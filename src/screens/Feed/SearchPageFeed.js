@@ -30,8 +30,10 @@ import SearchUserQuery from "../../graphQL/Query/Search/SearchPeopleV2";
 import { API_KEY } from "../../config";
 import RenderGrid from "./RenderGrid";
 import DeviceInfo from "react-native-device-info";
+import { useTranslation } from "react-i18next";
 
 export default function Feed(props) {
+  const { t } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const SafeStatusBar = Platform.select({
     ios: Notch ? 100 : -20,
@@ -354,7 +356,7 @@ export default function Feed(props) {
               value={searchtext}
               onChangeText={(e) => _searchHandle(e)}
               onFocus={() => showsearchpage(true)}
-              placeholder="Search Feed"
+              placeholder={t("SearchFeed")}
               placeholderTextColor="#464646"
               style={{
                 color: "#000",
@@ -430,7 +432,7 @@ export default function Feed(props) {
                   color: active_src == "account" ? "#209FAE" : "#D1D1D1",
                 }}
               >
-                Account
+                {t("account")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -455,7 +457,7 @@ export default function Feed(props) {
                   color: active_src == "tag" ? "#209FAE" : "#D1D1D1",
                 }}
               >
-                Tag
+                {t("tag")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -481,7 +483,7 @@ export default function Feed(props) {
                   color: active_src == "places" ? "#209FAE" : "#D1D1D1",
                 }}
               >
-                Places
+                {t("places")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -702,7 +704,7 @@ export default function Feed(props) {
                   color: active == "personal" ? "#209FAE" : "#D1D1D1",
                 }}
               >
-                All Post
+                {t("allPost")}
               </Text>
             </Ripple>
           </View>
