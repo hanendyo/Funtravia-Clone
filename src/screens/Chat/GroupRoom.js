@@ -58,6 +58,7 @@ export default function Room({ navigation, route }) {
 
   const [dataDetail, setDatadetail] = useState();
   const KeyboardUtils = Keyboard.KeyboardUtils;
+  let dateTime = new Date();
 
   const { t } = useTranslation();
 
@@ -375,6 +376,10 @@ export default function Room({ navigation, route }) {
       getUserToken();
     }
     socket.current.on("new_chat_group", (data) => {
+      console.log(
+        "🚀 ~ file: GroupRoom.js ~ line 378 ~ socket.current.on ~ data",
+        data
+      );
       setChatHistory(data);
     });
 
@@ -498,6 +503,7 @@ export default function Room({ navigation, route }) {
           text: chat,
           user_id: user.id,
           name: `${user.first_name} ${user.last_name}`,
+          time: dateTime,
         };
         if (connected) {
           await socket.current.emit("message", chatData);
@@ -535,6 +541,7 @@ export default function Room({ navigation, route }) {
         from: from,
         user_id: user.id,
         name: `${user.first_name} ${user.last_name ? user.last_name : ""}`,
+        time: dateTime,
       };
       // await fetch(`${CHATSERVER}/api/group/send`, {
       //   method: "POST",

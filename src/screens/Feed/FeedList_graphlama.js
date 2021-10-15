@@ -95,19 +95,18 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  // useScrollToTop(ref);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
-
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
-
   const [loaded, setLoaded] = useState(false);
 
   let { width, height } = Dimensions.get("screen");
@@ -235,20 +234,16 @@ export default function FeedList({ props, token }) {
 
   const _liked = async (id, index) => {
     let tempData = [...dataFeed];
-    index = tempData.findIndex((k) => k["node"]["id"] === id);
-
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (token && token !== "" && token !== null) {
           setactivelike(false);
           let tempData = [...dataFeed];
-          let tempData_all = { ...tempData[index] };
-          let tempDatas = { ...tempData[index].node };
+          let tempDatas = { ...tempData[index] };
           tempDatas.liked = true;
           tempDatas.response_count = tempDatas.response_count + 1;
-          tempData_all.node = tempDatas;
-
-          tempData.splice(index, 1, tempData_all);
+          tempData.splice(index, 1, tempDatas);
           setDataFeed(tempData);
           try {
             let response = await MutationLike({
@@ -256,11 +251,6 @@ export default function FeedList({ props, token }) {
                 post_id: id,
               },
             });
-            console.log(
-              "🚀 ~ file: FeedList.js ~ line 259 ~ const_liked= ~ response",
-              response
-            );
-
             if (errorLike) {
               throw new Error("Error");
             }
@@ -274,13 +264,10 @@ export default function FeedList({ props, token }) {
           } catch (error) {
             setactivelike(true);
             let tempData = [...dataFeed];
-            let tempData_all = { ...tempData[index] };
-            let tempDatas = { ...tempData[index].node };
+            let tempDatas = { ...tempData[index] };
             tempDatas.liked = false;
             tempDatas.response_count = tempDatas.response_count - 1;
-            tempData_all.node = tempDatas;
-
-            tempData.splice(index, 1, tempData_all);
+            tempData.splice(index, 1, tempDatas);
             setDataFeed(tempData);
           }
         } else {
@@ -292,18 +279,16 @@ export default function FeedList({ props, token }) {
 
   const _unliked = async (id, index) => {
     let tempData = [...dataFeed];
+    index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (token && token !== "" && token !== null) {
           setactivelike(false);
           let tempData = [...dataFeed];
-          let tempData_all = { ...tempData[index] };
-          let tempDatas = { ...tempData[index].node };
+          let tempDatas = { ...tempData[index] };
           tempDatas.liked = false;
           tempDatas.response_count = tempDatas.response_count - 1;
-          tempData_all.node = tempDatas;
-
-          tempData.splice(index, 1, tempData_all);
+          tempData.splice(index, 1, tempDatas);
           setDataFeed(tempData);
           try {
             let response = await MutationunLike({
@@ -330,13 +315,10 @@ export default function FeedList({ props, token }) {
           } catch (error) {
             setactivelike(true);
             let tempData = [...dataFeed];
-            let tempData_all = { ...tempData[index] };
-            let tempDatas = { ...tempData[index].node };
+            let tempDatas = { ...tempData[index] };
             tempDatas.liked = true;
             tempDatas.response_count = tempDatas.response_count + 1;
-            tempData_all.node = tempDatas;
-
-            tempData.splice(index, 1, tempData_all);
+            tempData.splice(index, 1, tempDatas);
             setDataFeed(tempData);
           }
         } else {
@@ -354,12 +336,11 @@ export default function FeedList({ props, token }) {
     fetchMore,
     refetch,
     networkStatus,
-  } = useQuery(FeedListCursorBased, {
+  } = useQuery(FeedPageing, {
     variables: {
-      first: 5,
-      after: "",
+      limit: 3,
+      offset: 0,
     },
-    pollInterval: 1000,
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -367,14 +348,10 @@ export default function FeedList({ props, token }) {
         Authorization: `Bearer ${props.route.params.token}`,
       },
     },
-    options: {
-      fetchPolicy: "network-only",
-      errorPolicy: "ignore",
-    },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setDataFeed(dataPost.post_cursor_based.edges);
+      setDataFeed(dataPost.feed_post_pageing.datas);
     },
   });
 
@@ -400,30 +377,33 @@ export default function FeedList({ props, token }) {
     });
   };
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { pageInfo } = fetchMoreResult.post_cursor_based;
-    const edges = [
-      ...prev.post_cursor_based.edges,
-      ...fetchMoreResult.post_cursor_based.edges,
-    ];
-    const feedback = Object.assign({}, prev, {
-      post_cursor_based: {
-        __typename: prev.post_cursor_based.__typename,
-        pageInfo,
-        edges,
-      },
-    });
-
-    return feedback;
+    if (
+      prev.feed_post_pageing.datas.length <
+      fetchMoreResult.feed_post_pageing.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.feed_post_pageing;
+      const datas = [
+        ...prev.feed_post_pageing.datas,
+        ...fetchMoreResult.feed_post_pageing.datas,
+      ];
+      return Object.assign({}, prev, {
+        feed_post_pageing: {
+          __typename: prev.feed_post_pageing.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
   const handleOnEndReached = () => {
     if (status == 0) {
-      if (dataPost.post_cursor_based?.pageInfo.hasNextPage) {
+      if (dataPost.feed_post_pageing?.page_info.hasNextPage) {
         return fetchMore({
           updateQuery: onUpdate,
           variables: {
-            first: 5,
-            after: dataPost.post_cursor_based.pageInfo.endCursor,
+            limit: 3,
+            offset: dataPost.feed_post_pageing.page_info.offset,
           },
         });
       }
@@ -516,7 +496,7 @@ export default function FeedList({ props, token }) {
         // Refresh();
         console.log("comment");
         if (ref) {
-          // ref?.current.scrollToIndex({ animated: true, index: 0 });
+          ref?.current.scrollToIndex({ animated: true, index: 0 });
           props.route.params.isComment = false;
         }
       }
@@ -525,9 +505,9 @@ export default function FeedList({ props, token }) {
         setRefreshing(true);
         setTimeout(() => {
           refetch();
-          // if (ref) {
-          // ref?.current.scrollToIndex({ animated: true, index: 0 });
-          // }
+          if (ref) {
+            ref?.current.scrollToIndex({ animated: true, index: 0 });
+          }
           setRefreshing(false);
         }, 800);
       }
@@ -556,8 +536,8 @@ export default function FeedList({ props, token }) {
 
   const countKoment = (id) => {
     const tempd = [...dataFeed];
-    const index = tempd.findIndex((k) => k["node"]["id"] === id);
-    tempd[index].node.comment_count = tempd[index].node.comment_count + 1;
+    const index = tempd.findIndex((k) => k["id"] === id);
+    tempd[index].comment_count = tempd[index].comment_count + 1;
   };
 
   const viewcomment = (data, index, time) => {
@@ -597,10 +577,9 @@ export default function FeedList({ props, token }) {
     return (
       <Text
         onPress={handlePress}
-        type="normal"
+        type="bold"
         style={{
           color: "#209fae",
-          marginTop: 5,
         }}
       >
         Read More
@@ -609,7 +588,17 @@ export default function FeedList({ props, token }) {
   };
 
   const ReadLesshendle = (handlePress) => {
-    return <View />;
+    return (
+      <Text
+        onPress={handlePress}
+        type="bold"
+        style={{
+          color: "#209fae",
+        }}
+      >
+        Read Less
+      </Text>
+    );
   };
 
   const goToItinerary = (data) => {
@@ -1533,13 +1522,12 @@ export default function FeedList({ props, token }) {
               backgroundColor: "#FFFFFF",
               marginHorizontal: 10,
               marginTop: Platform.OS === "ios" ? 0 : -5,
-              // marginVertical: 5,
-              marginBottom: 15,
+              marginVertical: 5,
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
             }}
-            key={item.id}
+            key={index}
           >
             <View
               style={{
@@ -1561,11 +1549,11 @@ export default function FeedList({ props, token }) {
                   marginLeft: 15,
                 }}
                 onPress={() => {
-                  item.node.user.id !== setting?.user?.id
+                  item.user.id !== setting?.user?.id
                     ? props.navigation.push("ProfileStack", {
                         screen: "otherprofile",
                         params: {
-                          idUser: item.node.user.id,
+                          idUser: item.user.id,
                         },
                       })
                     : props.navigation.push("ProfileStack", {
@@ -1575,7 +1563,7 @@ export default function FeedList({ props, token }) {
                         },
                       });
                 }}
-                source={{ uri: item.node.user.picture }}
+                source={{ uri: item.user.picture }}
               />
               <View
                 style={{
@@ -1585,11 +1573,11 @@ export default function FeedList({ props, token }) {
               >
                 <Text
                   onPress={() => {
-                    item.node.user.id !== setting?.user?.id
+                    item.user.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
                           screen: "otherprofile",
                           params: {
-                            idUser: item.node.user.id,
+                            idUser: item.user.id,
                           },
                         })
                       : props.navigation.push("ProfileStack", {
@@ -1605,8 +1593,8 @@ export default function FeedList({ props, token }) {
                     // marginTop: 7,
                   }}
                 >
-                  {item.node.user.first_name}{" "}
-                  {item.node.user.first_name ? item.node.user.last_name : null}
+                  {item.user.first_name}{" "}
+                  {item.user.first_name ? item.user.last_name : null}
                 </Text>
                 <View
                   style={{
@@ -1621,9 +1609,9 @@ export default function FeedList({ props, token }) {
                       // marginTop: 7,
                     }}
                   >
-                    {duration(item.node.created_at)}
+                    {duration(item.created_at)}
                   </Text>
-                  {item.node.location_name ? (
+                  {item.location_name ? (
                     <View
                       style={{
                         marginHorizontal: 5,
@@ -1634,7 +1622,7 @@ export default function FeedList({ props, token }) {
                       }}
                     ></View>
                   ) : null}
-                  {item.node.location_name ? (
+                  {item.location_name ? (
                     <Text
                       size="small"
                       style={{
@@ -1642,13 +1630,13 @@ export default function FeedList({ props, token }) {
                         // marginTop: 7,
                       }}
                     >
-                      <Truncate text={item.node.location_name} length={40} />
+                      <Truncate text={item.location_name} length={40} />
                     </Text>
                   ) : null}
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => OptionOpen(item.node, index, setting)}
+                onPress={() => OptionOpen(item, index, setting)}
                 style={{
                   position: "absolute",
                   right: 15,
@@ -1676,9 +1664,9 @@ export default function FeedList({ props, token }) {
                 borderRadius: 15,
               }}
             >
-              {item.node.is_single == false ? (
+              {item.is_single == false ? (
                 <RenderAlbum
-                  data={item.node}
+                  data={item}
                   props={props}
                   play={play}
                   muted={muted}
@@ -1689,7 +1677,7 @@ export default function FeedList({ props, token }) {
                 />
               ) : (
                 <RenderSinglePhoto
-                  data={item.node}
+                  data={item}
                   props={props}
                   play={play}
                   muted={muted}
@@ -1726,9 +1714,9 @@ export default function FeedList({ props, token }) {
                     // justifyContent: 'space-evenly',
                   }}
                 >
-                  {item.node.liked ? (
+                  {item.liked ? (
                     <Button
-                      onPress={() => _unliked(item.node.id, index)}
+                      onPress={() => _unliked(item.id, index)}
                       type="icon"
                       // variant="transparent"
                       position="left"
@@ -1751,12 +1739,12 @@ export default function FeedList({ props, token }) {
                           color: "#BE3737",
                         }}
                       >
-                        {item.node.response_count}
+                        {item.response_count}
                       </Text>
                     </Button>
                   ) : (
                     <Button
-                      onPress={() => _liked(item.node.id, index)}
+                      onPress={() => _liked(item.id, index)}
                       type="icon"
                       position="left"
                       size="small"
@@ -1774,18 +1762,14 @@ export default function FeedList({ props, token }) {
                         size="label"
                         style={{ marginHorizontal: 7 }}
                       >
-                        {item.node.response_count}
+                        {item.response_count}
                       </Text>
                     </Button>
                   )}
 
                   <Button
                     onPress={() =>
-                      viewcomment(
-                        item.node,
-                        index,
-                        duration(item.node.created_at)
-                      )
+                      viewcomment(item, index, duration(item.created_at))
                     }
                     type="icon"
                     variant="transparent"
@@ -1801,7 +1785,7 @@ export default function FeedList({ props, token }) {
                       size="label"
                       style={{ marginHorizontal: 7 }}
                     >
-                      {item.node.comment_count}
+                      {item.comment_count}
                     </Text>
                   </Button>
                 </View>
@@ -1811,7 +1795,7 @@ export default function FeedList({ props, token }) {
                     props.navigation.push("FeedStack", {
                       screen: "SendPost",
                       params: {
-                        post: item.node,
+                        post: item,
                       },
                     })
                   }
@@ -1837,7 +1821,7 @@ export default function FeedList({ props, token }) {
                   flexDirection: "row",
                 }}
               >
-                {item.node.itinerary !== null ? (
+                {item.itinerary !== null ? (
                   <View>
                     <View
                       style={{
@@ -1857,7 +1841,7 @@ export default function FeedList({ props, token }) {
                         }}
                       />
                       <Pressable
-                        onPress={() => goToItinerary(item.node)}
+                        onPress={() => goToItinerary(item)}
                         style={{
                           flex: 1,
                           flexDirection: "row",
@@ -1866,10 +1850,10 @@ export default function FeedList({ props, token }) {
                         }}
                       >
                         <Text size="label" type="bold" style>
-                          {item.node.itinerary.name}
+                          {item.itinerary.name}
                         </Text>
                         <Ripple
-                          onPress={() => goToItinerary(item.node)}
+                          onPress={() => goToItinerary(item)}
                           style={{
                             borderRadius: 10,
                             borderWidth: 1,
@@ -1890,7 +1874,7 @@ export default function FeedList({ props, token }) {
                         </Ripple>
                       </Pressable>
                     </View>
-                    {item.node.caption ? (
+                    {item.caption ? (
                       <ReadMore
                         numberOfLines={3}
                         renderTruncatedFooter={ReadMorehendle}
@@ -1904,12 +1888,12 @@ export default function FeedList({ props, token }) {
                             lineHeight: 20,
                           }}
                         >
-                          {item.node.caption}
+                          {item.caption}
                         </Text>
                       </ReadMore>
                     ) : null}
                   </View>
-                ) : item.node?.caption ? (
+                ) : item?.caption ? (
                   <View
                     style={{
                       marginBottom: 8,
@@ -1936,12 +1920,10 @@ export default function FeedList({ props, token }) {
                             marginRight: 5,
                           }}
                         >
-                          {item.node.user.first_name}{" "}
-                          {item.node.user.first_name
-                            ? item.node.user.last_name
-                            : null}{" "}
+                          {item.user.first_name}{" "}
+                          {item.user.first_name ? item.user.last_name : null}{" "}
                         </Text>
-                        {item.node?.caption}
+                        {item?.caption}
                       </Text>
                     </ReadMore>
                   </View>
@@ -1956,9 +1938,7 @@ export default function FeedList({ props, token }) {
           paddingVertical: 7,
         }}
         // initialNumToRender={7}
-        keyExtractor={(item, index) => {
-          item.cursor + toString(index);
-        }}
+        keyExtractor={(item) => item.id}
         // extraData={liked}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
@@ -1985,9 +1965,10 @@ export default function FeedList({ props, token }) {
             </View>
           ) : null
         }
-        initialNumToRender={10}
-        onEndReachedThreshold={0.5}
+        initialNumToRender={1}
+        onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
+        onEndThreshold={3000}
       />
     </SafeAreaView>
   );

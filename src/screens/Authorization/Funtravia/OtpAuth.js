@@ -139,6 +139,8 @@ export default function OtpAuth(props) {
     }
   };
 
+  console.log(props.route.params.userId);
+
   const signin = async () => {
     let fcm = await AsyncStorage.getItem("FCM_TOKEN");
     try {
@@ -156,37 +158,26 @@ export default function OtpAuth(props) {
           token: fcm,
         },
       });
-      if (response.data.verification.access_token) {
-        try {
-          setToken(response.data.verification.access_token);
-          await AsyncStorage.setItem(
-            "access_token",
-            response.data.verification.access_token
-          );
-          await AsyncStorage.setItem(
-            "setting",
-            JSON.stringify(response.data.verification.data_setting)
-          );
-          props.navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: "BottomStack",
-                routes: [{ name: "HomeScreen" }],
-              },
-            ],
-          });
 
-          // settingcreate();
-        } catch (error) {
-          // Alert.alert('failed to login');
-          showAlert({
-            ...aler,
-            show: true,
-            judul: "Sorry..",
-            detail: response.data.verification.message,
-          });
-        }
+      if (response.data.verification.access_token) {
+        setToken(response.data.verification.access_token);
+        await AsyncStorage.setItem(
+          "access_token",
+          response.data.verification.access_token
+        );
+        await AsyncStorage.setItem(
+          "setting",
+          JSON.stringify(response.data.verification.data_setting)
+        );
+        props.navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "BottomStack",
+              routes: [{ name: "HomeScreen" }],
+            },
+          ],
+        });
       } else {
         showAlert({
           ...aler,

@@ -60,7 +60,7 @@ export default function RenderSinglePhoto({
             }}
             // controls
             onError={videoView?.current?.videoError}
-            onLoad={(response) => console.log("response", response)}
+            onLoad={(response) => console.log("response")}
             on
             onProgress={durationTime}
             // onProgress={(event) => console.log("e", event)}
