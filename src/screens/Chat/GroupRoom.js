@@ -48,7 +48,7 @@ export default function Room({ navigation, route }) {
   const [user, setUser] = useState({});
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState("");
 
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
