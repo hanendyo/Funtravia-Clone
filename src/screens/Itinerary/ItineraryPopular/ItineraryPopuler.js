@@ -47,6 +47,9 @@ import {
   Newglobe,
   Padlock,
   ItineraryIcon,
+  ItineraryIconGray,
+  AlbumIconGray,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -127,7 +130,11 @@ export default function ItineraryPopuler(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={20} width={20}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (
@@ -1066,11 +1073,11 @@ export default function ItineraryPopuler(props) {
                     flex: 1,
                     paddingHorizontal: 15,
                     justifyContent: "space-between",
-                    paddingTop: 18,
-                    paddingBottom: 5,
+                    paddingTop: 20,
+                    paddingBottom: 8,
                   }}
                 >
-                  <Text size={"title"} type="bold" numberOfLines={2}>
+                  <Text size={"label"} type="bold" numberOfLines={2}>
                     {item.title}
                   </Text>
                   <Pressable
@@ -1090,8 +1097,8 @@ export default function ItineraryPopuler(props) {
                   >
                     <Image
                       style={{
-                        width: 35,
-                        height: 35,
+                        width: 30,
+                        height: 30,
                         borderRadius: 17,
                         marginRight: 10,
                       }}
@@ -1647,11 +1654,24 @@ export default function ItineraryPopuler(props) {
                   flexDirection: "row",
                 }}
               >
-                <ItineraryIcon
-                  style={{ marginRight: 5 }}
-                  height={20}
-                  width={20}
-                />
+                {actives == "Itinerary" ? (
+                  <ItineraryIcon
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : (
+                  <ItineraryIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                )}
+
                 <Text
                   size="label"
                   type={actives == "Itinerary" ? "bold" : "light"}
@@ -1675,11 +1695,23 @@ export default function ItineraryPopuler(props) {
                   flexDirection: "row",
                 }}
               >
-                <TravelAlbum
-                  style={{ marginRight: 5 }}
-                  height={20}
-                  width={20}
-                />
+                {actives == "Album" ? (
+                  <TravelAlbum
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : (
+                  <AlbumIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                )}
                 <Text
                   size="label"
                   type={actives == "Album" ? "bold" : "light"}

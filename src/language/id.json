@@ -717,7 +717,7 @@
   "morearticle": "Artikel Terkait Lainnya",
   "explore": "Jelajahi",
   "EventTitle": "Ribuan Acara di Seluruh Dunia Disesuaikan dengan Gairah Anda. Temukan Pengalaman Anda.",
-  "EventDescription": "Dari konser, film, spa, taman hiburan, tur, dan berbagai aktivitas yang memperkaya lainnya, temukan pengalaman yang sesuai dengan minat Anda dengan mudah!",
+  "EventDescription": "Dari konser, film, spa, taman hiburan, tur, dan berbagai aktivitas yang memperkaya lainnya, temukan pengalaman yang sesuai dengan minat Anda dengan mudah! ",
   "UnescoTitle": "Pusat Warisan Dunia UNESCO",
   "UnescoDescription": "UNESCO (Organisasi Pendidikan, Ilmu Pengetahuan dan Kebudayaan Perserikatan Bangsa-Bangsa) telah menetapkan sembilan Situs Warisan Dunia di",
   "Culture": "Kultur",
@@ -734,5 +734,8 @@
   "VerificationFailed": "Verifikasi gagal",
   "NumberAlreadyExist": "Nomor sudah ada",
   "CheckYourNumber": "Mohon cek nomor Anda",
-  "Post": "Kirim"
+  "Post": "Kirim",
+  "postImage": "Pasang",
+  "recentPhotos": "Foto terkini",
+  "recentVideos": "Video terkini"
 }

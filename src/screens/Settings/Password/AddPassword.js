@@ -204,7 +204,7 @@ export default function AddPassword(props) {
             style={{
               fontFamily: "Lato-Regular",
               fontSize: 14,
-              marginTop: 10,
+              marginTop: 0,
             }}
           >
             <Text size="label" type="regular">

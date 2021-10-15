@@ -733,5 +733,8 @@
   "VerificationFailed": "Verification Failed",
   "NumberAlreadyExist": "Number Already Exist",
   "CheckYourNumber": "Please check your number",
-  "Post": "Post"
+  "Post": "Post",
+  "postImage": "Post",
+  "recentPhotos": "Recent photos",
+  "recentVideos": "Recent videos"
 }

@@ -381,11 +381,11 @@ export default function Post(props) {
             let array_album = [
               {
                 count: 0,
-                title: "Recent Photos",
+                title: t("recentPhotos"),
               },
               {
                 count: 0,
-                title: "Recent Videos",
+                title: t("recentVideos"),
               },
             ];
 
@@ -671,7 +671,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: Platform.OS === "ios" ? 44 : 55,
+          height: Platform.OS === "ios" ? 55 : 55,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
@@ -715,7 +715,7 @@ export default function Post(props) {
           </Button>
         </View>
         <Button
-          size="medium"
+          size="large"
           text={t("next")}
           onPress={() => nextFunction(recent?.node?.type, checklistVideo)}
         />
