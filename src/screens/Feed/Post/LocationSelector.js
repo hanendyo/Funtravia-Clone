@@ -11,12 +11,15 @@ import {
 import { Arrowbackwhite, Pointmapblack, Search } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { StatusBar, Truncate } from "../../../component";
+import { useTranslation } from "react-i18next";
 
 export default function LocationSelector({
   modals,
   setModellocation,
   masukan,
 }) {
+  const { t, i18n } = useTranslation();
+
   // console.log(modals);
   const hasil = (detail) => {
     // console.log(detail);
@@ -62,7 +65,7 @@ export default function LocationSelector({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 0 : -21,
+            marginTop: Platform.OS === "ios" ? 30 : -21,
           }}
         >
           <TouchableOpacity
@@ -95,10 +98,10 @@ export default function LocationSelector({
               alignItems: "center",
               alignContent: "center",
               // paddingTop: 15,
-              marginTop: 5,
+              marginTop: 7,
             }}
           >
-            Select Location
+            {t("selectLocation")}
           </Text>
         </View>
         <View
@@ -109,7 +112,6 @@ export default function LocationSelector({
             backgroundColor: "white",
             paddingTop: 20,
             paddingHorizontal: 20,
-            paddingBottom: 20,
           }}
         >
           {/* <View
@@ -117,7 +119,6 @@ export default function LocationSelector({
                             marginHorizontal: 20,
                         }}> */}
           <GooglePlacesAutocomplete
-            style={{}}
             query={{
               key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
               language: "id", // language of the results
@@ -131,14 +132,14 @@ export default function LocationSelector({
             }}
             autoFocus={true}
             listViewDisplayed="auto"
-            onFail={(error) => console.log(error)}
+            onFail={(error) => alert(error)}
             // currentLocation={true}
-            placeholder={"Find Location"}
+            placeholder={t("findLocation")}
             // currentLocationLabel='Nearby location'
             renderLeftButton={() => {
               return (
-                <View style={{ justifyContent: "center", paddingTop: 5 }}>
-                  <Search />
+                <View style={{ justifyContent: "center", paddingBottom: 5 }}>
+                  <Search width={20} height={20} />
                 </View>
               );
             }}

@@ -95,7 +95,7 @@ export default function ListEventHome(props) {
             (heightjudul - 90) +
             tambahan
         : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahan
-      : Dimensions.get("screen").height * 0.23 + (heightjudul - 90) + tambahan;
+      : Dimensions.get("screen").height * 0.23 + (heightjudul - 55) + tambahan;
   const HeaderHeightCustom = Platform.select({
     ios: Notch ? 360 - 48 : 360 - 20,
     // android: 305 - StatusBar.currentHeight,
@@ -753,11 +753,11 @@ export default function ListEventHome(props) {
             onTextLayout={(x) => {
               let line = x.nativeEvent.lines.length;
               let lines = line - 1;
-              setTambahan(lines * 32);
+              // setTambahan(lines * 32);
               if (lines % 3 == 0) {
                 setTambahan(lines * 29);
               } else {
-                setTambahan(lines * 24);
+                setTambahan(lines * 23);
               }
             }}
             size="label"
