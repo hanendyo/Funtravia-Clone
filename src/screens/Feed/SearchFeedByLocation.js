@@ -16,8 +16,10 @@ import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useQuery } from "@apollo/react-hooks";
 import Feedsearchbylocation from "../../graphQL/Query/Home/Feedsearchbylocation";
 import RenderGrid from "./RenderGrid";
+import { useTranslation } from "react-i18next";
 
 export default function Feed(props) {
+  const { t } = useTranslation();
   const [searchtext, SetSearchtext] = useState("");
   let [setting, setSetting] = useState();
   let latitude = props.route.params.latitude;
@@ -155,11 +157,10 @@ export default function Feed(props) {
       props.navigation.goBack();
     }
   };
-
   let grid = 1;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
 
       <View
@@ -168,6 +169,7 @@ export default function Feed(props) {
           height: 55,
           alignItems: "center",
           justifyContent: "center",
+          marginBottom: 5,
         }}
       >
         <View
@@ -204,7 +206,7 @@ export default function Feed(props) {
               color: "#FFFFFF",
             }}
           >
-            Search By Location : {keyword}
+            {t("searchByLocation")} : {keyword}
           </Text>
           <Ripple
             onPress={() => {}}
@@ -217,46 +219,60 @@ export default function Feed(props) {
           ></Ripple>
         </View>
       </View>
-      <FlatList
-        data={feed_search_bylocation_paging}
-        renderItem={({ item, index }) => (
-          <RenderGrid item={item} index={index} props={props} />
-        )}
-        style={{
-          marginHorizontal: 10,
-        }}
-        contentContainerStyle={{
-          paddingVertical: 5,
-        }}
-        keyExtractor={(item) => item.id_post}
-        showsVerticalScrollIndicator={false}
-        refreshing={refreshing}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => _refresh()}
-          />
-        }
-        ListFooterComponent={
-          loadingPost ? (
-            <View
-              style={{
-                width: width,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator
-                animating={loadingPost}
-                size="large"
-                color="#209fae"
-              />
-            </View>
-          ) : null
-        }
-        onEndReachedThreshold={1}
-        onEndReached={handleOnEndReached}
-      />
-    </SafeAreaView>
+      {feed_search_bylocation_paging.length !== 0 ? (
+        <FlatList
+          data={feed_search_bylocation_paging}
+          renderItem={({ item, index }) => (
+            <RenderGrid item={item} index={index} props={props} />
+          )}
+          style={{
+            marginHorizontal: 10,
+          }}
+          contentContainerStyle={{
+            paddingVertical: 5,
+          }}
+          keyExtractor={(item) => item[0].id_post}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => _refresh()}
+            />
+          }
+          ListFooterComponent={
+            loadingPost ? (
+              <View
+                style={{
+                  width: width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator
+                  animating={loadingPost}
+                  size="large"
+                  color="#209fae"
+                />
+              </View>
+            ) : null
+          }
+          onEndReachedThreshold={1}
+          onEndReached={handleOnEndReached}
+        />
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginVertical: 20,
+          }}
+        >
+          <Text size="label" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      )}
+    </View>
   );
 }

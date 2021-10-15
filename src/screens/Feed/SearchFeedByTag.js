@@ -489,10 +489,8 @@ export default function Feed(props) {
     }
   };
 
-  console.log(feed_search_bytag_paging);
-
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <View
         style={{
@@ -500,6 +498,7 @@ export default function Feed(props) {
           height: 55,
           alignItems: "center",
           justifyContent: "center",
+          marginBottom: 10,
         }}
       >
         <View
@@ -536,7 +535,7 @@ export default function Feed(props) {
               color: "#FFFFFF",
             }}
           >
-            Search By Tag : #{keyword}
+            {t("searchByTag")} : #{keyword}
           </Text>
           <Ripple
             onPress={() => {}}
@@ -552,61 +551,63 @@ export default function Feed(props) {
         </View>
       </View>
 
-      <FlatList
-        data={feed_search_bytag_paging}
-        renderItem={({ item, index }) => (
-          <RenderGrid item={item} index={index} props={props} />
-        )}
-        style={{
-          marginHorizontal: 10,
-        }}
-        contentContainerStyle={{}}
-        keyExtractor={(item) => item.id_post}
-        showsVerticalScrollIndicator={false}
-        refreshing={refreshing}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => _refresh()}
-          />
-        }
-        ListFooterComponent={
-          loadingPost ? (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <ActivityIndicator
-                animating={loadingPost}
-                size="large"
-                color="#209fae"
-              />
-              {/* <Text
-                size="title"
-                type="bold"
+      {feed_search_bytag_paging.length !== 0 ? (
+        <FlatList
+          data={feed_search_bytag_paging}
+          renderItem={({ item, index }) => (
+            <RenderGrid item={item} index={index} props={props} />
+          )}
+          style={{
+            marginHorizontal: 10,
+          }}
+          contentContainerStyle={{}}
+          keyExtractor={(item) => item.id_post}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => _refresh()}
+            />
+          }
+          ListFooterComponent={
+            loadingPost ? (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                Loading...
-              </Text> */}
-            </View>
-          ) : (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                marginVertical: 20,
-              }}
-            >
-              <Text size="label" type="bold">
-                {t("noData")}
-              </Text>
-            </View>
-          )
-        }
-        onEndReachedThreshold={1}
-        onEndReached={handleOnEndReached}
-      />
-    </SafeAreaView>
+                <ActivityIndicator
+                  animating={loadingPost}
+                  size="large"
+                  color="#209fae"
+                />
+                {/* <Text
+                  size="title"
+                  type="bold"
+                >
+                  Loading...
+                </Text> */}
+              </View>
+            ) : null
+          }
+          onEndReachedThreshold={1}
+          onEndReached={handleOnEndReached}
+        />
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginVertical: 20,
+          }}
+        >
+          <Text size="label" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      )}
+    </View>
   );
 }

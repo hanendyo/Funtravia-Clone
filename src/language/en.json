@@ -495,7 +495,7 @@
   "saved": "save",
   "discard": "Discard",
   "areyousure": "Save changes?",
-  "noData": "No Data",
+  "noData": "No data",
   "postToFeed": "Post to Feed",
   "activities&Experience": "Activities & Experience",
   "exprole&inspiredtrip": "Explore and get inspired for your next trip",
@@ -736,5 +736,11 @@
   "Post": "Post",
   "postImage": "Post",
   "recentPhotos": "Recent photos",
-  "recentVideos": "Recent videos"
+  "recentVideos": "Recent videos",
+  "SearchFeed": "Search Feed",
+  "tag": "Tag",
+  "places": "Places",
+  "allPost": "All Post",
+  "searchByTag": "Search by Tag",
+  "searchByLocation": "Search By Location"
 }

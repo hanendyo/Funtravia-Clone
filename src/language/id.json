@@ -491,9 +491,9 @@
   "PasswordReset": "Pengaturan ulang kata sandi",
   "min6char": "Minimal 6 character dengan huruf kecil",
   "saved": "Simpan",
-  "discard": "Buang",
+  "discard": "Batal",
   "areyousure": "Simpan perubahan?",
-  "noData": "Tidak ada Data",
+  "noData": "Tidak ada data",
   "postToFeed": "Post to Feed",
   "activities&Experience": "Aktivitas & Pengalaman",
   "exprole&inspiredtrip": "Jelajahi dan dapatkan inspirasi untuk perjalanan Anda berikutnya",
@@ -737,5 +737,11 @@
   "Post": "Kirim",
   "postImage": "Pasang",
   "recentPhotos": "Foto terkini",
-  "recentVideos": "Video terkini"
+  "recentVideos": "Video terkini",
+  "SearchFeed": "Cari Feed",
+  "tag": "Tag",
+  "places": "Lokasi",
+  "allPost": "Semua Postingan",
+  "searchByTag": "Berdasarkan Tag",
+  "searchByLocation": "Berdasarkan Lokasi"
 }
