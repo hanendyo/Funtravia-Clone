@@ -31,6 +31,7 @@ import {
   Newglobe,
   Padlock,
   Xblue,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -41,12 +42,13 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import { Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
 export default function ItineraryFavorite(props) {
+  const { t } = useTranslation();
   let [soon, setSoon] = useState(false);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Itinerary Favorite",
+    headerTitle: t("itineraryFavorite"),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -74,11 +76,14 @@ export default function ItineraryFavorite(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={20} width={20}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
-  const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [setting, setSetting] = useState();
   let [textInput, setTextInput] = useState("");
@@ -348,7 +353,7 @@ export default function ItineraryFavorite(props) {
             placeholder={t("search")}
             placeholderTextColor="#464646"
             returnKeyType="search"
-            autoFocus={true}
+            // autoFocus={true}
             fontSize={16}
           />
           {textInput.length !== 0 ? (
@@ -836,7 +841,7 @@ export default function ItineraryFavorite(props) {
               }}
             >
               <Text size="label" type="bold">
-                Tidak Ada Data
+                {t("noData")}
               </Text>
             </View>
           )}

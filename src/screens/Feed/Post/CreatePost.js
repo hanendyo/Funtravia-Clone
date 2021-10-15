@@ -571,7 +571,11 @@ export default function CreatePost(props) {
               height: 55,
             }}
           >
-            <Button size="medium" text="Post" onPress={() => SubmitData()} />
+            <Button
+              size="large"
+              text={t("postImage")}
+              onPress={() => SubmitData()}
+            />
           </View>
         </View>
         <ScrollView
