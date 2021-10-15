@@ -87,7 +87,7 @@ export default function GroupDetail(props) {
           justifyContent: "center",
           height: 50,
           width: 50,
-          marginLeft: 20,
+          marginLeft: 10,
           marginTop: 20,
         }}
       >
@@ -96,9 +96,9 @@ export default function GroupDetail(props) {
             backgroundColor: "#000",
             opacity: 0.6,
             position: "absolute",
-            height: 50,
-            width: 50,
-            borderRadius: 25,
+            height: 40,
+            width: 40,
+            borderRadius: 20,
           }}
         ></View>
         <Button
@@ -129,7 +129,7 @@ export default function GroupDetail(props) {
             justifyContent: "center",
             height: 50,
             width: 50,
-            marginRight: 20,
+            marginRight: 10,
             marginTop: 20,
           }}
         >
@@ -138,9 +138,9 @@ export default function GroupDetail(props) {
               backgroundColor: "#000",
               opacity: 0.6,
               position: "absolute",
-              height: 50,
-              width: 50,
-              borderRadius: 25,
+              height: 40,
+              width: 40,
+              borderRadius: 20,
             }}
           ></View>
           <Menu
@@ -455,8 +455,7 @@ export default function GroupDetail(props) {
   const _leftGroup = async (group_id) => {
     setIndexActive(null);
     let data_kirim = JSON.stringify({
-      group_id: dataDetail.id,
-      title: text,
+      group_id: group_id,
     });
     try {
       let response = await fetch(`${RESTFULL_API}room/group/left_group`, {
@@ -469,7 +468,7 @@ export default function GroupDetail(props) {
         body: data_kirim,
       });
       let responseJson = await response.json();
-      // console.log(responseJson);
+      console.log(responseJson);
       if (responseJson.status == true) {
         props.navigation.navigate("BottomStack", {
           screen: "ChatBottomScreen",
@@ -1639,7 +1638,7 @@ export default function GroupDetail(props) {
               type="bold"
               style={{ marginTop: 13, marginBottom: 15 }}
             >
-              {t("removeAdmin")}
+              {t("leftGroup")}
             </Text>
             <Pressable
               onPress={() => setModalleft(false)}
