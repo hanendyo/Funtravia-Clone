@@ -413,13 +413,16 @@ export default function SearchListEventHome(props) {
       <View
         style={{
           flex: 1,
-          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
-          paddingVertical: 15,
+          // paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          // paddingVertical: 15,
           flexDirection: "row",
+          justifyContent: "space-around",
+          marginTop: 15,
+          paddingHorizontal: 5,
         }}
       >
         {/* start */}
-        <View>
+        <View style={{ width: "45%" }}>
           <Text
             style={{
               paddingTop: 10,
@@ -479,28 +482,30 @@ export default function SearchListEventHome(props) {
         </View>
         {/* DASH */}
         <View
-          style={{
-            paddingTop: 45,
-            paddingLeft: 10,
-            flexDirection: "row",
-            // justifyContent: "center",
-            // alignContent: "center",
-            // alignItems: "center",
-            // marginBottom: 10,
-            marginRight: 10,
-          }}
+          style={
+            {
+              // paddingTop: 45,
+              // paddingLeft: 10,
+              // flexDirection: "row",
+              // justifyContent: "center",
+              // alignContent: "center",
+              // alignItems: "center",
+              // marginBottom: 10,
+              // marginRight: 10,
+            }
+          }
         >
           <View
             style={{
               backgroundColor: "#d3d3d3",
               width: 10,
               height: 2,
-              marginTop: Platform.OS == "ios" ? 10 : 15,
+              marginTop: Platform.OS == "ios" ? 50 : 55,
             }}
           ></View>
         </View>
         {/* end */}
-        <View>
+        <View style={{ width: "45%" }}>
           <Text
             style={{
               paddingTop: 10,
@@ -510,7 +515,6 @@ export default function SearchListEventHome(props) {
               alignItems: "center",
               marginBottom: 10,
               // marginRight: 65,
-              width: 102,
             }}
           >
             {t("until")}
@@ -578,9 +582,10 @@ export default function SearchListEventHome(props) {
 
   const PriceFilter = () => {
     return (
-      <View
+      <ScrollView
+        showsVerticalScrollIndicator={false}
         style={{
-          flex: 1,
+          // flex: 1,
           paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
           paddingVertical: 15,
         }}
@@ -621,10 +626,11 @@ export default function SearchListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               paddingHorizontal: 10,
               borderWidth: 1,
               borderColor: "#d3d3d3",
+              alignItems: "center",
             }}
           >
             <TextInput
@@ -682,7 +688,7 @@ export default function SearchListEventHome(props) {
             style={{
               backgroundColor: "#d3d3d3",
               width: 2,
-              height: Platform.OS == "ios" ? (Notch ? 40 : 20) : 40,
+              height: Platform.OS == "ios" ? (Notch ? 30 : 10) : 30,
             }}
           ></View>
         </View>
@@ -704,10 +710,11 @@ export default function SearchListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
-              paddingVertical: 10,
+              // paddingVertical: 10,
               paddingHorizontal: 10,
               borderWidth: 1,
               borderColor: "#d3d3d3",
+              alignItems: "center",
             }}
           >
             <TextInput
@@ -753,7 +760,7 @@ export default function SearchListEventHome(props) {
             ) : null}
           </View>
         </View>
-      </View>
+      </ScrollView>
     );
   };
 
