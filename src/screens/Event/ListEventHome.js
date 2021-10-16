@@ -73,6 +73,7 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
+console.log("deviceId", deviceId);
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
@@ -95,11 +96,11 @@ export default function ListEventHome(props) {
             (heightjudul - 90) +
             tambahan
         : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahan
-      : Dimensions.get("screen").height * 0.23 + (heightjudul - 55) + tambahan;
+      : deviceId == "LYA-L29"
+      ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahan
+      : Dimensions.get("screen").height * 0.23 + (heightjudul - 90) + tambahan;
   const HeaderHeightCustom = Platform.select({
     ios: Notch ? 360 - 48 : 360 - 20,
-    // android: 305 - StatusBar.currentHeight,
-    // android: 320 - StatusBar.currentHeight,
     android: 340 - StatusBar.currentHeight,
   });
   let [heightview, setheight] = useState(0);
@@ -868,230 +869,243 @@ export default function ListEventHome(props) {
     return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
   };
 
-  const rederTab1Item = ({ item, index }, position) => {
+  let [loadings, setLoadings] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
+  }, []);
+  console.log("loading", loading, error, data, dataEvent);
+
+  const rederTab1Item = ({ item, index, loading }, position) => {
+    console.log("item", index, position);
     return (
-      <View
-        style={{
-          justifyContent: "center",
-          width: (Dimensions.get("screen").width - 40) / 2,
-          height: Dimensions.get("screen").width * 0.7,
-          margin: 5,
-          flexDirection: "column",
-          backgroundColor: "white",
-          borderRadius: 5,
-          shadowColor: "gray",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 0.5,
-          shadowRadius: 3,
-          elevation: 3,
-        }}
-      >
+      <>
         <View
+          key={index.toString()}
           style={{
-            position: "absolute",
-            top: 15,
-            left: 10,
-            right: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            zIndex: 9999,
-          }}
-        >
-          <View
-            style={{
-              // bottom: (9),
-              height: 21,
-              minWidth: 60,
-              borderRadius: 11,
-              alignSelf: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(226, 236, 248, 0.85)",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text
-              size="small"
-              style={{
-                textAlign: "center",
-              }}
-            >
-              {item.category.name}
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 26,
-              width: 26,
-              borderRadius: 50,
-              alignSelf: "center",
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(226, 236, 248, 0.85)",
-              // zIndex: 999,
-            }}
-          >
-            {item.liked === false ? (
-              <TouchableOpacity
-                style={{
-                  height: 26,
-                  width: 26,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-
-                  zIndex: 9999,
-                }}
-                onPress={() => _liked(item.id, item, position)}
-              >
-                <LikeEmpty height={13} width={13} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={{
-                  height: 26,
-                  width: 26,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-
-                  zIndex: 9999,
-                }}
-                onPress={() => _unliked(item.id, item, position)}
-              >
-                <LikeRed height={13} width={13} />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => eventdetail(item)}
-          style={{
-            height: Dimensions.get("window").width * 0.47 - 16,
-          }}
-        >
-          <FunImageBackground
-            key={item.id}
-            source={
-              item.cover
-                ? { uri: item.cover }
-                : item.images.length > 0
-                ? { uri: item.images[0].image }
-                : { default_image }
-            }
-            style={[styles.ImageView]}
-            imageStyle={[styles.Image]}
-          />
-        </TouchableOpacity>
-        <View
-          style={{
-            flex: 1,
+            justifyContent: "center",
+            width: (Dimensions.get("screen").width - 40) / 2,
+            height: Dimensions.get("screen").width * 0.7,
+            margin: 5,
             flexDirection: "column",
-            justifyContent: "space-around",
-            height: 230,
-            marginVertical: 5,
-            marginHorizontal: 10,
+            backgroundColor: "white",
+            borderRadius: 5,
+            shadowColor: "gray",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 3,
+            elevation: 3,
           }}
         >
-          <Text
-            onPress={() => eventdetail(item)}
-            size="label"
-            type="bold"
-            style={{}}
-          >
-            <Truncate text={item.name} length={27} />
-          </Text>
           <View
             style={{
-              height: "50%",
-              flexDirection: "column",
-              justifyContent: "space-around",
+              position: "absolute",
+              top: 15,
+              left: 10,
+              right: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignContent: "center",
+              zIndex: 9999,
             }}
           >
             <View
               style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
-                marginBottom: 3,
-                alignContent: "center",
-                alignItems: "center",
+                // bottom: (9),
+                height: 21,
+                minWidth: 60,
+                borderRadius: 11,
+                alignSelf: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(226, 236, 248, 0.85)",
+                paddingHorizontal: 10,
               }}
             >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={CalenderGrey}
-              />
-              {item.is_repeat === true ? (
-                <Text
-                  size="small"
-                  style={{
-                    paddingRight: 20,
-                    width: "100%",
-                  }}
-                >
-                  {handlerepeat(item.start_date, item.end_date)}
-                </Text>
-              ) : (
-                <Text
-                  size="small"
-                  style={{
-                    paddingRight: 20,
-                    width: "100%",
-                  }}
-                >
-                  {dateFormatBetween(item.start_date, item.end_date)}
-                </Text>
-              )}
-            </View>
-            <View
-              style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
-                borderColor: "grey",
-              }}
-            >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={MapIconGreen}
-              />
               <Text
                 size="small"
                 style={{
-                  width: "100%",
+                  textAlign: "center",
                 }}
               >
-                {item.city.name}
+                {item.category.name}
               </Text>
+            </View>
+            <View
+              style={{
+                height: 26,
+                width: 26,
+                borderRadius: 50,
+                alignSelf: "center",
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(226, 236, 248, 0.85)",
+                // zIndex: 999,
+              }}
+            >
+              {item.liked === false ? (
+                <TouchableOpacity
+                  style={{
+                    height: 26,
+                    width: 26,
+                    borderRadius: 50,
+                    alignSelf: "center",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+
+                    zIndex: 9999,
+                  }}
+                  onPress={() => _liked(item.id, item, position)}
+                >
+                  <LikeEmpty height={13} width={13} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={{
+                    height: 26,
+                    width: 26,
+                    borderRadius: 50,
+                    alignSelf: "center",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+
+                    zIndex: 9999,
+                  }}
+                  onPress={() => _unliked(item.id, item, position)}
+                >
+                  <LikeRed height={13} width={13} />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => eventdetail(item)}
+            style={{
+              height: Dimensions.get("window").width * 0.47 - 16,
+            }}
+          >
+            <FunImageBackground
+              key={item.id}
+              source={
+                item.cover
+                  ? { uri: item.cover }
+                  : item.images.length > 0
+                  ? { uri: item.images[0].image }
+                  : { default_image }
+              }
+              style={[styles.ImageView]}
+              imageStyle={[styles.Image]}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "space-around",
+              height: 230,
+              marginVertical: 5,
+              marginHorizontal: 10,
+            }}
+          >
+            <Text
+              onPress={() => eventdetail(item)}
+              size="label"
+              type="bold"
+              style={{}}
+            >
+              <Truncate text={item.name} length={27} />
+            </Text>
+            <View
+              style={{
+                height: "50%",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+            >
+              <View
+                style={{
+                  // flex: 1,
+                  flexDirection: "row",
+                  width: "100%",
+                  marginBottom: 3,
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CustomImage
+                  customStyle={{
+                    width: 15,
+                    height: 15,
+                    marginRight: 5,
+                  }}
+                  customImageStyle={{
+                    width: 15,
+                    height: 15,
+                    resizeMode: "contain",
+                  }}
+                  source={CalenderGrey}
+                />
+                {item.is_repeat === true ? (
+                  <Text
+                    size="small"
+                    style={{
+                      paddingRight: 20,
+                      width: "100%",
+                    }}
+                  >
+                    {handlerepeat(item.start_date, item.end_date)}
+                  </Text>
+                ) : (
+                  <Text
+                    size="small"
+                    style={{
+                      paddingRight: 20,
+                      width: "100%",
+                    }}
+                  >
+                    {dateFormatBetween(item.start_date, item.end_date)}
+                  </Text>
+                )}
+              </View>
+              <View
+                style={{
+                  // flex: 1,
+                  flexDirection: "row",
+                  width: "100%",
+                  borderColor: "grey",
+                }}
+              >
+                <CustomImage
+                  customStyle={{
+                    width: 15,
+                    height: 15,
+                    marginRight: 5,
+                  }}
+                  customImageStyle={{
+                    width: 15,
+                    height: 15,
+                    resizeMode: "contain",
+                  }}
+                  source={MapIconGreen}
+                />
+                <Text
+                  size="small"
+                  style={{
+                    width: "100%",
+                  }}
+                >
+                  {item.city.name}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </>
     );
   };
 
@@ -1109,7 +1123,7 @@ export default function ListEventHome(props) {
         break;
       case "tab2":
         numCols = 2;
-        data = dataEvent;
+        // data = dataEvent;
         data = dataEventPublic;
         renderItem = (e) => rederTab1Item(e, "public");
         break;
@@ -1798,6 +1812,7 @@ export default function ListEventHome(props) {
             {filterCountry.length > 0
               ? filterCountry.map((item, index) => (
                   <Pressable
+                    key={index.toString()}
                     onPress={() => handlecountry(item, index)}
                     style={{
                       paddingVertical: 15,
@@ -1995,6 +2010,7 @@ export default function ListEventHome(props) {
     countries: null,
     date_from: null,
     date_until: null,
+    city: null,
   });
 
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
