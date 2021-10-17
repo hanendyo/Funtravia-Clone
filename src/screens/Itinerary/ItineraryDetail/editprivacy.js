@@ -22,7 +22,11 @@ export default function editprivacy(props) {
   const [token, setToken] = useState(props.route.params.token);
   const HeaderComponent = {
     headerShown: true,
-    title: t("edit privacy"),
+    title: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("edit privacy")}
+      </Text>
+    ),
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: t("edit") + " " + t("privacy"),

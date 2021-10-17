@@ -12,13 +12,14 @@ import {
   ActivityIndicator,
   StatusBar,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/client";
 import PracticalCountries from "../../../graphQL/Query/Countries/PracticalCountries";
 import { TabBar, TabView } from "react-native-tab-view";
 import { Button, Text, FunImage, Truncate } from "../../../component";
-import { Arrowbackwhite } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
@@ -43,18 +44,21 @@ export default function PracticalInformation(props) {
   const _tabIndex = useRef(0);
   const isListGliding = useRef(false);
   let scrollRef = useRef();
-
   const [canScroll, setCanScroll] = useState(true);
   const headerScrollY = useRef(new Animated.Value(0)).current;
-
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Practical Information",
+    title: "",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Essentials - Practical Information",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>{`${t("essentials")} - ${t(
+        "practicalInformation"
+      )}`}</Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -82,12 +86,15 @@ export default function PracticalInformation(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [load, setLoad] = useState(true);
   const [actives, setActives] = useState(props.route.params.active);
   useEffect(() => {

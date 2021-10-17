@@ -13,7 +13,13 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { StackActions } from "@react-navigation/routers";
-import { Arrowbackwhite, NewAlbum, Search, Xgray } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  NewAlbum,
+  Search,
+  Xgray,
+} from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
 import { Text, Button, FunImage } from "../../../component";
@@ -65,7 +71,11 @@ export default function ChooseAlbumItinerary(props) {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View style={{ marginLeft: 5 }}>
           <Text size="label" type="bold" style={{ color: "#FFF" }}>

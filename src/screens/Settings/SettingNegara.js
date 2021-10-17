@@ -36,7 +36,11 @@ export default function SettingCity(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("country"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("country")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

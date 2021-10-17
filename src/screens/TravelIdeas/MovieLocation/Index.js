@@ -97,7 +97,11 @@ export default function MovieLocation({ navigation, route }) {
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
-    headerTitle: "Movie Location",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("filmLocation")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

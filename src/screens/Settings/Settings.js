@@ -25,7 +25,12 @@ export default function Settings(props) {
   let [index, setIndex] = useState(0);
 
   const HeaderComponent = {
-    headerTitle: t("setting"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {" "}
+        {t("setting")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

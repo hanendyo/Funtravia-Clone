@@ -12,10 +12,12 @@ import {
   Image,
   KeyboardAvoidingView,
   StyleSheet,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   ArrowRight,
   CalendarIcon,
@@ -91,7 +93,11 @@ export default function detailCustomItinerary(props) {
             height: 55,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View
           style={{

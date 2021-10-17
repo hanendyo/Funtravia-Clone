@@ -33,12 +33,18 @@ import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
 
 export default function CreateCustom(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     title: "Custom Activity",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Custom Activity",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("customActivity")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -71,7 +77,6 @@ export default function CreateCustom(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [modals, setModal] = useState(false);
   let [modaldate, setModaldate] = useState(false);
   let [cheked, setcheck] = useState(false);

@@ -26,12 +26,18 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
 
 export default function ChoosePosition(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     title: "Custom Activity",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Custom Activity",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("customActivity")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -64,7 +70,6 @@ export default function ChoosePosition(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let idDay = props.route.params.idDay;
   let token = props.route.params.token;
   let [datatimeline, setDatatimeline] = useState(

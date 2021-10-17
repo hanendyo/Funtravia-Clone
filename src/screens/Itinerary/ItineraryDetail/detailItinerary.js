@@ -6,11 +6,12 @@ import {
   ScrollView,
   FlatList,
   Image,
+  Platform,
 } from "react-native";
 import { Capital, Text } from "../../../component";
 import { Button } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
 
@@ -20,7 +21,11 @@ export default function DetailItinerary(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "" + t("Tripdetail"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {"" + t("Tripdetail")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -49,7 +54,11 @@ export default function DetailItinerary(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

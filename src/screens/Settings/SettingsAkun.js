@@ -70,7 +70,11 @@ export default function SettingsAkun(props) {
   };
 
   const HeaderComponent = {
-    headerTitle: t("accountInformation"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("accountInformation")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

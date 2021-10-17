@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Dimensions, Alert, Pressable, Modal } from "react-native";
+import {
+  View,
+  Dimensions,
+  Alert,
+  Pressable,
+  Modal,
+  Platform,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
@@ -10,6 +17,7 @@ import {
   CommentBlack,
   TravelAlbum,
   Xgray,
+  Arrowbackios,
 } from "../../assets/svg";
 // import Modal from "react-native-modal";
 import { useIsFocused } from "@react-navigation/native";
@@ -83,7 +91,11 @@ export default function myfeed(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerLeftContainerStyle: {

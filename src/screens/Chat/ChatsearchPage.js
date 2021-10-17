@@ -81,7 +81,11 @@ export default function ChatsearchPage({ navigation, route }) {
     tabBarBadge: null,
     tabBarLabel: "Message",
     // headerTintColor: "white",
-    headerTitle: t("search"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("search")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

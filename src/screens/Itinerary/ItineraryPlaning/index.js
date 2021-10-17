@@ -13,6 +13,7 @@ import {
   Image,
   Modal,
   Pressable,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomImage } from "../../../component";
@@ -23,6 +24,7 @@ import { dateFormats } from "../../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import { Text, Button, Truncate } from "../../../component";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   Calendargrey,
   PinHijau,
@@ -45,10 +47,14 @@ export default function listItinPlaning(props) {
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
     headerShown: true,
-    title: "Your Trip Plan",
+    title: "",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Your Trip Plan",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("youTrip")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -76,7 +82,11 @@ export default function listItinPlaning(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

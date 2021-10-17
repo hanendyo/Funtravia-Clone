@@ -14,7 +14,13 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useLazyQuery } from "@apollo/client";
-import { NewAlbum, Arrowbackwhite, Search, Xgray } from "../../../assets/svg";
+import {
+  NewAlbum,
+  Arrowbackwhite,
+  Search,
+  Xgray,
+  Arrowbackios,
+} from "../../../assets/svg";
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
@@ -72,7 +78,11 @@ export default function CreateAlbum(props) {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View style={{ marginLeft: 5 }}>
           <Text size="label" type="bold" style={{ color: "#FFF" }}>

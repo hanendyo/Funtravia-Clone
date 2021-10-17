@@ -35,6 +35,7 @@ import {
   Above,
   Xblue,
   ItineraryIcon,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -82,7 +83,11 @@ export default function ItinerarySearchCategory(props) {
     title: "Itinerary",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Itinerary",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        Itinerary
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -109,7 +114,11 @@ export default function ItinerarySearchCategory(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

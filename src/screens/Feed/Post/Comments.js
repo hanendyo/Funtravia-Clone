@@ -64,7 +64,11 @@ export default function Comments(props) {
     headerShown: true,
     transparent: false,
     headerTintColor: "white",
-    headerTitle: t("comments"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("comments")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

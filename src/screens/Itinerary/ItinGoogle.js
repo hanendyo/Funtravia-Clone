@@ -18,6 +18,7 @@ import {
   PinHijau,
   PinMerah,
   Pointmapgray,
+  Arrowbackios,
 } from "../../assets/svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView from "react-native-maps";
@@ -32,7 +33,11 @@ export default function ItinGoogle(props) {
     title: "Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Destination",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("destination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -60,7 +65,11 @@ export default function ItinGoogle(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

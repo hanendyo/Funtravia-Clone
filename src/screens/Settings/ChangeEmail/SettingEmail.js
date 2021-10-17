@@ -11,7 +11,11 @@ export default function SettingEmail(props) {
   const { t, i18n } = useTranslation();
   let [setSetting] = useState();
   const HeaderComponent = {
-    headerTitle: t("ChangeEmail"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("ChangeEmail")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

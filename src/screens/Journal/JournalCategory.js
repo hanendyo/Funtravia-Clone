@@ -37,7 +37,11 @@ export default function JournalCategory(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Travel Journal",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("traveljournal")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

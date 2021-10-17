@@ -6,10 +6,16 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { Arrowbackwhite, ArrowRight, Delete } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  ArrowRight,
+  Delete,
+} from "../../../assets/svg";
 import Timeline from "../../../graphQL/Query/Itinerary/Timelinecustom";
 import ListCustom from "../../../graphQL/Query/Itinerary/ListSavedCustom";
 import hapuscustomsaved from "../../../graphQL/Mutation/Itinerary/Deletecustomactivitysaved";
@@ -18,12 +24,18 @@ import { Button, Text, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
 
 export default function CustomItinerary(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     title: "Custom Activity",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Custom Activity",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("customActivity")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -51,12 +63,15 @@ export default function CustomItinerary(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let idItin = props.route.params.idItin;
   let idDay = props.route.params.idDay;
   let itintitle = props.route.params.itintitle;

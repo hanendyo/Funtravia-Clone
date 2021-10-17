@@ -50,7 +50,7 @@ export default function AddPasswordEmail(props) {
 
   const HeaderComponent = {
     headerTitle: (
-      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("SetPassword")}
       </Text>
     ),

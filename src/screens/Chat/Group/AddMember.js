@@ -6,13 +6,14 @@ import {
   Alert,
   Image,
   ScrollView,
+  Platform,
 } from "react-native";
 import { CustomImage } from "../../../component";
 import { Text } from "../../../component";
 import { Button, Truncate, Loading } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { Arrowbackwhite, WhiteCheck } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, WhiteCheck } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
@@ -26,10 +27,13 @@ export default function AddMember(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: t("addParticipant"),
     headerTransparent: false,
     headerTintColor: "#f0f0f0",
-    headerTitle: t("addParticipant"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("addParticipant")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -57,7 +61,11 @@ export default function AddMember(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

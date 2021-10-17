@@ -35,7 +35,11 @@ export default function PostItineraryAlbum(props) {
   const HeaderComponent = {
     // title: "Select Photos",
     headerTintColor: "white",
-    headerTitle: "Select Photos or Videos",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>{`${t("Select")} ${t(
+        "photo"
+      )} or VIdeos`}</Text>
+    ),
     headerShown: true,
     // headerTransparent: true,
     headerMode: "screen",

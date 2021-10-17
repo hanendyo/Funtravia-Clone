@@ -47,7 +47,7 @@ export default function HasPassword(props) {
 
   const HeaderComponent = {
     headerTitle: (
-      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("UpdatePassword")}
       </Text>
     ),

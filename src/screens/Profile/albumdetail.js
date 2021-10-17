@@ -8,8 +8,9 @@ import {
   RefreshControl,
   FlatList,
   Pressable,
+  Platform,
 } from "react-native";
-import { Sharegreen, Arrowbackwhite } from "../../assets/svg";
+import { Sharegreen, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Text, FunVideo } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -53,7 +54,11 @@ export default function albumdetail(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

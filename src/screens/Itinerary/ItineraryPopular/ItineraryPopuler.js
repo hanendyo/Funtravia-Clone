@@ -102,7 +102,11 @@ export default function ItineraryPopuler(props) {
     title: "Itinerary",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Itinerary",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        Itinerary
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

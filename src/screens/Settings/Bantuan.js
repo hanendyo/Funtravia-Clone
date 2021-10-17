@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
 import { WebView } from "react-native-webview";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import { Button } from "../../component";
+import { Button, Text } from "../../component";
 export default function Bantuan(props) {
   const { t, i18n } = useTranslation();
   // let [param, setParam] = useState(props.navigation.getParam('params'));
@@ -25,7 +25,11 @@ export default function Bantuan(props) {
     title: "",
     // headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: t("help"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("help")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

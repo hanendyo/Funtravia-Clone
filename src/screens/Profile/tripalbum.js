@@ -20,6 +20,7 @@ import {
   Pluswhite,
   PlayVideo,
   Nextpremier,
+  Arrowbackios,
 } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
@@ -45,7 +46,11 @@ export default function tripalbum(props) {
     title: "Trip Album",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("travelAlbum"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("travelAlbum")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -73,7 +78,11 @@ export default function tripalbum(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

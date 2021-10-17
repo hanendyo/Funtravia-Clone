@@ -17,7 +17,11 @@ export default function Follower(props) {
     headerTransparent: false,
     title: `${t("Followers")}`,
     headerTintColor: "white",
-    headerTitle: `${t("Followers")}`,
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("Followers")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

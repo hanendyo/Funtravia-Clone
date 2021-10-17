@@ -48,7 +48,11 @@ export default function ItineraryFavorite(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("itineraryFavorite"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("itineraryFavorite")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
