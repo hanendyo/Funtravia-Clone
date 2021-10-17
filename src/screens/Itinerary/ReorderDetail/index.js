@@ -6,6 +6,7 @@ import {
   Pressable,
   Alert,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import {
   Button,
@@ -22,6 +23,7 @@ import {
   Pencilgreen,
   Arrowbackwhite,
   DisketWhite,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import DraggableFlatList from "react-native-draggable-flatlist";
@@ -633,7 +635,11 @@ export default function ReoderDetail({ navigation, route }) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (

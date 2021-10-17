@@ -42,13 +42,18 @@ import { RNToasty } from "react-native-toasty";
 export default function ItineraryDestination(props) {
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
+  const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Destination",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("destination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -85,7 +90,6 @@ export default function ItineraryDestination(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
 
   let [show, setshow] = useState(false);
 

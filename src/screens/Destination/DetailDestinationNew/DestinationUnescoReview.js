@@ -22,6 +22,7 @@ import {
   StartBuleIsi,
   PanahPutih,
   Submit,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { RNToasty } from "react-native-toasty";
 import { Textarea } from "native-base";
@@ -54,7 +55,11 @@ export default function DestinationUnescoReview(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Write Review",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("writeReview")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -79,7 +84,11 @@ export default function DestinationUnescoReview(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

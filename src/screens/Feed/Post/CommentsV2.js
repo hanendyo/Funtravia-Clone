@@ -37,6 +37,7 @@ import {
   CommentBlack,
   Arrowbackwhite,
   Xgray,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
@@ -134,7 +135,11 @@ export default function Comments(props) {
           marginLeft: 5,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

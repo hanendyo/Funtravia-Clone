@@ -116,7 +116,11 @@ export default function Notification(props) {
     transparent: false,
     tabBarVisble: false,
     headerTintColor: "white",
-    headerTitle: t("inbox"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("inbox")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

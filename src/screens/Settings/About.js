@@ -27,7 +27,11 @@ export default function About(props) {
     title: "",
     // headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: t("aboutFuntravia"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("aboutFuntravia")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

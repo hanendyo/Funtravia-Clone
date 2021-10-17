@@ -45,7 +45,11 @@ export default function SettingEmailVerify(props) {
   });
 
   const HeaderComponent = {
-    headerTitle: t("verify") + " Email",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("verify") + " Email"}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

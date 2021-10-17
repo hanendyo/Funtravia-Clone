@@ -45,7 +45,11 @@ export default function World({ navigation }) {
     // title: "List Event",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("destination"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("destination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

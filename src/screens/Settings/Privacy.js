@@ -2,14 +2,18 @@ import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import { Button } from "../../component";
+import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 export default function Privacy(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     // headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: t("privacyPolicy"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("privacyPolicy")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

@@ -13,7 +13,11 @@ export default function SettingPhone(props) {
   let [selector, setSelector] = useState(false);
   let [setSetting] = useState();
   const HeaderComponent = {
-    headerTitle: t("addPhoneNumber"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("addPhoneNumber")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

@@ -12,10 +12,16 @@ import {
   Animated,
   PanResponder,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { Text, Button, FunImage } from "../../../component";
 import { default_image } from "../../../assets/png";
-import { Arrowbackwhite, LikeEmpty, Search } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  LikeEmpty,
+  Search,
+} from "../../../assets/svg";
 import ArtikelList from "../../../graphQL/Query/Countries/Articlelist";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Truncate } from "../../../component";
@@ -28,7 +34,6 @@ import Ripple from "react-native-material-ripple";
 
 export default function ArtikelCategory(props) {
   const [articles, setArticles] = useState(props.route.params.article);
-  console.log("art", articles);
   let [token, setToken] = useState("");
   const [routes, setRoutes] = useState([0]);
   const [tabIndex, setIndex] = useState(0);
@@ -73,7 +78,11 @@ export default function ArtikelCategory(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

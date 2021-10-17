@@ -15,7 +15,11 @@ export default function Following(props) {
   const HeaderComponent = {
     title: `${t("Following")}`,
     headerTintColor: "white",
-    headerTitle: `${t("Following")}`,
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("Following")}
+      </Text>
+    ),
     headerMode: "screen",
     headerTransparent: false,
     headerStyle: {

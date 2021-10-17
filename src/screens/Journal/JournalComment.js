@@ -57,7 +57,11 @@ export default function JournalComment(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("comments"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("comments")}
+      </Text>
+    ),
     headerStyle: {
       backgroundColor: "#209fae",
       elevation: 0,

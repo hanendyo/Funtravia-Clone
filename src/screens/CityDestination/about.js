@@ -12,9 +12,14 @@ import {
   ActivityIndicator,
   StatusBar,
   StyleSheet,
+  Platform,
 } from "react-native";
-
-import { Arrowbackwhite, Garuda, Calendargreen } from "../../assets/svg";
+import {
+  Arrowbackwhite,
+  Garuda,
+  Calendargreen,
+  Arrowbackios,
+} from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
 import { Text, Button, FunImage, Truncate } from "../../component";
@@ -50,13 +55,17 @@ export default function about(props) {
   const headerScrollY = useRef(new Animated.Value(0)).current;
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
     headerShown: true,
-    title: "About",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Essentials - About",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>{`${t("essentials")} - ${t(
+        "about"
+      )}`}</Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -84,12 +93,15 @@ export default function about(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [load, setLoad] = useState(true);
   const [actives, setActives] = useState(props.route.params.active);
 

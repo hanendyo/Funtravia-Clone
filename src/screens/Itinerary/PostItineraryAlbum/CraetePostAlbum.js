@@ -35,6 +35,7 @@ import { Mute, PlayVideo, Unmute } from "../../../assets/svg";
 const { width } = Dimensions.get("screen");
 
 export default function CraetePostAlbum(props) {
+  const { t } = useTranslation();
   let itinerary_id = props.route.params.itinerary_id;
   let selectedPhoto = props.route.params.selectedPhoto;
   let album_id = props.route.params.album_id;
@@ -56,7 +57,11 @@ export default function CraetePostAlbum(props) {
   const HeaderComponent = {
     title: "Select Photos",
     headerTintColor: "white",
-    headerTitle: "Post Album",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("postAlbum")}
+      </Text>
+    ),
     headerShown: true,
     // headerTransparent: true,
     headerMode: "screen",

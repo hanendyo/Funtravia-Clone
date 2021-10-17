@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { back_arrow_white, default_image } from "../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -18,7 +19,7 @@ import AddDestination from "../../graphQL/Mutation/Itinerary/AddDestination";
 import AddGoogle from "../../graphQL/Mutation/Itinerary/AddGoogle";
 import AddEvent from "../../graphQL/Mutation/Itinerary/AddEvent";
 import { Button, Text, Truncate, Loading } from "../../component";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 
@@ -30,7 +31,11 @@ export default function ItineraryChooseday(props) {
     title: "Choose day",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Choose day",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("chooseDay")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -58,7 +63,11 @@ export default function ItineraryChooseday(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

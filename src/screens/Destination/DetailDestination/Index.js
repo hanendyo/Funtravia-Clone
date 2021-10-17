@@ -35,6 +35,7 @@ import OnTheSpot from "./OnTheSpot";
 import ArticleView from "./ArticleView";
 import Fasilitas from "./Fasilitas";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   LikeEmpty,
   LikeRed,
@@ -190,7 +191,7 @@ const Article = ({ data, onScroll }) => {
 export default function DestinationDetail(props) {
   const HeaderComponent = {
     headerShown: true,
-    title: "" + props.route.params.name.toUpperCase(),
+    title: "",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: "" + props.route.params.name.toUpperCase(),
@@ -221,7 +222,11 @@ export default function DestinationDetail(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

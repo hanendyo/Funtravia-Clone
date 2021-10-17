@@ -11,7 +11,11 @@ export default function FAQ(props) {
   const HeaderComponent = {
     // headerTransparent: true,
     headerTintColor: "white",
-    headerTitle: "FAQ",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        FAQ
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

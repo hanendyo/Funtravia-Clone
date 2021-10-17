@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Alert,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, CustomImage, Text, Truncate } from "../../../component";
@@ -14,7 +15,7 @@ import { default_image } from "../../../assets/png";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, SharePutih } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, SharePutih } from "../../../assets/svg";
 import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { ScrollView } from "react-native";
@@ -25,6 +26,8 @@ import ArtikelList from "../../../graphQL/Query/Countries/Articlelist";
 import ArticleById from "../../../graphQL/Query/Countries/ArticleById";
 
 export default function ArticelDetail(props) {
+  const { t, i18n } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -57,11 +60,14 @@ export default function ArticelDetail(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

@@ -56,7 +56,11 @@ export default function Trip(props) {
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("TripPlanning"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("TripPlanning")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

@@ -13,7 +13,11 @@ export default function SettingPhoneChange(props) {
   let [selector, setSelector] = useState(false);
   let [setSetting] = useState();
   const HeaderComponent = {
-    headerTitle: t("ChangePhoneNumber"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("ChangePhoneNumber")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

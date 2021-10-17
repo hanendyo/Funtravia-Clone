@@ -20,7 +20,11 @@ export default function SettingEmailChange(props) {
   let ref2 = useRef();
 
   const HeaderComponent = {
-    headerTitle: t("ChangeEmail"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("ChangeEmail")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

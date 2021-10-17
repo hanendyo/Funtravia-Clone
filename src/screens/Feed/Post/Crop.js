@@ -9,13 +9,15 @@ import {
   TouchableOpacity,
   Pressable,
   BackHandler,
+  Platform,
 } from "react-native";
-import { Arrowbackwhite, Check } from "../../../assets/svg";
+import { Arrowbackios, Arrowbackwhite, Check } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import { Text, Button } from "../../../component";
 import Video from "react-native-video";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
+import { useTranslation } from "react-i18next";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
@@ -23,13 +25,15 @@ export default function Crop(props) {
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
   const [croped, setCroped] = useState(0);
+  const { t } = useTranslation();
+
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
     headerTintColor: "white",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#FFF" }}>
-        New Post Crop
+        {t("cropNewPost")}
       </Text>
     ),
     headerMode: "screen",
@@ -56,7 +60,11 @@ export default function Crop(props) {
           marginLeft: 5,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (

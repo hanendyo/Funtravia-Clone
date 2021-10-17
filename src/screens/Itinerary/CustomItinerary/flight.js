@@ -27,6 +27,7 @@ import {
   Plane,
   Xhitam,
   Pointmapgray,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { FloatingInput, Truncate, Peringatan } from "../../../component";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
@@ -84,7 +85,11 @@ export default function detailCustomItinerary(props) {
             height: 55,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <View
           style={{

@@ -19,7 +19,11 @@ export default function TravelIdeas(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: t("travelideas"),
+    title: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("travelideas")}
+      </Text>
+    ),
     headerTransparent: false,
     headerTitle: t("travelideas"),
     // headerMode: "none",

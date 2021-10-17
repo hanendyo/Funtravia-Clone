@@ -743,5 +743,9 @@
   "allPost": "All Post",
   "searchByTag": "Search by Tag",
   "searchByLocation": "Search By Location",
-  "leftItinerary": "Left Itinerary"
+  "leftItinerary": "Left Itinerary",
+  "writeReview": "Write Review",
+  "cropNewPost": "Crop New Post",
+  "newItinerary": "New Itinerary",
+  "postAlbum": "Post Album"
 }

@@ -20,7 +20,7 @@ import {
   Button,
 } from "../../../component";
 import { default_image } from "../../../assets/png";
-import { CheckWhite, Arrowbackwhite } from "../../../assets/svg";
+import { CheckWhite, Arrowbackwhite, Arrowbackios } from "../../../assets/svg";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -50,7 +50,11 @@ const PostEdit = gql`
 export default function EditPost(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
-    title: t("newPost"),
+    title: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("newPost")}
+      </Text>
+    ),
     headerTintColor: "white",
     headerTitle: "",
     headerTransparent: true,
@@ -85,7 +89,11 @@ export default function EditPost(props) {
             justifyContent: "flex-start",
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
           <Text
             type="bold"
             size="title"

@@ -32,7 +32,11 @@ export default function NotificationSettings(props) {
   let [token, setToken] = useState();
   let [setting, setSetting] = useState(props.route.params.setting);
   const HeaderComponent = {
-    headerTitle: t("accountInformation"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("accountInformation")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

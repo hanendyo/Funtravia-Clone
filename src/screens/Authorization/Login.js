@@ -21,7 +21,7 @@ import {
   show_password,
   hide_password,
 } from "../../assets/png";
-import { Arrowbackblack } from "../../assets/svg";
+import { Arrowbackblack, Arrowbackiosblack } from "../../assets/svg";
 import LOG_IN from "../../graphQL/Mutation/Login/Login";
 import { useTranslation } from "react-i18next";
 import {
@@ -170,7 +170,11 @@ export default function Login({ navigation, route }) {
           height: 55,
         }}
       >
-        <Arrowbackblack height={20} width={20}></Arrowbackblack>
+        {Platform.OS == "ios" ? (
+          <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
+        ) : (
+          <Arrowbackblack height={20} width={20}></Arrowbackblack>
+        )}
       </Button>
     ),
   };

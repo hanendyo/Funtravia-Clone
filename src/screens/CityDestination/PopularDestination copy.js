@@ -9,9 +9,10 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Modal from "react-native-modal";
-import { Search, Filternewbiru, Xhitam } from "../../assets/svg";
+import { Search, Filternewbiru, Xhitam, Arrowbackios } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import Continent from "../../graphQL/Query/Countries/Continent";
 import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
@@ -34,10 +35,13 @@ export default function AllDestination(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Popular Destination",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("popularDestination"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("popularDestination")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -65,7 +69,11 @@ export default function AllDestination(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

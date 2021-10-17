@@ -11,6 +11,7 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -24,6 +25,7 @@ import {
   TravelStories,
   TravelAlbum,
   Star,
+  Arrowbackios,
 } from "../../../assets/svg";
 import { Text, Button, FunIcon } from "../../../component/index";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
@@ -81,7 +83,11 @@ export default function ItineraryCategory(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "New Itinerary",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("newItinerary")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -109,7 +115,11 @@ export default function ItineraryCategory(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
     headerRight: () => (

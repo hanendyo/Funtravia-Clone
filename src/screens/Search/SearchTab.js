@@ -42,7 +42,11 @@ export default function SearchTab(props) {
   let refreshOrder = true;
   console.log("INPUT DARI SEARCH PAGE: ", input);
   const HeaderComponent = {
-    headerTitle: "Search",
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("search")}
+      </Text>
+    ),
     headerStyle: {
       elevation: 0,
       borderBottomWidth: 0,

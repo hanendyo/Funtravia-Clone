@@ -31,7 +31,11 @@ export default function TripPlaning(props) {
     title: "Your Trip",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("youTrip"),
+    headerTitle: (
+      <Text size="header" style={{ color: "#fff" }}>
+        {t("youTrip")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",

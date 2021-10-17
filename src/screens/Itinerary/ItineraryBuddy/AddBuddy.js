@@ -28,7 +28,7 @@ export default function AddBuddy(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Buddy",
+    title: "",
     headerTransparent: false,
     headerTintColor: "#f0f0f0",
     headerTitle: (
