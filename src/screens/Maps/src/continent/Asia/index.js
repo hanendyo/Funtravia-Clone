@@ -33,6 +33,7 @@ import Flag from "../../../data/flag";
 import { Keyboard, KeyboardEvent } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 const Notch = DeviceInfo.hasNotch();
+const deviceId = DeviceInfo.getModel();
 
 export default function Asia({ navigation }) {
   const { t } = useTranslation();
@@ -309,7 +310,10 @@ export default function Asia({ navigation }) {
                 ios: Notch
                   ? Dimensions.get("screen").height * 0.35
                   : Dimensions.get("screen").height * 0.4,
-                android: Dimensions.get("screen").height * 0.35,
+                android:
+                  deviceId == "LYA-L29"
+                    ? Dimensions.get("screen").height * 0.34
+                    : Dimensions.get("screen").height * 0.35,
               }),
               justifyContent: "center",
             }}

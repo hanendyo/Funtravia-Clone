@@ -84,8 +84,8 @@ const Index = (props) => {
   let { width, height } = Dimensions.get("screen");
   let Notch = DeviceInfo.hasNotch();
   let TabBarHeight = Platform.select({
-    ios: Notch ? 50 : 50,
-    android: 50,
+    ios: Notch ? 40 : 40,
+    android: 40,
   });
   let [unesco, setUnesco] = useState(0);
   let [tambahan, setTambahan] = useState(0);
@@ -648,18 +648,132 @@ const Index = (props) => {
 
   const [sharemodal, SetShareModal] = useState(false);
   const [shareuser, SetShareUser] = useState(false);
-
-  const renderHeader = () => {
-    const y = scrollY.interpolate({
+  const renderButton = () => {
+    const x = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
 
+    <Animated.View
+      style={{
+        transform: [{ translateY: x }],
+        top: SafeStatusBar,
+        height: HeaderHeight + Dimensions.get("screen").height / 10,
+        width: "100%",
+        position: "absolute",
+        backgroundColor: "#209FAE",
+        borderWidth: 1,
+      }}
+    >
+      <View
+        style={{
+          top: HeaderHeight + Dimensions.get("screen").height / 10,
+          position: "absolute",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {dataDestination?.liked === true ? (
+          <Pressable
+            style={{
+              backgroundColor: "#F6F6F6",
+              marginRight: 2,
+              height: 34,
+              width: 34,
+              borderRadius: 17,
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 5,
+            }}
+            onPress={() => _unliked(dataDestination.id)}
+          >
+            <Love height={20} width={20} />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() =>
+              shareAction({
+                from: "destination",
+                target: dataDestination.id,
+              })
+            }
+            style={{
+              backgroundColor: "#F6F6F6",
+              marginRight: 2,
+              height: 34,
+              width: 34,
+              borderRadius: 17,
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 5,
+            }}
+            onPress={() => _liked(dataDestination.id)}
+          >
+            <LikeEmpty height={20} width={20} />
+          </Pressable>
+        )}
+        <TouchableOpacity
+          onPress={() =>
+            // shareAction({
+            //   from: "destination",
+            //   target: dataDestination.id,
+            // })
+            SetShareModal(true)
+          }
+          style={{
+            backgroundColor: "#F6F6F6",
+            marginRight: 2,
+            height: 34,
+            width: 34,
+            borderRadius: 17,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ShareBlack height={20} width={20} />
+        </TouchableOpacity>
+      </View>
+    </Animated.View>;
+  };
+
+  let [layoutsAddress, setLayoutsAddress] = useState(0);
+  let [layoutsOpen, setLayoutsOpen] = useState(0);
+  let [layoutsWeb, setLayoutsWeb] = useState(0);
+  let [layoutImage, setLayoutImage] = useState(0);
+  let [layoutHeader, setLayoutHeader] = useState(0);
+  let [layoutUnesco, setLayoutUnesco] = useState(0);
+  console.log("layoutImage"), layoutImage;
+
+  const yButtonLikeShare = scrollY.interpolate({
+    inputRange: [0, HeaderHeight],
+    outputRange: [0, -HeaderHeight + 55],
+    extrapolateRight: "clamp",
+  });
+
+  const opacityButtonLikeShare = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (layoutImage === 0) {
+      Animated.timing(opacityButtonLikeShare, {
+        toValue: 1,
+        duration: 25000,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, []);
+
+  const renderHeader = () => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, -HeaderHeight + 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
       <Animated.View
-        pointerEvents={"none"}
+        pointerEvents="none"
         {...headerPanResponder.panHandlers}
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
@@ -681,7 +795,18 @@ const Index = (props) => {
         >
           {/* Image */}
           <Animated.Image
-            source={{ uri: data?.destinationById?.images[0].image }}
+            onLayout={(event) => {
+              let heights = event.nativeEvent.layout.height;
+              setLayoutImage(heights);
+            }}
+            source={
+              data &&
+              data?.destinationById &&
+              data?.destinationById?.images[0] &&
+              data?.destinationById?.images[0].image
+                ? { uri: data?.destinationById?.images[0].image }
+                : default_image
+            }
             style={{
               flex: 1,
               // height: 180,
@@ -693,6 +818,10 @@ const Index = (props) => {
 
           {/* Judul */}
           <View
+            onLayout={(event) => {
+              let heights = event.nativeEvent.layout.height;
+              setLayoutHeader(heights);
+            }}
             style={{
               paddingTop: 10,
               paddingHorizontal: 18,
@@ -768,7 +897,9 @@ const Index = (props) => {
                 </View>
               </View>
             </View>
-            <View
+
+            {/* Button like and share */}
+            {/* <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -813,7 +944,7 @@ const Index = (props) => {
                   <LikeEmpty height={20} width={20} />
                 </Pressable>
               )}
-              <Pressable
+              <TouchableOpacity
                 onPress={() =>
                   // shareAction({
                   //   from: "destination",
@@ -832,8 +963,9 @@ const Index = (props) => {
                 }}
               >
                 <ShareBlack height={20} width={20} />
-              </Pressable>
-            </View>
+              </TouchableOpacity>
+            </View> */}
+            {/*End Button like and share */}
           </View>
 
           {/* Type */}
@@ -841,6 +973,10 @@ const Index = (props) => {
           data?.destinationById?.type?.name.toLowerCase().substr(0, 6) ==
             "unesco" ? (
             <View
+              onLayout={(event) => {
+                let heights = event.nativeEvent.layout.height;
+                setLayoutUnesco(heights);
+              }}
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 18,
@@ -908,6 +1044,10 @@ const Index = (props) => {
           {/* View address */}
 
           <View
+            onLayout={(event) => {
+              let heights = event.nativeEvent.layout.height;
+              setLayoutsAddress(heights);
+            }}
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 18,
@@ -926,7 +1066,7 @@ const Index = (props) => {
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width * 0.75,
+                  width: Dimensions.get("screen").width * 0.72,
                   marginVertical: 8,
                 }}
               >
@@ -941,7 +1081,7 @@ const Index = (props) => {
                     let lines = line - 1;
                     setTambahan(lines * 20);
                   }}
-                  size="description"
+                  size="label"
                   type="regular"
                   style={{ lineHeight: 18 }}
                   numberOfLines={2}
@@ -951,7 +1091,7 @@ const Index = (props) => {
                     : "-"}
                 </Text>
               </View>
-              {data?.destinationById?.address ? (
+              {/* {data?.destinationById?.address ? (
                 <Ripple
                   style={{
                     justifyContent: "center",
@@ -972,24 +1112,21 @@ const Index = (props) => {
                   }}
                 >
                   <Mapsborder height="25" width="25" />
-                  {/* <Text
-                    size="description"
-                    type="regular"
-                    style={{ color: "#209FAE" }}
-                  >
-                    maps
-                  </Text> */}
+                  
                 </Ripple>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
 
           {/* View Time */}
 
           <View
+            onLayout={(event) => {
+              let heights = event.nativeEvent.layout.height;
+              setLayoutsOpen(heights);
+            }}
             style={{
               width: Dimensions.get("screen").width,
-              // minHeight: 40,
               paddingHorizontal: 18,
               backgroundColor: "#FFF",
               bottom: 0,
@@ -1008,7 +1145,7 @@ const Index = (props) => {
                 style={{
                   flexDirection: "row",
                   marginVertical: 8,
-                  width: Dimensions.get("screen").width * 0.75,
+                  width: Dimensions.get("screen").width * 0.72,
                 }}
               >
                 <Clock
@@ -1017,7 +1154,7 @@ const Index = (props) => {
                   style={{ marginRight: 10, aligmSelf: "center" }}
                 />
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
                   style={{ lineHeight: 18 }}
                   numberOfLines={2}
@@ -1032,7 +1169,7 @@ const Index = (props) => {
                     : "-"}
                 </Text>
               </View>
-              {data?.destinationById?.openat ? (
+              {/* {data?.destinationById?.openat ? (
                 <Pressable
                   onPress={() => setModalTime(true)}
                   style={{
@@ -1052,13 +1189,17 @@ const Index = (props) => {
                     {t("more")}
                   </Text>
                 </Pressable>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
 
           {/* View Website */}
 
           <View
+            onLayout={(event) => {
+              let heights = event.nativeEvent.layout.height;
+              setLayoutsWeb(heights);
+            }}
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 18,
@@ -1079,7 +1220,7 @@ const Index = (props) => {
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width * 0.75,
+                  width: Dimensions.get("screen").width * 0.72,
                   marginVertical: 8,
                 }}
               >
@@ -1089,7 +1230,7 @@ const Index = (props) => {
                   style={{ marginRight: 10, alignSelf: "center" }}
                 />
                 <Text
-                  size="description"
+                  size="label"
                   type="regular"
                   numberOfLines={2}
                   style={{ lineHeight: 18 }}
@@ -1104,7 +1245,7 @@ const Index = (props) => {
                     : "-"}
                 </Text>
               </View>
-              {data?.destinationById?.website ? (
+              {/* {data?.destinationById?.website ? (
                 <Pressable
                   onPress={() => setModalSosial(true)}
                   style={{
@@ -1125,7 +1266,7 @@ const Index = (props) => {
                     {t("more")}
                   </Text>
                 </Pressable>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
           {/* <View style={{ height: 5, backgroundColor: "#F1F1F1" }}></View> */}
@@ -1641,7 +1782,9 @@ const Index = (props) => {
                     }}
                   >
                     <FunImage
-                      source={{ uri: item?.cover }}
+                      source={
+                        item?.cover ? { uri: item?.cover } : default_image
+                      }
                       style={{
                         height: 150,
                         width: 120,
@@ -1725,7 +1868,9 @@ const Index = (props) => {
                         >
                           <FunImage
                             key={index + "1"}
-                            source={{ uri: item.image }}
+                            source={
+                              item?.image ? { uri: item?.image } : default_image
+                            }
                             style={{
                               // // width: Dimensions.get("screen").width * 0.15,
                               // width: Dimensions.get("screen").width * 0.22,
@@ -1753,7 +1898,9 @@ const Index = (props) => {
                         >
                           <FunImage
                             key={index}
-                            source={{ uri: item.image }}
+                            source={
+                              item?.image ? { uri: item?.image } : default_image
+                            }
                             style={{
                               opacity: 0.9,
                               // width: Dimensions.get("screen").width * 0.22,
@@ -1783,7 +1930,9 @@ const Index = (props) => {
                       return (
                         <FunImage
                           key={index + "3"}
-                          source={{ uri: item.image }}
+                          source={
+                            item?.image ? { uri: item?.image } : default_image
+                          }
                           style={{
                             // width: Dimensions.get("screen").width * 0.22,
                             width: (Dimensions.get("screen").width - 40) / 4,
@@ -1861,7 +2010,11 @@ const Index = (props) => {
                   <View style={{ justifyContent: "center" }}>
                     {/* Image */}
                     <FunImage
-                      source={{ uri: item.images.image }}
+                      source={
+                        item?.images?.image
+                          ? { uri: item?.images?.image }
+                          : default_image
+                      }
                       style={{
                         // width: 160,
                         width: Dimensions.get("screen").width / 2.7,
@@ -2193,7 +2346,9 @@ const Index = (props) => {
                           }}
                         >
                           <FunImage
-                            source={i.image ? { uri: i.image } : default_image}
+                            source={
+                              i?.image ? { uri: i?.image } : default_image
+                            }
                             resizeMode={"cover"}
                             style={{
                               borderWidth: 0.4,
@@ -2555,13 +2710,13 @@ const Index = (props) => {
   useEffect(() => {
     setTimeout(() => {
       setLoadings(false);
-    }, 1000);
+    }, 3000);
   }),
     [];
 
   let [loadings, setLoadings] = useState(true);
 
-  if (loading) {
+  if (loading || loadings) {
     return <IndexSkeleton />;
   }
 
@@ -2678,6 +2833,196 @@ const Index = (props) => {
           {data?.destinationById?.name}
         </Animated.Text>
       </Animated.View>
+
+      {/* Button Like and Share*/}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: layoutImage + 20,
+          transform: [{ translateY: yButtonLikeShare }],
+          right: 20,
+          zIndex: 9999,
+          opacity: hides.current,
+          alignItems: "flex-end",
+          justifyContent: "center",
+          height: 55,
+          // opacity: opacityButton,
+          // opacity: opacityButtonLikeShare,
+          // opacity: 0.5,
+        }}
+      >
+        <Animated.View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            opacity: opacityButtonLikeShare,
+            // opacity: opacityButton,
+          }}
+        >
+          {dataDestination?.liked === true ? (
+            <Pressable
+              style={{
+                backgroundColor: "#F6F6F6",
+                marginRight: 2,
+                height: 34,
+                width: 34,
+                borderRadius: 17,
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 5,
+              }}
+              onPress={() => _unliked(dataDestination.id)}
+            >
+              <Love height={20} width={20} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() =>
+                shareAction({
+                  from: "destination",
+                  target: dataDestination.id,
+                })
+              }
+              style={{
+                backgroundColor: "#F6F6F6",
+                marginRight: 2,
+                height: 34,
+                width: 34,
+                borderRadius: 17,
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 5,
+              }}
+              onPress={() => _liked(dataDestination.id)}
+            >
+              <LikeEmpty height={20} width={20} />
+            </Pressable>
+          )}
+          <TouchableOpacity
+            onPress={() =>
+              // shareAction({
+              //   from: "destination",
+              //   target: dataDestination.id,
+              // })
+              SetShareModal(true)
+            }
+            style={{
+              backgroundColor: "#F6F6F6",
+              marginRight: 2,
+              height: 34,
+              width: 34,
+              borderRadius: 17,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <ShareBlack height={20} width={20} />
+          </TouchableOpacity>
+        </Animated.View>
+      </Animated.View>
+
+      {/* End Button Like and Share*/}
+
+      {/* View SUb*/}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: layoutImage + layoutHeader + layoutHeader / 2 + layoutUnesco,
+          transform: [{ translateY: yButtonLikeShare }],
+          zIndex: 100,
+          opacity: hides.current,
+          right: 20,
+          width: Dimensions.get("screen").width / 10,
+        }}
+      >
+        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
+          {data?.destinationById?.address ? (
+            <Ripple
+              style={{
+                height: layoutsAddress,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                Linking.openURL(
+                  Platform.OS == "ios"
+                    ? "maps://app?daddr=" +
+                        data?.destinationById?.latitude +
+                        "+" +
+                        data?.destinationById?.longitude
+                    : "google.navigation:q=" +
+                        data?.destinationById?.latitude +
+                        "+" +
+                        data?.destinationById?.longitude
+                );
+              }}
+            >
+              <Mapsborder
+                height="25"
+                width="25"
+                style={{ marginVertical: 3 }}
+              />
+            </Ripple>
+          ) : null}
+        </Animated.View>
+
+        {/* View Time */}
+
+        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
+          {data?.destinationById?.openat ? (
+            <Pressable
+              onPress={() => setModalTime(true)}
+              style={{
+                height: layoutsOpen,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  color: "#209FAE",
+                  marginVertical: 8,
+                  marginLeft: 10,
+                }}
+              >
+                {t("more")}
+              </Text>
+            </Pressable>
+          ) : null}
+        </Animated.View>
+
+        {/* View Website */}
+
+        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
+          {data?.destinationById?.website ? (
+            <Pressable
+              onPress={() => setModalSosial(true)}
+              style={{
+                height: layoutsWeb,
+                justifyContent: "center",
+                alignItems: "center",
+                // marginVertical: 5,
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{
+                  color: "#209FAE",
+                  marginVertical: 8,
+                  marginLeft: 10,
+                }}
+              >
+                {t("more")}
+              </Text>
+            </Pressable>
+          ) : null}
+        </Animated.View>
+      </Animated.View>
+
+      {/* End BView SUb*/}
 
       {renderTabView()}
       {renderHeader()}
