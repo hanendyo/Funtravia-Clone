@@ -6,6 +6,7 @@ import {
   dateFormats,
 } from "../../../component/src/dateformatter";
 import { Star } from "../../../assets/svg";
+import { default_image } from "../../../assets/png";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -120,7 +121,7 @@ export default function Reviews({ props, id }) {
                     source={
                       item && item.user && item.user.picture
                         ? { uri: item?.user?.picture }
-                        : null
+                        : default_image
                     }
                   />
                   <View
@@ -196,7 +197,11 @@ export default function Reviews({ props, id }) {
                               >
                                 <FunImage
                                   key={indexs + "1"}
-                                  source={{ uri: items.image }}
+                                  source={
+                                    items?.image
+                                      ? { uri: items?.image }
+                                      : default_image
+                                  }
                                   style={{
                                     width: "100%",
                                     height: "100%",
@@ -219,7 +224,11 @@ export default function Reviews({ props, id }) {
                               >
                                 <FunImage
                                   key={indexs + "2"}
-                                  source={{ uri: items.image }}
+                                  source={
+                                    items.image
+                                      ? { uri: items?.image }
+                                      : default_image
+                                  }
                                   style={{
                                     opacity: 0.9,
                                     width: "100%",
@@ -257,7 +266,11 @@ export default function Reviews({ props, id }) {
                               >
                                 <FunImage
                                   key={index + "3"}
-                                  source={{ uri: items.image }}
+                                  source={
+                                    items?.image
+                                      ? { uri: items?.image }
+                                      : default_image
+                                  }
                                   style={{
                                     width: "100%",
                                     height: "100%",
