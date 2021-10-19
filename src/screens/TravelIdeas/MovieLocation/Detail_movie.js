@@ -882,7 +882,7 @@ export default function Detail_movie(props) {
                 ? HEADER_MAX_HEIGHT + normalize(50)
                 : HEADER_MAX_HEIGHT + normalize(30)
               : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + normalize(20)
+              ? HEADER_MAX_HEIGHT + normalize(30)
               : HEADER_MAX_HEIGHT + normalize(30),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
