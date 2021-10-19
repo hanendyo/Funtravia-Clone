@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 import Modal from "react-native-modal";
+import moment from "moment";
 
 const GetFeedPostSingle = gql`
   query($post_id: ID!) {
@@ -267,7 +268,9 @@ export default function SinglePost(props) {
   };
   const duration = (datetime) => {
     var date1 = new Date(datetime).getTime();
-    var date2 = new Date().getTime();
+    // var date2 = new Date().getTime();
+    var date2 = moment().format();
+    date2 = new Date(date2.slice(0, 19)).getTime();
     var msec = date2 - date1;
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);

@@ -1723,7 +1723,7 @@ export default function ItineraryPopuler(props) {
                     color: actives == "Album" ? "#209FAE" : "#464646",
                   }}
                 >
-                  Album
+                  {t("album")}
                 </Text>
               </Ripple>
               <Ripple
@@ -1756,7 +1756,7 @@ export default function ItineraryPopuler(props) {
                     color: "#c7c7c7",
                   }}
                 >
-                  Story
+                  {t("story")}
                 </Text>
               </Ripple>
             </View>

@@ -749,5 +749,12 @@
   "cropNewPost": "Menyesuaikan Postingan Baru",
   "newItinerary": "Itinerary Baru",
   "postAlbum": "Album Postingan",
-  "travelStories": "Cerita Perjalanan"
+  "travelStories": "Cerita Perjalanan",
+  "album": "Album",
+  "story": "Cerita",
+  "connectedAccount": "Akun Terkait",
+  "connect": "Hubungkan",
+  "disConnect": "Lepaskan"
+
+
 }

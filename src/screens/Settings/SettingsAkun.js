@@ -19,6 +19,8 @@ import {
   Nextpremier,
   Xgray,
   Arrowbackios,
+  GoogleIcon,
+  FacebookIcon,
 } from "../../assets/svg";
 import { calendar_blue, Bg_soon } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -307,6 +309,7 @@ export default function SettingsAkun(props) {
       <ScrollView
         style={{
           backgroundColor: "#F6F6F6",
+          // flex: 1,
         }}
       >
         {/* Modal Comming Soon */}
@@ -1183,7 +1186,7 @@ export default function SettingsAkun(props) {
           shadowRadius: arrayShadow.shadowRadius,
           elevation: arrayShadow.elevation,
         }}
-      >
+        >
         <Text
           size="label"
           type="regular"
@@ -1194,7 +1197,7 @@ export default function SettingsAkun(props) {
           {t("Security")}
         </Text>
         <Nextpremier width={15} height={15} />
-      </Ripple> */}
+        </Ripple> */}
         {/* {datacity && datacity?.cities_search.length > 0 ? (
           <SettingCity
             modals={modalCity}
@@ -1210,6 +1213,190 @@ export default function SettingsAkun(props) {
             props={props}
           />
         ) : null} */}
+        <View
+          style={{
+            // flexDirection: "row",
+            marginBottom: 15,
+            paddingHorizontal: 15,
+            marginHorizontal: 15,
+            // paddingVertical: 13,
+            backgroundColor: "#FFFFFF",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 5,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 6.27,
+            elevation: 2,
+            borderRadius: 10,
+          }}
+        >
+          <View style={{ marginVertical: 15, width: "100%" }}>
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                marginBottom: 10,
+              }}
+            >
+              {t("connectedAccount")}
+            </Text>
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "flex-end",
+                marginBottom: 15,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width - 50,
+                }}
+              >
+                <FacebookIcon width={40} height={40} />
+                <Pressable
+                  onPress={() =>
+                    props.navigation.navigate("SettingEmailChange", {
+                      setting: setting,
+                    })
+                  }
+                  style={{
+                    marginLeft: 5,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <View
+                    style={{
+                      alignContent: "flex-start",
+                      justifyContent: "flex-start",
+                      width: "70%",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      size="label"
+                      style={{
+                        alignSelf: "flex-start",
+                        // marginBottom: 5,
+                      }}
+                    >
+                      Facebook
+                    </Text>
+                    {/* <Text
+                      type="regular"
+                      size="small"
+                      style={{ color: "#6c6c6c" }}
+                    >
+                      {t("emailUsed")}
+                    </Text> */}
+                  </View>
+                  <Text
+                    type="regular"
+                    size="label"
+                    style={{
+                      color: "#209fae",
+                      // color: "#D75995",
+                      width: "30%",
+                      // marginBottom: 5,
+                      // marginHorizontal:10,
+                    }}
+                  >
+                    {t("connect")}
+                  </Text>
+                </Pressable>
+              </View>
+              {/* <OptionsVertBlack
+                width={20}
+                height={20}
+                onPress={() => {
+                  setModalEmail(true);
+                }}
+              /> */}
+            </View>
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width - 50,
+                }}
+              >
+                <GoogleIcon width={40} height={40} />
+                <Pressable
+                  onPress={() =>
+                    props.navigation.navigate("SettingEmailChange", {
+                      setting: setting,
+                    })
+                  }
+                  style={{
+                    marginLeft: 5,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <View
+                    style={{
+                      alignContent: "flex-start",
+                      justifyContent: "flex-start",
+                      width: "70%",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      size="label"
+                      style={{
+                        alignSelf: "flex-start",
+                        // marginBottom: 5,
+                      }}
+                    >
+                      Google
+                    </Text>
+                    {/* <Text
+                      type="regular"
+                      size="small"
+                      style={{ color: "#6c6c6c" }}
+                    >
+                      {t("emailUsed")}
+                    </Text> */}
+                  </View>
+                  <Text
+                    type="regular"
+                    size="label"
+                    style={{
+                      color: "#209fae",
+                      // color: "#D75995",
+                      width: "30%",
+                      // marginBottom: 5,
+                      // marginHorizontal:10,
+                    }}
+                  >
+                    {t("connect")}
+                  </Text>
+                </Pressable>
+              </View>
+              {/* <OptionsVertBlack
+                width={20}
+                height={20}
+                onPress={() => {
+                  setModalEmail(true);
+                }}
+              /> */}
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </>
   );

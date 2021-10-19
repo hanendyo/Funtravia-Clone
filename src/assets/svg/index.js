@@ -284,6 +284,8 @@ import Arrowbackiosblack from "./files/arrowbackiosblack.svg";
 import ItineraryIcon from "./files/ItineraryIcon.svg";
 import ItineraryIconGray from "./files/ItineraryIconGray.svg";
 import AlbumIconGray from "./files/AlbumIconGray.svg";
+import GoogleIcon from "./files/GoogleIcon.svg";
+import FacebookIcon from "./files/FacebookIcon.svg";
 
 export {
   Lock,
@@ -572,4 +574,6 @@ export {
   ItineraryIcon,
   ItineraryIconGray,
   AlbumIconGray,
+  GoogleIcon,
+  FacebookIcon,
 };
