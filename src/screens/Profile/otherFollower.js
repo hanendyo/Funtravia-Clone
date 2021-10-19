@@ -12,7 +12,6 @@ import { DefaultProfile } from "../../assets/png";
 
 export default function Follower(props) {
   const { t, i18n } = useTranslation();
-
   const HeaderComponent = {
     headerTransparent: false,
     title: "",

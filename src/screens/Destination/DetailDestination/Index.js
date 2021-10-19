@@ -189,6 +189,7 @@ const Article = ({ data, onScroll }) => {
 };
 
 export default function DestinationDetail(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "",
@@ -230,8 +231,6 @@ export default function DestinationDetail(props) {
       </Button>
     ),
   };
-
-  const { t, i18n } = useTranslation();
 
   let detailId = props.route.params.id;
   let [token, setToken] = useState("");

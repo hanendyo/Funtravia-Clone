@@ -60,6 +60,7 @@ import DeviceInfo from "react-native-device-info";
 import AutoHeightImage from "react-native-auto-height-image";
 
 export default function EventDetail(props) {
+  const { t, i18n } = useTranslation();
   let [showside, setshowside] = useState(false);
   let [modalShare, setModalShare] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
@@ -173,7 +174,6 @@ export default function EventDetail(props) {
     // ),
   };
 
-  const { t, i18n } = useTranslation();
   let [dataevent, setDataEvent] = useState({});
   let token = props.route.params.token;
   let event_id = props.route.params.event_id

@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Loading } from "../../../component";
 
 export default function TripPlaning(props) {
+  const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
     title: "Your Trip",
@@ -60,7 +61,6 @@ export default function TripPlaning(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   let [DataPlan, setDataPlan] = useState(0);
   let [DataActive, setDataActive] = useState(0);

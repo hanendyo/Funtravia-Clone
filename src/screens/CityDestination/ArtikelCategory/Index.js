@@ -33,6 +33,7 @@ import { TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 
 export default function ArtikelCategory(props) {
+  let { t } = useTranslation();
   const [articles, setArticles] = useState(props.route.params.article);
   let [token, setToken] = useState("");
   const [routes, setRoutes] = useState([0]);

@@ -15,6 +15,7 @@ import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 
 export default function SettingItin(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "Setting",
@@ -61,7 +62,6 @@ export default function SettingItin(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
   let [iditin, setId] = useState(props.route.params.iditin);
   let [isPrivate, setPrivate] = useState(props.route.params.isPrivate);

@@ -29,7 +29,7 @@ import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function JournalCategory(props) {
-  console.log("props category journal", props);
+  const { t } = useTranslation();
   let [category, setCategory] = useState(props.route.params.category);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
@@ -78,7 +78,6 @@ export default function JournalCategory(props) {
     ),
   };
 
-  const { t } = useTranslation();
   const [fetchDataPopuler, { data, loading }] = useLazyQuery(PopularJournal, {
     fetchPolicy: "network-only",
     context: {

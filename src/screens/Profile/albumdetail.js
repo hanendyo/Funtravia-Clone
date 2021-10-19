@@ -23,6 +23,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -63,7 +64,6 @@ export default function albumdetail(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let token = props.route.params.token;
   let judul = props.route.params.judul;
   let [modals, setmodal] = useState(false);

@@ -55,6 +55,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
 
 export default function detailCustomItinerary(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -120,7 +121,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const Notch = DeviceInfo.hasNotch();
-  const { t, i18n } = useTranslation();
   let [dataParent, setDataParent] = useState({});
   let [dataChild, setDataChild] = useState([]);
   let [token, setToken] = useState("");

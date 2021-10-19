@@ -60,6 +60,7 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
     // title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
@@ -105,7 +106,6 @@ export default function myfeed(props) {
     headerRightStyle: {},
   };
 
-  const { t, i18n } = useTranslation();
   const isFocused = useIsFocused();
   const ref = React.useRef(null);
   let [token, setToken] = useState(props?.route?.params?.token);

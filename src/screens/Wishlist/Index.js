@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite, Search } from "../../assets/svg";
 
 export default function Wishlist(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "Wishlist",
@@ -65,7 +66,6 @@ export default function Wishlist(props) {
       </Button>
     ),
   };
-  const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   let [texts, setText] = useState("");
   let [textc, setTextc] = useState("");
