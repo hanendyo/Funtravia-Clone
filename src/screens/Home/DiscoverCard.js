@@ -233,6 +233,7 @@ export default function DiscoverCard({ props, token }) {
               color: "#FFFFFF",
               textAlign: "center",
               paddingBottom: 15,
+              letterSpacing: 0.4,
             }}
           >
             {discoverCardsData[0].text}
@@ -272,6 +273,7 @@ export default function DiscoverCard({ props, token }) {
               color: "#FFFFFF",
               textAlign: "center",
               paddingBottom: 15,
+              letterSpacing: 0.4,
             }}
           >
             {discoverCardsData[1].text}
@@ -309,6 +311,7 @@ export default function DiscoverCard({ props, token }) {
               color: "#FFFFFF",
               textAlign: "center",
               paddingBottom: 15,
+              letterSpacing: 0.4,
             }}
           >
             {discoverCardsData[2].text}

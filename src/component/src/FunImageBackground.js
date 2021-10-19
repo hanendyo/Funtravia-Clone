@@ -64,13 +64,13 @@ export default function ImageBackground({
                 // console.log("Response written ===\n\n");
                 let progressPercent =
                   (res.bytesWritten / res.contentLength) * 100; // to calculate in percentage
-                // console.log("\n\nprogress===", progressPercent);
+                console.log("progress", progressPercent);
                 setProgress(progressPercent.toString());
                 // item.downloadProgress = progressPercent;
-                // console.log(res);
+                // console.log("res", res);
               },
             }).promise.then((res) => {
-              // console.log(res);
+              console.log(res);
               setTimeout(() => {
                 setLoading(false);
                 // setTimeOut(true);
