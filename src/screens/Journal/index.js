@@ -10,7 +10,11 @@ import {
   RefreshControl,
 } from "react-native";
 import { Text, Button } from "../../component";
-import { default_image, logo_funtravia } from "../../assets/png";
+import {
+  default_image,
+  logo_funtravia,
+  DefaultProfile,
+} from "../../assets/png";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -641,8 +645,8 @@ export default function Journal(props) {
         <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
           <Image
             source={
-              data?.journal_most_populer.firstimg
-                ? { uri: data?.journal_most_populer.firstimg }
+              data?.journal_most_populer?.firstimg
+                ? { uri: data?.journal_most_populer?.firstimg }
                 : default_image
             }
             style={styles.imageTop}
@@ -659,18 +663,22 @@ export default function Journal(props) {
             <View style={styles.editor}>
               <Image
                 style={{ width: 40, height: 40, borderRadius: 20 }}
-                source={{ uri: data?.journal_most_populer.userby.picture }}
+                source={
+                  data?.journal_most_populer?.userby?.picture
+                    ? { uri: data?.journal_most_populer?.userby?.picture }
+                    : logo_funtravia
+                }
               />
 
               <View style={styles.dataEditor}>
                 <Text size={"title"} type={"bold"}>
-                  {data?.journal_most_populer.userby.first_name
-                    ? data?.journal_most_populer.userby.first_name
+                  {data?.journal_most_populer?.userby?.first_name
+                    ? data?.journal_most_populer?.userby?.first_name
                     : "Funtravia"}
                 </Text>
                 <Text size={"label"} type={"regular"} style={{ marginTop: 0 }}>
-                  {data?.journal_most_populer.date
-                    ? dateFormatShortMonth(data?.journal_most_populer.date)
+                  {data?.journal_most_populer?.date
+                    ? dateFormatShortMonth(data?.journal_most_populer?.date)
                     : null}
                 </Text>
               </View>
