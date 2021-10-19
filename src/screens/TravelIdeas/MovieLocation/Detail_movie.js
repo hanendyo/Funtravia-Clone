@@ -16,10 +16,11 @@ import {
 } from "react-native";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import DeviceInfo from "react-native-device-info";
+const deviceId = DeviceInfo.getModel();
 import { default_image } from "../../../assets/png";
 import {
-  SharePutih,
+  ShareBlack,
   Star,
   PinHijau,
   Love,
@@ -62,44 +63,6 @@ export default function Detail_movie(props) {
   let [modalShare, setModalShare] = useState(false);
   let [movie_byid, setMoviebyid] = useState({});
   const { t } = useTranslation();
-  const HeaderComponent = {
-    headerShown: true,
-    transparent: false,
-    tabBarVisble: false,
-    tabBarLabel: "Unesco",
-    headerTintColor: "white",
-    headerTitle: movie_byid?.title,
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          marginLeft: 10,
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-  };
 
   let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);
   const [fetchDataAnotherDes, { data, loading, error }] = useLazyQuery(
@@ -148,16 +111,12 @@ export default function Detail_movie(props) {
     await fetchDataAnotherDes();
   };
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
-    // refetchmovie();
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
     });
     return unsubscribe;
-  }, [props.navigation, HeaderComponent]);
+  }, [props.navigation]);
 
   const [
     mutationliked,
@@ -321,13 +280,463 @@ export default function Detail_movie(props) {
     }
   };
 
+  const HEADER_MAX_HEIGHT = 240;
+  const HEADER_MIN_HEIGHT = 50;
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  let [scrollY] = useState(new Animated.Value(0));
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    extrapolate: "clamp",
+  });
+  const shareTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + 5],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE - 100],
+    extrapolate: "clamp",
+  });
+
+  const titleScale = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 1, 1.2],
+    extrapolate: "clamp",
+  });
+  const titleTranslateX = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 20, 45],
+    extrapolate: "clamp",
+  });
+  const titleTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, -8],
+    extrapolate: "clamp",
+  });
+
+  let imageTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 100],
+    extrapolate: "clamp",
+  });
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 1, 0],
+    extrapolate: "clamp",
+  });
+  const backOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE + 10],
+    outputRange: [0, 0, 1],
+    extrapolate: "clamp",
+  });
+
+  console.log("movie_byid", movie_byid);
+
   return (
-    <ScrollView
+    <View
       style={{
         flex: 1,
         backgroundColor: "#fff",
       }}
     >
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: HEADER_MAX_HEIGHT + 50,
+          backgroundColor: "#fff",
+          paddingBottom: 20,
+        }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+      >
+        <View
+          style={{
+            justifyContent: "flex-start",
+            paddingHorizontal: 20,
+            marginBottom: 15,
+          }}
+        >
+          <View
+            style={{
+              width: "85%",
+              marginBottom: 5,
+            }}
+          >
+            <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+              {movie_byid?.title}
+            </Text>
+          </View>
+          <Text
+            type="regular"
+            size="label"
+            style={{
+              textAlign: "left",
+              lineHeight: 20,
+            }}
+          >
+            {movie_byid?.description}
+          </Text>
+        </View>
+        {movie_byid?.movie_destination?.map((item, index) => {
+          return (
+            <View
+              key={index}
+              style={{
+                width: Dimensions.get("screen").width,
+                // marginBottom: 15,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginHorizontal: 20,
+                }}
+              >
+                <Text size="label" type="bold" style={{ marginBottom: 5 }}>
+                  {t("location") + " " + (index + 1)} :
+                </Text>
+                <Text
+                  size="label"
+                  type="bold"
+                  // style={{ marginHorizontal: 20, marginBottom: 5 }}
+                >
+                  {" " + item.list_destination.name}
+                </Text>
+              </View>
+              <Image
+                source={item ? { uri: item.image } : default_image}
+                style={{
+                  height: 150,
+                  width: Dimensions.get("screen").width - 30,
+                  marginHorizontal: 15,
+                  borderRadius: 5,
+                  marginBottom: 5,
+                }}
+              />
+              <Text
+                style={{ marginHorizontal: 20, marginBottom: 10 }}
+                size="description"
+                type="light"
+              >
+                {item.description_image}
+              </Text>
+              <Text
+                style={{
+                  marginHorizontal: 20,
+                  lineHeight: 22,
+                  marginBottom: 15,
+                }}
+                size="label"
+                type="regular"
+              >
+                {item.description}
+              </Text>
+            </View>
+          );
+        })}
+        {loadingmovie ? null : (
+          <View
+            style={{
+              backgroundColor: "#f6f6f6",
+              justifyContent: "center",
+              paddingHorizontal: 15,
+              marginBottom: 15,
+            }}
+          >
+            <Text
+              style={{ textAlign: "center", marginBottom: 10, marginTop: 30 }}
+              size="label"
+              type="bold"
+            >
+              {t("batasText1")} {movie_byid?.title} {t("batasText2")}
+            </Text>
+            <Text
+              style={{ textAlign: "center", marginBottom: 30 }}
+              size="label"
+              type="regular"
+            >
+              {t("letsText")}
+            </Text>
+          </View>
+        )}
+        {movie_byid?.movie_destination?.map((item, index) => {
+          return (
+            <View
+              key={index}
+              style={{
+                width: Dimensions.get("screen").width,
+                marginBottom: 15,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginHorizontal: 20,
+                  alignItems: "center",
+                  marginBottom: 15,
+                }}
+              >
+                <BlockDestination
+                  height={20}
+                  width={20}
+                  style={{ marginLeft: -5 }}
+                />
+                <Text size="label" type="bold" style={{}}>
+                  {t("location") + " " + (index + 1)} :
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => {
+                  props.navigation.push("DestinationUnescoDetail", {
+                    id: item.list_destination.id,
+                    name: item.list_destination.name,
+                    token: token,
+                  });
+                }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#F3F3F3",
+                  borderRadius: 10,
+                  height: 190,
+                  width: Dimensions.get("screen").width - 30,
+                  marginHorizontal: 15,
+                  flexDirection: "row",
+                  backgroundColor: "#FFF",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 1,
+                  },
+                  shadowOpacity: 0.22,
+                  shadowRadius: 2.22,
+                  elevation: 3,
+                }}
+              >
+                <View style={{ justifyContent: "center" }}>
+                  <FunImage
+                    source={item ? { uri: item.image } : default_image}
+                    style={{
+                      width: 160,
+                      height: "100%",
+                      borderBottomLeftRadius: 10,
+                      borderTopLeftRadius: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      left: 10,
+                      width: "87%",
+                      zIndex: 2,
+                      // borderWidth: 3,
+                      borderColor: "#209fae",
+                    }}
+                  >
+                    {/* {item.list_destination.liked === true ? (
+                    <Pressable
+                      // onPress={() => _unlikedAnother(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Love height={15} width={15} />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      // onPress={() => _likedAnother(item.id)}
+                      style={{
+                        backgroundColor: "#F3F3F3",
+                        height: 30,
+                        width: 30,
+                        borderRadius: 17,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <LikeEmpty height={15} width={15} />
+                    </Pressable>
+                  )} */}
+                    {item?.list_destination?.rating > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "#F3F3F3",
+                          borderRadius: 3,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                          height: 25,
+                        }}
+                      >
+                        <Star height={15} width={15} />
+                        <Text size="description" type="bold">
+                          {item.list_destination.rating.substr(0, 3)}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    paddingHorizontal: 8,
+                    paddingVertical: 7,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View style={{ borderWidth: 0 }}>
+                    {/* Title */}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        paddingHorizontal: 3,
+                      }}
+                    >
+                      <BlockDestination
+                        height={16}
+                        width={16}
+                        style={{ marginTop: 5 }}
+                      />
+                      <Text
+                        size="title"
+                        type="bold"
+                        numberOfLines={2}
+                        style={{
+                          marginLeft: 5,
+                          marginBottom: 5,
+                          flexWrap: "wrap",
+                          width: "90%",
+                        }}
+                      >
+                        {item.list_destination.name}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 5,
+                      }}
+                    >
+                      <PinHijau height={15} width={15} />
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{ marginLeft: 5 }}
+                        numberOfLines={1}
+                      >
+                        {item.list_destination.cities.name}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      marginTop: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "flex-end",
+                        paddingHorizontal: 7,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        {item.list_destination?.movie_location?.length > 0 ? (
+                          <MovieIcon
+                            height={33}
+                            width={33}
+                            style={{ marginRight: 5 }}
+                          />
+                        ) : null}
+                        {item.list_destination.type?.name
+                          .toLowerCase()
+                          .substr(0, 6) == "unesco" ? (
+                          <UnescoIcon height={33} width={33} />
+                        ) : null}
+                      </View>
+                      <View
+                        style={{
+                          marginBottom:
+                            item.list_destination.greatfor.length > 0 ? 0 : 7,
+                        }}
+                      >
+                        {item.list_destination.greatfor.length > 0 ? (
+                          <Text size="label" type="bold">
+                            {t("GreatFor") + " :"}
+                          </Text>
+                        ) : null}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            marginLeft: -5,
+                          }}
+                        >
+                          {item.list_destination.greatfor.length > 0
+                            ? item.list_destination.greatfor.map(
+                                (item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={"grat" + index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={40}
+                                      width={40}
+                                    />
+                                  ) : null;
+                                }
+                              )
+                            : null}
+                        </View>
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        justifyContent: "flex-end",
+                        width: 70,
+                        paddingBottom: 5,
+                        paddingRight: 5,
+                      }}
+                    >
+                      <Button
+                        onPress={() => addToPlan(item.list_destination)}
+                        size="small"
+                        text={"Add"}
+                        // style={{ marginTop: 15 }}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </Pressable>
+            </View>
+          );
+        })}
+      </Animated.ScrollView>
       <Modal
         useNativeDriver={true}
         visible={modalShare}
@@ -455,463 +864,192 @@ export default function Detail_movie(props) {
           </View>
         </View>
       </Modal>
-      <View
+      {/* Button Share */}
+      <Animated.View
         style={{
+          width: "100%",
+          height: 50,
           justifyContent: "center",
-          alignItems: "center",
-          width: width,
-          height: HeaderHeight - HeaderHeight / 2,
+          alignContent: "center",
+          position: "absolute",
+          zIndex: 2,
+          position: "absolute",
+          marginTop:
+            Platform.OS == "ios"
+              ? HEADER_MAX_HEIGHT + 70
+              : deviceId == "LYA-L29"
+              ? HEADER_MAX_HEIGHT + 30
+              : HEADER_MAX_HEIGHT + 60,
+          opacity: backOpacity,
+          transform: [{ translateY: shareTranslateY }],
         }}
       >
-        <ImageBackground
-          source={
-            movie_byid?.cover ? { uri: movie_byid?.cover } : default_image
-          }
+        <TouchableOpacity
+          type="circle"
+          color="secondary"
           style={{
-            width: width,
-            height: HeaderHeight - HeaderHeight / 2,
+            position: "absolute",
+            // width: Dimensions.get("screen").width / 2.5,
+            right: 20,
+            zIndex: 20,
+            alignSelf: "flex-end",
             justifyContent: "center",
-            padding: 20,
             alignItems: "center",
+            flexDirection: "row",
+            backgroundColor: "#F6F6F6",
+            height: 30,
+            width: 30,
+            borderRadius: 17,
           }}
-          resizeMode="cover"
-          // blurRadius={3}
-        ></ImageBackground>
-      </View>
-      <View
-        style={{
-          alignItems: "center",
-        }}
-      >
-        <Ripple
           onPress={() => {
             setModalShare(true);
           }}
-          style={{
-            height: 44,
-            borderRadius: 20,
-            borderColor: "grey",
-            paddingVertical: 0,
-            paddingHorizontal: 30,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-            backgroundColor: "#D75995",
-            shadowColor: "#DFDFDF",
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 2.84,
-            elevation: 3,
-            flexDirection: "row",
-            marginTop: -22,
-          }}
         >
-          <SharePutih height={20} width={20} />
-          <Text
-            type="bold"
-            size="label"
-            style={{
-              color: "white",
-              marginLeft: 10,
-              paddingVertical: 0,
-            }}
-          >
-            {t("share")}
-          </Text>
-        </Ripple>
-      </View>
-      {loadingmovie && loadAdd ? (
-        <View
-          style={{
-            height: Dimensions.get("screen").height,
-            width: Dimensions.get("screen").width - 30,
-            // justifyContent: "center",
-            marginTop: 150,
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
-      <View
+          <ShareBlack height={20} width={20} />
+          {/* <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text> */}
+        </TouchableOpacity>
+      </Animated.View>
+
+      {/* End Button Share */}
+
+      {/* Image Background */}
+
+      <Animated.View
+        pointerEvents="none"
         style={{
-          justifyContent: "flex-start",
-          paddingHorizontal: 20,
-          marginBottom: 15,
+          position: "absolute",
+          // top: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "#209fae",
+          overflow: "hidden",
+          height: HEADER_MAX_HEIGHT,
+          transform: [{ translateY: headerTranslateY }],
+          zIndex: 1,
+          top: SafeStatusBar,
         }}
       >
-        <View
+        <Animated.Image
           style={{
-            // borderWidth: 1,
-            marginTop: 10,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            width: null,
+            height: HEADER_MAX_HEIGHT,
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslateY }],
+            zIndex: 1,
           }}
-        >
-          <Text size="title" type="bold" style={{ marginBottom: 5 }}>
-            {movie_byid?.title}
-          </Text>
-          <Text
-            type="regular"
-            size="label"
-            style={{
-              textAlign: "left",
-              lineHeight: 20,
-            }}
-          >
-            {movie_byid?.description}
-          </Text>
-        </View>
-      </View>
-      {movie_byid?.movie_destination?.map((item, index) => {
-        return (
-          <View
-            key={index}
-            style={{
-              width: Dimensions.get("screen").width,
-              // marginBottom: 15,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                marginHorizontal: 20,
-              }}
-            >
-              <Text size="label" type="bold" style={{ marginBottom: 5 }}>
-                {t("location") + " " + (index + 1)} :
-              </Text>
-              <Text
-                size="label"
-                type="bold"
-                // style={{ marginHorizontal: 20, marginBottom: 5 }}
-              >
-                {" " + item.list_destination.name}
-              </Text>
-            </View>
-            <Image
-              source={item ? { uri: item.image } : default_image}
-              style={{
-                height: 150,
-                width: Dimensions.get("screen").width - 30,
-                marginHorizontal: 15,
-                borderRadius: 5,
-                marginBottom: 5,
-              }}
-            />
-            <Text
-              style={{ marginHorizontal: 20, marginBottom: 10 }}
-              size="description"
-              type="light"
-            >
-              {item.description_image}
-            </Text>
-            <Text
-              style={{ marginHorizontal: 20, lineHeight: 22, marginBottom: 15 }}
-              size="label"
-              type="regular"
-            >
-              {item.description}
-            </Text>
-          </View>
-        );
-      })}
-      {loadingmovie ? null : (
-        <View
-          style={{
-            backgroundColor: "#f6f6f6",
-            justifyContent: "center",
-            paddingHorizontal: 15,
-            marginBottom: 15,
-          }}
-        >
-          <Text
-            style={{ textAlign: "center", marginBottom: 10, marginTop: 30 }}
-            size="label"
-            type="bold"
-          >
-            {t("batasText1")} {movie_byid?.title} {t("batasText2")}
-          </Text>
-          <Text
-            style={{ textAlign: "center", marginBottom: 30 }}
-            size="label"
-            type="regular"
-          >
-            {t("letsText")}
-          </Text>
-        </View>
-      )}
-      {movie_byid?.movie_destination?.map((item, index) => {
-        return (
-          <View
-            key={index}
-            style={{
-              width: Dimensions.get("screen").width,
-              marginBottom: 15,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                marginHorizontal: 20,
-                alignItems: "center",
-                marginBottom: 15,
-              }}
-            >
-              <BlockDestination
-                height={20}
-                width={20}
-                style={{ marginLeft: -5 }}
-              />
-              <Text size="label" type="bold" style={{}}>
-                {t("location") + " " + (index + 1)} :
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => {
-                props.navigation.push("DestinationUnescoDetail", {
-                  id: item.list_destination.id,
-                  name: item.list_destination.name,
-                  token: token,
-                });
-              }}
-              style={{
-                borderWidth: 1,
-                borderColor: "#F3F3F3",
-                borderRadius: 10,
-                height: 190,
-                width: Dimensions.get("screen").width - 30,
-                marginHorizontal: 15,
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 1,
-                },
-                shadowOpacity: 0.22,
-                shadowRadius: 2.22,
-                elevation: 3,
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                <FunImage
-                  source={item ? { uri: item.image } : default_image}
-                  style={{
-                    width: 160,
-                    height: "100%",
-                    borderBottomLeftRadius: 10,
-                    borderTopLeftRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    left: 10,
-                    width: "87%",
-                    zIndex: 2,
-                    // borderWidth: 3,
-                    borderColor: "#209fae",
-                  }}
-                >
-                  {item.list_destination.liked === true ? (
-                    <Pressable
-                      // onPress={() => _unlikedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Love height={15} width={15} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      // onPress={() => _likedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <LikeEmpty height={15} width={15} />
-                    </Pressable>
-                  )}
-                  {item?.list_destination?.rating > 0 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "#F3F3F3",
-                        borderRadius: 3,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingHorizontal: 5,
-                        height: 25,
-                      }}
-                    >
-                      <Star height={15} width={15} />
-                      <Text size="description" type="bold">
-                        {item.list_destination.rating.substr(0, 3)}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 8,
-                  paddingVertical: 7,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View style={{ borderWidth: 0 }}>
-                  {/* Title */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 3,
-                    }}
-                  >
-                    <BlockDestination
-                      height={16}
-                      width={16}
-                      style={{ marginTop: 5 }}
-                    />
-                    <Text
-                      size="title"
-                      type="bold"
-                      numberOfLines={2}
-                      style={{
-                        marginLeft: 5,
-                        marginBottom: 5,
-                        flexWrap: "wrap",
-                        width: "90%",
-                      }}
-                    >
-                      {item.list_destination.name}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: 5,
-                    }}
-                  >
-                    <PinHijau height={15} width={15} />
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{ marginLeft: 5 }}
-                      numberOfLines={1}
-                    >
-                      {item.list_destination.cities.name}
-                    </Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    marginTop: 5,
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "flex-end",
-                      paddingHorizontal: 7,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                      }}
-                    >
-                      {item.list_destination?.movie_location?.length > 0 ? (
-                        <MovieIcon
-                          height={33}
-                          width={33}
-                          style={{ marginRight: 5 }}
-                        />
-                      ) : null}
-                      {item.list_destination.type?.name
-                        .toLowerCase()
-                        .substr(0, 6) == "unesco" ? (
-                        <UnescoIcon height={33} width={33} />
-                      ) : null}
-                    </View>
-                    <View
-                      style={{
-                        marginBottom:
-                          item.list_destination.greatfor.length > 0 ? 0 : 7,
-                      }}
-                    >
-                      {item.list_destination.greatfor.length > 0 ? (
-                        <Text size="label" type="bold">
-                          {t("GreatFor") + " :"}
-                        </Text>
-                      ) : null}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginLeft: -5,
-                        }}
-                      >
-                        {item.list_destination.greatfor.length > 0
-                          ? item.list_destination.greatfor.map(
-                              (item, index) => {
-                                return index < 3 ? (
-                                  <FunIcon
-                                    key={"grat" + index}
-                                    icon={item.icon}
-                                    fill="#464646"
-                                    height={40}
-                                    width={40}
-                                  />
-                                ) : null;
-                              }
-                            )
-                          : null}
-                      </View>
-                    </View>
-                  </View>
+          source={
+            movie_byid?.cover ? { uri: movie_byid?.cover } : default_image
+          }
+        />
+      </Animated.View>
 
-                  <View
-                    style={{
-                      justifyContent: "flex-end",
-                      width: 70,
-                      paddingBottom: 5,
-                      paddingRight: 5,
-                    }}
-                  >
-                    <Button
-                      onPress={() => addToPlan(item.list_destination)}
-                      size="small"
-                      text={"Add"}
-                      // style={{ marginTop: 15 }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </Pressable>
-          </View>
-        );
-      })}
-    </ScrollView>
+      {/*End Image Background */}
+
+      {/* Title Header */}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: titleTranslateY }],
+          height: 50,
+          flex: 1,
+          alignItems: "flex-start",
+          justifyContent: "center",
+          position: "absolute",
+          left: 60,
+          right: 20,
+          zIndex: 999,
+          opacity: titleOpacity,
+          top: SafeStatusBar + 5,
+        }}
+      >
+        <Text
+          size="header"
+          style={{
+            color: "#fff",
+          }}
+          numberOfLines={1}
+        >
+          {movie_byid?.title}
+        </Text>
+      </Animated.View>
+
+      {/*End Title Header */}
+
+      {/* Back Arrow One */}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: titleTranslateY }],
+          height: 100,
+          width: 100,
+          position: "absolute",
+          zIndex: 999,
+          top: SafeStatusBar,
+          opacity: backOpacity,
+        }}
+      >
+        <Pressable
+          onPress={() => props.navigation.goBack()}
+          style={{
+            marginTop: 15,
+            marginLeft: 15,
+            backgroundColor: "rgba(0,0,0, 0.5)",
+            borderRadius: 40,
+            height: 40,
+            width: 40,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Pressable>
+      </Animated.View>
+
+      {/* End Back Arrow One */}
+
+      {/* Back Arrow Two */}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: titleTranslateY }],
+          height: 100,
+          width: 100,
+          position: "absolute",
+          zIndex: 999,
+          top: SafeStatusBar,
+        }}
+      >
+        <Pressable
+          onPress={() => props.navigation.goBack()}
+          style={{
+            marginTop: 15,
+            marginLeft: 15,
+            borderRadius: 40,
+            height: 40,
+            width: 40,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Pressable>
+      </Animated.View>
+
+      {/* End Back Arrow Two */}
+    </View>
   );
 }
 
