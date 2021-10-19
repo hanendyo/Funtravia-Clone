@@ -425,7 +425,7 @@ export default function ProfileSettings(props) {
   // const Notch = DeviceInfo.hasNotch();
   const HeightBar = Platform.select({
     ios: Notch ? 95 : 70,
-    android: 70,
+    android: 90,
   });
 
   return (
