@@ -71,6 +71,7 @@ import {
   TravelAlbum,
   AlbumIconGray,
   TravelStoriesdis,
+  TravelAlbumdis,
 } from "../../../assets/svg";
 import {
   Button,
@@ -3127,8 +3128,18 @@ export default function ItineraryDetail(props) {
             height={20}
             width={20}
           />
-        ) : route.key == "tab2" && !focused ? (
+        ) : route.key == "tab2" && !focused && status !== "edit" ? (
           <AlbumIconGray
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : null}
+
+        {route.key == "tab2" && !focused && status == "edit" ? (
+          <TravelAlbumdis
             style={{
               marginRight: 5,
             }}
