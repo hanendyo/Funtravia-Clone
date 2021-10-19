@@ -44,6 +44,7 @@ const arrayShadow = {
 };
 
 export default function listItinPlaning(props) {
+  const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
     headerShown: true,
@@ -94,7 +95,6 @@ export default function listItinPlaning(props) {
   let [token, setToken] = useState("");
   let idkiriman = props.route.params.idkiriman;
 
-  const { t, i18n } = useTranslation();
   const [
     GetListitinaktif,
     { data: datalistaktif, loading: loadinglistaktif, error: errorlistaktif },

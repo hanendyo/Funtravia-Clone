@@ -40,7 +40,6 @@ export default function SearchTab(props) {
   let [initTab, setInitTab] = useState(sentInitTab);
   let [input, setInput] = useState(props.route.params.searchInput);
   let refreshOrder = true;
-  console.log("INPUT DARI SEARCH PAGE: ", input);
   const HeaderComponent = {
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>

@@ -32,6 +32,7 @@ import { ReactNativeFile } from "apollo-upload-client";
 import ImageSlide from "../../../component/src/ImageSlide";
 
 export default function detailCustomItinerary(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -98,7 +99,6 @@ export default function detailCustomItinerary(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [dataParent, setDataParent] = useState({});
   let [dataChild, setDataChild] = useState([]);
 

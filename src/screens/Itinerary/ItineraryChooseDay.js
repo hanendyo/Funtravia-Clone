@@ -24,8 +24,7 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 
 export default function ItineraryChooseday(props) {
-  console.log("props choss", props);
-  console.log("Props", props);
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "Choose day",
@@ -72,7 +71,6 @@ export default function ItineraryChooseday(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [Iditinerary, setId] = useState(props.route.params.Iditinerary);
   let [Kiriman, setIdDes] = useState(props.route.params.Kiriman);
   let [token, setToken] = useState(props.route.params.token);

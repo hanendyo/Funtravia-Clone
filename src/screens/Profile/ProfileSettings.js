@@ -31,6 +31,7 @@ import LinearGradient from "react-native-linear-gradient";
 import DeviceInfo from "react-native-device-info";
 
 export default function ProfileSettings(props) {
+  const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     title: "",
@@ -90,7 +91,6 @@ export default function ProfileSettings(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   const [dataerror, setdataerror] = useState({
     first_name: false,
     last_name: false,

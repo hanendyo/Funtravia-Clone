@@ -72,6 +72,7 @@ const deletepost = gql`
 `;
 
 export default function SinglePost(props) {
+  const { t } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -106,7 +107,7 @@ export default function SinglePost(props) {
     // 	</View>
     // ),
   };
-  const { t } = useTranslation();
+
   let [postid] = useState(props.route.params.post_id);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);

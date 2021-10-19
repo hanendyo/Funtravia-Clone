@@ -21,6 +21,7 @@ import ImageSlide from "../../component/src/ImageSlide/sliderwithoutlist";
 import ImagePicker from "react-native-image-crop-picker";
 
 export default function tripalbumdetail(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     title: "Trip Album",
     headerTransparent: false,
@@ -66,7 +67,6 @@ export default function tripalbumdetail(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let iditinerary = props.route.params.iditinerary;
   let token = props.route.params.token;
   let day_id = props.route.params.day_id;

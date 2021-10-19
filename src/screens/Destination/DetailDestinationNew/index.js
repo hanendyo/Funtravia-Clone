@@ -147,7 +147,6 @@ const Index = (props) => {
   let [dataDestination, setDataDestination] = useState(data);
 
   let [more, setMore] = useState(false);
-  // const { t } = useTranslation();
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState({});
   let [gambar, setGambar] = useState([]);

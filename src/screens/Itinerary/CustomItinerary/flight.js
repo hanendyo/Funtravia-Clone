@@ -47,6 +47,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -113,7 +114,6 @@ export default function detailCustomItinerary(props) {
   };
   const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
-  const { t, i18n } = useTranslation();
 
   //params data
   const dayId = [props.route.params.dayId];
