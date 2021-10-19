@@ -182,8 +182,8 @@ export default function TravelGoalDetail(props) {
     }
   };
 
-  const HEADER_MAX_HEIGHT = 240;
-  const HEADER_MIN_HEIGHT = 50;
+  const HEADER_MAX_HEIGHT = normalize(240);
+  const HEADER_MIN_HEIGHT = normalize(50);
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   let [scrollY] = useState(new Animated.Value(0));
@@ -369,7 +369,7 @@ export default function TravelGoalDetail(props) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           // paddingTop: HEADER_MAX_HEIGHT + 60,
-          paddingTop: HEADER_MAX_HEIGHT + 50,
+          paddingTop: HEADER_MAX_HEIGHT + normalize(50),
           backgroundColor: "#fff",
           paddingBottom: 20,
         }}
@@ -743,10 +743,12 @@ export default function TravelGoalDetail(props) {
           position: "absolute",
           marginTop:
             Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT + 70
+              ? Notch
+                ? HEADER_MAX_HEIGHT + normalize(50)
+                : HEADER_MAX_HEIGHT + normalize(30)
               : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + 30
-              : HEADER_MAX_HEIGHT + 60,
+              ? HEADER_MAX_HEIGHT + normalize(20)
+              : HEADER_MAX_HEIGHT + normalize(30),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}
