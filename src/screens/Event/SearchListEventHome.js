@@ -52,6 +52,7 @@ import CategoryEvent from "../../graphQL/Query/Event/FilterEvent";
 import BannerApps from "../../graphQL/Query/Home/BannerApps";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
+import normalize from "react-native-normalize";
 import {
   default_image,
   CalenderGrey,
@@ -262,7 +263,7 @@ export default function SearchListEventHome(props) {
 
   const [priceValue, setPriceValue] = useState({
     min: 0,
-    max: 1000000,
+    max: 0,
   });
 
   const [customPriceValues, setCustomPriceValues] = useState({
@@ -275,14 +276,12 @@ export default function SearchListEventHome(props) {
       if (priceValue.min === "" || priceValue.min === undefined) {
         setPriceValue({ ...priceValue, min: 0 });
       } else if (priceValue.max === "" || priceValue.max === undefined) {
-        setPriceValue({ ...priceValue, max: 1000000 });
+        setPriceValue({ ...priceValue, max: 0 });
       }
     } else {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
   }
-
-  const convertNumber = () => {};
 
   const [scrollStatus, setScrollStatus] = useState({ scrollEnabled: false });
   const enableScrollFunction = () => setScrollStatus({ scrollEnabled: true });
@@ -448,7 +447,7 @@ export default function SearchListEventHome(props) {
             }}
           >
             <TextInput
-              placeholder={t("pressHere")}
+              placeholder={t("startDate")}
               autoCorrect={false}
               style={{
                 flex: 1,
@@ -530,7 +529,7 @@ export default function SearchListEventHome(props) {
             }}
           >
             <TextInput
-              placeholder={t("pressHere")}
+              placeholder={t("endDate")}
               autoCorrect={false}
               style={{
                 flex: 1,
@@ -573,7 +572,7 @@ export default function SearchListEventHome(props) {
 
   // const changeValue =(x)=>{
   //   if (x === null) {
-  //     setPriceValue({ ...priceValue, max: 1000000 });
+  //     setPriceValue({ ...priceValue, max: 0 });
   //     setCustomPriceValues({ ...customPriceValues, max: 'any' });
   //     return customPriceValues.max;
   //   } else {
@@ -738,7 +737,7 @@ export default function SearchListEventHome(props) {
               // value={priceValue.max}
               onChangeText={(x) => {
                 if (x === null || x === undefined) {
-                  setPriceValue({ ...priceValue, max: 1000000 });
+                  setPriceValue({ ...priceValue, max: 0 });
                   setCustomPriceValues({ ...customPriceValues, max: "any" });
                 } else {
                   setPriceValue({ ...priceValue, max: x });
@@ -747,10 +746,10 @@ export default function SearchListEventHome(props) {
                 setKeyboardIsUp(true);
               }}
             />
-            {priceValue.max !== 1000000 ? (
+            {priceValue.max !== 0 ? (
               <TouchableOpacity
                 onPress={() => {
-                  setPriceValue({ ...priceValue, max: 1000000 });
+                  setPriceValue({ ...priceValue, max: 0 });
                   setCustomPriceValues({ ...customPriceValues, max: "any" });
                 }}
               >
@@ -1132,6 +1131,7 @@ export default function SearchListEventHome(props) {
           width: (Dimensions.get("screen").width - 40) / 2,
           height: Dimensions.get("screen").width * 0.7,
           margin: 5,
+          marginBottom: -5,
           flexDirection: "column",
           backgroundColor: "white",
           borderRadius: 5,
@@ -1145,7 +1145,7 @@ export default function SearchListEventHome(props) {
         <View
           style={{
             position: "absolute",
-            top: 15,
+            top: 10,
             left: 10,
             right: 10,
             flexDirection: "row",
@@ -1251,8 +1251,8 @@ export default function SearchListEventHome(props) {
             flexDirection: "column",
             justifyContent: "space-around",
             height: 230,
-            marginVertical: 5,
-            marginHorizontal: 10,
+            marginVertical: 3,
+            marginHorizontal: 12,
           }}
         >
           <Text
@@ -1261,7 +1261,7 @@ export default function SearchListEventHome(props) {
             type="bold"
             style={{}}
           >
-            <Truncate text={item.name} length={27} />
+            <Truncate text={item.name} length={42} />
           </Text>
           <View
             style={{
@@ -1295,7 +1295,7 @@ export default function SearchListEventHome(props) {
               />
               {item.is_repeat === true ? (
                 <Text
-                  size="small"
+                  size="description"
                   style={{
                     paddingRight: 20,
                     width: "100%",
@@ -1305,7 +1305,7 @@ export default function SearchListEventHome(props) {
                 </Text>
               ) : (
                 <Text
-                  size="small"
+                  size="description"
                   style={{
                     paddingRight: 20,
                     width: "100%",
@@ -1337,7 +1337,7 @@ export default function SearchListEventHome(props) {
                 source={MapIconGreen}
               />
               <Text
-                size="small"
+                size="description"
                 style={{
                   width: "100%",
                 }}
@@ -1460,11 +1460,12 @@ export default function SearchListEventHome(props) {
             <Text
               size="label"
               type="bold"
-              style={{
-                opacity: focused ? 1 : 0.5,
-                //  borderWidth: 1,
-                paddingBottom: 5,
-              }}
+              style={[
+                focused ? styles.labelActive : styles.label,
+                {
+                  opacity: focused ? 1 : 0.8,
+                },
+              ]}
             >
               {route.title}
             </Text>
@@ -2548,12 +2549,20 @@ export default function SearchListEventHome(props) {
       }
     }
 
+    console.log(`DATA FILTER: `, dataFilterCategori);
+    console.log(`HASIL: `, hasil);
+
     let data = { ...search };
     data["type"] = hasil;
     data["date_from"] = dateData.start_date;
     data["date_until"] = dateData.end_date;
-    data["price_start"] = priceValue.min;
-    data["price_end"] = priceValue.max;
+    if (customPriceValues.max !== "any") {
+      data["price_start"] = priceValue.min;
+      data["price_end"] = priceValue.max;
+    } else {
+      data["price_start"] = 0;
+      data["price_end"] = 0;
+    }
 
     await setSearch(data);
     await setshow(false);
@@ -2603,7 +2612,7 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
-    await setPriceValue({ min: 0, max: 1000000 });
+    await setPriceValue({ min: 0, max: 0 });
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
     await setshow(false);
     await setmonth(" - ");
@@ -2630,12 +2639,17 @@ export default function SearchListEventHome(props) {
           array.push(x);
         })
       : null;
+
     search["date_until"]?.length > 0 ? array.push(date) : null;
+
     (search["price_start"] > 0 && search["price_end"] > 0) ||
-    (search["price_start"] == 0 && search["price_end"] == "any") ||
-    search["price_end"] > 0
+    (search["price_start"] == 0 && search["price_end"] > 0) ||
+    (search["price_start"] == null && search["price_end"] != null)
       ? array.push(price)
       : null;
+
+    console.log(`SEARCH:  `, search);
+    console.log(`ARRAY:  `, array);
 
     return array?.length;
   };
@@ -2716,5 +2730,11 @@ const styles = StyleSheet.create({
     alignContent: "center",
     paddingHorizontal: 2,
     paddingVertical: 2,
+  },
+  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  labelActive: {
+    fontSize: normalize(14),
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
   },
 });

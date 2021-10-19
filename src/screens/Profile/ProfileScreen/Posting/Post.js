@@ -6,7 +6,6 @@ const { width, height } = Dimensions.get("screen");
 import { FunVideo } from "../../../../component";
 
 export default function Posts({ item, index, navigation, user }) {
-  // console.log(item);
   if (item?.length > 2) {
     if (item[3]?.grid == 1) {
       return (
@@ -30,6 +29,7 @@ export default function Posts({ item, index, navigation, user }) {
                 screen: "myfeed",
                 params: {
                   token: token,
+                  // index: index,
                   datauser: user,
                   post_id: item[0]?.id,
                 },
@@ -789,6 +789,7 @@ export default function Posts({ item, index, navigation, user }) {
                   screen: "myfeed",
                   params: {
                     token: token,
+                    index: index,
                     datauser: user,
                     post_id: data.id,
                   },

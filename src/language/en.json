@@ -740,7 +740,7 @@
   "SearchFeed": "Search Feed",
   "tag": "Tag",
   "places": "Places",
-  "allPost": "All Post",
+  "allPost": "All post",
   "searchByTag": "Search by Tag",
   "searchByLocation": "Search By Location",
   "leftItinerary": "Left Itinerary",
@@ -753,8 +753,8 @@
   "story": "Story",
   "connectedAccount": "Connected Account",
   "connect": "Connect",
-  "disConnect": "Disconnect"
-
-  
-  
+  "disConnect": "Disconnect",
+  "profilePost": "Post",
+  "startDate": "Start date",
+  "endDate": "End date"
 }

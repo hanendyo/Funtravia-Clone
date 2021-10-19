@@ -420,9 +420,9 @@ export default function OtherProfile(props) {
 
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "tab1", title: "Post" },
-    { key: "tab2", title: "Review" },
-    { key: "tab3", title: "Trip" },
+    { key: "tab1", title: t("profilePost") },
+    { key: "tab2", title: t("review") },
+    { key: "tab3", title: t("trip") },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -1203,13 +1203,16 @@ export default function OtherProfile(props) {
       return (
         <Post
           item={e.item}
+          index={e.index}
           navigation={e.props.navigation}
           user={dataUser}
           dataPost={dataPost}
         />
       );
     } else if (tabPost === 1) {
-      return <Albums item={e.item} props={e.props} token={token} />; // return Albums(e);
+      return (
+        <Albums item={e.item} index={e.index} props={e.props} token={token} />
+      ); // return Albums(e);
     } else {
       return Tags(e);
     }
@@ -1385,7 +1388,7 @@ export default function OtherProfile(props) {
                   fontWeight: tabPost === 0 ? "bold" : "normal",
                 }}
               >
-                All Post
+                {t("allPost")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -1435,7 +1438,7 @@ export default function OtherProfile(props) {
                   fontWeight: tabPost === 2 ? "bold" : "normal",
                 }}
               >
-                Tag
+                {t("tag")}
               </Text>
             </TouchableOpacity>
           </View>
