@@ -71,6 +71,7 @@ import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide";
 import { default_image, search_button } from "../../../assets/png";
 import normalize from "react-native-normalize";
+const deviceId = DeviceInfo.getModel();
 
 let PullToRefreshDist = 150;
 
@@ -745,7 +746,6 @@ const Index = (props) => {
   let [layoutImage, setLayoutImage] = useState(0);
   let [layoutHeader, setLayoutHeader] = useState(0);
   let [layoutUnesco, setLayoutUnesco] = useState(0);
-  console.log("layoutImage"), layoutImage;
 
   const yButtonLikeShare = scrollY.interpolate({
     inputRange: [0, HeaderHeight],
@@ -792,6 +792,7 @@ const Index = (props) => {
             opacity: imageOpacity,
             // height:"100%",
             flex: 1,
+            // height: HeaderHeight - 100,
           }}
         >
           {/* Image */}
@@ -2839,7 +2840,10 @@ const Index = (props) => {
       <Animated.View
         style={{
           position: "absolute",
-          top: normalize(layoutImage) + normalize(20),
+          top:
+            deviceId == "LYA-L29"
+              ? normalize(layoutImage) + normalize(40)
+              : normalize(layoutImage) + normalize(20),
           transform: [{ translateY: yButtonLikeShare }],
           right: 20,
           zIndex: 9999,
@@ -2934,10 +2938,16 @@ const Index = (props) => {
                 normalize(layoutHeader) +
                 normalize(layoutHeader) / normalize(4.3) +
                 normalize(layoutUnesco)
+              : deviceId == "LYA-L29"
+              ? normalize(layoutImage) +
+                normalize(layoutHeader) +
+                normalize(layoutUnesco) +
+                normalize(50)
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
                 normalize(15),
+
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
@@ -2994,7 +3004,6 @@ const Index = (props) => {
                 style={{
                   color: "#209FAE",
                   marginVertical: 8,
-                  marginLeft: 10,
                 }}
               >
                 {t("more")}
@@ -3022,7 +3031,6 @@ const Index = (props) => {
                 style={{
                   color: "#209FAE",
                   marginVertical: 8,
-                  marginLeft: 10,
                 }}
               >
                 {t("more")}

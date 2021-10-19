@@ -382,9 +382,10 @@ export default function CountrySrc({
             contentContainerStyle={{
               paddingTop: 10,
             }}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
                 <Pressable
+                  key={index.toString()}
                   onPress={() => hasil(item)}
                   style={({ pressed }) => [
                     {
