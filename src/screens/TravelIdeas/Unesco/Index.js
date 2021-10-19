@@ -233,8 +233,6 @@ export default function Unesco({ navigation, route }) {
     listdestinasi_unesco = data.listdestinasi_unesco;
   }
 
-  console.log("listdestinasi_unesco", listdestinasi_unesco);
-
   /**
    * PanResponder for header
    */
@@ -687,9 +685,9 @@ export default function Unesco({ navigation, route }) {
   };
 
   const renderCulture = ({ item, index }) => {
-    console.log("item", item);
     return (
       <Pressable
+        key={index.toString()}
         // onPress={() => {
         //   navigation.navigate("detailStack", {
         //     id: item.id,
