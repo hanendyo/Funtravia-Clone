@@ -77,8 +77,8 @@ export default function SplashScreen(props) {
             size="small"
             style={{
               flexDirection: "row",
-              backgroundColor: "#D1D1D1",
-              opacity: 0.45,
+              backgroundColor: "#fff",
+              // opacity: 0.45,
               borderRadius: 30,
             }}
             onPress={() =>
@@ -98,7 +98,7 @@ export default function SplashScreen(props) {
               size="description"
               type="bold"
               style={{
-                color: "white",
+                color: "black",
                 // marginRight: 10,
                 justifyContent: "center",
                 marginBottom: 1,

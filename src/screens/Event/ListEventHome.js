@@ -912,6 +912,7 @@ export default function ListEventHome(props) {
             width: (Dimensions.get("screen").width - 40) / 2,
             height: Dimensions.get("screen").width * 0.7,
             margin: 5,
+            marginBottom: -5,
             flexDirection: "column",
             backgroundColor: "white",
             borderRadius: 5,
@@ -925,7 +926,7 @@ export default function ListEventHome(props) {
           <View
             style={{
               position: "absolute",
-              top: 15,
+              top: 10,
               left: 10,
               right: 10,
               flexDirection: "row",
@@ -1031,7 +1032,7 @@ export default function ListEventHome(props) {
               flexDirection: "column",
               justifyContent: "space-around",
               height: 230,
-              marginVertical: 5,
+              marginVertical: 3,
               marginHorizontal: 10,
             }}
           >
@@ -1041,7 +1042,7 @@ export default function ListEventHome(props) {
               type="bold"
               style={{}}
             >
-              <Truncate text={item.name} length={27} />
+              <Truncate text={item.name} length={36} />
             </Text>
             <View
               style={{
@@ -1075,7 +1076,7 @@ export default function ListEventHome(props) {
                 />
                 {item.is_repeat === true ? (
                   <Text
-                    size="small"
+                    size="description"
                     style={{
                       paddingRight: 20,
                       width: "100%",
@@ -1085,7 +1086,7 @@ export default function ListEventHome(props) {
                   </Text>
                 ) : (
                   <Text
-                    size="small"
+                    size="description"
                     style={{
                       paddingRight: 20,
                       width: "100%",
@@ -1117,7 +1118,7 @@ export default function ListEventHome(props) {
                   source={MapIconGreen}
                 />
                 <Text
-                  size="small"
+                  size="description"
                   style={{
                     width: "100%",
                   }}
@@ -1194,7 +1195,7 @@ export default function ListEventHome(props) {
           paddingTop:
             HeaderHeight +
             TabBarHeight +
-            (Platform.OS == "ios" ? (Notch ? 0 : -15) : -15),
+            (Platform.OS == "ios" ? (Notch ? 40 : -15) : -15),
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -1219,7 +1220,7 @@ export default function ListEventHome(props) {
       outputRange:
         Platform.OS == "ios"
           ? Notch
-            ? [HeaderHeight, 60]
+            ? [HeaderHeight, 19]
             : [HeaderHeight, 70]
           : [HeaderHeight, 70],
       // extrapolate: 'clamp',
