@@ -2831,7 +2831,7 @@ export default function CityDetail(props) {
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar + 255,
-          left: 350,
+          right: 20,
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",

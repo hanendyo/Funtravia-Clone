@@ -2120,10 +2120,11 @@ export default function Country(props) {
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar + 255,
-          left: 350,
+          right: 20,
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
+          borderWidth: 1,
         }}
       >
         <Animated.View
