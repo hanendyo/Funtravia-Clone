@@ -11,6 +11,7 @@ import {
   Animated,
   StatusBar,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,6 +35,7 @@ import {
   Arrowbackiosblack,
   Arrowbackwhite,
   SharePutih,
+  ShareBlack,
   Xgray,
 } from "../../assets/svg";
 import { Image } from "react-native";
@@ -224,7 +226,7 @@ export default function TravelGoalDetail(props) {
     extrapolate: "clamp",
   });
   const backOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -725,37 +727,43 @@ export default function TravelGoalDetail(props) {
         style={{
           width: "100%",
           height: 50,
-          alignContent: "center",
+          justifyContent: "center",
           alignContent: "center",
           position: "absolute",
           zIndex: 2,
           position: "absolute",
           marginTop:
             Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT + 45
-              : HEADER_MAX_HEIGHT + 25,
+              ? HEADER_MAX_HEIGHT + 70
+              : HEADER_MAX_HEIGHT + 60,
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}
       >
-        <Button
+        <TouchableOpacity
           type="circle"
           color="secondary"
           style={{
             position: "absolute",
-            top: -20,
-            width: Dimensions.get("screen").width / 2.5,
+            // width: Dimensions.get("screen").width / 2.5,
+            right: 20,
             zIndex: 20,
-            alignSelf: "center",
+            alignSelf: "flex-end",
+            justifyContent: "center",
+            alignItems: "center",
             flexDirection: "row",
+            backgroundColor: "#F6F6F6",
+            height: 30,
+            width: 30,
+            borderRadius: 17,
           }}
           onPress={() => {
             setModalShare(true);
           }}
         >
-          <SharePutih height={20} width={20} />
-          <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text>
-        </Button>
+          <ShareBlack height={20} width={20} />
+          {/* <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text> */}
+        </TouchableOpacity>
       </Animated.View>
       <Animated.View
         pointerEvents="none"
@@ -795,7 +803,7 @@ export default function TravelGoalDetail(props) {
           transform: [{ translateY: titleTranslateY }],
           height: 50,
           flex: 1,
-          alignItems: Platform.OS == "ios" ? "flex-start" : null,
+          alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
           left: 60,
@@ -809,12 +817,11 @@ export default function TravelGoalDetail(props) {
           size="header"
           style={{
             color: "#fff",
-            marginLeft: Platform.OS == "ios" ? 0 : 60,
           }}
         >
           <Truncate
             text={datadetail.title ? datadetail.title : ""}
-            length={35}
+            length={45}
           />
         </Text>
       </Animated.View>
