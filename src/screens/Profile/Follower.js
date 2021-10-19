@@ -276,7 +276,7 @@ export default function Follower(props) {
               >
                 {item.last_name !== null ? (
                   <Text size="small" type="bold" style={{ marginBottom: 5 }}>
-                    {item.first_name + "" + item.last_name}
+                    {item.first_name + " " + item.last_name}
                   </Text>
                 ) : (
                   <Text size="small" type="regular" style={{ marginBottom: 5 }}>

@@ -53,6 +53,7 @@ const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
+const deviceId = DeviceInfo.getModel();
 
 export default function TravelGoalDetail(props) {
   const { t, i18n } = useTranslation();
@@ -367,7 +368,8 @@ export default function TravelGoalDetail(props) {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT + 60,
+          // paddingTop: HEADER_MAX_HEIGHT + 60,
+          paddingTop: HEADER_MAX_HEIGHT + 50,
           backgroundColor: "#fff",
           paddingBottom: 20,
         }}
@@ -404,20 +406,26 @@ export default function TravelGoalDetail(props) {
               {datadetail?.category?.name}
             </Text>
           </View>
-          <Animated.Text
-            type={"bold"}
-            size="title"
+          <View
             style={{
-              marginBottom: 5,
-              // opacity: backOpacity,
-              // transform: [
-              //   { scale: titleScale },
-              //   { translateX: titleTranslateX },
-              // ],
+              width: Dimensions.get("screen").width - 70,
             }}
           >
-            {datadetail?.title}
-          </Animated.Text>
+            <Text
+              type={"bold"}
+              size="title"
+              style={{
+                marginBottom: 5,
+                // opacity: backOpacity,
+                // transform: [
+                //   { scale: titleScale },
+                //   { translateX: titleTranslateX },
+                // ],
+              }}
+            >
+              {datadetail?.title}
+            </Text>
+          </View>
           {datadetail?.description ? (
             <Text
               size="readable"
@@ -723,6 +731,7 @@ export default function TravelGoalDetail(props) {
         ) : null}
       </Animated.ScrollView>
 
+      {/* Button Share */}
       <Animated.View
         style={{
           width: "100%",
@@ -735,6 +744,8 @@ export default function TravelGoalDetail(props) {
           marginTop:
             Platform.OS == "ios"
               ? HEADER_MAX_HEIGHT + 70
+              : deviceId == "LYA-L29"
+              ? HEADER_MAX_HEIGHT + 30
               : HEADER_MAX_HEIGHT + 60,
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
@@ -765,6 +776,11 @@ export default function TravelGoalDetail(props) {
           {/* <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text> */}
         </TouchableOpacity>
       </Animated.View>
+
+      {/* End Button Share */}
+
+      {/* Image Background */}
+
       <Animated.View
         pointerEvents="none"
         style={{
@@ -798,6 +814,11 @@ export default function TravelGoalDetail(props) {
           }
         />
       </Animated.View>
+
+      {/*End Image Background */}
+
+      {/* Title Header */}
+
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
@@ -807,7 +828,7 @@ export default function TravelGoalDetail(props) {
           justifyContent: "center",
           position: "absolute",
           left: 60,
-          right: 0,
+          right: 20,
           zIndex: 999,
           opacity: titleOpacity,
           top: SafeStatusBar + 5,
@@ -818,16 +839,19 @@ export default function TravelGoalDetail(props) {
           style={{
             color: "#fff",
           }}
+          numberOfLines={1}
         >
-          <Truncate
-            text={datadetail.title ? datadetail.title : ""}
-            length={45}
-          />
+          {datadetail.title}
         </Text>
       </Animated.View>
+
+      {/*End Title Header */}
+
+      {/* Back Arrow One */}
+
       <Animated.View
         style={{
-          transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
+          transform: [{ translateY: titleTranslateY }],
           height: 100,
           width: 100,
           position: "absolute",
@@ -856,9 +880,14 @@ export default function TravelGoalDetail(props) {
           )}
         </Pressable>
       </Animated.View>
+
+      {/* End Back Arrow One */}
+
+      {/* Back Arrow Two */}
+
       <Animated.View
         style={{
-          transform: [{ scale: titleScale }, { translateY: titleTranslateY }],
+          transform: [{ translateY: titleTranslateY }],
           height: 100,
           width: 100,
           position: "absolute",
@@ -885,6 +914,8 @@ export default function TravelGoalDetail(props) {
           )}
         </Pressable>
       </Animated.View>
+
+      {/* End Back Arrow Two */}
     </View>
   );
 }
