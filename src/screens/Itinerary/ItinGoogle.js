@@ -28,6 +28,7 @@ import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 
 export default function ItinGoogle(props) {
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
@@ -74,7 +75,6 @@ export default function ItinGoogle(props) {
     ),
   };
 
-  const { t, i18n } = useTranslation();
   let [datadayaktif, setdatadayaktif] = useState(
     props.route.params.datadayaktif
   );
