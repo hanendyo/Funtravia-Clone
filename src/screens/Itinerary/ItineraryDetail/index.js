@@ -66,6 +66,11 @@ import {
   Padlock,
   Newglobe,
   Newpadlock,
+  ItineraryIcon,
+  ItineraryIconGray,
+  TravelAlbum,
+  AlbumIconGray,
+  TravelStoriesdis,
 } from "../../../assets/svg";
 import {
   Button,
@@ -148,9 +153,9 @@ export default function ItineraryDetail(props) {
     props.route.params.index ? props.route.params.index : 0
   );
   const [routes] = useState([
-    { key: "tab1", title: "Itinerary" },
-    { key: "tab2", title: t("travelpicture") },
-    { key: "tab3", title: t("diary") },
+    { key: "tab1", title: "Itinerary", active: true },
+    { key: "tab2", title: t("album"), active: true },
+    { key: "tab3", title: t("story"), active: false },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let [dataList, setDataListItem] = useState([]);
@@ -3084,10 +3089,54 @@ export default function ItineraryDetail(props) {
         style={{
           alignContent: "center",
           alignItems: "center",
-          justifyContent: "flex-end",
+          justifyContent: "center",
+          flexDirection: "row",
           width: Dimensions.get("screen").width / 3,
         }}
       >
+        {route.key == "tab1" && focused ? (
+          <ItineraryIcon
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : route.key == "tab2" && focused ? (
+          <TravelAlbum
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : route.key == "tab3" ? (
+          <TravelStoriesdis
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : null}
+        {route.key == "tab1" && !focused ? (
+          <ItineraryIconGray
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : route.key == "tab2" && !focused ? (
+          <AlbumIconGray
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : null}
+
         <Text
           type={focused ? "bold" : "regular"}
           size="label"
@@ -3096,7 +3145,7 @@ export default function ItineraryDetail(props) {
               ? "#209FAE"
               : status === "edit"
               ? "#d3d3d3"
-              : route.title === "Cerita" || route.title === "Diary"
+              : route.active === false
               ? "#d3d3d3"
               : "#464646",
           }}
@@ -3864,12 +3913,11 @@ export default function ItineraryDetail(props) {
         <TabBar
           {...props}
           onTabPress={({ route, preventDefault }) => {
-            console.log("route", route),
-              status === "edit"
-                ? setmodalTrip(true)
-                : route.title === "Cerita" || route.title === "Diary"
-                ? Alert.alert(t("comingsoon"))
-                : null;
+            status === "edit"
+              ? setmodalTrip(true)
+              : route.active === false
+              ? Alert.alert(t("comingsoon"))
+              : null;
             if (isListGliding.current) {
               preventDefault();
             }

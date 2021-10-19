@@ -54,7 +54,19 @@ export default function RegisterGoogle({ navigation }) {
           },
         });
       }
+      console.log(
+        "🚀 ~ file: RegisterGoogle.js ~ line 55 ~ signInWithGoogle ~ FCM_TOKEN",
+        FCM_TOKEN
+      );
+      console.log(
+        "🚀 ~ file: RegisterGoogle.js ~ line 53 ~ signInWithGoogle ~ result.accessToken",
+        result.accessToken
+      );
 
+      console.log(
+        "🚀 ~ file: RegisterGoogle.js ~ line 51 ~ signInWithGoogle ~ response",
+        response
+      );
       if (response?.data === undefined || response?.data === "undefined") {
         setModalError(true);
         setMessage("Registration With Facebook is Failed");

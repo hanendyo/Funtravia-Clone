@@ -123,7 +123,7 @@ export default function Journal(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
-
+  console.log("🚀 ~ file: index.js ~ line 115 ~ Journal ~ data", data);
   const {
     data: dataList,
     loading: loadingList,

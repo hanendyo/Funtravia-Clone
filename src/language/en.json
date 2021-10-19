@@ -748,5 +748,13 @@
   "cropNewPost": "Crop New Post",
   "newItinerary": "New Itinerary",
   "postAlbum": "Post Album",
-  "travelStories": "Travel stories"
+  "travelStories": "Travel stories",
+  "album": "Album",
+  "story": "Story",
+  "connectedAccount": "Connected Account",
+  "connect": "Connect",
+  "disConnect": "Disconnect"
+
+  
+  
 }

@@ -48,7 +48,9 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
+import moment from "moment";
 import ProgressBar from "react-native-progress/Bar";
+import "moment/min/moment-with-locales";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -256,10 +258,6 @@ export default function FeedList({ props, token }) {
                 post_id: id,
               },
             });
-            console.log(
-              "🚀 ~ file: FeedList.js ~ line 259 ~ const_liked= ~ response",
-              response
-            );
 
             if (errorLike) {
               throw new Error("Error");
@@ -359,7 +357,7 @@ export default function FeedList({ props, token }) {
       first: 5,
       after: "",
     },
-    pollInterval: 1000,
+    // pollInterval: 1000,
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -402,6 +400,10 @@ export default function FeedList({ props, token }) {
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
     const { pageInfo } = fetchMoreResult.post_cursor_based;
+    console.log(
+      "🚀 ~ file: FeedList.js ~ line 405 ~ onUpdate ~ pageInfo",
+      pageInfo
+    );
     const edges = [
       ...prev.post_cursor_based.edges,
       ...fetchMoreResult.post_cursor_based.edges,
@@ -418,7 +420,7 @@ export default function FeedList({ props, token }) {
   };
   const handleOnEndReached = () => {
     if (status == 0) {
-      if (dataPost.post_cursor_based?.pageInfo.hasNextPage) {
+      if (dataPost.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
         return fetchMore({
           updateQuery: onUpdate,
           variables: {
@@ -465,17 +467,29 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  moment.locale("fr");
+  // console.log();
+
+  // const duration = (datetime) => {
+  //   return moment("20120620", "YYYYMMDD").fromNow();
+  // }
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
-    var date2 = new Date().getTime();
+
+    var date2 = moment().format();
+
+    date2 = new Date(date2.slice(0, 19)).getTime();
+
     var msec = date2 - date1;
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);
     var days = Math.floor(hrs / 24);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
+    // console.log("🚀 ~ file: FeedList.js ~ line 479 ~ duration ~ mins", mins);
     hrs = hrs % 24;
+    // console.log("🚀 ~ file: FeedList.js ~ line 481 ~ duration ~ hrs", hrs);
     if (yrs > 0) {
       return yrs + " " + t("yearsAgo");
     } else if (days > 0) {
@@ -1955,6 +1969,7 @@ export default function FeedList({ props, token }) {
         style={{
           paddingVertical: 7,
         }}
+        contentContainerStyle={{ flexGrow: 1 }}
         // initialNumToRender={7}
         keyExtractor={(item, index) => {
           item.cursor + toString(index);
@@ -1986,7 +2001,7 @@ export default function FeedList({ props, token }) {
           ) : null
         }
         initialNumToRender={10}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
       />
     </SafeAreaView>

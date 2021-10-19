@@ -26,6 +26,7 @@ import { RNToasty } from "react-native-toasty";
 import IsReadAll from "../../../graphQL/Mutation/Notification/IsReadAll";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Checkblok } from "../../../assets/svg";
+import moment from "moment";
 
 const InvitationNotif = gql`
   query {
@@ -551,7 +552,9 @@ export default function Invitation({ navigation, token }) {
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
-    var date2 = new Date().getTime();
+    var date2 = moment().format();
+    date2 = new Date(date2.slice(0, 19)).getTime();
+    // var date2 = new Date().getTime();
     var msec = date2 - date1;
     var mins = Math.floor(msec / 60000);
     var hrs = Math.floor(mins / 60);

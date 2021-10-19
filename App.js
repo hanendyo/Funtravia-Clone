@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { relayStylePagination } from "@apollo/client/utilities";
 import { createUploadLink } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 
@@ -182,7 +183,15 @@ function App() {
   }
 
   const client = new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            streetNames: relayStylePagination(),
+          },
+        },
+      },
+    }),
     link: createUploadLink({ uri: API }),
   });
 
