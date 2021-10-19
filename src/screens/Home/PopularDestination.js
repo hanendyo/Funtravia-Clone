@@ -46,6 +46,14 @@ export default function PopularDestination({ props }) {
     }
   };
 
+  let [temp, setTemp] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTemp(true);
+    }, 5000);
+  });
+
   return (
     <SafeAreaView>
       {loading ? (
@@ -107,11 +115,11 @@ export default function PopularDestination({ props }) {
               <TouchableOpacity
                 style={{
                   borderRadius: 5,
-                  shadowColor: "rgba(0, 0, 0, 0.11);",
+                  shadowColor: temp ? "rgba(0, 0, 0, 0.11)" : "#fff",
                   shadowOffset: { width: 0, height: 6 },
                   shadowRadius: 6,
                   shadowOpacity: 1,
-                  elevation: 6,
+                  elevation: temp ? 6 : 0,
                 }}
                 onPress={() =>
                   onSelect(
@@ -187,12 +195,12 @@ export default function PopularDestination({ props }) {
                     onPress={() => onSelect(item)}
                     style={{
                       marginRight: 8,
-                      shadowColor: "rgba(0, 0, 0, 0.11);",
+                      shadowColor: temp ? "rgba(0, 0, 0, 0.11);" : "#fff",
                       shadowOffset: { width: 0, height: 4 },
                       shadowRadius: 4,
                       shadowOpacity: 1,
                       borderRadius: 5,
-                      elevation: 4,
+                      elevation: temp ? 4 : 0,
                     }}
                   >
                     <FunImageBackground
@@ -212,7 +220,11 @@ export default function PopularDestination({ props }) {
                       imageStyle={styles.destinationImage}
                     >
                       <LinearGradient
-                        colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
+                        colors={
+                          temp
+                            ? ["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]
+                            : ["#fff", "#fff"]
+                        }
                         start={{ x: 0, y: 1 }}
                         end={{ x: 0, y: 0 }}
                         style={{
