@@ -547,7 +547,7 @@ export default function MovieLocation({ navigation, route }) {
                 ? HEADER_MAX_HEIGHT + normalize(20)
                 : HEADER_MAX_HEIGHT - normalize(5)
               : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + normalize(10)
+              ? HEADER_MAX_HEIGHT - normalize(5)
               : HEADER_MAX_HEIGHT,
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
