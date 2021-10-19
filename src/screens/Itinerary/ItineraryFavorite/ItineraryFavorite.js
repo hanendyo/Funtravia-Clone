@@ -733,7 +733,7 @@ export default function ItineraryFavorite(props) {
                       type="bold"
                       style={{ color: "#209FAE" }}
                     >
-                      Travel Album
+                      {t("travelAlbum")}
                     </Text>
                   </Pressable>
                   <Pressable
@@ -771,7 +771,7 @@ export default function ItineraryFavorite(props) {
                       }}
                       // style={{ color: "#209FAE" }}
                     >
-                      Travel Stories
+                      {t("travelStories")}
                     </Text>
                     {/* <TravelStories
                         style={{ marginRight: 5 }}

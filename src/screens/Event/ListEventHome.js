@@ -67,6 +67,7 @@ import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
 import { color } from "react-native-reanimated";
 import normalize from "react-native-normalize";
+import { Header } from "native-base";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -85,22 +86,26 @@ const PullToRefreshDist = 150;
 export default function ListEventHome(props) {
   let [heightjudul, setheightjudul] = useState(150);
   let [tambahan, setTambahan] = useState(0);
-  let HeaderHeight =
-    Platform.OS == "ios"
-      ? Notch
-        ? deviceId === "iPhone 12 Pro"
-          ? Dimensions.get("screen").height * 0.275 +
-            (heightjudul - 90) +
-            tambahan
-          : Dimensions.get("screen").height * 0.29 +
-            (heightjudul - 90) +
-            tambahan
-        : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahan
-      : deviceId == "LYA-L29"
-      ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahan
-      : Dimensions.get("screen").height * 0.23 + (heightjudul - 90) + tambahan;
+  const HeaderHeight = Platform.select({
+    ios: Notch ? 340 - StatusBar.currentHeight : 300 - StatusBar.currentHeight,
+    android: 340 - StatusBar.currentHeight,
+  });
+  // Platform.OS == "ios"
+  //   ? Notch
+  //     ? deviceId === "iPhone 12 Pro"
+  //       ? Dimensions.get("screen").height * 0.275 +
+  //         (heightjudul - 90) +
+  //         tambahan
+  //       : Dimensions.get("screen").height * 0.29 +
+  //         (heightjudul - 90) +
+  //         tambahan
+  //     : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahan
+  //   : deviceId == "LYA-L29"
+  //   ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahan
+  //   : Dimensions.get("screen").height * 0.28 + (heightjudul - 90) + tambahan;
+
   const HeaderHeightCustom = Platform.select({
-    ios: Notch ? 360 - 48 : 360 - 20,
+    ios: Notch ? 420 - 48 : 360 - 48,
     android: 340 - StatusBar.currentHeight,
   });
   let [heightview, setheight] = useState(0);
@@ -668,40 +673,50 @@ export default function ListEventHome(props) {
           backgroundColor: "#209fae",
         }}
       >
-        {Banner && Banner.banner_asset.length > 0 ? (
-          <Animated.Image
-            source={{ uri: Banner.banner_asset[0].filepath }}
-            // source={Eventcover}
-            style={{
-              height:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? Dimensions.get("screen").height * 0.26
-                    : Dimensions.get("screen").height * 0.26
-                  : Dimensions.get("screen").height * 0.26,
-              // height: 0.1,
-              // height: "100%",
-              width: "100%",
-              resizeMode: "cover",
-              // marginBottom: 0,
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
-            }}
-          />
-        ) : (
-          <Animated.Image
-            source={Eventcover}
-            style={{
-              // height: Dimensions.get("screen").height * 0.2,
-              height: "100%",
-              width: "100%",
-              resizeMode: "cover",
-              position: "absolute",
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
-            }}
-          />
-        )}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            width: width,
+            height: HeaderHeight - 138,
+          }}
+        >
+          {Banner && Banner.banner_asset.length > 0 ? (
+            <Animated.Image
+              source={{ uri: Banner.banner_asset[0].filepath }}
+              // source={Eventcover}
+              style={{
+                // height:
+                //   Platform.OS == "ios"
+                //     ? Notch
+                //       ? Dimensions.get("screen").height * 0.26
+                //       : Dimensions.get("screen").height * 0.26
+                //     : Dimensions.get("screen").height * 0.24,
+                // height: 0.1,
+                height: "100%",
+                width: "100%",
+                resizeMode: "cover",
+                // marginBottom: 0,
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
+              }}
+            />
+          ) : (
+            <Animated.Image
+              source={Eventcover}
+              style={{
+                // height: Dimensions.get("screen").height * 0.2,
+                height: "100%",
+                width: "100%",
+                resizeMode: "cover",
+                position: "absolute",
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
+              }}
+            />
+          )}
+        </View>
+
         <Animated.View
           // onLayout={(events) => {
           //   var { x, y, width, height } = events.nativeEvent.layout;
@@ -725,13 +740,11 @@ export default function ListEventHome(props) {
                     : 30
                   : 30
                 : 30,
-
             paddingHorizontal: 20,
             // zIndex: 1,
             backgroundColor: "#fff",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
-            // height: "100%",
           }}
         >
           <Text
@@ -756,9 +769,18 @@ export default function ListEventHome(props) {
               let lines = line - 1;
               // setTambahan(lines * 32);
               if (lines % 3 == 0) {
-                setTambahan(lines * 29);
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahan(lines * 12)
+                    : setTambahan(lines * 6)
+                  : setTambahan(lines - 20);
+                // setTambahan(lines * 12);
               } else {
-                setTambahan(lines * 23);
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahan(lines - 10)
+                    : setTambahan(lines - 20)
+                  : setTambahan(lines - 20);
               }
             }}
             size="label"
@@ -781,17 +803,18 @@ export default function ListEventHome(props) {
             position: "absolute",
             flexDirection: "row",
             // top: HeaderHeightCustom - 160,
+            top: HeaderHeight - 160,
             // top:
             //   HeaderHeightCustom -
             //   (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
-            top:
-              Platform.OS == "ios"
-                ? Notch
-                  ? deviceId === "iPhone 12 Pro"
-                    ? Dimensions.get("screen").height - 645
-                    : Dimensions.get("screen").height - 685
-                  : Dimensions.get("screen").height - 515
-                : Dimensions.get("screen").height - 602,
+            // top:
+            //   Platform.OS == "ios"
+            //     ? Notch
+            //       ? deviceId === "iPhone 12 Pro"
+            //         ? Dimensions.get("screen").height - 645
+            //         : Dimensions.get("screen").height - 685
+            //       : Dimensions.get("screen").height - 515
+            //     : Dimensions.get("screen").height - 602,
 
             zIndex: 11,
             opacity: imageOpacity,
@@ -1168,7 +1191,10 @@ export default function ListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight,
+          paddingTop:
+            HeaderHeight +
+            TabBarHeight +
+            (Platform.OS == "ios" ? (Notch ? 0 : -15) : -15),
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -1191,7 +1217,11 @@ export default function ListEventHome(props) {
       inputRange: [0, HeaderHeight],
       // outputRange: [HeaderHeight - 6, 0],
       outputRange:
-        Platform.OS == "ios" ? [HeaderHeight, 50] : [HeaderHeight, 50],
+        Platform.OS == "ios"
+          ? Notch
+            ? [HeaderHeight, 60]
+            : [HeaderHeight, 70]
+          : [HeaderHeight, 70],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1215,6 +1245,7 @@ export default function ListEventHome(props) {
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#d1d1d1",
+          marginTop: tambahan,
         }}
       >
         <TabBar
@@ -1782,6 +1813,7 @@ export default function ListEventHome(props) {
                   underlineColorAndroid="transparent"
                   enablesReturnKeyAutomatically={true}
                   placeholder={t("search")}
+                  autoCorrect={false}
                   style={{
                     width: "94%",
                     // borderWidth: 1,
@@ -1799,12 +1831,13 @@ export default function ListEventHome(props) {
                 />
                 {renderCountry.length !== 0 ? (
                   <TouchableOpacity
+                    style={{ marginLeft: -20 }}
                     onPress={() => {
                       setFilterCountry("");
                       setRenderCountry("");
                     }}
                   >
-                    <Xblue width="10" height="10" />
+                    <Xblue width="20" height="20" />
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -2352,6 +2385,7 @@ export default function ListEventHome(props) {
 
     await setModelSetNegara(false);
     await setcountry(item);
+    await setRenderCountry("");
   };
 
   const UpdateFilter = async () => {
