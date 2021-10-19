@@ -70,6 +70,7 @@ import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide";
 import { default_image, search_button } from "../../../assets/png";
+import normalize from "react-native-normalize";
 
 let PullToRefreshDist = 150;
 
@@ -2838,7 +2839,7 @@ const Index = (props) => {
       <Animated.View
         style={{
           position: "absolute",
-          top: layoutImage + 20,
+          top: normalize(layoutImage) + normalize(20),
           transform: [{ translateY: yButtonLikeShare }],
           right: 20,
           zIndex: 9999,
@@ -2927,7 +2928,16 @@ const Index = (props) => {
       <Animated.View
         style={{
           position: "absolute",
-          top: layoutImage + layoutHeader + layoutHeader / 2 + layoutUnesco,
+          top:
+            Platform.OS == "ios"
+              ? normalize(layoutImage) +
+                normalize(layoutHeader) +
+                normalize(layoutHeader) / normalize(4.3) +
+                normalize(layoutUnesco)
+              : normalize(layoutImage) +
+                normalize(layoutHeader) +
+                normalize(layoutUnesco) +
+                normalize(15),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
