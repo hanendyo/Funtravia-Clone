@@ -2934,10 +2934,15 @@ const Index = (props) => {
           position: "absolute",
           top:
             Platform.OS == "ios"
-              ? normalize(layoutImage) +
-                normalize(layoutHeader) +
-                normalize(layoutHeader) / normalize(4.3) +
-                normalize(layoutUnesco)
+              ? Notch
+                ? normalize(layoutImage) +
+                  normalize(layoutHeader) +
+                  normalize(layoutHeader) / normalize(4.3) +
+                  normalize(layoutUnesco)
+                : normalize(layoutImage) +
+                  normalize(layoutHeader) +
+                  normalize(layoutHeader) / normalize(3) +
+                  normalize(layoutUnesco)
               : deviceId == "LYA-L29"
               ? normalize(layoutImage) +
                 normalize(layoutHeader) +

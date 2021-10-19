@@ -12,10 +12,10 @@ import {
   ScrollView,
   FlatList,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import {
   Select,
   Arrowbackwhite,
@@ -30,6 +30,7 @@ import {
   NavigateAction,
   Text,
   Truncate,
+  StatusBar as Satbar,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -43,6 +44,8 @@ import DestinationMoviePopuler from "../../../graphQL/Query/TravelIdeas/Destinat
 import ImageSlider from "react-native-image-slider";
 import Ripple from "react-native-material-ripple";
 import { TouchableHighlight } from "react-native-gesture-handler";
+const deviceId = DeviceInfo.getModel();
+import normalize from "react-native-normalize";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -90,48 +93,6 @@ export default function MovieLocation({ navigation, route }) {
       tmpData.push(tmpArray);
     }
     return tmpData;
-  };
-  const HeaderComponent = {
-    headerShown: true,
-    transparent: false,
-    tabBarVisble: false,
-    tabBarLabel: "Unesco",
-    headerTintColor: "white",
-    headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
-        {t("filmLocation")}
-      </Text>
-    ),
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          marginLeft: 10,
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
   };
 
   const {
@@ -239,107 +200,379 @@ export default function MovieLocation({ navigation, route }) {
   useEffect(() => {
     loadAsync();
     GetDestinationMovieMovie();
-    navigation.setOptions(HeaderComponent);
   }, [route]);
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
   };
+
+  const HEADER_MAX_HEIGHT = normalize(200);
+  const HEADER_MIN_HEIGHT = normalize(50);
+  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  let [scrollY] = useState(new Animated.Value(0));
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    extrapolate: "clamp",
+  });
+  const shareTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + 5],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE - 100],
+    extrapolate: "clamp",
+  });
+
+  const titleScale = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 1, 1.2],
+    extrapolate: "clamp",
+  });
+  const titleTranslateX = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 20, 45],
+    extrapolate: "clamp",
+  });
+  const titleTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, -8],
+    extrapolate: "clamp",
+  });
+
+  let imageTranslateY = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 100],
+    extrapolate: "clamp",
+  });
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 1, 0],
+    extrapolate: "clamp",
+  });
+  const backOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE + 10],
+    outputRange: [0, 0, 1],
+    extrapolate: "clamp",
+  });
+
   return (
-    <ScrollView
+    <View
       style={{
         flex: 1,
       }}
-      stickyHeaderIndices={[2]}
     >
-      <CountrySrc
-        selectedCountry={selectedCountry}
-        SetselectedCountry={(e) => SetselectedCountry(e)}
-        modalshown={modalcountry}
-        setModelCountry={(e) => setModelCountry(e)}
-      />
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          width: width,
-          height: HeaderHeight - 150,
+      <Satbar backgroundColor="#14646E" />
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          marginTop: HEADER_MAX_HEIGHT + normalize(30),
+          backgroundColor: "#fff",
+          paddingBottom: normalize(230),
         }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
       >
-        {Banner && Banner.banner_asset.length > 0 ? (
-          <ImageBackground
-            source={{ uri: Banner.banner_asset[0].filepath }}
+        <CountrySrc
+          selectedCountry={selectedCountry}
+          SetselectedCountry={(e) => SetselectedCountry(e)}
+          modalshown={modalcountry}
+          setModelCountry={(e) => setModelCountry(e)}
+        />
+        <View
+          style={{
+            paddingBottom: 20,
+            paddingHorizontal: 20,
+            backgroundColor: "#f6f6f6",
+          }}
+        >
+          <Text
+            size="title"
+            type="bold"
             style={{
-              width: width,
-              height: HeaderHeight - 150,
-              paddingTop: 30,
+              textAlign: "left",
+            }}
+          >
+            {t("textRecommendation")} {selectedCountry?.name}
+          </Text>
+          <Text
+            size="label"
+            type="regular"
+            style={{
+              textAlign: "left",
+            }}
+          >
+            {t("subTitleMovie")}
+          </Text>
+        </View>
+        {loadingDestinationMovie ? (
+          <View
+            style={{
+              height: 220,
+              width: Dimensions.get("screen").width - 30,
+              justifyContent: "center",
               alignItems: "center",
             }}
-            resizeMode="cover"
           >
-            <Text size="h5" type="black">
-              {t("filmLocation")}
+            <ActivityIndicator size="large" color="#209fae" />
+          </View>
+        ) : null}
+        <ImageSlider
+          key={"imagesliderjournalsdsd"}
+          images={
+            renderDestinationMovie ? spreadData(renderDestinationMovie) : []
+          }
+          style={{
+            backgroundColor: "#f6f6f6",
+          }}
+          customSlide={({ index, item, style, width }) => (
+            <View key={"ky" + index}>
+              {item.map((dataX, indeks) => {
+                return (
+                  <Pressable
+                    key={"jrnla" + indeks}
+                    onPress={() => {
+                      navigation.navigate("CountryStack", {
+                        screen: "CityDetail",
+                        params: {
+                          data: {
+                            city_id: dataX.id,
+                            city_name: dataX.name,
+                          },
+                          exParam: true,
+                        },
+                      });
+                    }}
+                    style={{
+                      marginHorizontal: 15,
+                      marginBottom: 10,
+                      flexDirection: "row",
+                      borderRadius: 5,
+                      width: width - 30,
+                      height: width * 0.22,
+                      backgroundColor: "#fff",
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 1,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 1.41,
+                      elevation: 2,
+                      padding: 10,
+                    }}
+                  >
+                    <Image
+                      style={{
+                        height: "100%",
+                        width: 70,
+                        borderRadius: 5,
+                        marginRight: 10,
+                      }}
+                      source={dataX ? { uri: dataX.cover } : null}
+                    />
+                    <View style={{ flex: 1, justifyContent: "space-around" }}>
+                      <Text
+                        size="title"
+                        type="bold"
+                        numberOfLines={1}
+                        style={{ lineHeight: 20 }}
+                      >
+                        {dataX.name}
+                      </Text>
+                      <Text
+                        size="label"
+                        type="regular"
+                        numberOfLines={2}
+                        style={{ lineHeight: 20 }}
+                      >
+                        {dataX.description}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+          customButtons={(position, move) => (
+            <View
+              style={{
+                paddingTop: 10,
+                paddingBottom: 15,
+                alignContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              {(renderDestinationMovie
+                ? spreadData(renderDestinationMovie)
+                : []
+              ).map((image, index) => {
+                return (
+                  <TouchableHighlight
+                    key={"keys" + index}
+                    underlayColor="#f7f7f700"
+                  >
+                    <View
+                      style={{
+                        height: position === index ? 5 : 5,
+                        width: position === index ? 5 : 5,
+                        borderRadius: position === index ? 7 : 3,
+                        backgroundColor:
+                          position === index ? "#209fae" : "#d3d3d3",
+                        marginHorizontal: 3,
+                      }}
+                    ></View>
+                  </TouchableHighlight>
+                );
+              })}
+            </View>
+          )}
+        />
+        <View style={{ backgroundColor: "#fff", paddingVertical: 20 }}>
+          <View
+            style={{
+              marginHorizontal: 20,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <BlockDestination
+              height={20}
+              width={20}
+              style={{ marginLeft: -7 }}
+            />
+            <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
+              {t("insirationTravel")}
             </Text>
-            <Text size="description" type="regular">
-              {t("getVacation")}
-            </Text>
-          </ImageBackground>
-        ) : (
-          <View />
-          // <ImageBackground
-          //     source={bg_movielocation}
-          //     style={{
-          //         width: width,
-          //         height: HeaderHeight - 100,
-          //         justifyContent: "center",
-          //         padding: 20,
-          //     }}
-          //     resizeMode="cover"
-          // >
-          //     <Text size="label" style={{ marginBottom: 20 }}>
-          //         Get inspired #movielocation
-          //     </Text>
-          //     <Text size="h5" type="black">
-          //         Movie Location
-          //     </Text>
-          //     <Text size="label">
-          //         Explore Indonesia Movie Location
-          //     </Text>
-          // </ImageBackground>
-        )}
-      </View>
-      <View
+          </View>
+          <Text
+            size="label"
+            type="regular"
+            style={{
+              marginHorizontal: 20,
+              lineHeight: 20,
+              textAlign: "left",
+              marginTop: 15,
+            }}
+          >
+            {t("subInspirasiMovie")}
+          </Text>
+          {loadingfirst ? (
+            <View
+              style={{
+                height: 220,
+                width: Dimensions.get("screen").width - 30,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="#209fae" />
+            </View>
+          ) : null}
+          {movie_most_populer &&
+            movie_most_populer.length > 0 &&
+            movie_most_populer.map((item, index) => {
+              return (
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("TravelIdeaStack", {
+                      screen: "Detail_movie",
+                      params: {
+                        movie_id: item.id,
+                      },
+                    });
+                  }}
+                  key={"key detail" + index}
+                  style={{
+                    height: 220,
+                    width: Dimensions.get("screen").width - 30,
+                    backgroundColor: "#fff",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 1,
+                    },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 1.41,
+                    elevation: 2,
+                    marginHorizontal: 15,
+                    marginTop: 20,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Image
+                    source={item ? { uri: item?.cover } : null}
+                    style={{
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      height: "70%",
+                    }}
+                  />
+                  <View style={{ flex: 1, padding: 10 }}>
+                    <Text size="title" type="bold" style={{ lineHeight: 20 }}>
+                      {t("titleInspirasiMovie1")} '{item?.title}'
+                      {t("titleInspirasiMovie2")}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+        </View>
+      </Animated.ScrollView>
+
+      {/* Button Country */}
+      <Animated.View
         style={{
+          width: "100%",
+          height: 50,
+          justifyContent: "center",
           alignItems: "center",
-          alignSelf: "center",
-          top: HeaderHeight - 185,
           position: "absolute",
-          paddingTop: 30,
+          zIndex: 2,
+          position: "absolute",
+          marginTop:
+            Platform.OS == "ios"
+              ? Notch
+                ? HEADER_MAX_HEIGHT + normalize(20)
+                : HEADER_MAX_HEIGHT - normalize(5)
+              : deviceId == "LYA-L29"
+              ? HEADER_MAX_HEIGHT + normalize(10)
+              : HEADER_MAX_HEIGHT,
+          opacity: backOpacity,
+          transform: [{ translateY: shareTranslateY }],
         }}
       >
-        <Pressable
+        <TouchableOpacity
+          type="circle"
+          color="secondary"
+          style={{
+            position: "absolute",
+            // width: Dimensions.get("screen").width / 2.5,
+            // right: 20,
+            zIndex: 20,
+            alignSelf: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            backgroundColor: "#F6F6F6",
+            // height: 30,
+            // width: 100,
+            borderRadius: 17,
+            borderColor: "#d8d8d8",
+            borderWidth: 1,
+          }}
           onPress={() => setModelCountry(true)}
-          style={({ pressed }) => [
-            {
-              height: 50,
-              borderRadius: 25,
-              borderColor: "grey",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: pressed ? "#F6F6F7" : "white",
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 1.46,
-              elevation: 3,
-              flexDirection: "row",
-              marginTop: -22,
-            },
-          ]}
         >
           {loadingcountry ? (
             <ActivityIndicator
@@ -358,6 +591,7 @@ export default function MovieLocation({ navigation, route }) {
               style={{
                 marginRight: 10,
                 marginLeft: 20,
+                marginVertical: 10,
               }}
             >
               {selectedCountry?.name}
@@ -365,248 +599,181 @@ export default function MovieLocation({ navigation, route }) {
           )}
 
           <Select height={10} width={10} style={{ marginRight: 20 }} />
-        </Pressable>
-      </View>
+        </TouchableOpacity>
+      </Animated.View>
 
-      <View
+      {/* End Button Country */}
+      {/* Title Middle */}
+      <Animated.View
         style={{
-          paddingTop: 40,
-          paddingBottom: 20,
-          paddingHorizontal: 20,
-          backgroundColor: "#f6f6f6",
+          width: "100%",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          zIndex: 2,
+          position: "absolute",
+          marginTop:
+            Platform.OS == "ios"
+              ? Notch
+                ? HEADER_MAX_HEIGHT / 2
+                : HEADER_MAX_HEIGHT / 2
+              : deviceId == "LYA-L29"
+              ? HEADER_MAX_HEIGHT / 2
+              : HEADER_MAX_HEIGHT / 2,
+          opacity: backOpacity,
+          transform: [{ translateY: shareTranslateY }],
+        }}
+      >
+        <Text size="h5" type="black">
+          {t("filmLocation")}
+        </Text>
+        <Text size="description" type="regular">
+          {t("getVacation")}
+        </Text>
+      </Animated.View>
+
+      {/* End Title Middle */}
+
+      {/* Image Background */}
+
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          backgroundColor: "#209fae",
+          overflow: "hidden",
+          height: HEADER_MAX_HEIGHT - 5,
+          transform: [{ translateY: headerTranslateY }],
+          zIndex: 1,
+          top: SafeStatusBar,
+        }}
+      >
+        <Animated.Image
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            width: null,
+            height: HEADER_MAX_HEIGHT,
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslateY }],
+            zIndex: 1,
+          }}
+          source={
+            Banner?.banner_asset[0].filepath
+              ? { uri: Banner?.banner_asset[0].filepath }
+              : default_image
+          }
+        />
+      </Animated.View>
+
+      {/*End Image Background */}
+
+      {/* Title Header */}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: titleTranslateY }],
+          height: 50,
+          flex: 1,
+          alignItems: "flex-start",
+          justifyContent: "center",
+          position: "absolute",
+          left: 60,
+          right: 20,
+          zIndex: 999,
+          opacity: titleOpacity,
+          top: SafeStatusBar + 5,
         }}
       >
         <Text
-          size="title"
-          type="bold"
+          size="header"
           style={{
-            textAlign: "left",
+            color: "#fff",
           }}
+          numberOfLines={1}
         >
-          {t("textRecommendation")} {selectedCountry?.name}
+          {t("filmLocation")}
         </Text>
-        <Text
-          size="label"
-          type="regular"
+      </Animated.View>
+
+      {/*End Title Header */}
+
+      {/* Back Arrow One */}
+
+      <Animated.View
+        style={{
+          transform: [{ translateY: titleTranslateY }],
+          height: 100,
+          width: 100,
+          position: "absolute",
+          zIndex: 999,
+          top: SafeStatusBar,
+          opacity: backOpacity,
+        }}
+      >
+        <Pressable
+          onPress={() => navigation.goBack()}
           style={{
-            textAlign: "left",
-          }}
-        >
-          {t("subTitleMovie")}
-        </Text>
-      </View>
-      {loadingDestinationMovie ? (
-        <View
-          style={{
-            height: 220,
-            width: Dimensions.get("screen").width - 30,
+            marginTop: 10,
+            marginLeft: 15,
+            backgroundColor: "rgba(0,0,0, 0.5)",
+            borderRadius: 40,
+            height: 40,
+            width: 40,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
-      <ImageSlider
-        key={"imagesliderjournalsdsd"}
-        images={
-          renderDestinationMovie ? spreadData(renderDestinationMovie) : []
-        }
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Pressable>
+      </Animated.View>
+
+      {/* End Back Arrow One */}
+
+      {/* Back Arrow Two */}
+
+      <Animated.View
         style={{
-          backgroundColor: "#f6f6f6",
+          transform: [{ translateY: titleTranslateY }],
+          height: 100,
+          width: 100,
+          position: "absolute",
+          zIndex: 999,
+          top: SafeStatusBar,
         }}
-        customSlide={({ index, item, style, width }) => (
-          <View key={"ky" + index}>
-            {item.map((dataX, indeks) => {
-              return (
-                <Pressable
-                  key={"jrnla" + indeks}
-                  onPress={() => {
-                    navigation.navigate("CountryStack", {
-                      screen: "CityDetail",
-                      params: {
-                        data: {
-                          city_id: dataX.id,
-                          city_name: dataX.name,
-                        },
-                        exParam: true,
-                      },
-                    });
-                  }}
-                  style={{
-                    marginHorizontal: 15,
-                    marginBottom: 10,
-                    flexDirection: "row",
-                    borderRadius: 5,
-                    width: width - 30,
-                    height: width * 0.22,
-                    backgroundColor: "#fff",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 1,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 1.41,
-                    elevation: 2,
-                    padding: 10,
-                  }}
-                >
-                  <Image
-                    style={{
-                      height: "100%",
-                      width: 70,
-                      borderRadius: 5,
-                      marginRight: 10,
-                    }}
-                    source={dataX ? { uri: dataX.cover } : null}
-                  />
-                  <View style={{ flex: 1, justifyContent: "space-around" }}>
-                    <Text
-                      size="title"
-                      type="bold"
-                      numberOfLines={1}
-                      style={{ lineHeight: 20 }}
-                    >
-                      {dataX.name}
-                    </Text>
-                    <Text
-                      size="label"
-                      type="regular"
-                      numberOfLines={2}
-                      style={{ lineHeight: 20 }}
-                    >
-                      {dataX.description}
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-        customButtons={(position, move) => (
-          <View
-            style={{
-              paddingTop: 10,
-              paddingBottom: 15,
-              alignContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            {(renderDestinationMovie
-              ? spreadData(renderDestinationMovie)
-              : []
-            ).map((image, index) => {
-              return (
-                <TouchableHighlight
-                  key={"keys" + index}
-                  underlayColor="#f7f7f700"
-                >
-                  <View
-                    style={{
-                      height: position === index ? 5 : 5,
-                      width: position === index ? 5 : 5,
-                      borderRadius: position === index ? 7 : 3,
-                      backgroundColor:
-                        position === index ? "#209fae" : "#d3d3d3",
-                      marginHorizontal: 3,
-                    }}
-                  ></View>
-                </TouchableHighlight>
-              );
-            })}
-          </View>
-        )}
-      />
-      <View style={{ backgroundColor: "#fff", paddingVertical: 20 }}>
-        <View
+      >
+        <Pressable
+          onPress={() => navigation.goBack()}
           style={{
-            marginHorizontal: 20,
-            flexDirection: "row",
+            marginTop: 10,
+            marginLeft: 15,
+            borderRadius: 40,
+            height: 40,
+            width: 40,
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <BlockDestination height={20} width={20} style={{ marginLeft: -7 }} />
-          <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
-            {t("insirationTravel")}
-          </Text>
-        </View>
-        <Text
-          size="label"
-          type="regular"
-          style={{
-            marginHorizontal: 20,
-            lineHeight: 20,
-            textAlign: "left",
-            marginTop: 15,
-          }}
-        >
-          {t("subInspirasiMovie")}
-        </Text>
-        {loadingfirst ? (
-          <View
-            style={{
-              height: 220,
-              width: Dimensions.get("screen").width - 30,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ActivityIndicator size="large" color="#209fae" />
-          </View>
-        ) : null}
-        {movie_most_populer &&
-          movie_most_populer.length > 0 &&
-          movie_most_populer.map((item, index) => {
-            return (
-              <Pressable
-                onPress={() => {
-                  navigation.navigate("TravelIdeaStack", {
-                    screen: "Detail_movie",
-                    params: {
-                      movie_id: item.id,
-                    },
-                  });
-                }}
-                key={"key detail" + index}
-                style={{
-                  height: 220,
-                  width: Dimensions.get("screen").width - 30,
-                  backgroundColor: "#fff",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 1,
-                  },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 1.41,
-                  elevation: 2,
-                  marginHorizontal: 15,
-                  marginTop: 20,
-                  borderRadius: 5,
-                }}
-              >
-                <Image
-                  source={item ? { uri: item?.cover } : null}
-                  style={{
-                    borderTopLeftRadius: 5,
-                    borderTopRightRadius: 5,
-                    height: "70%",
-                  }}
-                />
-                <View style={{ flex: 1, padding: 10 }}>
-                  <Text size="title" type="bold" style={{ lineHeight: 20 }}>
-                    {t("titleInspirasiMovie1")} '{item?.title}'
-                    {t("titleInspirasiMovie2")}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-      </View>
-    </ScrollView>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Pressable>
+      </Animated.View>
+
+      {/* End Back Arrow Two */}
+    </View>
   );
 }
 

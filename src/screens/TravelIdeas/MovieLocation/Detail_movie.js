@@ -39,6 +39,7 @@ import {
   FunImage,
   shareAction,
   CopyLink,
+  StatusBar as Satbar,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
@@ -47,13 +48,15 @@ import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../../graphQL/Mutation/unliked";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
 const HeaderHeight = width - 70;
+const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
 
@@ -280,8 +283,8 @@ export default function Detail_movie(props) {
     }
   };
 
-  const HEADER_MAX_HEIGHT = 240;
-  const HEADER_MIN_HEIGHT = 50;
+  const HEADER_MAX_HEIGHT = normalize(240);
+  const HEADER_MIN_HEIGHT = normalize(50);
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   let [scrollY] = useState(new Animated.Value(0));
@@ -335,8 +338,6 @@ export default function Detail_movie(props) {
     extrapolate: "clamp",
   });
 
-  console.log("movie_byid", movie_byid);
-
   return (
     <View
       style={{
@@ -344,10 +345,11 @@ export default function Detail_movie(props) {
         backgroundColor: "#fff",
       }}
     >
+      <Satbar backgroundColor="#14646E" />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT + 50,
+          paddingTop: HEADER_MAX_HEIGHT + normalize(30),
           backgroundColor: "#fff",
           paddingBottom: 20,
         }}
@@ -876,10 +878,12 @@ export default function Detail_movie(props) {
           position: "absolute",
           marginTop:
             Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT + 70
+              ? Notch
+                ? HEADER_MAX_HEIGHT + normalize(50)
+                : HEADER_MAX_HEIGHT + normalize(30)
               : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + 30
-              : HEADER_MAX_HEIGHT + 60,
+              ? HEADER_MAX_HEIGHT + normalize(20)
+              : HEADER_MAX_HEIGHT + normalize(30),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}
@@ -918,7 +922,6 @@ export default function Detail_movie(props) {
         pointerEvents="none"
         style={{
           position: "absolute",
-          // top: 0,
           left: 0,
           right: 0,
           backgroundColor: "#209fae",
