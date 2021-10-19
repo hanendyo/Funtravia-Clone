@@ -1153,7 +1153,7 @@ export default function OtherProfile(props) {
 
           <View
             style={{
-              marginTop: 15,
+              marginVertical: 10,
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
               // borderWidth: 1,
@@ -1165,7 +1165,7 @@ export default function OtherProfile(props) {
               }}
               type="regular"
               size="description"
-              style={{ textAlign: "left" }}
+              style={{ textAlign: "center" }}
             >
               {data.bio ? data.bio : ""}
             </Text>

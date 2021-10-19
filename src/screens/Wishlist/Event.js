@@ -608,217 +608,241 @@ export default function Event({
           <ActivityIndicator animating={loading} size="large" color="#209fae" />
         </View>
       ) : (
-        <FlatList
-          contentContainerStyle={{
-            marginTop: 15,
-            justifyContent: "space-evenly",
-            paddingHorizontal: 15,
-            paddingBottom: 20,
-          }}
-          horizontal={false}
-          data={dataEv}
-          // renderItem={_renderItem}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => eventdetail(item)}
+        <View>
+          {dataEv.length !== 0 ? (
+            <FlatList
+              contentContainerStyle={{
+                marginTop: 15,
+                justifyContent: "space-evenly",
+                paddingHorizontal: 15,
+                paddingBottom: 20,
+              }}
+              horizontal={false}
+              data={dataEv}
+              // renderItem={_renderItem}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => eventdetail(item)}
+                  style={{
+                    // justifyContent: "center",
+                    width: (Dimensions.get("screen").width - 45) / 2,
+                    height: 280,
+                    flexDirection: "column",
+                    backgroundColor: "#FFF",
+                    shadowColor: "#FFF",
+                    shadowOffset: {
+                      width: 0,
+                      height: 5,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 6.27,
+                    elevation: 6,
+                    marginRight: 15,
+                    borderRadius: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 15,
+                      left: 10,
+                      right: 10,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignContent: "center",
+                      zIndex: 9999,
+                    }}
+                  >
+                    <View
+                      style={{
+                        // bottom: (9),
+                        height: 21,
+                        minWidth: 60,
+                        borderRadius: 11,
+                        alignSelf: "center",
+                        justifyContent: "center",
+                        backgroundColor: "rgba(226, 236, 248, 0.85)",
+                        // paddingHorizontal: 10,
+                      }}
+                    >
+                      <Text
+                        size="description"
+                        style={{
+                          textAlign: "center",
+                          marginBottom: 2,
+                        }}
+                      >
+                        {item.category.name}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        height: 26,
+                        width: 26,
+                        borderRadius: 50,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        alignContent: "center",
+                        justifyContent: "center",
+                        backgroundColor: "rgba(226, 236, 248, 0.85)",
+                        // zIndex: 999,
+                      }}
+                    >
+                      {item.liked === false ? (
+                        <TouchableOpacity
+                          style={{
+                            height: 26,
+                            width: 26,
+                            borderRadius: 50,
+                            alignSelf: "center",
+                            alignItems: "center",
+                            alignContent: "center",
+                            justifyContent: "center",
+
+                            zIndex: 9999,
+                          }}
+                          onPress={() => _liked(item.id)}
+                        >
+                          <LikeEmpty height={13} width={13} />
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          style={{
+                            height: 26,
+                            width: 26,
+                            borderRadius: 50,
+                            alignSelf: "center",
+                            alignItems: "center",
+                            alignContent: "center",
+                            justifyContent: "center",
+
+                            zIndex: 9999,
+                          }}
+                          onPress={() => _unliked(item.id)}
+                        >
+                          <LikeRed height={13} width={13} />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => eventdetail(item)}
+                    style={{
+                      height: Dimensions.get("window").width * 0.47 - 16,
+                    }}
+                  >
+                    <ImageBackground
+                      key={item.id}
+                      source={
+                        item.images.length
+                          ? { uri: item.images[0].image }
+                          : default_image
+                      }
+                      style={[styles.ImageView]}
+                      imageStyle={[styles.Image]}
+                    ></ImageBackground>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "column",
+                      justifyContent: "space-around",
+                      height: 230,
+                      marginVertical: 5,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    <Text
+                      onPress={() => eventdetail(item)}
+                      size="label"
+                      type="bold"
+                      numberOfLines={2}
+                    >
+                      {item.name}
+                    </Text>
+                    <View
+                      style={{
+                        height: "50%",
+                        flexDirection: "column",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          width: "100%",
+                          marginBottom: 3,
+                        }}
+                      >
+                        <Kalenderhijau width={15} height={15} />
+                        <Text
+                          size="description"
+                          style={{
+                            paddingRight: 20,
+                            width: "100%",
+                            marginLeft: 5,
+                          }}
+                        >
+                          {dateFormatBetween(item.start_date, item.end_date)}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          // flex: 1,
+                          flexDirection: "row",
+                          width: "100%",
+                          borderColor: "grey",
+                        }}
+                      >
+                        <PinHijau width={15} height={15} />
+                        <Text
+                          size="description"
+                          style={{
+                            width: "100%",
+                            marginLeft: 5,
+                          }}
+                        >
+                          {item.city.name}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+              )}
+              numColumns={numColumns}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              extraData={selected}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => Refresh()}
+                />
+              }
+            />
+          ) : (
+            <View
               style={{
-                // justifyContent: "center",
-                width: (Dimensions.get("screen").width - 45) / 2,
-                height: 280,
-                flexDirection: "column",
-                backgroundColor: "#FFF",
-                shadowColor: "#FFF",
-                shadowOffset: {
-                  width: 0,
-                  height: 5,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
-                marginRight: 15,
-                borderRadius: 5,
+                flex: 1,
+                width: Dimensions.get("screen").width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginHorizontal: 15,
               }}
             >
-              <View
-                style={{
-                  position: "absolute",
-                  top: 15,
-                  left: 10,
-                  right: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignContent: "center",
-                  zIndex: 9999,
-                }}
-              >
-                <View
-                  style={{
-                    // bottom: (9),
-                    height: 21,
-                    minWidth: 60,
-                    borderRadius: 11,
-                    alignSelf: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(226, 236, 248, 0.85)",
-                    // paddingHorizontal: 10,
-                  }}
-                >
-                  <Text
-                    size="description"
-                    style={{
-                      textAlign: "center",
-                      marginBottom: 2,
-                    }}
-                  >
-                    {item.category.name}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    height: 26,
-                    width: 26,
-                    borderRadius: 50,
-                    alignSelf: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(226, 236, 248, 0.85)",
-                    // zIndex: 999,
-                  }}
-                >
-                  {item.liked === false ? (
-                    <TouchableOpacity
-                      style={{
-                        height: 26,
-                        width: 26,
-                        borderRadius: 50,
-                        alignSelf: "center",
-                        alignItems: "center",
-                        alignContent: "center",
-                        justifyContent: "center",
-
-                        zIndex: 9999,
-                      }}
-                      onPress={() => _liked(item.id)}
-                    >
-                      <LikeEmpty height={13} width={13} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      style={{
-                        height: 26,
-                        width: 26,
-                        borderRadius: 50,
-                        alignSelf: "center",
-                        alignItems: "center",
-                        alignContent: "center",
-                        justifyContent: "center",
-
-                        zIndex: 9999,
-                      }}
-                      onPress={() => _unliked(item.id)}
-                    >
-                      <LikeRed height={13} width={13} />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => eventdetail(item)}
-                style={{
-                  height: Dimensions.get("window").width * 0.47 - 16,
-                }}
-              >
-                <ImageBackground
-                  key={item.id}
-                  source={
-                    item.images.length
-                      ? { uri: item.images[0].image }
-                      : default_image
-                  }
-                  style={[styles.ImageView]}
-                  imageStyle={[styles.Image]}
-                ></ImageBackground>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "column",
-                  justifyContent: "space-around",
-                  height: 230,
-                  marginVertical: 5,
-                  marginHorizontal: 10,
-                }}
-              >
-                <Text
-                  onPress={() => eventdetail(item)}
-                  size="label"
-                  type="bold"
-                  numberOfLines={2}
-                >
-                  {item.name}
-                </Text>
-                <View
-                  style={{
-                    height: "50%",
-                    flexDirection: "column",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      marginBottom: 3,
-                    }}
-                  >
-                    <Kalenderhijau width={15} height={15} />
-                    <Text
-                      size="description"
-                      style={{
-                        paddingRight: 20,
-                        width: "100%",
-                        marginLeft: 5,
-                      }}
-                    >
-                      {dateFormatBetween(item.start_date, item.end_date)}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      // flex: 1,
-                      flexDirection: "row",
-                      width: "100%",
-                      borderColor: "grey",
-                    }}
-                  >
-                    <PinHijau width={15} height={15} />
-                    <Text
-                      size="description"
-                      style={{
-                        width: "100%",
-                        marginLeft: 5,
-                      }}
-                    >
-                      {item.city.name}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </Pressable>
+              {loading ? (
+                <ActivityIndicator
+                  animating={loading}
+                  size="large"
+                  color="#209fae"
+                />
+              ) : (
+                <Text>{t("noData")}</Text>
+              )}
+            </View>
           )}
-          numColumns={numColumns}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          extraData={selected}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => Refresh()}
-            />
-          }
-        />
+        </View>
       )}
     </View>
   );

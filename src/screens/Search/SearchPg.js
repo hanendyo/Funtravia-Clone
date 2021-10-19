@@ -1002,7 +1002,7 @@ export default function SearchPg(props, { navigation, route }) {
                   size="label"
                   type={active_src == "location" ? "bold" : "bold"}
                   style={{
-                    color: active_src == "location" ? "#209FAE" : "#D1D1D1",
+                    color: active_src == "location" ? "#209FAE" : "#464646",
                   }}
                 >
                   {t("location")}
@@ -1029,7 +1029,7 @@ export default function SearchPg(props, { navigation, route }) {
                   size="label"
                   type={active_src == "destination" ? "bold" : "bold"}
                   style={{
-                    color: active_src == "destination" ? "#209FAE" : "#D1D1D1",
+                    color: active_src == "destination" ? "#209FAE" : "#464646",
                   }}
                 >
                   {t("destination")}
@@ -1056,7 +1056,7 @@ export default function SearchPg(props, { navigation, route }) {
                   size="label"
                   type={active_src == "people" ? "bold" : "bold"}
                   style={{
-                    color: active_src == "people" ? "#209FAE" : "#D1D1D1",
+                    color: active_src == "people" ? "#209FAE" : "#464646",
                   }}
                 >
                   {t("people")}
@@ -1086,7 +1086,7 @@ export default function SearchPg(props, { navigation, route }) {
                   // }
                   type="bold"
                   style={{
-                    color: active_src == "event" ? "#209FAE" : "#D1D1D1",
+                    color: active_src == "event" ? "#209FAE" : "#464646",
                   }}
                 >
                   {t("event")}

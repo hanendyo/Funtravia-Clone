@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import FollowerQuery from "../../graphQL/Query/Profile/Follower";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
-import { Text, Button } from "../../component";
+import { Text, Button, Truncate } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -219,8 +219,8 @@ export default function Follower(props) {
       <Loading show={loadin} />
       <FlatList
         contentContainerStyle={{
-          paddingVertical: 10,
           justifyContent: "space-evenly",
+          marginTop: 5,
         }}
         data={data}
         renderItem={({ item, index }) => (
@@ -229,10 +229,12 @@ export default function Follower(props) {
               width: "100%",
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
+              alignItems: "flex-start",
               alignContent: "center",
-              paddingHorizontal: 20,
-              paddingVertical: 10,
+              paddingHorizontal: 15,
+              paddingVertical: 15,
+              borderBottomWidth: 1,
+              borderBottomColor: "#F6F6F6",
             }}
           >
             <TouchableOpacity
@@ -260,45 +262,35 @@ export default function Follower(props) {
                 }
                 style={{
                   resizeMode: "cover",
-                  height: 50,
-                  width: 50,
-                  borderRadius: 25,
+                  height: 55,
+                  width: 55,
+                  borderRadius: 40,
                 }}
               />
               <View
                 style={{
                   marginLeft: 20,
                   justifyContent: "center",
+                  paddingVertical: 1,
                 }}
               >
                 {item.last_name !== null ? (
-                  <Text size="small" type="regular">
+                  <Text size="small" type="bold" style={{ marginBottom: 5 }}>
                     {item.first_name + "" + item.last_name}
                   </Text>
                 ) : (
-                  <Text size="small" type="regular">
+                  <Text size="small" type="regular" style={{ marginBottom: 5 }}>
                     {item.first_name}
                   </Text>
                 )}
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontFamily: "lato-light",
-                  }}
-                >
+                <Text size="small" type="regular" style={{ marginBottom: 5 }}>
                   {`@${item.username}`}
                 </Text>
-                {/* <Text
-                        style={{
-                            fontSize: 10,
-                            fontFamily:
-                                "lato-light",
-                        }}
-                    >
-                        {item.bio
-                            ? item.bio
-                            : "Funtravia"}
-                    </Text> */}
+                {item?.bio ? (
+                  <Text type="regular" size="small">
+                    <Truncate text={item?.bio ? item.bio : ""} length={40} />
+                  </Text>
+                ) : null}
               </View>
             </TouchableOpacity>
 
