@@ -2842,7 +2842,7 @@ const Index = (props) => {
           top:
             deviceId == "LYA-L29"
               ? normalize(layoutImage) + normalize(40)
-              : normalize(layoutImage) + normalize(20),
+              : normalize(layoutImage) + normalize(10),
           transform: [{ translateY: yButtonLikeShare }],
           right: 20,
           zIndex: 9999,
@@ -2931,7 +2931,7 @@ const Index = (props) => {
       <Animated.View
         style={{
           position: "absolute",
-          top:
+          marginTop:
             Platform.OS == "ios"
               ? Notch
                 ? normalize(layoutImage) +
@@ -2950,8 +2950,7 @@ const Index = (props) => {
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
-                normalize(15),
-
+                normalize(5),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
@@ -3553,8 +3552,8 @@ const styles = StyleSheet.create({
   // },
   //   label: { fontSize: 14, color: "#222" },
   indicator: { backgroundColor: "#209FAE" },
-  label: { fontSize: 14, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 14, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
 });
 
 export default Index;

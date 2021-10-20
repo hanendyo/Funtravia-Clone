@@ -692,7 +692,7 @@ export default function MovieLocation({ navigation, route }) {
         }}
       >
         <Text
-          size="header"
+          size="title"
           style={{
             color: "#fff",
           }}

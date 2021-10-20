@@ -21,8 +21,8 @@ import {
   PinHijau,
   Calendargrey,
   User,
-  TravelAlbum,
-  TravelStories,
+  TravelAlbumdis,
+  TravelStoriesdis,
   Xgray,
   Lock,
   World,
@@ -894,9 +894,10 @@ export default function ActivePlan({
                 paddingVertical: 3,
                 height: "25%",
                 flexDirection: "row",
-                backgroundColor: "#FFFFFF",
+                // backgroundColor: "#FFFFFF",
                 borderBottomLeftRadius: 5,
                 borderBottomRightRadius: 5,
+                backgroundColor: "#f6f6f6",
                 justifyContent: "space-between",
               }}
             >
@@ -911,12 +912,12 @@ export default function ActivePlan({
                   paddingVertical: 5,
                 }}
               >
-                <TravelAlbum
+                <TravelAlbumdis
                   height={20}
                   width={20}
                   style={{ marginRight: 5 }}
                 />
-                <Text type="bold" style={{ color: "#209fae", fontSize: 12 }}>
+                <Text type="bold" style={{ color: "#d1d1d1", fontSize: 12 }}>
                   Travel Album
                 </Text>
               </View>
@@ -928,12 +929,12 @@ export default function ActivePlan({
                   justifyContent: "center",
                 }}
               >
-                <TravelStories
+                <TravelStoriesdis
                   height={20}
                   width={20}
                   style={{ marginRight: 5 }}
                 />
-                <Text type="bold" style={{ color: "#209fae", fontSize: 12 }}>
+                <Text type="bold" style={{ color: "#d1d1d1", fontSize: 12 }}>
                   Travel Stories
                 </Text>
               </View>
