@@ -51,7 +51,7 @@ export default function PopularDestination({ props }) {
   useEffect(() => {
     setTimeout(() => {
       setTemp(true);
-    }, 5000);
+    }, 10000);
   });
 
   return (

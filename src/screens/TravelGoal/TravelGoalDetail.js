@@ -833,11 +833,11 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 5,
+          top: SafeStatusBar + 8,
         }}
       >
         <Text
-          size="header"
+          size="title"
           style={{
             color: "#fff",
           }}

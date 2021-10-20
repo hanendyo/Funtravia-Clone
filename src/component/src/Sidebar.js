@@ -105,7 +105,7 @@ export default function Sidebar({ show, Data, setClose, props }) {
                 padding: 10,
               }}
               onPress={() => {
-                setClose(), props.navigation.navigate("Home");
+                setClose(), props.navigation.navigate("HomeScreen");
               }}
             >
               <Home height={15} width={15} />

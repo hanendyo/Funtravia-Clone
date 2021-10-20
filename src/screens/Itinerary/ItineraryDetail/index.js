@@ -276,6 +276,7 @@ export default function ItineraryDetail(props) {
         Authorization: `Bearer ${token}`,
       },
     },
+    pollInterval: 500,
     variables: { id: itineraryId },
   });
 

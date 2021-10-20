@@ -24,7 +24,6 @@ export default function ImageBackground({
   let [loading, setLoading] = useState(false);
   // let [timeout, setTimeOut] = useState(false);
   let [progress, setProgress] = useState();
-  // console.log(progress);
   let [temp, setTemp] = useState([]);
   let isUri = source.uri ? true : false;
   let uri;
@@ -50,7 +49,6 @@ export default function ImageBackground({
           if (!exists && CACHE.indexOf(name) === -1) {
             setLoading(true);
             CACHE.push(name);
-            // console.log("CACHE FILE", name);
             RNFS.downloadFile({
               fromUrl: uri,
               toFile: path,
@@ -64,13 +62,11 @@ export default function ImageBackground({
                 // console.log("Response written ===\n\n");
                 let progressPercent =
                   (res.bytesWritten / res.contentLength) * 100; // to calculate in percentage
-                console.log("progress", progressPercent);
                 setProgress(progressPercent.toString());
                 // item.downloadProgress = progressPercent;
                 // console.log("res", res);
               },
             }).promise.then((res) => {
-              console.log(res);
               setTimeout(() => {
                 setLoading(false);
                 // setTimeOut(true);

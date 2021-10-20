@@ -122,6 +122,7 @@ export default function TripPlaning(props) {
     { data, loading: loadingdata, error: errordata },
   ] = useLazyQuery(ListItinerary, {
     fetchPolicy: "network-only",
+    pollInterval: 500,
     context: {
       headers: {
         "Content-Type": "application/json",

@@ -967,11 +967,11 @@ export default function Detail_movie(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 5,
+          top: SafeStatusBar + 8,
         }}
       >
         <Text
-          size="header"
+          size="title"
           style={{
             color: "#fff",
           }}
