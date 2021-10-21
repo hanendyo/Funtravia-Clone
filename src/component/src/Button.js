@@ -238,8 +238,8 @@ const fontColor = {
 };
 
 const fontSize = StyleSheet.create({
-  small: { fontSize: normalize(10), fontFamily: "Lato-Bold" },
-  medium: { fontSize: normalize(12), fontFamily: "Lato-Bold" },
-  large: { fontSize: normalize(14), fontFamily: "Lato-Bold" },
+  small: { fontSize: normalize(12), fontFamily: "Lato-Bold" },
+  medium: { fontSize: normalize(14), fontFamily: "Lato-Bold" },
+  large: { fontSize: normalize(16), fontFamily: "Lato-Bold" },
   small_light: { fontSize: normalize(10), fontFamily: "Lato-Light" },
 });

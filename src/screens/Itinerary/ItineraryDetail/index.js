@@ -72,6 +72,7 @@ import {
   AlbumIconGray,
   TravelStoriesdis,
   TravelAlbumdis,
+  BackHandler,
 } from "../../../assets/svg";
 import {
   Button,
@@ -138,7 +139,6 @@ const childrenWidth = width - 40;
 const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
-  console.log("pros", props);
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * 0.3

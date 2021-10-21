@@ -13,7 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
 import { mascot_black, logo_google, logo_facebook } from "../../assets/png";
-import { EyeActive, EyeNonactive } from "../../assets/svg";
+import { Arrowbackblack, EyeActive, EyeNonactive } from "../../assets/svg";
 import Email from "../../graphQL/Mutation/Register/Email";
 import {
   Text,
@@ -28,6 +28,47 @@ import { TextInput } from "react-native";
 
 export default function Register({ navigation }) {
   const { t, i18n } = useTranslation();
+  const HeaderComponent = {
+    headerShown: true,
+    title: "",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: "",
+    headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#fff",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      fontFamily: "Lato-Bold",
+      fontSize: 14,
+      color: "white",
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+
+      marginLeft: 10,
+    },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
+        ) : (
+          <Arrowbackblack height={20} width={20}></Arrowbackblack>
+        )}
+      </Button>
+    ),
+  };
   let [region, setRegion] = useState("+62");
   let [selector, setSelector] = useState(false);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
@@ -172,22 +213,20 @@ export default function Register({ navigation }) {
     headerTransparent: true,
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      BackHandler.addEventListener(navigation.goBack());
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    // return () => backHandler.remove();
-  });
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
 
   useEffect(() => {
-    navigation.setOptions(NavigationComponent);
+    navigation.setOptions(HeaderComponent);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
+
+  useEffect(() => {
+    // navigation.setOptions(NavigationComponent);
     AsyncStorage.setItem("isFirst", "false");
   }, []);
 
@@ -195,6 +234,7 @@ export default function Register({ navigation }) {
     <View
       style={{
         flex: 1,
+        backgroundColor: "#fff",
       }}
       // behavior={Platform.OS === "ios" ? "padding" : null}
       // keyboardVerticalOffset={30}
@@ -218,7 +258,7 @@ export default function Register({ navigation }) {
           customStyle={{
             height: 180,
             width: 180,
-            marginTop: Platform.OS === "ios" ? 30 : 50,
+            marginTop: Platform.OS === "ios" ? 30 : 20,
             alignSelf: "center",
           }}
         />

@@ -755,7 +755,8 @@
   "connectedAccount": "Akun Terkait",
   "connect": "Hubungkan",
   "disConnect": "Lepaskan",
-  "profilePost": "Postingan",  
+  "profilePost": "Postingan",
   "startDate": "Tanggal awal",
-  "endDate": "Tanggal akhir"
+  "endDate": "Tanggal akhir",
+  "createdBy": "Ciptakan oleh"
 }

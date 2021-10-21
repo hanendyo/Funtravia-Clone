@@ -10,6 +10,7 @@ import {
   StatusBar,
   Modal,
   Platform,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -255,6 +256,17 @@ export default function DetailJournal(props) {
     await fetchData();
     // await fetchDataComment();
   };
+
+  // const backAction = () => {
+  //   props.navigation.goBack();
+  //   return true;
+  // };
+
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, []);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -594,7 +606,7 @@ export default function DetailJournal(props) {
               alignItems: "center",
               marginHorizontal: 20,
               marginVertical: 20,
-              width: Dimensions.get("window").width * 0.9,
+              width: Dimensions.get("window").width - 40,
               justifyContent: "space-between",
             }}
           >
@@ -703,17 +715,23 @@ export default function DetailJournal(props) {
               </TouchableOpacity>
             ) : null}
           </View>
-          <View style={{ marginHorizontal: 20 }}>
-            <View>
+          <View
+            style={{
+              marginHorizontal: 20,
+              width: Dimensions.get("screen").width - 40,
+            }}
+          >
+            <View style={{ marginBottom: 3 }}>
               <Text type={"bold"} style={{ lineHeight: 26, fontSize: 20 }}>
                 {data.journal_byid ? data.journal_byid.title : "Title"}
               </Text>
             </View>
-            <View style={{ marginTop: 10, marginBottom: 7 }}>
+            <View style={{ marginBottom: 10 }}>
               <View
                 style={{
                   justifyContent: "space-between",
                   flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
                 {data && data.journal_byid && data.journal_byid.created_at ? (
@@ -747,17 +765,17 @@ export default function DetailJournal(props) {
           {data.journal_byid && data.journal_byid.article ? (
             <>
               {data.journal_byid.article.map((item, index) => {
+                console.log("item", item);
                 if (item.type === "image") {
                   return (
                     <View key={index}>
-                      <View style={{ marginVertical: 10 }}>
+                      <View style={{}}>
                         {item.title ? (
                           <View
                             style={{
-                              marginTop: 10,
                               marginBottom: 10,
-                              alignSelf: "center",
-                              width: Dimensions.get("window").width * 0.9,
+                              width: Dimensions.get("window").width - 40,
+                              marginHorizontal: 20,
                             }}
                           >
                             <Text
@@ -775,18 +793,18 @@ export default function DetailJournal(props) {
                             style={{
                               width: Dimensions.get("window").width,
                               height: Dimensions.get("window").height * 0.3,
-                              marginTop: item.title ? 20 : 0,
-                              // borderWidth: 1,
+                              marginBottom: 5,
                             }}
                           />
                         ) : null}
                       </View>
-
                       {item.text ? (
                         <View
                           style={{
                             alignSelf: "center",
-                            width: Dimensions.get("window").width * 0.9,
+                            width: Dimensions.get("window").width - 40,
+                            marginHorizontal: 20,
+                            marginBottom: 10,
                           }}
                         >
                           <Text
@@ -807,34 +825,37 @@ export default function DetailJournal(props) {
                 } else {
                   return (
                     <View key={index}>
+                      {item?.title ? (
+                        <View
+                          style={{
+                            width: Dimensions.get("screen").width - 40,
+                            marginHorizontal: 20,
+                            marginBottom: 5,
+                          }}
+                        >
+                          <Text size="readable" type="bold">
+                            {item?.title}
+                          </Text>
+                        </View>
+                      ) : null}
                       {item.text ? (
                         <View
                           style={{
-                            alignSelf: "center",
-                            width: Dimensions.get("window").width * 0.9,
+                            width: Dimensions.get("window").width - 40,
+                            marginHorizontal: 20,
+                            marginBottom: 10,
                           }}
                         >
-                          <View
+                          <Text
+                            size="readable"
+                            type="regular"
                             style={{
-                              marginVertical: 25,
-                              alignSelf: "center",
-                              width: Dimensions.get("window").width * 0.9,
+                              textAlign: "left",
+                              color: "#464646",
                             }}
                           >
-                            <Text
-                              // size="readable"
-                              size="title"
-                              type="regular"
-                              style={{
-                                marginTop: item.title ? 20 : 0,
-                                lineHeight: 20,
-                                textAlign: "left",
-                                color: "#464646",
-                              }}
-                            >
-                              {item.text ? item.text : null}
-                            </Text>
-                          </View>
+                            {item.text ? item.text : null}
+                          </Text>
                         </View>
                       ) : null}
                     </View>
@@ -858,7 +879,7 @@ export default function DetailJournal(props) {
           >
             <View style={{ flexDirection: "row" }}>
               <Text size={"label"} type={"regular"}>
-                Created By
+                {t("createdBy")}
               </Text>
               <Text
                 size={"label"}
@@ -1094,9 +1115,11 @@ export default function DetailJournal(props) {
           ) : (
             <View
               style={{
-                width: Dimensions.get("window").width * 0.9,
+                width: Dimensions.get("window").width - 40,
                 marginHorizontal: 20,
                 alignItems: "center",
+                marginBottom: 20,
+                marginTop: 10,
               }}
             >
               <Text>{`${t("NoComment")}`}</Text>

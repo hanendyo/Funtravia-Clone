@@ -47,18 +47,44 @@ export default function Text({
   );
 }
 
+// const fontSize = StyleSheet.create({
+//   small: { fontSize: 10 },
+//   description: { fontSize: 12 },
+//   readable: { fontSize: 14 },
+//   label: { fontSize: 14 },
+//   title: { fontSize: 16 },
+//   header: { fontSize: 18 },
+//   h5: { fontSize: 20 },
+//   h4: { fontSize: 26 },
+//   h3: { fontSize: 32 },
+//   h2: { fontSize: 44 },
+//   h1: { fontSize: 60 },
+// });
+// const fontSize = StyleSheet.create({
+//   small: { fontSize: normalize(10) },
+//   description: { fontSize: normalize(12) },
+//   readable: { fontSize: normalize(14) },
+//   label: { fontSize: normalize(14) },
+//   title: { fontSize: normalize(16) },
+//   header: { fontSize: normalize(18) },
+//   h5: { fontSize: normalize(20) },
+//   h4: { fontSize: normalize(26) },
+//   h3: { fontSize: normalize(32) },
+//   h2: { fontSize: normalize(44) },
+//   h1: { fontSize: normalize(60) },
+// });
 const fontSize = StyleSheet.create({
-  small: { fontSize: normalize(10) },
-  description: { fontSize: normalize(12) },
-  readable: { fontSize: normalize(14) },
-  label: { fontSize: normalize(14) },
-  title: { fontSize: normalize(16) },
-  header: { fontSize: normalize(18) },
-  h5: { fontSize: normalize(20) },
-  h4: { fontSize: normalize(26) },
-  h3: { fontSize: normalize(32) },
-  h2: { fontSize: normalize(44) },
-  h1: { fontSize: normalize(60) },
+  small: { fontSize: normalize(12) },
+  description: { fontSize: normalize(14) },
+  readable: { fontSize: 16, lineHeight: normalize(25) },
+  label: { fontSize: normalize(16) },
+  title: { fontSize: normalize(18) },
+  header: { fontSize: normalize(20) },
+  h5: { fontSize: normalize(22) },
+  h4: { fontSize: normalize(28) },
+  h3: { fontSize: normalize(34) },
+  h2: { fontSize: normalize(46) },
+  h1: { fontSize: normalize(62) },
 });
 
 const fontType = StyleSheet.create({

@@ -35,6 +35,7 @@ export default function MyAccount(props) {
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
+  console.log("t", t("LoginFirsts"));
   let [modalLogin, setModalLogin] = useState(false);
   let [token, setToken] = useState("");
   const HeaderComponent = {
