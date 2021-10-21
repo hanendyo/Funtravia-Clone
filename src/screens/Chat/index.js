@@ -64,6 +64,8 @@ export default function Message({ navigation, route }) {
   const [searchtext, SetSearchtext] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   //TRY SOCKET
+  const socket = io(CHATSERVER);
+
   // TRY SOCKET
 
   const HeaderComponent = {
@@ -117,18 +119,7 @@ export default function Message({ navigation, route }) {
     cek_koneksi();
   }, [connection_check]);
 
-  const socket = useRef(null);
-  useEffect(() => {
-    socket.current = io(CHATSERVER);
-
-    socket.current.on("new_chat_group", (data) => {
-      getRoomGroup();
-    });
-    socket.current.on("new_chat_personal", (data) => {
-      getRoom();
-    });
-    return () => socket.current.disconnect();
-  }, [connected]);
+  // const socket = useRef(null);
 
   useEffect(() => {
     getUserAndToken();
@@ -138,6 +129,13 @@ export default function Message({ navigation, route }) {
       }
     });
     navigation.setOptions(HeaderComponent);
+    socket.on("new_chat_group", (data) => {
+      getRoomGroup();
+    });
+    socket.on("new_chat_personal", (data) => {
+      getRoom();
+    });
+    return () => socket.disconnect();
   }, []);
 
   const getRoom = async () => {
@@ -152,7 +150,7 @@ export default function Message({ navigation, route }) {
     });
     let dataResponse = await response.json();
     for (let i of dataResponse) {
-      socket.current.emit("join", i.id);
+      socket.emit("join", i.id);
     }
     await setData(dataResponse);
     await setDataRes(dataResponse);
@@ -172,7 +170,7 @@ export default function Message({ navigation, route }) {
     });
     let dataResponse = await response.json();
     for (let i of dataResponse) {
-      socket.current.emit("join", i.group);
+      socket.emit("join", i.group);
     }
     await setDataGroup(dataResponse);
     await setDataGroupRes(dataResponse);
