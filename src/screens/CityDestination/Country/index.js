@@ -2124,7 +2124,6 @@ export default function Country(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          borderWidth: 1,
         }}
       >
         <Animated.View

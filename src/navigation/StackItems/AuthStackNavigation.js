@@ -74,7 +74,7 @@ export default function AuthStackNavigation(props) {
       <AuthNav.Screen
         name="RegisterScreen"
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTintColor: "black",
           headerBackTitleVisible: false,
         }}

@@ -79,6 +79,7 @@ import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { isNonEmptyArray } from "@apollo/client/utilities";
+import normalize from "react-native-normalize";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -727,7 +728,7 @@ export default function CityDetail(props) {
                   type="regular"
                   style={{
                     textAlign: "left",
-                    lineHeight: 20,
+                    // lineHeight: normalize(30),
                   }}
                 >
                   <Truncate
@@ -741,7 +742,7 @@ export default function CityDetail(props) {
                   type="regular"
                   style={{
                     textAlign: "left",
-                    lineHeight: 20,
+                    // lineHeight: 30,
                   }}
                 >
                   {render ? render.description : null}
@@ -1633,7 +1634,7 @@ export default function CityDetail(props) {
         <View
           style={{
             flexDirection: "column",
-            paddingTop: 15,
+            paddingVertical: 15,
           }}
         >
           <View>
@@ -2865,7 +2866,7 @@ export default function CityDetail(props) {
                 display: "flex",
               }}
             >
-              <Text size="title" type="bold">
+              <Text size="header" type="black">
                 {dataCity && dataCity.CitiesInformation ? (
                   <Truncate
                     text={Capital({
@@ -2894,8 +2895,8 @@ export default function CityDetail(props) {
                     alignItems: "center",
                   }}
                 >
-                  <PinHijau height={12} width={12} />
-                  <Text size="label" type="regular" style={{ marginLeft: 10 }}>
+                  <PinHijau height={14} width={14} />
+                  <Text size="label" type="regular" style={{ marginLeft: 5 }}>
                     {dataCity && dataCity.CitiesInformation
                       ? dataCity.CitiesInformation.countries.name
                       : "-"}
@@ -2988,7 +2989,6 @@ export default function CityDetail(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          borderWidth: 1,
         }}
       >
         <Animated.View
@@ -4009,8 +4009,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: {
+    fontSize: 16,
+    color: "#464646",
+    fontFamily: "Lato-Regular",
+  },
+  labelActive: {
+    fontSize: 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
   tab: {
     elevation: 0,
     shadowOpacity: 0,

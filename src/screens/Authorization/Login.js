@@ -122,7 +122,8 @@ export default function Login({ navigation, route }) {
   }, []);
 
   const signUp = () => {
-    navigation.navigate("RegisterScreen");
+    navigation.dispatch(StackActions.replace("RegisterScreen"));
+    // navigation.dis("RegisterScreen");
   };
 
   const forgotPwd = () => {
@@ -199,6 +200,7 @@ export default function Login({ navigation, route }) {
     <KeyboardAvoidingView
       style={{
         flex: 1,
+        backgroundColor: "#fff",
       }}
       behavior={Platform.OS === "ios" ? "padding" : null}
       enabled

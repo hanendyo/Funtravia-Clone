@@ -433,7 +433,7 @@ export default function TravelGoalDetail(props) {
               type="regular"
               style={{
                 textAlign: "left",
-                lineHeight: normalize(20),
+                // lineHeight: normalize(20),
                 marginBottom: 5,
               }}
             >

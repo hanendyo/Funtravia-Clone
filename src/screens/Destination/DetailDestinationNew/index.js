@@ -839,9 +839,12 @@ const Index = (props) => {
                 justifyContent: "space-around",
               }}
             >
-              <Text size="title" type="black" numberOfLines={1}>
-                {data?.destinationById?.name}
-              </Text>
+              <View style={{ width: "95%" }}>
+                <Text size="header" type="black" numberOfLines={1}>
+                  {data?.destinationById?.name}
+                  {data?.destinationById?.name}
+                </Text>
+              </View>
               <View style={{ flexDirection: "row", marginTop: 5 }}>
                 <View
                   style={{
@@ -1067,7 +1070,7 @@ const Index = (props) => {
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width * 0.72,
+                  width: Dimensions.get("screen").width * 0.7,
                   marginVertical: 8,
                 }}
               >
@@ -1146,7 +1149,7 @@ const Index = (props) => {
                 style={{
                   flexDirection: "row",
                   marginVertical: 8,
-                  width: Dimensions.get("screen").width * 0.72,
+                  width: Dimensions.get("screen").width * 0.7,
                 }}
               >
                 <Clock
@@ -1221,7 +1224,7 @@ const Index = (props) => {
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width * 0.72,
+                  width: Dimensions.get("screen").width * 0.7,
                   marginVertical: 8,
                 }}
               >
@@ -2955,7 +2958,7 @@ const Index = (props) => {
           zIndex: 100,
           opacity: hides.current,
           right: 20,
-          width: Dimensions.get("screen").width / 10,
+          width: Dimensions.get("screen").width / 8,
         }}
       >
         <Animated.View style={{ opacity: opacityButtonLikeShare }}>
