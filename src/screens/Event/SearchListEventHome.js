@@ -27,6 +27,7 @@ import {
   StatusBar as StaBar,
   Text,
   Truncate,
+  Peringatan,
 } from "../../component";
 import {
   Arrowbackwhite,
@@ -166,6 +167,43 @@ export default function SearchListEventHome(props) {
       },
     })
   ).current;
+  const [isValidDate, setIsValidDate] = useState(true);
+  const [isValidPrice, setIsValidPrice] = useState(true);
+  //  Alert
+  let [alertPopUp, setAlertPopUp] = useState({
+    show: false,
+    judul: "",
+    detail: "",
+  });
+
+  const [timeModalStartDate, setTimeModalStartDate] = useState("");
+  const [timeModalEndDate, setTimeModalEndDate] = useState("");
+
+  const [dateData, setDateData] = useState({
+    start_date: "",
+    end_date: "",
+  });
+
+  const [renderDate, setRenderDate] = useState({
+    render_start_date: "",
+    render_end_date: "",
+  });
+
+  const [dateValidations, setDateValidations] = useState({
+    start_date: 0,
+    end_date: 0,
+  });
+
+  const [startValidations, setStartValidations] = useState({
+    year: 0,
+    month: 0,
+    day: 0,
+  });
+  const [endValidations, setEndValidations] = useState({
+    year: 0,
+    month: 0,
+    day: 0,
+  });
 
   const HeaderComponent = {
     headerShown: true,
@@ -252,11 +290,6 @@ export default function SearchListEventHome(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  let [timeModalDate, setTimeModalDate] = useState({
-    start_date: "",
-    end_date: "",
-  });
-
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
 
   const [categoryName, setCategoryName] = useState("");
@@ -282,6 +315,27 @@ export default function SearchListEventHome(props) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
   }
+
+  useEffect(() => {
+    dateUseEffect();
+    priceUseEffect();
+  });
+
+  const dateUseEffect = () => {
+    if (+dateValidations.start_date > +dateValidations.end_date) {
+      return setIsValidDate(false);
+    } else {
+      return setIsValidDate(true);
+    }
+  };
+
+  const priceUseEffect = () => {
+    if (+priceValue.min > +priceValue.max) {
+      return setIsValidPrice(false);
+    } else {
+      return setIsValidPrice(true);
+    }
+  };
 
   const [scrollStatus, setScrollStatus] = useState({ scrollEnabled: false });
   const enableScrollFunction = () => setScrollStatus({ scrollEnabled: true });
@@ -414,175 +468,181 @@ export default function SearchListEventHome(props) {
 
   const dateFilter = () => {
     return (
-      <View
-        style={{
-          flex: 1,
-          // paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
-          // paddingVertical: 15,
-          flexDirection: "row",
-          justifyContent: "space-around",
-          marginTop: 15,
-          paddingHorizontal: 5,
-        }}
-      >
-        {/* start */}
-        <View style={{ width: "45%" }}>
-          <Text
-            style={{
-              paddingTop: 10,
-              // flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              marginBottom: 10,
-              // marginRight: 70,
-              width: 100,
-            }}
-          >
-            {t("From")}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <TextInput
-              placeholder={t("startDate")}
-              autoCorrect={false}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
-                fontFamily: "Lato-Regular",
-                borderColor: "#d3d3d3",
-                fontSize: 14,
-                borderWidth: 1,
-              }}
-              value={renderDate.render_start_date}
-            />
-            <TouchableOpacity
-              onPress={() => setTimeModalStartDate(true)}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                align: "center",
-                width: "100%",
-                height: "100%",
-              }}
-            />
-            <DateTimePickerModal
-              isVisible={timeModalStartDate}
-              mode="date"
-              // display="inline"
-              locale="en_id"
-              onConfirm={(date) => {
-                timeConverter(date);
-                setTimeModalStartDate(false);
-              }}
-              onCancel={() => setTimeModalStartDate(false)}
-            />
-          </View>
-        </View>
-        {/* DASH */}
+      <View style={{ width: "65%", height: "25%" }}>
         <View
-          style={
-            {
-              // paddingTop: 45,
-              // paddingLeft: 10,
-              // flexDirection: "row",
-              // justifyContent: "center",
-              // alignContent: "center",
-              // alignItems: "center",
-              // marginBottom: 10,
-              // marginRight: 10,
-            }
-          }
+          style={{
+            flex: 1,
+            // paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+            // paddingVertical: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginTop: 15,
+            paddingHorizontal: 5,
+          }}
         >
-          <View
-            style={{
-              backgroundColor: "#d3d3d3",
-              width: 10,
-              height: 2,
-              marginTop: Platform.OS == "ios" ? 50 : 55,
-            }}
-          ></View>
-        </View>
-        {/* end */}
-        <View style={{ width: "45%" }}>
-          <Text
-            style={{
-              paddingTop: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              marginBottom: 10,
-              // marginRight: 65,
-            }}
-          >
-            {t("until")}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
-            <TextInput
-              placeholder={t("endDate")}
-              autoCorrect={false}
+          {/* start */}
+          <View style={{ width: "45%" }}>
+            <Text
               style={{
-                flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
-                fontFamily: "Lato-Regular",
-                borderColor: "#d3d3d3",
-                fontSize: 14,
-                borderWidth: 1,
+                // flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                paddingTop: 10,
+                marginBottom: 10,
+                // marginRight: 70,
+                width: 100,
               }}
-              value={renderDate.render_end_date}
-            />
-            <TouchableOpacity
-              onPress={() => setTimeModalEndDate(true)}
+            >
+              {t("From")}
+            </Text>
+            <View
               style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                align: "center",
-                width: "100%",
-                height: "100%",
+                flexDirection: "row",
               }}
-            />
-            <DateTimePickerModal
-              isVisible={timeModalEndDate}
-              mode="date"
-              // display="inline"
-              locale="en_id"
-              onConfirm={(date) => {
-                timeConverter(date);
-                setTimeModalEndDate(false);
+            >
+              <TextInput
+                placeholder={t("startDate")}
+                autoCorrect={false}
+                style={{
+                  flex: 1,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  fontFamily: "Lato-Regular",
+                  borderColor: "#d3d3d3",
+                  fontSize: 14,
+                  borderWidth: 1,
+                }}
+                value={renderDate.render_start_date}
+              />
+              <TouchableOpacity
+                onPress={() => setTimeModalStartDate(true)}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  align: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+              <DateTimePickerModal
+                isVisible={timeModalStartDate}
+                mode="date"
+                // display="inline"
+                locale="en_id"
+                onConfirm={(date) => {
+                  timeConverter(date);
+                  setTimeModalStartDate(false);
+                }}
+                onCancel={() => setTimeModalStartDate(false)}
+              />
+            </View>
+          </View>
+          {/* DASH */}
+          <View
+            style={
+              {
+                // paddingTop: 45,
+                // paddingLeft: 10,
+                // flexDirection: "row",
+                // justifyContent: "center",
+                // alignContent: "center",
+                // alignItems: "center",
+                // marginBottom: 10,
+                // marginRight: 10,
+              }
+            }
+          >
+            <View
+              style={{
+                backgroundColor: "#d3d3d3",
+                width: 10,
+                height: 2,
+                marginTop: Platform.OS == "ios" ? 50 : 55,
               }}
-              onCancel={() => setTimeModalEndDate(false)}
-            />
+            ></View>
+          </View>
+          {/* end */}
+          <View style={{ width: "45%" }}>
+            <Text
+              style={{
+                paddingTop: 10,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                marginBottom: 10,
+                // marginRight: 65,
+              }}
+            >
+              {t("until")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <TextInput
+                placeholder={t("endDate")}
+                autoCorrect={false}
+                style={{
+                  flex: 1,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  fontFamily: "Lato-Regular",
+                  borderColor: "#d3d3d3",
+                  fontSize: 14,
+                  borderWidth: 1,
+                }}
+                value={renderDate.render_end_date}
+              />
+              <TouchableOpacity
+                onPress={() => setTimeModalEndDate(true)}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  align: "center",
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+              <DateTimePickerModal
+                isVisible={timeModalEndDate}
+                mode="date"
+                // display="inline"
+                locale="en_id"
+                onConfirm={async (date) => {
+                  timeConverter(date);
+                  setTimeModalEndDate(false);
+                  dateUseEffect();
+                }}
+                onCancel={() => setTimeModalEndDate(false)}
+              />
+            </View>
           </View>
         </View>
+        {dateValidations.start_date != 0 &&
+        dateValidations.end_date == 0 ? null : dateValidations.start_date >
+          dateValidations.end_date ? (
+          <View style={{ width: "100%" }}>
+            <Text
+              type="regular"
+              size="medium"
+              style={{
+                color: "#D75995",
+                position: "absolute",
+                left: 10,
+              }}
+            >
+              {"*" + t("dateWarning")}
+            </Text>
+          </View>
+        ) : null}
       </View>
     );
   };
-
-  // const changeValue =(x)=>{
-  //   if (x === null) {
-  //     setPriceValue({ ...priceValue, max: 0 });
-  //     setCustomPriceValues({ ...customPriceValues, max: 'any' });
-  //     return customPriceValues.max;
-  //   } else {
-  //     setPriceValue({ ...priceValue, max: x });
-  //     etCustomPriceValues({ ...customPriceValues, max: x });
-  //     return customPriceValues.max;
-  //   }
-
-  //   // setKeyboardIsUp(true);
-  // }
 
   const PriceFilter = () => {
     return (
@@ -632,6 +692,7 @@ export default function SearchListEventHome(props) {
               flexDirection: "row",
               // paddingVertical: 10,
               paddingHorizontal: 10,
+              paddingVertical: Platform.OS == "ios" ? 10 : null,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
@@ -639,7 +700,7 @@ export default function SearchListEventHome(props) {
           >
             <TextInput
               value={priceValue.min}
-              placeholder={t("inputCost")}
+              placeholder={t("minCostEx")}
               autoCorrect={false}
               keyboardType="numeric"
               type="number"
@@ -719,11 +780,12 @@ export default function SearchListEventHome(props) {
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
+              paddingVertical: Platform.OS == "ios" ? 10 : null,
             }}
           >
             <TextInput
               value={priceValue.max}
-              placeholder={t("inputCost")}
+              placeholder={t("maxCostEx")}
               autoCorrect={false}
               // keyboardVerticalOffset={
               //   Platform.OS == "ios" ? (Notch ? 100 : 150) : null
@@ -735,14 +797,15 @@ export default function SearchListEventHome(props) {
                 fontSize: 14,
               }}
               // value={priceValue.max}
-              onChangeText={(x) => {
-                if (x === null || x === undefined) {
+              onChangeText={async (x) => {
+                if (x === null || x === undefined || x === "") {
                   setPriceValue({ ...priceValue, max: 0 });
                   setCustomPriceValues({ ...customPriceValues, max: "any" });
                 } else {
                   setPriceValue({ ...priceValue, max: x });
                   setCustomPriceValues({ ...customPriceValues, max: x });
                 }
+
                 setKeyboardIsUp(true);
               }}
             />
@@ -764,25 +827,34 @@ export default function SearchListEventHome(props) {
             ) : null}
           </View>
         </View>
+        {(priceValue.min != "" ||
+          priceValue.min != 0 ||
+          priceValue.min != null ||
+          priceValue.min != undefined) &&
+        (priceValue.max == "" ||
+          priceValue.max == null ||
+          priceValue.max == undefined) ? null : parseInt(priceValue.min) >
+          parseInt(priceValue.max) ? (
+          <View style={{ width: "100%" }}>
+            <Text
+              type="regular"
+              size="medium"
+              style={{
+                color: "#D75995",
+                position: "absolute",
+                left: 0,
+                top: 10,
+              }}
+            >
+              {"*" + t("priceWarning")}
+            </Text>
+          </View>
+        ) : null}
       </ScrollView>
     );
   };
 
-  const [timeModalStartDate, setTimeModalStartDate] = useState("");
-  const [timeModalEndDate, setTimeModalEndDate] = useState("");
-
-  const [dateData, setDateData] = useState({
-    start_date: "",
-    end_date: "",
-  });
-
-  const [renderDate, setRenderDate] = useState({
-    render_start_date: "",
-    render_end_date: "",
-  });
-
   const timeConverter = (date) => {
-    //! Hanendyo's work'
     const checkTime = (time) => {
       if (time < 10) {
         time = "0" + time;
@@ -842,6 +914,7 @@ export default function SearchListEventHome(props) {
     let formattedDate = `${year}-${months}-${day}`;
     let formatForScreen = `${day} ${monthStringify} ${year}`;
 
+    // start
     if (timeModalStartDate) {
       setDateData((prevCin) => {
         return {
@@ -850,12 +923,14 @@ export default function SearchListEventHome(props) {
         };
       });
 
-      // setCheckInCheck(formatForScreen);
       setRenderDate((prev) => {
         return { ...prev, ["render_start_date"]: formatForScreen };
       });
+
+      setDateValidations({ ...dateValidations, ["start_date"]: date * 1000 });
     }
 
+    // end
     if (timeModalEndDate) {
       setDateData((prevCout) => {
         return {
@@ -864,10 +939,11 @@ export default function SearchListEventHome(props) {
         };
       });
 
-      // setCheckoutCheck(formatForScreen);
       setRenderDate((prev) => {
         return { ...prev, ["render_end_date"]: formatForScreen };
       });
+
+      setDateValidations({ ...dateValidations, ["end_date"]: date * 1000 });
     }
   };
 
@@ -1409,7 +1485,7 @@ export default function SearchListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
-          paddingTop: 100,
+          paddingTop: Platform.OS === "ios" ? 90 : 85,
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -1454,7 +1530,7 @@ export default function SearchListEventHome(props) {
             height: TabBarHeight + 5,
             // borderWidth: 1,
             // paddingTop: 0,
-            // marginTop: -10,
+            marginTop: Platform.OS === "ios" ? -5 : -10,
           }}
           renderLabel={({ route, focused }) => (
             <Text
@@ -2004,6 +2080,15 @@ export default function SearchListEventHome(props) {
               style={{ width: "65%" }}
               text={t("apply")}
             ></Button>
+            <Peringatan
+              aler={alertPopUp}
+              setClose={() =>
+                setAlertPopUp({
+                  ...alertPopUp,
+                  show: false,
+                })
+              }
+            />
           </View>
         </View>
       </Modal>
@@ -2332,7 +2417,6 @@ export default function SearchListEventHome(props) {
     data["keyword"] = txt;
     await setSearch(data);
   };
-  console.log("props :", props.route);
 
   const [
     mutationliked,
@@ -2543,31 +2627,53 @@ export default function SearchListEventHome(props) {
 
   const UpdateFilter = async () => {
     let hasil = [];
-    for (var x of dataFilterCategori) {
-      if (x.checked === true) {
-        hasil.push(x.id);
+
+    if (isValidDate == true && isValidPrice == true) {
+      for (var x of dataFilterCategori) {
+        if (x.checked === true) {
+          hasil.push(x.id);
+        }
       }
-    }
 
-    console.log(`DATA FILTER: `, dataFilterCategori);
-    console.log(`HASIL: `, hasil);
+      let data = { ...search };
+      data["type"] = hasil;
+      data["date_from"] = dateData.start_date;
+      data["date_until"] = dateData.end_date;
+      if (customPriceValues.max !== "any") {
+        data["price_start"] = priceValue.min;
+        data["price_end"] = priceValue.max;
+      } else {
+        data["price_start"] = 0;
+        data["price_end"] = 0;
+      }
 
-    let data = { ...search };
-    data["type"] = hasil;
-    data["date_from"] = dateData.start_date;
-    data["date_until"] = dateData.end_date;
-    if (customPriceValues.max !== "any") {
-      data["price_start"] = priceValue.min;
-      data["price_end"] = priceValue.max;
+      await setSearch(data);
+      await setshow(false);
+      getdataEvent();
+      getdataEventPublic();
     } else {
-      data["price_start"] = 0;
-      data["price_end"] = 0;
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: warningAlert(),
+        detail: "",
+      });
     }
+  };
 
-    await setSearch(data);
-    await setshow(false);
-    getdataEvent();
-    getdataEventPublic();
+  const warningAlert = () => {
+    if (isValidDate == false && isValidPrice == false) {
+      let warning = t("wrongInputOn") + " " + t("date") + " & " + t("price");
+      return warning;
+    } else if (isValidDate == false && isValidPrice == true) {
+      let warning = t("wrongInputOn") + " " + t("date");
+      return warning;
+    } else if (isValidDate == true && isValidPrice == false) {
+      let warning = t("wrongInputOn") + " " + t("price");
+      return warning;
+    } else {
+      return "";
+    }
   };
 
   const _handledate = async (selected) => {
@@ -2616,6 +2722,30 @@ export default function SearchListEventHome(props) {
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
     await setshow(false);
     await setmonth(" - ");
+    await setDateValidations({ ["start_date"]: 0, ["end_date"]: 0 });
+    if (
+      dateData.start_date == "" &&
+      dateData.end_date == "" &&
+      priceValue.min == 0 &&
+      priceValue.max == 0
+    ) {
+      await setIsValidDate(true);
+      await setIsValidPrice(true);
+    } else if (
+      dateData.start_date == "" &&
+      dateData.end_date == "" &&
+      priceValue.min !== 0 &&
+      priceValue.max !== 0
+    ) {
+      await setIsValidDate(true);
+    } else if (
+      dateData.start_date !== "" &&
+      dateData.end_date !== "" &&
+      priceValue.min == 0 &&
+      priceValue.max == 0
+    ) {
+      await setIsValidPrice(true);
+    }
   };
 
   const searchkategori = async (teks) => {
@@ -2647,9 +2777,6 @@ export default function SearchListEventHome(props) {
     (search["price_start"] == null && search["price_end"] != null)
       ? array.push(price)
       : null;
-
-    console.log(`SEARCH:  `, search);
-    console.log(`ARRAY:  `, array);
 
     return array?.length;
   };

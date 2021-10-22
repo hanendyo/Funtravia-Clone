@@ -388,7 +388,6 @@ export default function detailCustomItinerary(props) {
   });
 
   const timeConverter = (date) => {
-    //! Hanendyo's work'
     const checkTime = (time) => {
       if (time < 10) {
         time = "0" + time;
@@ -436,7 +435,6 @@ export default function detailCustomItinerary(props) {
   const [mutation, { loading, data, error }] = useMutation(
     AddCustomAccomodation,
     {
-      //! Hanendyo's work'
       context: {
         headers: {
           "Content-Type": (file = []
