@@ -758,5 +758,9 @@
   "profilePost": "Postingan",
   "startDate": "Tanggal awal",
   "endDate": "Tanggal akhir",
-  "createdBy": "Ciptakan oleh"
+  "dateWarning": "Tanggal awal tidak boleh lebih besar dari tanggal akhir",
+  "priceWarning": "Harga minimal tidak boleh lebih besar dari harga maksimal",
+  "wrongInputOn": "Ada inputan yang salah pada",
+  "minCostEx": "Contoh: 10.000",
+  "maxCostEx": "Contoh: 1.000.000"
 }

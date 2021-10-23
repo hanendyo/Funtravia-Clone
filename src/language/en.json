@@ -757,5 +757,10 @@
   "profilePost": "Post",
   "startDate": "Start date",
   "endDate": "End date",
-  "createdBy": "Created By"
+  "createdBy": "Created By",
+  "dateWarning": "The start date cannot be greater than the end date",
+  "priceWarning": "The minimum price cannot be greater than the maximum price",
+  "wrongInputOn": "There is an incorrect input on",
+  "minCostEx": "Example: 10.000",
+  "maxCostEx": "Example: 1.000.000"
 }
