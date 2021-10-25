@@ -8,6 +8,7 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
+  BackHandler,
 } from "react-native";
 import { Text, Button } from "../../component";
 import {
@@ -224,6 +225,17 @@ export default function Journal(props) {
       dataPopuler: data,
     });
   };
+
+  const backAction = () => {
+    props.navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

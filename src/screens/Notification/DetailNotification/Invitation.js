@@ -497,6 +497,7 @@ export default function Invitation({ navigation, token }) {
     { data: datasnotif, loading: loadingnotif, error: errornotif },
   ] = useLazyQuery(ListNotifikasi_, {
     fetchPolicy: "network-only",
+    pollInterval: 1000,
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -860,7 +861,7 @@ export default function Invitation({ navigation, token }) {
             <View
               style={{
                 flexDirection: "column",
-                width: "65%",
+                width: "83%",
                 paddingLeft: 10,
               }}
             >
@@ -886,7 +887,6 @@ export default function Invitation({ navigation, token }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "flex-start",
-
                   alignItems: "center",
                   flexWrap: "wrap",
                 }}
@@ -968,7 +968,6 @@ export default function Invitation({ navigation, token }) {
                     size="description"
                     type="regular"
                     style={{
-                      marginLeft: 5,
                       color: "#209FAE",
                     }}
                   >
