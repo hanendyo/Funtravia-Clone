@@ -748,7 +748,7 @@ export default function TravelGoalDetail(props) {
                 : HEADER_MAX_HEIGHT + normalize(30)
               : deviceId == "LYA-L29"
               ? HEADER_MAX_HEIGHT + normalize(30)
-              : HEADER_MAX_HEIGHT + normalize(30),
+              : HEADER_MAX_HEIGHT + normalize(40),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}
@@ -833,7 +833,7 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 8,
+          top: SafeStatusBar + 17,
         }}
       >
         <Text

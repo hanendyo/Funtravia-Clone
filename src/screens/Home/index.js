@@ -357,11 +357,12 @@ export default function Home(props) {
                     marginRight: 10,
                   }}
                 >
-                  <SearchHome height={15} width={15} />
+                  <SearchHome height={20} width={20} />
                 </View>
-                <View>
+                <View style={{ width: "90%" }}>
                   <Text
                     type="bold"
+                    numberOfLines={1}
                     style={{
                       color: "#A9A9A9",
                     }}
@@ -554,7 +555,7 @@ export default function Home(props) {
                             flexDirection: "row",
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            width: 85,
+                            width: 110,
                           }}
                         >
                           <Text
