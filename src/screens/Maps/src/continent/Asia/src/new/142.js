@@ -2,6 +2,7 @@ import React from "react";
 import Svg, { Path, G } from "react-native-svg";
 import { Dimensions } from "react-native";
 import DeviceInfo from "react-native-device-info";
+import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 
 const HeightMaps = Platform.select({
@@ -24,8 +25,8 @@ export default function Maps({
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
-      width="340"
-      height="400"
+      width={width - normalize(40)}
+      height={width - normalize(150)}
       viewBox="0 0 865 591"
       fill="none"
       xmlns="http://www.w3.org/2000/Svg"
