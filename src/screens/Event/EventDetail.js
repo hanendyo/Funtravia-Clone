@@ -989,38 +989,37 @@ export default function EventDetail(props) {
                 flexDirection: "column",
               }}
             >
-              <View
+              {/* <View
                 style={{
                   backgroundColor: "#f6f6f6",
-                  width: 150,
+                  // width: 150,
                   marginBottom: 10,
                   borderRadius: 30,
                 }}
+              > */}
+              <Text
+                size="description"
+                style={{
+                  alignSelf: "flex-start",
+                  textAlign: "center",
+                  color: "#209fae",
+                  paddingHorizontal: 10,
+                  // paddingVertical: 5,
+                  paddingBottom: 8,
+                  paddingTop: 5,
+                  borderRadius: 20,
+                  backgroundColor: "#f6f6f6",
+                }}
               >
-                <Text
-                  size="readable"
-                  style={{
-                    textAlign: "center",
-                    color: "#14646E",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                  }}
-                >
-                  {dataevent?.category?.name}
-                </Text>
-              </View>
+                {dataevent?.category?.name}
+              </Text>
+              {/* </View> */}
               <View
                 style={{
                   width: "95%",
                 }}
               >
-                <Text
-                  size="title"
-                  type="bold"
-                  style={{
-                    fontSize: 18,
-                  }}
-                >
+                <Text size="header" type="bold">
                   {dataevent?.name}
                 </Text>
               </View>
@@ -1278,11 +1277,11 @@ export default function EventDetail(props) {
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
-                  height: 5,
+                  height: 1,
                 },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
+                shadowOpacity: 0.22,
+                shadowRadius: 2.22,
+                elevation: 3,
               }}
             >
               {dataevent && dataevent.vendor ? (
@@ -1379,11 +1378,11 @@ export default function EventDetail(props) {
                 shadowColor: "#000",
                 shadowOffset: {
                   width: 0,
-                  height: 5,
+                  height: 1,
                 },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
+                shadowOpacity: 0.22,
+                shadowRadius: 2.22,
+                elevation: 3,
                 marginBottom: 100,
               }}
             >
@@ -1395,7 +1394,6 @@ export default function EventDetail(props) {
                 <View
                   style={{
                     width: "75%",
-                    // borderWidth: 1,
                   }}
                 >
                   <Text
@@ -1466,7 +1464,7 @@ export default function EventDetail(props) {
           }}
         >
           <Button
-            text="Add To Plan"
+            text={t("addToPlan")}
             size="medium"
             color="primary"
             type="box"

@@ -25,6 +25,7 @@ import {
 } from "../../component";
 import { useTranslation } from "react-i18next";
 import { TextInput } from "react-native";
+import normalize from "react-native-normalize";
 
 export default function Register({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -140,7 +141,7 @@ export default function Register({ navigation }) {
         variables: {
           first_name: state?.first_name,
           last_name: state?.last_name,
-          email: state?.email,
+          email: state?.email.toLowerCase(),
           phone: region + state?.phone,
           password: state?.password,
           password_confirmation: state?.password_confirmation,
@@ -226,7 +227,6 @@ export default function Register({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // navigation.setOptions(NavigationComponent);
     AsyncStorage.setItem("isFirst", "false");
   }, []);
 
@@ -251,7 +251,7 @@ export default function Register({ navigation }) {
           paddingHorizontal: 20,
         }}
         showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
+        // stickyHeaderIndices={[1]}
       >
         <CustomImage
           source={mascot_black}
@@ -310,10 +310,11 @@ export default function Register({ navigation }) {
         <View style={{ marginTop: 10 }}>
           <FloatingInput
             value={state.email}
-            keyboardType="email-address"
-            autoCapitalize="none"
+            keyboardType="visible-password"
             onChangeText={onChange("email")}
             label="Email"
+            autoCorrect={true}
+
             // customTextStyle={{
             //   color: itemvalid.first_name === false ? "#464646" : "#D75995",
             // }}
@@ -324,7 +325,6 @@ export default function Register({ navigation }) {
               size="small"
               style={{
                 color: "#D75995",
-
                 position: "absolute",
                 bottom: -15,
               }}

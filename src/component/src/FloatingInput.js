@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, View, StyleSheet, Animated } from "react-native";
+import normalize from "react-native-normalize";
 
 export default function FloatingInput({
   customStyle,
@@ -21,8 +22,8 @@ export default function FloatingInput({
       outputRange: [20, 1],
     }),
     fontSize: animatedFocus.interpolate({
-      inputRange: [0, 0],
-      outputRange: [14, 14],
+      inputRange: [0, 1],
+      outputRange: [normalize(14), normalize(12)],
     }),
     color: animatedFocus.interpolate({
       inputRange: [0, 1],
@@ -62,5 +63,6 @@ const styles = StyleSheet.create({
     height: 30,
     fontFamily: "Lato-Regular",
     padding: 0,
+    fontSize: 14,
   },
 });

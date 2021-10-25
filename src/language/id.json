@@ -39,7 +39,7 @@
   "inputWarningName": "*Masukan ",
   "inputWarningPhone": "*Masukan nomor telepon yang valid ",
   "inputWarningEmail": "*Masukan alamat email yang valid ",
-  "inputWarningPassword": "*Gunakan kata sandi dengan panjang minimum 8 huruf",
+  "inputWarningPassword": "*Gunakan kata sandi dengan panjang min 8 huruf",
   "inputWarningRepeatPassword": "*Gunakan kata sandi yang sama",
   "resetPassword": "Setel ulang kata sandi",
   "pleaseEnter": "Silakan masukan kata sandi baru Anda",
