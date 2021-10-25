@@ -222,6 +222,7 @@ export default function Following(props) {
           marginTop: 5,
           justifyContent: "space-evenly",
         }}
+        showsVerticalScrollIndicator={false}
         data={data}
         renderItem={({ item, index }) => (
           <View
