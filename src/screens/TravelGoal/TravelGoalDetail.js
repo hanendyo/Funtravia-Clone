@@ -889,7 +889,7 @@ export default function TravelGoalDetail(props) {
 
       <Animated.View
         style={{
-          transform: [{ translateY: titleTranslateY }],
+          // transform: [{ translateY: titleTranslateY }],
           height: 100,
           width: 100,
           position: "absolute",

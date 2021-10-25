@@ -47,7 +47,7 @@
   "reenterPass": "Masukkan kembali Kata Sandi Baru",
   "submit": "Simpan",
   "skip": "Lewati",
-  "description": "Kami percaya bahwa berwisata tidaklah sulit. Itu merupakan sesuatu yang menyenangkan untuk direncanakan dan dilakukan oleh semua orang. Berwisata jauh lebih mudah dari yang Anda pikirkan",
+  "description": "We believe that traveling should not be hard. It is something everyone should be able to do and organize with fun. Traveling is definitely easier than you think",
   "signIn": "Masuk",
   "createYourAccount": "Buat Akun Anda",
   "hello": "Halo",
@@ -625,6 +625,7 @@
   "Attachment": "Sisipan",
   "ChooseFile": "Pilih Dokumen",
   "HotelName": "Nama hotel",
+  "SearchForLocation": "Cari lokasi",
   "SearchForHotel": "Cari hotel",
   "checkIn": "Waktu masuk",
   "checkOut": "Waktu keluar",
@@ -762,5 +763,9 @@
   "priceWarning": "Harga minimal tidak boleh lebih besar dari harga maksimal",
   "wrongInputOn": "Ada inputan yang salah pada",
   "minCostEx": "Contoh: 10.000",
-  "maxCostEx": "Contoh: 1.000.000"
+  "maxCostEx": "Contoh: 1.000.000",
+  "uploadYourFlightTicketHotelVoucherEtc": "Unggah tiket penerbangan, voucher hotel, dll.",
+  "newGroupChat": "Grup Chat Baru",
+  "addParticipants": "Tambah Peserta",
+  "newMessage": "Pesan Baru"
 }

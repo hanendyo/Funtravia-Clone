@@ -391,7 +391,7 @@ export default function Destination({
                         flex: 1,
                         justifyContent: "flex-end",
                         // borderWidth: 1,
-                        paddingHorizontal: 7,
+                        // paddingHorizontal: 7,
                       }}
                     >
                       <View
@@ -469,7 +469,6 @@ export default function Destination({
                     <View
                       style={{
                         justifyContent: "flex-end",
-                        width: 65,
                         paddingBottom: 5,
                         paddingRight: 5,
                       }}
@@ -477,7 +476,7 @@ export default function Destination({
                       <Button
                         onPress={() => addToPlan(item)}
                         size="small"
-                        text={"Add"}
+                        text={t("add")}
                         style={{ height: 25 }}
                         // style={{ marginTop: 15 }}
                       />

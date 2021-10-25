@@ -312,7 +312,6 @@ export default function SearchPg(props, { navigation, route }) {
     },
   });
 
-  // console.log(user_search);
   let [destinationSearch, SetdestinationSearch] = useState([]);
 
   const [
@@ -1546,7 +1545,7 @@ export default function SearchPg(props, { navigation, route }) {
                       >
                         <View>
                           <Text size="label" type="bold">
-                            Great for :
+                            {t("GreatFor")} :
                           </Text>
                           <View
                             style={{
@@ -1586,7 +1585,7 @@ export default function SearchPg(props, { navigation, route }) {
                             });
                           }}
                           size="small"
-                          text={"Add"}
+                          text={t("add")}
                           // style={{ marginTop: 15 }}
                         />
                       </View>

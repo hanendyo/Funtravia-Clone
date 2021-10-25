@@ -59,7 +59,7 @@ export default function NewGroup(props) {
 
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "New Group",
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -70,22 +70,31 @@ export default function NewGroup(props) {
       fontFamily: "Lato-Bold",
       fontSize: 18,
       color: "white",
-      marginLeft: -10,
+      // marginLeft: -10,
     },
+
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-          marginLeft: 10,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+            marginLeft: 10,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <View>
+          <Text size="label" style={{ color: "white" }}>
+            {t("newGroupChat")}
+          </Text>
+          <Text style={{ color: "white" }}>{t("addParticipants")}</Text>
+        </View>
+      </View>
     ),
     headerRight: () => (
       <View
@@ -259,6 +268,7 @@ export default function NewGroup(props) {
         style={{
           flex: 1,
           borderRadius: 15,
+          margin: 15,
         }}
       >
         <Loading show={loading} />
@@ -287,7 +297,6 @@ export default function NewGroup(props) {
             style={{
               width: Dimensions.get("screen").width - 100,
               marginHorizontal: 50,
-              backgroundColor: "#FFF",
               borderRadius: 5,
               marginTop: Dimensions.get("screen").height / 3,
             }}
@@ -364,6 +373,8 @@ export default function NewGroup(props) {
             paddingVertical: 20,
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
+            borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
           }}
         >
           <View
@@ -380,9 +391,9 @@ export default function NewGroup(props) {
           >
             <View
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#FFF",
                 borderRadius: 5,
-                width: "100%",
+                width: "95%",
                 height: 40,
                 flexDirection: "row",
                 alignItems: "center",
@@ -393,9 +404,9 @@ export default function NewGroup(props) {
                   <Pressable
                     onPress={() => setmodal(true)}
                     style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 25,
+                      width: 55,
+                      height: 55,
+                      borderRadius: 35,
                       // borderWidth: 1.5,
                       // borderColor: "#FFF",
                       backgroundColor: "#D1D1D1",
@@ -408,9 +419,9 @@ export default function NewGroup(props) {
                     <Image
                       source={{ uri: dataImagepatch }}
                       style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 25,
+                        width: 55,
+                        height: 55,
+                        borderRadius: 35,
                       }}
                     />
                   </Pressable>
@@ -419,9 +430,9 @@ export default function NewGroup(props) {
                 <Pressable
                   onPress={() => setmodal(true)}
                   style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 25,
+                    width: 55,
+                    height: 55,
+                    borderRadius: 35,
                     // borderWidth: 1.5,
                     // borderColor: "#FFF",
                     backgroundColor: "#D1D1D1",
@@ -434,21 +445,29 @@ export default function NewGroup(props) {
                   <CameraIcon width={20} height={20} />
                 </Pressable>
               )}
-
-              <TextInput
-                underlineColorAndroid="transparent"
-                placeholder={"Type group subject here...."}
-                maxLength={25}
+              <View
                 style={{
-                  width: "75%",
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  borderBottomColor: "#C6C6C6",
+                  paddingVertical: 5,
+                  marginBottom: 5,
                   borderBottomWidth: 1,
-                  borderBottomColor: "#D1D1D1",
+                  width: "75%",
                 }}
-                item={title}
-                onChangeText={(text) => _settitle(text)}
-              />
+              >
+                <TextInput
+                  underlineColorAndroid="transparent"
+                  placeholder={"Type group subject here...."}
+                  maxLength={25}
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    fontSize: 14,
+                    paddingVertical: 5,
+                    // backgroundColor: "red",
+                  }}
+                  item={title}
+                  onChangeText={(text) => _settitle(text)}
+                />
+              </View>
             </View>
           </View>
         </View>
