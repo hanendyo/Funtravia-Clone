@@ -127,13 +127,16 @@ export default function Asia({ navigation }) {
 
   const onBackPress = useCallback(() => {
     if (BackUse.current.id !== "142") {
-      setSubContinent({ id: "142" });
-      InitialCountry({ id: "142" });
-      BackUse.current = {
-        id: "142",
-        label: "All",
-      };
+      navigation.goBack();
+      // console.log("not go back");
+      // setSubContinent({ id: "142" });
+      // InitialCountry({ id: "142" });
+      // BackUse.current = {
+      //   id: "142",
+      //   label: "All",
+      // };
     } else {
+      console.log("go back");
       navigation.goBack();
     }
     return true;
@@ -242,10 +245,7 @@ export default function Asia({ navigation }) {
               justifyContent: "space-between",
             }}
           >
-            <Pressable
-              style={{ flexDirection: "row" }}
-              onPress={() => onBackPress()}
-            >
+            <View style={{ flexDirection: "row" }}>
               <Button
                 text={""}
                 size="medium"
@@ -268,18 +268,18 @@ export default function Asia({ navigation }) {
                 }}
               >
                 <Text
+                  onPress={() => onBackPress()}
                   style={{
                     color: "#464646",
                     marginLeft: 10,
                     fontSize: 18,
-
                     fontFamily: "Lato-Bold",
                   }}
                 >
                   {t("destination")}
                 </Text>
               </View>
-            </Pressable>
+            </View>
             {subContinent.id !== "142" ? (
               <View
                 style={{
