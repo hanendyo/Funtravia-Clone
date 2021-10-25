@@ -250,7 +250,7 @@ export default function Following(props) {
                 }
                 // props.navigation.push("otherprofile", { idUser: item.id })
               }
-              style={{ flexDirection: "row" }}
+              style={{ flexDirection: "row", width: "75%" }}
             >
               <Image
                 source={
@@ -269,26 +269,40 @@ export default function Following(props) {
               />
               <View
                 style={{
+                  width: "70%",
                   marginLeft: 20,
                   justifyContent: "center",
                   paddingVertical: 1,
                 }}
               >
                 {item.last_name !== null ? (
-                  <Text size="small" type="bold" style={{ marginBottom: 5 }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginBottom: 5 }}
+                  >
                     {item.first_name + " " + item.last_name}
                   </Text>
                 ) : (
-                  <Text size="small" type="bold" style={{ marginBottom: 5 }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginBottom: 5 }}
+                  >
                     {item.first_name}
                   </Text>
                 )}
-                <Text type="regular" size="small" style={{ marginBottom: 5 }}>
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{ marginBottom: 5 }}
+                >
                   {`@${item.username}`}
                 </Text>
                 {item?.bio ? (
-                  <Text type="regular" size="small">
-                    <Truncate text={item?.bio ? item.bio : ""} length={40} />
+                  <Text type="regular" size="description" numberOfLines={1}>
+                    {item?.bio ? item.bio : ""}
+                    {/* <Truncate text={item?.bio ? item.bio : ""} length={40} /> */}
                   </Text>
                 ) : null}
               </View>
