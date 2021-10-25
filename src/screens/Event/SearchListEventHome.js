@@ -468,7 +468,9 @@ export default function SearchListEventHome(props) {
 
   const dateFilter = () => {
     return (
-      <View style={{ width: "65%", height: "25%" }}>
+      <View
+        style={{ width: "65%", height: Platform.OS == "ios" ? "25%" : "30%" }}
+      >
         <View
           style={{
             flex: 1,
@@ -559,7 +561,7 @@ export default function SearchListEventHome(props) {
                 backgroundColor: "#d3d3d3",
                 width: 10,
                 height: 2,
-                marginTop: Platform.OS == "ios" ? 50 : 55,
+                marginTop: Platform.OS == "ios" ? (Notch ? 60 : 55) : 60,
               }}
             ></View>
           </View>
@@ -626,7 +628,7 @@ export default function SearchListEventHome(props) {
         {dateValidations.start_date != 0 &&
         dateValidations.end_date == 0 ? null : dateValidations.start_date >
           dateValidations.end_date ? (
-          <View style={{ width: "100%" }}>
+          <View style={{ width: "90%" }}>
             <Text
               type="regular"
               size="medium"
@@ -646,18 +648,20 @@ export default function SearchListEventHome(props) {
 
   const PriceFilter = () => {
     return (
-      <ScrollView
+      <View
         showsVerticalScrollIndicator={false}
         style={{
           // flex: 1,
-          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 17 : 4) : 10,
+          paddingHorizontal: Platform.OS == "ios" ? (Notch ? 15 : 15) : 15,
           paddingVertical: 15,
+          height: "80%",
+          width: "65%",
         }}
       >
         <View
           style={{
-            marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 10) : 10,
-            marginTop: Platform.OS == "ios" ? (Notch ? 15 : 15) : 15,
+            marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 0) : 10,
+            marginTop: Platform.OS == "ios" ? (Notch ? -5 : -5) : -5,
           }}
         >
           <Text>{t("price")}</Text>
@@ -671,18 +675,17 @@ export default function SearchListEventHome(props) {
         <View
           keyboardShouldPersistTaps="handled"
           style={{
-            marginBottom: Platform.OS == "ios" ? (Notch ? 20 : 15) : 20,
+            marginBottom: Platform.OS == "ios" ? (Notch ? -40 : -30) : -40,
           }}
         >
           <Text
             style={{
               paddingTop: 10,
-              // flexDirection: "row",
+              flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
-              marginRight: 80,
             }}
           >
             {t("minCost")}
@@ -690,12 +693,13 @@ export default function SearchListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
-              // paddingVertical: 10,
               paddingHorizontal: 10,
               paddingVertical: Platform.OS == "ios" ? 10 : null,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
+              height: "30%",
+              width: "100%",
             }}
           >
             <TextInput
@@ -746,14 +750,14 @@ export default function SearchListEventHome(props) {
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
-            marginBottom: Platform.OS == "ios" ? (Notch ? 5 : 0) : 5,
+            marginBottom: Platform.OS == "ios" ? (Notch ? -10 : -20) : -10,
           }}
         >
           <View
             style={{
               backgroundColor: "#d3d3d3",
               width: 2,
-              height: Platform.OS == "ios" ? (Notch ? 30 : 10) : 30,
+              height: Platform.OS == "ios" ? (Notch ? 30 : 20) : 30,
             }}
           ></View>
         </View>
@@ -761,13 +765,12 @@ export default function SearchListEventHome(props) {
         <View>
           <Text
             style={{
-              paddingTop: 10,
+              paddingTop: 15,
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
-              marginRight: 65,
             }}
           >
             {t("maxCost")}
@@ -775,12 +778,13 @@ export default function SearchListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
-              // paddingVertical: 10,
               paddingHorizontal: 10,
+              paddingVertical: Platform.OS == "ios" ? 10 : null,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
-              paddingVertical: Platform.OS == "ios" ? 10 : null,
+              height: "30%",
+              width: "100%",
             }}
           >
             <TextInput
@@ -835,22 +839,26 @@ export default function SearchListEventHome(props) {
           priceValue.max == null ||
           priceValue.max == undefined) ? null : parseInt(priceValue.min) >
           parseInt(priceValue.max) ? (
-          <View style={{ width: "100%" }}>
+          <View
+            style={{
+              width: "100%",
+              marginTop:
+                Platform.OS == "ios" ? (Notch ? "-20%" : "-15%") : "-20%",
+            }}
+          >
             <Text
               type="regular"
               size="medium"
               style={{
                 color: "#D75995",
                 position: "absolute",
-                left: 0,
-                top: 10,
               }}
             >
               {"*" + t("priceWarning")}
             </Text>
           </View>
         ) : null}
-      </ScrollView>
+      </View>
     );
   };
 
@@ -1643,6 +1651,7 @@ export default function SearchListEventHome(props) {
           <Search width={15} height={15} />
 
           <TextInput
+            value={search.keyword}
             underlineColorAndroid="transparent"
             placeholder={t("search")}
             style={{
@@ -1847,9 +1856,9 @@ export default function SearchListEventHome(props) {
             height:
               Platform.OS == "ios"
                 ? Notch
-                  ? Dimensions.get("screen").height * 0.57
-                  : Dimensions.get("screen").height * 0.6
-                : Dimensions.get("screen").height * 0.589,
+                  ? Dimensions.get("screen").height * 0.6
+                  : Dimensions.get("screen").height * 0.63
+                : Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopStartRadius: 15,

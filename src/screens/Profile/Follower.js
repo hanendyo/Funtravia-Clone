@@ -222,6 +222,7 @@ export default function Follower(props) {
           justifyContent: "space-evenly",
           marginTop: 5,
         }}
+        showsVerticalScrollIndicator={false}
         data={data}
         renderItem={({ item, index }) => (
           <View
