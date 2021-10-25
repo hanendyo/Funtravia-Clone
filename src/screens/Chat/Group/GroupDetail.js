@@ -21,6 +21,7 @@ import {
   StatusBar,
   FunImage,
   FunImageBackground,
+  Truncate,
 } from "../../../component";
 import {
   Arrowbackwhite,
@@ -916,7 +917,7 @@ export default function GroupDetail(props) {
               marginTop: 13,
             }}
           >
-            {dataDetail?.title}
+            <Truncate text={dataDetail ? dataDetail.title : null} length={20} />
           </Text>
           {dataDetail && dataDetail.type == "itinerary" ? (
             <Pressable
