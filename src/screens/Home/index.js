@@ -362,6 +362,7 @@ export default function Home(props) {
                 <View>
                   <Text
                     type="bold"
+                    numberOfLines={1}
                     style={{
                       color: "#A9A9A9",
                     }}
@@ -554,7 +555,7 @@ export default function Home(props) {
                             flexDirection: "row",
                             justifyContent: "flex-end",
                             alignItems: "center",
-                            width: 85,
+                            width: 110,
                           }}
                         >
                           <Text
