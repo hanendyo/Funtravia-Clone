@@ -35,6 +35,8 @@ import {
   Above,
   Xblue,
   ItineraryIcon,
+  ItineraryIconGray,
+  AlbumIconGray,
   Arrowbackios,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
@@ -1580,11 +1582,23 @@ export default function ItinerarySearchCategory(props) {
                     flexDirection: "row",
                   }}
                 >
-                  <ItineraryIcon
-                    style={{ marginRight: 5 }}
-                    height={20}
-                    width={20}
-                  />
+                  {actives == "Itinerary" ? (
+                    <ItineraryIcon
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  ) : (
+                    <ItineraryIconGray
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  )}
                   <Text
                     size="label"
                     type={actives == "Itinerary" ? "bold" : "light"}
@@ -1610,11 +1624,23 @@ export default function ItinerarySearchCategory(props) {
                     flexDirection: "row",
                   }}
                 >
-                  <TravelAlbum
-                    style={{ marginRight: 5 }}
-                    height={20}
-                    width={20}
-                  />
+                  {actives == "Album" ? (
+                    <TravelAlbum
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  ) : (
+                    <AlbumIconGray
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  )}
                   <Text
                     size="label"
                     type={actives == "Album" ? "bold" : "light"}

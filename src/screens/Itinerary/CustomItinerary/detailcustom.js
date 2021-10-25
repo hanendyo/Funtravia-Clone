@@ -85,7 +85,7 @@ export default function detailCustomItinerary(props) {
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
-            Activity Details
+            {t("activityDetails")}
           </Text>
           <Text
             style={{
@@ -511,8 +511,8 @@ export default function detailCustomItinerary(props) {
                         item.type !== "custom"
                           ? item.type !== "google"
                             ? item.type
-                            : "Destination from Google"
-                          : "Custom Activity",
+                            : t("destinationFromGoogle")
+                          : t("customActivity"),
                     })}
                   </Text>
                 </TouchableOpacity>
@@ -711,7 +711,7 @@ export default function detailCustomItinerary(props) {
                           color: "#d1d1d1",
                         }}
                       >
-                        Choose File
+                        {t("chooseFile")}
                       </Text>
                     </TouchableOpacity>
                     <Text
@@ -757,10 +757,10 @@ export default function detailCustomItinerary(props) {
                   width: "50%",
                 }}
               >
-                Add activity at this location
+                {t("addActivityAtThisLocation")}
               </Text>
               <Button
-                text={"Add Activity"}
+                text={t("addActivity")}
                 onPress={() => {
                   props.navigation.push("CustomItinerary", {
                     idItin: props.route.params.idItin,
@@ -828,8 +828,8 @@ export default function detailCustomItinerary(props) {
                       dataParent.type !== "custom"
                         ? dataParent.type !== "google"
                           ? dataParent.type
-                          : "Destination from Google"
-                        : "Custom Activity",
+                          : t("destinationFromGoogle")
+                        : t("customActivity"),
                   })}
                 </Text>
               </TouchableOpacity>
@@ -855,7 +855,7 @@ export default function detailCustomItinerary(props) {
                 borderBottomWidth: 0.5,
               }}
             >
-              <Text>Location</Text>
+              <Text>{t("location")}</Text>
               <MapView
                 style={{
                   // flex: 1,
@@ -923,7 +923,7 @@ export default function detailCustomItinerary(props) {
                     marginRight: 40,
                   }}
                 >
-                  <Text>Duration :</Text>
+                  <Text>{t("duration")} :</Text>
                   <View
                     style={{
                       marginTop: 10,
@@ -944,7 +944,7 @@ export default function detailCustomItinerary(props) {
                   </View>
                 </View>
                 <View>
-                  <Text>Time :</Text>
+                  <Text>{t("time")} :</Text>
                   <View
                     style={{
                       marginTop: 10,
@@ -995,7 +995,7 @@ export default function detailCustomItinerary(props) {
                   borderBottomWidth: 0.5,
                 }}
               >
-                <Text>Notes</Text>
+                <Text>{t("notes")}</Text>
                 <Text style={{ marginTop: 10 }}>{dataParent.note}</Text>
               </View>
             ) : null}
@@ -1097,7 +1097,7 @@ export default function detailCustomItinerary(props) {
                         color: "#d1d1d1",
                       }}
                     >
-                      Choose File
+                      {t("chooseFile")}
                     </Text>
                   </TouchableOpacity>
                   <Text
@@ -1107,7 +1107,7 @@ export default function detailCustomItinerary(props) {
                       color: "#d1d1d1",
                     }}
                   >
-                    {t("Upload your flight ticket, hotel voucher, etc.")}
+                    {t("uploadFlightTicket")}
                   </Text>
                 </View>
               </View>

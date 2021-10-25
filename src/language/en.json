@@ -607,7 +607,6 @@
   "visitCity": "Visit this city",
   "pageNoteFound": "Looks like the page you visit is missing or deleted by its user",
   "closeDouble": "Press again to close!",
-  "CustomActivity": "Custom Activity",
   "AddFlightNumber": "Input Flight Number",
   "inputAlertFlight": "Input your flight number",
   "inputAlertDateTime": "Input Date and Time",
@@ -767,5 +766,14 @@
   "uploadYourFlightTicketHotelVoucherEtc": "Upload your flight ticket, hotel voucher, etc.",
   "newGroupChat": "New Group Chat",
   "addParticipants": "Add Participants",
-  "newMessage": "New Message"
+  "newMessage": "New Message",
+  "addActivity": "Tambah aktifitas",
+  "addActivityAtThisLocation": "Add activity at this location",
+  "activityDetails": "Activity details",
+  "destinationFromGoogle": "Destination from Google",
+  "time": "Time",
+  "notes": "Notes",
+  "uploadFlightTicket": "Upload your flight ticket, hotel voucher, etc.",
+  "chooseFile": "Choose file"
+  
 }
