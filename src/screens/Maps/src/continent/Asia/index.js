@@ -201,7 +201,6 @@ export default function Asia({ navigation }) {
     <View
       style={{
         flex: 1,
-
         width: Dimensions.get("screen").width,
         backgroundColor: "#FFFFFF",
       }}
@@ -209,8 +208,6 @@ export default function Asia({ navigation }) {
       <StatusBar backgroundColor="#14646E" />
       <View
         style={{
-          width: Dimensions.get("screen").width,
-
           height: Platform.select({
             ios: Notch
               ? Dimensions.get("screen").height * 0.5
@@ -223,12 +220,13 @@ export default function Asia({ navigation }) {
         {/* view for map destination */}
         <View
           style={{
+            overflow: "hidden",
+            width: Dimensions.get("screen").width - 30,
             backgroundColor: "#f6f6f6",
             marginHorizontal: 15,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             marginTop: 15,
-
             height: Platform.select({
               ios: Notch
                 ? Dimensions.get("screen").height * 0.5 - 15
@@ -244,7 +242,10 @@ export default function Asia({ navigation }) {
               justifyContent: "space-between",
             }}
           >
-            <View style={{ flexDirection: "row" }}>
+            <Pressable
+              style={{ flexDirection: "row" }}
+              onPress={() => onBackPress()}
+            >
               <Button
                 text={""}
                 size="medium"
@@ -278,7 +279,7 @@ export default function Asia({ navigation }) {
                   {t("destination")}
                 </Text>
               </View>
-            </View>
+            </Pressable>
             {subContinent.id !== "142" ? (
               <View
                 style={{
@@ -305,7 +306,6 @@ export default function Asia({ navigation }) {
           <View
             style={{
               width: "100%",
-
               height: Platform.select({
                 ios: Notch
                   ? Dimensions.get("screen").height * 0.35
@@ -313,7 +313,8 @@ export default function Asia({ navigation }) {
                 android:
                   deviceId == "LYA-L29"
                     ? Dimensions.get("screen").height * 0.34
-                    : Dimensions.get("screen").height * 0.35,
+                    : // : Dimensions.get("screen").height * 0.35,
+                      "70%",
               }),
               justifyContent: "center",
             }}
@@ -396,7 +397,7 @@ export default function Asia({ navigation }) {
                 {t("region")}
               </Text>
             </View>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <FlatList
                 data={subContinentData}
                 contentContainerStyle={{
