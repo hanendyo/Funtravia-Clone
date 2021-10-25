@@ -6,7 +6,7 @@ import FollowingQuery from "../../graphQL/Query/Profile/otherFollowing";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import { Text, Button, Loading, Truncate } from "../../component";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 
@@ -36,6 +36,25 @@ export default function Following(props) {
     headerLeftContainerStyle: {
       background: "#FFF",
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+          marginLeft: 5,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
+    ),
   };
 
   let [token, setToken] = useState("");
@@ -319,6 +338,7 @@ export default function Following(props) {
     >
       <Loading show={loadin} />
       <FlatList
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingVertical: 5,
           justifyContent: "space-evenly",
@@ -351,7 +371,7 @@ export default function Following(props) {
                 }
                 // props.navigation.push("otherprofile", { idUser: item.id })
               }
-              style={{ flexDirection: "row" }}
+              style={{ flexDirection: "row", width: "75%" }}
             >
               <Image
                 source={
@@ -370,26 +390,40 @@ export default function Following(props) {
               />
               <View
                 style={{
+                  width: "70%",
                   marginLeft: 20,
                   justifyContent: "center",
                   paddingVertical: 1,
                 }}
               >
                 {item.last_name !== null ? (
-                  <Text size="small" type="bold" style={{ marginBottom: 5 }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginBottom: 5 }}
+                  >
                     {item.first_name + " " + item.last_name}
                   </Text>
                 ) : (
-                  <Text size="small" type="bold" style={{ marginBottom: 5 }}>
+                  <Text
+                    size="description"
+                    type="bold"
+                    style={{ marginBottom: 5 }}
+                  >
                     {item.first_name}
                   </Text>
                 )}
-                <Text type="regular" size="small" style={{ marginBottom: 5 }}>
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{ marginBottom: 5 }}
+                >
                   {`@${item.username}`}
                 </Text>
                 {item?.bio ? (
-                  <Text type="regular" size="small">
-                    <Truncate text={item?.bio ? item.bio : ""} length={40} />
+                  <Text type="regular" size="description" numberOfLines={1}>
+                    {item?.bio ? item.bio : ""}
+                    {/* <Truncate text={item?.bio ? item.bio : ""} length={40} /> */}
                   </Text>
                 ) : null}
               </View>

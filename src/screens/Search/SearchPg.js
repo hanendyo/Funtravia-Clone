@@ -1209,7 +1209,7 @@ export default function SearchPg(props, { navigation, route }) {
                       <View style={{}}>
                         {item.status_following === false ? (
                           <Button
-                            size="medium"
+                            size="small"
                             type="circle"
                             variant="bordered"
                             style={{ width: 100 }}
@@ -1220,7 +1220,7 @@ export default function SearchPg(props, { navigation, route }) {
                           ></Button>
                         ) : (
                           <Button
-                            size="medium"
+                            size="small"
                             type="circle"
                             style={{ width: 100 }}
                             onPress={() => {
@@ -2203,7 +2203,7 @@ export default function SearchPg(props, { navigation, route }) {
                       <View style={{}}>
                         {item.status_following === false ? (
                           <Button
-                            size="medium"
+                            size="small"
                             type="circle"
                             variant="bordered"
                             style={{ width: 100 }}
@@ -2214,7 +2214,7 @@ export default function SearchPg(props, { navigation, route }) {
                           ></Button>
                         ) : (
                           <Button
-                            size="medium"
+                            size="small"
                             type="circle"
                             style={{ width: 100 }}
                             onPress={() => {
