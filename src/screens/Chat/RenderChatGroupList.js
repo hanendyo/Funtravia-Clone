@@ -271,7 +271,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
               <View
                 style={{
                   flexDirection: "row",
-                  width: "85%",
+                  width: "80%",
                   // borderWidth: 1,
                 }}
               >
@@ -349,7 +349,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
               {item.recent ? (
                 <View
                   style={{
-                    width: "15%",
+                    width: "20%",
                     alignItems: "flex-end",
                     // marginTop: 5,
                     // paddingRight: 10,
