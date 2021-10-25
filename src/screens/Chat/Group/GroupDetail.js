@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  SafeAreaView,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { ReactNativeFile } from "apollo-upload-client";
@@ -20,14 +21,18 @@ import {
   StatusBar,
   FunImage,
   FunImageBackground,
+  Truncate,
 } from "../../../component";
 import {
   Arrowbackwhite,
+  Arrowbackios,
   AddParticipant,
   OptionsVertWhite,
   Xgray,
   Pencilgreen,
+  PensilPutih,
   ArrowRightHome,
+  ItineraryIcon,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -125,35 +130,46 @@ export default function GroupDetail(props) {
         <View
           style={{
             flex: 1,
+            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-end",
             height: 50,
-            width: 50,
-            marginRight: 10,
+            width: 100,
+            marginRight: 15,
             marginTop: 20,
           }}
         >
-          <View
-            style={{
-              backgroundColor: "#000",
-              opacity: 0.6,
-              position: "absolute",
-              height: 40,
-              width: 40,
-              borderRadius: 20,
-            }}
-          ></View>
+          {dataDetail && dataDetail.type !== "itinerary" ? (
+            <Pressable
+              onPress={() => {
+                setModalrename();
+              }}
+              style={{
+                width: 40,
+                height: 40,
+                marginRight: 10,
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                borderRadius: 25,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <PensilPutih width={18} height={18} />
+            </Pressable>
+          ) : null}
           <Menu
             ref={(ref) => (_menu = ref)}
             button={
               <Pressable
                 style={{
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
+                  paddingHorizontal: 13,
+                  paddingVertical: 13,
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  borderRadius: 20,
                 }}
                 onPress={() => _menu.show()}
               >
-                <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+                <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
               </Pressable>
             }
             style={{
@@ -862,7 +878,7 @@ export default function GroupDetail(props) {
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#FFF",
       }}
     >
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
@@ -901,7 +917,7 @@ export default function GroupDetail(props) {
               marginTop: 13,
             }}
           >
-            {dataDetail?.title}
+            <Truncate text={dataDetail ? dataDetail.title : null} length={20} />
           </Text>
           {dataDetail && dataDetail.type == "itinerary" ? (
             <Pressable
@@ -913,6 +929,11 @@ export default function GroupDetail(props) {
                 alignItems: "center",
               }}
             >
+              <ItineraryIcon
+                style={{ marginRight: 5 }}
+                height={20}
+                width={20}
+              />
               <Text type="bold" size="label" style={{ color: "#209fae" }}>
                 {t("viewTrip")}
               </Text>
@@ -925,19 +946,7 @@ export default function GroupDetail(props) {
                 }}
               />
             </Pressable>
-          ) : (
-            <Pressable
-              onPress={() => {
-                setModalrename();
-              }}
-              style={{
-                width: "25%",
-                alignItems: "flex-end",
-              }}
-            >
-              <Pencilgreen width={20} height={20} />
-            </Pressable>
-          )}
+          ) : null}
         </View>
       </View>
       <View

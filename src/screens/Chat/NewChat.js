@@ -50,7 +50,7 @@ export default function NewChat({ navigation }) {
   console.log(DataBuddy);
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "New Message",
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -64,19 +64,24 @@ export default function NewChat({ navigation }) {
       marginLeft: -10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          height: 55,
-          marginLeft: 10,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => navigation.goBack()}
+          style={{
+            height: 55,
+            marginLeft: 10,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <Text type="bold" size="title" style={{ color: "#FFF", marginLeft: 5 }}>
+          {t("newMessage")}
+        </Text>
+      </View>
     ),
     headerRight: () => (
       <View

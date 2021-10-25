@@ -626,6 +626,7 @@
   "hotelName": "Hotel name",
   "checkIn": "Check in",
   "checkOut": "Check out",
+  "SearchForLocation": "Search for location",
   "SearchForHotel": "Search for hotel",
   "inputAlertHotelName": "Input hotel name",
   "inputAlertAddress": "Input hotel address",
@@ -762,5 +763,9 @@
   "priceWarning": "The minimum price cannot be greater than the maximum price",
   "wrongInputOn": "There is an incorrect input on",
   "minCostEx": "Example: 10.000",
-  "maxCostEx": "Example: 1.000.000"
+  "maxCostEx": "Example: 1.000.000",
+  "uploadYourFlightTicketHotelVoucherEtc": "Upload your flight ticket, hotel voucher, etc.",
+  "newGroupChat": "New Group Chat",
+  "addParticipants": "Add Participants",
+  "newMessage": "New Message"
 }

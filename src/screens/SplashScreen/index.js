@@ -103,7 +103,9 @@ export default function SplashScreen(props) {
                 justifyContent: "center",
                 marginBottom: 1,
               }}
-            >{`${t("skip")}`}</Text>
+            >
+              {"Skip"}
+            </Text>
           </Button>
         </View>
         <View
@@ -133,7 +135,7 @@ export default function SplashScreen(props) {
                 }}
                 color="secondary"
                 onPress={() => props.navigation.navigate("LoginScreen")}
-                text={t("signIn")}
+                text={"Sign in"}
               />
               <Button
                 style={{
@@ -145,7 +147,7 @@ export default function SplashScreen(props) {
                   width: Dimensions.get("screen").width - 50,
                 }}
                 onPress={() => props.navigation.navigate("RegisterScreen")}
-                text={t("createYourAccount")}
+                text={"Create your account"}
               />
             </View>
           </View>

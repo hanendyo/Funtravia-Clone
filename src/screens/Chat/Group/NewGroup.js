@@ -27,6 +27,7 @@ import {
   Arrowbackwhite,
   CheckWhite,
   Xgray,
+  Xblue,
   ArrowRight,
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
@@ -38,7 +39,7 @@ export default function NewGroup({ navigation }) {
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
-  let [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   let [DataBuddy, setDataBuddy] = useState([]);
@@ -64,7 +65,7 @@ export default function NewGroup({ navigation }) {
 
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "New Group",
+    headerTitle: "",
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -78,19 +79,27 @@ export default function NewGroup({ navigation }) {
       marginLeft: -10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          height: 55,
-          marginLeft: 10,
-        }}
-      >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-      </Button>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 55,
+            marginLeft: 10,
+          }}
+        >
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        </Button>
+        <View>
+          <Text size="label" style={{ color: "white" }}>
+            {t("newGroupChat")}
+          </Text>
+          <Text style={{ color: "white" }}>{t("addParticipants")}</Text>
+        </View>
+      </View>
     ),
     headerRight: () => (
       <View
@@ -152,6 +161,7 @@ export default function NewGroup({ navigation }) {
       style={{
         flex: 1,
         padding: 10,
+        margin: 15,
         // backgroundColor: "white",
         // borderWidth: 1,
       }}
@@ -167,7 +177,7 @@ export default function NewGroup({ navigation }) {
         <View
           style={{
             backgroundColor: "white",
-            paddingVertical: 10,
+            paddingTop: 10,
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
           }}
@@ -181,7 +191,7 @@ export default function NewGroup({ navigation }) {
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 20,
+              width: Dimensions.get("screen").width - 30,
             }}
           >
             <View
@@ -208,12 +218,11 @@ export default function NewGroup({ navigation }) {
                   }}
                 />
               </View>
-
               <TextInput
                 underlineColorAndroid="transparent"
                 placeholder={t("search")}
                 style={{
-                  width: "100%",
+                  width: "85%",
                   fontFamily: "Lato-Regular",
                   fontSize: 14,
                 }}
@@ -221,6 +230,17 @@ export default function NewGroup({ navigation }) {
                 onChangeText={(text) => _setSearch(text)}
                 onSubmitEditing={(text) => _setSearch(text)}
               />
+              {search ? (
+                <TouchableOpacity onPress={() => _setSearch("")}>
+                  <Xblue
+                    width="20"
+                    height="20"
+                    style={{
+                      alignSelf: "center",
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
           {userSelected && userSelected.length > 0 ? (
@@ -230,18 +250,20 @@ export default function NewGroup({ navigation }) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
-                marginVertical: 10,
+                paddingVertical: 10,
                 paddingHorizontal: 20,
               }}
+              style={{ borderBottomColor: "#F6F6F6", borderBottomWidth: 1 }}
               renderItem={({ item, index }) => (
                 <Pressable
                   onPress={() => selectUser(item)}
-                  style={
-                    {
-                      // borderRadius: 15,
-                      // margin: 10,
-                    }
-                  }
+                  style={{
+                    // borderRadius: 15,
+                    // margin: 10,
+                    // justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 20,
+                  }}
                 >
                   <FunImageBackground
                     size="xs"
@@ -255,7 +277,7 @@ export default function NewGroup({ navigation }) {
                       height: 55,
                       width: 55,
                       borderRadius: 30,
-                      marginRight: 20,
+                      marginBottom: 5,
                     }}
                     imageStyle={{
                       height: 55,
@@ -279,6 +301,7 @@ export default function NewGroup({ navigation }) {
                       <Xgray width={10} height={10} />
                     </View>
                   </FunImageBackground>
+                  <Text>{item.first_name}</Text>
                 </Pressable>
               )}
             />
@@ -311,6 +334,8 @@ export default function NewGroup({ navigation }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                   alignContent: "center",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#F6F6F6",
                 }}
               >
                 <View
@@ -373,10 +398,11 @@ export default function NewGroup({ navigation }) {
                     </Text>
 
                     <Text
-                      size="small"
+                      size="description"
                       type="regular"
                       style={{
                         marginLeft: 20,
+                        marginTop: 5,
                       }}
                     >
                       @{item.username}
@@ -399,7 +425,7 @@ export default function NewGroup({ navigation }) {
                 borderColor: "#FFF",
                 backgroundColor: "#209FAE",
                 position: "relative",
-                bottom: 90,
+                bottom: 75,
                 marginBottom: -60,
                 right: 15,
                 justifyContent: "center",

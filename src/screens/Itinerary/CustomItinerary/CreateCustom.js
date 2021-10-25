@@ -832,7 +832,7 @@ export default function CreateCustom(props) {
                         // color: '#646464',
                       }}
                       autoCorrect={false}
-                      placeholder={"Search Address"}
+                      placeholder={t("searchAddress")}
                       value={Address}
                       onChangeText={onChange("address")}
                       keyboardType="default"
@@ -882,7 +882,7 @@ export default function CreateCustom(props) {
               }}
               disabled={props.route.params?.dataParent ? true : false}
               rowSpan={5}
-              placeholder="Detail Address"
+              placeholder={t("detailAddress")}
               value={DetailAddress}
               bordered
               maxLength={160}
@@ -912,7 +912,7 @@ export default function CreateCustom(props) {
                 marginTop: 20,
               }}
             >
-              {t("Attach File")}
+              {t("Attachment")}
             </Text>
             <View
               style={{
@@ -979,7 +979,7 @@ export default function CreateCustom(props) {
                     color: "#d1d1d1",
                   }}
                 >
-                  Upload File
+                  {t("ChooseFile")}
                 </Text>
               </TouchableOpacity>
               <Text
@@ -989,7 +989,7 @@ export default function CreateCustom(props) {
                   color: "#d1d1d1",
                 }}
               >
-                {t("Upload your flight ticket, hotel voucher, etc.")}
+                {t("uploadYourFlightTicketHotelVoucherEtc")}
               </Text>
             </View>
           </View>
@@ -1140,18 +1140,11 @@ export default function CreateCustom(props) {
               <Arrowbackwhite width={20} height={20} />
             </TouchableOpacity>
             <Text
+              size={"title"}
+              type={"bold"}
               style={{
-                top: 13,
                 left: 55,
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
                 color: "white",
-                height: 50,
-                // width: 50,
-                position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
-                // paddingTop: 15,
               }}
             >
               {t("address")}
@@ -1182,7 +1175,7 @@ export default function CreateCustom(props) {
               listViewDisplayed="auto"
               onFail={(error) => console.log(error)}
               currentLocation={true}
-              placeholder={"Search for location"}
+              placeholder={t("SearchForLocation")}
               currentLocationLabel="Nearby location"
               renderLeftButton={() => {
                 return (

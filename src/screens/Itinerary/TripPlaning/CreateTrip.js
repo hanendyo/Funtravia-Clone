@@ -337,10 +337,13 @@ export default function Trip(props) {
   };
 
   const setcity = async (id, name) => {
-    let namecity = name.toLowerCase();
+    let namecity = name.toLowerCase().split(" ");
+    for (let i = 0; i < namecity.length; i++) {
+      namecity[i] = namecity[i].charAt(0).toUpperCase() + namecity[i].slice(1);
+    }
     await setIdCity(id);
     await setModalcity(false);
-    await setCity(namecity);
+    await setCity(namecity.join(" "));
     await setsearchcity([]);
   };
 
@@ -642,7 +645,7 @@ export default function Trip(props) {
                       paddingBottom: 10,
                     }}
                   >
-                    <Item floatingLabel style={{}}>
+                    <Item floatingLabel style={{ marginTop: 10 }}>
                       <Label
                         style={{
                           fontFamily: "Lato-Regular",
@@ -988,7 +991,7 @@ export default function Trip(props) {
                       paddingHorizontal: 20,
                     }}
                   >
-                    <Item floatingLabel>
+                    <Item floatingLabel style={{ marginTop: 10 }}>
                       <Label
                         style={{
                           fontFamily: "Lato-Regular",
