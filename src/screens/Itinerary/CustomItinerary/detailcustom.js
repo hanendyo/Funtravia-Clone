@@ -101,6 +101,7 @@ export default function detailCustomItinerary(props) {
 
   let [dataParent, setDataParent] = useState({});
   let [dataChild, setDataChild] = useState([]);
+  let [modalmenu, setModalmenu] = useState(false);
 
   const pecahData = async (data, id) => {
     let dataX = [];
@@ -547,7 +548,7 @@ export default function detailCustomItinerary(props) {
                       marginRight: 40,
                     }}
                   >
-                    <Text>Duration :</Text>
+                    <Text>{t("duration")} :</Text>
                     <View
                       style={{
                         marginTop: 10,
@@ -566,7 +567,7 @@ export default function detailCustomItinerary(props) {
                     </View>
                   </View>
                   <View>
-                    <Text>Time :</Text>
+                    <Text>{t("time")} :</Text>
                     <View
                       style={{
                         marginTop: 10,
@@ -616,7 +617,7 @@ export default function detailCustomItinerary(props) {
                     borderBottomWidth: 0.5,
                   }}
                 >
-                  <Text>Notes</Text>
+                  <Text>{t("notes")}</Text>
                   <Text style={{ marginTop: 10 }}>{item.note}</Text>
                 </View>
               ) : null}
@@ -711,7 +712,7 @@ export default function detailCustomItinerary(props) {
                           color: "#d1d1d1",
                         }}
                       >
-                        {t("chooseFile")}
+                        {t("ChooseFile")}
                       </Text>
                     </TouchableOpacity>
                     <Text
@@ -839,9 +840,9 @@ export default function detailCustomItinerary(props) {
                 type="circle"
                 variant="transparent"
                 style={{}}
-                // onPress={() => {
-                //   bukamodalmenu(item.id, item.type);
-                // }}
+                onPress={() => {
+                  bukamodalmenu(item.id, item.type);
+                }}
               >
                 <More width={15} height={15} />
               </Button>
@@ -1097,7 +1098,7 @@ export default function detailCustomItinerary(props) {
                         color: "#d1d1d1",
                       }}
                     >
-                      {t("chooseFile")}
+                      {t("ChooseFile")}
                     </Text>
                   </TouchableOpacity>
                   <Text

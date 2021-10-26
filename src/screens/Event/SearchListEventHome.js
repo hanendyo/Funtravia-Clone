@@ -750,7 +750,7 @@ export default function SearchListEventHome(props) {
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
-            marginBottom: Platform.OS == "ios" ? (Notch ? -10 : -20) : -10,
+            marginBottom: Platform.OS == "ios" ? (Notch ? 5 : -20) : -10,
           }}
         >
           <View
