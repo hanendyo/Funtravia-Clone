@@ -13,7 +13,7 @@ export default function Maps({
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
-      width={width - normalize(10)}
+      width={width - normalize(30)}
       height={width - normalize(150)}
       viewBox="0 0 4655 3150"
       fill="none"

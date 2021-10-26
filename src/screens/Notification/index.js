@@ -166,10 +166,6 @@ export default function Notification(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
-    const backAction = () => {
-      BackHandler.addEventListener(props.navigation.goBack());
-      return true;
-    };
   }, []);
   const [
     GetListNotif,

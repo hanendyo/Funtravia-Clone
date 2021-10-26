@@ -203,14 +203,17 @@ export default function Home(props) {
             style={{
               flexDirection: "row",
               padding: 0,
+              alignItems: "center",
             }}
           >
             <View
               style={{
-                width: 5,
+                height: 20,
                 marginRight: 5,
-                backgroundColor: "#209FAE",
-                borderRadius: 20,
+                marginTop: 2,
+                width: 7,
+                backgroundColor: "#209fae",
+                borderRadius: 5,
               }}
             ></View>
             <Text
@@ -229,7 +232,7 @@ export default function Home(props) {
             type="regular"
             size="description"
             style={{
-              marginLeft: 10,
+              marginLeft: 12,
               marginTop: 1,
             }}
           >

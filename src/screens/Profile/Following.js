@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Alert, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Alert,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Text as Teks,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
@@ -13,13 +20,24 @@ import { DefaultProfile } from "../../assets/png";
 export default function Following(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
-    title: `${t("Following")}`,
     headerTintColor: "white",
+    // headerTitle: "Following",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("Following")}
       </Text>
     ),
+    // headerTitle: (
+    //   <Text
+    //     size="title"
+    //     type="regular"
+    //     style={{ color: "#fff", fontFamily: "Lato-Bold" }}
+    //     allowFontScaling={false}
+    //   >
+    //     {t("Following")}
+    //   </Text>
+    // ),
+
     headerMode: "screen",
     headerTransparent: false,
     headerStyle: {
@@ -27,11 +45,11 @@ export default function Following(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    // },
     headerLeftContainerStyle: {
       background: "#FFF",
     },

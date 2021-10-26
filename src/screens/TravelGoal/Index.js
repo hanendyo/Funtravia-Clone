@@ -31,7 +31,12 @@ export default function TravelGoal(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" size="header" style={{ color: "#fff" }}>
+      <Text
+        type="light"
+        size="header"
+        style={{ color: "#fff" }}
+        allowFontScaling={false}
+      >
         {t("travelgoals")}
       </Text>
     ),
@@ -174,16 +179,14 @@ export default function TravelGoal(props) {
 
   return (
     <ScrollView
-      contentContainerStyle={
-        {
-          // backgroundColor: "#f6f6f6",
-        }
-      }
+      contentContainerStyle={{
+        backgroundColor: "#f6f6f6",
+      }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       style={{
         flex: 1,
-        // backgroundColor: "#fff",
+        backgroundColor: "#f6f6f6",
         // padding: 20,
       }}
     >

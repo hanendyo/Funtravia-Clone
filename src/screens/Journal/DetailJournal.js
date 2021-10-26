@@ -257,16 +257,22 @@ export default function DetailJournal(props) {
     // await fetchDataComment();
   };
 
-  const backAction = () => {
-    props.navigation.goBack();
-    return true;
-  };
+  // const backAction = () => {
+  //   props.navigation.goBack();
+  //   return true;
+  // };
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, [backAction]);
+
+  // useEffect(() => {
+  //   props.navigation.addListener("blur", () => {
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  //   });
+  // }, [backAction]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

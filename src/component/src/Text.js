@@ -29,22 +29,35 @@ type Props = TextProps & {
 
 export default function Text({
   children,
-  style,
   onPress,
+  style,
   type = "regular",
   size = "description",
   ...otherProps
 }: Props) {
-  return (
-    <TextComponent
-      style={[fontSize[size], fontType[type], style]}
-      allowFontScaling={false}
-      onPress={onPress ? onPress : null}
-      {...otherProps}
-    >
-      {children}
-    </TextComponent>
-  );
+  if (style) {
+    return (
+      <TextComponent
+        style={[fontSize[size], fontType[type], style]}
+        allowFontScaling={false}
+        onPress={onPress ? onPress : null}
+        {...otherProps}
+      >
+        {children}
+      </TextComponent>
+    );
+  } else {
+    return (
+      <TextComponent
+        style={[fontSize[size], fontType[type]]}
+        allowFontScaling={false}
+        onPress={onPress ? onPress : null}
+        {...otherProps}
+      >
+        {children}
+      </TextComponent>
+    );
+  }
 }
 
 // const fontSize = StyleSheet.create({

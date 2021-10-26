@@ -56,13 +56,11 @@ export default function SearchFeed({ props }) {
     setuser(user.user);
   };
   useEffect(() => {
-    if (token) {
-      const feedasync = props.navigation.addListener("focus", () => {
-        querySearchPost();
-        loadAsync();
-      });
-      return feedasync;
-    }
+    const feedasync = props.navigation.addListener("focus", () => {
+      querySearchPost();
+      loadAsync();
+    });
+    return feedasync;
   }, [props.navigation]);
 
   const Ceklogin = (id, item, index) => {

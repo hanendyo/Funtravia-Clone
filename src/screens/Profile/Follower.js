@@ -15,10 +15,9 @@ export default function Follower(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
-    title: `${t("Followers")}`,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("Followers")}
       </Text>
     ),
@@ -28,11 +27,11 @@ export default function Follower(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    // },
     headerLeftContainerStyle: {
       background: "#FFF",
     },

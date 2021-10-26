@@ -183,18 +183,25 @@ export default function Login({ navigation, route }) {
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
     AsyncStorage.setItem("isFirst", "false");
-    const backAction = () => {
-      BackHandler.addEventListener(navigation.goBack());
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    // return () => backHandler.remove();
   }, []);
+
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    navigation.setOptions(HeaderComponent);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   return (
     <KeyboardAvoidingView
