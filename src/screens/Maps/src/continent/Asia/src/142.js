@@ -1,6 +1,7 @@
 import React from "react";
 import Svg, { Path, G } from "react-native-svg";
 import { Dimensions } from "react-native";
+import normalize from "react-native-normalize";
 
 export default function Maps({
   subContinent,
@@ -12,8 +13,8 @@ export default function Maps({
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
-      width={width - 30}
-      height={width - 150}
+      width={width - normalize(10)}
+      height={width - normalize(150)}
       viewBox="0 0 4655 3150"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

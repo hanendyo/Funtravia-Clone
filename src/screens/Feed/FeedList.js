@@ -48,9 +48,8 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
-import moment from "moment";
 import ProgressBar from "react-native-progress/Bar";
-import "moment/min/moment-with-locales";
+import moment from "moment";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -467,7 +466,7 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  moment.locale("fr");
+  // moment.locale("fr");
   // console.log();
 
   // const duration = (datetime) => {
@@ -476,6 +475,7 @@ export default function FeedList({ props, token }) {
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
+    // var date2 = new Date().getTime();
 
     var date2 = moment().format();
 

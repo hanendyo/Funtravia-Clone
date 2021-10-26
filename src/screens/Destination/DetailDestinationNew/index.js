@@ -842,7 +842,6 @@ const Index = (props) => {
               <View style={{ width: "95%" }}>
                 <Text size="header" type="black" numberOfLines={1}>
                   {data?.destinationById?.name}
-                  {data?.destinationById?.name}
                 </Text>
               </View>
               <View style={{ flexDirection: "row", marginTop: 5 }}>
