@@ -313,7 +313,7 @@
   "completePlan": "Plan Selesai",
   "addDestinationForm": "Tambah Destinasi",
   "createActivity": "Tambahkan Aktivitas Baru",
-  "addCustomActivity": "Tambahkan Aktivitas Custom",
+  "addCustomActivity": "Tambahkan Aktivitas Buatan",
   "myWishlist": "Wishlist Saya",
   "addFromWishtlist": "Tambahkan Destinasi Dari Wishlist Anda",
   "searchFromGoogle": "Cari di Google",
@@ -775,5 +775,6 @@
   "time": "Waktu",
   "notes": "Catatan",
   "uploadFlightTicket": "Unggah tiket penerbanganmu, voucher hotel, dan lain-lain",
-  "chooseFile": "Pilih file"
+  "registerEmail": "Masukkan emailmu yang telah terdaftar di bawah untuk menerima intruksi pergantian email"
+  
 }

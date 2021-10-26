@@ -203,13 +203,14 @@ export default function SettingEmailChange(props) {
           <View
             style={{
               borderRadius: 3,
-              height: 45,
+              height: Platform.OS == "ios" ? 50 : 45,
               backgroundColor: "#DAF0F2",
               borderWidth: 1,
               borderColor: "#209fae",
               width: "100%",
               marginTop: 10,
               paddingHorizontal: 10,
+              paddingVertical: Platform.OS == "ios" ? 15 : null,
             }}
           >
             <TextInput
@@ -227,13 +228,14 @@ export default function SettingEmailChange(props) {
           <View
             style={{
               borderRadius: 3,
-              height: 45,
-              backgroundColor: "#fff",
+              height: Platform.OS == "ios" ? 50 : 45,
+              backgroundColor: "#DAF0F2",
               borderWidth: 1,
+              borderColor: "#209fae",
               width: "100%",
-              borderColor: "#e1e1e1",
               marginTop: 10,
               paddingHorizontal: 10,
+              paddingVertical: Platform.OS == "ios" ? 15 : null,
             }}
           >
             <TextInput

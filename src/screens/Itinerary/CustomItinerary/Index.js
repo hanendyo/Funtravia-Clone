@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  Modal as ModalRN,
+  Pressable,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -16,6 +19,7 @@ import {
   ArrowRight,
   Delete,
 } from "../../../assets/svg";
+import { Bg_soon } from "../../../assets/png";
 import Timeline from "../../../graphQL/Query/Itinerary/Timelinecustom";
 import ListCustom from "../../../graphQL/Query/Itinerary/ListSavedCustom";
 import hapuscustomsaved from "../../../graphQL/Mutation/Itinerary/Deletecustomactivitysaved";
@@ -25,6 +29,7 @@ import { useTranslation } from "react-i18next";
 
 export default function CustomItinerary(props) {
   const { t, i18n } = useTranslation();
+  let [soon, setSoon] = useState(false);
 
   const HeaderComponent = {
     headerShown: true,
@@ -222,6 +227,79 @@ export default function CustomItinerary(props) {
     ];
   };
 
+  const renderAlert = () => {
+    return (
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
+        >
+          <View
+            style={{
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
+    );
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -231,7 +309,7 @@ export default function CustomItinerary(props) {
   }, [props.navigation]);
 
   return (
-    <View
+    <ScrollView
       style={{
         flex: 1,
         backgroundColor: "#fff",
@@ -240,7 +318,7 @@ export default function CustomItinerary(props) {
       }}
     >
       <Loading show={loading} />
-
+      <View>{renderAlert()}</View>
       <View
         style={{
           // position: 'absolute',
@@ -459,6 +537,7 @@ export default function CustomItinerary(props) {
             }}
           >
             {t("suggestion")}
+            {console.log(`SOON: `, soon)}
           </Text>
 
           <TouchableOpacity
@@ -475,12 +554,12 @@ export default function CustomItinerary(props) {
             // 	})
             // }
             // disabled
-            onPress={() => {
-              Alert.alert("Coming soon");
-            }}
+            // onPress={() => {
+            //   Alert.alert("Coming soon boi");
+            // }}
+            onPress={() => setSoon(true)}
             style={{
               paddingVertical: 5,
-
               width: Dimensions.get("screen").width,
               flexDirection: "row",
               alignItems: "center",
@@ -810,6 +889,6 @@ export default function CustomItinerary(props) {
           ) : null}
         </View>
       </ScrollView>
-    </View>
+    </ScrollView>
   );
 }
