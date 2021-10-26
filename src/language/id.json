@@ -318,7 +318,7 @@
   "addFromWishtlist": "Tambahkan Destinasi Dari Wishlist Anda",
   "searchFromGoogle": "Cari di Google",
   "addDestinationGoogle": "Tambahkan Destinasi Dari Google",
-  "customActivity": "Aktivitas Custom",
+  "customActivity": "Aktivitas Buatan",
   "inputDestinationDetails": "Masukan Detail Destinasi",
   "selectPosition": "Pilih Posisi",
   "addNewActivity": "Tambahkan Aktivitas Baru",
@@ -608,7 +608,6 @@
   "visitCity": "Kunjungi kota ini",
   "pageNoteFound": "Sepertinya halaman yang Anda kunjungi hilang atau dihapus oleh penggunanya",
   "closeDouble": "Tekan sekali lagi untuk keluar!",
-  "CustomActivity": "Aktivitas Buatan",
   "AddFlightNumber": "Masukkan Nomor Penerbangan",
   "inputAlertFlight": "Masukkan nomor penerbangan anda",
   "inputAlertDateTime": "Masukkan tanggal dan waktu",
@@ -768,5 +767,13 @@
   "uploadYourFlightTicketHotelVoucherEtc": "Unggah tiket penerbangan, voucher hotel, dll.",
   "newGroupChat": "Grup Chat Baru",
   "addParticipants": "Tambah Peserta",
-  "newMessage": "Pesan Baru"
+  "newMessage": "Pesan Baru",
+  "addActivity": "Tambah aktifitas",
+  "addActivityAtThisLocation": "Tambah aktifitas pada lokasi ini",
+  "activityDetails": "Detail aktifitas",
+  "destinationFromGoogle": "Destinasi dari Google",
+  "time": "Waktu",
+  "notes": "Catatan",
+  "uploadFlightTicket": "Unggah tiket penerbanganmu, voucher hotel, dan lain-lain",
+  "chooseFile": "Pilih file"
 }
