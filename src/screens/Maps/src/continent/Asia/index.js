@@ -186,6 +186,12 @@ export default function Asia({ navigation }) {
   }, [navigation, onBackPress]);
 
   useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    });
+  }, [onBackPress]);
+
+  useEffect(() => {
     keyboardDidShowListener.current = Keyboard.addListener(
       "keyboardWillShow",
       onKeyboardShow

@@ -344,6 +344,12 @@ export default function Room({ navigation, route }) {
   }, [onBackPress]);
 
   useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    });
+  }, [onBackPress]);
+
+  useEffect(() => {
     navigation.setOptions(headerOptions);
     // if (init) {
     //   getUserToken();

@@ -157,17 +157,22 @@ export default function Comments(props) {
     setSetting(JSON.parse(setsetting));
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      BackHandler.addEventListener(props.navigation.goBack());
-      return true;
-    };
+  const backAction = () => {
+    props.navigation.goBack();
+    return true;
+  };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-  });
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

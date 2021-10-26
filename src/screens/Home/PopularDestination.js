@@ -195,7 +195,7 @@ export default function PopularDestination({ props }) {
                     onPress={() => onSelect(item)}
                     style={{
                       marginRight: 8,
-                      shadowColor: temp ? "rgba(0, 0, 0, 0.11);" : "#fff",
+                      shadowColor: temp ? "rgba(0, 0, 0, 0.11)" : "#fff",
                       shadowOffset: { width: 0, height: 4 },
                       shadowRadius: 4,
                       shadowOpacity: 1,
@@ -220,11 +220,7 @@ export default function PopularDestination({ props }) {
                       imageStyle={styles.destinationImage}
                     >
                       <LinearGradient
-                        colors={
-                          temp
-                            ? ["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]
-                            : ["#fff", "#fff"]
-                        }
+                        colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
                         start={{ x: 0, y: 1 }}
                         end={{ x: 0, y: 0 }}
                         style={{

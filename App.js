@@ -16,6 +16,12 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 import { createUploadLink } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
+import { Text } from "./src/component";
+
+// Text.defaultProps = Text.defaultProps || {};
+// Text.defaultProps.style = { fontFamily: "Lora-Bold" };
+
+console.log("Text.defaultProps", Text.defaultProps);
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
@@ -57,6 +63,8 @@ function App() {
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState();
+
+  console.log("Text.defaultProps", Text.defaultProps);
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();

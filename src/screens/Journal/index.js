@@ -226,16 +226,16 @@ export default function Journal(props) {
     });
   };
 
-  const backAction = () => {
-    props.navigation.goBack();
-    return true;
-  };
+  // const backAction = () => {
+  //   props.navigation.goBack();
+  //   return true;
+  // };
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, []);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

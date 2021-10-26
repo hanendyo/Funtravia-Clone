@@ -224,7 +224,13 @@ export default function Register({ navigation }) {
     BackHandler.addEventListener("hardwareBackPress", backAction);
     return () =>
       BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
+  }, [backAction]);
+
+  useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   useEffect(() => {
     AsyncStorage.setItem("isFirst", "false");

@@ -615,7 +615,7 @@ export default function Unesco({ navigation, route }) {
             // transform: [{ translateY: PosisiCountry }],
             alignItems: "center",
             width: "100%",
-            height: 44,
+            height: normalize(44),
             // backgroundColor: "#FFFFFF",
             // zIndex: 100,
             opacity: imageOpacity,
@@ -626,31 +626,18 @@ export default function Unesco({ navigation, route }) {
             onPress={() => setModelCountry(true)}
             style={({ pressed }) => [
               {
-                height: 50,
-                borderRadius: 25,
-                // borderWidth: 1,
-                borderColor: "grey",
+                height: normalize(45),
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: "#d8d8d8",
                 paddingVertical: 10,
-                paddingHorizontal: 30,
+                paddingHorizontal: 0,
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
-                // bottom: -22,
-                // left: "30%",
                 backgroundColor: pressed ? "#F6F6F7" : "white",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.22,
-                shadowRadius: 1.46,
-                elevation: 3,
                 flexDirection: "row",
-
-                // position: "absolute",
-                // transform: [{ translateY: PosisiCountry }],
-                // alignItems: "center",
+                width: "35%",
               },
             ]}
           >
@@ -666,7 +653,7 @@ export default function Unesco({ navigation, route }) {
               />
             ) : (
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{
                   marginRight: 10,
@@ -1171,9 +1158,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(14),
+    fontSize: normalize(16),
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

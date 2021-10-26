@@ -202,21 +202,30 @@ export function MyProfile({ navigation, route }) {
         setToken(value);
       }
     });
-    const backAction = () => {
-      BackHandler.addEventListener(navigation.goBack());
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
 
     return () => {
       scrollY.removeAllListeners();
       headerScrollY.removeAllListeners();
     };
   }, [routes, tabIndex]);
+
+  const backAction = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    navigation.setOptions(HeaderComponent);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   /**
    *  helper functions

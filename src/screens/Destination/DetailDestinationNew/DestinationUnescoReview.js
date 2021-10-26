@@ -93,12 +93,6 @@ export default function DestinationUnescoReview(props) {
     ),
   };
 
-  const handleBack = () => {
-    BackHandler.removeEventListener("hardwareBackPress", backAction);
-    props.navigation.goBack();
-    return true;
-  };
-
   const backAction = () => {
     // console.log("platform android", Platform.OS === "android");
     if (Platform.OS === "android") {

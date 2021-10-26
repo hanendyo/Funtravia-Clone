@@ -547,7 +547,7 @@ export default function MovieLocation({ navigation, route }) {
                 ? HEADER_MAX_HEIGHT + normalize(20)
                 : HEADER_MAX_HEIGHT - normalize(5)
               : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT - normalize(5)
+              ? HEADER_MAX_HEIGHT - normalize(8)
               : HEADER_MAX_HEIGHT,
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
@@ -565,10 +565,10 @@ export default function MovieLocation({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             flexDirection: "row",
-            backgroundColor: "#F6F6F6",
+            backgroundColor: "#fff",
             // height: 30,
             // width: 100,
-            borderRadius: 17,
+            borderRadius: 30,
             borderColor: "#d8d8d8",
             borderWidth: 1,
           }}

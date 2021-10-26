@@ -43,6 +43,12 @@ export default function SplashScreen(props) {
     };
   }, [backAction]);
 
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
+
   return (
     <View style={styles.main}>
       <StatusBar barStyle="light-content" />
