@@ -85,7 +85,8 @@ const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
   let [heightjudul, setheightjudul] = useState(150);
-  let [tambahan, setTambahan] = useState(0);
+  let [tambahanJudul, setTambahanJudul] = useState(0);
+  let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
   const HeaderHeight = Platform.select({
     ios: Notch ? 340 - StatusBar.currentHeight : 300 - StatusBar.currentHeight,
     android: 340 - StatusBar.currentHeight,
@@ -95,20 +96,26 @@ export default function ListEventHome(props) {
   //     ? deviceId === "iPhone 12 Pro"
   //       ? Dimensions.get("screen").height * 0.275 +
   //         (heightjudul - 90) +
-  //         tambahan
+  //         tambahanDeskripsi
   //       : Dimensions.get("screen").height * 0.29 +
   //         (heightjudul - 90) +
-  //         tambahan
-  //     : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahan
+  //         tambahanDeskripsi
+  //     : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahanDeskripsi
   //   : deviceId == "LYA-L29"
-  //   ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahan
-  //   : Dimensions.get("screen").height * 0.28 + (heightjudul - 90) + tambahan;
+  //   ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahanDeskripsi
+  //   : Dimensions.get("screen").height * 0.28 + (heightjudul - 90) + tambahanDeskripsi;
 
   const HeaderHeightCustom = Platform.select({
     ios: Notch ? 420 - 48 : 360 - 48,
     android: 340 - StatusBar.currentHeight,
   });
   let [heightview, setheight] = useState(0);
+  const tambahanValidation = () => {
+    let valid = (tambahanDeskripsi + tambahanJudul) % 3 === 0 ? true : false;
+    console.log(`TOTAL: `, (tambahanDeskripsi + tambahanJudul) % 3);
+    console.log(`Valid: `, valid);
+    return valid;
+  };
   const { t, i18n } = useTranslation();
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
@@ -642,7 +649,7 @@ export default function ListEventHome(props) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55],
+      outputRange: [0, -HeaderHeight],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -665,17 +672,17 @@ export default function ListEventHome(props) {
         style={{
           transform: [{ translateY: y }],
           top: deviceId === "iPhone 12 Pro" ? SafeStatusBar - 5 : SafeStatusBar,
-          height: HeaderHeight,
+          height: HeaderHeight + 55,
           width: "100%",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#209fae",
         }}
       >
         <View
           style={{
-            justifyContent: "center",
+            justifyContent: "flex-start",
             alignItems: "center",
             width: width,
             height: HeaderHeight - 138,
@@ -740,25 +747,44 @@ export default function ListEventHome(props) {
                     : 30
                   : 30
                 : 30,
-            paddingHorizontal: 20,
+            // paddingHorizontal: 10,
+            paddingLeft: 15,
+            paddingRight: 10,
             // zIndex: 1,
             backgroundColor: "#fff",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
+            width: "100%",
           }}
         >
           <Text
-            // onTextLayout={(x) => {
-            //   let line = x.nativeEvent.lines.length;
-            //   let lines = line - 1;
-            //   setTambahan(lines * 30);
-            // }}
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = +line;
+              if (+lines % 3 == 0) {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanJudul(lines * 3)
+                    : setTambahanJudul(lines * -6)
+                  : setTambahanJudul(lines * 1);
+                // setTambahanJudul(lines * 12);
+              } else {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanJudul(lines * -10)
+                    : setTambahanJudul(lines * -20)
+                  : setTambahanJudul(lines * 1);
+              }
+            }}
             size="title"
             type="bold"
             style={{
-              textAlign: "justify",
+              textAlign: "left",
               paddingBottom: 5,
+              flexShrink: 0,
+              // borderWidth: 2,
             }}
+            // wordWra
           >
             {// Banner && Banner.title ? Banner.title : t("EventTitle")
             t("EventTitle")}
@@ -766,27 +792,30 @@ export default function ListEventHome(props) {
           <Text
             onTextLayout={(x) => {
               let line = x.nativeEvent.lines.length;
+              console.log(`LINE coi: `, line);
               let lines = line - 1;
-              // setTambahan(lines * 32);
-              if (lines % 3 == 0) {
+              console.log(`LINES: `, lines);
+              // setTambahanDeskripsi(lines * 32);
+              if (+lines % 3 == 0) {
                 Platform.OS == "ios"
                   ? Notch
-                    ? setTambahan(lines * 12)
-                    : setTambahan(lines * 6)
-                  : setTambahan(lines - 20);
-                // setTambahan(lines * 12);
+                    ? setTambahanDeskripsi(lines * 15)
+                    : setTambahanDeskripsi(lines * 17)
+                  : setTambahanDeskripsi(lines * 11);
+                // setTambahanDeskripsi(lines * 12);
               } else {
                 Platform.OS == "ios"
                   ? Notch
-                    ? setTambahan(lines - 10)
-                    : setTambahan(lines - 20)
-                  : setTambahan(lines - 20);
+                    ? setTambahanDeskripsi(lines * 16)
+                    : setTambahanDeskripsi(lines - 20)
+                  : setTambahanDeskripsi(lines - 10);
               }
             }}
             size="label"
             type="regular"
             style={{
-              textAlign: "justify",
+              textAlign: "left",
+              // paddingHorizontal:
               // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
               // backgroundColor: "red",
             }}
@@ -1195,7 +1224,18 @@ export default function ListEventHome(props) {
           paddingTop:
             HeaderHeight +
             TabBarHeight +
-            (Platform.OS == "ios" ? (Notch ? 40 : -15) : -15),
+            // (Platform.OS == "ios" ? (Notch ? 55 : 35) : 38),
+            (tambahanJudul % 3 === 0
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 55
+                  : 35
+                : 40
+              : Platform.OS == "ios"
+              ? Notch
+                ? 25
+                : 15
+              : -5),
           paddingHorizontal: 10,
           minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
@@ -1207,6 +1247,9 @@ export default function ListEventHome(props) {
       />
     );
   };
+
+  console.log(`TITLE: `, tambahanJudul);
+  console.log(`DESC: `, tambahanDeskripsi);
 
   const renderTabBar = (props) => {
     // const y = scrollY.interpolate({
@@ -1220,10 +1263,9 @@ export default function ListEventHome(props) {
       outputRange:
         Platform.OS == "ios"
           ? Notch
-            ? [HeaderHeight, 19]
-            : [HeaderHeight, 70]
-          : [HeaderHeight, 70],
-      // extrapolate: 'clamp',
+            ? [HeaderHeight, tambahanJudul % 3 === 0 ? 0 : 30]
+            : [HeaderHeight, tambahanJudul % 3 === 0 ? 20 : 40]
+          : [HeaderHeight, tambahanJudul % 3 === 0 ? 19 : 30],
       extrapolateRight: "clamp",
     });
     return (
@@ -1246,7 +1288,7 @@ export default function ListEventHome(props) {
           width: "100%",
           borderBottomWidth: 2,
           borderBottomColor: "#d1d1d1",
-          marginTop: tambahan,
+          marginTop: tambahanDeskripsi + tambahanJudul,
         }}
       >
         <TabBar
@@ -1260,7 +1302,6 @@ export default function ListEventHome(props) {
             elevation: 0,
             shadowOpacity: 0,
             backgroundColor: "#fff",
-            // backgroundColor: "red",
             height: TabBarHeight - 10,
           }}
           renderLabel={({ route, focused }) => (
