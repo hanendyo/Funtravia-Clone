@@ -23,7 +23,7 @@ import {
   FacebookIcon,
 } from "../../assets/svg";
 import { calendar_blue, Bg_soon } from "../../assets/png";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button, CustomImage } from "../../component";
 import Ripple from "react-native-material-ripple";
@@ -39,12 +39,23 @@ import City from "../../graphQL/Query/Itinerary/City";
 import { useMutation } from "@apollo/react-hooks";
 import Gender from "../../graphQL/Mutation/Setting/genderSettingAkun";
 import DateSetting from "../../graphQL/Mutation/Setting/dateSettingAkun";
+import ConnectionFacebook from "../../graphQL/Mutation/Setting/ConnectionFacebook";
+import disConnectionFacebook from "../../graphQL/Mutation/Setting/disConnectionFacebook";
+import ConnectionGoogle from "../../graphQL/Mutation/Setting/ConnectionGoogle";
+import disConnectionGoogle from "../../graphQL/Mutation/Setting/disConnectionGoogle";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import HasPassword from "../../graphQL/Query/Settings/HasPassword";
+import AkunConnect from "../../graphQL/Query/Settings/AkunConnect";
 import CityInformation from "../../graphQL/Query/Cities/CitiesInformation";
 import { RNToasty } from "react-native-toasty";
 import SettingCity from "./SettingCity";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-community/google-signin";
+import unConnectionGoogle from "../../graphQL/Mutation/Setting/disConnectionGoogle";
+import { LoginManager, AccessToken } from "react-native-fbsdk";
 
 export default function SettingsAkun(props) {
   let { t, i18n } = useTranslation();
@@ -53,7 +64,9 @@ export default function SettingsAkun(props) {
   let [modalBirth, setModalBirth] = useState(false);
   let [modalBirth1, setModalBirth1] = useState(false);
   let [modalGender, setModalGender] = useState(false);
-  let [token, setToken] = useState("");
+  let [modalDisconnect, setModalDisconnect] = useState(false);
+  let [token, setToken] = useState(props.route.params.token);
+
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
   let [dates, setDate] = useState();
@@ -137,11 +150,104 @@ export default function SettingsAkun(props) {
     await querycity();
   };
 
-  const [
-    passwords,
-    { data: dataPassword, loading: loadingPassword, error: errorPassword },
-  ] = useLazyQuery(HasPassword, {
+  const [cek_haspassword, setCekHasPassword] = useState({});
+
+  const {
+    data: dataPassword,
+    loading: loadingPassword,
+    error: errorPassword,
+    refetch: refetchHasPassword,
+  } = useQuery(HasPassword, {
     fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    // pollInterval: 5500,
+    pollInterval: 5000,
+    notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setCekHasPassword(dataPassword.cek_haspassword);
+    },
+  });
+  const [dataAccountConnection, setDataAccountConnection] = useState({});
+
+  const {
+    data: dataConnectionAkun,
+    loading: loadingConnectionAkun,
+    error: errorConnectionAkun,
+    refetch: refatchAccountConnect,
+  } = useQuery(AkunConnect, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+
+    // pollInterval: 5000,
+    notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setDataAccountConnection(dataConnectionAkun.user_connection_account);
+    },
+  });
+
+  const [
+    mutationConnectionGoogle,
+    {
+      data: dataConnectionGoogle,
+      loading: loadingConnectionGoogle,
+      error: errorConnectionGoogle,
+    },
+  ] = useMutation(ConnectionGoogle, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  const [
+    mutationConnectionFacebook,
+    {
+      data: dataConnectionFacebook,
+      loading: loadingConnectionFacebook,
+      error: errorConnectionFacebook,
+    },
+  ] = useMutation(ConnectionFacebook, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  const [
+    mutationDisConnectionGoogle,
+    {
+      data: dataDisConnectionGoogle,
+      loading: loadingDisConnectionGoogle,
+      error: errorDisConnectionGoogle,
+    },
+  ] = useMutation(disConnectionGoogle, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+  const [
+    mutationDisConnectionFacebook,
+    {
+      data: dataDisConnectionFacebook,
+      loading: loadingDisConnectionFacebook,
+      error: errorDisConnectionFacebook,
+    },
+  ] = useMutation(disConnectionFacebook, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -150,11 +256,183 @@ export default function SettingsAkun(props) {
     },
   });
 
+  const _handleGoogleConnect = async () => {
+    try {
+      await GoogleSignin.configure({
+        iosClientId:
+          "292367084833-1kfl44kqitftu0bo1apg8924o0tgakst.apps.googleusercontent.com",
+        offlineAccess: false,
+      });
+      let data = await GoogleSignin.getCurrentUser();
+      if (data) {
+        await GoogleSignin.revokeAccess();
+      }
+
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signIn();
+
+      const result = await GoogleSignin.getTokens();
+
+      let response;
+      if (result) {
+        response = await mutationConnectionGoogle({
+          variables: {
+            client_token: result.accessToken,
+          },
+        });
+      }
+
+      if (
+        response &&
+        (response.data.connection_google.code === "200" ||
+          response.data.connection_google.code === 200)
+      ) {
+        // console.log("success");
+        refatchAccountConnect();
+        RNToasty.Show({
+          title: "Success to Connect Google",
+          position: "bottom",
+        });
+      } else {
+        refatchAccountConnect();
+        RNToasty.Show({
+          title: response.data.connection_google.message,
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      refatchAccountConnect();
+      RNToasty.Show({
+        title: "Someting Wrong",
+        position: "bottom",
+      });
+      console.log("error", error);
+    }
+  };
+
+  const [dataDisconnect, setDatadisconnect] = useState("facebook");
+  const [idProvider, setIdProvicer] = useState("");
+  const _handleModalDisconnect = async (id, provider) => {
+    await setIdProvicer(id);
+    await setDatadisconnect(provider);
+    await setModalDisconnect(true);
+  };
+  const _handleGoogleDisConnect = async (id) => {
+    try {
+      let response = await mutationDisConnectionGoogle({
+        variables: {
+          id: id,
+        },
+      });
+
+      if (
+        response.data.unconnection_google.code === "200" ||
+        response.data.unconnection_google.code === 200
+      ) {
+        console.log("success");
+        refatchAccountConnect();
+        RNToasty.Show({
+          title: "Success to Disconnect Google",
+          position: "bottom",
+        });
+      } else {
+        refatchAccountConnect();
+        console.log("gagal");
+        RNToasty.Show({
+          title: response.data.unconnection_google.message,
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      RNToasty.Show({
+        title: "Someting Wrong",
+        position: "bottom",
+      });
+      console.log("error", error);
+    }
+  };
+  const _handleFacebookDisConnect = async (id) => {
+    try {
+      let response = await mutationDisConnectionFacebook({
+        variables: {
+          id: id,
+        },
+      });
+
+      if (
+        response.data.unconnection_facebook.code === "200" ||
+        response.data.unconnection_facebook.code === 200
+      ) {
+        console.log("success");
+        refatchAccountConnect();
+        RNToasty.Show({
+          title: "Success to Disconnect Facebook",
+          position: "bottom",
+        });
+      } else {
+        refatchAccountConnect();
+        RNToasty.Show({
+          title: response.data.unconnection_facebook.message,
+          position: "bottom",
+        });
+        console.log("gagal");
+      }
+    } catch (error) {
+      RNToasty.Show({
+        title: "Someting Wrong",
+        position: "bottom",
+      });
+      console.log("error", error);
+    }
+  };
+  const _handleFacebookConnect = async () => {
+    try {
+      let FB = await LoginManager.logInWithPermissions([
+        "email",
+        "public_profile",
+        "user_likes",
+      ]);
+      let FB_Data;
+      if (!FB.isCancelled) {
+        FB_Data = await AccessToken.getCurrentAccessToken();
+      }
+      let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
+      let response;
+      if (FB_Data) {
+        response = await mutationConnectionFacebook({
+          variables: {
+            client_token: FB_Data.accessToken,
+          },
+        });
+        console.log(
+          "🚀 ~ file: SettingsAkun.js ~ line 311 ~ const_handleFacebookConnect= ~ response",
+          response
+        );
+      }
+
+      if (
+        response &&
+        (response.data.connection_facebook.code === "200" ||
+          response.data.connection_facebook.code === 200)
+      ) {
+        console.log("success");
+        refatchAccountConnect();
+      } else {
+        refatchAccountConnect();
+        console.log("gagal");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await querycity();
-    await passwords();
+    refetchHasPassword();
+    refatchAccountConnect();
+    // await passwords();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -267,10 +545,14 @@ export default function SettingsAkun(props) {
     }
   };
 
-  const hasPassword = () => {
+  const _handlehasPassword = () => {
+    console.log(
+      "🚀 ~ file: SettingsAkun.js ~ line 547 ~ SettingsAkun ~ cek_haspassword",
+      cek_haspassword
+    );
     if (token !== "" && token !== null) {
-      if (dataPassword && dataPassword.cek_haspassword) {
-        if (dataPassword?.cek_haspassword?.ishasPassword === true) {
+      if (cek_haspassword) {
+        if (cek_haspassword.ishasPassword === true) {
           props.navigation.navigate("HasPassword");
         } else {
           props.navigation.navigate("AddPassword");
@@ -305,326 +587,198 @@ export default function SettingsAkun(props) {
   // Render all
 
   return (
-    <>
-      <ScrollView
-        style={{
-          backgroundColor: "#F6F6F6",
-          // flex: 1,
-        }}
+    <ScrollView
+      style={{
+        backgroundColor: "#F6F6F6",
+        // flex: 1,
+      }}
+    >
+      {/* Modal Comming Soon */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
       >
-        {/* Modal Comming Soon */}
-        <ModalRN
-          useNativeDriver={true}
-          visible={soon}
-          onRequestClose={() => setSoon(false)}
-          transparent={true}
-          animationType="fade"
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 4,
+          }}
         >
-          <Pressable
-            // onPress={() => setModalLogin(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          ></Pressable>
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
               alignItems: "center",
+              justifyContent: "center",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 4,
             }}
           >
-            <View
+            <Image
+              source={Bg_soon}
               style={{
-                // backgroundColor: "white",
-                // width: Dimensions.get("screen").width - 100,
-                padding: 20,
-                paddingHorizontal: 20,
-                alignItems: "center",
-                justifyContent: "center",
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                position: "absolute",
                 borderRadius: 5,
               }}
-            >
-              <Image
-                source={Bg_soon}
-                style={{
-                  height: Dimensions.get("screen").width - 180,
-                  width: Dimensions.get("screen").width - 110,
-                  position: "absolute",
-                  borderRadius: 5,
-                }}
-              />
-              <Text type="bold" size="h5">
-                {t("comingSoon")}!
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
+
+      {/*Modal Email */}
+      <View style={styles.centeredView}>
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalEmail}
+          onRequestClose={() => setModalEmail(false)}
+          onBackdropPress={() => {
+            setModalEmail(false);
+          }}
+          // style={{ height: Dimensions.get("screen").width * 0.2 }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalViewEmail}>
+              <Text
+                type="bold"
+                size="label"
+                onPress={() => emailChange()}
+                // onPress={() => {
+                //   setModalEmail(false),
+                //     props.navigation.navigate("SettingEmailChange", {
+                //       setting: setting,
+                //     });
+                // }}
+              >
+                Change Email
               </Text>
-              <Text type="regular" size="label" style={{ marginTop: 5 }}>
-                {t("soonUpdate")}.
-              </Text>
-              <Button
-                text={"OK"}
-                style={{
-                  marginTop: 20,
-                  width: Dimensions.get("screen").width - 300,
-                }}
-                type="box"
-                onPress={() => setSoon(false)}
-              ></Button>
             </View>
           </View>
-        </ModalRN>
+        </Modal>
+      </View>
 
-        {/*Modal Email */}
-        <View style={styles.centeredView}>
-          <Modal
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-            isVisible={modalEmail}
-            onRequestClose={() => setModalEmail(false)}
-            onBackdropPress={() => {
-              setModalEmail(false);
-            }}
-            // style={{ height: Dimensions.get("screen").width * 0.2 }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalViewEmail}>
-                <Text
-                  type="bold"
-                  size="label"
-                  onPress={() => emailChange()}
-                  // onPress={() => {
-                  //   setModalEmail(false),
-                  //     props.navigation.navigate("SettingEmailChange", {
-                  //       setting: setting,
-                  //     });
-                  // }}
-                >
-                  Change Email
-                </Text>
-              </View>
-            </View>
-          </Modal>
-        </View>
-
-        {/*Modal Phone */}
-        <View style={styles.centeredView}>
-          <Modal
-            animationIn="fadeIn"
-            animationOut="fadeOut"
-            isVisible={modalPhone}
-            onRequestClose={() => setModalPhone(false)}
-            onBackdropPress={() => {
-              setModalPhone(false);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text
-                  style={{ color: "#209FAE", marginBottom: 20 }}
-                  size="label"
-                  type="bold"
-                >
-                  Delete Phone Number
-                </Text>
-                <Text
-                  type="bold"
-                  size="label"
-                  onPress={() => {
-                    setModalPhone(!modalPhone);
-                  }}
-                  onPress={() => {
-                    setModalPhone(false),
-                      props.navigation.navigate("SettingPhoneChange");
-                  }}
-                >
-                  Change Phone Number
-                </Text>
-              </View>
-            </View>
-          </Modal>
-        </View>
-
-        {/* Modal Birth Date */}
-
-        <ModalRN
-          onRequestClose={() => setModalBirth(false)}
-          onBackdropPress={() => setModalBirth(false)}
-          visible={modalBirth}
-          transparent={true}
+      {/*Modal Phone */}
+      <View style={styles.centeredView}>
+        <Modal
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modalPhone}
+          onRequestClose={() => setModalPhone(false)}
+          onBackdropPress={() => {
+            setModalPhone(false);
+          }}
         >
-          <Pressable
-            onPress={() => setModalBirth(false)}
-            style={{
-              backgroundColor: "rgba(0,0,0,0.7)",
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#fff",
-                width: Dimensions.get("screen").width - 110,
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  borderRadius: 5,
-                  alignItems: "center",
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text
+                style={{ color: "#209FAE", marginBottom: 20 }}
+                size="label"
+                type="bold"
+              >
+                Delete Phone Number
+              </Text>
+              <Text
+                type="bold"
+                size="label"
+                onPress={() => {
+                  setModalPhone(!modalPhone);
+                }}
+                onPress={() => {
+                  setModalPhone(false),
+                    props.navigation.navigate("SettingPhoneChange");
                 }}
               >
-                <Text
-                  size="title"
-                  type="bold"
-                  style={{ marginTop: 12, marginBottom: 15 }}
-                >
-                  {t("birthdate")}
-                </Text>
-                <Pressable
-                  onPress={() => setModalBirth(false)}
-                  style={{
-                    height: 50,
-                    width: 55,
-                    position: "absolute",
-                    right: 0,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Xgray width={15} height={15} />
-                </Pressable>
-              </View>
-              <Pressable
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#464646",
-                  marginTop: 30,
-                  marginHorizontal: 20,
-                }}
-                onPress={() => closeBirth()}
-              >
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginVertical: 10 }}
-                >
-                  {dates ? dateFormatYMD(dates) : t("birthofdate")}
-                </Text>
-                <CustomImage
-                  source={calendar_blue}
-                  customStyle={{ width: 20, height: 20 }}
-                />
-              </Pressable>
-              <View
-                style={{
-                  marginVertical: 20,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginHorizontal: 30,
-                }}
-              >
-                <Button
-                  variant="transparent"
-                  size="medium"
-                  style={{ width: "48%" }}
-                  // color="green"
-                  text={t("cancel")}
-                  onPress={() => setModalBirth(false)}
-                ></Button>
-                <Button
-                  size="medium"
-                  style={{ width: "48%" }}
-                  text={t("save")}
-                  onPress={() => hasilDate(dates)}
-                ></Button>
-              </View>
+                Change Phone Number
+              </Text>
             </View>
-          </Pressable>
-        </ModalRN>
+          </View>
+        </Modal>
+      </View>
 
-        <DateTimePickerModal
-          isVisible={modalBirth1}
-          mode="date"
-          date={new Date(dates)}
-          onConfirm={(e) => dateTime(e)}
-          onCancel={() => closeDatPicker()}
-        />
+      {/* Modal Birth Date */}
 
-        {/* Modal Jenis Kelamin */}
-
-        <ModalRN
-          onRequestClose={() => setModalGender(false)}
-          onBackdropPress={() => setModalGender(false)}
-          transparent={true}
-          visible={modalGender}
+      <ModalRN
+        onRequestClose={() => setModalBirth(false)}
+        onBackdropPress={() => setModalBirth(false)}
+        visible={modalBirth}
+        transparent={true}
+      >
+        <Pressable
+          onPress={() => setModalBirth(false)}
+          style={{
+            backgroundColor: "rgba(0,0,0,0.7)",
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
         >
-          <Pressable
-            onPress={() => setModalGender(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          ></Pressable>
           <View
             style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-              borderRadius: 5,
+              backgroundColor: "#fff",
               width: Dimensions.get("screen").width - 110,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
-                backgroundColor: "#fff",
-                width: Dimensions.get("screen").width - 110,
+                backgroundColor: "#f6f6f6",
                 borderRadius: 5,
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
               }}
             >
-              <View
-                style={{
-                  backgroundColor: "#f6f6f6",
-                  borderRadius: 5,
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
-                  alignItems: "center",
-                }}
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 12, marginBottom: 15 }}
               >
-                <Text
-                  size="title"
-                  type="bold"
-                  style={{ marginTop: 12, marginBottom: 15 }}
-                >
-                  {t("gender")}
-                </Text>
-              </View>
+                {t("birthdate")}
+              </Text>
               <Pressable
-                onPress={() => setModalGender(false)}
+                onPress={() => setModalBirth(false)}
                 style={{
                   height: 50,
                   width: 55,
@@ -636,769 +790,990 @@ export default function SettingsAkun(props) {
               >
                 <Xgray width={15} height={15} />
               </Pressable>
-              <View
-                style={{
-                  marginHorizontal: 20,
-                  marginTop: 20,
-                  borderBottomColor: "#464646",
-                  borderBottomWidth: 1,
-                }}
-              >
-                <Picker
-                  note
-                  mode="dropdown"
-                  style={{
-                    width: "107%",
-                    height: Platform.OS === "ios" ? 200 : 40,
-                    fontSize: 14,
-                    fontFamily: "Lato-Regular",
-                    marginLeft: -8,
-                    elevation: 20,
-                  }}
-                  selectedValue={genders}
-                  onValueChange={(x) => setGender(x)}
-                >
-                  <Picker.Item label={t("Male")} value="M" />
-                  <Picker.Item label={t("Female")} value="F" />
-                </Picker>
-              </View>
-              <View
-                style={{
-                  marginVertical: 30,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginHorizontal: 20,
-                }}
-              >
-                <Button
-                  size="medium"
-                  style={{ width: "48%" }}
-                  variant="transparent"
-                  text={t("cancel")}
-                  onPress={() => setModalGender(false)}
-                ></Button>
-                <Button
-                  size="medium"
-                  style={{ width: "48%" }}
-                  text={t("save")}
-                  onPress={() => hasilGender(genders)}
-                ></Button>
-              </View>
+            </View>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#464646",
+                marginTop: 30,
+                marginHorizontal: 20,
+              }}
+              onPress={() => closeBirth()}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 10 }}>
+                {dates ? dateFormatYMD(dates) : t("birthofdate")}
+              </Text>
+              <CustomImage
+                source={calendar_blue}
+                customStyle={{ width: 20, height: 20 }}
+              />
+            </Pressable>
+            <View
+              style={{
+                marginVertical: 20,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginHorizontal: 30,
+              }}
+            >
+              <Button
+                variant="transparent"
+                size="medium"
+                style={{ width: "48%" }}
+                // color="green"
+                text={t("cancel")}
+                onPress={() => setModalBirth(false)}
+              ></Button>
+              <Button
+                size="medium"
+                style={{ width: "48%" }}
+                text={t("save")}
+                onPress={() => hasilDate(dates)}
+              ></Button>
             </View>
           </View>
-        </ModalRN>
-        {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
+        </Pressable>
+      </ModalRN>
+
+      <DateTimePickerModal
+        isVisible={modalBirth1}
+        mode="date"
+        date={new Date(dates)}
+        onConfirm={(e) => dateTime(e)}
+        onCancel={() => closeDatPicker()}
+      />
+
+      {/* Modal Jenis Kelamin */}
+
+      <ModalRN
+        onRequestClose={() => setModalGender(false)}
+        onBackdropPress={() => setModalGender(false)}
+        transparent={true}
+        visible={modalGender}
+      >
+        <Pressable
+          onPress={() => setModalGender(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
         <View
           style={{
-            marginTop: 15,
-            marginHorizontal: 15,
-            backgroundColor: "#FFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-            elevation: 2,
-            borderRadius: 10,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            width: Dimensions.get("screen").width - 110,
           }}
         >
           <View
             style={{
-              paddingHorizontal: 15,
-              paddingTop: 13,
-            }}
-          >
-            <Text size="title" type="bold">
-              {t("personalData")}
-            </Text>
-          </View>
-          <Ripple
-            rippleCentered={true}
-            // onPress={() => setModelSetNegara(true)}
-            style={{
-              paddingHorizontal: 15,
-              // paddingVertical: 13,
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 0.5,
+              backgroundColor: "#fff",
+              width: Dimensions.get("screen").width - 110,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginBottom: 15,
-                marginTop: 13,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
               }}
             >
-              <Text size="label" type="regular">
-                {t("firstName")}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 12, marginBottom: 15 }}
               >
-                <Text size="label" type="light" style={{}}>
-                  <Truncate
-                    text={
-                      setting.user.first_name
-                        ? setting.user.first_name
-                        : "Not Set"
-                    }
-                    length={30}
-                  />
-                </Text>
-              </View>
-            </View>
-          </Ripple>
-          <Ripple
-            rippleCentered={true}
-            // onPress={() => setModelSetNegara(true)}
-            style={{
-              paddingHorizontal: 15,
-              // paddingVertical: 13,
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 0.5,
-            }}
-          >
-            <View
-              style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginBottom: 15,
-                marginTop: 13,
-              }}
-            >
-              <Text size="label" type="regular">
-                {t("lastName")}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text size="description" type="light" style={{}}>
-                  <Truncate
-                    text={
-                      setting && setting.user && setting.user?.last_name
-                        ? setting.user?.last_name
-                        : "Not Set"
-                    }
-                    length={30}
-                  />
-                </Text>
-              </View>
-            </View>
-          </Ripple>
-          <Ripple
-            rippleCentered={true}
-            style={{
-              paddingHorizontal: 15,
-              // paddingVertical: 13,
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 0.5,
-            }}
-            onPress={() => setModalGender(true)}
-          >
-            <View
-              style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginBottom: 15,
-                marginTop: 13,
-              }}
-            >
-              <Text size="label" type="regular">
                 {t("gender")}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text size="description" type="light" style={{}}>
-                  {setting && setting.user && setting.user.gender
-                    ? setting.user.gender === "M"
-                      ? t("Male")
-                      : t("Female")
-                    : t("notSet")}
-                </Text>
-              </View>
             </View>
-          </Ripple>
-          <Ripple
-            rippleCentered={true}
-            onPress={(e) => setModalBirth(true)}
-            style={{
-              paddingHorizontal: 15,
-              // paddingVertical: 13,
-              borderBottomColor: "#D1D1D1",
-              borderBottomWidth: 0.5,
-            }}
-          >
-            <View
+            <Pressable
+              onPress={() => setModalGender(false)}
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginBottom: 15,
-                marginTop: 13,
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Text size="label" type="regular">
-                {t("birthdate")}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text size="description" type="light" style={{}}>
-                  {setting.user.birth_date
-                    ? dateFormat(setting.user.birth_date)
-                    : t("notSet")}
-                </Text>
-              </View>
-            </View>
-          </Ripple>
-          <Ripple
-            rippleCentered={true}
-            onPress={() =>
-              props.navigation.navigate("AccountStack", {
-                screen: "SettingCity",
-                params: {
-                  props: props,
-                  setting: setting,
-                  token: token,
-                  setSetting: (e) => setSetting(e),
-                  index: index,
-                  setIndex: (e) => setIndex(e),
-                },
-              })
-            }
-            style={{
-              paddingHorizontal: 15,
-              // paddingVertical: 13,
-            }}
-          >
+              <Xgray width={15} height={15} />
+            </Pressable>
             <View
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginBottom: 15,
-                marginTop: 13,
+                marginHorizontal: 20,
+                marginTop: 20,
+                borderBottomColor: "#464646",
+                borderBottomWidth: 1,
               }}
             >
-              <Text size="label" type="regular">
-                {t("cityOfRecidence")}
-              </Text>
-              <View
+              <Picker
+                note
+                mode="dropdown"
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
+                  width: "107%",
+                  height: Platform.OS === "ios" ? 200 : 40,
+                  fontSize: 14,
+                  fontFamily: "Lato-Regular",
+                  marginLeft: -8,
+                  elevation: 20,
                 }}
+                selectedValue={genders}
+                onValueChange={(x) => setGender(x)}
               >
-                <Text size="description" type="light" style={{}}>
-                  {setting &&
-                  setting.cities &&
-                  setting?.cities?.id &&
-                  setting?.cities?.name
-                    ? setting?.cities?.name
-                        .toString()
-                        .toLowerCase()
-                        .replace(/\b[a-z]/g, function(letter) {
-                          return letter.toUpperCase();
-                        })
-                    : t("notSet")}
-                </Text>
-              </View>
+                <Picker.Item label={t("Male")} value="M" />
+                <Picker.Item label={t("Female")} value="F" />
+              </Picker>
             </View>
-          </Ripple>
+            <View
+              style={{
+                marginVertical: 30,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginHorizontal: 20,
+              }}
+            >
+              <Button
+                size="medium"
+                style={{ width: "48%" }}
+                variant="transparent"
+                text={t("cancel")}
+                onPress={() => setModalGender(false)}
+              ></Button>
+              <Button
+                size="medium"
+                style={{ width: "48%" }}
+                text={t("save")}
+                onPress={() => hasilGender(genders)}
+              ></Button>
+            </View>
+          </View>
         </View>
+      </ModalRN>
+      {/* <NavigationEvents onDidFocus={() => loadAsync()} /> */}
+      <View
+        style={{
+          marginTop: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
+        }}
+      >
         <View
           style={{
-            flexDirection: "row",
-            marginTop: 15,
             paddingHorizontal: 15,
-            marginHorizontal: 15,
-            // paddingVertical: 13,
-            backgroundColor: "#FFFFFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-            elevation: 2,
-            borderRadius: 10,
+            paddingTop: 13,
           }}
         >
-          <View style={{ marginVertical: 15, width: "100%" }}>
-            <Text
-              size="label"
-              type="bold"
+          <Text size="title" type="bold">
+            {t("personalData")}
+          </Text>
+        </View>
+        <Ripple
+          rippleCentered={true}
+          // onPress={() => setModelSetNegara(true)}
+          style={{
+            paddingHorizontal: 15,
+            // paddingVertical: 13,
+            borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            <Text size="label" type="regular">
+              {t("firstName")}
+            </Text>
+            <View
               style={{
-                marginBottom: 10,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {t("email")}
+              <Text size="label" type="light" style={{}}>
+                <Truncate
+                  text={
+                    setting.user.first_name
+                      ? setting.user.first_name
+                      : "Not Set"
+                  }
+                  length={30}
+                />
+              </Text>
+            </View>
+          </View>
+        </Ripple>
+        <Ripple
+          rippleCentered={true}
+          // onPress={() => setModelSetNegara(true)}
+          style={{
+            paddingHorizontal: 15,
+            // paddingVertical: 13,
+            borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            <Text size="label" type="regular">
+              {t("lastName")}
             </Text>
-            {setting && setting.user && setting.user.email ? (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text size="description" type="light" style={{}}>
+                <Truncate
+                  text={
+                    setting && setting.user && setting.user?.last_name
+                      ? setting.user?.last_name
+                      : "Not Set"
+                  }
+                  length={30}
+                />
+              </Text>
+            </View>
+          </View>
+        </Ripple>
+        <Ripple
+          rippleCentered={true}
+          style={{
+            paddingHorizontal: 15,
+            // paddingVertical: 13,
+            borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+          }}
+          onPress={() => setModalGender(true)}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            <Text size="label" type="regular">
+              {t("gender")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text size="description" type="light" style={{}}>
+                {setting && setting.user && setting.user.gender
+                  ? setting.user.gender === "M"
+                    ? t("Male")
+                    : t("Female")
+                  : t("notSet")}
+              </Text>
+            </View>
+          </View>
+        </Ripple>
+        <Ripple
+          rippleCentered={true}
+          onPress={(e) => setModalBirth(true)}
+          style={{
+            paddingHorizontal: 15,
+            // paddingVertical: 13,
+            borderBottomColor: "#D1D1D1",
+            borderBottomWidth: 0.5,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            <Text size="label" type="regular">
+              {t("birthdate")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text size="description" type="light" style={{}}>
+                {setting.user.birth_date
+                  ? dateFormat(setting.user.birth_date)
+                  : t("notSet")}
+              </Text>
+            </View>
+          </View>
+        </Ripple>
+        <Ripple
+          rippleCentered={true}
+          onPress={() =>
+            props.navigation.navigate("AccountStack", {
+              screen: "SettingCity",
+              params: {
+                props: props,
+                setting: setting,
+                token: token,
+                setSetting: (e) => setSetting(e),
+                index: index,
+                setIndex: (e) => setIndex(e),
+              },
+            })
+          }
+          style={{
+            paddingHorizontal: 15,
+            // paddingVertical: 13,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            <Text size="label" type="regular">
+              {t("cityOfRecidence")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text size="description" type="light" style={{}}>
+                {setting &&
+                setting.cities &&
+                setting?.cities?.id &&
+                setting?.cities?.name
+                  ? setting?.cities?.name
+                      .toString()
+                      .toLowerCase()
+                      .replace(/\b[a-z]/g, function(letter) {
+                        return letter.toUpperCase();
+                      })
+                  : t("notSet")}
+              </Text>
+            </View>
+          </View>
+        </Ripple>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: 15,
+          paddingHorizontal: 15,
+          marginHorizontal: 15,
+          // paddingVertical: 13,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
+        }}
+      >
+        <View style={{ marginVertical: 15, width: "100%" }}>
+          <Text
+            size="label"
+            type="bold"
+            style={{
+              marginBottom: 10,
+            }}
+          >
+            {t("email")}
+          </Text>
+          {setting && setting.user && setting.user.email ? (
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "flex-end",
+              }}
+            >
               <View
                 style={{
-                  justifyContent: "space-between",
                   flexDirection: "row",
-                  alignItems: "flex-end",
+                  width: Dimensions.get("screen").width - 50,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: Dimensions.get("screen").width - 50,
-                  }}
-                >
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate("SettingEmailChange", {
-                        setting: setting,
-                      })
+                <Pressable
+                  onPress={() =>
+                    // props.navigation.navigate("SettingEmailChange", {
+                    //   setting: setting,
+                    // })
+                    {
+                      if (
+                        cek_haspassword.ishasPassword &&
+                        cek_haspassword.ishasPassword === true
+                      ) {
+                        return props.navigation.navigate("SettingEmailChange", {
+                          setting: setting,
+                        });
+                      } else {
+                        return props.navigation.navigate("AddPasswordEmail");
+                      }
                     }
+                  }
+                >
+                  <View
+                    style={{
+                      alignContent: "flex-start",
+                      justifyContent: "flex-start",
+                    }}
                   >
-                    <View
+                    <Text
+                      type="regular"
+                      size="label"
                       style={{
-                        alignContent: "flex-start",
-                        justifyContent: "flex-start",
+                        alignSelf: "flex-start",
+                        marginBottom: 5,
                       }}
                     >
-                      <Text
-                        type="regular"
-                        size="label"
-                        style={{
-                          alignSelf: "flex-start",
-                          marginBottom: 5,
-                        }}
-                      >
-                        {setting && setting.user && setting.user.email
-                          ? setting.user.email
-                          : t("notSet")}
-                      </Text>
-                      <Text
-                        type="regular"
-                        size="small"
-                        style={{ color: "#6c6c6c" }}
-                      >
-                        {t("emailUsed")}
-                      </Text>
-                    </View>
-                  </Pressable>
-                </View>
-                {/* <OptionsVertBlack
+                      {setting && setting.user && setting.user.email
+                        ? setting.user.email
+                        : t("notSet")}
+                    </Text>
+                    <Text
+                      type="regular"
+                      size="small"
+                      style={{ color: "#6c6c6c" }}
+                    >
+                      {t("emailUsed")}
+                    </Text>
+                  </View>
+                </Pressable>
+              </View>
+              {/* <OptionsVertBlack
                 width={20}
                 height={20}
                 onPress={() => {
                   setModalEmail(true);
                 }}
               /> */}
-              </View>
-            ) : (
-              <Button
-                style={{
-                  width: Dimensions.get("screen").width * 0.9,
-                  paddingHorizontal: 10,
-                  width: "100%",
-                }}
-                type="box"
-                size="medium"
-                color="green"
-                text={t("AddEmail")}
-                onPress={() =>
-                  props.navigation.navigate("SettingEmail", {
-                    dataEmail: setting.user,
-                  })
-                }
-              />
-            )}
-          </View>
-          {setting && setting.user && setting.user.email ? (
-            <View style={{ justifyContent: "center" }}>
-              {/* <OptionsVertBlack
+            </View>
+          ) : (
+            <Button
+              style={{
+                width: Dimensions.get("screen").width * 0.9,
+                paddingHorizontal: 10,
+                width: "100%",
+              }}
+              type="box"
+              size="medium"
+              color="green"
+              text={t("AddEmail")}
+              onPress={() => {
+                cek_haspassword && cek_haspassword.ishasPassword === true
+                  ? props.navigation.navigate("SettingEmail", {
+                      dataEmail: setting.user,
+                    })
+                  : props.navigation.navigate("AddPassword");
+              }}
+            />
+          )}
+        </View>
+        {setting && setting.user && setting.user.email ? (
+          <View style={{ justifyContent: "center" }}>
+            {/* <OptionsVertBlack
               width={15}
               height={15}
               onPress={() => {
                 setModalEmail(true);
               }}
             /> */}
-            </View>
-          ) : null}
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 15,
-            paddingHorizontal: 15,
-            marginHorizontal: 15,
-            backgroundColor: "#FFFFFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-            elevation: 2,
-            borderRadius: 10,
-          }}
-        >
-          <View style={{ marginVertical: 15, width: "100%" }}>
-            <Text
-              size="label"
-              type="bold"
+          </View>
+        ) : null}
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: 15,
+          paddingHorizontal: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
+        }}
+      >
+        <View style={{ marginVertical: 15, width: "100%" }}>
+          <Text
+            size="label"
+            type="bold"
+            style={{
+              marginBottom: 5,
+            }}
+          >
+            {t("phoneNumber")}
+          </Text>
+          {setting && setting.user && setting.user.phone ? (
+            <View
               style={{
-                marginBottom: 5,
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {t("phoneNumber")}
-            </Text>
-            {setting && setting.user && setting.user.phone ? (
               <View
                 style={{
-                  justifyContent: "space-between",
                   flexDirection: "row",
-                  alignItems: "center",
+                  width: Dimensions.get("screen").width - 50,
                 }}
               >
                 <View
                   style={{
-                    flexDirection: "row",
-                    width: Dimensions.get("screen").width - 50,
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  <View
+                  <Text
+                    type="regular"
+                    size="label"
                     style={{
-                      alignContent: "flex-start",
-                      justifyContent: "flex-start",
+                      alignSelf: "flex-start",
+                      marginVertical: 5,
                     }}
                   >
-                    <Text
-                      type="regular"
-                      size="label"
-                      style={{
-                        alignSelf: "flex-start",
-                        marginVertical: 5,
-                      }}
-                    >
-                      {setting.user.email}
-                    </Text>
-                    <Text
-                      type="regular"
-                      size="small"
-                      style={{ color: "#6c6c6c" }}
-                    >
-                      {t("phoneUsed")}
-                    </Text>
-                  </View>
+                    {setting.user.email}
+                  </Text>
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{ color: "#6c6c6c" }}
+                  >
+                    {t("phoneUsed")}
+                  </Text>
                 </View>
               </View>
-            ) : (
-              <Button
-                style={{
-                  width: "100%",
-                  paddingHorizontal: 10,
-                  marginTop: 5,
-                }}
-                type="box"
-                size="medium"
-                color="green"
-                text={t("addPhoneNumber")}
-                // onPress={() => props.navigation.navigate("SettingPhone")}
-                onPress={() => setSoon(true)}
-              />
-            )}
-          </View>
-          {setting && setting.user && setting.user.phone ? (
-            <Pressable
-              style={{ justifyContent: "center" }}
+            </View>
+          ) : (
+            <Button
+              style={{
+                width: "100%",
+                paddingHorizontal: 10,
+                marginTop: 5,
+              }}
+              type="box"
+              size="medium"
+              color="green"
+              text={t("addPhoneNumber")}
+              // onPress={() => props.navigation.navigate("SettingPhone")}
               onPress={() => setSoon(true)}
-            >
-              <OptionsVertBlack width={15} height={15} />
-            </Pressable>
-          ) : null}
+            />
+          )}
         </View>
-        <Pressable
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 15,
-            paddingHorizontal: 15,
-            marginHorizontal: 15,
-            backgroundColor: "#FFFFFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-            elevation: 2,
-            borderRadius: 5,
-          }}
-          onPress={(x) => hasPassword(x)}
-        >
-          <Text
-            size="label"
-            type="regular"
-            style={{
-              marginBottom: 15,
-              marginTop: 13,
-            }}
+        {setting && setting.user && setting.user.phone ? (
+          <Pressable
+            style={{ justifyContent: "center" }}
+            onPress={() => setSoon(true)}
           >
-            {t("password")}
-          </Text>
-          <Nextpremier
-            width={15}
-            height={15}
-            style={{
-              marginVertical: 15,
-            }}
-          />
-        </Pressable>
-        {/* <Ripple
-        onPress={() => null}
+            <OptionsVertBlack width={15} height={15} />
+          </Pressable>
+        ) : null}
+      </View>
+      <Pressable
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          // marginTop: 4,
-          borderWidth: 1,
-          borderTopWidth: 1,
-          borderColor: "#D1D1D1",
+          marginVertical: 15,
           paddingHorizontal: 15,
-          paddingVertical: 13,
+          marginHorizontal: 15,
           backgroundColor: "#FFFFFF",
-          shadowColor: "gray",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 5,
         }}
-        >
+        onPress={() => _handlehasPassword()}
+      >
         <Text
           size="label"
           type="regular"
           style={{
-            marginBottom: 5,
-          }}
-        >
-          {t("Security")}
-        </Text>
-        <Nextpremier width={15} height={15} />
-        </Ripple> */}
-        {/* {datacity && datacity?.cities_search.length > 0 ? (
-          <SettingCity
-            modals={modalCity}
-            setModalCity={(e) => setModalCity(e)}
-            masukan={(e) => setSetting(e)}
-            data={datacity?.cities_search}
-            selected={setting}
-            token={token}
-            setSearchCity={(e) => resultSearch(e)}
-            searchCity={searchCity}
-            indexCity={index}
-            setIndex={(e) => setIndex(e)}
-            props={props}
-          />
-        ) : null} */}
-        <View
-          style={{
-            // flexDirection: "row",
             marginBottom: 15,
-            paddingHorizontal: 15,
-            marginHorizontal: 15,
-            // paddingVertical: 13,
-            backgroundColor: "#FFFFFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 5,
-            },
-            shadowOpacity: 0.1,
-            shadowRadius: 6.27,
-            elevation: 2,
-            borderRadius: 10,
+            marginTop: 13,
           }}
         >
-          <View style={{ marginVertical: 15, width: "100%" }}>
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                marginBottom: 10,
-              }}
-            >
-              {t("connectedAccount")}
-            </Text>
+          {t("password")}
+        </Text>
+        <Nextpremier
+          width={15}
+          height={15}
+          style={{
+            marginVertical: 15,
+          }}
+        />
+      </Pressable>
+      <View
+        style={{
+          // flexDirection: "row",
+          marginBottom: 15,
+          paddingHorizontal: 15,
+          marginHorizontal: 15,
+          // paddingVertical: 13,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 10,
+        }}
+      >
+        <View style={{ marginVertical: 15, width: "100%" }}>
+          <Text
+            size="label"
+            type="bold"
+            style={{
+              marginBottom: 10,
+            }}
+          >
+            {t("connectedAccount")}
+          </Text>
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "flex-end",
+              marginBottom: 15,
+            }}
+          >
             <View
               style={{
-                justifyContent: "space-between",
                 flexDirection: "row",
-                alignItems: "flex-end",
-                marginBottom: 15,
+                width: Dimensions.get("screen").width - 60,
+                // borderWidth: 1,
               }}
             >
-              <View
+              <FacebookIcon width={40} height={40} />
+              <Pressable
+                onPress={() =>
+                  // props.navigation.navigate("SettingEmailChange", {
+                  //   setting: setting,
+                  // })
+                  {
+                    dataAccountConnection.facebook
+                      ? _handleModalDisconnect(
+                          dataAccountConnection.facebook.id,
+                          "facebook"
+                        )
+                      : _handleFacebookConnect();
+                  }
+                }
                 style={{
+                  marginLeft: 5,
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width - 50,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  // width: "100%",
+                  flex: 1,
+                  // borderWidth: 1,
                 }}
               >
-                <FacebookIcon width={40} height={40} />
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("SettingEmailChange", {
-                      setting: setting,
-                    })
-                  }
+                <View
                   style={{
-                    marginLeft: 5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    width: "100%",
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
+                    // width: "70%",
                   }}
                 >
-                  <View
+                  <Text
+                    type="bold"
+                    size="label"
                     style={{
-                      alignContent: "flex-start",
-                      justifyContent: "flex-start",
-                      width: "70%",
+                      alignSelf: "flex-start",
+                      // marginBottom: 5,
                     }}
                   >
+                    Facebook
+                  </Text>
+                  {dataAccountConnection.facebook ? (
                     <Text
-                      type="bold"
-                      size="label"
-                      style={{
-                        alignSelf: "flex-start",
-                        // marginBottom: 5,
-                      }}
-                    >
-                      Facebook
-                    </Text>
-                    {/* <Text
                       type="regular"
                       size="small"
                       style={{ color: "#6c6c6c" }}
                     >
-                      {t("emailUsed")}
-                    </Text> */}
-                  </View>
-                  <Text
-                    type="regular"
-                    size="label"
-                    style={{
-                      color: "#209fae",
-                      // color: "#D75995",
-                      width: "30%",
-                      // marginBottom: 5,
-                      // marginHorizontal:10,
-                    }}
-                  >
-                    {t("connect")}
-                  </Text>
-                </Pressable>
-              </View>
-              {/* <OptionsVertBlack
+                      {dataAccountConnection.facebook.name}
+                    </Text>
+                  ) : null}
+                </View>
+                <Text
+                  type="regular"
+                  size="label"
+                  style={{
+                    color: dataAccountConnection.facebook
+                      ? "#D75995"
+                      : "#209fae",
+                    // color: "#D75995",
+                    // width: "30%",
+                    // marginBottom: 5,
+                  }}
+                >
+                  {dataAccountConnection.facebook
+                    ? t("disConnect")
+                    : t("connect")}
+                </Text>
+              </Pressable>
+            </View>
+            {/* <OptionsVertBlack
                 width={20}
                 height={20}
                 onPress={() => {
                   setModalEmail(true);
                 }}
               /> */}
-            </View>
+          </View>
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "flex-end",
+            }}
+          >
             <View
               style={{
-                justifyContent: "space-between",
                 flexDirection: "row",
-                alignItems: "flex-end",
+                width: Dimensions.get("screen").width - 60,
               }}
             >
-              <View
+              <GoogleIcon width={40} height={40} />
+              <Pressable
+                onPress={() => {
+                  dataAccountConnection.gmail
+                    ? _handleModalDisconnect(
+                        dataAccountConnection.gmail.id,
+                        "google"
+                      )
+                    : _handleGoogleConnect();
+                }}
                 style={{
+                  marginLeft: 5,
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width - 50,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  // width: "100%",
+                  flex: 1,
                 }}
               >
-                <GoogleIcon width={40} height={40} />
-                <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("SettingEmailChange", {
-                      setting: setting,
-                    })
-                  }
+                <View
                   style={{
-                    marginLeft: 5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    width: "100%",
+                    alignContent: "flex-start",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  <View
+                  <Text
+                    type="bold"
+                    size="label"
                     style={{
-                      alignContent: "flex-start",
-                      justifyContent: "flex-start",
-                      width: "70%",
+                      alignSelf: "flex-start",
+                      // marginBottom: 5,
                     }}
                   >
+                    Google
+                  </Text>
+                  {dataAccountConnection.gmail ? (
                     <Text
-                      type="bold"
-                      size="label"
-                      style={{
-                        alignSelf: "flex-start",
-                        // marginBottom: 5,
-                      }}
-                    >
-                      Google
-                    </Text>
-                    {/* <Text
                       type="regular"
                       size="small"
                       style={{ color: "#6c6c6c" }}
                     >
-                      {t("emailUsed")}
-                    </Text> */}
-                  </View>
-                  <Text
-                    type="regular"
-                    size="label"
-                    style={{
-                      color: "#209fae",
-                      // color: "#D75995",
-                      width: "30%",
-                      // marginBottom: 5,
-                      // marginHorizontal:10,
-                    }}
-                  >
-                    {t("connect")}
-                  </Text>
-                </Pressable>
-              </View>
-              {/* <OptionsVertBlack
+                      {dataAccountConnection.gmail.email}
+                    </Text>
+                  ) : null}
+                </View>
+                <Text
+                  type="regular"
+                  size="label"
+                  style={{
+                    color: dataAccountConnection.gmail ? "#D75995" : "#209fae",
+                    // color: "#D75995",
+                    // width: "30%",
+                    // marginBottom: 5,
+                  }}
+                >
+                  {dataAccountConnection.gmail ? t("disConnect") : t("connect")}
+                </Text>
+              </Pressable>
+            </View>
+            {/* <OptionsVertBlack
                 width={20}
                 height={20}
                 onPress={() => {
                   setModalEmail(true);
                 }}
               /> */}
-            </View>
           </View>
         </View>
-      </ScrollView>
-    </>
+      </View>
+      {/* modal remove_admin */}
+      <ModalRN
+        useNativeDriver={true}
+        visible={modalDisconnect}
+        onRequestClose={() => setModalDisconnect(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalDisconnect(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            // top: 0,
+            // left: -21,
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            zIndex: 10,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {dataDisconnect == "facebook"
+                ? t("disconnectFacebook")
+                : t("disconnectGoogle")}
+            </Text>
+            <Pressable
+              onPress={() => setModalDisconnect(false)}
+              style={{
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+            <Text
+              style={{ alignSelf: "center", textAlign: "center" }}
+              size="label"
+              type="regular"
+            >
+              {dataDisconnect == "facebook"
+                ? t("alertDisconnectFacebook")
+                : t("alertDisconnectGoogle")}
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 20,
+            }}
+          >
+            <Button
+              onPress={() => {
+                if (dataDisconnect == "facebook") {
+                  _handleFacebookDisConnect(idProvider);
+                } else {
+                  _handleGoogleDisConnect(idProvider);
+                }
+                setModalDisconnect(false);
+              }}
+              color="secondary"
+              text={
+                dataDisconnect == "facebook"
+                  ? t("disconnectFacebook")
+                  : t("disconnectGoogle")
+              }
+            ></Button>
+            <Button
+              onPress={() => {
+                setModalDisconnect(false);
+              }}
+              // color="secondary"
+              variant="transparent"
+              text={t("cancel")}
+              style={{ marginTop: 5, marginBottom: 15 }}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
+    </ScrollView>
   );
 }
 

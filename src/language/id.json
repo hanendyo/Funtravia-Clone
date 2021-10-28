@@ -775,6 +775,10 @@
   "time": "Waktu",
   "notes": "Catatan",
   "uploadFlightTicket": "Unggah tiket penerbanganmu, voucher hotel, dan lain-lain",
-  "registerEmail": "Masukkan emailmu yang telah terdaftar di bawah untuk menerima intruksi pergantian email"
+  "registerEmail": "Masukkan emailmu yang telah terdaftar di bawah untuk menerima intruksi pergantian email",
+  "alertDisconnectGoogle": "Apakah Anda ingin melepaskan akun google ini?",
+  "alertDisconnectFacebook": "Apakah Anda ingin melepaskan akun facebook ini?",
+  "disconnectGoogle":"Lepaskan Google",
+  "disconnectFacebook":"Lepaskan Facebook"
   
 }

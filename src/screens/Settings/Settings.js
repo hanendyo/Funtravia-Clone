@@ -347,7 +347,10 @@ export default function Settings(props) {
         <Ripple
           rippleCentered={true}
           onPress={() =>
-            props.navigation.navigate("SettingsAkun", { setting: setting })
+            props.navigation.navigate("SettingsAkun", {
+              setting: setting,
+              token: token,
+            })
           }
           style={{
             paddingHorizontal: 15,
