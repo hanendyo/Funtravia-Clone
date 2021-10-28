@@ -1607,7 +1607,7 @@ export default function SearchListEventHome(props) {
             setshow(true);
           }}
           style={{
-            marginRight: 13,
+            marginRight: 5,
             borderRadius: 3,
             paddingHorizontal: 10,
             borderColor: "#209fae",
@@ -1629,7 +1629,7 @@ export default function SearchListEventHome(props) {
                 style={{
                   fontFamily: "Lato-Regular",
                   color: "#ffff",
-                  fontSize: 15,
+                  fontSize: 14,
                 }}
               >
                 {cekData(dataFilterCategori)}
