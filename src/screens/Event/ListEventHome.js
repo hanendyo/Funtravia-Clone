@@ -649,7 +649,7 @@ export default function ListEventHome(props) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight],
+      outputRange: [0, -HeaderHeight + 50],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -672,7 +672,19 @@ export default function ListEventHome(props) {
         style={{
           transform: [{ translateY: y }],
           top: deviceId === "iPhone 12 Pro" ? SafeStatusBar - 5 : SafeStatusBar,
-          height: HeaderHeight + 55,
+          height:
+            HeaderHeight +
+            (tambahanJudul % 3 === 0
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 10
+                  : 0
+                : 0
+              : Platform.OS == "ios"
+              ? Notch
+                ? 10
+                : 0
+              : 0),
           width: "100%",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -747,9 +759,9 @@ export default function ListEventHome(props) {
                     : 30
                   : 30
                 : 30,
-            // paddingHorizontal: 10,
-            paddingLeft: 15,
-            paddingRight: 10,
+            paddingHorizontal: 15,
+            // paddingLeft: 15,
+            // paddingRight: 15,
             // zIndex: 1,
             backgroundColor: "#fff",
             opacity: imageOpacity,
@@ -845,7 +857,7 @@ export default function ListEventHome(props) {
             //       : Dimensions.get("screen").height - 515
             //     : Dimensions.get("screen").height - 602,
 
-            zIndex: 11,
+            // zIndex: 11,
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
           }}
@@ -865,7 +877,8 @@ export default function ListEventHome(props) {
               alignContent: "center",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
+              width: Dimensions.get("screen").width * 0.33,
+              marginRight: -1,
             }}
           >
             <Text
@@ -896,7 +909,7 @@ export default function ListEventHome(props) {
               alignContent: "center",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
+              width: Dimensions.get("screen").width * 0.33,
             }}
           >
             <Text
@@ -1263,9 +1276,9 @@ export default function ListEventHome(props) {
       outputRange:
         Platform.OS == "ios"
           ? Notch
-            ? [HeaderHeight, tambahanJudul % 3 === 0 ? 0 : 30]
-            : [HeaderHeight, tambahanJudul % 3 === 0 ? 20 : 40]
-          : [HeaderHeight, tambahanJudul % 3 === 0 ? 19 : 30],
+            ? [HeaderHeight, tambahanJudul % 3 === 0 ? 5 : 35]
+            : [HeaderHeight, tambahanJudul % 3 === 0 ? 17 : 37]
+          : [HeaderHeight, tambahanJudul % 3 === 0 ? 13 : 55],
       extrapolateRight: "clamp",
     });
     return (
@@ -1834,6 +1847,7 @@ export default function ListEventHome(props) {
                 backgroundColor: "#fff",
                 // position: "absolute",
                 top: 0,
+                height: Platform.OS == "ios" ? (Notch ? "6%" : "8%") : "6%",
               }}
             >
               <View
@@ -1843,8 +1857,6 @@ export default function ListEventHome(props) {
                   flexDirection: "row",
                   alignItems: "center",
                   alignContent: "center",
-                  height: 30,
-
                   paddingHorizontal: 10,
                 }}
               >
@@ -1857,10 +1869,11 @@ export default function ListEventHome(props) {
                   placeholder={t("search")}
                   autoCorrect={false}
                   style={{
-                    width: "94%",
+                    width: "93%",
                     // borderWidth: 1,
-                    marginLeft: 5,
+                    marginLeft: 10,
                     padding: 0,
+                    fontSize: 16,
                   }}
                   returnKeyType="search"
                   onChangeText={(x) => {
