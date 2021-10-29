@@ -521,7 +521,7 @@ export default function Comments(props) {
           color: "#209fae",
         }}
       >
-        Read More
+        {t("readMore")}
       </Text>
     );
   };

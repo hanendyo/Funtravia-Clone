@@ -321,7 +321,7 @@ export default function Comments(props) {
           marginTop: 5,
         }}
       >
-        Read More
+        {t("readMore")}
       </Text>
     );
   };

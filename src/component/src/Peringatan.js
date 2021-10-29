@@ -30,7 +30,6 @@ export default function ImageSlide({ aler, setClose }) {
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
-            justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
             position: "absolute",
@@ -39,9 +38,9 @@ export default function ImageSlide({ aler, setClose }) {
         <View
           style={{
             width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 60,
+            alignSelf: "center",
             zIndex: 15,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View

@@ -31,6 +31,7 @@ import {
   PlusCircle,
   Search,
   Xhitam,
+  Xblue,
 } from "../../../assets/svg";
 import Swipeout from "react-native-swipeout";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/listbuddy";
@@ -1048,7 +1049,7 @@ export default function ItineraryBuddy(props) {
             <Input
               // editable={false}
               style={{
-                width: "100%",
+                width: "85%",
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
                 color: "#464646",
@@ -1059,6 +1060,17 @@ export default function ItineraryBuddy(props) {
               onChangeText={_Search}
               keyboardType="default"
             />
+            {search.length !== 0 ? (
+              <TouchableOpacity onPress={() => setSearch("")}>
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
       </View>

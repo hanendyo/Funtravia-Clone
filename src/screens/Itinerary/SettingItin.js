@@ -96,14 +96,12 @@ export default function SettingItin(props) {
       if (errorPrivate) {
         throw new Error("Error Input");
       }
-      // console.log(response);
       if (response.data) {
         if (response.data.change_publication.code !== 200) {
           setPrivate(x);
           throw new Error(response.data.change_publication.message);
         }
         setPrivate(response.data.change_publication.isprivate);
-        // Alert.alert('Succes');
       }
     } catch (error) {
       setPrivate(x);
@@ -144,7 +142,7 @@ export default function SettingItin(props) {
           <Switch
             style={styles.switchView}
             onValueChange={() => savePrivate(isPrivate)}
-            value={isPrivate}
+            value={!isPrivate}
           />
         </ListItem>
         <ListItem

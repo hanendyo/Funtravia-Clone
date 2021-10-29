@@ -13,7 +13,12 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
 import { mascot_black, logo_google, logo_facebook } from "../../assets/png";
-import { Arrowbackblack, EyeActive, EyeNonactive } from "../../assets/svg";
+import {
+  Arrowbackblack,
+  EyeActive,
+  EyeNonactive,
+  Arrowbackiosblack,
+} from "../../assets/svg";
 import Email from "../../graphQL/Mutation/Register/Email";
 import {
   Text,
@@ -70,6 +75,7 @@ export default function Register({ navigation }) {
       </Button>
     ),
   };
+  let [choosePhone, setChoosePhone] = useState("+62");
   let [region, setRegion] = useState("+62");
   let [selector, setSelector] = useState(false);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
@@ -81,43 +87,30 @@ export default function Register({ navigation }) {
     password: "",
     password_confirmation: "",
   });
-
-  let [itemvalid, setItemValid] = useState({
-    first_name: true,
-    last_name: true,
-    email: true,
-    phone: true,
-    password: true,
-    password_confirmation: true,
-  });
-
   let [hidePasswd, setHidePasswd] = useState(true);
   let [hidePasswdCnfrm, setHidePasswdCnfrm] = useState(true);
 
-  const validation = (name, value) => {
-    var emailRegx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!value || value === "") {
-      return false;
-    } else if (name === "email") {
-      return value.match(emailRegx) ? true : false;
-    } else if (name === "password") {
-      return value.length >= 8 ? true : false;
-    } else if (name === "password_confirmation") {
-      return value.length >= 8 && value === state.password ? true : false;
-    } else if (name === "phone" || name === "phone1" || name === "phone2") {
-      return value.length <= 13 && value.length >= 6 ? true : false;
-    } else {
-      return true;
-    }
-  };
-
   const [mutation, { loading, data, error }] = useMutation(Email);
+  const [registerFailed, setRegisterFailed] = useState(false);
 
   const register = async () => {
+    if (
+      state.first_name === "" ||
+      state.email === "" ||
+      state.password === "" ||
+      state.password_confirmation === "" ||
+      state.phone === ""
+    ) {
+      return setRegisterFailed(true);
+    }
+
     let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
     for (let i in state) {
       let check = validation(i, state[i]);
       if (!check) {
+        if (i === "last_name") {
+          continue;
+        }
         if (i == "password") {
           setItemValid({
             ...itemvalid,
@@ -187,6 +180,33 @@ export default function Register({ navigation }) {
   const togglePasswordBottom = () => {
     setHidePasswdCnfrm(!hidePasswdCnfrm);
   };
+
+  let [itemvalid, setItemValid] = useState({
+    first_name: true,
+    last_name: true,
+    email: true,
+    phone: true,
+    password: true,
+    password_confirmation: true,
+  });
+
+  const validation = (name, value) => {
+    var emailRegx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!value || value === "") {
+      return false;
+    } else if (name === "email") {
+      return value.match(emailRegx) ? true : false;
+    } else if (name === "password") {
+      return value.length >= 8 ? true : false;
+    } else if (name === "password_confirmation") {
+      return value.length >= 8 && value === state.password ? true : false;
+    } else if (name === "phone" || name === "phone1" || name === "phone2") {
+      return value.length <= 13 && value.length >= 6 ? true : false;
+    } else {
+      return true;
+    }
+  };
+
   const onChange = (name) => (text) => {
     let check = validation(name, text);
     setState({ ...state, [name]: name == "email" ? text.toLowerCase() : text });
@@ -242,9 +262,6 @@ export default function Register({ navigation }) {
         flex: 1,
         backgroundColor: "#fff",
       }}
-      // behavior={Platform.OS === "ios" ? "padding" : null}
-      // keyboardVerticalOffset={30}
-      // enabled
     >
       <Peringatan
         aler={aler}
@@ -257,7 +274,6 @@ export default function Register({ navigation }) {
           paddingHorizontal: 20,
         }}
         showsVerticalScrollIndicator={false}
-        // stickyHeaderIndices={[1]}
       >
         <CustomImage
           source={mascot_black}
@@ -283,14 +299,16 @@ export default function Register({ navigation }) {
         >
           <View style={{ flex: 1 }}>
             <FloatingInput
-              customTextStyle={{
-                color: "#464646",
-              }}
+              customTextStyle={
+                registerFailed === true && state.first_name === ""
+                  ? styles.InputTextStyleFailed
+                  : styles.InputTextStyle
+              }
               value={state.first_name}
               onChangeText={onChange("first_name")}
               label={t("firstName")}
             />
-            {itemvalid.first_name === false ? (
+            {registerFailed === true && state.first_name === "" ? (
               <Text
                 type="regular"
                 size="small"
@@ -300,7 +318,7 @@ export default function Register({ navigation }) {
                   bottom: -15,
                 }}
               >
-                {`${t("inputWarningName")}${t("firstName")}`}
+                {t("inputWarningName")}
               </Text>
             ) : null}
           </View>
@@ -308,7 +326,7 @@ export default function Register({ navigation }) {
             <FloatingInput
               customTextStyle={{}}
               value={state.last_name}
-              onChangeText={onChange("last_name")}
+              onChangeText={state.last_name}
               label={t("lastName")}
             />
           </View>
@@ -316,28 +334,47 @@ export default function Register({ navigation }) {
         <View style={{ marginTop: 10 }}>
           <FloatingInput
             value={state.email}
-            keyboardType="visible-password"
+            keyboardType="default"
             onChangeText={onChange("email")}
             label="Email"
             autoCorrect={true}
-
-            // customTextStyle={{
-            //   color: itemvalid.first_name === false ? "#464646" : "#D75995",
-            // }}
+            customTextStyle={
+              registerFailed === true && state.email === ""
+                ? styles.InputTextStyleFailed
+                : styles.InputTextStyle
+            }
           />
-          {itemvalid.email === false ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-                position: "absolute",
-                bottom: -15,
-              }}
-            >
-              {`${t("inputWarningEmail")}`}
-            </Text>
-          ) : null}
+          <View
+            style={{
+              flexDirection: "row",
+              position: "absolute",
+              bottom: -15,
+            }}
+          >
+            {itemvalid.email === false && state.email.length !== 0 ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                  marginRight: 5,
+                }}
+              >
+                {`${t("inputWarningEmail")}`}
+              </Text>
+            ) : null}
+            {registerFailed === true && state.email === "" ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {t("emailRequired")}
+              </Text>
+            ) : null}
+          </View>
         </View>
         <View
           style={{
@@ -351,55 +388,89 @@ export default function Register({ navigation }) {
             onPress={() => setSelector(true)}
             style={{
               borderBottomWidth: StyleSheet.hairlineWidth,
-
-              paddingHorizontal: 15,
+              zIndex: 10,
+              paddingHorizontal: 25,
               justifyContent: "flex-end",
+              backgroundColor: "rgba(0, 0, 0, 0)",
             }}
-          >
-            <TextInput style={{ padding: 0 }} value={region} editable={false} />
-          </TouchableOpacity>
+          />
+          <TextInput
+            style={{
+              paddingBottom: 5,
+              position: "absolute",
+              top: Platform.OS === "ios" ? 32 : 16,
+              left: 10,
+              zIndex: 9,
+              color: "#464646",
+              fontSize: normalize(14),
+            }}
+            value={region}
+            editable={false}
+            onPressIn={() => setSelector(true)}
+          />
           <View style={{ paddingLeft: 15, flex: 1 }}>
             <FloatingInput
               value={state.phone}
               onChangeText={onChange("phone")}
-              customTextStyle={{
-                fontSize: 14,
-                padding: 0,
-              }}
+              customTextStyle={
+                registerFailed === true && state.phone === ""
+                  ? styles.InputTextStyleFailed
+                  : styles.InputTextStyle
+              }
               keyboardType="number-pad"
               label={t("phoneNumber")}
             />
-            {itemvalid.phone === false ? (
-              <Text
-                type="regular"
-                size="small"
-                style={{
-                  color: "#D75995",
-                  left: 20,
-                  position: "absolute",
-                  bottom: -15,
-                }}
-              >
-                {t("inputWarningPhone")}
-              </Text>
-            ) : null}
+            <View
+              style={{
+                flexDirection: "row",
+                position: "absolute",
+                bottom: -15,
+                left: 20,
+              }}
+            >
+              {itemvalid.phone === false && state.phone.length !== 0 ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    marginRight: 5,
+                  }}
+                >
+                  {t("inputWarningPhone")}
+                </Text>
+              ) : null}
+              {registerFailed === true && state.phone === "" ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                  }}
+                >
+                  {t("phoneNumberRequired")}
+                </Text>
+              ) : null}
+            </View>
           </View>
         </View>
 
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
             <FloatingInput
-              customTextStyle={{}}
               value={state.password}
               onChangeText={onChange("password")}
               label={t("password")}
               secureTextEntry={hidePasswd}
+              customTextStyle={
+                registerFailed === true && state.password === ""
+                  ? styles.InputTextStyleFailed
+                  : styles.InputTextStyle
+              }
             />
             <TouchableOpacity
               onPress={togglePasswordTop}
               style={{
-                // height: 35,
-                // width: 35,
                 position: "absolute",
                 top: 15,
                 right: 5,
@@ -412,25 +483,42 @@ export default function Register({ navigation }) {
               )}
             </TouchableOpacity>
           </View>
-          {itemvalid.password === false ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-
-                position: "absolute",
-                bottom: -15,
-              }}
-            >
-              {t("inputWarningPassword")}
-            </Text>
-          ) : null}
+          <View
+            style={{ flexDirection: "row", position: "absolute", bottom: -15 }}
+          >
+            {itemvalid.password === false && state.password.length !== 0 ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                  marginRight: 5,
+                }}
+              >
+                {t("inputWarningPassword")}
+              </Text>
+            ) : null}
+            {registerFailed === true && state.password === "" ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {t("passwordRequired")}
+              </Text>
+            ) : null}
+          </View>
         </View>
         <View style={{ flex: 1, marginTop: 15 }}>
           <View style={{ flex: 1 }}>
             <FloatingInput
-              customTextStyle={{}}
+              customTextStyle={
+                registerFailed === true && state.password_confirmation === ""
+                  ? styles.InputTextStyleFailed
+                  : styles.InputTextStyle
+              }
               value={state.password_confirmation}
               onChangeText={onChange("password_confirmation")}
               label={t("reEnterPassword")}
@@ -451,20 +539,34 @@ export default function Register({ navigation }) {
               )}
             </TouchableOpacity>
           </View>
-          {itemvalid.password_confirmation === false ? (
-            <Text
-              type="regular"
-              size="small"
-              style={{
-                color: "#D75995",
-
-                position: "absolute",
-                bottom: -15,
-              }}
-            >
-              {t("inputWarningRepeatPassword")}
-            </Text>
-          ) : null}
+          <View
+            style={{ flexDirection: "row", position: "absolute", bottom: -15 }}
+          >
+            {itemvalid.password_confirmation === false &&
+            state.password_confirmation.length !== 0 ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                  marginRight: 5,
+                }}
+              >
+                {t("inputWarningRepeatPassword")}
+              </Text>
+            ) : null}
+            {registerFailed === true && state.password_confirmation === "" ? (
+              <Text
+                type="regular"
+                size="small"
+                style={{
+                  color: "#D75995",
+                }}
+              >
+                {t("passwordConfirmationRequired")}
+              </Text>
+            ) : null}
+          </View>
         </View>
         <Button
           style={{
@@ -555,10 +657,25 @@ export default function Register({ navigation }) {
         <PhoneCodeSelector
           show={selector}
           close={() => setSelector(false)}
-          callBack={(e) => setRegion(e)}
-          value={region}
+          callBack={(e) => setChoosePhone(e)}
+          value={choosePhone}
+          onSelect={() => {
+            setRegion(choosePhone);
+            setSelector(false);
+          }}
         />
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  InputTextStyle: {
+    borderBottomColor: "#464646",
+    fontSize: normalize(14),
+  },
+  InputTextStyleFailed: {
+    borderBottomColor: "#D75995",
+    fontSize: normalize(14),
+  },
+});
