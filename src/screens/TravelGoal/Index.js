@@ -7,7 +7,13 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, CustomImage, Text, Truncate } from "../../component";
+import {
+  Button,
+  CustomImage,
+  Text,
+  Truncate,
+  FunImageBackground,
+} from "../../component";
 import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/client";
 import { Loading } from "../../component";
@@ -22,6 +28,7 @@ import TravelTops from "../../graphQL/Query/TravelGoal/TravelTop";
 import TravelPopulars from "../../graphQL/Query/TravelGoal/TravelPopular";
 import TravelNews from "../../graphQL/Query/TravelGoal/TravelNew";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import LinearGradient from "react-native-linear-gradient";
 import normalize from "react-native-normalize";
 
 export default function TravelGoal(props) {
@@ -177,6 +184,8 @@ export default function TravelGoal(props) {
     }
   };
 
+  console.log("Data", dataTop);
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -197,7 +206,7 @@ export default function TravelGoal(props) {
         }}
       >
         {dataTop?.travelgoal_first ? (
-          <ImageBackground
+          <FunImageBackground
             source={
               dataTop?.travelgoal_first?.cover
                 ? { uri: dataTop?.travelgoal_first?.cover }
@@ -219,13 +228,8 @@ export default function TravelGoal(props) {
               style={{
                 height: "100%",
                 width: "100%",
-                padding: 10,
-                justifyContent: "flex-end",
-                alignContent: "flex-start",
-                alignItems: "flex-start",
-                // backgroundColor: "rgba(0,0,0,0.2)",
-                borderRadius: 5,
                 justifyContent: "space-between",
+                borderRadius: 5,
               }}
               onPress={() => {
                 props.navigation.push("TravelGoalDetail", {
@@ -236,59 +240,71 @@ export default function TravelGoal(props) {
               <View
                 style={{
                   backgroundColor: "#E2ECF8",
-                  paddingHorizontal: 10,
-                  paddingVertical: 3,
-                  borderRadius: 20,
-                  marginVertical: 10,
+                  marginTop: 10,
+                  marginLeft: 10,
+                  borderRadius: 10,
+                  alignSelf: "flex-start",
                 }}
               >
-                <Text size="small" style={{ color: "#209fae" }}>
+                <Text
+                  size="small"
+                  style={{
+                    color: "#209fae",
+                    marginTop: 2,
+                    marginBottom: 3,
+                    marginHorizontal: 10,
+                  }}
+                >
                   {dataTop?.travelgoal_first?.category?.name}
                 </Text>
               </View>
-              <View>
-                <Text type="bold" size="title" style={{ color: "white" }}>
-                  {dataTop?.travelgoal_first?.title}
-                </Text>
-                <Text
-                  size="description"
-                  numberOfLines={1}
-                  style={{ color: "white" }}
-                >
-                  {dataTop?.travelgoal_first?.description}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {dataTop?.travelgoal_first?.created_at ? (
-                    <Text
-                      type="light"
-                      size="description"
-                      style={{ color: "white" }}
-                    >
-                      {getdate(dataTop?.travelgoal_first?.created_at)}
-                    </Text>
-                  ) : null}
-                  {/* <View
+              <LinearGradient
+                colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
                 style={{
-                  width: 5,
-                  height: 5,
-                  marginTop: 3,
-                  backgroundColor: "white",
+                  height: "50%",
+                  width: "100%",
+                  alignItems: "flex-start",
+                  alignContent: "flex-start",
+                  justifyContent: "flex-end",
                   borderRadius: 5,
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
                 }}
-              ></View> */}
-                  {/* <Text type="light" size="small" style={{ color: "white" }}>
-                12 min read{" "}
-              </Text> */}
+              >
+                <View>
+                  <Text type="bold" size="title" style={{ color: "white" }}>
+                    {dataTop?.travelgoal_first?.title}
+                  </Text>
+                  <Text
+                    size="description"
+                    numberOfLines={1}
+                    style={{ color: "white" }}
+                  >
+                    {dataTop?.travelgoal_first?.description}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {dataTop?.travelgoal_first?.created_at ? (
+                      <Text
+                        type="light"
+                        size="description"
+                        style={{ color: "white" }}
+                      >
+                        {getdate(dataTop?.travelgoal_first?.created_at)}
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
-              </View>
+              </LinearGradient>
             </Ripple>
-          </ImageBackground>
+          </FunImageBackground>
         ) : null}
         {/* Popular */}
         {dataPopular.length > 0 ? (
@@ -441,7 +457,7 @@ export default function TravelGoal(props) {
               <Text
                 style={{ color: "#209fae" }}
                 size="description"
-                type="light"
+                type="regular"
               >
                 {t("Seemore")}
               </Text>

@@ -51,7 +51,8 @@ import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  // android: StatusBar.currentHeight,
+  android: normalize(28),
 });
 const deviceId = DeviceInfo.getModel();
 
@@ -190,7 +191,7 @@ export default function TravelGoalDetail(props) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE + 10],
     extrapolate: "clamp",
   });
   const shareTranslateY = scrollY.interpolate({
@@ -199,16 +200,6 @@ export default function TravelGoalDetail(props) {
     extrapolate: "clamp",
   });
 
-  const titleScale = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 1, 1.2],
-    extrapolate: "clamp",
-  });
-  const titleTranslateX = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 20, 45],
-    extrapolate: "clamp",
-  });
   const titleTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 0, -8],
@@ -238,7 +229,7 @@ export default function TravelGoalDetail(props) {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#FFF" }}>
       <Satbar backgroundColor="#14646E" />
       <Modal
         useNativeDriver={true}
@@ -824,7 +815,7 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: 50,
+          height: normalize(50),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -833,7 +824,7 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 17,
+          top: SafeStatusBar + 10,
         }}
       >
         <Text
@@ -865,7 +856,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: 15,
+            marginTop: 8,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 40,
@@ -900,7 +891,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: 15,
+            marginTop: 8,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

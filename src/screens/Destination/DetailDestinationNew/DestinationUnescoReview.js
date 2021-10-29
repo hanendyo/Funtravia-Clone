@@ -12,6 +12,8 @@ import {
   ActivityIndicator,
   ToastAndroid,
   Platform,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -23,12 +25,13 @@ import {
   PanahPutih,
   Submit,
   Arrowbackios,
+  Xgray,
 } from "../../../assets/svg";
+import { default_image } from "../../../assets/png";
 import { RNToasty } from "react-native-toasty";
 import { Textarea } from "native-base";
 import { Button, Text, FunImage, Loading } from "../../../component";
 import Ripple from "react-native-material-ripple";
-import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
 import ImagePicker from "react-native-image-crop-picker";
 import CheckBox from "@react-native-community/checkbox";
@@ -94,7 +97,6 @@ export default function DestinationUnescoReview(props) {
   };
 
   const backAction = () => {
-    // console.log("platform android", Platform.OS === "android");
     if (Platform.OS === "android") {
       ToastAndroid.show("Cancelled", ToastAndroid.LONG);
     }
@@ -279,7 +281,6 @@ export default function DestinationUnescoReview(props) {
       });
       x++;
     }
-    console.log("temp", tempdatas);
     await setGambar(tempdatas);
     await setModalss(true);
   };
@@ -307,7 +308,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <Text size="title" type="bold">
-          {data.name}
+          {data?.name}
         </Text>
         <View style={{ flexDirection: "row" }}>
           <View
@@ -316,10 +317,11 @@ export default function DestinationUnescoReview(props) {
               backgroundColor: "#F4F4F4",
               padding: 2,
               marginRight: 5,
+              marginTop: 5,
             }}
           >
             <Text size="description" type="bold">
-              {data.type.name}
+              {data?.type?.name}
             </Text>
           </View>
         </View>
@@ -336,7 +338,7 @@ export default function DestinationUnescoReview(props) {
         }}
       >
         <FunImage
-          source={{ uri: data.images[0].image }}
+          source={data ? { uri: data?.images[0].image } : default_image}
           height={50}
           width={100}
           style={{ height: "100%", width: "100%", borderRadius: 5 }}
@@ -407,7 +409,6 @@ export default function DestinationUnescoReview(props) {
               }}
             >
               {dataImage.map((item, index) => {
-                console.log(item);
                 if (index < 3) {
                   return (
                     <Ripple
@@ -547,13 +548,15 @@ export default function DestinationUnescoReview(props) {
           onValueChange={(newValue) => setToggleCheckBox(newValue)}
         />
 
-        <Pressable onPress={() => setToggleCheckBox(!toggleCheckBox)}>
+        <Pressable
+          onPress={() => setToggleCheckBox(!toggleCheckBox)}
+          style={{ width: Dimensions.get("screen").width - 65 }}
+        >
           <Text size="description" type="light">
-            Term and Condition
+            {t("termsAndConditions")}
           </Text>
           <Text size="small" type="light">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vitae
-            mauris
+            {t("subTermsAndConditions")}
           </Text>
         </Pressable>
       </View>
@@ -588,7 +591,7 @@ export default function DestinationUnescoReview(props) {
               marginRight: 10,
             }}
           >
-            Send Review
+            {`${t("Send")} ${t("review")}`}
           </Text>
           {toggleCheckBox ? (
             <PanahPutih height={20} width={20} />
@@ -610,45 +613,95 @@ export default function DestinationUnescoReview(props) {
         onBackdropPress={() => {
           setmodal(false);
         }}
+        animationType="fade"
         onRequestClose={() => setmodal(false)}
         onDismiss={() => setmodal(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modals}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
+        visible={modals}
+        transparent={true}
       >
+        <Pressable
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            alignSelf: "center",
+            backgroundColor: "#000",
+            opacity: 0.7,
+            position: "absolute",
+          }}
+          onPress={() => setmodal(false)}
+        />
         <View
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
-          <Ripple
+          <View
             style={{
-              paddingVertical: 10,
+              flexDirection: "row",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("option")}
+            </Text>
+            <Pressable
+              onPress={() => setmodal(false)}
+              style={{
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
             }}
             onPress={() => pickcamera()}
           >
-            <Text size="description" type="regular" style={{}}>
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
               {t("OpenCamera")}
             </Text>
-          </Ripple>
-          <Ripple
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{
-              paddingVertical: 10,
+              alignItems: "center",
             }}
             onPress={() => pickGallery()}
           >
-            <Text size="description" type="regular" style={{}}>
+            <Text
+              size="description"
+              type="regular"
+              style={{ marginTop: 15, marginBottom: 18 }}
+            >
               {t("OpenGallery")}
             </Text>
-          </Ripple>
+          </TouchableOpacity>
         </View>
       </Modal>
     </ScrollView>

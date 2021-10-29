@@ -120,8 +120,6 @@ export default function AllDestination(props) {
     }
   );
 
-  console.log("data", dataResult);
-
   //Filter Region
   const [filterRegion, setFilterRegion] = useState([]);
 
@@ -229,7 +227,6 @@ export default function AllDestination(props) {
   }, []);
   let [showcity, setShowCity] = useState(null);
   const RenderList = ({ item }) => {
-    console.log("item", item);
     let sumdestination = item.count_destination;
 
     return item && item.city.length > 0 ? (
@@ -497,8 +494,8 @@ export default function AllDestination(props) {
           flexDirection: "row",
           zIndex: 5,
           paddingHorizontal: 15,
-          paddingTop: 10,
-          paddingBottom: 5,
+          // paddingTop: 10,
+          // paddingBottom: 10,
           backgroundColor: "#fff",
           position: "absolute",
           top: 0,
@@ -513,11 +510,11 @@ export default function AllDestination(props) {
             setShow(true);
           }}
           style={{
-            marginRight: 5,
+            marginRight: 7,
             borderRadius: 3,
             paddingHorizontal: 10,
             borderColor: "#209FAE",
-            paddingBottom: 1,
+            marginVertical: 10,
           }}
         >
           <Filternewbiru width={18} height={18} />
@@ -545,12 +542,13 @@ export default function AllDestination(props) {
         </Button>
         <View
           style={{
-            backgroundColor: "#F0F0F0",
+            backgroundColor: "#f6f6f6",
             borderRadius: 3,
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
+            marginVertical: 10,
 
             paddingHorizontal: 10,
           }}
@@ -704,7 +702,7 @@ export default function AllDestination(props) {
               <View style={{ padding: 15 }}>
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
+                    backgroundColor: "#f6f6f6",
                     borderRadius: 5,
                     // flex: 1,
                     flexDirection: "row",
