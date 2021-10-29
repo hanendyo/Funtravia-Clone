@@ -1082,9 +1082,11 @@ export default function ListEventHome(props) {
               onPress={() => eventdetail(item)}
               size="label"
               type="bold"
+              numberOfLines={2}
               style={{}}
             >
-              <Truncate text={item.name} length={36} />
+              {item.name}
+              {/* <Truncate text={item.name} length={36} /> */}
             </Text>
             <View
               style={{
@@ -2617,9 +2619,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(14),
+    fontSize: normalize(16),
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

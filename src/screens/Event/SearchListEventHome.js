@@ -1336,16 +1336,17 @@ export default function SearchListEventHome(props) {
             justifyContent: "space-around",
             height: 230,
             marginVertical: 3,
-            marginHorizontal: 12,
+            marginHorizontal: 13,
           }}
         >
           <Text
             onPress={() => eventdetail(item)}
             size="label"
             type="bold"
-            style={{}}
+            numberOfLines={2}
           >
-            <Truncate text={item.name} length={42} />
+            {item.name}
+            {/* <Truncate text={item.name} length={42} /> */}
           </Text>
           <View
             style={{
@@ -2867,9 +2868,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     paddingVertical: 2,
   },
-  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(14),
+    fontSize: normalize(16),
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
