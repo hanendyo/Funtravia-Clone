@@ -6,6 +6,7 @@ import {
   Alert,
   Image,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { CustomImage } from "../../../component";
 import { Text } from "../../../component";
@@ -17,6 +18,7 @@ import {
   Arrowbackwhite,
   Search,
   WhiteCheck,
+  Xblue,
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
@@ -231,7 +233,7 @@ export default function AddBuddy(props) {
 
   const RenderBuddy = ({ databuddy }) => {
     return (
-      <View style={{ width: Dimensions.get("screen").width }}>
+      <View style={{ width: Dimensions.get("screen").width, marginBottom: 60 }}>
         {databuddy.map((value, i) => {
           var datafilter = dataFilter.filter((e) =>
             (e.user_id ? e.user_id : e.id).includes(value.id)
@@ -515,7 +517,7 @@ export default function AddBuddy(props) {
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
-                width: "100%",
+                width: "88%",
                 fontFamily: "Lato-Regular",
                 marginLeft: 5,
                 fontSize: 14,
@@ -524,6 +526,17 @@ export default function AddBuddy(props) {
               value={search}
               onChangeText={(text) => _setSearch(text)}
             />
+            {search !== null ? (
+              <TouchableOpacity onPress={() => setSearch(null)}>
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
       </View>

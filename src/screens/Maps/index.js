@@ -108,7 +108,7 @@ export default function World({ navigation }) {
   ];
   return (
     <View style={{ flex: 1, backgroundColor: "#F6F6F6", paddingBottom: 50 }}>
-      <StatusBar backgroundColor="#14646E" barStyle="white-content" />
+      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <View
         style={{
           height: (height * 34) / 110,

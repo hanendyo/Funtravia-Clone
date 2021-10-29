@@ -49,6 +49,7 @@ export default function Login({ navigation, route }) {
   const login = async () => {
     if (email === "" || password === "") {
       setModalError(true);
+      setLoginFailed(true);
       return setMessage(t("emailPasswordRequired"));
     }
     try {
@@ -104,6 +105,31 @@ export default function Login({ navigation, route }) {
   const onKeyboardHide = () => setKeyboardOffset(0);
   const keyboardDidShowListener = useRef();
   const keyboardDidHideListener = useRef();
+  const [itemValid, setItemValid] = useState({
+    email: true,
+    password: true,
+  });
+
+  const [loginFailed, setLoginFailed] = useState(false);
+
+  const validation = (name, value) => {
+    let emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!value || value === "") {
+      return false;
+    } else if (name === "email") {
+      return value.match(emailRegex) ? true : false;
+    } else {
+      return true;
+    }
+  };
+
+  const onChange = (name) => (text) => {
+    let check = validation(name, text);
+    if (name === "email") {
+      setEmail(text.toLowerCase());
+      setItemValid({ ...itemValid, email: check });
+    }
+  };
 
   useEffect(() => {
     keyboardDidShowListener.current = Keyboard.addListener(
@@ -248,22 +274,64 @@ export default function Login({ navigation, route }) {
                 {`${t("hello")},`}
               </Text>
             </View>
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "flex-start" }}>
               <FloatingInput
                 value={email}
-                onChangeText={(text) => setEmail(text)}
-                customTextStyle={styles.inputTextStyle}
+                onChangeText={onChange("email")}
+                customTextStyle={
+                  loginFailed === true && email.length === 0
+                    ? styles.inputTextStyleFailed
+                    : styles.inputTextStyle
+                }
                 keyboardType="email-address"
                 label="Email"
                 autoCapitalize="none"
+                onFocus={() => setLoginFailed(false)}
               />
-              <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  position: "absolute",
+                  bottom: -15,
+                }}
+              >
+                {loginFailed === true && email.length === 0 ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                      marginRight: 5,
+                    }}
+                  >
+                    {t("emailRequired")}
+                  </Text>
+                ) : null}
+                {itemValid.email === false ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                    }}
+                  >
+                    {t("sampleEmail")}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+            <View>
+              <View style={{ flexDirection: "row", marginTop: 5 }}>
                 <FloatingInput
                   secureTextEntry={hidePasswd}
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   label={t("password")}
-                  customTextStyle={styles.inputTextStyle}
+                  customTextStyle={
+                    loginFailed === true && password.length === 0
+                      ? styles.inputTextStyleFailed
+                      : styles.inputTextStyle
+                  }
                   keyboardType="default"
                 />
                 <CustomImage
@@ -278,6 +346,19 @@ export default function Login({ navigation, route }) {
                     right: 0,
                   }}
                 />
+                {loginFailed === true && password.length === 0 ? (
+                  <Text
+                    type="regular"
+                    size="small"
+                    style={{
+                      color: "#D75995",
+                      position: "absolute",
+                      bottom: -15,
+                    }}
+                  >
+                    {t("passwordRequired")}
+                  </Text>
+                ) : null}
               </View>
             </View>
             <TouchableOpacity onPress={forgotPwd}>
@@ -418,5 +499,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width / 1.2,
     fontSize: normalize(14),
     padding: 0,
+  },
+  inputTextStyleFailed: {
+    width: Dimensions.get("window").width / 1.2,
+    fontSize: normalize(14),
+    padding: 0,
+    borderBottomColor: "#D75995",
   },
 });

@@ -32,6 +32,7 @@ import {
   Select,
   Filternewbiru,
   Arrowbackios,
+  Xblue,
 } from "../../../assets/svg";
 // import FilterItin from "./FillterItin";
 import Listdestination from "../../../graphQL/Query/Destination/ListDestinationV2";
@@ -691,15 +692,30 @@ export default function ItineraryDestination(props) {
               underlineColorAndroid="transparent"
               placeholder={t("search")}
               style={{
-                width: "100%",
-                // borderWidth: 1,
+                width: "85%",
+
                 marginLeft: 5,
                 padding: 0,
               }}
               returnKeyType="search"
+              value={search["keyword"]}
               onChangeText={(x) => _setSearch(x)}
               onSubmitEditing={(x) => _setSearch(x)}
             />
+            {search["keyword"] !== null ? (
+              <TouchableOpacity
+                onPress={() => setSearch({ ...search, keyword: null })}
+              >
+                <Xblue
+                  width="20"
+                  height="20"
+                  style={{
+                    alignSelf: "center",
+                    // marginRight: 20,
+                  }}
+                />
+              </TouchableOpacity>
+            ) : null}
           </View>
 
           <TouchableOpacity
@@ -996,15 +1012,34 @@ export default function ItineraryDestination(props) {
                     placeholder={t("search")}
                     Text={keyword}
                     style={{
-                      width: "100%",
+                      width: "80%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
                   />
+
+                  {keyword.length !== 0 ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setkeyword("");
+                        searchs("");
+                      }}
+                    >
+                      <Xblue
+                        width="15"
+                        height="15"
+                        style={{
+                          alignSelf: "center",
+                          // marginRight: 20,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
               {aktif === "categories" ? (
@@ -1678,15 +1713,33 @@ export default function ItineraryDestination(props) {
                     placeholder={t("search")}
                     Text={keyword}
                     style={{
-                      width: "100%",
+                      width: "80%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
                   />
+                  {keyword.length !== 0 ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setkeyword("");
+                        searchs("");
+                      }}
+                    >
+                      <Xblue
+                        width="15"
+                        height="15"
+                        style={{
+                          alignSelf: "center",
+                          // marginRight: 20,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
               <ScrollView
@@ -1915,15 +1968,33 @@ export default function ItineraryDestination(props) {
                     placeholder={t("search")}
                     Text={keyword}
                     style={{
-                      width: "100%",
+                      width: "80%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
                   />
+                  {keyword.length !== 0 ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setkeyword("");
+                        searchs("");
+                      }}
+                    >
+                      <Xblue
+                        width="15"
+                        height="15"
+                        style={{
+                          alignSelf: "center",
+                          // marginRight: 20,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
               <ScrollView

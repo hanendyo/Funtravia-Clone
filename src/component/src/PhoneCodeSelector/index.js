@@ -1,88 +1,54 @@
-import React, { useState } from "react";
+import React from "react";
 import { countryCallCode } from "./countryCallCode";
 import {
-  // Modal,
   Picker,
   View,
   StyleSheet,
   Dimensions,
   Platform,
-  TouchableOpacity,
   Text,
+  Pressable,
 } from "react-native";
+import { Button } from "../../../component";
+import { Xgray } from "../../../assets/svg";
 import Modal from "react-native-modal";
-export default function PhoneCodeSelector({ show, close, callBack, value }) {
-  const screen = Dimensions.get("screen");
-  const styles = StyleSheet.create({
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22,
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: "white",
-      borderRadius: 5,
-      padding: 35,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    openButton: {
-      backgroundColor: "#F194FF",
-      borderRadius: 5,
-      padding: 10,
-      elevation: 2,
-    },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: "center",
-    },
-  });
+import { useTranslation } from "react-i18next";
+export default function PhoneCodeSelector({
+  show,
+  close,
+  callBack,
+  value,
+  onSelect,
+}) {
+  const { t } = useTranslation();
   return (
-    <View style={styles.centeredView}>
+    <View>
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={show}
         onBackdropPress={close}
         onRequestClose={close}
         onDismiss={close}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={{ color: "black", fontWeight: "500", fontSize: 20 }}>
-              Select Code
-            </Text>
-            <View
-              style={{
-                borderWidth: 1,
-                marginVertical: 10,
-                borderRadius: 5,
-                borderColor: "#d1d1d1",
-              }}
-            >
+        <Pressable onPress={close} style={styles.modalSection} />
+        <View style={styles.modalContainer}>
+          <View style={styles.HeaderContainer}>
+            <View style={styles.Header}>
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("selectCode")}
+              </Text>
+            </View>
+            <Pressable onPress={close} style={styles.HeaderClose}>
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <View style={styles.PickerContainer}>
               <Picker
+                note
+                mode="dropdown"
                 selectedValue={value}
-                style={{
-                  height: Platform.OS === "ios" ? screen.height / 3 : 30,
-                  // height: 30,
-                  width: screen.width / 1.5,
-                  // borderWidth: 1,
-                }}
-                onValueChange={(itemValue, itemIndex) => callBack(itemValue)}
+                style={styles.Picker}
+                onValueChange={(itemValue) => callBack(itemValue)}
               >
                 {countryCallCode.map((value, index) => {
                   return (
@@ -95,20 +61,85 @@ export default function PhoneCodeSelector({ show, close, callBack, value }) {
                 })}
               </Picker>
             </View>
-            <TouchableOpacity
-              onPress={close}
-              style={{
-                paddingHorizontal: 25,
-                paddingVertical: 10,
-                backgroundColor: "#D75995",
-                borderRadius: 5,
-              }}
-            >
-              <Text style={{ color: "white" }}>Select</Text>
-            </TouchableOpacity>
+            <View style={styles.FooterContainer}>
+              <Button
+                size="medium"
+                style={{ width: "48%" }}
+                variant="transparent"
+                text={t("cancel")}
+                onPress={close}
+              ></Button>
+              <Button
+                size="medium"
+                style={{ width: "48%" }}
+                text={t("select")}
+                onPress={onSelect}
+              ></Button>
+            </View>
           </View>
         </View>
       </Modal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  modalSection: {
+    width: Dimensions.get("screen").width + 20,
+    height: Dimensions.get("screen").height,
+    justifyContent: "center",
+    opacity: 0.7,
+    backgroundColor: "#000",
+    position: "absolute",
+    left: -25,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    alignContent: "center",
+    borderRadius: 5,
+    width: Dimensions.get("screen").width - 110,
+  },
+  HeaderContainer: {
+    backgroundColor: "#fff",
+    width: Dimensions.get("screen").width - 110,
+    borderRadius: 5,
+  },
+  Header: {
+    backgroundColor: "#f6f6f6",
+    borderRadius: 5,
+    borderBottomColor: "#d1d1d1",
+    borderBottomWidth: 1,
+    alignItems: "center",
+  },
+  HeaderClose: {
+    height: 50,
+    width: 55,
+    position: "absolute",
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  PickerContainer: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderBottomColor: "#464646",
+    borderBottomWidth: 1,
+  },
+  Picker: {
+    height: Platform.OS === "ios" ? 200 : 40,
+    width: "107%",
+    fontSize: 14,
+    fontFamily: "Lato-Regular",
+    marginLeft: -8,
+    elevation: 20,
+  },
+  FooterContainer: {
+    marginVertical: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+  },
+});
