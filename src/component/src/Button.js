@@ -123,7 +123,7 @@ export default function Button({
           style={[
             fontSize[size],
             fontColor[variant][color],
-            { marginHorizontal: 20, textAlign: "center" },
+            { marginHorizontal: 15, textAlign: "center" },
           ]}
         >
           {text}

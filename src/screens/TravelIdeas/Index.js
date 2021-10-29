@@ -227,7 +227,9 @@ export default function TravelIdeas(props) {
               <Text type="bold" size="label">
                 Unesco World Heritage
               </Text>
-              <Text>Must visit destination</Text>
+              <Text type="regular" size="description">
+                {t("subUnescoIndex")}
+              </Text>
             </View>
           </View>
 
@@ -293,9 +295,11 @@ export default function TravelIdeas(props) {
               }}
             >
               <Text type="bold" size="label">
-                Filming Location
+                {t("MovieLocation")}
               </Text>
-              <Text>Pick some places you are interested in</Text>
+              <Text type="regular" size="description">
+                {t("subFilmingLocationIndex")}
+              </Text>
             </View>
           </View>
 

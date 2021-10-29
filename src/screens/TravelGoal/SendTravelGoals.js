@@ -60,7 +60,7 @@ export default function SendTravelGoals({ navigation, route }) {
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>{`${t(
         "Send"
-      )} ${t("destination")}`}</Text>
+      )} ${t("travelgoals")}`}</Text>
     ),
     headerMode: "screen",
     headerStyle: {

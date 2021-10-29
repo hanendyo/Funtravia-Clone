@@ -776,8 +776,8 @@
   "uploadFlightTicket": "Upload your flight ticket, hotel voucher, etc.",
   "alertDisconnectGoogle": "Do you want to disconnect this google?",
   "alertDisconnectFacebook": "Do you want to disconnect this facebook?",
-  "disconnectGoogle":"Disconneact Google",
-  "disconnectFacebook":"Disconnect Facebook",
+  "disconnectGoogle": "Disconneact Google",
+  "disconnectFacebook": "Disconnect Facebook",
   "successCopyLink": "Success Copy Link To Clipboard",
   "failedCopyLink": "Failed To Copy Link To Clipboard",
   "destinationFromGoogle": "Destination From Google",
@@ -791,5 +791,9 @@
   "firstnameRequired": "*First name required",
   "phoneNumberRequired": "*Phone number required",
   "selectCode": "Select Code",
-  "select": "Select"
+  "select": "Select",
+  "termsAndConditions": "Terms and Condition",
+  "subTermsAndConditions": "I agree to the company Terms, Service dan Privacy Policy",
+  "subFilmingLocationIndex": "Pick some places you are interested in",
+  "subUnescoIndex": "Must visit Destination"
 }

@@ -68,7 +68,7 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
           style={{ height: "100%", width: "100%" }}
           color="primary"
           type="box"
-          text="Add To Plan"
+          text={t("addToPlan")}
         ></Button>
       </View>
     </View>

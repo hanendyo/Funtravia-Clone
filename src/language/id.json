@@ -792,5 +792,9 @@
   "firstnameRequired": "*Nama depan diperlukan",
   "phoneNumberRequired": "*Nomor telepon diperlukan",
   "selectCode": "Pilih Kode",
-  "select": "Pilih"
+  "select": "Pilih",
+  "termsAndConditions": "Syarat dan Ketentuan",
+  "subTermsAndConditions": "Saya setuju dengan Persyaratan Perusahaan, Layanan dan Kebijakan Privasi",
+  "subFilmingLocationIndex": "Pilih beberapa tempat yang Anda minati",
+  "subUnescoIndex": "Tempat Wisata  yang wajib di kunjungi"
 }
