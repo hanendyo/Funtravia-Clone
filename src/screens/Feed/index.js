@@ -23,17 +23,16 @@ export default function Feed(props) {
     tabBarVisble: false,
     tabBarLabel: "Feed",
     headerTintColor: "white",
-    headerTitle: "Fun Feed",
+    headerTitle: (
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
+        Fun Feed
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",

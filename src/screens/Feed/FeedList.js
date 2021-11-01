@@ -24,8 +24,6 @@ import {
   Xgray,
   AcceptNotif,
   Errorr,
-  Errors,
-  Errorx,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -102,10 +100,13 @@ export default function FeedList({ props, token }) {
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
 
+  console.log("datafeed", dataFeed);
+
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
+  let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
 
@@ -399,10 +400,6 @@ export default function FeedList({ props, token }) {
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
     const { pageInfo } = fetchMoreResult.post_cursor_based;
-    console.log(
-      "🚀 ~ file: FeedList.js ~ line 405 ~ onUpdate ~ pageInfo",
-      pageInfo
-    );
     const edges = [
       ...prev.post_cursor_based.edges,
       ...fetchMoreResult.post_cursor_based.edges,
@@ -466,12 +463,6 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  // moment.locale("fr");
-  // console.log();
-
-  // const duration = (datetime) => {
-  //   return moment("20120620", "YYYYMMDD").fromNow();
-  // }
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
     var date1 = new Date(datetime).getTime();
@@ -487,9 +478,7 @@ export default function FeedList({ props, token }) {
     var days = Math.floor(hrs / 24);
     var yrs = Math.floor(days / 365);
     mins = mins % 60;
-    // console.log("🚀 ~ file: FeedList.js ~ line 479 ~ duration ~ mins", mins);
     hrs = hrs % 24;
-    // console.log("🚀 ~ file: FeedList.js ~ line 481 ~ duration ~ hrs", hrs);
     if (yrs > 0) {
       return yrs + " " + t("yearsAgo");
     } else if (days > 0) {
@@ -550,19 +539,12 @@ export default function FeedList({ props, token }) {
     return unsubscribe;
   }, [props.route.params?.isPost, count]);
 
-  // console.log("async storage : ", AsyncStorage.getItem("userUpload"));
-
   const createPost = () => {
     if (token && token !== null && token !== "") {
       props.navigation.navigate("FeedStack", {
         screen: "Post",
       });
       const uploading = true;
-      // try {
-      //   AsyncStorage.setItem("userUpload");
-      // } catch (e) {
-      //   console.log("error async", e);
-      // }
     } else {
       setModalLogin(true);
     }
@@ -800,6 +782,98 @@ export default function FeedList({ props, token }) {
       //     modalmenu || modalmenuother || modalhapus === true ? "#000" : null,
       // }}
       >
+        {/* Start Modal Konfirmasi Unfollow */}
+        <Modal
+          useNativeDriver={true}
+          visible={modalConfUnFollow}
+          onRequestClose={() => setmodalConfUnFollow(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setmodalConfUnFollow(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 140,
+              marginHorizontal: 70,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 140,
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                  {t("unfollow")}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlign: "center",
+                  marginTop: 20,
+                  marginHorizontal: 10,
+                }}
+                size="label"
+                type="regular"
+              >
+                {`${t("descUnfollow")} ${selectedOption?.user?.first_name} ${
+                  selectedOption?.user?.last_name
+                } ?`}
+              </Text>
+              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Button
+                  onPress={async () => {
+                    await _unfollow(selectedOption.user.id);
+                    await setmodalConfUnFollow(false);
+                  }}
+                  color="secondary"
+                  text={t("unfollow")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    // setModalmenuother(false);
+                    setmodalConfUnFollow(false);
+                  }}
+                  style={{ marginVertical: 5 }}
+                  variant="transparent"
+                  text={t("discard")}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        {/* End Modal Konfirmasi Unfollow */}
         <Modal
           useNativeDriver={true}
           visible={modalLogin}
@@ -948,6 +1022,7 @@ export default function FeedList({ props, token }) {
             </View>
           </View>
         </Modal>
+
         {/* Modal Menu user */}
 
         <Modal
@@ -1270,7 +1345,11 @@ export default function FeedList({ props, token }) {
                     borderBottomColor: "#d1d1d1",
                     borderBottomWidth: 1,
                   }}
-                  onPress={() => _follow(selectedOption.user.id)}
+                  // onPress={() => _follow(selectedOption.user.id)}
+                  onPress={() => {
+                    setModalmenuother(false);
+                    setmodalConfUnFollow(true);
+                  }}
                 >
                   <Text
                     size="label"
@@ -1287,7 +1366,11 @@ export default function FeedList({ props, token }) {
                     borderBottomRightRadius: 5,
                     borderBottomLeftRadius: 5,
                   }}
-                  onPress={() => _unfollow(selectedOption.user.id)}
+                  // onPress={() => _unfollow(selectedOption.user.id)}
+                  onPress={() => {
+                    setModalmenuother(false);
+                    setmodalConfUnFollow(true);
+                  }}
                 >
                   <Text
                     size="label"
@@ -1562,42 +1645,26 @@ export default function FeedList({ props, token }) {
                 marginVertical: 15,
                 // justifyContent: 'space-evenly',
                 alignContent: "center",
+                justifyContent: "space-between",
               }}
             >
-              <FunImage
-                size="xs"
-                isTouchable
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                  alignSelf: "center",
-                  marginLeft: 15,
-                }}
-                onPress={() => {
-                  item.node.user.id !== setting?.user?.id
-                    ? props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: item.node.user.id,
-                        },
-                      })
-                    : props.navigation.push("ProfileStack", {
-                        screen: "ProfileTab",
-                        params: {
-                          token: token,
-                        },
-                      });
-                }}
-                source={{ uri: item.node.user.picture }}
-              />
               <View
                 style={{
-                  justifyContent: "center",
-                  marginHorizontal: 10,
+                  flexDirection: "row",
+                  flex: 1,
+                  overflow: "hidden",
                 }}
               >
-                <Text
+                <FunImage
+                  size="xs"
+                  isTouchable
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    alignSelf: "center",
+                    marginLeft: 15,
+                  }}
                   onPress={() => {
                     item.node.user.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
@@ -1613,42 +1680,48 @@ export default function FeedList({ props, token }) {
                           },
                         });
                   }}
-                  size="title"
-                  style={{
-                    fontFamily: "Lato-Bold",
-                    // marginTop: 7,
-                  }}
-                >
-                  {item.node.user.first_name}{" "}
-                  {item.node.user.first_name ? item.node.user.last_name : null}
-                </Text>
+                  source={{ uri: item.node.user.picture }}
+                />
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
+                    justifyContent: "center",
+                    marginHorizontal: 10,
                   }}
                 >
                   <Text
-                    size="small"
+                    onPress={() => {
+                      item.node.user.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: item.node.user.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                            params: {
+                              token: token,
+                            },
+                          });
+                    }}
+                    size="title"
+                    type="bold"
                     style={{
-                      fontFamily: "Lato-Regular",
+                      flexWrap: "wrap",
                       // marginTop: 7,
                     }}
                   >
-                    {duration(item.node.created_at)}
+                    {item.node.user.first_name}{" "}
+                    {item.node.user.first_name
+                      ? item.node.user.last_name
+                      : null}
                   </Text>
-                  {item.node.location_name ? (
-                    <View
-                      style={{
-                        marginHorizontal: 5,
-                        backgroundColor: "black",
-                        height: 4,
-                        width: 4,
-                        borderRadius: 2,
-                      }}
-                    ></View>
-                  ) : null}
-                  {item.node.location_name ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
                     <Text
                       size="small"
                       style={{
@@ -1656,21 +1729,39 @@ export default function FeedList({ props, token }) {
                         // marginTop: 7,
                       }}
                     >
-                      <Truncate text={item.node.location_name} length={40} />
+                      {duration(item.node.created_at)}
                     </Text>
-                  ) : null}
+                    {item.node.location_name ? (
+                      <View
+                        style={{
+                          marginHorizontal: 5,
+                          backgroundColor: "black",
+                          height: 4,
+                          width: 4,
+                          borderRadius: 2,
+                        }}
+                      ></View>
+                    ) : null}
+                    {item.node.location_name ? (
+                      <Text
+                        size="small"
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          // marginTop: 7,
+                        }}
+                      >
+                        <Truncate text={item.node.location_name} length={40} />
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
               </View>
               <TouchableOpacity
                 onPress={() => OptionOpen(item.node, index, setting)}
                 style={{
-                  position: "absolute",
-                  right: 15,
-                  top: 2,
-                  alignSelf: "center",
-                  height: "100%",
                   width: 50,
-                  alignItems: "flex-end",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <More height={20} width={20} />

@@ -1,5 +1,5 @@
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,14 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
-import { Arrowbackwhite, Pointmapblack, Search } from "../../../assets/svg";
+import {
+  Arrowbackwhite,
+  Pointmapblack,
+  Search,
+  Xblue,
+} from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { StatusBar, Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -19,16 +25,17 @@ export default function LocationSelector({
   masukan,
 }) {
   const { t, i18n } = useTranslation();
+  let [text, setText] = useState("");
 
-  // console.log(modals);
   const hasil = (detail) => {
-    // console.log(detail);
     masukan({
       address: detail.name + ", " + detail.address_components[2]?.short_name,
       latitude: detail.geometry.location.lat,
       longitude: detail.geometry.location.lng,
     });
   };
+
+  let GooglePlacesRef = useRef();
 
   return (
     <Modal
@@ -125,38 +132,63 @@ export default function LocationSelector({
               // components: "country:id",
             }}
             fetchDetails={true}
-            // GooglePlacesDetailsQuery={{}}
             onPress={(data, details = null, search = null) => {
               setModellocation(false);
               hasil(details);
             }}
             autoFocus={true}
-            listViewDisplayed="auto"
+            // listViewDisplayed="auto"
             onFail={(error) => alert(error)}
-            // currentLocation={true}
             placeholder={t("findLocation")}
-            // currentLocationLabel='Nearby location'
             renderLeftButton={() => {
               return (
-                <View style={{ justifyContent: "center", paddingBottom: 5 }}>
+                <View
+                  style={{
+                    justifyContent: "center",
+                    paddingBottom: 5,
+                  }}
+                >
                   <Search width={20} height={20} />
                 </View>
               );
             }}
+            renderRightButton={() => {
+              return (
+                <Pressable
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: 50,
+                    marginRight: -10,
+                  }}
+                  onPress={() => {
+                    setText("");
+                    GooglePlacesRef.current.setAddressText("");
+                  }}
+                >
+                  <Xblue width={20} height={20} />
+                </Pressable>
+              );
+            }}
+            textInputProps={{
+              onChangeText: (text) => {
+                setText(text);
+              },
+              value: text,
+            }}
             GooglePlacesSearchQuery={{ rankby: "distance" }}
+            setAddressText={text}
+            ref={GooglePlacesRef}
             enablePoweredByContainer={false}
             renderRow={(data) => {
-              console.log(data);
               var x = data?.description.split(",");
-              console.log(data?.description);
               return (
                 <View
                   style={{
                     flexDirection: "row",
-                    // height: 100,
                     alignContent: "flex-start",
                     alignItems: "flex-start",
-                    // width: Dimensions.get('screen').width - 60,
+                    borderWidth: 0,
                   }}
                 >
                   <View
@@ -170,7 +202,6 @@ export default function LocationSelector({
                   <View
                     style={{
                       width: Dimensions.get("screen").width - 60,
-                      // paddingBottom: 10,
                       paddingRight: 10,
                     }}
                   >
@@ -179,7 +210,6 @@ export default function LocationSelector({
                     </Text>
                     <Text style={{ fontFamily: "Lato-Regular", fontSize: 12 }}>
                       {data.description}
-                      {/* <Truncate text={data.description} length={65} /> */}
                     </Text>
                   </View>
                 </View>
@@ -188,37 +218,20 @@ export default function LocationSelector({
             styles={{
               // container: { backgroundColor: 'red' },
               textInputContainer: {
-                // height: 40,
-                backgroundColor: "#F4F4F4",
-                borderTopWidth: 0.5,
+                backgroundColor: "#f6f6f6",
+                borderTopWidth: 0,
                 borderTopColor: "#FFFFFF",
-                // borderBottomWidth: 0.5,
-                // borderBottomColor: '#6c6c6c',
-                borderRadius: 3,
-                // paddingBottom: 5,
+                borderRadius: 5,
                 paddingHorizontal: 10,
               },
               textInput: {
                 marginLeft: 0,
                 marginRight: 0,
-                // height: 38,
-                color: "#5d5d5d",
+                height: 38,
+                color: "#464646",
                 fontSize: 14,
                 fontFamily: "Lato-Regular",
-                // borderWidth: 1,
-                backgroundColor: "#F4F4F4",
-                // borderColor: '#eaeaea',
-              },
-              predefinedPlacesDescription: {
-                // color: '#646464',
-              },
-              listView: {
-                // backgroundColor: 'red',
-                // position: 'absolute',
-                // height: 50,
-              },
-              row: {
-                // height: 48,
+                backgroundColor: "#f6f6f6",
               },
             }}
           />

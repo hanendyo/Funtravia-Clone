@@ -21,7 +21,6 @@ export default function RenderSinglePhoto({
   isComment,
   token,
 }) {
-  // console.log("data single", data);
   let videoView = useRef(null);
   const [heightScaled, setHeightScaled] = useState(width);
   const [oriented, setOriented] = useState("");
@@ -63,7 +62,6 @@ export default function RenderSinglePhoto({
             onLoad={(response) => console.log("response")}
             on
             onProgress={durationTime}
-            // onProgress={(event) => console.log("e", event)}
             repeat={true}
             style={{
               width: width - 40,
@@ -103,7 +101,17 @@ export default function RenderSinglePhoto({
         {data && data?.album !== null ? (
           <>
             <Pressable
-              onPress={() => console.log("album")}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "albumdetail",
+                  params: {
+                    id: data?.album?.id,
+                    type: null,
+                    token: token,
+                    judul: data?.album?.title,
+                  },
+                });
+              }}
               style={{
                 backgroundColor: "#040404",
                 position: "absolute",
@@ -111,14 +119,24 @@ export default function RenderSinglePhoto({
                 top: 10,
                 borderRadius: 15,
                 opacity: 0.6,
-                height: 30,
-                width: 50,
+                height: 27,
+                // width: 50,
               }}
             ></Pressable>
             <AlbumFeed
-              onPress={() => console.log("album")}
-              height={17}
-              width={17}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "albumdetail",
+                  params: {
+                    id: data?.album?.id,
+                    type: null,
+                    token: token,
+                    judul: data?.album?.title,
+                  },
+                });
+              }}
+              height={15}
+              width={15}
               style={{
                 marginHorizontal: 15,
                 marginVertical: 5,
@@ -155,7 +173,17 @@ export default function RenderSinglePhoto({
         {data && data?.album !== null ? (
           <>
             <Pressable
-              onPress={() => console.log("album")}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "albumdetail",
+                  params: {
+                    id: data?.album?.id,
+                    type: null,
+                    token: token,
+                    judul: data?.album?.title,
+                  },
+                });
+              }}
               style={{
                 backgroundColor: "#040404",
                 position: "absolute",
@@ -168,7 +196,17 @@ export default function RenderSinglePhoto({
               }}
             ></Pressable>
             <AlbumFeed
-              onPress={() => console.log("album")}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "albumdetail",
+                  params: {
+                    id: data?.album?.id,
+                    type: null,
+                    token: token,
+                    judul: data?.album?.title,
+                  },
+                });
+              }}
               height={17}
               width={17}
               style={{
