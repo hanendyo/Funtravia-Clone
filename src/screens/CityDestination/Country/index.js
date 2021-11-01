@@ -2644,7 +2644,7 @@ export default function Country(props) {
             flexDirection: "row",
             justifyContent: "space-around",
             alignItems: "center",
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
             borderRadius: 5,
           }}
         >
@@ -3009,7 +3009,7 @@ export default function Country(props) {
             justifyContent: "space-around",
             alignItems: "center",
             borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View

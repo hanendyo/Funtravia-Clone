@@ -256,7 +256,7 @@ export default function CustomItinerary(props) {
             justifyContent: "space-around",
             alignItems: "center",
             borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
@@ -537,7 +537,6 @@ export default function CustomItinerary(props) {
             }}
           >
             {t("suggestion")}
-            {console.log(`SOON: `, soon)}
           </Text>
 
           <TouchableOpacity

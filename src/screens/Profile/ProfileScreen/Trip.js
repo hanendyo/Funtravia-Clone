@@ -86,7 +86,7 @@ export default function Trip({ item, props, token, position }) {
     <View
       style={{
         height: 150,
-        marginTop: 10,
+        marginTop: Platform.OS === "ios" ? 10 : -25,
         borderRadius: 5,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: arrayShadow.shadowOpacity,

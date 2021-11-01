@@ -29,15 +29,22 @@ import { ReactNativeFile } from "apollo-upload-client";
 import * as mime from "react-native-mime-types";
 import LinearGradient from "react-native-linear-gradient";
 import DeviceInfo from "react-native-device-info";
+import get from "lodash.get";
 
 export default function ProfileSettings(props) {
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
+  let [modalhapus, setModalhapus] = useState(false);
   const HeaderComponent = {
     title: "",
-    headerTransparent: true,
+    headerShown: true,
+    headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: (
+      <Text type="bold" size="title" style={{ color: "#fff" }}>
+        {t("editprofile")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
@@ -46,7 +53,7 @@ export default function ProfileSettings(props) {
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
-      fontSize: 14,
+      fontSize: 16,
       color: "white",
     },
     headerLeftContainerStyle: {
@@ -54,40 +61,58 @@ export default function ProfileSettings(props) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <View
+      // <View
+      //   style={{
+      //     flexDirection: "row",
+      //     alignItems: "center",
+      //     flex: 1,
+      //   }}
+      // >
+      //   <Button
+      //     text={""}
+      //     size="medium"
+      //     type="circle"
+      //     variant="transparent"
+      //     onPress={() => props.navigation.goBack()}
+      //     style={{
+      //       // backgroundColor: "rgba(0,0,0,0.3)",
+      //       marginTop: Platform.OS == "ios" ? 0 : -10,
+      //     }}
+      //   >
+      //     {Platform.OS == "ios" ? (
+      //       <Arrowbackios height={15} width={15}></Arrowbackios>
+      //     ) : (
+      //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+      //     )}
+      //   </Button>
+      //   <View
+      //     style={{
+      //       marginLeft: 10,
+      //       marginTop: Platform.OS == "ios" ? 0 : -10,
+      //     }}
+      //   >
+      //     <Text type="bold" size="title" style={{ color: "#fff" }}>
+      //       {t("editprofile")}
+      //     </Text>
+      //   </View>
+      // </View>
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        // variant="transparent"
+        onPress={() => props.navigation.goBack()}
         style={{
-          flexDirection: "row",
-          alignItems: "center",
+          // backgroundColor: "rgba(0,0,0,0.3)",
+          marginTop: Platform.OS == "ios" ? 0 : 0,
         }}
       >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            // backgroundColor: "rgba(0,0,0,0.3)",
-            marginTop: Platform.OS == "ios" ? 0 : -10,
-          }}
-        >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Button>
-        <View
-          style={{
-            marginLeft: 10,
-            marginTop: Platform.OS == "ios" ? 0 : -10,
-          }}
-        >
-          <Text type="bold" size="title" style={{ color: "#fff" }}>
-            {t("editprofile")}
-          </Text>
-        </View>
-      </View>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
     ),
   };
 
@@ -122,6 +147,99 @@ export default function ProfileSettings(props) {
   // const win = Dimensions.get('window')
   // const ratio = Dimensions.get('window').width/220
 
+  const newModal = () => {
+    return (
+      <Modal
+        useNativeDriver={true}
+        visible={modalhapus}
+        onRequestClose={() => setModalhapus(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalhapus(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            // width: "100%",
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 140,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: "10%",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 140,
+              justifyContent: "center",
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("areyousure")}
+              </Text>
+            </View>
+            {/* <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 20,
+                marginHorizontal: 10,
+              }}
+              size="label"
+              type="regular"
+            >
+              {t("alertHapusPost")}
+            </Text> */}
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <Button
+                onPress={() => {
+                  _handlesave();
+                }}
+                color="secondary"
+                text={t("saved")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalhapus(false);
+                }}
+                style={{ marginTop: 5, marginBottom: 8 }}
+                variant="transparent"
+                text={t("discard")}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   const backAction = () => {
     Alert.alert("", t("areyousure"), [
       {
@@ -142,6 +260,95 @@ export default function ProfileSettings(props) {
         },
       },
     ]);
+
+    // <Modal
+    //   useNativeDriver={true}
+    //   visible={modalhapus}
+    //   onRequestClose={() => setModalhapus(false)}
+    //   transparent={true}
+    //   animationType="fade"
+    // >
+    //   <Pressable
+    //     onPress={() => setModalhapus(false)}
+    //     style={{
+    //       width: Dimensions.get("screen").width,
+    //       height: Dimensions.get("screen").height,
+    //       justifyContent: "center",
+    //       opacity: 0.7,
+    //       backgroundColor: "#000",
+    //       position: "absolute",
+    //     }}
+    //   />
+    //   <View
+    //     style={{
+    //       width: Dimensions.get("screen").width - 140,
+    //       marginHorizontal: 70,
+    //       backgroundColor: "#FFF",
+    //       zIndex: 15,
+    //       flexDirection: "row",
+    //       justifyContent: "space-around",
+    //       alignItems: "center",
+    //       alignContent: "center",
+    //       borderRadius: 5,
+    //       marginTop: Dimensions.get("screen").height / 3,
+    //     }}
+    //   >
+    //     <View
+    //       style={{
+    //         backgroundColor: "white",
+    //         width: Dimensions.get("screen").width - 140,
+    //         justifyContent: "center",
+    //         borderRadius: 5,
+    //       }}
+    //     >
+    //       <View
+    //         style={{
+    //           alignItems: "center",
+    //           borderBottomColor: "#d1d1d1",
+    //           borderBottomWidth: 1,
+    //           borderTopRightRadius: 5,
+    //           borderTopLeftRadius: 5,
+    //           backgroundColor: "#f6f6f6",
+    //         }}
+    //       >
+    //         <Text style={{ marginVertical: 15 }} size="title" type="bold">
+    //           {t("areyousure")}
+    //         </Text>
+    //       </View>
+    //       <Text
+    //         style={{
+    //           alignSelf: "center",
+    //           textAlign: "center",
+    //           marginTop: 20,
+    //           marginHorizontal: 10,
+    //         }}
+    //         size="label"
+    //         type="regular"
+    //       >
+    //         {t("alertHapusPost")}
+    //       </Text>
+    //       <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+    //         <Button
+    //           onPress={() => {
+    //             _deletepost(selectedOption);
+    //           }}
+    //           color="secondary"
+    //           text={t("delete")}
+    //         ></Button>
+    //         <Button
+    //           onPress={() => {
+    //             setModalhapus(false);
+    //             setModalmenu(true);
+    //           }}
+    //           style={{ marginTop: 5, marginBottom: 8 }}
+    //           variant="transparent"
+    //           text={t("cancel")}
+    //         ></Button>
+    //       </View>
+    //     </View>
+    //   </View>
+    // </Modal>;
+
     return true;
   };
 
@@ -221,12 +428,19 @@ export default function ProfileSettings(props) {
             size="medium"
             type="circle"
             variant="transparent"
-            onPress={() => backAction()}
-            style={{
-              backgroundColor: "rgba(0,0,0,0.3)",
+            onPress={() => {
+              backAction();
+              // setModalhapus(true);
             }}
+            // style={{
+            //   backgroundColor: "rgba(0,0,0,0.3)",
+            // }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
         ),
       });
@@ -256,11 +470,15 @@ export default function ProfileSettings(props) {
             type="circle"
             variant="transparent"
             onPress={() => backAction()}
-            style={{
-              backgroundColor: "rgba(0,0,0,0.3)",
-            }}
+            // style={{
+            //   backgroundColor: "rgba(0,0,0,0.3)",
+            // }}
           >
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
         ),
       });
@@ -295,7 +513,7 @@ export default function ProfileSettings(props) {
     }
   };
   const _handleOnChange = async (value, name) => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
+    // BackHandler.addEventListener("hardwareBackPress", backAction);
     props.navigation.setOptions({
       headerLeft: () => (
         <Button
@@ -303,12 +521,19 @@ export default function ProfileSettings(props) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => backAction()}
-          style={{
-            backgroundColor: "rgba(0,0,0,0.3)",
+          onPress={() => {
+            // backAction();
+            setModalhapus(true);
           }}
+          // style={{
+          //   backgroundColor: "rgba(0,0,0,0.3)",
+          // }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
       ),
     });
@@ -425,15 +650,32 @@ export default function ProfileSettings(props) {
   // const Notch = DeviceInfo.hasNotch();
   const HeightBar = Platform.select({
     ios: Notch ? 95 : 70,
-    android: 90,
+    android: 70,
   });
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flex: 1 }}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+    // behavior={Platform.OS == "ios" ? "padding" : null}
+    // keyboardVerticalOffset={Notch ? 276 : 65}
+    // keyboardVerticalOffset={-390}
+    // style={{ backgroundColor: "blue" }}
     >
-      <LinearGradient
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{
+          backgroundColor: "#f6f6f6",
+        }}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        style={
+          {
+            // flex: 1,
+            // backgroundColor: "#fae",
+            // padding: 20,
+          }
+        }
+      >
+        {/* <LinearGradient
         start={{ x: 0, y: 0 }} //here we are defined x as start position
         end={{ x: 0, y: -2 }} //here we can define axis but as end position
         colors={["#209fae", "#68D7E3"]}
@@ -441,8 +683,8 @@ export default function ProfileSettings(props) {
           // height: Platform.OS == "ios" ? 95 : 70,
           height: HeightBar,
         }}
-      ></LinearGradient>
-      {/* <ImageBackground
+      ></LinearGradient> */}
+        {/* <ImageBackground
         source={Akunsaya}
         imageStyle={{
           width: Dimensions.get("screen").width,
@@ -454,10 +696,11 @@ export default function ProfileSettings(props) {
           height: 200,
         }}
       ></ImageBackground> */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : null}
-        keyboardVerticalOffset={Notch ? 275 : 65}
-      >
+        {/* <KeyboardAvoidingView
+        // behavior={Platform.OS == "ios" ? "padding" : null}
+        // keyboardVerticalOffset={Notch ? 100 : 65}
+        style={{ backgroundColor: "blue" }}
+      > */}
         <View
           style={{
             width: Dimensions.get("screen").width,
@@ -467,13 +710,14 @@ export default function ProfileSettings(props) {
             marginBottom: 20,
             paddingHorizontal: 20,
             alignItems: "flex-end",
+            // backgroundColor: "red",
           }}
         >
           <View
             style={{
               // position: 'absolute',
               alignSelf: "center",
-              // backgroundColor: "#B8E0E5",
+              // backgroundColor: "#B8E",
               height: 120,
               width: 120,
 
@@ -505,7 +749,9 @@ export default function ProfileSettings(props) {
         <View
           style={{
             backgroundColor: "#fff",
-            height: Dimensions.get("window").height,
+            height:
+              Dimensions.get("window").height -
+              (Platform.OS === "ios" ? 100 : 200),
           }}
         >
           <View
@@ -684,7 +930,7 @@ export default function ProfileSettings(props) {
                 floatingLabel
                 style={{
                   // marginVertical: 10,
-                  marginTop: -0,
+                  marginTop: 0,
                   marginBottom: 10,
                 }}
               >
@@ -804,53 +1050,55 @@ export default function ProfileSettings(props) {
             />
           </View>
         </View>
-      </KeyboardAvoidingView>
-      <Loading show={loading} />
-      <Modal
-        onBackdropPress={() => {
-          setmodal(false);
-        }}
-        onRequestClose={() => setmodal(false)}
-        onDismiss={() => setmodal(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        isVisible={modals}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
-        }}
-      >
-        <View
+        {/* </KeyboardAvoidingView> */}
+        <Loading show={loading} />
+        <Modal
+          onBackdropPress={() => {
+            setmodal(false);
+          }}
+          onRequestClose={() => setmodal(false)}
+          onDismiss={() => setmodal(false)}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          isVisible={modals}
           style={{
-            backgroundColor: "white",
-            width: Dimensions.get("screen").width - 60,
-            padding: 20,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
           }}
         >
-          <TouchableOpacity
+          <View
             style={{
-              paddingVertical: 10,
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              padding: 20,
             }}
-            onPress={() => pickcamera()}
           >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenCamera")}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 10,
-            }}
-            onPress={() => pickGallery()}
-          >
-            <Text size="description" type="regular" style={{}}>
-              {t("OpenGallery")}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </ScrollView>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => pickcamera()}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                paddingVertical: 10,
+              }}
+              onPress={() => pickGallery()}
+            >
+              <Text size="description" type="regular" style={{}}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </ScrollView>
+      {newModal()}
+    </KeyboardAvoidingView>
   );
 }

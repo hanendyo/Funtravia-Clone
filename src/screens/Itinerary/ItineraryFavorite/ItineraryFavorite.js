@@ -281,7 +281,7 @@ export default function ItineraryFavorite(props) {
             justifyContent: "space-around",
             alignItems: "center",
             borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View
