@@ -50,7 +50,6 @@ import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 
 export default function Post(props) {
-  console.log("props", props);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
@@ -381,11 +380,11 @@ export default function Post(props) {
             let array_album = [
               {
                 count: 0,
-                title: t("recentPhotos"),
+                title: "Recent Photos",
               },
               {
                 count: 0,
-                title: t("recentVideos"),
+                title: "Recent Videos",
               },
             ];
 
@@ -448,7 +447,6 @@ export default function Post(props) {
     }
 
     let data_foto = dataCamera.edges;
-    console.log("datafoto", data_foto);
     let camera = {
       id: "0",
       mediaType: "camera",
@@ -516,7 +514,6 @@ export default function Post(props) {
     await setIsVisible(false);
     await getImageFromRoll(item);
     await props.navigation.setParams({ title: item.title });
-    console.log(`SELECt ALBUM: `, item);
   };
 
   const _getDuration = (s) => {
@@ -610,7 +607,6 @@ export default function Post(props) {
                   onPress={() => selectAlbum(item)}
                 >
                   <Text>{item.title}</Text>
-                  {console.log(`item: `, item)}
                 </Button>
               )}
               keyExtractor={(item, index) => "" + index}
@@ -671,7 +667,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: Platform.OS === "ios" ? 55 : 55,
+          height: 55,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
@@ -715,7 +711,7 @@ export default function Post(props) {
           </Button>
         </View>
         <Button
-          size="large"
+          size="medium"
           text={t("next")}
           onPress={() => nextFunction(recent?.node?.type, checklistVideo)}
         />

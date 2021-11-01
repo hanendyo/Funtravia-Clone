@@ -386,16 +386,48 @@ export default function TravelGoalDetail(props) {
         >
           <View
             style={{
-              backgroundColor: "#E2ECF8",
-              paddingHorizontal: 10,
-              paddingVertical: 3,
-              borderRadius: 20,
-              marginVertical: 10,
+              flexDirection: "row",
+              width: Dimensions.get("screen").width - 40,
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 10,
             }}
           >
-            <Text size="small" style={{ color: "#209fae" }}>
-              {datadetail?.category?.name}
-            </Text>
+            <View
+              style={{
+                backgroundColor: "#E2ECF8",
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                size="small"
+                style={{
+                  color: "#209fae",
+                  marginBottom: 3,
+                  marginTop: 2,
+                  marginHorizontal: 10,
+                }}
+              >
+                {datadetail?.category?.name}
+              </Text>
+            </View>
+            <TouchableOpacity
+              type="circle"
+              color="secondary"
+              style={{
+                backgroundColor: "#F6F6F6",
+                height: 30,
+                width: 30,
+                borderRadius: 17,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalShare(true);
+              }}
+            >
+              <ShareBlack height={20} width={20} />
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -407,11 +439,6 @@ export default function TravelGoalDetail(props) {
               size="title"
               style={{
                 marginBottom: 5,
-                // opacity: backOpacity,
-                // transform: [
-                //   { scale: titleScale },
-                //   { translateX: titleTranslateX },
-                // ],
               }}
             >
               {datadetail?.title}
@@ -420,11 +447,9 @@ export default function TravelGoalDetail(props) {
           {datadetail?.description ? (
             <Text
               size="readable"
-              // numberOfLines={2}
               type="regular"
               style={{
                 textAlign: "left",
-                // lineHeight: normalize(20),
                 marginBottom: 5,
               }}
             >
@@ -438,18 +463,12 @@ export default function TravelGoalDetail(props) {
               alignItems: "center",
             }}
           >
-            {/* <Text type="light" size="small" style={{}}>
-            Source :{" "}
-          </Text> */}
             {datadetail?.created_at ? (
               <Text type="light" size="small">
                 {getdate(datadetail?.created_at)}
               </Text>
             ) : null}
           </View>
-          {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
-          12 min read
-        </Text> */}
         </View>
         {/* detail */}
         {datadetail?.content?.map((i, index) => {
@@ -533,45 +552,6 @@ export default function TravelGoalDetail(props) {
                   </Text>
                 </View>
               )}
-
-              {/* {item?.title ? (
-              <Text size="label" type="bold" style={{}}>
-                {item?.title ? item?.title : null}
-              </Text>
-            ) : null}
-            {item?.image ? (
-              <Image
-                source={item?.image ? { uri: item?.image } : default_image}
-                style={{
-                  width: "100%",
-                  height: Dimensions.get("screen").width / 2,
-                  borderRadius: 5,
-                  marginVertical: 10,
-                }}
-              ></Image>
-            ) : null} */}
-
-              {/* <ViewArticle
-              style={{
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                marginBottom: 5,
-              }}
-            >
-              <Text type="light" size="small" style={{}}>
-                Source :{" "}
-              </Text>
-
-              <Text type="light" size="small" style={{ fontStyle: "italic" }}>
-                {getdate(item.)}
-              </Text>
-            </ViewArticle> */}
-              {/* {item.text ? (
-              <Text size="readable" style={{ textAlign: "justify" }}>
-                {item.text}
-              </Text>
-            ) : null} */}
             </View>
           );
         })}
@@ -685,9 +665,6 @@ export default function TravelGoalDetail(props) {
                     >
                       {item.description}
                     </Text>
-                    {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
-                  12 min read
-                </Text> */}
                   </View>
                 </Ripple>
               );
@@ -721,56 +698,6 @@ export default function TravelGoalDetail(props) {
           </View>
         ) : null}
       </Animated.ScrollView>
-
-      {/* Button Share */}
-      <Animated.View
-        style={{
-          width: "100%",
-          height: 50,
-          justifyContent: "center",
-          alignContent: "center",
-          position: "absolute",
-          zIndex: 2,
-          position: "absolute",
-          marginTop:
-            Platform.OS == "ios"
-              ? Notch
-                ? HEADER_MAX_HEIGHT + normalize(50)
-                : HEADER_MAX_HEIGHT + normalize(30)
-              : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + normalize(30)
-              : HEADER_MAX_HEIGHT + normalize(40),
-          opacity: backOpacity,
-          transform: [{ translateY: shareTranslateY }],
-        }}
-      >
-        <TouchableOpacity
-          type="circle"
-          color="secondary"
-          style={{
-            position: "absolute",
-            // width: Dimensions.get("screen").width / 2.5,
-            right: 20,
-            zIndex: 20,
-            alignSelf: "flex-end",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            backgroundColor: "#F6F6F6",
-            height: 30,
-            width: 30,
-            borderRadius: 17,
-          }}
-          onPress={() => {
-            setModalShare(true);
-          }}
-        >
-          <ShareBlack height={20} width={20} />
-          {/* <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text> */}
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* End Button Share */}
 
       {/* Image Background */}
 

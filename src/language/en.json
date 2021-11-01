@@ -795,5 +795,6 @@
   "termsAndConditions": "Terms and Condition",
   "subTermsAndConditions": "I agree to the company Terms, Service dan Privacy Policy",
   "subFilmingLocationIndex": "Pick some places you are interested in",
-  "subUnescoIndex": "Must visit Destination"
+  "subUnescoIndex": "Must visit Destination",
+  "descUnfollow": "Do you want to unfollow"
 }

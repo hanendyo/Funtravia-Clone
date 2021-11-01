@@ -171,9 +171,20 @@ export default function RenderAlbum({
           source={{ uri: data.assets[indexAktif].filepath }}
         >
           <Pressable
-            onPress={() =>
-              data.itinerary !== null ? goToItinerary(data) : null
-            }
+            // onPress={() =>
+            //   data.itinerary !== null ? goToItinerary(data) : null
+            // }
+            onPress={() => {
+              props.navigation.push("ProfileStack", {
+                screen: "albumdetail",
+                params: {
+                  id: data?.album?.id,
+                  type: null,
+                  token: token,
+                  judul: data?.album?.title,
+                },
+              });
+            }}
             style={({ pressed }) => [
               {
                 position: "absolute",
@@ -183,7 +194,7 @@ export default function RenderAlbum({
                 opacity: pressed ? 1 : 0.8,
                 //   paddingHorizontal: 15,
                 borderRadius: 14,
-                height: 28,
+                height: 27,
                 justifyContent: "center",
                 alignItems: "center",
                 flexDirection: "row",
@@ -191,11 +202,11 @@ export default function RenderAlbum({
             ]}
           >
             <AlbumFeed
-              height={17}
-              width={17}
+              height={15}
+              width={15}
               style={{
                 marginHorizontal: 15,
-                marginVertical: 10,
+                marginVertical: 5,
               }}
             />
           </Pressable>
@@ -218,9 +229,10 @@ export default function RenderAlbum({
             {/* <AllPostWhite width={13} height={13} /> */}
             <Text
               type="bold"
+              size="small"
               style={{
                 color: "white",
-                marginLeft: 5,
+                // marginLeft: 5,
               }}
             >
               {indexAktif + 1} {"/"} {data.assets.length}

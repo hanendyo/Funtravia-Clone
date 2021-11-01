@@ -79,7 +79,6 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("props create", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -528,7 +527,6 @@ export default function CreatePost(props) {
       );
     }
   };
-  console.log(props.route.params.id_album, "id_album");
   return (
     <KeyboardAvoidingView
       style={{
@@ -608,6 +606,9 @@ export default function CreatePost(props) {
                   flexDirection: "row",
                   backgroundColor: "#ffffff",
                   alignItems: "center",
+                  width: Dimensions.get("screen").width - 20,
+                  marginHorizontal: 10,
+                  marginTop: 10,
                 }}
               >
                 <FunImage
@@ -625,18 +626,18 @@ export default function CreatePost(props) {
                     width: 50,
                     height: 50,
                     borderRadius: 50,
-                    margin: 10,
-                    marginRight: 15,
+                    marginRight: 10,
                   }}
                 />
                 <View
                   style={{
                     backgroundColor: "#f6f6f6",
-                    width: "77%",
+                    // width: "77%",
                     maxHeight: 60,
                     minHeight: 30,
                     borderRadius: 5,
                     paddingHorizontal: 10,
+                    flex: 1,
                   }}
                 >
                   <TextInput
