@@ -164,7 +164,7 @@ export default function World({ navigation }) {
             justifyContent: "space-around",
             alignItems: "center",
             borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 4,
+            marginTop: Dimensions.get("screen").height / 3,
           }}
         >
           <View

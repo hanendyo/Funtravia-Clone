@@ -286,6 +286,10 @@ import ItineraryIconGray from "./files/ItineraryIconGray.svg";
 import AlbumIconGray from "./files/AlbumIconGray.svg";
 import GoogleIcon from "./files/GoogleIcon.svg";
 import FacebookIcon from "./files/FacebookIcon.svg";
+import AlbumGray from "./files/AlbumGray.svg";
+import AlbumGreen from "./files/AlbumGreen.svg";
+import PostGreen from "./files/PostGreen.svg";
+import PostGray from "./files/PostGray.svg";
 
 export {
   Lock,
@@ -576,4 +580,8 @@ export {
   AlbumIconGray,
   GoogleIcon,
   FacebookIcon,
+  AlbumGray,
+  AlbumGreen,
+  PostGreen,
+  PostGray,
 };

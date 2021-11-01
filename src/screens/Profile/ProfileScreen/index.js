@@ -15,6 +15,7 @@ import {
   SafeAreaView,
   Image,
   Pressable,
+  Modal as ModalRN,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import {
@@ -36,9 +37,9 @@ import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
 import Itinerary2 from "../../../graphQL/Query/Profile/itinerary";
 import { useTranslation } from "react-i18next";
+import { Bg_soon } from "../../../assets/png";
 import {
   Album,
-  Albumgreen,
   Allpost,
   Allpostgreen,
   Arrowbackios,
@@ -46,10 +47,14 @@ import {
   Google,
   Message,
   OptionsVertWhite,
+  PostGreen,
+  PostGray,
   SendMessage,
   Sharegreen,
   Tag,
   Taggreen,
+  AlbumGray,
+  AlbumGreen,
 } from "../../../assets/svg";
 import Post from "./Posting/Post";
 import Albums from "./Posting/Album";
@@ -90,6 +95,7 @@ export default function OtherProfile(props) {
   const HeaderHeight = 310 - SafeStatusBar + 55 + captionHeight;
 
   const { t } = useTranslation();
+  let [soon, setSoon] = useState(false);
   let [showside, setshowside] = useState(false);
   let [token, setToken] = useState(null);
   const [dataPost, setdataPost] = useState([]);
@@ -837,7 +843,7 @@ export default function OtherProfile(props) {
     let data = { ...datas };
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55],
+      outputRange: [0, -HeaderHeight + (Platform.OS === "ios" ? 55 : 85)],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -850,7 +856,7 @@ export default function OtherProfile(props) {
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
-          height: HeaderHeight,
+          height: Platform.OS === "ios" ? HeaderHeight : HeaderHeight - 30,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -862,13 +868,13 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             width: "100%",
-            height: "87%",
+            height: Platform.OS === "ios" ? "90%" : "87%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-
-            marginTop: 62,
+            paddingTop: Platform.OS === "ios" ? "5%" : "17%",
+            marginTop: Platform.OS === "ios" ? "15%" : "13%",
           }}
         >
           <View
@@ -878,6 +884,7 @@ export default function OtherProfile(props) {
               alignItems: "center",
               alignContent: "center",
               justifyContent: "center",
+              top: 0,
 
               // position: "absolute",
               // top: "32%",
@@ -936,6 +943,7 @@ export default function OtherProfile(props) {
               justifyContent: "center",
               alignSelf: "center",
               marginTop: 10,
+
               // paddingTop: 30,
             }}
           >
@@ -966,6 +974,7 @@ export default function OtherProfile(props) {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "baseline",
+
               // width: Dimensions.get('window').width,
             }}
           >
@@ -1157,6 +1166,7 @@ export default function OtherProfile(props) {
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
               // borderWidth: 1,
+              marginBottom: Platform.OS === "ios" ? null : "15%",
             }}
           >
             <Text
@@ -1165,7 +1175,10 @@ export default function OtherProfile(props) {
               }}
               type="regular"
               size="description"
-              style={{ textAlign: "center" }}
+              style={{
+                textAlign: "center",
+                // borderWidth: 2,
+              }}
             >
               {data.bio ? data.bio : ""}
             </Text>
@@ -1217,6 +1230,7 @@ export default function OtherProfile(props) {
       return Tags(e);
     }
   };
+
   const renderdataPost = (tabPost) => {
     if (tabPost === 0) {
       return dataPost;
@@ -1294,7 +1308,7 @@ export default function OtherProfile(props) {
         contentContainerStyle={{
           paddingTop:
             tabIndex === 0
-              ? HeaderHeight + TabBarHeight + 55
+              ? HeaderHeight + TabBarHeight + (Platform.OS === "ios" ? 70 : 20)
               : HeaderHeight + TabBarHeight,
           paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
@@ -1320,14 +1334,14 @@ export default function OtherProfile(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 55],
+      outputRange: [HeaderHeight, Platform.OS === "ios" ? 45 : 90],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          top: 0,
+          top: Platform.OS === "ios" ? "1%" : "-5%",
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -1377,9 +1391,9 @@ export default function OtherProfile(props) {
               }}
             >
               {tabPost === 0 ? (
-                <Allpostgreen height={15} width={15} />
+                <PostGreen height={15} width={15} />
               ) : (
-                <Allpost height={15} width={15} />
+                <PostGray height={15} width={15} />
               )}
               <Text
                 style={{
@@ -1402,9 +1416,9 @@ export default function OtherProfile(props) {
               }}
             >
               {tabPost === 1 ? (
-                <Albumgreen height={15} width={15} />
+                <AlbumGreen height={15} width={15} />
               ) : (
-                <Album height={15} width={15} />
+                <AlbumGray height={15} width={15} />
               )}
               <Text
                 style={{
@@ -1418,7 +1432,7 @@ export default function OtherProfile(props) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                settabPost(2);
+                setSoon(true);
               }}
               style={{
                 padding: 10,
@@ -1734,6 +1748,79 @@ export default function OtherProfile(props) {
     }
   };
 
+  const renderAlert = () => {
+    return (
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </ModalRN>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
@@ -1931,6 +2018,7 @@ export default function OtherProfile(props) {
         ) : null}
       </Animated.View>
 
+      {renderAlert()}
       {renderTabView()}
       {renderHeader(dataUser)}
       {renderCustomRefresh()}
