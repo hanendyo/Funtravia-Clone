@@ -100,8 +100,6 @@ export default function FeedList({ props, token }) {
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
 
-  console.log("datafeed", dataFeed);
-
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -505,26 +503,22 @@ export default function FeedList({ props, token }) {
     loadAsync();
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
-        console.log("itinerary");
         Refresh();
       }
 
       if (props.route.params.isPost === true) {
-        console.log("submit");
         SubmitData();
         props.route.params.isPost = false;
       }
 
       if (props.route.params.isComment === true) {
         // Refresh();
-        console.log("comment");
         if (ref) {
           // ref?.current.scrollToIndex({ animated: true, index: 0 });
           props.route.params.isComment = false;
         }
       }
       if (props.route.params.isTag === true) {
-        console.log("tag");
         setRefreshing(true);
         setTimeout(() => {
           refetch();

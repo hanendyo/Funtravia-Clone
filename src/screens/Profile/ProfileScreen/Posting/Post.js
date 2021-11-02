@@ -15,6 +15,7 @@ export default function Posts({ item, index, navigation, user }) {
             flexDirection: "row",
             justifyContent: "flex-start",
             paddingHorizontal: 2.5,
+            marginHorizontal: 10,
           }}
         >
           <Pressable
@@ -36,7 +37,7 @@ export default function Posts({ item, index, navigation, user }) {
               });
             }}
             style={{
-              width: ((width - 12) / 3) * 2,
+              width: ((width - 12) / 3.25) * 2,
               height: ((width - 12) / 3) * 2,
               margin: 2.5,
             }}
@@ -330,6 +331,7 @@ export default function Posts({ item, index, navigation, user }) {
             flexDirection: "row",
             justifyContent: "flex-start",
             paddingHorizontal: 2.5,
+            marginHorizontal: 10,
           }}
         >
           <View>
@@ -351,8 +353,8 @@ export default function Posts({ item, index, navigation, user }) {
                 });
               }}
               style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
+                width: (width - 20) / 3.25,
+                height: (width - 20) / 3.4,
                 margin: 2.5,
               }}
             >
@@ -645,6 +647,7 @@ export default function Posts({ item, index, navigation, user }) {
             flexDirection: "row",
             justifyContent: "flex-start",
             paddingHorizontal: 2.5,
+            marginHorizontal: 15,
           }}
         >
           {item.map((data, index) => {
@@ -669,8 +672,8 @@ export default function Posts({ item, index, navigation, user }) {
                     });
                   }}
                   style={{
-                    width: (width - 20) / 3,
-                    height: (width - 20) / 3,
+                    width: (width - 20) / 3.25,
+                    height: (width - 20) / 3.4,
                     margin: 2.5,
                   }}
                 >
@@ -772,6 +775,7 @@ export default function Posts({ item, index, navigation, user }) {
           flexDirection: "row",
           justifyContent: "flex-start",
           paddingHorizontal: 2.5,
+          marginHorizontal: 10,
         }}
       >
         {item.map((data, index) => {
@@ -796,8 +800,8 @@ export default function Posts({ item, index, navigation, user }) {
                 });
               }}
               style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
+                width: (width - 20) / 3.25,
+                height: (width - 20) / 3.4,
                 margin: 2.5,
               }}
             >

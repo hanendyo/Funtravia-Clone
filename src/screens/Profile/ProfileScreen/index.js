@@ -1221,7 +1221,6 @@ export default function OtherProfile(props) {
 
   const renderPost = (tabPost, e) => {
     if (tabPost === 0) {
-      console.log(`DATA POST: `, dataPost);
       return (
         <Post
           item={e.item}
@@ -1319,11 +1318,11 @@ export default function OtherProfile(props) {
             tabIndex === 0
               ? HeaderHeight +
                 TabBarHeight +
-                (Platform.OS === "ios" ? (Notch ? 70 : 15) : 25)
+                (Platform.OS === "ios" ? (Notch ? 75 : 20) : 35)
               : HeaderHeight + TabBarHeight,
-          paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingBottom: 10,
+          // paddingHorizontal: 15,
           // margin: Platform.OS === "ios" ? 10 : 5,
         }}
         showsHorizontalScrollIndicator={false}
