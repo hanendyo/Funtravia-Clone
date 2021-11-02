@@ -12,13 +12,14 @@ import {
   Modal,
   TextInput,
   SafeAreaView,
+  StatusBar,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { ReactNativeFile } from "apollo-upload-client";
 import {
   Button,
   Text,
-  StatusBar,
+  StatusBar as StatBar,
   FunImage,
   FunImageBackground,
   Truncate,
@@ -57,9 +58,8 @@ import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: 40,
+  android: StatusBar.currentHeight,
 });
-
 export default function GroupDetail(props) {
   let { width } = Dimensions.get("screen");
   const { t } = useTranslation();
@@ -377,7 +377,7 @@ export default function GroupDetail(props) {
             ? image.path
             : photo.path.replace("file://", ""),
       });
-      console.log(formData);
+      // console.log(formData);
       let response = await fetch(`${RESTFULL_API}room/group/change_cover`, {
         method: "POST",
         headers: {
@@ -772,7 +772,7 @@ export default function GroupDetail(props) {
       if (errorLeft) {
         throw new Error("Error Deleted");
       }
-      console.log(response);
+      // console.log(response);
       if (response.data) {
         if (response.data.left_itinerary_buddy.code !== 200) {
           throw new Error(response.data.left_itinerary_buddy.message);
@@ -861,7 +861,7 @@ export default function GroupDetail(props) {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar backgroundColor="#14646E" />
+      <StatBar backgroundColor="#14646E" />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
@@ -870,8 +870,8 @@ export default function GroupDetail(props) {
           { useNativeDriver: true }
         )}
         contentContainerStyle={{
-          paddingTop:
-            Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT - 10,
+          paddingTop: HEADER_MAX_HEIGHT,
+          // Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT - 10,
           backgroundColor: "#FFF",
           // paddingBottom: 20,
         }}
@@ -1747,8 +1747,9 @@ export default function GroupDetail(props) {
           zIndex: 999,
           // width: "80%",
           opacity: titleOpacity,
-          top: SafeStatusBar - 10,
+          top: SafeStatusBar - 8,
           marginTop: 22,
+          // borderWidth: 1,
         }}
       >
         <Pressable

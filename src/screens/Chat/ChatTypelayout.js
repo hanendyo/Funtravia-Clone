@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 import normalize from "react-native-normalize";
+import ImageView from "react-native-image-viewing";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -42,6 +43,7 @@ export default function ChatTypelayout({
   const { t } = useTranslation();
   const playerRef = useRef(null);
   const [loading, setloading] = useState(true);
+  const [modalss, setModalss] = useState(false);
   const Loadingkirim = () => {
     setTimeout(() => {
       setloading(false);
@@ -996,62 +998,80 @@ export default function ChatTypelayout({
     // att_image_layout
 
     return (
-      <Pressable
-        style={{
-          borderWidth: 1,
-          borderColor: "#209fae",
-          justifyContent: "center",
-          alignContent: "center",
-          borderRadius: 10,
-          borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-          borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-          width: moderateScale(201, 2),
-          height: moderateScale(171, 2),
-          marginVertical: 5,
-          backgroundColor: "#F6F6F6",
-        }}
-      >
-        {item.is_send ? (
-          <FunImage
-            source={{ uri: item.text }}
-            style={{
-              width: moderateScale(200, 2),
-              height: moderateScale(170, 2),
-              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-              // height: 200,
-              alignSelf: "center",
-              // marginVertical: 10,
-              borderRadius: 10,
-            }}
-          />
-        ) : (
-          <ImageBackground
-            source={{ uri: JSON.parse(item.text).path }}
-            style={{
-              width: moderateScale(200, 2),
-              height: moderateScale(170, 2),
-              // maxHeight: 400,
-              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-              alignSelf: "center",
-              flexDirection: "row",
-              // marginVertical: 10,
-              // borderRadius: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-            imageStyle={{
-              borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-              borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-            }}
-            blurRadius={3}
-          >
-            <Loadingkirim />
-          </ImageBackground>
-        )}
-      </Pressable>
+      <>
+        <Pressable
+          style={{
+            borderWidth: 1,
+            borderColor: "#209fae",
+            justifyContent: "center",
+            alignContent: "center",
+            borderRadius: 10,
+            borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+            borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+            width: moderateScale(201, 2),
+            height: moderateScale(171, 2),
+            marginVertical: 5,
+            backgroundColor: "#F6F6F6",
+          }}
+        >
+          {item.is_send ? (
+            <Pressable onPress={() => setModalss(true)}>
+              <FunImage
+                source={{ uri: item.text }}
+                style={{
+                  width: moderateScale(200, 2),
+                  height: moderateScale(170, 2),
+                  borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                  borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+                  // height: 200,
+                  alignSelf: "center",
+                  // marginVertical: 10,
+                  borderRadius: 10,
+                }}
+              />
+            </Pressable>
+          ) : (
+            <ImageBackground
+              source={{ uri: JSON.parse(item.text).path }}
+              style={{
+                width: moderateScale(200, 2),
+                height: moderateScale(170, 2),
+                // maxHeight: 400,
+                borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+                alignSelf: "center",
+                flexDirection: "row",
+                // marginVertical: 10,
+                // borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                alignContent: "center",
+              }}
+              imageStyle={{
+                borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+              }}
+              blurRadius={3}
+            >
+              <Loadingkirim />
+            </ImageBackground>
+          )}
+        </Pressable>
+        {/* <ImageSlide
+        index={index}
+        name="Funtravia Chat Images"
+        location={""}
+        show={modalss}
+        dataImage={dataImage}
+        setClose={() => setModalss(!modalss)}
+      /> */}
+        <ImageView
+          images={[{ uri: item.text }]}
+          imageIndex={0}
+          visible={modalss}
+          onRequestClose={() => setModalss(false)}
+        />
+      </>
     );
   }
 

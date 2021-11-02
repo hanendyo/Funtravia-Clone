@@ -284,11 +284,16 @@ export default function Message({ navigation, route }) {
           LongPressFunc={(item, room_id) => {
             LongPressFunc(item, room_id);
           }}
+          param="list"
         />
       );
     } else if (route.key == "group") {
       return (
-        <ChatGroupList dataGroupRes={dataGroupRes} navigation={navigation} />
+        <ChatGroupList
+          dataGroupRes={dataGroupRes}
+          navigation={navigation}
+          param="list"
+        />
       );
     }
   };

@@ -92,11 +92,11 @@ export default function ChatsearchPage({ navigation, route }) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    // },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,
@@ -285,11 +285,16 @@ export default function ChatsearchPage({ navigation, route }) {
           LongPressFunc={(item, room_id) => {
             LongPressFunc(item, room_id);
           }}
+          param={"search"}
         />
       );
     } else if (route.key == "group") {
       return (
-        <ChatGroupList dataGroupRes={dataGroupRes} navigation={navigation} />
+        <ChatGroupList
+          dataGroupRes={dataGroupRes}
+          navigation={navigation}
+          param="search"
+        />
       );
     }
   };
@@ -470,26 +475,34 @@ export default function ChatsearchPage({ navigation, route }) {
             borderRadius: 3,
             alignContent: "center",
             alignItems: "center",
+            justifyContent: "space-between",
+            paddingRight: 10,
           }}
         >
-          <Magnifying width="20" height="20" style={{ marginHorizontal: 10 }} />
-          <TextInput
-            ref={srcinpt}
-            onChangeText={(e) => _searchHandle(e)}
-            value={searchtext}
-            placeholder="Search"
-            placeholderTextColor="#464646"
-            style={{
-              color: "#464646",
-              fontFamily: "Lato-Regular",
-              height: 40,
-              width: "80%",
-            }}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Magnifying
+              width="15"
+              height="15"
+              style={{ marginHorizontal: 10 }}
+            />
+            <TextInput
+              ref={srcinpt}
+              onChangeText={(e) => _searchHandle(e)}
+              value={searchtext}
+              placeholder="Search"
+              placeholderTextColor="#464646"
+              style={{
+                color: "#464646",
+                fontFamily: "Lato-Regular",
+                height: 40,
+                width: "80%",
+              }}
+            />
+          </View>
           {searchtext.length !== 0 ? (
             <TouchableOpacity
               onPress={() => {
-                SetSearchtext("");
+                _searchHandle("");
               }}
             >
               <Xblue

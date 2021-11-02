@@ -40,11 +40,11 @@ export default function AddMember(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "#f0f0f0",
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 14,
+    //   color: "#f0f0f0",
+    // },
     headerLeftContainerStyle: {
       background: "#FFF",
 
