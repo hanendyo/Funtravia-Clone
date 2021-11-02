@@ -1070,6 +1070,7 @@ export default function ChatTypelayout({
           imageIndex={0}
           visible={modalss}
           onRequestClose={() => setModalss(false)}
+          doubleTapToZoomEnabled={true}
         />
       </>
     );
