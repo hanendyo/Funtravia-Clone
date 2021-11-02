@@ -815,9 +815,22 @@ export default function Detail_movie(props) {
               }}
               onPress={() => {
                 setModalShare(false);
-                props.navigation.navigate("TravelIdeaStack", {
-                  screen: "SendMovie",
-                  params: { movie: movie_byid },
+                // props.navigation.navigate("TravelIdeaStack", {
+                //   screen: "SendMovie",
+                //   params: { movie: movie_byid },
+                // });
+                props.navigation.navigate("ChatStack", {
+                  screen: "SendToChat",
+                  params: {
+                    dataSend: {
+                      id: movie_byid?.id,
+                      cover: movie_byid?.cover,
+                      name: movie_byid?.title,
+                      description: movie_byid?.description,
+                    },
+                    title: t("MovieLocation"),
+                    tag_type: "tag_movie",
+                  },
                 });
               }}
             >

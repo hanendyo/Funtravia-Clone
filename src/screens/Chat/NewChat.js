@@ -309,7 +309,7 @@ export default function NewChat({ navigation }) {
           </View>
         </View>
 
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {loadingwith ? (
             <View style={{ paddingVertical: 20 }}>
               <ActivityIndicator animating={true} color="#209FAE" />

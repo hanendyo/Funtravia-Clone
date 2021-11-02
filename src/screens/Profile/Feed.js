@@ -1023,10 +1023,24 @@ export default function myfeed(props) {
 
                 <Button
                   onPress={() =>
-                    props.navigation.push("FeedStack", {
-                      screen: "SendPost",
+                    // props.navigation.push("FeedStack", {
+                    //   screen: "SendPost",
+                    //   params: {
+                    //     post: item,
+                    //   },
+                    // }),
+                    props.navigation.navigate("ChatStack", {
+                      screen: "SendToChat",
                       params: {
-                        post: item,
+                        dataSend: {
+                          id: item?.id,
+                          assets: item?.assets,
+                          caption: item?.caption,
+                          user: item?.user,
+                          media_orientation: item?.media_orientation,
+                        },
+                        title: "Post",
+                        tag_type: "tag_post",
                       },
                     })
                   }

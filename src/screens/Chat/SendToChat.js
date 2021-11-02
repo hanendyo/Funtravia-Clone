@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -24,15 +24,19 @@ import { RNToasty } from "react-native-toasty";
 import io from "socket.io-client";
 import normalize from "react-native-normalize";
 
-export default function SendTravelGoals({ navigation, route }) {
-  const socket = io(CHATSERVER, {
-    withCredentials: true,
-    extraHeaders: {
-      Authorization: token,
-    },
-  });
-  const { t, i18n } = useTranslation();
+export default function SendToChat({ navigation, route }) {
   const [token, setToken] = useState(null);
+  const socket = useRef();
+  useEffect(() => {
+    socket.current = io(CHATSERVER, {
+      withCredentials: true,
+      extraHeaders: {
+        Authorization: token,
+      },
+    });
+  }, [token]);
+
+  const { t, i18n } = useTranslation();
 
   let [search, setSearch] = useState("");
   const [user, setUser] = useState({});
@@ -61,7 +65,7 @@ export default function SendTravelGoals({ navigation, route }) {
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>{`${t(
         "send_to"
-      )} ${t("event")}`}</Text>
+      )} ${route.params.title}`}</Text>
     ),
     headerMode: "screen",
     headerStyle: {
@@ -246,23 +250,17 @@ export default function SendTravelGoals({ navigation, route }) {
 
       let responseJson = await response.json();
       if (responseJson) {
-        socket.emit("join", responseJson.id);
-        socket.on("connection", (socket) => {});
-        let dataEvent = route.params.dataEvent;
-        let constain = {
-          id: dataEvent?.id,
-          cover: dataEvent?.cover,
-          name: dataEvent?.name,
-          description: dataEvent?.description,
-        };
+        socket.current.emit("join", responseJson.id);
+        socket.current.on("connection", (socket) => {});
+        let dataSend = route.params.dataSend;
         // console.log("constain", constain);
         let uuid = create_UUID();
         let chatData = {
           id: uuid,
           room: responseJson.id,
           chat: "personal",
-          type: "tag_event",
-          text: JSON.stringify(constain),
+          type: route.params.tag_type,
+          text: JSON.stringify(dataSend),
           user_id: user.id,
           time: dateTime,
         };
@@ -274,12 +272,12 @@ export default function SendTravelGoals({ navigation, route }) {
         //   },
         //   body: `room=${
         //     responseJson.id
-        //   }&type=tag_destination&chat=personal&text=${JSON.stringify(
-        //     constain
+        //   }&type=${route.params.tag_type}&chat=personal&text=${JSON.stringify(
+        //     dataSend
         //   )}&user_id=${user.id}`,
         // });
-        await socket.emit("message", chatData);
-        socket.on("new_chat_personal", (data) => {
+        await socket.current.emit("message", chatData);
+        socket.current.on("new_chat_personal", (data) => {
           setChatHistory(data);
         });
         let change =
@@ -287,7 +285,7 @@ export default function SendTravelGoals({ navigation, route }) {
             ? responseJson.receiver
             : responseJson.sender;
         setTimeout(() => {
-          socket.disconnect();
+          socket.current.disconnect();
           RNToasty.Show({
             duration: 1,
             title: t("successfullySent"),
@@ -324,38 +322,42 @@ export default function SendTravelGoals({ navigation, route }) {
       setloadingsend(true);
       setIndexGroup(index);
       let dateTime = new Date();
-      await socket.emit("join", value.group_id);
-      await socket.on("connection", (socket) => {});
+      await socket.current.emit("join", value.group_id);
+      await socket.current.on("connection", (socket) => {});
       let from = value.itinerary ? "itinerary" : "group";
-      let dataEvent = route.params.dataevent;
-      let constain = {
-        id: dataEvent?.id,
-        cover: dataEvent?.cover,
-        name: dataEvent?.name,
-        description: dataEvent?.description,
-      };
+      let dataSend = route.params.dataSend;
+      // let constain = {
+      //   id: dataEvent?.id,
+      //   cover: dataEvent?.cover,
+      //   name: dataEvent?.name,
+      //   description: dataEvent?.description,
+      // };
+      let uuid = create_UUID();
       let chatData = {
+        id: uuid,
         room: value.group_id,
         chat: "group",
-        type: "tag_event",
-        text: JSON.stringify(constain),
+        type: route.params.tag_type,
+        text: JSON.stringify(dataSend),
         user_id: user.id,
+        name: `${user.first_name} ${user.last_name ? user.last_name : ""}`,
         time: dateTime,
+        from: from,
       };
-      await fetch(`${CHATSERVER}/api/group/send`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `user_id=${user.id}&type=tag_event&chat=group&room=${
-          value.group_id
-        }&from=${from}&text=${JSON.stringify(constain)}&name=${
-          user.first_name
-        } ${user.last_name}`,
-      });
-      await socket.emit("message", chatData);
-      socket.on("new_chat_group", (data) => {
+      // await fetch(`${CHATSERVER}/api/group/send`, {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     "Content-Type": "application/x-www-form-urlencoded",
+      //   },
+      //   body: `user_id=${user.id}&type=${route.params.tag_type}&chat=group&room=${
+      //     value.group_id
+      //   }&from=${from}&text=${JSON.stringify(dataSend)}&name=${
+      //     user.first_name
+      //   } ${user.last_name}`,
+      // });
+      await socket.current.emit("message", chatData);
+      socket.current.on("new_chat_group", (data) => {
         setChatHistoryGroup(data);
       });
       RNToasty.Show({

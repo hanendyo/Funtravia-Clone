@@ -233,6 +233,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
     >
       <FlatList
         data={dataGroupRes}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View
             key={`${item.id}_child`}

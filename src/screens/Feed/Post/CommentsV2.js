@@ -1547,10 +1547,24 @@ export default function Comments(props) {
 
                   <Button
                     onPress={() =>
-                      props.navigation.push("FeedStack", {
-                        screen: "SendPost",
+                      // props.navigation.push("FeedStack", {
+                      //   screen: "SendPost",
+                      //   params: {
+                      //     post: dataPost,
+                      //   },
+                      // })
+                      props.navigation.navigate("ChatStack", {
+                        screen: "SendToChat",
                         params: {
-                          post: dataPost,
+                          dataSend: {
+                            id: dataPost?.id,
+                            assets: dataPost?.assets,
+                            caption: dataPost?.caption,
+                            user: dataPost?.user,
+                            media_orientation: dataPost?.media_orientation,
+                          },
+                          title: "Post",
+                          tag_type: "tag_post",
                         },
                       })
                     }

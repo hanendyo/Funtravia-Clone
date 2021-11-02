@@ -852,8 +852,21 @@ export default function EventDetail(props) {
               }}
               onPress={() => {
                 setModalShare(false);
-                props.navigation.navigate("SendEvent", {
-                  params: { dataEvent: dataevent },
+                // props.navigation.navigate("SendEvent", {
+                //   dataEvent: dataevent,
+                // });
+                props.navigation.navigate("ChatStack", {
+                  screen: "SendToChat",
+                  params: {
+                    dataSend: {
+                      id: dataevent?.id,
+                      cover: dataevent?.cover,
+                      name: dataevent?.name,
+                      description: dataevent?.description,
+                    },
+                    title: t("event"),
+                    tag_type: "tag_event",
+                  },
                 });
               }}
             >

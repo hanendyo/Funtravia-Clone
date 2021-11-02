@@ -3931,10 +3931,23 @@ export default function CityDetail(props) {
               onPress={() => {
                 token
                   ? (SetShareModal(false),
-                    props.navigation.push("CountryStack", {
-                      screen: "SendCity",
+                    // props.navigation.push("CountryStack", {
+                    //   screen: "SendCity",
+                    //   params: {
+                    //     city: dataCity.CitiesInformation,
+                    //   },
+                    // })
+                    props.navigation.navigate("ChatStack", {
+                      screen: "SendToChat",
                       params: {
-                        city: dataCity.CitiesInformation,
+                        dataSend: {
+                          id: dataCity.CitiesInformation?.id,
+                          cover: dataCity.CitiesInformation?.cover,
+                          name: dataCity.CitiesInformation?.name,
+                          description: dataCity.CitiesInformation?.description,
+                        },
+                        title: "City",
+                        tag_type: "tag_city",
                       },
                     }))
                   : (setModalLogin(true), SetShareModal(false));

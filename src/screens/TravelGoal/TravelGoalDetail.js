@@ -306,8 +306,21 @@ export default function TravelGoalDetail(props) {
               }}
               onPress={() => {
                 setModalShare(false);
-                props.navigation.navigate("SendTravelGoals", {
-                  params: { dataGoal: datadetail },
+                // props.navigation.navigate("SendTravelGoals", {
+                //   params: { dataGoal: datadetail },
+                // });
+                props.navigation.navigate("ChatStack", {
+                  screen: "SendToChat",
+                  params: {
+                    dataSend: {
+                      id: datadetail?.id,
+                      cover: datadetail?.cover,
+                      name: datadetail?.title,
+                      description: datadetail?.firsttxt,
+                    },
+                    title: t("travelgoals"),
+                    tag_type: "tag_travel_goal",
+                  },
                 });
               }}
             >

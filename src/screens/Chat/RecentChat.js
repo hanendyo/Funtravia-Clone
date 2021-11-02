@@ -32,6 +32,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
           // borderWidth: 1,
         }}
       >
@@ -50,6 +51,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
@@ -67,6 +69,7 @@ export default function ChatList({ data, style, room }) {
           flexDirection: "row",
           alignContent: "center",
           // borderWidth: 1,
+          alignItems: "center",
         }}
       >
         <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
@@ -84,6 +87,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
@@ -101,6 +105,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
@@ -117,6 +122,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
@@ -133,12 +139,49 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
         <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
         <Text style={style} size="description" type="regular">
           {data_movie.name}
+        </Text>
+      </View>
+    );
+  }
+  if (datas.type == "tag_event") {
+    let data_event = JSON.parse(datas.text);
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
+        <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+        <Text style={style} size="description" type="regular">
+          {data_event.name}
+        </Text>
+      </View>
+    );
+  }
+  if (datas.type == "tag_travel_goal") {
+    let data_travel_goal = JSON.parse(datas.text);
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
+        <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
+        <Text style={style} size="description" type="regular">
+          {data_travel_goal.name}
         </Text>
       </View>
     );
@@ -150,6 +193,7 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
+          alignItems: "center",
         }}
       >
         <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
