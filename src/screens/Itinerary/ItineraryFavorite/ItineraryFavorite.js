@@ -59,12 +59,6 @@ export default function ItineraryFavorite(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-      marginLeft: -10,
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,

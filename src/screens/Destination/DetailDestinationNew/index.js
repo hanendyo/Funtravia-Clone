@@ -790,6 +790,7 @@ const Index = (props) => {
 
     return (
       <Animated.View
+        pointerEvents="none"
         // {...headerPanResponder.panHandlers}
         // {...panResponder.panHandlers}
         // style={[styles.header, { transform: [{ translateY: y }] }]}

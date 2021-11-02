@@ -51,7 +51,6 @@ export default function SearchTab(props) {
       borderBottomWidth: 0,
       backgroundColor: "#209FAE",
     },
-    headerTitleStyle: { color: "white" },
     headerLeft: () => (
       <TouchableOpacity
         onPress={() =>

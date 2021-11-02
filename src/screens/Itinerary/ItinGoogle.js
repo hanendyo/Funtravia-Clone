@@ -45,11 +45,6 @@ export default function ItinGoogle(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
 

@@ -62,11 +62,6 @@ export default function Journal(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
     headerLRightContainerStyle: {
       background: "#FFF",
       marginRight: 10,

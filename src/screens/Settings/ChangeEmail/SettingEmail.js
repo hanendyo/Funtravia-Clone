@@ -22,11 +22,6 @@ export default function SettingEmail(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 16,
-      color: "white",
-    },
     headerLeft: () => (
       <Button
         type="circle"

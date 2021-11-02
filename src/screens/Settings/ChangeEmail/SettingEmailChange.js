@@ -31,11 +31,6 @@ export default function SettingEmailChange(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
     headerLeft: () => (
       <Button
         type="circle"

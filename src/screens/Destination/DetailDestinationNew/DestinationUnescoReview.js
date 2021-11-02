@@ -69,10 +69,6 @@ export default function DestinationUnescoReview(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Regular",
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
     },
@@ -397,6 +393,7 @@ export default function DestinationUnescoReview(props) {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
+          keyboardVerticalOffset={50}
           // contentContainerStyle={{ paddingHorizontal: 15 }}
         >
           {dataImage.length > 0 ? (

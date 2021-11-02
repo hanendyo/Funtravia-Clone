@@ -33,11 +33,6 @@ export default function TravelIdeas(props) {
       shadowOpacity: 0, // remove shadow on iOS
       borderBottomWidth: 0, // Just in case.
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,
@@ -79,6 +74,7 @@ export default function TravelIdeas(props) {
         flex: 1,
         backgroundColor: "#ffffff",
       }}
+      showsVerticalScrollIndicator={false}
     >
       <View
         style={{

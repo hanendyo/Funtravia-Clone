@@ -76,11 +76,6 @@ export default function myfeed(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
     headerLeft: () => (
       <Button
         text={""}

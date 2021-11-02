@@ -55,7 +55,6 @@ export default function CraetePostAlbum(props) {
     setSetting(JSON.parse(setsetting));
   };
   const HeaderComponent = {
-    title: "Select Photos",
     headerTintColor: "white",
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>
@@ -69,11 +68,6 @@ export default function CraetePostAlbum(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 16,
-      color: "white",
     },
     headerRight: () => (
       <Pressable

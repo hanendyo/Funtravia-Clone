@@ -118,11 +118,6 @@ export default function Comments(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      color: "white",
-      fontSize: 18,
-    },
     headerLeft: () => (
       <Button
         text={""}

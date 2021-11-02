@@ -113,11 +113,6 @@ export default function ItineraryPopuler(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      color: "white",
-      // alignSelf: "center",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
 

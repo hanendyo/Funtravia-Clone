@@ -96,11 +96,6 @@ export default function ItinerarySearchCategory(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      color: "white",
-      // alignSelf: "center",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,

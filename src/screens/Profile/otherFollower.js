@@ -27,11 +27,6 @@ export default function Follower(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
     },

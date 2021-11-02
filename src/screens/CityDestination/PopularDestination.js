@@ -55,16 +55,6 @@ export default function AllDestination(props) {
       </Text>
     ),
     headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,

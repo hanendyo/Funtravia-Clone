@@ -55,11 +55,6 @@ export default function MyAccount(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
 
     // headerRight: () => (
     //   <TouchableOpacity

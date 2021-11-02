@@ -44,7 +44,6 @@ export default function ItineraryBuddy(props) {
 
   const HeaderComponent = {
     headerShown: true,
-    title: "Travel Buddy",
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
@@ -57,11 +56,6 @@ export default function ItineraryBuddy(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",
