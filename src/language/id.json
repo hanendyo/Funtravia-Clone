@@ -403,7 +403,7 @@
   "editprofile": "Sunting Profil",
   "Message": "Pesan",
   "unfollow": "Berhenti Mengikuti",
-  "username": "Nama Pengguna",
+  "username": "Nama pengguna",
   "Usernameisused": "nama pengguna sudah digunakan",
   "success": "Berhasil",
   "justNow": "Baru saja",
@@ -489,7 +489,7 @@
   "RegisterGoogleFailed": "Registrasi Dengan Google Gagal",
   "weJustSendRegister": "Kami baru saja mengirimkan kode verifikasi untuk memverifikasi akun Anda ke email",
   "PasswordReset": "Pengaturan ulang kata sandi",
-  "min6char": "Minimal 6 character dengan huruf kecil",
+  "usernameValidation": "minimal 6 karakter atau maksimal 20 karakter dengan huruf kecil",
   "saved": "Simpan",
   "discard": "Batal",
   "areyousure": "Simpan perubahan?",
@@ -747,7 +747,7 @@
   "searchByLocation": "Berdasarkan Lokasi",
   "leftItinerary": "Tinggalkan Itinerary",
   "writeReview": "Menulis Ulasan",
-  "cropNewPost": "Menyesuaikan Postingan Baru",
+  "cropNewPost": "Sesuaikan Postingan Baru",
   "newItinerary": "Itinerary Baru",
   "postAlbum": "Album Postingan",
   "travelStories": "Cerita Perjalanan",
@@ -797,5 +797,7 @@
   "subTermsAndConditions": "Saya setuju dengan Persyaratan Perusahaan, Layanan dan Kebijakan Privasi",
   "subFilmingLocationIndex": "Pilih beberapa tempat yang Anda minati",
   "subUnescoIndex": "Tempat Wisata  yang wajib di kunjungi",
-  "descUnfollow": "Apakah anda ingin berhenti mengikuti"
+  "descUnfollow": "Apakah anda ingin berhenti mengikuti",
+  "somethingWrong": "Terdapat kesalahan",
+  "changeSaved": "Perubahan tersimpan"
 }

@@ -491,7 +491,7 @@
   "RegisterGoogleFailed": "Registrasi With Google is Failed",
   "weJustSendRegister": "We just sent the verification code to verify your account to",
   "PasswordReset": "Password Reset",
-  "min6char": "6 characters minimal in lowercase",
+  "usernameValidation": "6 characters minimal or 20 characters maximal in lowercase",
   "saved": "Save",
   "discard": "Discard",
   "areyousure": "Save changes?",
@@ -796,5 +796,7 @@
   "subTermsAndConditions": "I agree to the company Terms, Service dan Privacy Policy",
   "subFilmingLocationIndex": "Pick some places you are interested in",
   "subUnescoIndex": "Must visit Destination",
-  "descUnfollow": "Do you want to unfollow"
+  "descUnfollow": "Do you want to unfollow",
+  "somethingWrong": "Something wrong",
+  "changeSaved": "Change saved"
 }

@@ -904,8 +904,17 @@ export default function myfeed(props) {
                 borderRadius: 15,
               }}
             >
-              {item.is_single == false && item.itinerary !== null ? (
-                <RenderAlbum data={item} props={props} />
+              {item.is_single == false ? (
+                <RenderAlbum
+                  data={item}
+                  props={props}
+                  play={play}
+                  muted={muted}
+                  isFocused={isFocused}
+                  setMuted={(e) => setMuted(e)}
+                  token={token}
+                  setModalLogin={(e) => setModalLogin(e)}
+                />
               ) : (
                 <RenderSinglePhoto
                   data={item}
@@ -914,6 +923,7 @@ export default function myfeed(props) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
+                  token={token}
                 />
               )}
             </View>

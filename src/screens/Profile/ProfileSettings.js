@@ -14,7 +14,12 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
-import { Addphoto, Arrowbackios, Arrowbackwhite } from "../../assets/svg";
+import {
+  Addphoto,
+  Arrowbackios,
+  Arrowbackwhite,
+  Xgray,
+} from "../../assets/svg";
 import { Input, Item, Label } from "native-base";
 import { useTranslation } from "react-i18next";
 import EditProfile from "../../graphQL/Mutation/Profile/EditProfile";
@@ -30,11 +35,13 @@ import * as mime from "react-native-mime-types";
 import LinearGradient from "react-native-linear-gradient";
 import DeviceInfo from "react-native-device-info";
 import get from "lodash.get";
+import { RNToasty } from "react-native-toasty";
 
 export default function ProfileSettings(props) {
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   let [modalhapus, setModalhapus] = useState(false);
+  let [modalCamera, setmodalCamera] = useState(false);
   const HeaderComponent = {
     title: "",
     headerShown: true,
@@ -147,7 +154,7 @@ export default function ProfileSettings(props) {
   // const win = Dimensions.get('window')
   // const ratio = Dimensions.get('window').width/220
 
-  const newModal = () => {
+  const saveModal = () => {
     return (
       <Modal
         useNativeDriver={true}
@@ -228,12 +235,112 @@ export default function ProfileSettings(props) {
               <Button
                 onPress={() => {
                   setModalhapus(false);
+                  props.navigation.goBack();
                 }}
                 style={{ marginTop: 5, marginBottom: 8 }}
                 variant="transparent"
                 text={t("discard")}
               ></Button>
             </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const cameraModal = () => {
+    return (
+      <Modal
+        onBackdropPress={() => {
+          setmodalCamera(false);
+        }}
+        onRequestClose={() => setmodalCamera(false)}
+        onDismiss={() => setmodalCamera(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalCamera}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 15,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 100,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                // height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setmodalCamera(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomWidth: 1,
+                // height: 50,
+                borderColor: "#d1d1d1",
+              }}
+              onPress={() => pickcamera()}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("OpenCamera")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomRightRadius: 5,
+                borderBottomLeftRadius: 5,
+              }}
+              onPress={() => pickGallery()}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("OpenGallery")}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -420,7 +527,7 @@ export default function ProfileSettings(props) {
       // setdataImage(image.data);
       dataImage.current = image;
       dataImagepatch.current = image.path;
-      BackHandler.addEventListener("hardwareBackPress", backAction);
+      // BackHandler.addEventListener("hardwareBackPress", backAction);
       props.navigation.setOptions({
         headerLeft: () => (
           <Button
@@ -430,6 +537,7 @@ export default function ProfileSettings(props) {
             variant="transparent"
             onPress={() => {
               backAction();
+              // setmodalCamera(true);
               // setModalhapus(true);
             }}
             // style={{
@@ -446,7 +554,8 @@ export default function ProfileSettings(props) {
       });
 
       // setdataImagepatch(image.path);
-      setmodal(false);
+      // setmodal(false);
+      setmodalCamera(false);
       // upload(image.data);
     });
   };
@@ -501,7 +610,7 @@ export default function ProfileSettings(props) {
     } else if (name === "username") {
       return value.match(regx)
         ? value.length <= 5 ||
-          value.length > 30 ||
+          value.length > 20 ||
           value.toLowerCase() !== value
           ? false
           : true
@@ -605,7 +714,10 @@ export default function ProfileSettings(props) {
 
     if (x > 0 || (datausername && datausername.user_check.isused === true)) {
       setLoading(false);
-      Alert.alert(t("Terdapat kesalahan"));
+      RNToasty.Show({
+        title: t("somethingWrong"),
+        position: "bottom",
+      });
     } else {
       try {
         let response = await mutationEdit({
@@ -634,6 +746,10 @@ export default function ProfileSettings(props) {
           props.navigation.goBack();
         }
         setLoading(false);
+        RNToasty.Show({
+          title: t("changeSaved"),
+          position: "bottom",
+        });
       } catch (error) {
         Alert.alert("" + error);
         setLoading(false);
@@ -735,7 +851,7 @@ export default function ProfileSettings(props) {
               }}
             />
             <Pressable
-              onPress={() => setmodal(true)}
+              onPress={() => setmodalCamera(true)}
               style={{
                 position: "absolute",
                 right: -8,
@@ -751,7 +867,7 @@ export default function ProfileSettings(props) {
             backgroundColor: "#fff",
             height:
               Dimensions.get("window").height -
-              (Platform.OS === "ios" ? 100 : 200),
+              (Platform.OS === "ios" ? (Notch ? 100 : -50) : 200),
           }}
         >
           <View
@@ -802,7 +918,7 @@ export default function ProfileSettings(props) {
                   }}
                 >
                   {t("inputWarningName")}
-                  {t("firstName")}
+                  {/* {t("firstName")} */}
                 </Text>
               ) : null}
             </View>
@@ -899,7 +1015,7 @@ export default function ProfileSettings(props) {
                   }}
                 >
                   {/* {t("inputWarningName")} */}
-                  {t("username")} {t("min6char")}
+                  {t("username")} {t("usernameValidation")}
                 </Text>
               ) : null}
               {datausername && datausername.user_check.isused === true ? (
@@ -1098,7 +1214,8 @@ export default function ProfileSettings(props) {
           </View>
         </Modal>
       </ScrollView>
-      {newModal()}
+      {saveModal()}
+      {cameraModal()}
     </KeyboardAvoidingView>
   );
 }

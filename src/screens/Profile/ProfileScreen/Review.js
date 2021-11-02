@@ -25,6 +25,9 @@ import {
   shareAction,
 } from "../../../component";
 import { useQuery } from "@apollo/client";
+import DeviceInfo from "react-native-device-info";
+
+const Notch = DeviceInfo.hasNotch();
 
 export default function Review({ item, index }, onSelect, props, token, t) {
   return (
@@ -32,10 +35,20 @@ export default function Review({ item, index }, onSelect, props, token, t) {
       style={{
         paddingVertical: 10,
         paddingHorizontal: 20,
-        width: Dimensions.get("screen").width,
-        borderBottomWidth: 1,
-        borderBottomColor: "#f3f3f3",
+        width: Dimensions.get("screen").width - 30,
+        // borderBottomWidth: 1,
+        // borderBottomColor: "#f3f3f3",
         backgroundColor: "#fff",
+        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : -25,
+        marginBottom: Platform.OS === "ios" ? (Notch ? null : 45) : 35,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        // marginLeft: 10,
+        // marginRight: 10,
+        // borderWidth: 4,
+        marginHorizontal: 15,
       }}
     >
       <View
