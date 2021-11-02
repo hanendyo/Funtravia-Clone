@@ -24,6 +24,7 @@ import {
   Xgray,
   AcceptNotif,
   Errorr,
+  CheckWhite,
 } from "../../assets/svg";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -586,7 +587,6 @@ export default function FeedList({ props, token }) {
   };
 
   const renderViewMore = (onPress) => {
-    console.log("onpress", onPress);
     return (
       <Text
         size="description"
@@ -766,6 +766,8 @@ export default function FeedList({ props, token }) {
       setModalLogin(false);
     }
   }, [status]);
+
+  const [loads, setLoads] = useState(true);
 
   return (
     <SafeAreaView>
@@ -1561,7 +1563,7 @@ export default function FeedList({ props, token }) {
                       size="label"
                       type="regular"
                     >
-                      {t("uploadFailed")}
+                      {`Oops! ${t("uploadFailed")}`}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row" }}>
@@ -1603,14 +1605,41 @@ export default function FeedList({ props, token }) {
               ) : null}
             </>
           ) : (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <AcceptNotif
-                height="40"
-                width="40"
-                style={{ marginVertical: 20 }}
-              />
-              <Text style={{ marginLeft: 15 }} size="label" type="regular">
-                {t("uploaded")}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: "#79C05A",
+                width: Dimensions.get("screen").width - 20,
+                borderRadius: 10,
+                marginLeft: -15,
+              }}
+            >
+              <View
+                style={{
+                  height: 50,
+                  width: 50,
+                  borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  marginLeft: 20,
+                  marginVertical: 10,
+                }}
+              >
+                <CheckWhite
+                  height="30"
+                  width="30"
+                  // style={{ marginVertical: 20 }}
+                />
+              </View>
+              <Text
+                style={{ marginLeft: 15, color: "#fff" }}
+                size="title "
+                type="bold"
+              >
+                {`Wohoo! ${t("uploaded")}`}
               </Text>
             </View>
           )}
