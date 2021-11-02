@@ -35,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import FeedListCursorBased from "../../graphQL/Query/Feed/FeedListCursorBased";
 import ReadMore from "react-native-read-more-text";
+import ViewMoreText from "react-native-view-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
 import RenderAlbum from "./RenderAlbumItinerary";
@@ -48,6 +49,7 @@ import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
 import ProgressBar from "react-native-progress/Bar";
 import moment from "moment";
+import ShowMoreText from "react-show-more-text";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -99,8 +101,6 @@ export default function FeedList({ props, token }) {
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
-
-  console.log("datafeed", dataFeed);
 
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -589,23 +589,26 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const ReadMorehendle = (handlePress) => {
+  const renderViewMore = (onPress) => {
+    console.log("onpress", onPress);
     return (
       <Text
-        onPress={handlePress}
-        type="normal"
+        size="description"
+        type="bold"
+        onPress={onPress}
         style={{
           color: "#209fae",
-          marginTop: 5,
+          marginTop: 2,
+          marginBottom: 5,
         }}
       >
-        Read More
+        {t("readMoreCaption")}
       </Text>
     );
   };
 
-  const ReadLesshendle = (handlePress) => {
-    return <View />;
+  const renderViewLess = (onPress) => {
+    return <Text></Text>;
   };
 
   const goToItinerary = (data) => {
@@ -2010,11 +2013,11 @@ export default function FeedList({ props, token }) {
                       </Pressable>
                     </View>
                     {item.node.caption ? (
-                      <ReadMore
+                      <ViewMoreText
                         numberOfLines={3}
-                        renderTruncatedFooter={ReadMorehendle}
-                        renderRevealedFooter={ReadLesshendle}
-                        // onReady={this._handleTextReady}
+                        renderViewMore={renderViewMore}
+                        renderViewLess={renderViewLess}
+                        // textStyle={{ color: "#209fae" }}
                       >
                         <Text
                           size="label"
@@ -2025,20 +2028,21 @@ export default function FeedList({ props, token }) {
                         >
                           {item.node.caption}
                         </Text>
-                      </ReadMore>
+                      </ViewMoreText>
                     ) : null}
                   </View>
                 ) : item.node?.caption ? (
                   <View
-                    style={{
-                      marginBottom: 8,
-                    }}
+                    style={
+                      {
+                        // marginBottom: 8,
+                      }
+                    }
                   >
-                    <ReadMore
+                    <ViewMoreText
                       numberOfLines={3}
-                      renderTruncatedFooter={ReadMorehendle}
-                      renderRevealedFooter={ReadLesshendle}
-                      // onReady={this._handleTextReady}
+                      renderViewMore={renderViewMore}
+                      renderViewLess={renderViewLess}
                     >
                       <Text
                         size="label"
@@ -2062,7 +2066,7 @@ export default function FeedList({ props, token }) {
                         </Text>
                         {item.node?.caption}
                       </Text>
-                    </ReadMore>
+                    </ViewMoreText>
                   </View>
                 ) : null}
               </View>

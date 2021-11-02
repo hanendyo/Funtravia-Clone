@@ -32,12 +32,6 @@ export default function DetailItinerary(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-      marginLeft: -10,
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
 

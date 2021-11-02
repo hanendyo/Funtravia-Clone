@@ -75,11 +75,6 @@ export default function Comments(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      // fontSize: 14,
-      color: "white",
-    },
   };
   const [loadings, setLoading] = useState(false);
   let [statusText, setStatusText] = useState("");

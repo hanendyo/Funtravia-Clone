@@ -31,17 +31,16 @@ export default function Wishlist(props) {
     title: "Wishlist",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Wishlist",
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        Wishlist
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",

@@ -42,10 +42,6 @@ export default function Crop(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      color: "white",
-    },
     headerLeft: () => (
       <Button
         text={""}

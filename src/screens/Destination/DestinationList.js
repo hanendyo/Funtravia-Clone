@@ -60,11 +60,6 @@ export default function ItineraryDestination(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
     headerLeftContainerStyle: {
       background: "#FFF",
 
