@@ -16,6 +16,8 @@ const { width, height } = Dimensions.get("screen");
 export default function Album({ item, props, token }) {
   // const { t } = useTranslation();
   // console.log("firstimg", item.firstimg);
+  console.log(`ITEM: `, item);
+  console.log(`PROPS: `, props);
   return (
     <Pressable
       // key={index}

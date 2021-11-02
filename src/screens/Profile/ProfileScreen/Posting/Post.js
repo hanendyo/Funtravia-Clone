@@ -62,7 +62,7 @@ export default function Posts({ item, index, navigation, user }) {
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                 />
                 <View
@@ -73,7 +73,7 @@ export default function Posts({ item, index, navigation, user }) {
                     height: "100%",
                     backgroundColor: "rgba(0,0,0,0.4)",
                     justifyContent: "flex-end",
-                    borderRadius: 5,
+                    borderRadius: 10,
                     // bottom: "35%",
                     // left: "35%",
                   }}
@@ -96,7 +96,7 @@ export default function Posts({ item, index, navigation, user }) {
               //     width: "100%",
               //     height: "100%",
               //     backgroundColor: "#fff",
-              //     borderRadius: 5,
+              //     borderRadius: 10,
               //   }}
               //   resizeMode="cover"
               //   muted={true}
@@ -106,7 +106,7 @@ export default function Posts({ item, index, navigation, user }) {
                 style={{
                   width: "100%",
                   height: "100%",
-                  borderRadius: 5,
+                  borderRadius: 10,
                 }}
                 source={
                   item[0]?.assets[0]?.filepath
@@ -161,7 +161,7 @@ export default function Posts({ item, index, navigation, user }) {
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
-                      borderRadius: 5,
+                      borderRadius: 10,
                     }}
                   />
                   <View
@@ -172,7 +172,7 @@ export default function Posts({ item, index, navigation, user }) {
                       height: "100%",
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
-                      borderRadius: 5,
+                      borderRadius: 10,
 
                       // bottom: "35%",
                       // left: "35%",
@@ -196,7 +196,7 @@ export default function Posts({ item, index, navigation, user }) {
                 //     width: "100%",
                 //     height: "100%",
                 //     backgroundColor: "#fff",
-                //     borderRadius: 5,
+                //     borderRadius: 10,
                 //   }}
                 //   resizeMode="cover"
                 //   muted={true}
@@ -206,7 +206,7 @@ export default function Posts({ item, index, navigation, user }) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                   source={
                     item[1]?.assets[0] && item[1]?.assets[0]?.filepath
@@ -262,7 +262,7 @@ export default function Posts({ item, index, navigation, user }) {
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
-                      borderRadius: 5,
+                      borderRadius: 10,
                     }}
                   />
                   <View
@@ -273,7 +273,7 @@ export default function Posts({ item, index, navigation, user }) {
                       height: "100%",
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
-                      borderRadius: 5,
+                      borderRadius: 10,
 
                       // bottom: "35%",
                       // left: "35%",
@@ -297,7 +297,7 @@ export default function Posts({ item, index, navigation, user }) {
                 //     width: "100%",
                 //     height: "100%",
                 //     backgroundColor: "#fff",
-                //     borderRadius: 5,
+                //     borderRadius: 10,
                 //   }}
                 //   resizeMode="cover"
                 //   muted={true}
@@ -307,7 +307,7 @@ export default function Posts({ item, index, navigation, user }) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                   source={
                     item[2]?.assets[0]?.filepath
@@ -377,7 +377,7 @@ export default function Posts({ item, index, navigation, user }) {
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
-                      borderRadius: 5,
+                      borderRadius: 10,
                     }}
                   />
                   <View
@@ -388,7 +388,7 @@ export default function Posts({ item, index, navigation, user }) {
                       height: "100%",
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
-                      borderRadius: 5,
+                      borderRadius: 10,
 
                       // bottom: "35%",
                       // left: "35%",
@@ -412,7 +412,7 @@ export default function Posts({ item, index, navigation, user }) {
                 //     width: "100%",
                 //     height: "100%",
                 //     backgroundColor: "#fff",
-                //     borderRadius: 5,
+                //     borderRadius: 10,
                 //   }}
                 //   resizeMode="cover"
                 //   muted={true}
@@ -422,7 +422,7 @@ export default function Posts({ item, index, navigation, user }) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                   source={
                     item[0]?.assets[0]?.filepath
@@ -478,7 +478,7 @@ export default function Posts({ item, index, navigation, user }) {
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
-                      borderRadius: 5,
+                      borderRadius: 10,
                     }}
                   />
                   <View
@@ -489,7 +489,7 @@ export default function Posts({ item, index, navigation, user }) {
                       height: "100%",
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
-                      borderRadius: 5,
+                      borderRadius: 10,
 
                       // bottom: "35%",
                       // left: "35%",
@@ -513,7 +513,7 @@ export default function Posts({ item, index, navigation, user }) {
                 //     width: "100%",
                 //     height: "100%",
                 //     backgroundColor: "#fff",
-                //     borderRadius: 5,
+                //     borderRadius: 10,
                 //   }}
                 //   resizeMode="cover"
                 //   muted={true}
@@ -523,7 +523,7 @@ export default function Posts({ item, index, navigation, user }) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                   source={
                     item[1]?.assets[0]?.filepath
@@ -580,7 +580,7 @@ export default function Posts({ item, index, navigation, user }) {
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#fff",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                 />
                 <View
@@ -591,7 +591,7 @@ export default function Posts({ item, index, navigation, user }) {
                     height: "100%",
                     backgroundColor: "rgba(0,0,0,0.4)",
                     justifyContent: "flex-end",
-                    borderRadius: 5,
+                    borderRadius: 10,
 
                     // bottom: "35%",
                     // left: "35%",
@@ -615,7 +615,7 @@ export default function Posts({ item, index, navigation, user }) {
               //     width: "100%",
               //     height: "100%",
               //     backgroundColor: "#fff",
-              //     borderRadius: 5,
+              //     borderRadius: 10,
               //   }}
               //   resizeMode="cover"
               //   muted={true}
@@ -625,7 +625,7 @@ export default function Posts({ item, index, navigation, user }) {
                 style={{
                   width: "100%",
                   height: "100%",
-                  borderRadius: 5,
+                  borderRadius: 10,
                 }}
                 source={
                   item[2]?.assets[0]?.filepath
@@ -695,7 +695,7 @@ export default function Posts({ item, index, navigation, user }) {
                           width: "100%",
                           height: "100%",
                           backgroundColor: "#fff",
-                          borderRadius: 5,
+                          borderRadius: 10,
                         }}
                       />
                       <View
@@ -706,7 +706,7 @@ export default function Posts({ item, index, navigation, user }) {
                           height: "100%",
                           backgroundColor: "rgba(0,0,0,0.4)",
                           justifyContent: "flex-end",
-                          borderRadius: 5,
+                          borderRadius: 10,
 
                           // bottom: "35%",
                           // left: "35%",
@@ -734,7 +734,7 @@ export default function Posts({ item, index, navigation, user }) {
                     //     width: "100%",
                     //     height: "100%",
                     //     backgroundColor: "#fff",
-                    //     borderRadius: 5,
+                    //     borderRadius: 10,
                     //   }}
                     //   resizeMode="cover"
                     //   muted={true}
@@ -744,7 +744,7 @@ export default function Posts({ item, index, navigation, user }) {
                       style={{
                         width: "100%",
                         height: "100%",
-                        borderRadius: 5,
+                        borderRadius: 10,
                       }}
                       source={
                         data.assets[0]?.filepath
@@ -822,7 +822,7 @@ export default function Posts({ item, index, navigation, user }) {
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#fff",
-                      borderRadius: 5,
+                      borderRadius: 10,
                     }}
                   />
                   <View
@@ -833,7 +833,7 @@ export default function Posts({ item, index, navigation, user }) {
                       height: "100%",
                       backgroundColor: "rgba(0,0,0,0.4)",
                       justifyContent: "flex-end",
-                      borderRadius: 5,
+                      borderRadius: 10,
 
                       // bottom: "35%",
                       // left: "35%",
@@ -857,7 +857,7 @@ export default function Posts({ item, index, navigation, user }) {
                 //     width: "100%",
                 //     height: "100%",
                 //     backgroundColor: "#fff",
-                //     borderRadius: 5,
+                //     borderRadius: 10,
                 //   }}
                 //   resizeMode="cover"
                 //   muted={true}
@@ -867,7 +867,7 @@ export default function Posts({ item, index, navigation, user }) {
                   style={{
                     width: "100%",
                     height: "100%",
-                    borderRadius: 5,
+                    borderRadius: 10,
                   }}
                   source={
                     data.assets[0]?.filepath

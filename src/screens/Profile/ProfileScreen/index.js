@@ -843,7 +843,10 @@ export default function OtherProfile(props) {
     let data = { ...datas };
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + (Platform.OS === "ios" ? 55 : 85)],
+      outputRange: [
+        0,
+        -HeaderHeight + (Platform.OS === "ios" ? (Notch ? 55 : 95) : 85),
+      ],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -856,7 +859,12 @@ export default function OtherProfile(props) {
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
-          height: Platform.OS === "ios" ? HeaderHeight : HeaderHeight - 30,
+          height:
+            Platform.OS === "ios"
+              ? Notch
+                ? HeaderHeight
+                : HeaderHeight - 40
+              : HeaderHeight - 30,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -868,13 +876,13 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             width: "100%",
-            height: Platform.OS === "ios" ? "90%" : "87%",
+            height: Platform.OS === "ios" ? (Notch ? "90%" : "87%") : "87%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-            paddingTop: Platform.OS === "ios" ? "5%" : "17%",
-            marginTop: Platform.OS === "ios" ? "15%" : "13%",
+            paddingTop: Platform.OS === "ios" ? (Notch ? "5%" : "5%") : "17%",
+            marginTop: Platform.OS === "ios" ? (Notch ? "15%" : "15%") : "13%",
           }}
         >
           <View
@@ -1213,6 +1221,7 @@ export default function OtherProfile(props) {
 
   const renderPost = (tabPost, e) => {
     if (tabPost === 0) {
+      console.log(`DATA POST: `, dataPost);
       return (
         <Post
           item={e.item}
@@ -1308,7 +1317,9 @@ export default function OtherProfile(props) {
         contentContainerStyle={{
           paddingTop:
             tabIndex === 0
-              ? HeaderHeight + TabBarHeight + (Platform.OS === "ios" ? 70 : 20)
+              ? HeaderHeight +
+                TabBarHeight +
+                (Platform.OS === "ios" ? (Notch ? 70 : 15) : 25)
               : HeaderHeight + TabBarHeight,
           paddingHorizontal: paddingHorizontal,
           minHeight: height - SafeStatusBar + HeaderHeight,
@@ -1334,14 +1345,17 @@ export default function OtherProfile(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, Platform.OS === "ios" ? 45 : 90],
+      outputRange: [
+        HeaderHeight,
+        Platform.OS === "ios" ? (Notch ? 45 : 95) : 90,
+      ],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          top: Platform.OS === "ios" ? "1%" : "-5%",
+          top: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : "-5%",
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -1386,7 +1400,7 @@ export default function OtherProfile(props) {
               }}
               style={{
                 padding: 10,
-                width: "33.3%",
+                width: "34.4%",
                 alignItems: "center",
               }}
             >
@@ -1396,10 +1410,10 @@ export default function OtherProfile(props) {
                 <PostGray height={15} width={15} />
               )}
               <Text
+                type={tabPost === 0 ? "bold" : "regular"}
                 style={{
                   marginTop: 6,
                   color: tabPost === 0 ? "#209fae" : "#464646",
-                  fontWeight: tabPost === 0 ? "bold" : "normal",
                 }}
               >
                 {t("allPost")}
@@ -1421,10 +1435,10 @@ export default function OtherProfile(props) {
                 <AlbumGray height={15} width={15} />
               )}
               <Text
+                type={tabPost === 1 ? "bold" : "regular"}
                 style={{
                   marginTop: 6,
                   color: tabPost === 1 ? "#209fae" : "#464646",
-                  fontWeight: tabPost === 1 ? "bold" : "normal",
                 }}
               >
                 Album
@@ -1446,10 +1460,10 @@ export default function OtherProfile(props) {
                 <Tag height={15} width={15} />
               )}
               <Text
+                type={tabPost === 2 ? "bold" : "regular"}
                 style={{
                   marginTop: 6,
                   color: tabPost === 2 ? "#209fae" : "#464646",
-                  fontWeight: tabPost === 2 ? "bold" : "normal",
                 }}
               >
                 {t("tag")}

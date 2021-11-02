@@ -25,7 +25,7 @@ import io from "socket.io-client";
 import normalize from "react-native-normalize";
 
 export default function SendToChat({ navigation, route }) {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState("");
   const socket = useRef();
   useEffect(() => {
     socket.current = io(CHATSERVER, {

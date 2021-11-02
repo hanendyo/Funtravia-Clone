@@ -26,7 +26,9 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
 import { dateFormats } from "../../../component/src/dateformatter";
+import DeviceInfo from "react-native-device-info";
 
+const Notch = DeviceInfo.hasNotch();
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
@@ -86,8 +88,9 @@ export default function Trip({ item, props, token, position }) {
     <View
       style={{
         height: 150,
-        marginTop: Platform.OS === "ios" ? 10 : -25,
-        borderRadius: 5,
+        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : -25,
+        marginBottom: Platform.OS === "ios" ? (Notch ? 0 : 50) : 40,
+        borderRadius: 10,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
