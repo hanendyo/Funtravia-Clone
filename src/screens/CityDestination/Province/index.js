@@ -3770,10 +3770,24 @@ export default function CityDetail(props) {
               onPress={() => {
                 token
                   ? (SetShareModal(false),
-                    props.navigation.push("CountryStack", {
-                      screen: "SendProvince",
+                    // props.navigation.push("CountryStack", {
+                    //   screen: "SendProvince",
+                    //   params: {
+                    //     province: dataProvince.province_detail_v2,
+                    //   },
+                    // })
+                    props.navigation.navigate("ChatStack", {
+                      screen: "SendToChat",
                       params: {
-                        province: dataProvince.province_detail_v2,
+                        dataSend: {
+                          id: dataProvince.province_detail_v2?.id,
+                          cover: dataProvince.province_detail_v2?.cover,
+                          name: dataProvince.province_detail_v2?.name,
+                          description:
+                            dataProvince.province_detail_v2?.description,
+                        },
+                        title: t("province"),
+                        tag_type: "tag_province",
                       },
                     }))
                   : (setModalLogin(true), SetShareModal(false));

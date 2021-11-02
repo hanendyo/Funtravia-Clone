@@ -3056,10 +3056,23 @@ export default function Country(props) {
               onPress={() => {
                 token
                   ? (SetShareModal(false),
-                    props.navigation.push("CountryStack", {
-                      screen: "SendCountry",
+                    // props.navigation.push("CountryStack", {
+                    //   screen: "SendCountry",
+                    //   params: {
+                    //     country: data.country_detail,
+                    //   },
+                    // })
+                    props.navigation.navigate("ChatStack", {
+                      screen: "SendToChat",
                       params: {
-                        country: data.country_detail,
+                        dataSend: {
+                          id: data.country_detail?.id,
+                          cover: data.country_detail?.cover,
+                          name: data.country_detail?.name,
+                          description: data.country_detail?.description,
+                        },
+                        title: t("country"),
+                        tag_type: "tag_country",
                       },
                     }))
                   : (setModalLogin(true), SetShareModal(false));

@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from "react-native";
-import { Text, FunImage, FunImageAutoSize } from "../../component";
+import { Text, FunImage, FunImageAutoSize, FunVideo } from "../../component";
 import { Star, AddHijau, Reupload } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
@@ -38,6 +38,7 @@ export default function ChatTypelayout({
   //     }
   //   }
   // }, []);
+  let videoView = useRef(null);
   const { t } = useTranslation();
   const playerRef = useRef(null);
   const [loading, setloading] = useState(true);
@@ -685,16 +686,27 @@ export default function ChatTypelayout({
               {data?.user.first_name} {data?.user.last_name}
             </Text>
           </View>
+
           <FunImageAutoSize
-            source={data ? { uri: data?.assets[0].filepath } : null}
+            source={
+              data.assets[0].type === "video"
+                ? {
+                    uri: data?.assets[0].filepath.replace(
+                      "output.m3u8",
+                      "thumbnail.png"
+                    ),
+                  }
+                : { uri: data?.assets[0].filepath }
+            }
             style={{
-              width: 250,
+              width: 248,
               height: 250 * scale,
               alignSelf: "center",
               marginVertical: 10,
               // borderRadius: 10,
             }}
           />
+
           <View
             style={{
               flex: 1,

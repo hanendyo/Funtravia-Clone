@@ -1038,8 +1038,9 @@ export default function Room({ navigation, route }) {
                 width: width - 130,
                 alignSelf: "center",
                 backgroundColor: "#f3f3f3",
-                borderRadius: 50,
+                borderRadius: 20,
                 flexDirection: "row",
+                maxHeight: 70,
               }}
             >
               <TextInput
@@ -1102,7 +1103,7 @@ export default function Room({ navigation, route }) {
         </>
       ) : (
         <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          behavior={Platform.OS == "ios" ? "padding" : ""}
           keyboardVerticalOffset={Notch ? 90 : 65}
           style={{
             flexDirection: "row",
@@ -1173,8 +1174,9 @@ export default function Room({ navigation, route }) {
               width: width - 130,
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
-              borderRadius: 50,
+              borderRadius: 20,
               flexDirection: "row",
+              maxHeight: 70,
             }}
           >
             <TextInput

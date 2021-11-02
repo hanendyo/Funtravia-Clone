@@ -256,6 +256,7 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
     >
       <FlatList
         data={dataRes}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View key={`${item.id}_child`}>
             {item.recent ? (
@@ -305,9 +306,18 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
                   style={{
                     width: width - 180,
                     paddingHorizontal: 10,
+                    alignContent: "center",
                   }}
                 >
-                  <Text size="label" type="bold" style={{ paddingVertical: 5 }}>
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={
+                      {
+                        //  paddingVertical: 5
+                      }
+                    }
+                  >
                     {item.sender_id === user.id
                       ? `${item.receiver?.first_name} ${
                           item.receiver?.last_name
@@ -321,9 +331,11 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
 
                   {item.recent ? (
                     <RecentChat
-                      style={{
-                        marginTop: -5,
-                      }}
+                      style={
+                        {
+                          // marginTop: -5,
+                        }
+                      }
                       data={item.recent}
                       room={item.id}
                     />

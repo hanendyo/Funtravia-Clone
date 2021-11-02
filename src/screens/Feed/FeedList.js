@@ -1913,10 +1913,24 @@ export default function FeedList({ props, token }) {
 
                 <Button
                   onPress={() =>
-                    props.navigation.push("FeedStack", {
-                      screen: "SendPost",
+                    // props.navigation.push("FeedStack", {
+                    //   screen: "SendPost",
+                    //   params: {
+                    //     post: item.node,
+                    //   },
+                    // })
+                    props.navigation.navigate("ChatStack", {
+                      screen: "SendToChat",
                       params: {
-                        post: item.node,
+                        dataSend: {
+                          id: item.node?.id,
+                          assets: item.node?.assets,
+                          caption: item.node?.caption,
+                          user: item.node?.user,
+                          media_orientation: item.node?.media_orientation,
+                        },
+                        title: "Post",
+                        tag_type: "tag_post",
                       },
                     })
                   }

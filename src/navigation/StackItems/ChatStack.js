@@ -13,6 +13,7 @@ import GroupChat from "../../screens/Chat/GroupRoom";
 import RoomChat from "../../screens/Chat/PersonalRoom";
 import KeyboardInput from "../../screens/Chat/CustomKeyboard/demoScreen";
 import ChatsearchPage from "../../screens/Chat/ChatsearchPage";
+import SendToChat from "../../screens/Chat/SendToChat";
 
 const ChatStack = createStackNavigator();
 const Recent = () => {
@@ -144,6 +145,16 @@ export default function ChatStackNavigation() {
           headerBackTitleVisible: false,
           gestureDirection: "horizontal",
           ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <ChatStack.Screen
+        name="SendToChat"
+        component={SendToChat}
+        options={{
+          headerTitle: "",
+          // headerTransparent: true,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
         }}
       />
     </ChatStack.Navigator>

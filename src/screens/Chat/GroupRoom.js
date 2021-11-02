@@ -382,10 +382,6 @@ export default function Room({ navigation, route }) {
       getUserToken();
     }
     socket.current.on("new_chat_group", (data) => {
-      console.log(
-        "🚀 ~ file: GroupRoom.js ~ line 378 ~ socket.current.on ~ data",
-        data
-      );
       setChatHistory(data);
     });
 
@@ -492,6 +488,10 @@ export default function Room({ navigation, route }) {
       let new_array = [];
 
       setMessage(filteredList);
+      console.log(
+        "🚀 ~ file: GroupRoom.js ~ line 491 ~ initialHistory ~ filteredList",
+        filteredList
+      );
     }
   };
 
@@ -508,7 +508,7 @@ export default function Room({ navigation, route }) {
           type: "text",
           text: chat,
           user_id: user.id,
-          name: `${user.first_name} ${user.last_name}`,
+          name: `${user.first_name} ${user.last_name ? user.last_name : ""}`,
           time: dateTime,
         };
         if (connected) {
@@ -965,7 +965,7 @@ export default function Room({ navigation, route }) {
       {keyboardOpenState ? (
         <>
           <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            behavior={Platform.OS == "ios" ? "padding" : ""}
             keyboardVerticalOffset={Notch ? 90 : 65}
             style={{
               flexDirection: "row",

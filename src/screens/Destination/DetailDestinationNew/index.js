@@ -3469,8 +3469,25 @@ const Index = (props) => {
               }}
               onPress={() => {
                 SetShareModal(false);
-                props.navigation.navigate("SendDestination", {
-                  destination: dataDestination,
+                // props.navigation.navigate("SendDestination", {
+                //   destination: dataDestination,
+                // });
+                props.navigation.navigate("ChatStack", {
+                  screen: "SendToChat",
+                  params: {
+                    dataSend: {
+                      id: dataDestination?.id,
+                      cover: dataDestination?.cover,
+                      name: dataDestination?.name,
+                      description: dataDestination?.description,
+                      rating: dataDestination?.rating,
+                      destination_type: dataDestination?.destination_type,
+                      cities: dataDestination?.cities,
+                      images: dataDestination?.images,
+                    },
+                    title: t("destination"),
+                    tag_type: "tag_destination",
+                  },
                 });
               }}
             >
