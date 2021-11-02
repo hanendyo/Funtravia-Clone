@@ -1617,9 +1617,9 @@ export default function FeedList({ props, token }) {
             >
               <View
                 style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 50,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 40,
                   justifyContent: "center",
                   alignItems: "center",
                   borderWidth: 2,
@@ -1629,8 +1629,8 @@ export default function FeedList({ props, token }) {
                 }}
               >
                 <CheckWhite
-                  height="30"
-                  width="30"
+                  height="20"
+                  width="20"
                   // style={{ marginVertical: 20 }}
                 />
               </View>
