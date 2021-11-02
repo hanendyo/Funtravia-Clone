@@ -27,9 +27,10 @@ import {
 } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 import { useTranslation } from "react-i18next";
+import RecentChat from "./RecentChat";
 
 const { width, height } = Dimensions.get("screen");
-export default function ChatGroupList({ dataGroupRes, navigation }) {
+export default function ChatGroupList({ dataGroupRes, navigation, param }) {
   const { t } = useTranslation();
   const dateGroup = () => {
     let date = new Date().toLocaleDateString();
@@ -83,11 +84,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
             // borderWidth: 1,
           }}
         >
           <Tagsticker width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={{ ...style, marginTop: -2 }}
+            size="description"
+            type="regular"
+          >
             Sticker
           </Text>
         </View>
@@ -101,10 +107,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={style}
+            size="description"
+            type="regular"
+            numberOfLines={2}
+          >
             {data_des.name}
           </Text>
         </View>
@@ -117,11 +129,17 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
             // borderWidth: 1,
           }}
         >
           <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={style}
+            size="description"
+            type="regular"
+            numberOfLines={2}
+          >
             Post
           </Text>
         </View>
@@ -135,10 +153,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={style}
+            size="description"
+            type="regular"
+            numberOfLines={2}
+          >
             {data_city.name}
           </Text>
         </View>
@@ -152,10 +176,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={style}
+            size="description"
+            type="regular"
+            numberOfLines={2}
+          >
             {data_province.name}
           </Text>
         </View>
@@ -169,10 +199,16 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
+          <Text
+            style={style}
+            size="description"
+            type="regular"
+            numberOfLines={2}
+          >
             {data_province.name}
           </Text>
         </View>
@@ -186,6 +222,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
@@ -203,6 +240,7 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
           style={{
             flexDirection: "row",
             alignContent: "center",
+            alignItems: "center",
           }}
         >
           <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
@@ -305,8 +343,8 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                     <View
                       style={{
                         backgroundColor: "#F6F6F6",
-                        paddingHorizontal: 10,
-                        paddingVertical: 5,
+                        paddingHorizontal: 8,
+                        paddingVertical: 3,
                         marginLeft: -3,
                         borderRadius: 15,
                         // maxWidth: 100,
@@ -338,11 +376,14 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
                     {item.title}
                   </Text>
                   {item.recent ? (
-                    <RecentView
-                      style={{
-                        marginTop: -5,
-                      }}
+                    <RecentChat
+                      style={
+                        {
+                          // marginTop: -5,
+                        }
+                      }
                       data={item.recent}
+                      room={item.id}
                     />
                   ) : null}
                 </View>
@@ -373,23 +414,25 @@ export default function ChatGroupList({ dataGroupRes, navigation }) {
         )}
         keyExtractor={(item) => item.id}
       />
-      <Button
-        onPress={() => {
-          navigation.navigate("ChatStack", {
-            screen: "NewGroup",
-          });
-        }}
-        type="circle"
-        size="medium"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          elevation: 5,
-        }}
-      >
-        <NewGroup width="20" height="20" />
-      </Button>
+      {param == "list" ? (
+        <Button
+          onPress={() => {
+            navigation.navigate("ChatStack", {
+              screen: "NewGroup",
+            });
+          }}
+          type="circle"
+          size="medium"
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            elevation: 5,
+          }}
+        >
+          <NewGroup width="20" height="20" />
+        </Button>
+      ) : null}
     </View>
   );
 }

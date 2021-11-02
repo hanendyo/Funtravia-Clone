@@ -35,7 +35,7 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from "react-native-device-info";
 
-export default function NewGroup({ navigation }) {
+export default function NewGroup({ navigation, route }) {
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
@@ -72,12 +72,12 @@ export default function NewGroup({ navigation }) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-      marginLeft: -10,
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    //   marginLeft: -10,
+    // },
     headerLeft: () => (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Button
@@ -85,7 +85,7 @@ export default function NewGroup({ navigation }) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => props.navigation.goBack()}
+          onPress={() => navigation.goBack()}
           style={{
             height: 55,
             marginLeft: 10,
@@ -164,6 +164,7 @@ export default function NewGroup({ navigation }) {
         margin: 15,
         // backgroundColor: "white",
         // borderWidth: 1,
+        // paddingBottom: 10,
       }}
     >
       {/* <Loading show={loading} /> */}
@@ -172,6 +173,7 @@ export default function NewGroup({ navigation }) {
           flex: 1,
           // margin: 10,
           borderRadius: 15,
+          // paddingBottom: 10,
         }}
       >
         <View
@@ -191,7 +193,7 @@ export default function NewGroup({ navigation }) {
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 30,
+              width: Dimensions.get("screen").width - 50,
             }}
           >
             <View
@@ -316,13 +318,19 @@ export default function NewGroup({ navigation }) {
             flex: 1,
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
+            paddingBottom: 10,
           }}
         >
           <FlatList
             style={{}}
             data={DataBuddy}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{}}
+            contentContainerStyle={
+              {
+                // paddingBottom: 10,
+              }
+            }
+            showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 onPress={() => selectUser(item)}
@@ -402,7 +410,7 @@ export default function NewGroup({ navigation }) {
                       type="regular"
                       style={{
                         marginLeft: 20,
-                        marginTop: 5,
+                        // marginTop: 5,
                       }}
                     >
                       @{item.username}

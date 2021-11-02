@@ -34,7 +34,13 @@ import Ripple from "react-native-material-ripple";
 import RecentChat from "./RecentChat";
 
 const { width, height } = Dimensions.get("screen");
-export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
+export default function ChatList({
+  dataRes,
+  user,
+  navigation,
+  LongPressFunc,
+  param,
+}) {
   // console.log(dataRes);
   const change = (item) => {
     let change = item.sender_id === user.id ? item.receiver : item.sender;
@@ -369,23 +375,25 @@ export default function ChatList({ dataRes, user, navigation, LongPressFunc }) {
           }
         }
       />
-      <Button
-        onPress={() => {
-          navigation.navigate("ChatStack", {
-            screen: "NewChat",
-          });
-        }}
-        type="circle"
-        size="medium"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          elevation: 5,
-        }}
-      >
-        <NewChat width="20" height="20" />
-      </Button>
+      {param == "list" ? (
+        <Button
+          onPress={() => {
+            navigation.navigate("ChatStack", {
+              screen: "NewChat",
+            });
+          }}
+          type="circle"
+          size="medium"
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            elevation: 5,
+          }}
+        >
+          <NewChat width="20" height="20" />
+        </Button>
+      ) : null}
     </View>
   );
 }

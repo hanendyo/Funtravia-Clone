@@ -66,12 +66,12 @@ export default function NewGroup(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-      // marginLeft: -10,
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    //   // marginLeft: -10,
+    // },
 
     headerLeft: () => (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -297,15 +297,16 @@ export default function NewGroup(props) {
             style={{
               width: Dimensions.get("screen").width - 100,
               marginHorizontal: 50,
-              borderRadius: 5,
+              borderRadius: 10,
               marginTop: Dimensions.get("screen").height / 3,
+              backgroundColor: "#fff",
             }}
           >
             <View
               style={{
                 flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
                 paddingHorizontal: 20,
                 backgroundColor: "#f6f6f6",
                 borderBottomColor: "#d1d1d1",
@@ -393,7 +394,7 @@ export default function NewGroup(props) {
               style={{
                 backgroundColor: "#FFF",
                 borderRadius: 5,
-                width: "95%",
+                width: Dimensions.get("screen").width - 80,
                 height: 40,
                 flexDirection: "row",
                 alignItems: "center",

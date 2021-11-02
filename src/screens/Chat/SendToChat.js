@@ -73,12 +73,12 @@ export default function SendToChat({ navigation, route }) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-      marginLeft: -10,
-    },
+    // headerTitleStyle: {
+    //   fontFamily: "Lato-Bold",
+    //   fontSize: 18,
+    //   color: "white",
+    //   marginLeft: -10,
+    // },
     headerLeft: () => (
       <Button
         text={""}

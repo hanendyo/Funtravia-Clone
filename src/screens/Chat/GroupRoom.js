@@ -71,7 +71,7 @@ export default function Room({ navigation, route }) {
       elevation: 1,
       borderBottomWidth: 0,
     },
-    headerTitleStyle: null,
+    // headerTitleStyle: null,
     headerLeft: () => (
       <View
         style={{
@@ -488,10 +488,6 @@ export default function Room({ navigation, route }) {
       let new_array = [];
 
       setMessage(filteredList);
-      console.log(
-        "🚀 ~ file: GroupRoom.js ~ line 491 ~ initialHistory ~ filteredList",
-        filteredList
-      );
     }
   };
 
