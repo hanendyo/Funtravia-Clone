@@ -2725,7 +2725,7 @@ export default function SearchListEventHome(props) {
     });
     await setPriceValue({ min: 0, max: 0 });
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
-    await setshow(false);
+    // await setshow(false);
     await setmonth(" - ");
     await setDateValidations({ ["start_date"]: 0, ["end_date"]: 0 });
     if (

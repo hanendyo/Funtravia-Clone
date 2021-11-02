@@ -74,7 +74,6 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
-console.log("deviceId", deviceId);
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
@@ -112,8 +111,6 @@ export default function ListEventHome(props) {
   let [heightview, setheight] = useState(0);
   const tambahanValidation = () => {
     let valid = (tambahanDeskripsi + tambahanJudul) % 3 === 0 ? true : false;
-    console.log(`TOTAL: `, (tambahanDeskripsi + tambahanJudul) % 3);
-    console.log(`Valid: `, valid);
     return valid;
   };
   const { t, i18n } = useTranslation();
@@ -804,9 +801,7 @@ export default function ListEventHome(props) {
           <Text
             onTextLayout={(x) => {
               let line = x.nativeEvent.lines.length;
-              console.log(`LINE coi: `, line);
               let lines = line - 1;
-              console.log(`LINES: `, lines);
               // setTambahanDeskripsi(lines * 32);
               if (+lines % 3 == 0) {
                 Platform.OS == "ios"
@@ -829,7 +824,6 @@ export default function ListEventHome(props) {
               textAlign: "left",
               // paddingHorizontal:
               // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
-              // backgroundColor: "red",
             }}
           >
             {// Banner && Banner.description
@@ -941,10 +935,8 @@ export default function ListEventHome(props) {
       setLoadings(false);
     }, 2000);
   }, []);
-  console.log("loading", loading, error, data, dataEvent);
 
   const rederTab1Item = ({ item, index, loading }, position) => {
-    console.log("item", index, position);
     return (
       <>
         <View
@@ -1262,9 +1254,6 @@ export default function ListEventHome(props) {
       />
     );
   };
-
-  console.log(`TITLE: `, tambahanJudul);
-  console.log(`DESC: `, tambahanDeskripsi);
 
   const renderTabBar = (props) => {
     // const y = scrollY.interpolate({
@@ -2387,8 +2376,8 @@ export default function ListEventHome(props) {
   );
 
   const imageTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -2],
+    inputRange: [0, HeaderHeight],
+    outputRange: [0, -60],
     extrapolate: "clamp",
   });
   const imageTranslateTab = scrollY.interpolate({

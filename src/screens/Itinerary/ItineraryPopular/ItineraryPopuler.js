@@ -79,7 +79,6 @@ export default function ItineraryPopuler(props) {
   let [idDataCategory, setidDataCategory] = useState(null);
   let [select, setSelect] = useState(true);
   let [dataAlbums, setDataAlbums] = useState(null);
-  console.log("dataAlbums populer", dataAlbums);
   let [search, setSearch] = useState({
     keyword: "",
     type: null,
@@ -94,8 +93,6 @@ export default function ItineraryPopuler(props) {
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1,
     elevation: Platform.OS == "ios" ? 3 : 2.5,
   };
-
-  console.log(token);
 
   const HeaderComponent = {
     headerShown: true,
@@ -291,7 +288,6 @@ export default function ItineraryPopuler(props) {
   const _liked = async (id, index, item) => {
     let items = { ...item };
     let list_populers = [...list_populer];
-    // console.log(list_populers[index]);
     if (token && token !== "" && token !== null) {
       items.liked = true;
       await list_populers.splice(index, 1, items);

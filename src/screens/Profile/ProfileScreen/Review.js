@@ -75,7 +75,6 @@ export default function Review({ item, index }, onSelect, props, token, t) {
           )}
           <TouchableOpacity
             onPress={() => {
-              // console.log("masuk : ", item.id_item);
               props.navigation.push("DestinationUnescoDetail", {
                 id: item.id_item,
                 name: item.name,

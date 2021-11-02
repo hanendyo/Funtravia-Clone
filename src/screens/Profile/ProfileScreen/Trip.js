@@ -37,7 +37,6 @@ const arrayShadow = {
 };
 
 export default function Trip({ item, props, token, position }) {
-  console.log("item", item);
   const getDN = (start, end) => {
     var x = start;
     var y = end,
@@ -98,6 +97,8 @@ export default function Trip({ item, props, token, position }) {
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         overflow: "hidden",
+        marginHorizontal: 15,
+        // width: "50%",
       }}
     >
       <TouchableOpacity

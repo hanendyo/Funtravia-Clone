@@ -12,12 +12,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
-
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
 export default function Album({ item, props, token }) {
   // const { t } = useTranslation();
-  // console.log("firstimg", item.firstimg);
-  console.log(`ITEM: `, item);
-  console.log(`PROPS: `, props);
   return (
     <Pressable
       // key={index}
@@ -30,10 +28,12 @@ export default function Album({ item, props, token }) {
         });
       }}
       style={{
-        width: "100%",
+        width: Dimensions.get("screen").width - 30,
         height: width * 0.55,
-        paddingHorizontal: 10,
         marginBottom: 10,
+        marginHorizontal: 15,
+        // paddingHorizontal: 10,
+        marginTop: Platform.OS == "ios" ? (Notch ? 5 : 0) : 0,
       }}
     >
       <View
