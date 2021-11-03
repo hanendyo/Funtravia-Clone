@@ -19,6 +19,7 @@ import {
   PinMerah,
   Pointmapgray,
   Arrowbackios,
+  Search,
 } from "../../assets/svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView from "react-native-maps";
@@ -166,31 +167,44 @@ export default function ItinGoogle(props) {
         </MapView>
         <Button
           onPress={() => setModal(true)}
-          color={"tertiary"}
-          text={t("search")}
+          // color={"tertiary"}
+          text=""
+          size="large"
+          type="circle"
           style={{
             marginTop: 10,
             width: Dimensions.get("screen").width - 20,
             borderWidth: 1,
-            // height: 38,
-            backgroundColor: "white",
+            borderRadius: 5,
+            flexDirection: "row",
+            backgroundColor: "#FFF",
             borderColor: "#d3d3d3",
           }}
-        ></Button>
+        >
+          <Search width={15} height={15} />
+          <Text size="description" style={{ marginLeft: 10 }}>
+            {t("search")}
+          </Text>
+        </Button>
 
         {detailMap ? (
           <View
             style={{
-              width: "100%",
-              marginVertical: 20,
-              paddingHorizontal: 20,
+              width: "95%",
+              marginVertical: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 5,
+              backgroundColor: "#FFF",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 5,
             }}
           >
             <View
               style={{
                 width: "100%",
                 flexDirection: "row",
-                justifyContent: "flex-start",
+                justifyContent: "center",
                 marginBottom: 20,
               }}
             >

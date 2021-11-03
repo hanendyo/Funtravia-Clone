@@ -7,6 +7,7 @@ import {
   Bottom,
   Arrowbackios,
   Check,
+  Search,
 } from "../../../assets/svg";
 import {
   Dimensions,
@@ -22,7 +23,9 @@ import {
   Alert,
   Picker,
   Pressable,
+  TextInput,
 } from "react-native";
+import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import DatePicker from "react-native-modern-datepicker";
@@ -53,6 +56,7 @@ const boxWidth = Dimensions.get("screen").width / 1.09;
 
 export default function Trip(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -65,7 +69,7 @@ export default function Trip(props) {
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
-      borderBottomWidth: 0,
+      // borderBottomWidth: 0,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -239,6 +243,10 @@ export default function Trip(props) {
       setToken("");
     }
   };
+  const [isFocusedTitle, setIsFocusedTitle] = useState(false);
+  const [isFocusedCountry, setIsFocusedCountry] = useState(false);
+  const [isFocusedCity, setIsFocusedCity] = useState(false);
+  const [isFocusedStartDate, setIsFocusedStartDate] = useState(false);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -405,22 +413,22 @@ export default function Trip(props) {
   const createItinerary = () => {
     setLoadingApp(true);
     if (!idCountry) {
-      Alert.alert("Country is not valid!");
+      _ShowAlert("countryValid");
       setLoadingApp(false);
     } else if (!idCity) {
-      Alert.alert("City is not valid!");
+      _ShowAlert("cityValid");
       setLoadingApp(false);
     } else if (!title) {
-      Alert.alert("Title is not valid!");
+      _ShowAlert("titleValid");
       setLoadingApp(false);
     } else if (!startDate) {
-      Alert.alert("Start Date is not valid!");
+      _ShowAlert("startDateValid");
       setLoadingApp(false);
     } else if (!endDate) {
-      Alert.alert("End Date is not valid!");
+      _ShowAlert("endDateValid");
       setLoadingApp(false);
     } else if (!category_id) {
-      Alert.alert("Category is not valid!");
+      _ShowAlert("categoryValid");
       setLoadingApp(false);
     } else {
       Create();
@@ -453,7 +461,6 @@ export default function Trip(props) {
           position: "absolute",
           zIndex: 1,
           top: 0,
-          padding: 0,
           backgroundColor: "#209FAE",
           height: Dimensions.get("screen").height * 0.2,
           width: Dimensions.get("screen").width,
@@ -526,11 +533,15 @@ export default function Trip(props) {
                   <Label
                     style={{
                       fontFamily: "Lato-Regular",
-                      fontSize: 14,
+                      fontSize:
+                        country.length !== 0 || isFocusedCountry === true
+                          ? 12
+                          : 14,
                     }}
                   >
                     {t("country")}
                   </Label>
+
                   <Input
                     editable={false}
                     style={{
@@ -540,6 +551,8 @@ export default function Trip(props) {
                     autoCorrect={false}
                     value={country}
                     keyboardType="default"
+                    onFocus={() => setIsFocusedCountry(true)}
+                    onBlur={() => setIsFocusedCountry(false)}
                   />
                 </Item>
                 <TouchableOpacity
@@ -565,6 +578,7 @@ export default function Trip(props) {
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modalcountry}
+                avoidKeyboard={true}
                 style={{
                   marginBottom: -10,
                   justifyContent: "flex-end",
@@ -575,7 +589,12 @@ export default function Trip(props) {
                 <View
                   style={{
                     flexDirection: "column",
-                    height: Dimensions.get("screen").height * 0.6,
+                    height:
+                      Platform.OS == "ios"
+                        ? Notch
+                          ? Dimensions.get("screen").height * 0.6
+                          : Dimensions.get("screen").height * 0.63
+                        : Dimensions.get("screen").height * 0.6,
                     width: Dimensions.get("screen").width,
                     borderTopRightRadius: 15,
                     borderTopLeftRadius: 15,
@@ -632,15 +651,61 @@ export default function Trip(props) {
                   />
                   <View
                     style={{
-                      width: Dimensions.get("screen").width,
-                      minHeight: Dimensions.get("screen").height * 0.5,
-                      backgroundColor: "white",
+                      backgroundColor: "#F0F0F0",
+                      borderRadius: 3,
+                      flex: 1,
+                      flexDirection: "row",
+                      alignSelf: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      marginVertical: 5,
+                      maxHeight: 40,
+                      width: "90%",
+                    }}
+                  >
+                    <Search width={15} height={15} />
 
+                    <TextInput
+                      value={countrys}
+                      underlineColorAndroid="transparent"
+                      placeholder={t("search")}
+                      style={{
+                        width: "85%",
+                        marginLeft: 5,
+                        padding: 0,
+                      }}
+                      returnKeyType="search"
+                      autoCorrect={false}
+                      onChangeText={(text) => Searchcountry(text)}
+                      onSubmitEditing={(text) => Searchcountry(text)}
+                    />
+                    {countrys.length !== 0 ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          // _setSearch(null);
+                          setCountrys("");
+                        }}
+                      >
+                        <Xblue
+                          width="20"
+                          height="20"
+                          style={{
+                            alignSelf: "center",
+                          }}
+                        />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      // minHeight: Dimensions.get("screen").height * 0.4,
+                      backgroundColor: "white",
                       paddingHorizontal: 20,
                       paddingBottom: 10,
                     }}
                   >
-                    <Item floatingLabel style={{ marginTop: 10 }}>
+                    {/* <Item floatingLabel style={{ marginTop: 10 }}>
                       <Label
                         style={{
                           fontFamily: "Lato-Regular",
@@ -649,6 +714,7 @@ export default function Trip(props) {
                       >
                         {t("SearchCountry")}
                       </Label>
+                      <Search width={15} height={15} />
                       <Input
                         style={{
                           fontFamily: "Lato-Regular",
@@ -660,7 +726,7 @@ export default function Trip(props) {
                         returnKeyType="search"
                         keyboardType="default"
                       />
-                    </Item>
+                    </Item> */}
                     {datacountry && datacountry.country_search.length > 0 ? (
                       <FlatList
                         style={{
@@ -752,7 +818,8 @@ export default function Trip(props) {
                     <Label
                       style={{
                         fontFamily: "Lato-Regular",
-                        fontSize: 14,
+                        fontSize:
+                          city.length !== 0 || isFocusedCity === true ? 12 : 14,
                         color: "#000",
                         opacity: 0.7,
                       }}
@@ -764,7 +831,7 @@ export default function Trip(props) {
                       style={{
                         fontFamily: "Lato-Regular",
                         fontSize: 14,
-                        color: "#dedede",
+                        color: "#D3D3D3",
                       }}
                     >
                       {t("City")}
@@ -781,6 +848,8 @@ export default function Trip(props) {
                       fontSize: 16,
                     }}
                     keyboardType="default"
+                    onFocus={() => setIsFocusedCity(true)}
+                    onBlur={() => setIsFocusedCity(false)}
                   />
                 </Item>
                 {idCountry ? (
@@ -816,95 +885,6 @@ export default function Trip(props) {
                   showAlert({ ...aler, show: false, judul: "", detail: "" })
                 }
               />
-              {/* <Modal
-                useNativeDriver={true}
-                visible={modalalert}
-                onRequestClose={() => setModalAlert(false)}
-                transparent={true}
-                animationType="fade"
-                style={{
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Pressable
-                  onPress={() => setModalAlert(false)}
-                  style={{
-                    width: Dimensions.get("screen").width,
-
-                    height: Dimensions.get("screen").height,
-                    justifyContent: "center",
-                    opacity: 0.7,
-                    backgroundColor: "#000",
-                    position: "absolute",
-                  }}
-                ></Pressable>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width - 100,
-                    marginHorizontal: 50,
-                    backgroundColor: "#FFF",
-                    zIndex: 15,
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    borderRadius: 5,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      width: Dimensions.get("screen").width - 100,
-                      // paddingHorizontal: 20,
-                      borderRadius: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        borderBottomWidth: 1,
-                        borderColor: "#d1d1d1",
-                        alignItems: "center",
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
-                        backgroundColor: "#f6f6f6",
-                        // height: 50,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Text
-                        size="title"
-                        type="bold"
-                        style={{ marginVertical: 15 }}
-                      >
-                        {t("Oops")}
-                      </Text>
-                    </View>
-                    <Pressable
-                      onPress={() => setModalAlert(false)}
-                      style={{
-                        position: "absolute",
-                        right: 0,
-                        width: 55,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 60,
-                      }}
-                    >
-                      <Xgray width={15} height={15} />
-                    </Pressable>
-                    <Text
-                      size="title"
-                      type="regular"
-                      style={{ marginVertical: 20, textAlign: "center" }}
-                    >
-                      {t(textalert)}
-                    </Text>
-                  </View>
-                </View>
-              </Modal> */}
-
-              {/* modal city */}
               <Modal
                 onRequestClose={() => setModalcity(false)}
                 onBackdropPress={() => setModalcity(false)}
@@ -913,6 +893,7 @@ export default function Trip(props) {
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modalcity}
+                avoidKeyboard={true}
                 style={{
                   marginBottom: -10,
                   // backgroundColor: 'rgba(0, 0, 0, 0.25)',
@@ -925,7 +906,12 @@ export default function Trip(props) {
                 <View
                   style={{
                     flexDirection: "column",
-                    height: Dimensions.get("screen").height * 0.6,
+                    height:
+                      Platform.OS == "ios"
+                        ? Notch
+                          ? Dimensions.get("screen").height * 0.6
+                          : Dimensions.get("screen").height * 0.63
+                        : Dimensions.get("screen").height * 0.6,
                     width: Dimensions.get("screen").width,
                     borderTopRightRadius: 15,
                     borderTopLeftRadius: 15,
@@ -980,13 +966,60 @@ export default function Trip(props) {
                   />
                   <View
                     style={{
+                      backgroundColor: "#F0F0F0",
+                      borderRadius: 3,
+                      flex: 1,
+                      flexDirection: "row",
+                      alignSelf: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      marginVertical: 5,
+                      maxHeight: 40,
+                      width: "90%",
+                    }}
+                  >
+                    <Search width={15} height={15} />
+
+                    <TextInput
+                      value={citys}
+                      underlineColorAndroid="transparent"
+                      placeholder={t("search")}
+                      style={{
+                        width: "85%",
+                        marginLeft: 5,
+                        padding: 0,
+                      }}
+                      returnKeyType="search"
+                      autoCorrect={false}
+                      onChangeText={(text) => Searchcity(text)}
+                      onSubmitEditing={(text) => Searchcity(text)}
+                    />
+                    {citys.length !== 0 ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          // _setSearch(null);
+                          setCitys("");
+                        }}
+                      >
+                        <Xblue
+                          width="20"
+                          height="20"
+                          style={{
+                            alignSelf: "center",
+                          }}
+                        />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                  <View
+                    style={{
                       width: Dimensions.get("screen").width,
-                      minHeight: Dimensions.get("screen").height * 0.5,
+                      minHeight: Dimensions.get("screen").height * 0.4,
                       backgroundColor: "white",
                       paddingHorizontal: 20,
                     }}
                   >
-                    <Item floatingLabel style={{ marginTop: 10 }}>
+                    {/* <Item floatingLabel style={{ marginTop: 10 }}>
                       <Label
                         style={{
                           fontFamily: "Lato-Regular",
@@ -1009,7 +1042,7 @@ export default function Trip(props) {
                         // onSubmitEditing={}
                         keyboardType="default"
                       />
-                    </Item>
+                    </Item> */}
                     {datacity && datacity.cities_search.length > 0 ? (
                       <FlatList
                         style={{
@@ -1062,12 +1095,14 @@ export default function Trip(props) {
                 <Label
                   style={{
                     fontFamily: "Lato-Regular",
-                    fontSize: 14,
+                    fontSize:
+                      title.length !== 0 || isFocusedTitle === true ? 12 : 14,
                   }}
                 >
                   {t("TitleofyourTrip")}
                 </Label>
                 <Input
+                  on
                   autoCorrect={false}
                   value={title}
                   onChangeText={(text) => setTitle(text)}
@@ -1076,6 +1111,8 @@ export default function Trip(props) {
                     fontSize: 16,
                   }}
                   keyboardType="default"
+                  onFocus={() => setIsFocusedTitle(true)}
+                  onBlur={() => setIsFocusedTitle(false)}
                 />
               </Item>
               {/* date start */}
@@ -1146,7 +1183,7 @@ export default function Trip(props) {
                   >
                     <Xhitam width={15} height={15} />
                   </TouchableOpacity>
-                  <Text size="description" type="bold" style={{}}>
+                  <Text size="small" type="bold" style={{}}>
                     {t("duration")}
                   </Text>
                   <View
@@ -1240,7 +1277,10 @@ export default function Trip(props) {
                     <Label
                       style={{
                         fontFamily: "Lato-Regular",
-                        fontSize: 14,
+                        fontSize:
+                          startDate !== null || isFocusedStartDate === true
+                            ? 12
+                            : 14,
                         color: "#464646",
                       }}
                     >
@@ -1255,6 +1295,8 @@ export default function Trip(props) {
                         fontSize: 16,
                       }}
                       keyboardType="default"
+                      onFocus={() => setIsFocusedStartDate(true)}
+                      onBlur={() => setIsFocusedStartDate(false)}
                     />
                   </Item>
 
@@ -1275,11 +1317,11 @@ export default function Trip(props) {
                     width: "40%",
                     height: 70,
                     paddingTop: 5,
-                    justifyContent: "space-between",
+                    justifyContent: "space-around",
                   }}
                 >
                   <Text
-                    size="label"
+                    size="small"
                     type="regular"
                     style={
                       {
@@ -1295,7 +1337,7 @@ export default function Trip(props) {
                     }
                   >
                     <Text
-                      size="label"
+                      size="description"
                       type="regular"
                       style={{
                         color: startDate ? "#464646" : "#dedede",
@@ -1304,12 +1346,12 @@ export default function Trip(props) {
                       {duration} {t("days")}
                     </Text>
                     <Text
-                      size="description"
+                      size="small"
                       style={{
                         color: "#d3d3d3",
                       }}
                     >
-                      Max. 30 {t("days")}
+                      {t("max")} 30 {t("days")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -1317,6 +1359,7 @@ export default function Trip(props) {
               <View
                 style={{
                   marginTop: 10,
+                  marginBottom: 5,
                   paddingBottom: opens,
                 }}
               >
@@ -1371,33 +1414,45 @@ export default function Trip(props) {
                       paddingVertical: 20,
                     }}
                   >
-                    {withSelected && withSelected.length
-                      ? withSelected.map((value, i) => {
-                          if (i < 3) {
-                            return (
-                              <View>
-                                <Image
-                                  source={
-                                    value.image
-                                      ? { uri: value.image }
-                                      : default_image
-                                  }
-                                  style={{
-                                    resizeMode: "cover",
-                                    height: 30,
-                                    width: 30,
-                                    borderRadius: 15,
+                    {withSelected && withSelected.length ? (
+                      withSelected.map((value, i) => {
+                        if (i < 3) {
+                          return (
+                            <View>
+                              <Image
+                                source={
+                                  value.image
+                                    ? { uri: value.image }
+                                    : default_image
+                                }
+                                style={{
+                                  resizeMode: "cover",
+                                  height: 30,
+                                  width: 30,
+                                  borderRadius: 15,
 
-                                    marginLeft: i > 0 ? -10 : 0,
-                                  }}
-                                />
-                              </View>
-                            );
-                          } else {
-                            null;
-                          }
-                        })
-                      : null}
+                                  marginLeft: i > 0 ? -10 : 0,
+                                }}
+                              />
+                            </View>
+                          );
+                        } else {
+                          null;
+                        }
+                      })
+                    ) : (
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          color: "#D3D3D3",
+                          position: "absolute",
+                          top: 15,
+                        }}
+                      >
+                        {t("optional")}
+                      </Text>
+                    )}
                     {withSelected && withSelected.length > 0 ? (
                       <View
                         style={{

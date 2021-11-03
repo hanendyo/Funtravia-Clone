@@ -385,6 +385,7 @@ export default function TripPlaning(props) {
                 alignContent: "center",
                 alignItems: "center",
                 justifyContent: "center",
+                backgroundColor: "#FFF",
               }}
             >
               <Text
@@ -427,7 +428,7 @@ export default function TripPlaning(props) {
       //     fontFamily: "Lato-Bold",
       //   },
       //   style: {
-      //     backgroundColor: "#ffff",
+      //     backgroundColor: "#fff",
       //   },
       // }}
       tabBar={(props) => <MyTabBar {...props} count={planCount} />}

@@ -110,3 +110,4 @@ export const bg_notfound = require("./files/bg_notfound.png");
 export const empty_image = require("./files/empty_image.png");
 export const NewItineraryImage = require("./files/NewItineraryImage.png");
 export const PopularItineraryImage = require("./files/PopularItineraryImage.png");
+export const ItineraryKosong = require("./files/itinerary_kosong.png");

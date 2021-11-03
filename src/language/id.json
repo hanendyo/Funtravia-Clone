@@ -800,5 +800,13 @@
   "descUnfollow": "Apakah anda ingin berhenti mengikuti",
   "somethingWrong": "Terdapat kesalahan",
   "changeSaved": "Perubahan tersimpan",
-  "readMoreCaption": "selengkapnya"
+  "readMoreCaption": "selengkapnya",
+  "max": "Maks.",
+  "optional": "Opsional",
+  "countryValid": "Negara tidak valid",
+  "cityValid": "Kota tidak valid",
+  "titleValid": "Judul perjalanan valid",
+  "startDateValid": "Tanggal mulai tidak valid",
+  "endDateValid": "Durasi tidak valid",
+  "categoryValid": "Kategori tidak valid"
 }
