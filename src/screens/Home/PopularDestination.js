@@ -162,7 +162,7 @@ export default function PopularDestination({ props }) {
                   >
                     <Text
                       size="title"
-                      type="regular"
+                      type="black"
                       style={{
                         zIndex: 2,
                         color: "#fff",
@@ -232,7 +232,7 @@ export default function PopularDestination({ props }) {
                       >
                         <Text
                           size="label"
-                          type="bold"
+                          type="black"
                           style={{
                             color: "#ffff",
                             margin: 5,

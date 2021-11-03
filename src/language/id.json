@@ -808,5 +808,7 @@
   "titleValid": "Judul perjalanan valid",
   "startDateValid": "Tanggal mulai tidak valid",
   "endDateValid": "Durasi tidak valid",
-  "categoryValid": "Kategori tidak valid"
+  "categoryValid": "Kategori tidak valid",
+  "noAlbum": "Tidak ada Album",
+  "showResult": "Tampilkan Hasil"
 }
