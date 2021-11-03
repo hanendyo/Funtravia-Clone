@@ -208,10 +208,9 @@ export default function Home(props) {
           >
             <View
               style={{
-                height: 20,
+                height: 15,
                 marginRight: 5,
-                marginTop: 2,
-                width: 7,
+                width: 5,
                 backgroundColor: "#209fae",
                 borderRadius: 5,
               }}

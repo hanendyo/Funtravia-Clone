@@ -374,7 +374,7 @@
   "clearAll": "Clear All",
   "apply": "Apply",
   "private": "Private",
-  "night": "Night",
+  "night": "night",
   "photoBy": "Photo by",
   "enterAddressMeetup": "Enter address meetup",
   "validateNote": "Enter your note and max length 50 character",
@@ -810,5 +810,7 @@
   "titleValid": "Title is not valid",
   "startDateValid": "Start date is not valid",
   "endDateValid": "End date is not valid",
-  "categoryValid": "Category is not valid"
+  "categoryValid": "Category is not valid",
+  "noAlbum": "No albums",
+  "showResult": "Show Result"
 }
