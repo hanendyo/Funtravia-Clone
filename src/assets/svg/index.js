@@ -290,8 +290,16 @@ import AlbumGray from "./files/AlbumGray.svg";
 import AlbumGreen from "./files/AlbumGreen.svg";
 import PostGreen from "./files/PostGreen.svg";
 import PostGray from "./files/PostGray.svg";
+import Complete from "./files/complete.svg";
+import ChatItinerary from "./files/chat_itinerary.svg";
+import CalendarItinerary from "./files/calendar_itinerary.svg";
+import PeopleItinerary from "./files/people_itinerary.svg";
 
 export {
+  PeopleItinerary,
+  CalendarItinerary,
+  ChatItinerary,
+  Complete,
   Lock,
   World,
   SearchHome,

@@ -106,7 +106,7 @@ export default function detailCustomItinerary(props) {
               fontSize: 14,
             }}
           >
-            {t("CustomActivity")}
+            {t("customActivity")}
           </Text>
         </View>
       </View>
@@ -540,18 +540,18 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
           <FloatingInput
-            label={t("Guest Name")}
+            label={t("guestNameOptional")}
             value={guestName}
             onChangeText={setGuestName}
           />
 
           <FloatingInput
-            label={t("BookingRef")}
+            label={t("bookingRefOptional")}
             value={bookingRef}
             onChangeText={setBookingRef}
           />
           <FloatingInput
-            label={t("Carrier")}
+            label={t("carrierOptional")}
             value={carrier}
             onChangeText={setCarrier}
           />

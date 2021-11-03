@@ -12,17 +12,17 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { default_image, imgPrivate } from "../../../assets/png";
+import { default_image, ItineraryKosong } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
 import {
   Kosong,
   PinHijau,
-  Calendargrey,
-  User,
   TravelAlbum,
   TravelStories,
   Lock,
   World,
+  CalendarItinerary,
+  PeopleItinerary,
 } from "../../../assets/svg";
 import { Truncate, Text, FunImageBackground } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -32,9 +32,9 @@ import ListItinerary from "../../../graphQL/Query/Itinerary/listitineraryA";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const arrayShadow = {
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-  shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+  shadowOffset: { width: 1, height: 1 },
+  shadowOpacity: Platform.OS == "ios" ? 0.1 : 0.1,
+  shadowRadius: Platform.OS == "ios" ? 10 : 10,
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
@@ -100,7 +100,7 @@ export default function ActivePlan({
                   source={
                     value.user && value.user.picture
                       ? { uri: value.user.picture }
-                      : default_image
+                      : ItineraryKosong
                   }
                   style={{
                     resizeMode: "cover",
@@ -383,7 +383,7 @@ export default function ActivePlan({
 
   if (AData?.length > 0) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
         <FlatList
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
@@ -399,12 +399,13 @@ export default function ActivePlan({
           renderItem={({ item }) => (
             <View
               style={{
-                height: 157,
+                height: Platform.OS === "ios" ? 167 : 157,
                 marginTop: 10,
                 borderRadius: 5,
                 borderWidth: 1,
                 borderColor: "#d1d1d1",
                 shadowOffset: { width: 0, height: 1 },
+
                 shadowOpacity: arrayShadow.shadowOpacity,
                 shadowRadius: arrayShadow.shadowRadius,
                 elevation: arrayShadow.elevation,
@@ -432,6 +433,8 @@ export default function ActivePlan({
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
                   flexDirection: "row",
+                  shadowColor: "black",
+                  zIndex: 99,
                   shadowOpacity: arrayShadow.shadowOpacity,
                   shadowRadius: arrayShadow.shadowRadius,
                   elevation: arrayShadow.elevation,
@@ -439,7 +442,7 @@ export default function ActivePlan({
               >
                 <ImageBackground
                   source={
-                    item && item.cover ? { uri: item.cover } : default_image
+                    item && item.cover ? { uri: item.cover } : ItineraryKosong
                   }
                   style={{
                     height: "100%",
@@ -484,7 +487,7 @@ export default function ActivePlan({
                         source={
                           item.user_created
                             ? { uri: item.user_created.picture }
-                            : default_image
+                            : ItineraryKosong
                         }
                         style={{
                           zIndex: 2,
@@ -599,12 +602,14 @@ export default function ActivePlan({
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        marginTop: Platform.OS === "ios" ? 5 : 3,
+                        marginTop: Platform.OS === "ios" ? 3 : 2,
+                        marginBottom: 5,
+                        marginLeft: 2,
                       }}
                     >
                       <PinHijau width={15} height={15} />
                       <Text
-                        style={{ marginLeft: 3, fontSize: 12 }}
+                        style={{ marginLeft: 4, fontSize: 12 }}
                         type="regular"
                       >
                         {item?.country?.name}
@@ -634,7 +639,7 @@ export default function ActivePlan({
                         marginLeft: 3,
                       }}
                     >
-                      <Calendargrey
+                      <CalendarItinerary
                         width={12}
                         height={12}
                         style={{ marginRight: 5 }}
@@ -650,7 +655,11 @@ export default function ActivePlan({
                         marginLeft: 15,
                       }}
                     >
-                      <User width={13} height={13} style={{ marginRight: 5 }} />
+                      <PeopleItinerary
+                        width={13}
+                        height={13}
+                        style={{ marginRight: 5 }}
+                      />
                       <Text style={{ fontSize: 12 }} type="regular">
                         {(item && item.buddy.length
                           ? item.buddy.length
@@ -668,7 +677,7 @@ export default function ActivePlan({
                   paddingVertical: 3,
                   height: "25%",
                   flexDirection: "row",
-                  backgroundColor: "#F6F6F6",
+                  backgroundColor: "#FFF",
                   borderBottomLeftRadius: 5,
                   borderBottomRightRadius: 5,
                   justifyContent: "space-between",
@@ -748,7 +757,7 @@ export default function ActivePlan({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
