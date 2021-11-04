@@ -27,8 +27,8 @@ import {
   default_profile,
   Bg_soon,
   empty_image,
-  NewItineraryImage,
-  PopularItineraryImage,
+  // NewItineraryImage,
+  // PopularItineraryImage,
   ItineraryKosong,
 } from "../../../assets/png";
 import {
@@ -47,6 +47,8 @@ import {
   ItineraryIconGray,
   AlbumIconGray,
   Arrowbackios,
+  NewItineraryImage,
+  PopularItineraryImage,
 } from "../../../assets/svg";
 import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -1425,11 +1427,9 @@ export default function ItineraryPopuler(props) {
           <Ripple
             style={{
               borderRadius: 10,
-              // height: "100%",
               height: Dimensions.get("screen").width * 0.32,
               marginTop: 10,
               width: Dimensions.get("screen").width * 0.57,
-              marginBottom: -5,
             }}
             onPress={() =>
               props.navigation.navigate("ItineraryCategory", {
@@ -1439,15 +1439,7 @@ export default function ItineraryPopuler(props) {
               })
             }
           >
-            <FunImageBackground
-              source={NewItineraryImage ? NewItineraryImage : default_image}
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: 10,
-              }}
-              imageStyle={{ borderRadius: 10 }}
-            ></FunImageBackground>
+            <NewItineraryImage height={"100%"} width={"100%"} />
             <View
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -1475,11 +1467,10 @@ export default function ItineraryPopuler(props) {
           <Ripple
             style={{
               borderRadius: 10,
-              // height: "100%",
               height: Dimensions.get("screen").width * 0.32,
               marginTop: 10,
               width: Dimensions.get("screen").width * 0.57,
-              marginBottom: -5,
+              marginLeft: 10,
             }}
             onPress={() =>
               props.navigation.navigate("ItineraryCategory", {
@@ -1489,16 +1480,7 @@ export default function ItineraryPopuler(props) {
               })
             }
           >
-            <FunImageBackground
-              source={
-                PopularItineraryImage ? PopularItineraryImage : default_image
-              }
-              style={{
-                width: "100%",
-                height: "96%",
-              }}
-              imageStyle={{ borderRadius: 10 }}
-            ></FunImageBackground>
+            <PopularItineraryImage height={"100%"} width={"100%"} />
             <View
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.6)",

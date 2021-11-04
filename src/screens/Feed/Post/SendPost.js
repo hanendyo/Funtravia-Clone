@@ -21,7 +21,7 @@ import {
 } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Arrowbackwhite, Itinerary_1, SendMessage } from "../../../assets/svg";
+import { Arrowbackwhite, SendMessage } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
