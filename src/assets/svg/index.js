@@ -241,8 +241,8 @@ import LeaveTrips from "./files/leaveTrip.svg";
 import Errors from "./files/errors.svg";
 import Errorr from "./files/errorr.svg";
 import Refresh from "./files/refresh.svg";
-import Itinerary_1 from "./files/itinerary_1.svg";
-import Itinerary_2 from "./files/itinerary_2.svg";
+import PopularItineraryImage from "./files/PopularItineraryImage.svg";
+import NewItineraryImage from "./files/NewItineraryImage.svg";
 import Submit from "./files/submit.svg";
 import Errorx from "./files/errorx.svg";
 import Filternewbiru from "./files/filternewbiru.svg";
@@ -547,8 +547,6 @@ export {
   Errors,
   Errorr,
   Refresh,
-  Itinerary_1,
-  Itinerary_2,
   Submit,
   Errorx,
   Filternewbiru,
@@ -592,4 +590,6 @@ export {
   AlbumGreen,
   PostGreen,
   PostGray,
+  PopularItineraryImage,
+  NewItineraryImage,
 };
