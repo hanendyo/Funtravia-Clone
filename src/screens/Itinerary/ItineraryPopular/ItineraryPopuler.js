@@ -531,7 +531,7 @@ export default function ItineraryPopuler(props) {
             renderItem={({ item, index }) => (
               <View
                 style={{
-                  height: Dimensions.get("screen").height / 4.5,
+                  height: Dimensions.get("screen").height / 5.1,
                   // height: normalize(167),
                   // minHeight: 167,
                   paddingHorizontal: 15,
@@ -1410,149 +1410,134 @@ export default function ItineraryPopuler(props) {
           </View>
         </View>
       </ModalRN>
-      <View
-        style={{
-          backgroundColor: "white",
-          paddingTop: 20,
-          // paddingBottom: 10,
-          // borderWidth: 1,
-        }}
+
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        style={{ backgroundColor: "#fff" }}
       >
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View
+        <View
+          style={{
+            paddingHorizontal: 15,
+            flexDirection: "row",
+          }}
+        >
+          <Ripple
             style={{
+              borderRadius: 10,
+              // height: "100%",
               height: Dimensions.get("screen").width * 0.32,
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              // borderWidth: 1,
+              marginTop: 10,
+              width: Dimensions.get("screen").width * 0.57,
+              marginBottom: -5,
             }}
+            onPress={() =>
+              props.navigation.navigate("ItineraryCategory", {
+                dataPopuler: dataPopuler,
+                typeOrder: "new",
+                typeCategory: [],
+              })
+            }
           >
-            <Ripple
+            <FunImageBackground
+              source={NewItineraryImage ? NewItineraryImage : default_image}
               style={{
-                marginRight: 5,
-                borderRadius: 10,
+                width: "100%",
                 height: "100%",
-                width: Dimensions.get("screen").width * 0.57,
-                // shadowColor: "gray",
-                // shadowOffset: { width: 0, height: 1 },
-                // shadowOpacity: arrayShadow.shadowOpacity,
-                // shadowRadius: arrayShadow.shadowRadius,
-                // elevation: arrayShadow.elevation,
-                // paddingVertical: 2,
+                borderRadius: 10,
               }}
-              onPress={() =>
-                props.navigation.navigate("ItineraryCategory", {
-                  dataPopuler: dataPopuler,
-                  typeOrder: "new",
-                  typeCategory: [],
-                })
-              }
+              imageStyle={{ borderRadius: 10 }}
+            ></FunImageBackground>
+            <View
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                // opacity: 0.6,
+                position: "absolute",
+                left: 10,
+                top: 10,
+                borderRadius: 2,
+              }}
             >
-              <FunImageBackground
-                source={NewItineraryImage ? NewItineraryImage : default_image}
-                style={{ width: "100%", height: "100%" }}
-                imageStyle={{ borderRadius: 10 }}
-              ></FunImageBackground>
-              {/* <Itinerary_1 height={"100%"} width={"100%"} borderRadius={10} /> */}
-              <View
+              <Text
+                size="description"
+                type="bold"
                 style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  // opacity: 0.6,
-                  position: "absolute",
-                  left: 10,
-                  top: 10,
-                  borderRadius: 2,
+                  // position: "absolute",
+                  color: "#FFF",
+                  marginHorizontal: 5,
+                  marginVertical: 3,
                 }}
               >
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{
-                    // position: "absolute",
-                    color: "#FFF",
-                    marginHorizontal: 5,
-                    marginVertical: 3,
-                  }}
-                >
-                  New Itinerary
-                </Text>
-              </View>
-            </Ripple>
-            <Ripple
-              style={{
-                marginRight: 5,
-                borderRadius: 10,
-                height: "100%",
-                width: Dimensions.get("screen").width * 0.57,
-                marginRight: 5,
-                // shadowColor: "gray",
-                // shadowOffset: { width: 0, height: 1 },
-                // shadowOpacity: arrayShadow.shadowOpacity,
-                // shadowRadius: arrayShadow.shadowRadius,
-                // elevation: arrayShadow.elevation,
-                // paddingVertical: 2,
-              }}
-              onPress={() =>
-                props.navigation.navigate("ItineraryCategory", {
-                  dataPopuler: dataPopuler,
-                  typeOrder: "populer",
-                  typeCategory: [],
-                })
+                New Itinerary
+              </Text>
+            </View>
+          </Ripple>
+          <Ripple
+            style={{
+              borderRadius: 10,
+              // height: "100%",
+              height: Dimensions.get("screen").width * 0.32,
+              marginTop: 10,
+              width: Dimensions.get("screen").width * 0.57,
+              marginBottom: -5,
+            }}
+            onPress={() =>
+              props.navigation.navigate("ItineraryCategory", {
+                dataPopuler: dataPopuler,
+                typeOrder: "populer",
+                typeCategory: [],
+              })
+            }
+          >
+            <FunImageBackground
+              source={
+                PopularItineraryImage ? PopularItineraryImage : default_image
               }
+              style={{
+                width: "100%",
+                height: "96%",
+              }}
+              imageStyle={{ borderRadius: 10 }}
+            ></FunImageBackground>
+            <View
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                // opacity: 0.6,
+                position: "absolute",
+                left: 10,
+                top: 10,
+                borderRadius: 2,
+              }}
             >
-              <FunImageBackground
-                source={
-                  PopularItineraryImage ? PopularItineraryImage : default_image
-                }
-                style={{ width: "100%", height: "100%" }}
-                imageStyle={{ borderRadius: 10 }}
-              ></FunImageBackground>
-              {/* <Itinerary_2 height={"100%"} width={"100%"} /> */}
-              {/* <Image
-                source={Itinerary_2}
+              <Text
+                size="description"
+                type="bold"
                 style={{
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: 10,
-                }}
-              /> */}
-              <View
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  // opacity: 0.6,
-                  position: "absolute",
-                  left: 10,
-                  top: 10,
-                  borderRadius: 2,
+                  // position: "absolute",
+                  color: "#FFF",
+                  marginHorizontal: 5,
+                  marginVertical: 3,
                 }}
               >
-                <Text
-                  size="description"
-                  type="bold"
-                  style={{
-                    // position: "absolute",
-                    color: "#FFF",
-                    marginHorizontal: 5,
-                    marginVertical: 3,
-                  }}
-                >
-                  Popular Itinerary
-                </Text>
-              </View>
-            </Ripple>
-          </View>
-        </ScrollView>
-      </View>
+                Popular Itinerary
+              </Text>
+            </View>
+          </Ripple>
+        </View>
+      </ScrollView>
       <View
         style={{
           width: Dimensions.get("screen").width,
-          // paddingHorizontal: 15,
           backgroundColor: "#FFF",
-          paddingTop: 15,
+          // borderWidth: 1,
         }}
       >
         {actives === "Itinerary" || actives === "Album" ? (
-          <Text size="title" type="bold" style={{ marginLeft: 20 }}>
+          <Text
+            size="title"
+            type="bold"
+            style={{ marginLeft: 20, marginTop: 5 }}
+          >
             {t("CategoryItin")}
           </Text>
         ) : null}
@@ -1652,9 +1637,11 @@ export default function ItineraryPopuler(props) {
                   borderBottomWidth: actives == "Itinerary" ? 1 : 0,
                   borderBottomColor:
                     actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
-                  paddingTop: 10,
-                  paddingBottom: 15,
+                  // paddingTop: 10,
+                  // paddingBottom: 15,
+                  height: normalize(40),
                   flexDirection: "row",
+                  // borderWidth: 2,
                 }}
               >
                 {actives == "Itinerary" ? (
@@ -1677,7 +1664,7 @@ export default function ItineraryPopuler(props) {
 
                 <Text
                   size="label"
-                  type={actives == "Itinerary" ? "bold" : "light"}
+                  type={actives == "Itinerary" ? "bold" : "regular"}
                   style={{
                     color: actives == "Itinerary" ? "#209FAE" : "#464646",
                   }}
@@ -1693,9 +1680,10 @@ export default function ItineraryPopuler(props) {
                   justifyContent: "center",
                   borderBottomWidth: actives == "Album" ? 1 : 0,
                   borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
-                  paddingTop: 10,
-                  paddingBottom: 15,
+                  // paddingTop: 10,
+                  // paddingBottom: 15,
                   flexDirection: "row",
+                  height: normalize(40),
                 }}
               >
                 {actives == "Album" ? (
@@ -1734,8 +1722,9 @@ export default function ItineraryPopuler(props) {
                   borderBottomWidth: actives == "Stories" ? 1 : 0,
                   borderBottomColor:
                     actives == "Stories" ? "#249FAE" : "#EEEEEE",
-                  paddingTop: 10,
-                  paddingBottom: 15,
+                  // paddingTop: 10,
+                  // paddingBottom: 15,
+                  height: normalize(40),
                   flexDirection: "row",
                 }}
               >
