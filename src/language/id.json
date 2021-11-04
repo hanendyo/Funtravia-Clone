@@ -810,5 +810,8 @@
   "endDateValid": "Durasi tidak valid",
   "categoryValid": "Kategori tidak valid",
   "noAlbum": "Tidak ada Album",
-  "showResult": "Tampilkan Hasil"
+  "showResult": "Tampilkan Hasil",
+  "failedAddPassword": "Gagal menambahkan password",
+  "failedChangeEmail": "Gagal merubah email",
+  "failedResendCode": "Gagal Mengirim Ulang Kode OTP"
 }

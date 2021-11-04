@@ -316,7 +316,9 @@ export default function AddPassword(props) {
         <Button
           disabled={disable1.length < 8 || disable2.length < 8 ? true : false}
           color={
-            disable1.length < 8 || disable2.length < 8 ? "tertiary" : "disabled"
+            disable1.length < 8 || disable2.length < 8
+              ? "disabled"
+              : "secondary"
           }
           text={"Submit"}
           onPress={() => onSubmit(text1, text2)}

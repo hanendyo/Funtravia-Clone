@@ -164,10 +164,7 @@ export default function SettingCity(props) {
               ({ ...tempData[index], selected: true });
             }
             setData(tempData);
-            props.navigation.goBack();
-            // masukan(selected);
-            // setCountry(null);
-            // setModalCity(false);
+            // props.navigation.goBack();
           } else {
             throw new Error(response.data.update_city_settings.message);
           }
@@ -211,7 +208,6 @@ export default function SettingCity(props) {
           }}
           onChangeText={(e) => {
             setCountry(e);
-            console.log(e);
           }}
           onSubmitEditing={(e) => setCountry(e)}
           autoCorrect={false}

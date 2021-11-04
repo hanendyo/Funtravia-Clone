@@ -812,5 +812,8 @@
   "endDateValid": "End date is not valid",
   "categoryValid": "Category is not valid",
   "noAlbum": "No albums",
-  "showResult": "Show Result"
+  "showResult": "Show Result",
+  "failedAddPassword": "Failed Add Password",
+  "failedChangeEmail": "Failed to Change email",
+  "failedResendCode": "Failed to Resend OTP CodeP"
 }

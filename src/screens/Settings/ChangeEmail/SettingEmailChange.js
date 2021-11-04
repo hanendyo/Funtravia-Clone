@@ -8,6 +8,7 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import changeEmail from "../../../graphQL/Mutation/Setting/changeEmail";
 import { useMutation } from "@apollo/client";
 import DeviceInfo from "react-native-device-info";
+import { RNToasty } from "react-native-toasty";
 
 export default function SettingEmailChange(props) {
   const Notch = DeviceInfo.hasNotch();
@@ -18,6 +19,37 @@ export default function SettingEmailChange(props) {
   let [email2, setEmail2] = useState("");
   let ref1 = useRef();
   let ref2 = useRef();
+  const [disable1, setDisable1] = useState("");
+  const [disable2, setDisable2] = useState("");
+  const [error, setError] = useState({
+    emailError1: false,
+    emailError2: false,
+  });
+  const handleError1 = (e) => {
+    let emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    setEmail1(e);
+    console.log("email 1", e.length);
+    if (e.length > 0 && !e.match(emailRegex)) {
+      setDisable1(e);
+      return setError({ ...error, emailError1: true });
+    } else {
+      setDisable1(e);
+      return setError({ ...error, emailError1: false });
+    }
+  };
+  const handleError2 = (e, text1) => {
+    let emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    setEmail2(e);
+    if (e !== text1 && e.length > 0 && !e.match(emailRegex)) {
+      setDisable2(e);
+      setError({ ...error, emailError2: true });
+    } else {
+      setDisable2(e);
+      setError({ ...error, emailError2: false });
+    }
+  };
+
+  console.log("all error", error);
 
   const HeaderComponent = {
     headerTitle: (
@@ -108,22 +140,23 @@ export default function SettingEmailChange(props) {
             newEmail: newEmail,
           },
         });
-        if (loadingEmail) {
-          Alert.alert("Loading!!");
-        }
-        if (errorMutationEmail) {
-          throw new Error("Email change failed");
-        }
+        console.log("response", response);
+
         if (response.data) {
           if (response.data.changemail.code !== 200) {
-            throw new Error(response.data.changemail.message);
+            RNToasty.Show({
+              title: t("failedChangeEmail"),
+              position: "bottom",
+            });
+          } else {
+            await props.navigation.navigate("SettingEmailVerify", {
+              emailNew: newEmail,
+              emailOld: oldEmail,
+            });
           }
-          await props.navigation.navigate("SettingEmailVerify", {
-            emailNew: newEmail,
-            emailOld: oldEmail,
-          });
         }
       } catch (error) {
+        console.log("error", error);
         showAlert({
           ...aler,
           show: true,
@@ -140,6 +173,9 @@ export default function SettingEmailChange(props) {
       });
     }
   };
+
+  console.log("disable1", disable1.length);
+  console.log("disable2", disable2.length);
   return (
     <KeyboardAvoidingView
       style={{
@@ -157,7 +193,7 @@ export default function SettingEmailChange(props) {
           showAlert({ ...aler, show: false, judul: "", detail: "" })
         }
       />
-      <Loading show={loadingEmail} />
+      {/* <Loading show={loadingEmail} /> */}
       <ScrollView
         style={{
           backgroundColor: "white",
@@ -210,16 +246,30 @@ export default function SettingEmailChange(props) {
           >
             <TextInput
               keyboardType="email-address"
+              autoCapitalize="none"
               style={{
                 fontSize: 14,
                 width: "100%",
               }}
               ref={ref1}
               placeholder={t("currentEmail")}
-              onChangeText={(text1) => setEmail1(text1)}
-              onSubmitEditing={(text1) => setEmail1(text1)}
+              onChangeText={(e) => handleError1(e)}
+              onSubmitEditing={(e) => handleError1(e)}
             ></TextInput>
           </View>
+          {error["emailError1"] === true ? (
+            <View
+              style={{
+                marginTop: 5,
+                width: Dimensions.get("screen").width - 40,
+                marginHorizontal: 20,
+              }}
+            >
+              <Text type="light" size="small" style={{ color: "#D75995" }}>
+                {t("sampleEmail")}
+              </Text>
+            </View>
+          ) : null}
           <View
             style={{
               borderRadius: 3,
@@ -235,16 +285,30 @@ export default function SettingEmailChange(props) {
           >
             <TextInput
               keyboardType="email-address"
+              autoCapitalize="none"
               style={{
                 width: "100%",
                 fontSize: 14,
               }}
               ref={ref2}
-              onChangeText={(text2) => setEmail2(text2)}
-              onSubmitEditing={(text2) => setEmail2(text2)}
+              onChangeText={(e) => handleError2(e)}
+              onSubmitEditing={(e) => handleError2(e)}
               placeholder={t("newEmail")}
             ></TextInput>
           </View>
+          {error["emailError2"] === true ? (
+            <View
+              style={{
+                marginTop: 5,
+                width: Dimensions.get("screen").width - 40,
+                marginHorizontal: 20,
+              }}
+            >
+              <Text type="light" size="small" style={{ color: "#D75995" }}>
+                {t("sampleEmail")}
+              </Text>
+            </View>
+          ) : null}
         </View>
         <View
           style={{
@@ -256,7 +320,22 @@ export default function SettingEmailChange(props) {
           <Button
             type="box"
             size="large"
-            color="secondary"
+            disabled={
+              disable1.length < 1 ||
+              disable2.length == 0 ||
+              error["emailError1"] == true ||
+              error["emailError2"] == true
+                ? true
+                : false
+            }
+            color={
+              disable1.length < 1 ||
+              disable2.length == 0 ||
+              error["emailError1"] == true ||
+              error["emailError2"] == true
+                ? "disabled"
+                : "secondary"
+            }
             text={t("save")}
             onPress={() => resultChangeEmail(email1, email2)}
             style={{ width: "100%" }}
