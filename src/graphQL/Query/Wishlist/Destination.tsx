@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const Destination = gql`
-  query {
-    listdetination_wishlist(keyword: "") {
+  query($keyword: String) {
+    listdetination_wishlist(keyword: $keyword) {
       id
       name
       cover

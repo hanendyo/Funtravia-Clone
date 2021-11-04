@@ -50,18 +50,19 @@ export default function AllDestination(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("popularDestination")}
       </Text>
     ),
     headerMode: "screen",
+    headerStyle: {
+      backgroundColor: "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
       marginLeft: 10,
-    },
-    headerLRightContainerStyle: {
-      background: "#FFF",
-      marginRight: 10,
     },
     headerLeft: () => (
       <Button

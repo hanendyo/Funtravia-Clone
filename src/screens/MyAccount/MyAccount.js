@@ -35,7 +35,6 @@ export default function MyAccount(props) {
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
-  console.log("t", t("LoginFirsts"));
   let [modalLogin, setModalLogin] = useState(false);
   let [token, setToken] = useState("");
   const HeaderComponent = {
@@ -308,7 +307,6 @@ export default function MyAccount(props) {
           >
             <Pressable
               onPress={() => {
-                // console.log(datauser.user_profile.id);
                 props.navigation.push("ProfileStack", {
                   screen: "ProfileTab",
                   params: { token: token },
@@ -682,14 +680,7 @@ export default function MyAccount(props) {
                 let response = await mutationlogout({
                   variables: { token: pushTkn },
                 });
-                // console.log(response);
-                // if (loading) {
-                //     Alert.alert("Loading!!");
-                // }
 
-                if (error) {
-                  throw new Error("Error mutation");
-                }
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
                   await AsyncStorage.setItem("setting", "");

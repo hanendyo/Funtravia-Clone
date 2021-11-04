@@ -95,7 +95,7 @@ export default function ItineraryCategory(props) {
     headerTintColor: "white",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
-        {t("newItinerary")}
+        {order == "populer" ? t("popularTrip") : t("newItinerary")}
       </Text>
     ),
     headerMode: "screen",
@@ -125,20 +125,6 @@ export default function ItineraryCategory(props) {
         ) : (
           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
         )}
-      </Button>
-    ),
-    headerRight: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        {/* <SearchWhite height={20} width={20}></SearchWhite> */}
       </Button>
     ),
   };
@@ -300,9 +286,6 @@ export default function ItineraryCategory(props) {
           },
         });
 
-        if (errorLike) {
-          console.log(errorLike);
-        }
         if (response.data) {
           if (response.data.setItineraryFavorit.code === 200) {
             list_populer[index].liked = true;
@@ -339,11 +322,6 @@ export default function ItineraryCategory(props) {
             id: id,
           },
         });
-
-        if (errorUnLike) {
-          // throw new Error("Error Input");
-          console.log(errorUnLike);
-        }
 
         if (response.data) {
           if (response.data.unsetItineraryFavorit.code === 200) {
@@ -695,14 +673,11 @@ export default function ItineraryCategory(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
-      scroll_to();
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, order]);
 
   let _menu = null;
-  console.log("_menu", _menu);
-  console.log("order", order);
 
   const RenderUtama = ({ aktif }) => {
     if (loadingPopuler) {
