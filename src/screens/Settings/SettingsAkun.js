@@ -282,7 +282,6 @@ export default function SettingsAkun(props) {
         (response.data.connection_google.code === "200" ||
           response.data.connection_google.code === 200)
       ) {
-        // console.log("success");
         refatchAccountConnect();
         RNToasty.Show({
           title: "Success to Connect Google",
@@ -301,7 +300,6 @@ export default function SettingsAkun(props) {
         title: "Someting Wrong",
         position: "bottom",
       });
-      console.log("error", error);
     }
   };
 
@@ -324,7 +322,6 @@ export default function SettingsAkun(props) {
         response.data.unconnection_google.code === "200" ||
         response.data.unconnection_google.code === 200
       ) {
-        console.log("success");
         refatchAccountConnect();
         RNToasty.Show({
           title: "Success to Disconnect Google",
@@ -332,18 +329,19 @@ export default function SettingsAkun(props) {
         });
       } else {
         refatchAccountConnect();
-        console.log("gagal");
         RNToasty.Show({
           title: response.data.unconnection_google.message,
           position: "bottom",
         });
+        setTimeout(() => {
+          props.navigation.navigate("AddPassword");
+        }, 500);
       }
     } catch (error) {
       RNToasty.Show({
         title: "Someting Wrong",
         position: "bottom",
       });
-      console.log("error", error);
     }
   };
   const _handleFacebookDisConnect = async (id) => {
@@ -358,7 +356,6 @@ export default function SettingsAkun(props) {
         response.data.unconnection_facebook.code === "200" ||
         response.data.unconnection_facebook.code === 200
       ) {
-        console.log("success");
         refatchAccountConnect();
         RNToasty.Show({
           title: "Success to Disconnect Facebook",
@@ -370,14 +367,12 @@ export default function SettingsAkun(props) {
           title: response.data.unconnection_facebook.message,
           position: "bottom",
         });
-        console.log("gagal");
       }
     } catch (error) {
       RNToasty.Show({
         title: "Someting Wrong",
         position: "bottom",
       });
-      console.log("error", error);
     }
   };
   const _handleFacebookConnect = async () => {
@@ -399,10 +394,6 @@ export default function SettingsAkun(props) {
             client_token: FB_Data.accessToken,
           },
         });
-        console.log(
-          "🚀 ~ file: SettingsAkun.js ~ line 311 ~ const_handleFacebookConnect= ~ response",
-          response
-        );
       }
 
       if (
@@ -410,14 +401,15 @@ export default function SettingsAkun(props) {
         (response.data.connection_facebook.code === "200" ||
           response.data.connection_facebook.code === 200)
       ) {
-        console.log("success");
         refatchAccountConnect();
       } else {
         refatchAccountConnect();
-        console.log("gagal");
       }
     } catch (error) {
-      console.log("error", error);
+      RNToasty.Show({
+        title: "Failed to Connect Facebook",
+        position: "bottom",
+      });
     }
   };
 
@@ -541,10 +533,6 @@ export default function SettingsAkun(props) {
   };
 
   const _handlehasPassword = () => {
-    console.log(
-      "🚀 ~ file: SettingsAkun.js ~ line 547 ~ SettingsAkun ~ cek_haspassword",
-      cek_haspassword
-    );
     if (token !== "" && token !== null) {
       if (cek_haspassword) {
         if (cek_haspassword.ishasPassword === true) {
@@ -1013,7 +1001,7 @@ export default function SettingsAkun(props) {
                 alignItems: "center",
               }}
             >
-              <Text size="label" type="light" style={{}}>
+              <Text size="description" type="light" style={{}}>
                 <Truncate
                   text={
                     setting.user.first_name
@@ -1323,10 +1311,48 @@ export default function SettingsAkun(props) {
           </View>
         ) : null}
       </View>
+      <Pressable
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginVertical: 15,
+          paddingHorizontal: 15,
+          marginHorizontal: 15,
+          backgroundColor: "#FFFFFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 5,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 6.27,
+          elevation: 2,
+          borderRadius: 5,
+        }}
+        onPress={() => _handlehasPassword()}
+      >
+        <Text
+          size="label"
+          type="regular"
+          style={{
+            marginBottom: 15,
+            marginTop: 13,
+          }}
+        >
+          {t("password")}
+        </Text>
+        <Nextpremier
+          width={15}
+          height={15}
+          style={{
+            marginVertical: 15,
+          }}
+        />
+      </Pressable>
       <View
         style={{
           flexDirection: "row",
-          marginTop: 15,
+          marginBottom: 15,
           paddingHorizontal: 15,
           marginHorizontal: 15,
           backgroundColor: "#FFFFFF",
@@ -1416,44 +1442,7 @@ export default function SettingsAkun(props) {
           </Pressable>
         ) : null}
       </View>
-      <Pressable
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginVertical: 15,
-          paddingHorizontal: 15,
-          marginHorizontal: 15,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
-          elevation: 2,
-          borderRadius: 5,
-        }}
-        onPress={() => _handlehasPassword()}
-      >
-        <Text
-          size="label"
-          type="regular"
-          style={{
-            marginBottom: 15,
-            marginTop: 13,
-          }}
-        >
-          {t("password")}
-        </Text>
-        <Nextpremier
-          width={15}
-          height={15}
-          style={{
-            marginVertical: 15,
-          }}
-        />
-      </Pressable>
+
       <View
         style={{
           // flexDirection: "row",

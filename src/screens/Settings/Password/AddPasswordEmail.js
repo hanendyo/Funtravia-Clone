@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, Button } from "../../../component";
+import { Text, Button, Peringatan } from "../../../component";
 import { View } from "native-base";
 import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite, SetPass } from "../../../assets/svg";
@@ -18,6 +18,7 @@ import Modal from "react-native-modal";
 import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
 import normalize from "react-native-normalize";
+import { RNToasty } from "react-native-toasty";
 
 export default function AddPasswordEmail(props) {
   const [token, setToken] = useState("");
@@ -31,19 +32,28 @@ export default function AddPasswordEmail(props) {
     password2: false,
   });
 
+  const [disable1, setDisable1] = useState("");
+  const [disable2, setDisable2] = useState("");
+
   const handleError1 = (e) => {
     setText1(e);
     if (e && e.length < 8) {
+      setDisable1(e);
+
       return setError({ ...error, password1: true });
     } else {
+      setDisable1(e);
+
       return setError({ ...error, password1: false });
     }
   };
   const handleError2 = (e, text1) => {
     setText2(e);
     if (e !== text1) {
+      setDisable2(e);
       setError({ ...error, password2: true });
     } else {
+      setDisable2(e);
       setError({ ...error, password2: false });
     }
   };
@@ -124,11 +134,18 @@ export default function AddPasswordEmail(props) {
 
   const onSubmit = async (text1, text2) => {
     if (text1 === "") {
-      setModalVisible2(true);
-      return setErrors("Passwords cannot be empty");
+      showAlert({
+        ...aler,
+        show: true,
+        judul: t("somefieldempty"),
+        detail: "",
+      });
     }
     if (text1 !== text2) {
-      return (error["password2"] = true);
+      RNToasty.Show({
+        title: t("failedAddPassword"),
+        position: "bottom",
+      });
     }
 
     if (token || token !== "") {
@@ -138,39 +155,42 @@ export default function AddPasswordEmail(props) {
             password: text1,
           },
         });
-        if (loadingPassword) {
-          <View>
-            <ActivityIndicator animating={true} color="#209FAE" />
-          </View>;
-        }
-        if (errorPassword) {
-          throw new Error("Error Input");
-        }
+        console.log("response", response);
         if (response.data) {
           if (
             response.data.update_password_settings.code === 200 ||
             response.data.update_password_settings.code === "200"
           ) {
-            await setModalVisible(!modalVisible);
+            RNToasty.Show({
+              title: t("failedAddPassword"),
+              position: "bottom",
+            });
             await setTimeout(() => {
               props.navigation.navigate("SettingEmailChange", {
                 setting: setting,
               });
             }, 2000);
-            await setTimeout(() => {
-              setModalVisible(modalVisible);
-            }, 3000);
           } else {
-            throw new Error(response.data.update_password_settings.message);
+            RNToasty.Show({
+              title: t("failedAddPassword"),
+              position: "bottom",
+            });
           }
         }
       } catch (error) {
-        setModalVisible2(true);
-        return setErrors(errors);
+        console.log("error", error);
+        RNToasty.Show({
+          title: t("failedAddPassword"),
+          position: "bottom",
+        });
       }
     } else {
-      setModalVisible2(true);
-      return setErrors("Please Login");
+      console.log("error");
+
+      RNToasty.Show({
+        title: t("failedAddPassword"),
+        position: "bottom",
+      });
     }
   };
 
@@ -183,9 +203,14 @@ export default function AddPasswordEmail(props) {
   const toggleTwo = () => {
     setHide1(!hide1);
   };
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 
   return (
     <ScrollView style={{ backgroundColor: "white", flex: 1 }}>
+      <Peringatan
+        aler={aler}
+        setClose={() => showAlert({ ...aler, show: false })}
+      />
       <KeyboardAvoidingView
         style={{
           width: Dimensions.get("screen").width * 0.9,
@@ -334,8 +359,12 @@ export default function AddPasswordEmail(props) {
         ) : null}
         <View style={{ marginTop: 30, marginBottom: 10 }}>
           <Button
-            disable={false}
-            color="secondary"
+            disabled={disable1.length < 8 || disable2.length < 8 ? true : false}
+            color={
+              disable1.length < 8 || disable2.length < 8
+                ? "disabled"
+                : "secondary"
+            }
             text={"Submit"}
             onPress={() => onSubmit(text1, text2)}
           ></Button>

@@ -18,6 +18,7 @@ import { useMutation } from "@apollo/client";
 import verifyEmail from "../../../graphQL/Mutation/Setting/verifyEmail";
 import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
 import DeviceInfo from "react-native-device-info";
+import { RNToasty } from "react-native-toasty";
 
 export default function SettingEmailVerify(props) {
   const Notch = DeviceInfo.hasNotch();
@@ -138,25 +139,27 @@ export default function SettingEmailVerify(props) {
             ),
           },
         });
-        if (errorVerify) {
-          throw new Error(t("verifyFail"));
-        }
-        if (loadingVerify) {
-          alert("Loading!!");
-        }
         if (response.data) {
           if (response.data.change_email_verification.code !== 200) {
-            throw new Error(response.data.change_email_verification.message);
+            RNToasty.Show({
+              title: t("verifyFail"),
+              position: "bottom",
+            });
+          } else {
+            let tmp_data = { ...setting };
+            tmp_data.user.email = props.route.params.emailNew;
+            await setSetting(tmp_data);
+            await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+            await props.navigation.navigate("SettingsAkun", {
+              setting: setting,
+            });
           }
-          let tmp_data = { ...setting };
-          tmp_data.user.email = props.route.params.emailNew;
-          await setSetting(tmp_data);
-          await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
-          await props.navigation.navigate("SettingsAkun", { setting: setting });
         }
       } catch (error) {
-        let errors = error.toString().replace("Error:", "");
-        Alert.alert(errors);
+        RNToasty.Show({
+          title: t("verifyFail"),
+          position: "bottom",
+        });
       }
     }
   };
@@ -174,7 +177,6 @@ export default function SettingEmailVerify(props) {
   };
 
   const resendOTP = async () => {
-    console.log("response");
     try {
       let response = await resend({
         variables: {
@@ -182,12 +184,29 @@ export default function SettingEmailVerify(props) {
           email: props.route.params.emailOld,
         },
       });
-      hitungMundur();
+      console.log("response verifi", response);
+      if (response.data.resend_email_verification.code == 200) {
+        hitungMundur();
+        // var timeleft = 30;
+        // var downloadTimer = setInterval(function() {
+        //   timeleft -= 1;
+        //   setTimer(timeleft);
+        //   if (timeleft === 0) {
+        //     clearInterval(downloadTimer);
+        //     return false;
+        //   }
+        // }, 1000);
+      } else {
+        RNToasty.Show({
+          title: t("failedResendCode"),
+          position: "bottom",
+        });
+      }
     } catch (error) {
       showAlert({
         ...aler,
         show: true,
-        judul: "Failed Send OTP",
+        judul: t("failedResendCode"),
         detail: "",
       });
     }
@@ -195,44 +214,6 @@ export default function SettingEmailVerify(props) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <Loading show={loadingVerify} />
-      {/* Modal Phone
-      <View style={styles.centeredView}>
-        <Modal
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalSuccess}
-          onRequestClose={() => setModalSuccess(false)}
-          onBackdropPress={() => {
-            setModalSuccess(false);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text
-                style={{ color: "#209FAE", marginBottom: 20 }}
-                size="label"
-                type="bold"
-              >
-                Delete Phone Number
-              </Text>
-              <Text
-                type="bold"
-                size="label"
-                onPress={() => {
-                  setModalSuccess(!modalSuccess);
-                }}
-                onPress={() => {
-                  setModalSuccess(false),
-                    props.navigation.navigate("SettingPhoneChange");
-                }}
-              >
-                Change Phone Number
-              </Text>
-            </View>
-          </View>
-        </Modal>
-      </View> */}
       <ScrollView>
         <View
           style={{
@@ -490,15 +471,14 @@ export default function SettingEmailVerify(props) {
           style={{
             marginTop: 10,
             marginBottom: 30,
-            alignItems: "center",
-            justifyContent: "center",
           }}
         >
-          <Text size="description">{t("didntReceive")}</Text>
           <TouchableOpacity
             onPress={() => resendOTP()}
+            style={{ alignItems: "center", justifyContent: "center" }}
             disabled={Timer === 0 ? false : true}
           >
+            <Text size="description">{t("didntReceive")}</Text>
             <Text size="description" type="black" style={{ color: "#209FAE" }}>
               {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
             </Text>
@@ -508,20 +488,3 @@ export default function SettingEmailVerify(props) {
     </SafeAreaView>
   );
 }
-
-// const styles = StyleSheet.create({
-//   centeredView: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   modalView: {
-//     margin: 20,
-//     backgroundColor: "white",
-//     borderRadius: 5,
-//     width: Dimensions.get("screen").width * 0.7,
-//     height: Dimensions.get("screen").width * 0.4,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });

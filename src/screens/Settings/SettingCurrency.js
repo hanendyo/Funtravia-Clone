@@ -104,7 +104,7 @@ export default function SettingCurrency({
             }
             setdataCurrency(tempData);
             masukan(selected);
-            setModelSetCurrency(false);
+            // setModelSetCurrency(false);
           } else {
             throw new Error(response.data.update_currency_settings.message);
           }
@@ -181,14 +181,7 @@ export default function SettingCurrency({
                 <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
               )}
             </Button>
-            <Text
-              size="label"
-              style={{
-                color: "white",
-                fontFamily: "Lato-Bold",
-                fontSize: 18,
-              }}
-            >
+            <Text size="header" type="bold" style={{ color: "#fff" }}>
               {t("currency")}
             </Text>
           </View>
