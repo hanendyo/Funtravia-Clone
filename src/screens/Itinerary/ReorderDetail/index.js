@@ -7,6 +7,7 @@ import {
   Alert,
   SafeAreaView,
   Platform,
+  Dimensions,
 } from "react-native";
 import {
   Button,
@@ -24,6 +25,9 @@ import {
   Arrowbackwhite,
   DisketWhite,
   Arrowbackios,
+  Complete,
+  Stay,
+  Flights,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import DraggableFlatList from "react-native-draggable-flatlist";
@@ -32,15 +36,19 @@ import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 import _ from "lodash";
+import Modal from "react-native-modal";
+import { RNToasty } from "react-native-toasty";
 
 export default function ReoderDetail({ navigation, route }) {
   const { t } = useTranslation();
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
+  console.log(`LISTDATACUI: `, listData);
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
     route.params.child[0] ? route.params.child[0].time : "00:00"
   );
+  let [modalSave, setModalSave] = useState(false);
 
   const [timeLine, { loading, data, error }] = useMutation(UpdateTimeline, {
     context: {
@@ -51,6 +59,105 @@ export default function ReoderDetail({ navigation, route }) {
     },
   });
 
+  const saveModal = () => {
+    return (
+      <Modal
+        useNativeDriver={true}
+        visible={modalSave}
+        onRequestClose={() => setModalSave(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalSave(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            // width: "100%",
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 140,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: "10%",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 140,
+              justifyContent: "center",
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("areyousure")}
+              </Text>
+            </View>
+            {/* <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 20,
+                marginHorizontal: 10,
+              }}
+              size="label"
+              type="regular"
+            >
+              {t("alertHapusPost")}
+            </Text> */}
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <Button
+                onPress={() => {
+                  saveTimeLine();
+                }}
+                color="secondary"
+                text={t("saved")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalSave(false);
+                  // navigation.goBack();
+                }}
+                style={{ marginTop: 5, marginBottom: 8 }}
+                variant="transparent"
+                text={t("discard")}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  // console.log(`DAY--DATA: `, dayData.id);
+  // console.log(`LIST--DATA: `, listData);
+  // console.log(`CHILD: `, route.params.child);
+  // console.log(`ACTIVE: `, route.params.active);
+
   const saveTimeLine = async () => {
     try {
       let response = await timeLine({
@@ -59,26 +166,43 @@ export default function ReoderDetail({ navigation, route }) {
           value: JSON.stringify(listData),
         },
       });
+      // if (error) {
+      //   throw new Error("Error Input");
+      // }
+      console.log(`RESPONSE CUI: `, response);
       if (response.data) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
         }
+        timeLine();
       }
       navigation.dispatch(
         StackActions.replace("ItineraryStack", {
           screen: "itindetail",
           params: {
-            itintitle: headData.name,
-            country: headData.id,
-            dateitin: headData.start_date + "  -  " + headData.end_date,
+            itintitle: headData?.name,
+            country: headData?.id,
+            dateitin: headData?.start_date + "  -  " + headData?.end_date,
             token: token,
             datadayaktif: dayData,
             status: "edit",
           },
         })
       );
+      setModalSave(false);
+      RNToasty.Show({
+        title: t("changeSaved"),
+        position: "bottom",
+      });
     } catch (error) {
-      Alert.alert("Oops, Problem Save Detail Itinerary !");
+      console.log(`ERROR CUI: `, error);
+
+      // Alert.alert("Oops, Problem Save Detail Itinerary !");
+      setModalSave(false);
+      RNToasty.Show({
+        title: t("somethingWrong"),
+        position: "bottom",
+      });
     }
   };
 
@@ -189,7 +313,7 @@ export default function ReoderDetail({ navigation, route }) {
             >
               <View
                 style={{
-                  width: "80%",
+                  width: "81%",
                   paddingVertical: 5,
                   paddingHorizontal: 10,
                   backgroundColor: "#daf0f2",
@@ -351,7 +475,25 @@ export default function ReoderDetail({ navigation, route }) {
                       borderRadius: 15,
                     }}
                   />
-                ) : item.icon ? (
+                ) : item.detail_flight ? (
+                  <View
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  >
+                    <Flights height={25} width={25} />
+                  </View>
+                ) : item.detail_accomodation ? (
+                  <View
+                    style={{
+                      height: 30,
+                      width: 30,
+                    }}
+                  >
+                    <Stay height={25} width={25} />
+                  </View>
+                ) : item?.icon ? (
                   <View
                     style={{
                       height: 30,
@@ -425,6 +567,7 @@ export default function ReoderDetail({ navigation, route }) {
                     paddingVertical: 5,
                     paddingHorizontal: 15,
                     borderRadius: 5,
+                    marginLeft: "15%",
                   }}
                 >
                   <Text type="bold">
@@ -538,6 +681,35 @@ export default function ReoderDetail({ navigation, route }) {
     );
   };
 
+  const handleDrag = async (data) => {
+    console.log(`DRAG DATA: `, data);
+    let tmpData = [...data];
+    tmpData[0].time = startTime;
+    let x = 0;
+    let order = 1;
+    for (let i in tmpData) {
+      tmpData[i].order = order;
+
+      if (tmpData[i - 1]) {
+        tmpData[i].time = hitungDuration({
+          start: tmpData[i - 1].time,
+          duration: tmpData[i - 1].duration,
+        });
+        // tmpData.push(order);
+        console.log(`TMPD: `, tmpData[i]);
+      }
+      x++;
+      order++;
+    }
+    isEdited = true;
+    if (x == tmpData.length) {
+      setListData(tmpData);
+    }
+    // saveTimeLine();
+  };
+  console.log(`SATU: `, listData);
+  console.log(`DUA: `, listData[1]);
+
   const hitungDuration = ({ start, duration }) => {
     duration = duration ? duration.split(":") : "00:00:00";
     let starttime = start ? start.split(":") : "00:00:00";
@@ -553,26 +725,6 @@ export default function ReoderDetail({ navigation, route }) {
       (menit < 10 ? "0" + menit : menit) +
       ":00"
     );
-  };
-
-  const handleDrag = (data) => {
-    let tmpData = [...data];
-    tmpData[0].time = startTime;
-    let x = 0;
-    let order = 1;
-    for (let i in tmpData) {
-      tmpData[i].order = order;
-      if (tmpData[i - 1]) {
-        tmpData[i].time = hitungDuration({
-          start: tmpData[i - 1].time,
-          duration: tmpData[i - 1].duration,
-        });
-      }
-      x++;
-      order++;
-    }
-    isEdited = true;
-    setListData(tmpData);
   };
 
   let isEdited = false;
@@ -597,15 +749,17 @@ export default function ReoderDetail({ navigation, route }) {
     headerTintColor: "white",
     headerTitle: () => {
       return (
-        <View style={{ alignItems: "center" }}>
-          <Text type="bold" size="title" style={{ color: "#FFF" }}>
-            {headData.name}
-          </Text>
-          <Text
-            type="regular"
-            size="label"
-            style={{ color: "#FFF" }}
-          >{`Day ${dayData.day}`}</Text>
+        <View style={{ marginBottom: 5 }}>
+          <View style={{ alignItems: "center" }}>
+            <Text type="bold" size="title" style={{ color: "#FFF" }}>
+              {headData.name}
+            </Text>
+            <Text
+              type="regular"
+              size="label"
+              style={{ color: "#FFF" }}
+            >{`Day ${dayData.day}`}</Text>
+          </View>
         </View>
       );
     },
@@ -631,7 +785,7 @@ export default function ReoderDetail({ navigation, route }) {
         }}
       >
         {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
+          <Arrowbackios height={20} width={20}></Arrowbackios>
         ) : (
           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
         )}
@@ -639,15 +793,16 @@ export default function ReoderDetail({ navigation, route }) {
     ),
     headerRight: () => (
       <Button
-        onPress={() => saveTimeLine()}
+        onPress={() => setModalSave(true)}
         size="medium"
         type="circle"
         variant="transparent"
         style={{
           height: 55,
+          marginRight: 10,
         }}
       >
-        <DisketWhite width={20} height={20} />
+        <Complete width={25} height={25} />
       </Button>
     ),
   };
@@ -667,6 +822,7 @@ export default function ReoderDetail({ navigation, route }) {
           padding: 15,
         }}
       />
+      {saveModal()}
     </SafeAreaView>
   );
 }
