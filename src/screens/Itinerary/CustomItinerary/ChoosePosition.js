@@ -6,6 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { Textarea } from "native-base";
 import { default_image } from "../../../assets/png";
@@ -15,7 +16,7 @@ import {
   Arrowbackwhite,
   Delete,
   Pencilgreen,
-  Xhitam,
+  Xgray,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustomNew";
 import SaveCustom2 from "../../../graphQL/Mutation/Itinerary/AddCustom";
@@ -305,7 +306,7 @@ export default function ChoosePosition(props) {
                           color: "#209fae",
                         }}
                       >
-                        Edit notes
+                        {t("editNotes")}
                       </Text>
                     </TouchableOpacity>
                   ) : (
@@ -324,7 +325,7 @@ export default function ChoosePosition(props) {
                           color: "#209fae",
                         }}
                       >
-                        Add notes
+                        {t("addNotes")}
                       </Text>
                     </TouchableOpacity>
                   )}
@@ -461,7 +462,7 @@ export default function ChoosePosition(props) {
                         color: "#209fae",
                       }}
                     >
-                      Edit notes
+                      {t("EditNotes")}
                     </Text>
                   </TouchableOpacity>
                 ) : (
@@ -480,7 +481,7 @@ export default function ChoosePosition(props) {
                         color: "#209fae",
                       }}
                     >
-                      Add notes
+                      {t("addNotes")}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1422,66 +1423,91 @@ export default function ChoosePosition(props) {
       >
         <View
           style={{
-            width: Dimensions.get("screen").width - 20,
-            backgroundColor: "white",
-            marginBottom: 70,
-            paddingTop: 60,
-            paddingHorizontal: 20,
-            paddingBottom: 30,
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 10,
           }}
         >
-          <TouchableOpacity
+          <View
             style={{
-              position: "absolute",
-              top: 20,
-              left: 20,
-            }}
-            onPress={() => setModal(false)}
-          >
-            <Xhitam width={15} height={15} />
-          </TouchableOpacity>
-          <Text size="label" type="bold" style={{}}>
-            {t("EditNotes")}
-          </Text>
-          <Textarea
-            style={{
-              width: "100%",
-              borderRadius: 5,
-              fontFamily: "Lato-Regular",
-            }}
-            rowSpan={5}
-            placeholder="Input Notes"
-            value={textinput}
-            bordered
-            maxLength={160}
-            onChangeText={(text) => setInput(text)}
-          />
-          <TouchableOpacity
-            onPress={() => saveNotes()}
-            style={{
-              marginTop: 15,
               flexDirection: "row",
-              alignItems: "center",
-              alignSelf: "center",
-              backgroundColor: "#209fae",
-              paddingHorizontal: 40,
-              paddingVertical: 5,
-              borderRadius: 5,
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              justifyContent: "center",
             }}
           >
             <Text
-              size="label"
-              type="regular"
+              size="title"
+              type="bold"
+              style={{ marginTop: 13, marginBottom: 15 }}
+            >
+              {t("EditNotes")}
+            </Text>
+            <Pressable
+              onPress={() => setModal(false)}
               style={{
-                // marginLeft: 5,
-                // marginVertical: 5,
-
-                color: "white",
+                height: 50,
+                width: 55,
+                position: "absolute",
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {t("save")}
-            </Text>
-          </TouchableOpacity>
+              <Xgray width={15} height={15} />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              marginVertical: 20,
+            }}
+          >
+            <Textarea
+              style={{
+                width: Dimensions.get("screen").width - 140,
+                marginVertical: 20,
+                borderRadius: 5,
+                fontFamily: "Lato-Regular",
+                backgroundColor: "#f6f6f6",
+                alignSelf: "center",
+              }}
+              rowSpan={5}
+              placeholder={t("inputNotes")}
+              value={textinput}
+              bordered
+              maxLength={160}
+              onChangeText={(text) => setInput(text)}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              paddingHorizontal: 15,
+              marginBottom: 20,
+            }}
+          >
+            <Button
+              onPress={() => setModal(false)}
+              size="medium"
+              color="transparant"
+              text={t("cancel")}
+            ></Button>
+            <Button
+              onPress={() => saveNotes()}
+              style={{
+                marginLeft: 10,
+              }}
+              color="primary"
+              text={t("submit")}
+            ></Button>
+          </View>
         </View>
       </Modal>
     </View>

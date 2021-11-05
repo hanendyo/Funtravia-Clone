@@ -343,12 +343,12 @@ export default function ItinGoogle(props) {
               flexDirection: "row",
               alignSelf: "flex-start",
               alignItems: "center",
-              alignContent: "center",
+              // alignContent: "center",
               backgroundColor: "#209fae",
               height: 50,
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
+              marginTop: Platform.OS === "ios" ? 20 : -21,
             }}
           >
             <TouchableOpacity
@@ -382,7 +382,7 @@ export default function ItinGoogle(props) {
                 // paddingTop: 15,
               }}
             >
-              Find Destination
+              {t("findDestination")}
             </Text>
           </View>
           <View
