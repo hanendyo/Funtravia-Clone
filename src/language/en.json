@@ -785,7 +785,7 @@
   "failedCopyLink": "Failed To Copy Link To Clipboard",
   "destinationFromGoogle": "Destination From Google",
   "bookingRef": "Booking Ref",
-  "addActivityToItinerary": "Add Activity to Itinerary",
+  "addActivityToItinerary": "Add Activity to Other Itinerary",
   "sampleEmail": "ex: *****@email.com",
   "emailRequired": "*Email required",
   "passwordRequired": "*Password required",
@@ -815,5 +815,13 @@
   "showResult": "Show Result",
   "failedAddPassword": "Failed Add Password",
   "failedChangeEmail": "Failed to Change email",
-  "failedResendCode": "Failed to Resend OTP CodeP"
+  "failedResendCode": "Failed to Resend OTP CodeP",
+  "deleteActivity": "Delete Activity",
+  "deleteDay": "Delete day",
+  "fromItinerary": "from itinerary",
+  "inputNotes": "Input Notes",
+  "findDestination": "Find Destination",
+  "yourTripIsNotComplete": "Your Trip is not complete",
+  "activateThisTrip": "To activate this trip you must complete the activity on an empty day or you can delete the empty day.",
+  "dayEmptyTrip": "There are still days that haven't been filled with your holiday activities."
 }

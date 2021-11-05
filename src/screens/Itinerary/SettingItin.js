@@ -7,12 +7,17 @@ import {
   ScrollView,
   Alert,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import EditPrivate from "../../graphQL/Mutation/Itinerary/EditPrivate";
 import { useMutation } from "@apollo/react-hooks";
 import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
+import SettingCurrency from "../Settings/SettingCurrency";
+import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLazyQuery } from "@apollo/react-hooks";
 
 export default function SettingItin(props) {
   const { t, i18n } = useTranslation();
@@ -57,13 +62,35 @@ export default function SettingItin(props) {
     ),
   };
 
+  const loadAsync = async () => {
+    GetCurrencyList();
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
+
   let [token, setToken] = useState(props.route.params.token);
   let [iditin, setId] = useState(props.route.params.iditin);
   let [isPrivate, setPrivate] = useState(props.route.params.isPrivate);
+  const [modalSetCurrency, setModalSetCurrency] = useState(false);
+  const [setting, setSetting] = useState("");
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
   }, [props.navigation]);
+
+  const [
+    GetCurrencyList,
+    { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
+  ] = useLazyQuery(CurrencyList);
+  const languageToggle = async (value) => {
+    setLanguage(value);
+    i18n.changeLanguage(value);
+    await AsyncStorage.setItem("setting_language", value);
+  };
 
   const [
     mutationEditPrivate,
@@ -194,12 +221,31 @@ export default function SettingItin(props) {
 							</CustomText> */}
           </View>
           <View>
-            <Text size={"description"} type={"regular"}>
-              Rupiah Indonesia
-            </Text>
+            <TouchableOpacity onPress={() => setModalSetCurrency(true)}>
+              <Text
+                size="description"
+                type="reguler"
+                style={{
+                  marginRight: 15,
+                }}
+              >
+                {setting?.currency?.name}
+              </Text>
+            </TouchableOpacity>
           </View>
         </ListItem>
       </List>
+
+      {datacurrency && datacurrency.currency_list.length ? (
+        <SettingCurrency
+          modals={modalSetCurrency}
+          setModelSetCurrency={(e) => setModalSetCurrency(e)}
+          masukan={(e) => setSetting(e)}
+          data={datacurrency.currency_list}
+          selected={setting}
+          token={token}
+        />
+      ) : null}
     </ScrollView>
   );
 }

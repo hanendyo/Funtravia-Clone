@@ -345,7 +345,7 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-
+      console.log("res", res);
       let files = new ReactNativeFile({
         uri: res.uri,
         type: res.type,
@@ -568,7 +568,7 @@ export default function detailCustomItinerary(props) {
             {t("Notes")}
           </Text>
           <TextInput
-            placeholder={t("Notes")}
+            placeholder={t("optional")}
             value={note}
             autoCorrect={false}
             onChangeText={setNote}

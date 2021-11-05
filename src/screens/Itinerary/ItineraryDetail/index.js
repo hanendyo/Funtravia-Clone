@@ -22,17 +22,15 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { TabView, TabBar } from "react-native-tab-view";
-import { default_image } from "../../../assets/png";
+import { default_image, Bg_soon } from "../../../assets/png";
 import {
   Settings,
   Arrowbackwhite,
   Bottom,
-  Chat,
   Create,
   Delete,
   Disketpink,
   Google,
-  Jalan,
   Love,
   Mobil,
   More,
@@ -46,10 +44,7 @@ import {
   Xhitam,
   LikeEmptynew,
   Reorder,
-  CameraBlue,
   CameraIcon,
-  Hotel,
-  Plane,
   Stay,
   Flights,
   Chatnew,
@@ -60,19 +55,20 @@ import {
   Errors,
   Errorr,
   Errorx,
-  Calendargrey,
   CalendarIcon,
   Arrowbackios,
-  Padlock,
-  Newglobe,
-  Newpadlock,
   ItineraryIcon,
   ItineraryIconGray,
   TravelAlbum,
   AlbumIconGray,
+  TravelStories,
   TravelStoriesdis,
   TravelAlbumdis,
-  BackHandler,
+  Xgray,
+  World,
+  Lock,
+  Complete,
+  ChatItinerary,
 } from "../../../assets/svg";
 import {
   Button,
@@ -122,12 +118,14 @@ import { StackActions } from "@react-navigation/routers";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ReactNativeFile } from "apollo-upload-client";
 import DocumentPicker from "react-native-document-picker";
+import DeviceInfo from "react-native-device-info";
 
+const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
 const SafeStatusBar = Platform.select({
-  ios: 44,
+  ios: Notch ? 44 : 24,
   android: StatusBar.currentHeight,
 });
 const tab1ItemSize = (width - 30) / 2;
@@ -141,12 +139,13 @@ const childrenHeight = 60;
 export default function ItineraryDetail(props) {
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
-    Dimensions.get("screen").height * 0.3
+    Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
   );
 
   /**
    * stats
    */
+
   const { t, i18n } = useTranslation();
   let [Cover, setCover] = useState(null);
 
@@ -183,7 +182,7 @@ export default function ItineraryDetail(props) {
     "04d": "w-fog",
     "09d": "w-fog_rain",
     "10d": "w-sunny_rainy",
-    "11d": "w-thunderstorm",
+    "11d": "w-thunderstrom",
     "13d": "w-snowflakes",
     "50d": "w-windy",
     "01n": "w-sunny",
@@ -192,7 +191,7 @@ export default function ItineraryDetail(props) {
     "04n": "w-fog",
     "09n": "w-fog_rain",
     "10n": "w-sunny_rainy",
-    "11n": "w-thunderstorm",
+    "11n": "w-thunderstrom",
     "13n": "w-snowflakes",
     "50n": "w-windy",
   });
@@ -252,6 +251,11 @@ export default function ItineraryDetail(props) {
   let [modalcover, setmodalcover] = useState(false);
   let [modalAlbum, setmodalAlbum] = useState(false);
   let [modalTrip, setmodalTrip] = useState(false);
+  let [modalDelete, setModalDelete] = useState(false);
+  let [modalLeaveTrip, setModalLeaveTrip] = useState(false);
+  let [modalDeleteTrip, setModalDeleteTrip] = useState(false);
+  let [soon, setSoon] = useState(false);
+
   let [users, setuser] = useState(null);
   const loadasync = async () => {
     let user = await AsyncStorage.getItem("setting");
@@ -295,9 +299,6 @@ export default function ItineraryDetail(props) {
     },
     variables: { itinerary_id: itineraryId },
   });
-
-  // console.log("album", dataAlbum);
-  // console.log("detail", datadetail);
 
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
@@ -381,6 +382,10 @@ export default function ItineraryDetail(props) {
           })
         );
 
+        props.navigation.navigate("BottomStack", {
+          screen: "TripBottomPlaning",
+          params: { screen: "TripPlaning" },
+        });
         // props.navigation.push("TripPlaning", {
         // 	index: status === "saved" ? 1 : 0,
         // });
@@ -797,12 +802,16 @@ export default function ItineraryDetail(props) {
           }
           await setdatadayaktif(datadetail.itinerary_detail.day[indexnya - 1]);
           await setidDay(datadetail.itinerary_detail.day[indexnya - 1].id);
-          await setIndexnya(indexnya - 1);
+          if (indexnya !== 0) {
+            await setIndexnya(indexnya - 1);
+          }
           await setModalmenuday(false);
           await _Refresh();
         }
       } catch (error) {
-        Alert.alert("" + error);
+        await setModalmenuday(false);
+
+        Alert.alert("error disini " + error);
       }
     } else {
       await setModalmenuday(false);
@@ -815,8 +824,6 @@ export default function ItineraryDetail(props) {
     let x = { ...tempData[indexinput] };
     x.note = textinput;
     tempData.splice(indexinput, 1, x);
-
-    // console.log(tempData);
     await setDataListItem(tempData);
     await setModal(false);
     await setidDay(idDay);
@@ -940,15 +947,12 @@ export default function ItineraryDetail(props) {
     for (var y in datax) {
       if (datax[y - 1]) {
         let datareplace = { ...datax[y] };
-        // await console.log("awal", datax[y]);
-
         datareplace.order = order;
         datareplace.time = await hitungDuration({
           startt: datax[y - 1].time,
           dur: datax[y - 1].duration,
         });
         await datax.splice(y, 1, datareplace);
-        // await console.log("akhir", datax[y]);
       }
       x++;
       order++;
@@ -984,8 +988,6 @@ export default function ItineraryDetail(props) {
     } else {
       Alert.alert("Waktu sudah melewati batas maksimal");
     }
-
-    // await console.log("hasilnya", hasiljam, hasilmenit);
   };
 
   const hitungDuration = ({ startt, dur }) => {
@@ -1049,17 +1051,19 @@ export default function ItineraryDetail(props) {
 
   let [idTarget, setIdtarget] = useState(null);
 
-  const bukamodalmenu = async (id, type, item) => {
-    await setidactivity(id);
-    await settypes(type);
+  const bukamodalmenu = (id, type, item) => {
+    setidactivity(id);
+    settypes(type);
+
     if (item.destination_id) {
-      await setIdtarget(item.destination_id);
+      setIdtarget(item.destination_id);
     } else if (item.event_id) {
-      await setIdtarget(item.event_id);
+      setIdtarget(item.event_id);
     } else {
-      await setIdtarget(null);
+      setIdtarget(null);
     }
-    await setModalmenu(true);
+    // setModalDelete(true);
+    setModalmenu(true);
   };
 
   const [
@@ -1141,11 +1145,11 @@ export default function ItineraryDetail(props) {
           await GetTimelin();
         }
 
-        setModalmenu(false);
+        setModalDelete(false);
       }
     } catch (error) {
       Alert.alert("" + error);
-      setModalmenu(false);
+      setModalDelete(false);
     }
   };
 
@@ -1712,8 +1716,6 @@ export default function ItineraryDetail(props) {
     // var date2 = new Date(end[0]);
     var Difference_In_Time = date2.getTime() - date1.getTime();
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-
-    // console.log(Difference_In_Time, "masuk time");
     return Difference_In_Days;
   };
 
@@ -1822,6 +1824,16 @@ export default function ItineraryDetail(props) {
               /> */}
               <View
                 style={{
+                  width: 5,
+                  height: 5,
+                  alignSelf: "center",
+                  backgroundColor: "#000",
+                  borderRadius: 10,
+                  marginLeft: 10,
+                }}
+              />
+              <View
+                style={{
                   alignSelf: "center",
                   marginLeft: 10,
                 }}
@@ -1842,19 +1854,19 @@ export default function ItineraryDetail(props) {
                   }
                 >
                   {datadetail.itinerary_detail.isprivate == false ? (
-                    <Newglobe width={25} height={25} />
+                    <World width={15} height={15} />
                   ) : (
                     <View
                       style={{
-                        height: 30,
-                        width: 30,
+                        height: 25,
+                        width: 25,
                         borderRadius: 30,
                         backgroundColor: "#daf0f2",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
                     >
-                      <Newpadlock width={15} height={15} />
+                      <Lock width={15} height={15} />
                     </View>
                   )}
                 </Ripple>
@@ -2077,8 +2089,6 @@ export default function ItineraryDetail(props) {
   const Formattime = (berangkat, tiba) => {
     let awal = berangkat.split(" ");
     let akhir = tiba.split(" ");
-    // console.log(awal[1].substring(0, 5));
-    // console.log(akhir[1]);
     return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
   };
 
@@ -2086,8 +2096,6 @@ export default function ItineraryDetail(props) {
 
   const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
-    // console.log(item?.detail_flight);
-    // console.log(item?.detail_accomodation);
     return (
       <View
         style={{
@@ -2147,7 +2155,7 @@ export default function ItineraryDetail(props) {
                 style={{
                   width: "80%",
                   paddingVertical: 5,
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 5,
                   backgroundColor: "#daf0f2",
                   borderRadius: 5,
                   alignContent: "center",
@@ -2410,8 +2418,6 @@ export default function ItineraryDetail(props) {
                             datadayaktif: datadayaktif,
                           })
                         : null;
-
-                      // console.log(dataSpreadtimeline, "masuk paji");
                     }}
                   >
                     <Text size="label" type="bold" style={{}}>
@@ -2424,8 +2430,8 @@ export default function ItineraryDetail(props) {
                             item.type !== "custom"
                               ? item.type !== "google"
                                 ? item.type
-                                : "Destination from Google"
-                              : "Custom Activity",
+                                : t("destinationFromGoogle")
+                              : t("customActivity"),
                         })}
                       </Text>
                     ) : null}
@@ -2530,7 +2536,9 @@ export default function ItineraryDetail(props) {
                           flexDirection: "row",
                         }}
                       >
-                        <Text style={{ marginBottom: 5 }}>Booking Ref : </Text>
+                        <Text style={{ marginBottom: 5 }}>
+                          {t("bookingRef")} :{" "}
+                        </Text>
                         <Text type="bold">
                           {item?.detail_flight?.booking_ref}
                         </Text>
@@ -2546,7 +2554,9 @@ export default function ItineraryDetail(props) {
                           flexDirection: "row",
                         }}
                       >
-                        <Text style={{ marginBottom: 5 }}>Guest Name : </Text>
+                        <Text style={{ marginBottom: 5 }}>
+                          {t("Guest Name")} :{" "}
+                        </Text>
                         <Text type="bold">
                           {item?.detail_accomodation?.guest_name}
                         </Text>
@@ -2561,7 +2571,9 @@ export default function ItineraryDetail(props) {
                           flexDirection: "row",
                         }}
                       >
-                        <Text style={{ marginBottom: 5 }}>Booking Ref : </Text>
+                        <Text style={{ marginBottom: 5 }}>
+                          {t("bookingRef")} :{" "}
+                        </Text>
                         <Text type="bold">
                           {item?.detail_accomodation?.booking_ref}
                         </Text>
@@ -2613,8 +2625,6 @@ export default function ItineraryDetail(props) {
                         nameitin: datadetail.itinerary_detail.name,
                         datadayaktif: datadayaktif,
                       });
-
-                      // console.log(dataSpreadtimeline, "masuk paji");
                     }}
                   >
                     <Next width={15} height={15} />
@@ -3112,8 +3122,8 @@ export default function ItineraryDetail(props) {
             height={20}
             width={20}
           />
-        ) : route.key == "tab3" ? (
-          <TravelStoriesdis
+        ) : route.key == "tab3" && focused ? (
+          <TravelStories
             style={{
               marginRight: 5,
             }}
@@ -3141,6 +3151,16 @@ export default function ItineraryDetail(props) {
 
         {route.key == "tab2" && !focused && status == "edit" ? (
           <TravelAlbumdis
+            style={{
+              marginRight: 5,
+            }}
+            height={20}
+            width={20}
+          />
+        ) : null}
+
+        {route.key == "tab3" && !focused ? (
+          <TravelStoriesdis
             style={{
               marginRight: 5,
             }}
@@ -3687,7 +3707,13 @@ export default function ItineraryDetail(props) {
                           }}
                         >
                           <FunIcon
-                            icon={icons[dataweather.weather[0].icon]}
+                            icon={
+                              icons[
+                                dataweather.weather[0].icon
+                                  ? dataweather.weather[0].icon
+                                  : "01d"
+                              ]
+                            }
                             height={35}
                             width={35}
                             style={{
@@ -3855,7 +3881,7 @@ export default function ItineraryDetail(props) {
                           setModalmenuday(true);
                         }}
                       >
-                        <More width={15} height={15} />
+                        <Delete width={15} height={15} />
                       </Button>
                     ) : null}
                   </View>
@@ -3928,7 +3954,7 @@ export default function ItineraryDetail(props) {
             status === "edit"
               ? setmodalTrip(true)
               : route.active === false
-              ? Alert.alert(t("comingsoon"))
+              ? setSoon(true)
               : null;
             if (isListGliding.current) {
               preventDefault();
@@ -4162,7 +4188,10 @@ export default function ItineraryDetail(props) {
                   });
                 }}
               >
-                <Chatnew width={25} height={25} />
+                <ChatItinerary width={20} height={20} />
+                <Text size="small" style={{ color: "#209FAE" }}>
+                  {t("Chat")}
+                </Text>
               </Button>
               <Button
                 disabled
@@ -4278,7 +4307,10 @@ export default function ItineraryDetail(props) {
                   });
                 }}
               >
-                <Chatnew width={25} height={25} />
+                <ChatItinerary width={20} height={20} />
+                <Text size="small" style={{ color: "#209FAE" }}>
+                  {t("Chat")}
+                </Text>
               </Button>
               <Button
                 onPress={() => {
@@ -4337,7 +4369,7 @@ export default function ItineraryDetail(props) {
                   height: 56,
                   fontSize: 18,
                 }}
-              ></Button>
+              />
 
               <View
                 style={{
@@ -4354,7 +4386,7 @@ export default function ItineraryDetail(props) {
                   }}
                   text=""
                   size="large"
-                  color="tertiary"
+                  color="#FFF"
                   type="circle"
                   style={{
                     borderRadius: 0,
@@ -4383,7 +4415,7 @@ export default function ItineraryDetail(props) {
                     fontSize: 18,
                   }}
                 >
-                  <Disketpink width={20} height={20} />
+                  <Complete width={20} height={20} />
                   <Text size="small" style={{ color: "#d75995" }}>
                     {t("completePlan")}
                   </Text>
@@ -4677,6 +4709,12 @@ export default function ItineraryDetail(props) {
 
   if (datadetail) {
     let rData = datadetail.itinerary_detail;
+    const yHeader = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [HeaderHeight, 60],
+      // extrapolate: 'clamp',
+      extrapolateRight: "clamp",
+    });
 
     return (
       <View
@@ -4693,6 +4731,7 @@ export default function ItineraryDetail(props) {
             opacity: textOpacity,
             flexDirection: "row",
             justifyContent: "space-between",
+
             // borderWidth: 1,
             alignContent: "center",
             alignItems: "center",
@@ -4767,8 +4806,8 @@ export default function ItineraryDetail(props) {
             flexDirection: "row",
             justifyContent: "space-between",
             // borderWidth: 1,
-            alignContent: "center",
-            alignItems: "center",
+            // alignContent: "center",
+            // alignItems: "center",
             marginHorizontal: 20,
             height: 55,
             width: Dimensions.get("screen").width - 40,
@@ -4777,6 +4816,7 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               flexDirection: "row",
+              // backgroundColor: "red",
             }}
           >
             <Button
@@ -4898,7 +4938,7 @@ export default function ItineraryDetail(props) {
           setClose={() => setModalsss(!modalsss)}
         />
 
-        <Modal
+        {/* <Modal
           onBackdropPress={() => {
             setModalmenuday(false);
           }}
@@ -4970,7 +5010,7 @@ export default function ItineraryDetail(props) {
               </Text>
             </TouchableOpacity>
           </View>
-        </Modal>
+        </Modal> */}
 
         <Modal
           onRequestClose={() => {
@@ -5365,7 +5405,10 @@ export default function ItineraryDetail(props) {
                 });
               }}
             >
-              <Chatnew width={25} height={25} />
+              <Chatnew width={20} height={20} />
+              <Text size="small" style={{ color: "black" }}>
+                {t("Chat")}
+              </Text>
             </Button>
             <Button
               onPress={() => {
@@ -5497,6 +5540,100 @@ export default function ItineraryDetail(props) {
         >
           <View
             style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                paddingHorizontal: 20,
+                backgroundColor: "#f6f6f6",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginTop: 13, marginBottom: 15 }}
+              >
+                {t("EditNotes")}
+              </Text>
+              <Pressable
+                onPress={() => setModal(false)}
+                style={{
+                  height: 50,
+                  width: 55,
+                  position: "absolute",
+                  right: 0,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+            </View>
+            <View
+              style={{
+                // borderColor: "#D1D1D1",
+                // width: width - 140,
+                marginVertical: 20,
+                // alignSelf: "center",
+                // // borderRadius: 5,
+                // backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Textarea
+                style={{
+                  width: width - 140,
+                  marginVertical: 20,
+                  borderRadius: 5,
+                  fontFamily: "Lato-Regular",
+                  backgroundColor: "#f6f6f6",
+                  alignSelf: "center",
+                }}
+                rowSpan={5}
+                placeholder={t("inputNotes")}
+                value={textinput}
+                bordered
+                maxLength={160}
+                onChangeText={(text) => setInput(text)}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                paddingHorizontal: 15,
+                marginBottom: 20,
+              }}
+            >
+              <Button
+                onPress={() => setModal(false)}
+                size="medium"
+                color="transparant"
+                text={t("cancel")}
+              ></Button>
+              <Button
+                onPress={() => saveNotes()}
+                style={{
+                  marginLeft: 10,
+                }}
+                color="primary"
+                text={t("submit")}
+              ></Button>
+            </View>
+          </View>
+
+          {/* <View
+            style={{
               width: Dimensions.get("screen").width - 20,
               backgroundColor: "white",
               marginBottom: 70,
@@ -5554,7 +5691,7 @@ export default function ItineraryDetail(props) {
                 {t("save")}
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </Modal>
 
         {/* modaldates */}
@@ -5848,15 +5985,326 @@ export default function ItineraryDetail(props) {
           </View>
         </Modal>
 
-        <Modal
+        {/* Modal Hapus Day */}
+        <Modalss
+          useNativeDriver={true}
+          visible={modalDelete}
+          onRequestClose={() => false}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalDelete(false)}
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              left: -21,
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 140,
+              // marginHorizontal: 70,
+              alignSelf: "center",
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 2.5,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 140,
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                  {t("deleteActivity")}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlign: "center",
+                  marginTop: 20,
+                  marginHorizontal: 10,
+                }}
+                size="label"
+                type="regular"
+              >
+                {t("DeleteActivityfromItinerary")}
+              </Text>
+              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Button
+                  onPress={() => {
+                    deleteactivity(itineraryId, idactivity, types),
+                      setModalDelete(false);
+                  }}
+                  color="secondary"
+                  text={t("delete")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalDelete(false);
+                  }}
+                  style={{ marginVertical: 5 }}
+                  variant="transparent"
+                  text={t("discard")}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modalss>
+        {/* End of Modal Hapus */}
+
+        {/* Modal Hapus Aktifitas */}
+        <Modalss
+          useNativeDriver={true}
+          visible={modalmenuday}
+          onRequestClose={() => setModalmenuday(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalmenuday(false)}
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              left: -21,
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 140,
+              // marginHorizontal: 70,
+              alignSelf: "center",
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 2.5,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 140,
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                  {t("deleteDay")}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlign: "center",
+                  marginTop: 20,
+                  marginHorizontal: 10,
+                }}
+                size="label"
+                type="regular"
+              >
+                {`${t("deleteDay")} ${datadayaktif?.day} ${t("fromItinerary")}`}
+              </Text>
+              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Button
+                  onPress={() => {
+                    _handledeleteDay(
+                      datadayaktif?.itinerary_id,
+                      datadayaktif?.id
+                    );
+                  }}
+                  color="secondary"
+                  text={t("delete")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalmenuday(false);
+                  }}
+                  style={{ marginVertical: 5 }}
+                  variant="transparent"
+                  text={t("discard")}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modalss>
+        {/* End of Modal Hapus */}
+
+        {/* Modal Delete Option Aktifitas */}
+
+        <Modalss
           onBackdropPress={() => {
             setModalmenu(false);
           }}
           onRequestClose={() => setModalmenu(false)}
           onDismiss={() => setModalmenu(false)}
+          // animationIn="fadeIn"
+          // animationOut="fadeOut"
+          visible={modalmenu}
+          transparent={true}
+        >
+          <Pressable
+            onPress={() => setModalmenu(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              alignSelf: "center",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              // backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignSelf: "center",
+              marginTop: Dimensions.get("screen").height / 2.5,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 60,
+                // paddingHorizontal: 20,
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  alignItems: "center",
+                  backgroundColor: "#f6f6f6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                  {t("option")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setModalmenu(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              {types !== "custom" && types !== "google" ? (
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 15,
+                    alignItems: "center",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                  }}
+                  onPress={() => {
+                    // add to itin
+                    setModalmenu(false);
+                    props.navigation.push("ItineraryStack", {
+                      screen: "ItineraryPlaning",
+                      params: {
+                        idkiriman: idTarget,
+                        Position: types,
+                      },
+                    });
+                  }}
+                >
+                  <Text size="label" type="regular">
+                    {t("addActivityToItinerary")}
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  setModalmenu(false);
+                  setModalDelete(true);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    color: "#d75995",
+                    marginVertical: 15,
+                  }}
+                >
+                  {t("delete")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modalss>
+        {/* End of Modal Delete Option  */}
+
+        {/* Modal Gallery/photo */}
+        <Modal
+          onBackdropPress={() => {
+            setmodalcover(false);
+          }}
+          onRequestClose={() => setmodalcover(false)}
+          onDismiss={() => setmodalcover(false)}
           animationIn="fadeIn"
           animationOut="fadeOut"
-          isVisible={modalmenu}
+          isVisible={modalcover}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -5864,137 +6312,111 @@ export default function ItineraryDetail(props) {
             alignContent: "center",
           }}
         >
+          <Pressable
+            onPress={() => setmodalcover(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              alignSelf: "center",
+            }}
+          ></Pressable>
           <View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                setModalmenu(false);
-
-                Alert.alert("", t("DeleteActivityfromItinerary") + "?", [
-                  {
-                    text: t("cancel"),
-                    onPress: () => {
-                      setModalmenu(false);
-                    },
-                    style: "cancel",
-                  },
-                  {
-                    text: t("delete"),
-                    onPress: () => {
-                      deleteactivity(itineraryId, idactivity, types);
-                    },
-                  },
-                ]);
-                return true;
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{ color: "#d75995" }}
-              >
-                {t("DeleteActivityfromItinerary")}
-              </Text>
-            </TouchableOpacity>
-            {types !== "custom" && types !== "google" ? (
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 10,
-                }}
-                onPress={() => {
-                  // add to itin
-                  setModalmenu(false);
-
-                  props.navigation.push("ItineraryStack", {
-                    screen: "ItineraryPlaning",
-                    params: {
-                      idkiriman: idTarget,
-                      Position: types,
-                    },
-                  });
-                }}
-              >
-                <Text size="description" type="regular" style={{}}>
-                  Add Activity to Itinerary
-                </Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </Modal>
-
-        <Modalss
-          onBackdropPress={() => {
-            setmodalcover(false);
-          }}
-          onRequestClose={() => setmodalcover(false)}
-          onDismiss={() => setmodalcover(false)}
-          // animationIn="fadeIn"
-          // animationOut="fadeOut"
-          visible={modalcover}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => {
-              setmodalcover(false);
-            }}
-            style={{
-              height: Dimensions.get("screen").height,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
-              // opacity: 0.7,
-              justifyContent: "center",
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              // backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
               alignItems: "center",
               alignSelf: "center",
-              alignContent: "center",
+              marginTop: Dimensions.get("screen").height / 10,
+              borderRadius: 5,
             }}
           >
             <View
               style={{
                 backgroundColor: "white",
-                height: 100,
-                width: Dimensions.get("screen").width - 60,
-                padding: 20,
+                borderRadius: 5,
               }}
             >
-              <TouchableOpacity
+              <View
                 style={{
-                  paddingVertical: 10,
-                }}
-                onPress={() => {
-                  pickcamera();
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  alignItems: "center",
+                  backgroundColor: "#f6f6f6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
                 }}
               >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ color: "#d75995" }}
+                <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                  {t("option")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setmodalcover(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 55,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 100,
+                  borderBottomRightRadius: 5,
+                  borderBottomLeftRadius: 5,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                  }}
+                  onPress={() => {
+                    pickcamera();
+                  }}
                 >
-                  {t("OpenCamera")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 10,
-                }}
-                onPress={() => {
-                  pickGallery();
-                }}
-              >
-                <Text size="description" type="regular" style={{}}>
-                  {t("OpenGallery")}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{ color: "#d75995" }}
+                  >
+                    {t("OpenCamera")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 20,
+                    alignSelf: "center",
+                  }}
+                  onPress={() => {
+                    pickGallery();
+                  }}
+                >
+                  <Text size="description" type="regular" style={{}}>
+                    {t("OpenGallery")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </Pressable>
-        </Modalss>
+          </View>
+        </Modal>
 
         <Modal
           onBackdropPress={() => {
@@ -6117,7 +6539,7 @@ export default function ItineraryDetail(props) {
                   marginTop: 20,
                 }}
               >
-                Trip kamu belum lengkap
+                {t("yourTripIsNotComplete")}
               </Text>
               <Text
                 // textAlign={"center"}
@@ -6127,7 +6549,7 @@ export default function ItineraryDetail(props) {
                   width: "60%",
                 }}
               >
-                Masih ada hari yang belum terisi aktivitas liburanmu.
+                {t("dayEmptyTrip")}
               </Text>
               <View
                 style={{
@@ -6136,11 +6558,7 @@ export default function ItineraryDetail(props) {
                   padding: 20,
                 }}
               >
-                <Text size="label">
-                  Untuk mengaktifkan trip ini kamu harus melengkapi aktivitas di
-                  hari yang masih kosong atau kamu bisa hapus hari yang kosong
-                  tersebut.
-                </Text>
+                <Text size="label">{t("dayEmptyTrip")}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
@@ -6157,7 +6575,7 @@ export default function ItineraryDetail(props) {
                     color: "#209fae",
                   }}
                 >
-                  Ok, Saya Mengerti
+                  {t("understand")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -6283,6 +6701,232 @@ export default function ItineraryDetail(props) {
           </Pressable>
         </Modalss>
 
+        <Modalss
+          onBackdropPress={() => {
+            setSoon(false);
+          }}
+          onRequestClose={() => setSoon(false)}
+          onDismiss={() => setSoon(false)}
+          visible={soon}
+          transparent={true}
+        >
+          <Pressable
+            onPress={() => setSoon(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              borderRadius: 5,
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 2.5,
+            }}
+          >
+            <View
+              style={{
+                // backgroundColor: "white",
+                // width: Dimensions.get("screen").width - 100,
+                padding: 20,
+                paddingHorizontal: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Image
+                source={Bg_soon}
+                style={{
+                  height: Dimensions.get("screen").width - 180,
+                  width: Dimensions.get("screen").width - 110,
+                  position: "absolute",
+                  borderRadius: 5,
+                }}
+              />
+              <Text type="bold" size="h5">
+                {t("comingSoon")}!
+              </Text>
+              <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                {t("soonUpdate")}.
+              </Text>
+              <Button
+                text={"OK"}
+                style={{
+                  marginTop: 20,
+                  width: Dimensions.get("screen").width - 300,
+                }}
+                type="box"
+                onPress={() => setSoon(false)}
+              ></Button>
+            </View>
+          </View>
+        </Modalss>
+
+        {/* Modal Leave Trip */}
+        <Modal
+          useNativeDriver={true}
+          visible={modalLeaveTrip}
+          onRequestClose={() => setModalLeaveTrip(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalLeaveTrip(false)}
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              left: -21,
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 140,
+              alignSelf: "center",
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 10,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 140,
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                  {t("leave")} {t("trip")}
+                </Text>
+              </View>
+              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Button
+                  onPress={() => {
+                    _handleLeave(itineraryId), setModalLeaveTrip(false);
+                  }}
+                  color="secondary"
+                  text={t("leave")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalLeaveTrip(false);
+                  }}
+                  style={{ marginVertical: 5 }}
+                  variant="transparent"
+                  text={t("discard")}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal Delete Trip */}
+        <Modal
+          useNativeDriver={true}
+          visible={modalDeleteTrip}
+          onRequestClose={() => setModalDeleteTrip(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalDeleteTrip(false)}
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+              left: -21,
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 140,
+              alignSelf: "center",
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 10,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 140,
+                justifyContent: "center",
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                  {t("delete")} {t("trip")}
+                </Text>
+              </View>
+              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Button
+                  onPress={() => {
+                    _handlehapus(itineraryId), setModalDeleteTrip(false);
+                  }}
+                  color="secondary"
+                  text={t("delete")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalDeleteTrip(false);
+                  }}
+                  style={{ marginVertical: 5 }}
+                  variant="transparent"
+                  text={t("discard")}
+                ></Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <Sidebar
           props={props}
           show={showside}
@@ -6394,22 +7038,7 @@ export default function ItineraryDetail(props) {
                       alignItems: "center",
                     }}
                     onPress={() => {
-                      Alert.alert("", t("leave") + " " + t("trip") + "?", [
-                        {
-                          text: t("cancel"),
-                          onPress: () => {
-                            null;
-                          },
-                          style: "cancel",
-                        },
-                        {
-                          text: t("leave"),
-                          onPress: () => {
-                            _handleLeave(itineraryId), setshowside(false);
-                          },
-                        },
-                      ]);
-                      return true;
+                      setModalLeaveTrip(true), setshowside(false);
                     }}
                   >
                     <LeaveTrips height={15} width={15} />
@@ -6436,22 +7065,7 @@ export default function ItineraryDetail(props) {
                       alignItems: "center",
                     }}
                     onPress={() => {
-                      Alert.alert("", t("delete") + " itinerary?", [
-                        {
-                          text: t("cancel"),
-                          onPress: () => {
-                            null;
-                          },
-                          style: "cancel",
-                        },
-                        {
-                          text: t("delete"),
-                          onPress: () => {
-                            _handlehapus(itineraryId), setshowside(false);
-                          },
-                        },
-                      ]);
-                      return true;
+                      setModalDeleteTrip(true), setshowside(false);
                     }}
                   >
                     <Delete height={15} width={15} />

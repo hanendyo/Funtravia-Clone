@@ -47,6 +47,7 @@ export default function FloatingInput({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         blurOnSubmit
+        selection={{ start: 0, end: 0 }}
       />
     </View>
   );
