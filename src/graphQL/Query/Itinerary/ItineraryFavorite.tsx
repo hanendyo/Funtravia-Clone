@@ -26,6 +26,13 @@ const ItineraryFavorite = gql`
         date
       }
       liked
+      user_created {
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
     }
   }
 `;
