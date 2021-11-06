@@ -67,7 +67,6 @@ export const FormatYMD = (date) => {
       ? "0" + (format.getMonth() + 1)
       : format.getMonth() + 1;
   let newDate = format.getFullYear() + "-" + month + "-" + format.getDate();
-  // console.log(newDate);
   return newDate;
 };
 

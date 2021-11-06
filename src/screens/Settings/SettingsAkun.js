@@ -66,7 +66,6 @@ export default function SettingsAkun(props) {
   let [modalGender, setModalGender] = useState(false);
   let [modalDisconnect, setModalDisconnect] = useState(false);
   let [token, setToken] = useState(props.route.params.token);
-
   let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user.gender);
   let [dates, setDate] = useState();
@@ -74,7 +73,6 @@ export default function SettingsAkun(props) {
   let [soon, setSoon] = useState(false);
   let [index, setIndex] = useState(0);
   let [dataCitySetting, setDataCitySetting] = useState();
-
   const closeBirth = () => {
     setModalBirth(false);
     setModalBirth1(true);
@@ -483,21 +481,27 @@ export default function SettingsAkun(props) {
       }
       if (response.data) {
         if (response.data.update_gender_settings.code !== 200) {
-          throw new Error(response.data.update_gender_settings.message);
-        }
-        setModalGender(false);
-        if (Platform.OS === "android") {
-          ToastAndroid.show(t("SuccessfullySetGender"), ToastAndroid.LONG);
+          RNToasty.Show({
+            title: t("FailedSetGender"),
+            position: "bottom",
+          });
         } else {
-          Alert.alert(t("SuccessfullySetGender"));
+          setModalGender(false);
+          RNToasty.Show({
+            title: t("SuccessfullySetGender"),
+            position: "bottom",
+          });
+          let tmp_data = { ...setting };
+          tmp_data.user.gender = x;
+          await setSetting(tmp_data);
+          await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
         }
-        let tmp_data = { ...setting };
-        tmp_data.user.gender = x;
-        await setSetting(tmp_data);
-        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
       }
     } catch (error) {
-      Alert.alert("" + error);
+      RNToasty.Show({
+        title: t("FailedSetGender"),
+        position: "bottom",
+      });
     }
   };
 
@@ -509,26 +513,29 @@ export default function SettingsAkun(props) {
           date: format,
         },
       });
-      if (errorDate) {
-        throw new Error("Error Input");
-      }
       if (response.data) {
         if (response.data.update_birth_settings.code !== 200) {
-          throw new Error(response.data.update_birth_settings.message);
-        }
-        setModalBirth(false);
-        if (Platform.OS === "android") {
-          ToastAndroid.show(t("SuccessfullySetDateofBirth"), ToastAndroid.LONG);
+          RNToasty.Show({
+            title: t("FailedSetDateofBirth"),
+            position: "bottom",
+          });
         } else {
-          Alert.alert(t("SuccessfullySetDateofBirth"));
+          setModalBirth(false);
+          RNToasty.Show({
+            title: t("SuccessfullySetDateofBirth"),
+            position: "bottom",
+          });
+          let tmp_data = { ...setting };
+          tmp_data.user.birth_date = format;
+          await setSetting(tmp_data);
+          await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
         }
-        let tmp_data = { ...setting };
-        tmp_data.user.birth_date = format;
-        await setSetting(tmp_data);
-        await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
       }
     } catch (error) {
-      Alert.alert("" + error);
+      RNToasty.Show({
+        title: t("FailedSetDateofBirth"),
+        position: "bottom",
+      });
     }
   };
 
@@ -918,6 +925,7 @@ export default function SettingsAkun(props) {
                 selectedValue={genders}
                 onValueChange={(x) => setGender(x)}
               >
+                <Picker.Item label={t("gender")} />
                 <Picker.Item label={t("Male")} value="M" />
                 <Picker.Item label={t("Female")} value="F" />
               </Picker>
@@ -1119,9 +1127,7 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting.user.birth_date
-                  ? dateFormat(setting.user.birth_date)
-                  : t("notSet")}
+                {dates ? dateFormat(dates) : t("notSet")}
               </Text>
             </View>
           </View>

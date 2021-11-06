@@ -824,5 +824,8 @@
   "findDestination": "Cari Destinasi",
   "yourTripIsNotComplete": "Perjalanan Anda belum selesai",
   "activateThisTrip": "Untuk mengaktifkan trip ini kamu harus melengkapi aktivitas di hari yang masih kosong atau kamu bisa hapus hari yang kosong tersebut.",
-  "dayEmptyTrip": "Masih ada hari yang belum terisi aktivitas liburanmu."
+  "dayEmptyTrip": "Masih ada hari yang belum terisi aktivitas liburanmu.",
+  "FailedSetGender": "Gagal mengatur jenis kelamin",
+  "FailedSetDateofBirth": "Gagal mengatur tanggal lahir",
+  "FailedLikeItinerary": "Gagal menyukai itinerary"
 }

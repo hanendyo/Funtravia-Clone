@@ -161,7 +161,7 @@ export default function OtpPassword(props) {
   let [Timer, setTimer] = useState(0);
   const hitungMundur = () => {
     var timeleft = 30;
-    var downloadTimer = setInterval(function () {
+    var downloadTimer = setInterval(function() {
       timeleft -= 1;
       setTimer(timeleft);
       if (timeleft === 0) {
