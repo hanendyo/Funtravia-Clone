@@ -823,5 +823,8 @@
   "findDestination": "Find Destination",
   "yourTripIsNotComplete": "Your Trip is not complete",
   "activateThisTrip": "To activate this trip you must complete the activity on an empty day or you can delete the empty day.",
-  "dayEmptyTrip": "There are still days that haven't been filled with your holiday activities."
+  "dayEmptyTrip": "There are still days that haven't been filled with your holiday activities.",
+  "FailedSetGender": "Failed to set gender",
+  "FailedSetDateofBirth": "Failed to set date of birth",
+  "FailedLikeItinerary": "Failed to like itinerary"
 }

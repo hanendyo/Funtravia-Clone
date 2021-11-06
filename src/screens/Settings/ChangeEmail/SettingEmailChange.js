@@ -140,7 +140,6 @@ export default function SettingEmailChange(props) {
             newEmail: newEmail,
           },
         });
-        console.log("response", response);
 
         if (response.data) {
           if (response.data.changemail.code !== 200) {
@@ -156,7 +155,6 @@ export default function SettingEmailChange(props) {
           }
         }
       } catch (error) {
-        console.log("error", error);
         showAlert({
           ...aler,
           show: true,
@@ -174,8 +172,6 @@ export default function SettingEmailChange(props) {
     }
   };
 
-  console.log("disable1", disable1.length);
-  console.log("disable2", disable2.length);
   return (
     <KeyboardAvoidingView
       style={{

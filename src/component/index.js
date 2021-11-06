@@ -30,6 +30,8 @@ import StickerModal from "./src/Sticker/StickerModal";
 import FunMaps from "./src/FunMaps";
 import PagenotFound from "./src/PagenotFound";
 import Uuid from "./src/Uuid";
+import CardItinerary from "./src/CardItinerary";
+import ModalLogin from "./src/ModalLogin";
 
 export {
   Text,
@@ -64,4 +66,6 @@ export {
   FunMaps,
   PagenotFound,
   Uuid,
+  CardItinerary,
+  ModalLogin,
 };

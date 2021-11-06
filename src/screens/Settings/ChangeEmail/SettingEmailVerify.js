@@ -19,6 +19,7 @@ import verifyEmail from "../../../graphQL/Mutation/Setting/verifyEmail";
 import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
+import useTimer from "../../../component/src/CountDownTimer";
 
 export default function SettingEmailVerify(props) {
   const Notch = DeviceInfo.hasNotch();
@@ -34,7 +35,6 @@ export default function SettingEmailVerify(props) {
   let refBox4 = useRef(null);
   let refBox5 = useRef(null);
   let refBox6 = useRef(null);
-  let [modalSuccess, setModalSuccess] = useState(false);
 
   let [state, setState] = useState({
     onebox: null,
@@ -184,18 +184,8 @@ export default function SettingEmailVerify(props) {
           email: props.route.params.emailOld,
         },
       });
-      console.log("response verifi", response);
       if (response.data.resend_email_verification.code == 200) {
         hitungMundur();
-        // var timeleft = 30;
-        // var downloadTimer = setInterval(function() {
-        //   timeleft -= 1;
-        //   setTimer(timeleft);
-        //   if (timeleft === 0) {
-        //     clearInterval(downloadTimer);
-        //     return false;
-        //   }
-        // }, 1000);
       } else {
         RNToasty.Show({
           title: t("failedResendCode"),
@@ -475,13 +465,35 @@ export default function SettingEmailVerify(props) {
         >
           <TouchableOpacity
             onPress={() => resendOTP()}
-            style={{ alignItems: "center", justifyContent: "center" }}
             disabled={Timer === 0 ? false : true}
+            style={{
+              width: Dimensions.get("screen").width,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Text size="description">{t("didntReceive")}</Text>
-            <Text size="description" type="black" style={{ color: "#209FAE" }}>
-              {`${t("resend")} ${Timer > 0 ? Timer : ""}`}
+            <Text size="description" type="regular">
+              {t("didntReceive")}
             </Text>
+            {Timer ? (
+              <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ textAlign: "center", color: "#209FAE" }}
+                >
+                  {t("resend") + " " + "(" + Timer + ")"}
+                </Text>
+              </View>
+            ) : (
+              <Text
+                size="label"
+                type="bold"
+                style={{ textAlign: "center", color: "#209FAE" }}
+              >
+                {t("resend")}
+              </Text>
+            )}
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </ScrollView>

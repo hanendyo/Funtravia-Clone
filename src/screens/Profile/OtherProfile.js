@@ -59,6 +59,7 @@ export default function Render({ navigation, route }) {
   return <Hello route={route} />;
 }
 export function MyProfile({ navigation, route }) {
+  console.log("route profil", route);
   let [token, setToken] = useState(null);
   let [canScroll, setCanScroll] = useState(true);
   let [loadings, setLoading] = useState(false);
