@@ -30,7 +30,6 @@ import {
   NewItineraryImage,
   PopularItineraryImage,
 } from "../../../assets/svg";
-import { Truncate } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/client";
 import Populer_ from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
