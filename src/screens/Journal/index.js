@@ -8,14 +8,9 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
-  BackHandler,
 } from "react-native";
 import { Text, Button } from "../../component";
-import {
-  default_image,
-  logo_funtravia,
-  DefaultProfile,
-} from "../../assets/png";
+import { default_image, logo_funtravia } from "../../assets/png";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -25,7 +20,6 @@ import {
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
-import { Truncate } from "../../component";
 import {
   dateFormatMonthYears,
   dateFormatShortMonth,
@@ -33,7 +27,6 @@ import {
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import normalize from "react-native-normalize";
 
 export default function Journal(props) {
   const { t } = useTranslation();

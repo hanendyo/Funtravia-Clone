@@ -179,7 +179,8 @@ export default function ItineraryFavorite(props) {
               text={"OK"}
               style={{
                 marginTop: 20,
-                width: Dimensions.get("screen").width - 300,
+                width: Dimensions.get("screen").width / 5,
+                borderWidth: 1,
               }}
               type="box"
               onPress={() => setSoon(false)}

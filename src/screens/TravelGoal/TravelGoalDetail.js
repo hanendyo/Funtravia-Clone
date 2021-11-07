@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  StyleSheet,
   Dimensions,
-  TextInput,
-  SafeAreaView,
-  Alert,
   Modal,
   Pressable,
   Animated,
-  StatusBar,
   Platform,
   TouchableOpacity,
 } from "react-native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Button,
@@ -22,19 +16,15 @@ import {
   FunImage,
   shareAction,
   Text,
-  Truncate,
+  ModalLogin,
   StatusBar as Satbar,
 } from "../../component";
 import { default_image } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import {
-  Arrowbackblack,
   Arrowbackios,
-  Arrowbackiosblack,
   Arrowbackwhite,
-  SharePutih,
   ShareBlack,
   Xgray,
 } from "../../assets/svg";
@@ -61,6 +51,14 @@ export default function TravelGoalDetail(props) {
   let [datadetail, setdatadetail] = useState({});
   let [modalShare, setModalShare] = useState(false);
   let [datarelated, setdatarelated] = useState([]);
+  let [modalLogin, setModalLogin] = useState(false);
+  let [token, setToken] = useState("");
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    await setToken(tkn);
+  };
+
   // const HeaderComponent = {
   //   headerShown: true,
   //   headerTransparent: false,
@@ -147,6 +145,10 @@ export default function TravelGoalDetail(props) {
   useEffect(() => {
     Traveldetail();
     Travelrelated();
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      loadAsync();
+    });
+    return unsubscribe;
   }, []);
 
   const getdate = (date) => {
@@ -231,6 +233,11 @@ export default function TravelGoalDetail(props) {
   return (
     <View style={{ flex: 1, backgroundColor: "#FFF" }}>
       <Satbar backgroundColor="#14646E" />
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Modal
         useNativeDriver={true}
         visible={modalShare}
@@ -436,7 +443,7 @@ export default function TravelGoalDetail(props) {
                 alignItems: "center",
               }}
               onPress={() => {
-                setModalShare(true);
+                token ? setModalShare(true) : setModalLogin(true);
               }}
             >
               <ShareBlack height={20} width={20} />

@@ -36,7 +36,6 @@ export default function CardItinerary({
   token,
   setting,
 }) {
-  console.log("data", data);
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
@@ -239,19 +238,21 @@ export default function CardItinerary({
                   />
                   <Pressable
                     onPress={() => {
-                      item.user_created.id !== setting?.user?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: item.user_created.id,
-                            },
-                          })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                            params: {
-                              token: token,
-                            },
-                          });
+                      token
+                        ? item.user_created.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.user_created.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                              params: {
+                                token: token,
+                              },
+                            })
+                        : setModalLogin(true);
                     }}
                     style={{
                       position: "absolute",
@@ -491,16 +492,18 @@ export default function CardItinerary({
               >
                 <Pressable
                   onPress={() =>
-                    props.navigation.navigate("ItineraryStack", {
-                      screen: "itindetail",
-                      params: {
-                        itintitle: item.name,
-                        country: item.id,
-                        token: token,
-                        status: "favorite",
-                        index: 1,
-                      },
-                    })
+                    token
+                      ? props.navigation.navigate("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: item.name,
+                            country: item.id,
+                            token: token,
+                            status: "favorite",
+                            index: 1,
+                          },
+                        })
+                      : setModalLogin(true)
                   }
                   style={{
                     width: "50%",
@@ -617,7 +620,7 @@ export default function CardItinerary({
               text={"OK"}
               style={{
                 marginTop: 20,
-                width: Dimensions.get("screen").width - 300,
+                width: Dimensions.get("screen").width / 5,
               }}
               type="box"
               onPress={() => setSoon(false)}

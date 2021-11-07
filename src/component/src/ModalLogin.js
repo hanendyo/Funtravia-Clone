@@ -5,7 +5,7 @@ import { Text, Button } from "../../component";
 import { Xgray } from "../../assets/svg";
 
 export default function ModalLogin({ props, modalLogin, setModalLogin }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <Modal
       useNativeDriver={true}
@@ -60,7 +60,8 @@ export default function ModalLogin({ props, modalLogin, setModalLogin }) {
               size="title"
               type="bold"
             >
-              {t("LoginFirst")}
+              {`${t("LoginFirst")}`}
+              {/* {t("login dulu")} */}
             </Text>
             <Pressable
               onPress={() => {

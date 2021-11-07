@@ -53,7 +53,7 @@ export default function SearchFeed({ props }) {
     setToken(tkn);
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
-    setuser(user.user);
+    setuser(user?.user);
   };
   useEffect(() => {
     const feedasync = props.navigation.addListener("focus", () => {
@@ -64,27 +64,19 @@ export default function SearchFeed({ props }) {
   }, [props.navigation]);
 
   const Ceklogin = (id, item, index) => {
-    if (token && token !== null && token !== "") {
-      props.navigation.push("FeedStack", {
-        screen: "CommentPost",
-        params: {
-          post_id: id,
-          data: item,
-          token: token,
-          // ref: ref,
-          _liked: (e) => _like(e),
-          _unliked: (e) => _unlike(e),
-          indeks: index,
-          countKoment: (e) => countKoment(e),
-          // time: time,
-          _deletepost: (e) => _deletepost(e),
-
-          //   comment_id: data.comment_feed.id,
-        },
-      });
-    } else {
-      setModalLogin(true);
-    }
+    props.navigation.push("FeedStack", {
+      screen: "CommentPost",
+      params: {
+        post_id: id,
+        data: item,
+        token: token,
+        _liked: (e) => _like(e),
+        _unliked: (e) => _unlike(e),
+        indeks: index,
+        countKoment: (e) => countKoment(e),
+        _deletepost: (e) => _deletepost(e),
+      },
+    });
   };
   const [
     MutationLike,

@@ -51,6 +51,7 @@ import {
   FunIcon,
   CopyLink,
   Truncate,
+  ModalLogin,
 } from "../../../component";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
 import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
@@ -78,6 +79,7 @@ let PullToRefreshDist = 150;
 
 const Index = (props) => {
   const { t, i18n } = useTranslation();
+  const [modalLogin, setModalLogin] = useState(false);
 
   /**
    * stats
@@ -562,18 +564,12 @@ const Index = (props) => {
         alert("" + error);
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
   const _unliked = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (token) {
       var tempData = { ...dataDestination };
       tempData.liked = false;
       setDataDestination(tempData);
@@ -608,13 +604,7 @@ const Index = (props) => {
         alert("" + error);
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -719,11 +709,13 @@ const Index = (props) => {
         )}
         <TouchableOpacity
           onPress={() =>
-            // shareAction({
-            //   from: "destination",
-            //   target: dataDestination.id,
-            // })
-            SetShareModal(true)
+            token
+              ? // shareAction({
+                //   from: "destination",
+                //   target: dataDestination.id,
+                // })
+                SetShareModal(true)
+              : setModalLogin(true)
           }
           style={{
             backgroundColor: "#F6F6F6",
@@ -1284,7 +1276,7 @@ const Index = (props) => {
   };
 
   const addToPlan = (kiriman) => {
-    if (token && token !== null && token !== "") {
+    if (token) {
       if (kiriman) {
         props?.route?.params && props?.route?.params?.iditinerary
           ? props.navigation.dispatch(
@@ -1329,13 +1321,7 @@ const Index = (props) => {
             });
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -2735,6 +2721,11 @@ const Index = (props) => {
   return (
     <View style={styles.container}>
       <Satbar backgroundColor="#14646E" />
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Animated.View
         style={{
           position: "absolute",
@@ -2916,7 +2907,7 @@ const Index = (props) => {
               //   from: "destination",
               //   target: dataDestination.id,
               // })
-              SetShareModal(true)
+              token ? SetShareModal(true) : setModalLogin(true)
             }
             style={{
               backgroundColor: "#F6F6F6",

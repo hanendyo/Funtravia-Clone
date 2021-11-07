@@ -970,229 +970,231 @@ export default function SearchPg(props, { navigation, route }) {
           ) : null}
         </View>
         {aktifsearch == true ? (
-          <>
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#fff",
-                borderBottomWidth: 1,
-                borderBottomColor: "#EEEEEE",
-                paddingHorizontal: 15,
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveSrc("location");
-                }}
+          token ? (
+            <>
+              <View
                 style={{
-                  // width: width / 2,
-                  alignContent: "center",
-                  alignItems: "center",
-                  borderBottomWidth: active_src == "location" ? 2 : 0,
-                  borderBottomColor:
-                    active_src == "location" ? "#209FAE" : "#EEEEEE",
-                  paddingVertical: 15,
-                  backgroundColor: "#FFFFFF",
-                  // paddingHorizontal: 10,
-                  marginRight: 15,
+                  flexDirection: "row",
+                  backgroundColor: "#fff",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#EEEEEE",
+                  paddingHorizontal: 15,
                 }}
               >
-                <Text
-                  size="label"
-                  type={active_src == "location" ? "bold" : "bold"}
-                  style={{
-                    color: active_src == "location" ? "#209FAE" : "#464646",
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("location");
                   }}
-                >
-                  {t("location")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveSrc("destination");
-                }}
-                style={{
-                  // width: width / 2,
-                  alignContent: "center",
-                  alignItems: "center",
-                  borderBottomWidth: active_src == "destination" ? 2 : 0,
-                  borderBottomColor:
-                    active_src == "destination" ? "#209FAE" : "#EEEEEE",
-                  paddingVertical: 15,
-                  backgroundColor: "#FFFFFF",
-                  // paddingHorizontal: 10,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  size="label"
-                  type={active_src == "destination" ? "bold" : "bold"}
                   style={{
-                    color: active_src == "destination" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  {t("destination")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveSrc("people");
-                }}
-                style={{
-                  // width: width / 2,
-                  alignContent: "center",
-                  alignItems: "center",
-                  borderBottomWidth: active_src == "people" ? 2 : 0,
-                  borderBottomColor:
-                    active_src == "people" ? "#209FAE" : "#EEEEEE",
-                  paddingVertical: 15,
-                  backgroundColor: "#FFFFFF",
-                  // paddingHorizontal: 10,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  size="label"
-                  type={active_src == "people" ? "bold" : "bold"}
-                  style={{
-                    color: active_src == "people" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  {t("people")}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setActiveSrc("event");
-                }}
-                style={{
-                  // width: width / 2,
-                  alignContent: "center",
-                  alignItems: "center",
-                  borderBottomWidth: active_src == "event" ? 2 : 0,
-                  borderBottomColor:
-                    active_src == "event" ? "#209FAE" : "#EEEEEE",
-                  paddingVertical: 15,
-                  backgroundColor: "#FFFFFF",
-                  // paddingHorizontal: 10,
-                  marginHorizontal: 10,
-                }}
-              >
-                <Text
-                  size="label"
-                  // type={
-                  //     active_src == "event" ? "bold" : "reg"
-                  // }
-                  type="bold"
-                  style={{
-                    color: active_src == "event" ? "#209FAE" : "#464646",
-                  }}
-                >
-                  {t("event")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {active_src === "people" ? (
-              loadingSrcuser ? (
-                <View
-                  style={{
-                    // position: 'absolute',
-                    // bottom:0,
-                    flex: 1,
-                    width: width,
-                    justifyContent: "center",
+                    // width: width / 2,
+                    alignContent: "center",
                     alignItems: "center",
+                    borderBottomWidth: active_src == "location" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "location" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
+                    marginRight: 15,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type={active_src == "location" ? "bold" : "bold"}
+                    style={{
+                      color: active_src == "location" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("location")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("destination");
+                  }}
+                  style={{
+                    // width: width / 2,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "destination" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
                     marginHorizontal: 15,
                   }}
                 >
-                  <ActivityIndicator
-                    animating={loadingSrcuser}
-                    size="large"
-                    color="#209fae"
-                  />
-                </View>
-              ) : (
-                // <FriendList
-                //   props={props}
-                //   datanya={user_search}
-                //   token={token}
-                //   onBackPress={() => onBackPress()}
-                //   recent_save={(searchtext) => recent_save(searchtext)}
-                // />
-
-                <FlatList
-                  key={"search"}
-                  contentContainerStyle={{
-                    marginTop: 5,
-                    justifyContent: "space-evenly",
+                  <Text
+                    size="label"
+                    type={active_src == "destination" ? "bold" : "bold"}
+                    style={{
+                      color:
+                        active_src == "destination" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("destination")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("people");
+                  }}
+                  style={{
+                    // width: width / 2,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "people" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "people" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
                     marginHorizontal: 15,
                   }}
-                  data={user_search}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        alignContent: "center",
-                        paddingVertical: 15,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={
-                          () => {
-                            BackHandler.removeEventListener(
-                              "hardwareBackPress",
-                              onBackPress
-                            );
-                            recent_save(searchtext);
-                            props.navigation.push("ProfileStack", {
-                              screen: "otherprofile",
-                              params: {
-                                idUser: item.id,
-                                token: token,
-                              },
-                            });
-                          }
-                          // props.navigation.push("otherprofile", { idUser: item.id })
-                        }
-                        style={{ flexDirection: "row" }}
+                >
+                  <Text
+                    size="label"
+                    type={active_src == "people" ? "bold" : "bold"}
+                    style={{
+                      color: active_src == "people" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("people")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("event");
+                  }}
+                  style={{
+                    // width: width / 2,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "event" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "event" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    // type={
+                    //     active_src == "event" ? "bold" : "reg"
+                    // }
+                    type="bold"
+                    style={{
+                      color: active_src == "event" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("event")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {active_src === "people" ? (
+                loadingSrcuser ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingSrcuser}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  // <FriendList
+                  //   props={props}
+                  //   datanya={user_search}
+                  //   token={token}
+                  //   onBackPress={() => onBackPress()}
+                  //   recent_save={(searchtext) => recent_save(searchtext)}
+                  // />
+
+                  <FlatList
+                    key={"search"}
+                    contentContainerStyle={{
+                      marginTop: 5,
+                      justifyContent: "space-evenly",
+                      marginHorizontal: 15,
+                    }}
+                    data={user_search}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          alignContent: "center",
+                          paddingVertical: 15,
+                        }}
                       >
-                        <Image
-                          source={
-                            item.picture
-                              ? {
-                                  uri: item.picture,
-                                }
-                              : DefaultProfile
+                        <TouchableOpacity
+                          onPress={
+                            () => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.id,
+                                  token: token,
+                                },
+                              });
+                            }
+                            // props.navigation.push("otherprofile", { idUser: item.id })
                           }
-                          style={{
-                            resizeMode: "cover",
-                            height: 50,
-                            width: 50,
-                            borderRadius: 25,
-                          }}
-                        />
-                        <View
-                          style={{
-                            marginLeft: 20,
-                            justifyContent: "center",
-                          }}
+                          style={{ flexDirection: "row" }}
                         >
-                          {item.last_name !== null ? (
-                            <Text size="label" type="bold">
-                              {item.first_name + "" + item.last_name}
+                          <Image
+                            source={
+                              item.picture
+                                ? {
+                                    uri: item.picture,
+                                  }
+                                : DefaultProfile
+                            }
+                            style={{
+                              resizeMode: "cover",
+                              height: 50,
+                              width: 50,
+                              borderRadius: 25,
+                            }}
+                          />
+                          <View
+                            style={{
+                              marginLeft: 20,
+                              justifyContent: "center",
+                            }}
+                          >
+                            {item.last_name !== null ? (
+                              <Text size="label" type="bold">
+                                {item.first_name + "" + item.last_name}
+                              </Text>
+                            ) : (
+                              <Text size="label" type="bold">
+                                {item.first_name}
+                              </Text>
+                            )}
+                            <Text size="label" type="regular">
+                              {`@${item.username}`}test
                             </Text>
-                          ) : (
-                            <Text size="label" type="bold">
-                              {item.first_name}
-                            </Text>
-                          )}
-                          <Text size="label" type="regular">
-                            {`@${item.username}`}test
-                          </Text>
-                          {/* <Text
+                            {/* <Text
                                                         style={{
                                                             fontSize: 10,
                                                             fontFamily:
@@ -1203,82 +1205,159 @@ export default function SearchPg(props, { navigation, route }) {
                                                             ? item.bio
                                                             : "Funtravia"}
                                                     </Text> */}
-                        </View>
-                      </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
 
-                      <View style={{}}>
-                        {item.status_following === false ? (
-                          <Button
-                            size="small"
-                            type="circle"
-                            variant="bordered"
-                            style={{ width: 100 }}
-                            text={t("follow")}
-                            onPress={() => {
-                              _follow(item.id, index);
-                            }}
-                          ></Button>
-                        ) : (
-                          <Button
-                            size="small"
-                            type="circle"
-                            style={{ width: 100 }}
-                            onPress={() => {
-                              _unfollow(item.id, index);
-                            }}
-                            text={t("following")}
-                          ></Button>
-                        )}
+                        <View style={{}}>
+                          {item.status_following === false ? (
+                            <Button
+                              size="small"
+                              type="circle"
+                              variant="bordered"
+                              style={{ width: 100 }}
+                              text={t("follow")}
+                              onPress={() => {
+                                _follow(item.id, index);
+                              }}
+                            ></Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              type="circle"
+                              style={{ width: 100 }}
+                              onPress={() => {
+                                _unfollow(item.id, index);
+                              }}
+                              text={t("following")}
+                            ></Button>
+                          )}
+                        </View>
                       </View>
-                    </View>
-                  )}
-                  keyExtractor={(item) => item.id}
-                  showsVerticalScrollIndicator={false}
-                  ListFooterComponent={
-                    searchtext !== "" && user_search.length <= 0 ? (
-                      <View
+                    )}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && user_search.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                  />
+                )
+              ) : null}
+              {active_src === "location" && searchtext ? (
+                loadingLocation ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingLocation}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    data={search_location}
+                    contentContainerStyle={{
+                      marginTop: 5,
+                      justifyContent: "space-evenly",
+                      paddingStart: 10,
+                      paddingEnd: 10,
+                      paddingBottom: 120,
+                    }}
+                    horizontal={false}
+                    renderItem={({ item, index }) => (
+                      <Pressable
+                        onPress={() => gotoLocation(item)}
                         style={{
-                          // position: 'absolute',
-                          // bottom:0,
-                          width: width,
-                          justifyContent: "center",
+                          flexDirection: "row",
                           alignItems: "center",
-                          marginTop: 30,
-                          marginLeft: -15,
-                          // borderWidth: 1,
+                          marginBottom: 15,
                         }}
                       >
-                        <Text size="label" type="regular">
-                          {t("noData")}
-                        </Text>
-                      </View>
-                    ) : null
-                  }
-                />
-              )
-            ) : null}
-            {active_src === "location" && searchtext ? (
-              loadingLocation ? (
-                <View
-                  style={{
-                    // position: 'absolute',
-                    // bottom:0,
-                    flex: 1,
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginHorizontal: 15,
-                  }}
-                >
-                  <ActivityIndicator
-                    animating={loadingLocation}
-                    size="large"
-                    color="#209fae"
+                        <FunImage
+                          source={
+                            item.cover ? { uri: item.cover } : default_image
+                          }
+                          style={{
+                            width: width / 3,
+                            height: 85,
+                            borderRadius: 7,
+                          }}
+                        />
+                        <View
+                          style={{
+                            width: width / 2,
+                            marginLeft: 20,
+                          }}
+                        >
+                          <Text
+                            size="bold"
+                            style={{
+                              marginBottom: 5,
+                            }}
+                          >
+                            {prepercase(item.name)}
+                          </Text>
+                          <Text>
+                            {item.type}{" "}
+                            {item.head1 ? "of " + prepercase(item.head1) : null}
+                            {item.head2 ? ", " + prepercase(item.head2) : null}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && search_location.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                    // extraData={selected}
                   />
-                </View>
-              ) : (
+                )
+              ) : null}
+              {active_src === "destination" && searchtext ? (
                 <FlatList
-                  data={search_location}
+                  data={destinationSearch}
                   contentContainerStyle={{
                     marginTop: 5,
                     justifyContent: "space-evenly",
@@ -1289,563 +1368,215 @@ export default function SearchPg(props, { navigation, route }) {
                   horizontal={false}
                   renderItem={({ item, index }) => (
                     <Pressable
-                      onPress={() => gotoLocation(item)}
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginBottom: 15,
+                      onPress={() => {
+                        gotodestinasi(item);
                       }}
-                    >
-                      <FunImage
-                        source={
-                          item.cover ? { uri: item.cover } : default_image
-                        }
-                        style={{
-                          width: width / 3,
-                          height: 85,
-                          borderRadius: 7,
-                        }}
-                      />
-                      <View
-                        style={{
-                          width: width / 2,
-                          marginLeft: 20,
-                        }}
-                      >
-                        <Text
-                          size="bold"
-                          style={{
-                            marginBottom: 5,
-                          }}
-                        >
-                          {prepercase(item.name)}
-                        </Text>
-                        <Text>
-                          {item.type}{" "}
-                          {item.head1 ? "of " + prepercase(item.head1) : null}
-                          {item.head2 ? ", " + prepercase(item.head2) : null}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                  ListFooterComponent={
-                    searchtext !== "" && search_location.length <= 0 ? (
-                      <View
-                        style={{
-                          // position: 'absolute',
-                          // bottom:0,
-                          width: width,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginTop: 30,
-                          marginLeft: -15,
-                          // borderWidth: 1,
-                        }}
-                      >
-                        <Text size="label" type="regular">
-                          {t("noData")}
-                        </Text>
-                      </View>
-                    ) : null
-                  }
-                  // extraData={selected}
-                />
-              )
-            ) : null}
-            {active_src === "destination" && searchtext ? (
-              // loadingDestination ? (
-              //   <View
-              //     style={{
-              //       // position: 'absolute',
-              //       // bottom:0,
-              //       flex: 1,
-              //       width: width,
-              //       justifyContent: "center",
-              //       alignItems: "center",
-              //       marginHorizontal: 15,
-              //     }}
-              //   >
-              //     <ActivityIndicator
-              //       animating={loadingDestination}
-              //       size="large"
-              //       color="#209fae"
-              //     />
-              //   </View>
-              // ) : (
-              <FlatList
-                data={destinationSearch}
-                contentContainerStyle={{
-                  marginTop: 5,
-                  justifyContent: "space-evenly",
-                  paddingStart: 10,
-                  paddingEnd: 10,
-                  paddingBottom: 120,
-                }}
-                horizontal={false}
-                renderItem={({ item, index }) => (
-                  <Pressable
-                    onPress={() => {
-                      gotodestinasi(item);
-                    }}
-                    key={index}
-                    style={{
-                      borderWidth: 1,
-                      borderColor: "#F3F3F3",
-                      borderRadius: 10,
-                      height: 170,
-                      // padding: 10,
-                      marginTop: 10,
-                      width: "100%",
-                      flexDirection: "row",
-                      backgroundColor: "#FFF",
-                      shadowColor: "#FFF",
-                      shadowOffset: {
-                        width: 0,
-                        height: 5,
-                      },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 6.27,
-
-                      elevation: 6,
-                    }}
-                  >
-                    <View
+                      key={index}
                       style={{
-                        justifyContent: "center",
-                      }}
-                    >
-                      {/* Image */}
-                      <FunImage
-                        source={{
-                          uri: item.images.image,
-                        }}
-                        style={{
-                          width: 150,
-                          height: "100%",
-                          borderBottomLeftRadius: 10,
-                          borderTopLeftRadius: 10,
-                        }}
-                      />
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          position: "absolute",
-                          top: 10,
-                          right: 10,
-                          left: 10,
-                          width: 130,
-                          zIndex: 2,
-                        }}
-                      >
-                        {item.liked === true ? (
-                          <Pressable
-                            onPress={() => _unliked(item.id, index)}
-                            style={{
-                              backgroundColor: "#F3F3F3",
-                              height: 30,
-                              width: 30,
-                              borderRadius: 17,
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Love height={15} width={15} />
-                          </Pressable>
-                        ) : (
-                          <Pressable
-                            onPress={() =>
-                              loadingLike ? null : _liked(item.id, index)
-                            }
-                            style={{
-                              backgroundColor: "#F3F3F3",
-                              height: 30,
-                              width: 30,
-                              borderRadius: 17,
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <LikeEmpty height={15} width={15} />
-                          </Pressable>
-                        )}
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            backgroundColor: "#F3F3F3",
-                            borderRadius: 3,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingHorizontal: 5,
-                            height: 25,
-                          }}
-                        >
-                          <Star height={15} width={15} />
-                          <Text size="label" type="bold">
-                            {item.rating.substr(0, 3)}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    {/* Keterangan */}
-                    {/* rating */}
-                    <View
-                      style={{
-                        flex: 1,
-                        padding: 10,
+                        borderWidth: 1,
+                        borderColor: "#F3F3F3",
+                        borderRadius: 10,
                         height: 170,
-                        justifyContent: "space-between",
+                        // padding: 10,
+                        marginTop: 10,
+                        width: "100%",
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        shadowColor: "#FFF",
+                        shadowOffset: {
+                          width: 0,
+                          height: 5,
+                        },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 6.27,
+
+                        elevation: 6,
                       }}
                     >
-                      <View>
-                        {/* Title */}
-                        <Text
-                          size="title"
-                          type="bold"
-                          style={{ marginTop: 2 }}
-                          numberOfLines={1}
-                        >
-                          {item.name}
-                        </Text>
-
-                        {/* Maps */}
+                      <View
+                        style={{
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Image */}
+                        <FunImage
+                          source={{
+                            uri: item.images.image,
+                          }}
+                          style={{
+                            width: 150,
+                            height: "100%",
+                            borderBottomLeftRadius: 10,
+                            borderTopLeftRadius: 10,
+                          }}
+                        />
                         <View
                           style={{
                             flexDirection: "row",
-                            marginTop: 5,
+                            justifyContent: "space-between",
                             alignItems: "center",
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            left: 10,
+                            width: 130,
+                            zIndex: 2,
                           }}
                         >
-                          <PinHijau height={15} width={15} />
-                          <Text
-                            size="label"
-                            type="regular"
-                            style={{
-                              marginLeft: 5,
-                            }}
-                            numberOfLines={1}
-                          >
-                            {item.cities.name}
-                          </Text>
-                        </View>
-                      </View>
-                      {/* Great for */}
-
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          height: 50,
-                          marginTop: 10,
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <View>
-                          <Text size="label" type="bold">
-                            {t("GreatFor")} :
-                          </Text>
+                          {item.liked === true ? (
+                            <Pressable
+                              onPress={() => _unliked(item.id, index)}
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Love height={15} width={15} />
+                            </Pressable>
+                          ) : (
+                            <Pressable
+                              onPress={() =>
+                                loadingLike ? null : _liked(item.id, index)
+                              }
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <LikeEmpty height={15} width={15} />
+                            </Pressable>
+                          )}
                           <View
                             style={{
                               flexDirection: "row",
+                              backgroundColor: "#F3F3F3",
+                              borderRadius: 3,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              paddingHorizontal: 5,
+                              height: 25,
                             }}
                           >
-                            {item.greatfor.length > 0 ? (
-                              item.greatfor.map((item, index) => {
-                                return index < 3 ? (
-                                  <FunIcon
-                                    key={index}
-                                    icon={item.icon}
-                                    fill="#464646"
-                                    height={35}
-                                    width={35}
-                                  />
-                                ) : null;
-                              })
-                            ) : (
-                              <Text>-</Text>
-                            )}
+                            <Star height={15} width={15} />
+                            <Text size="label" type="bold">
+                              {item.rating.substr(0, 3)}
+                            </Text>
                           </View>
                         </View>
-                        <Button
-                          onPress={() => {
-                            BackHandler.removeEventListener(
-                              "hardwareBackPress",
-                              onBackPress
-                            );
-                            recent_save(searchtext);
-                            props.navigation.push("ItineraryStack", {
-                              screen: "ItineraryPlaning",
-                              params: {
-                                idkiriman: item.id,
-                                Position: "destination",
-                              },
-                            });
-                          }}
-                          size="small"
-                          text={t("add")}
-                          // style={{ marginTop: 15 }}
-                        />
-                      </View>
-                    </View>
-                  </Pressable>
-                )}
-                ListFooterComponent={
-                  searchtext !== "" && destinationSearch.length <= 0 ? (
-                    <View
-                      style={{
-                        // position: 'absolute',
-                        // bottom:0,
-                        width: width,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 30,
-                        marginLeft: -15,
-                        // borderWidth: 1,
-                      }}
-                    >
-                      <Text size="label" type="regular">
-                        {t("noData")}
-                      </Text>
-                    </View>
-                  ) : null
-                }
-                showsHorizontalScrollIndicator={false}
-              />
-            ) : null}
-            {active_src === "event" ? (
-              loadingEvent == true ? (
-                <View
-                  style={{
-                    // position: 'absolute',
-                    // bottom:0,
-                    flex: 1,
-                    width: width,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginHorizontal: 15,
-                  }}
-                >
-                  <ActivityIndicator
-                    animating={loadingDestination}
-                    size="large"
-                    color="#209fae"
-                  />
-                </View>
-              ) : (
-                <FlatList
-                  contentContainerStyle={{
-                    marginBottom: 15,
-                    justifyContent: "space-evenly",
-                    paddingBottom: 5,
-                    marginHorizontal: 15,
-                  }}
-                  horizontal={false}
-                  data={event_search}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        justifyContent: "center",
-
-                        width: Dimensions.get("screen").width * 0.5 - 25,
-                        height: Dimensions.get("screen").width * 0.7,
-                        margin: 5,
-                        flexDirection: "column",
-                        backgroundColor: "white",
-                        borderRadius: 5,
-                        shadowColor: "gray",
-                        shadowOffset: {
-                          width: 2,
-                          height: 2,
-                        },
-                        shadowOpacity: 1,
-                        shadowRadius: 3,
-                        elevation: 3,
-                      }}
-                    >
-                      <View
-                        style={{
-                          position: "absolute",
-                          top: 15,
-                          left: 10,
-                          right: 10,
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignContent: "center",
-                          zIndex: 9999,
-                        }}
-                      >
-                        <View
-                          style={{
-                            // bottom: (9),
-                            height: 21,
-                            minWidth: 60,
-                            borderRadius: 11,
-                            alignSelf: "center",
-                            justifyContent: "center",
-                            backgroundColor: "rgba(226, 236, 248, 0.85)",
-                            paddingHorizontal: 10,
-                          }}
-                        >
-                          <Text
-                            size="readable"
-                            style={{
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.category.name}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            height: 26,
-                            width: 26,
-                            borderRadius: 50,
-                            alignSelf: "center",
-                            alignItems: "center",
-                            alignContent: "center",
-                            justifyContent: "center",
-                            backgroundColor: "rgba(226, 236, 248, 0.85)",
-                            // zIndex: 999,
-                          }}
-                        >
-                          {item.liked === false ? (
-                            <TouchableOpacity
-                              style={{
-                                height: 26,
-                                width: 26,
-                                borderRadius: 50,
-                                alignSelf: "center",
-                                alignItems: "center",
-                                alignContent: "center",
-                                justifyContent: "center",
-
-                                zIndex: 9999,
-                              }}
-                              onPress={() => _likedevent(item.id, index)}
-                            >
-                              <LikeEmpty height={13} width={13} />
-                            </TouchableOpacity>
-                          ) : (
-                            <TouchableOpacity
-                              style={{
-                                height: 26,
-                                width: 26,
-                                borderRadius: 50,
-                                alignSelf: "center",
-                                alignItems: "center",
-                                alignContent: "center",
-                                justifyContent: "center",
-
-                                zIndex: 9999,
-                              }}
-                              onPress={() => _unlikedevent(item.id, index)}
-                            >
-                              <LikeRed height={13} width={13} />
-                            </TouchableOpacity>
-                          )}
-                        </View>
                       </View>
 
-                      <TouchableOpacity
-                        onPress={() => eventdetail(item)}
-                        style={{
-                          height: Dimensions.get("window").width * 0.47 - 16,
-                        }}
-                      >
-                        <FunImageBackground
-                          key={item.id}
-                          source={
-                            item.images.length
-                              ? {
-                                  uri: item.images[0].image,
-                                }
-                              : default_image
-                          }
-                          style={[styles.ImageView]}
-                          imageStyle={[styles.Image]}
-                        ></FunImageBackground>
-                      </TouchableOpacity>
+                      {/* Keterangan */}
+                      {/* rating */}
                       <View
                         style={{
                           flex: 1,
-                          flexDirection: "column",
-                          justifyContent: "space-around",
-                          height: 230,
-                          marginVertical: 5,
-                          marginHorizontal: 10,
+                          padding: 10,
+                          height: 170,
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Text
-                          onPress={() => eventdetail(item)}
-                          size="title"
-                          type="bold"
-                          style={{}}
-                        >
-                          <Truncate text={item.name} length={27} />
-                        </Text>
-                        <View
-                          style={{
-                            height: "50%",
-                            flexDirection: "column",
-                            justifyContent: "space-around",
-                          }}
-                        >
+                        <View>
+                          {/* Title */}
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{ marginTop: 2 }}
+                            numberOfLines={1}
+                          >
+                            {item.name}
+                          </Text>
+
+                          {/* Maps */}
                           <View
                             style={{
-                              // flex: 1,
                               flexDirection: "row",
-                              width: "100%",
-                              borderColor: "grey",
+                              marginTop: 5,
+                              alignItems: "center",
                             }}
                           >
-                            <PinHijau width={15} height={15} />
-
+                            <PinHijau height={15} width={15} />
                             <Text
-                              size="readable"
+                              size="label"
+                              type="regular"
                               style={{
-                                width: "100%",
                                 marginLeft: 5,
                               }}
+                              numberOfLines={1}
                             >
-                              {item.city.name}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              // flex: 1,
-                              flexDirection: "row",
-                              width: "100%",
-                              marginBottom: 3,
-                            }}
-                          >
-                            <Calendargrey width={15} height={15} />
-
-                            <Text
-                              size="readable"
-                              style={{
-                                paddingRight: 20,
-                                width: "100%",
-                                marginLeft: 5,
-                              }}
-                            >
-                              {dateFormatBetween(
-                                item.start_date,
-                                item.end_date
-                              )}
+                              {item.cities.name}
                             </Text>
                           </View>
                         </View>
+                        {/* Great for */}
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            height: 50,
+                            marginTop: 10,
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <View>
+                            <Text size="label" type="bold">
+                              {t("GreatFor")} :
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                              }}
+                            >
+                              {item.greatfor.length > 0 ? (
+                                item.greatfor.map((item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={35}
+                                      width={35}
+                                    />
+                                  ) : null;
+                                })
+                              ) : (
+                                <Text>-</Text>
+                              )}
+                            </View>
+                          </View>
+                          <Button
+                            onPress={() => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ItineraryStack", {
+                                screen: "ItineraryPlaning",
+                                params: {
+                                  idkiriman: item.id,
+                                  Position: "destination",
+                                },
+                              });
+                            }}
+                            size="small"
+                            text={t("add")}
+                            // style={{ marginTop: 15 }}
+                          />
+                        </View>
                       </View>
-                    </View>
+                    </Pressable>
                   )}
-                  numColumns={2}
-                  keyExtractor={(item, index) => index.toString()}
-                  showsVerticalScrollIndicator={false}
                   ListFooterComponent={
-                    searchtext !== "" && event_search.length <= 0 ? (
+                    searchtext !== "" && destinationSearch.length <= 0 ? (
                       <View
                         style={{
                           // position: 'absolute',
@@ -1864,10 +1595,1136 @@ export default function SearchPg(props, { navigation, route }) {
                       </View>
                     ) : null
                   }
+                  showsHorizontalScrollIndicator={false}
                 />
-              )
-            ) : null}
-          </>
+              ) : null}
+              {active_src === "event" ? (
+                loadingEvent == true ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingDestination}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    contentContainerStyle={{
+                      marginBottom: 15,
+                      justifyContent: "space-evenly",
+                      paddingBottom: 5,
+                      marginHorizontal: 15,
+                    }}
+                    horizontal={false}
+                    data={event_search}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+
+                          width: Dimensions.get("screen").width * 0.5 - 25,
+                          height: Dimensions.get("screen").width * 0.7,
+                          margin: 5,
+                          flexDirection: "column",
+                          backgroundColor: "white",
+                          borderRadius: 5,
+                          shadowColor: "gray",
+                          shadowOffset: {
+                            width: 2,
+                            height: 2,
+                          },
+                          shadowOpacity: 1,
+                          shadowRadius: 3,
+                          elevation: 3,
+                        }}
+                      >
+                        <View
+                          style={{
+                            position: "absolute",
+                            top: 15,
+                            left: 10,
+                            right: 10,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignContent: "center",
+                            zIndex: 9999,
+                          }}
+                        >
+                          <View
+                            style={{
+                              // bottom: (9),
+                              height: 21,
+                              minWidth: 60,
+                              borderRadius: 11,
+                              alignSelf: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              paddingHorizontal: 10,
+                            }}
+                          >
+                            <Text
+                              size="readable"
+                              style={{
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.category.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              height: 26,
+                              width: 26,
+                              borderRadius: 50,
+                              alignSelf: "center",
+                              alignItems: "center",
+                              alignContent: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              // zIndex: 999,
+                            }}
+                          >
+                            {item.liked === false ? (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _likedevent(item.id, index)}
+                              >
+                                <LikeEmpty height={13} width={13} />
+                              </TouchableOpacity>
+                            ) : (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _unlikedevent(item.id, index)}
+                              >
+                                <LikeRed height={13} width={13} />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+
+                        <TouchableOpacity
+                          onPress={() => eventdetail(item)}
+                          style={{
+                            height: Dimensions.get("window").width * 0.47 - 16,
+                          }}
+                        >
+                          <FunImageBackground
+                            key={item.id}
+                            source={
+                              item.images.length
+                                ? {
+                                    uri: item.images[0].image,
+                                  }
+                                : default_image
+                            }
+                            style={[styles.ImageView]}
+                            imageStyle={[styles.Image]}
+                          ></FunImageBackground>
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            justifyContent: "space-around",
+                            height: 230,
+                            marginVertical: 5,
+                            marginHorizontal: 10,
+                          }}
+                        >
+                          <Text
+                            onPress={() => eventdetail(item)}
+                            size="title"
+                            type="bold"
+                            style={{}}
+                          >
+                            <Truncate text={item.name} length={27} />
+                          </Text>
+                          <View
+                            style={{
+                              height: "50%",
+                              flexDirection: "column",
+                              justifyContent: "space-around",
+                            }}
+                          >
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                borderColor: "grey",
+                              }}
+                            >
+                              <PinHijau width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {item.city.name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                marginBottom: 3,
+                              }}
+                            >
+                              <Calendargrey width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  paddingRight: 20,
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {dateFormatBetween(
+                                  item.start_date,
+                                  item.end_date
+                                )}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                    )}
+                    numColumns={2}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && event_search.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                  />
+                )
+              ) : null}
+            </>
+          ) : (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "#fff",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#EEEEEE",
+                  paddingHorizontal: 15,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("location");
+                  }}
+                  style={{
+                    // width: width / 3,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "location" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "location" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
+                    marginRight: 15,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type={active_src == "location" ? "bold" : "bold"}
+                    style={{
+                      color: active_src == "location" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("location")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("destination");
+                  }}
+                  style={{
+                    // width: width / 2,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "destination" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
+                    marginHorizontal: 15,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type={active_src == "destination" ? "bold" : "bold"}
+                    style={{
+                      color:
+                        active_src == "destination" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("destination")}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveSrc("event");
+                  }}
+                  style={{
+                    // width: width / 2,
+                    alignContent: "center",
+                    alignItems: "center",
+                    borderBottomWidth: active_src == "event" ? 2 : 0,
+                    borderBottomColor:
+                      active_src == "event" ? "#209FAE" : "#EEEEEE",
+                    paddingVertical: 15,
+                    backgroundColor: "#FFFFFF",
+                    // paddingHorizontal: 10,
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    // type={
+                    //     active_src == "event" ? "bold" : "reg"
+                    // }
+                    type="bold"
+                    style={{
+                      color: active_src == "event" ? "#209FAE" : "#464646",
+                    }}
+                  >
+                    {t("event")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {active_src === "people" ? (
+                loadingSrcuser ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingSrcuser}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  // <FriendList
+                  //   props={props}
+                  //   datanya={user_search}
+                  //   token={token}
+                  //   onBackPress={() => onBackPress()}
+                  //   recent_save={(searchtext) => recent_save(searchtext)}
+                  // />
+
+                  <FlatList
+                    key={"search"}
+                    contentContainerStyle={{
+                      marginTop: 5,
+                      justifyContent: "space-evenly",
+                      marginHorizontal: 15,
+                    }}
+                    data={user_search}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          alignContent: "center",
+                          paddingVertical: 15,
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={
+                            () => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.id,
+                                  token: token,
+                                },
+                              });
+                            }
+                            // props.navigation.push("otherprofile", { idUser: item.id })
+                          }
+                          style={{ flexDirection: "row" }}
+                        >
+                          <Image
+                            source={
+                              item.picture
+                                ? {
+                                    uri: item.picture,
+                                  }
+                                : DefaultProfile
+                            }
+                            style={{
+                              resizeMode: "cover",
+                              height: 50,
+                              width: 50,
+                              borderRadius: 25,
+                            }}
+                          />
+                          <View
+                            style={{
+                              marginLeft: 20,
+                              justifyContent: "center",
+                            }}
+                          >
+                            {item.last_name !== null ? (
+                              <Text size="label" type="bold">
+                                {item.first_name + "" + item.last_name}
+                              </Text>
+                            ) : (
+                              <Text size="label" type="bold">
+                                {item.first_name}
+                              </Text>
+                            )}
+                            <Text size="label" type="regular">
+                              {`@${item.username}`}test
+                            </Text>
+                            {/* <Text
+                                                        style={{
+                                                            fontSize: 10,
+                                                            fontFamily:
+                                                                "lato-light",
+                                                        }}
+                                                    >
+                                                        {item.bio
+                                                            ? item.bio
+                                                            : "Funtravia"}
+                                                    </Text> */}
+                          </View>
+                        </TouchableOpacity>
+
+                        <View style={{}}>
+                          {item.status_following === false ? (
+                            <Button
+                              size="small"
+                              type="circle"
+                              variant="bordered"
+                              style={{ width: 100 }}
+                              text={t("follow")}
+                              onPress={() => {
+                                _follow(item.id, index);
+                              }}
+                            ></Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              type="circle"
+                              style={{ width: 100 }}
+                              onPress={() => {
+                                _unfollow(item.id, index);
+                              }}
+                              text={t("following")}
+                            ></Button>
+                          )}
+                        </View>
+                      </View>
+                    )}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && user_search.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                  />
+                )
+              ) : null}
+              {active_src === "location" && searchtext ? (
+                loadingLocation ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingLocation}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    data={search_location}
+                    contentContainerStyle={{
+                      marginTop: 5,
+                      justifyContent: "space-evenly",
+                      paddingStart: 10,
+                      paddingEnd: 10,
+                      paddingBottom: 120,
+                    }}
+                    horizontal={false}
+                    renderItem={({ item, index }) => (
+                      <Pressable
+                        onPress={() => gotoLocation(item)}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginBottom: 15,
+                        }}
+                      >
+                        <FunImage
+                          source={
+                            item.cover ? { uri: item.cover } : default_image
+                          }
+                          style={{
+                            width: width / 3,
+                            height: 85,
+                            borderRadius: 7,
+                          }}
+                        />
+                        <View
+                          style={{
+                            width: width / 2,
+                            marginLeft: 20,
+                          }}
+                        >
+                          <Text
+                            size="bold"
+                            style={{
+                              marginBottom: 5,
+                            }}
+                          >
+                            {prepercase(item.name)}
+                          </Text>
+                          <Text>
+                            {item.type}{" "}
+                            {item.head1 ? "of " + prepercase(item.head1) : null}
+                            {item.head2 ? ", " + prepercase(item.head2) : null}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && search_location.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                    // extraData={selected}
+                  />
+                )
+              ) : null}
+              {active_src === "destination" && searchtext ? (
+                // loadingDestination ? (
+                //   <View
+                //     style={{
+                //       // position: 'absolute',
+                //       // bottom:0,
+                //       flex: 1,
+                //       width: width,
+                //       justifyContent: "center",
+                //       alignItems: "center",
+                //       marginHorizontal: 15,
+                //     }}
+                //   >
+                //     <ActivityIndicator
+                //       animating={loadingDestination}
+                //       size="large"
+                //       color="#209fae"
+                //     />
+                //   </View>
+                // ) : (
+                <FlatList
+                  data={destinationSearch}
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    justifyContent: "space-evenly",
+                    paddingStart: 10,
+                    paddingEnd: 10,
+                    paddingBottom: 120,
+                  }}
+                  horizontal={false}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => {
+                        gotodestinasi(item);
+                      }}
+                      key={index}
+                      style={{
+                        borderWidth: 1,
+                        borderColor: "#F3F3F3",
+                        borderRadius: 10,
+                        height: 170,
+                        // padding: 10,
+                        marginTop: 10,
+                        width: "100%",
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        shadowColor: "#FFF",
+                        shadowOffset: {
+                          width: 0,
+                          height: 5,
+                        },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 6.27,
+
+                        elevation: 6,
+                      }}
+                    >
+                      <View
+                        style={{
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Image */}
+                        <FunImage
+                          source={{
+                            uri: item.images.image,
+                          }}
+                          style={{
+                            width: 150,
+                            height: "100%",
+                            borderBottomLeftRadius: 10,
+                            borderTopLeftRadius: 10,
+                          }}
+                        />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            left: 10,
+                            width: 130,
+                            zIndex: 2,
+                          }}
+                        >
+                          {item.liked === true ? (
+                            <Pressable
+                              onPress={() => _unliked(item.id, index)}
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Love height={15} width={15} />
+                            </Pressable>
+                          ) : (
+                            <Pressable
+                              onPress={() =>
+                                loadingLike ? null : _liked(item.id, index)
+                              }
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <LikeEmpty height={15} width={15} />
+                            </Pressable>
+                          )}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              backgroundColor: "#F3F3F3",
+                              borderRadius: 3,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              paddingHorizontal: 5,
+                              height: 25,
+                            }}
+                          >
+                            <Star height={15} width={15} />
+                            <Text size="label" type="bold">
+                              {item.rating.substr(0, 3)}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {/* Keterangan */}
+                      {/* rating */}
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: 10,
+                          height: 170,
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View>
+                          {/* Title */}
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{ marginTop: 2 }}
+                            numberOfLines={1}
+                          >
+                            {item.name}
+                          </Text>
+
+                          {/* Maps */}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              marginTop: 5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <PinHijau height={15} width={15} />
+                            <Text
+                              size="label"
+                              type="regular"
+                              style={{
+                                marginLeft: 5,
+                              }}
+                              numberOfLines={1}
+                            >
+                              {item.cities.name}
+                            </Text>
+                          </View>
+                        </View>
+                        {/* Great for */}
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            height: 50,
+                            marginTop: 10,
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <View>
+                            <Text size="label" type="bold">
+                              {t("GreatFor")} :
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                              }}
+                            >
+                              {item.greatfor.length > 0 ? (
+                                item.greatfor.map((item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={35}
+                                      width={35}
+                                    />
+                                  ) : null;
+                                })
+                              ) : (
+                                <Text>-</Text>
+                              )}
+                            </View>
+                          </View>
+                          <Button
+                            onPress={() => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ItineraryStack", {
+                                screen: "ItineraryPlaning",
+                                params: {
+                                  idkiriman: item.id,
+                                  Position: "destination",
+                                },
+                              });
+                            }}
+                            size="small"
+                            text={t("add")}
+                            // style={{ marginTop: 15 }}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  )}
+                  ListFooterComponent={
+                    searchtext !== "" && destinationSearch.length <= 0 ? (
+                      <View
+                        style={{
+                          // position: 'absolute',
+                          // bottom:0,
+                          width: width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 30,
+                          marginLeft: -15,
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
+                      </View>
+                    ) : null
+                  }
+                  showsHorizontalScrollIndicator={false}
+                />
+              ) : null}
+              {active_src === "event" ? (
+                loadingEvent == true ? (
+                  <View
+                    style={{
+                      // position: 'absolute',
+                      // bottom:0,
+                      flex: 1,
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <ActivityIndicator
+                      animating={loadingDestination}
+                      size="large"
+                      color="#209fae"
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    contentContainerStyle={{
+                      marginBottom: 15,
+                      justifyContent: "space-evenly",
+                      paddingBottom: 5,
+                      marginHorizontal: 15,
+                    }}
+                    horizontal={false}
+                    data={event_search}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+
+                          width: Dimensions.get("screen").width * 0.5 - 25,
+                          height: Dimensions.get("screen").width * 0.7,
+                          margin: 5,
+                          flexDirection: "column",
+                          backgroundColor: "white",
+                          borderRadius: 5,
+                          shadowColor: "gray",
+                          shadowOffset: {
+                            width: 2,
+                            height: 2,
+                          },
+                          shadowOpacity: 1,
+                          shadowRadius: 3,
+                          elevation: 3,
+                        }}
+                      >
+                        <View
+                          style={{
+                            position: "absolute",
+                            top: 15,
+                            left: 10,
+                            right: 10,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignContent: "center",
+                            zIndex: 9999,
+                          }}
+                        >
+                          <View
+                            style={{
+                              // bottom: (9),
+                              height: 21,
+                              minWidth: 60,
+                              borderRadius: 11,
+                              alignSelf: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              paddingHorizontal: 10,
+                            }}
+                          >
+                            <Text
+                              size="readable"
+                              style={{
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.category.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              height: 26,
+                              width: 26,
+                              borderRadius: 50,
+                              alignSelf: "center",
+                              alignItems: "center",
+                              alignContent: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              // zIndex: 999,
+                            }}
+                          >
+                            {item.liked === false ? (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _likedevent(item.id, index)}
+                              >
+                                <LikeEmpty height={13} width={13} />
+                              </TouchableOpacity>
+                            ) : (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _unlikedevent(item.id, index)}
+                              >
+                                <LikeRed height={13} width={13} />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+
+                        <TouchableOpacity
+                          onPress={() => eventdetail(item)}
+                          style={{
+                            height: Dimensions.get("window").width * 0.47 - 16,
+                          }}
+                        >
+                          <FunImageBackground
+                            key={item.id}
+                            source={
+                              item.images.length
+                                ? {
+                                    uri: item.images[0].image,
+                                  }
+                                : default_image
+                            }
+                            style={[styles.ImageView]}
+                            imageStyle={[styles.Image]}
+                          ></FunImageBackground>
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            justifyContent: "space-around",
+                            height: 230,
+                            marginVertical: 5,
+                            marginHorizontal: 10,
+                          }}
+                        >
+                          <Text
+                            onPress={() => eventdetail(item)}
+                            size="title"
+                            type="bold"
+                            style={{}}
+                          >
+                            <Truncate text={item.name} length={27} />
+                          </Text>
+                          <View
+                            style={{
+                              height: "50%",
+                              flexDirection: "column",
+                              justifyContent: "space-around",
+                            }}
+                          >
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                borderColor: "grey",
+                              }}
+                            >
+                              <PinHijau width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {item.city.name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                marginBottom: 3,
+                              }}
+                            >
+                              <Calendargrey width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  paddingRight: 20,
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {dateFormatBetween(
+                                  item.start_date,
+                                  item.end_date
+                                )}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                    )}
+                    numColumns={2}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && event_search.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
+                  />
+                )
+              ) : null}
+            </>
+          )
         ) : (
           <View
             style={{
@@ -1951,7 +2808,8 @@ export default function SearchPg(props, { navigation, route }) {
                           onPress={() => {
                             srcfromricent(value);
                           }}
-                          size="readable"
+                          size="label"
+                          type="regular"
                           style={{
                             marginRight: 10,
                             paddingVertical: 5,
@@ -2030,7 +2888,7 @@ export default function SearchPg(props, { navigation, route }) {
               >
                 <Text
                   type="bold"
-                  size="readable"
+                  size="label"
                   style={{
                     // fontFamily: "Lato-Bold",
                     textAlign: "right",
@@ -2079,7 +2937,7 @@ export default function SearchPg(props, { navigation, route }) {
                       margin: 3,
                     }}
                   >
-                    <Text size="readable" key={value.id}>
+                    <Text size="label" type="regular" key={value.id}>
                       {value.name}
                     </Text>
                   </TouchableOpacity>
@@ -2116,119 +2974,130 @@ export default function SearchPg(props, { navigation, route }) {
                   {t("people")}
                 </Text>
               </View>
-              {loadingRekomendasi ? (
-                <ActivityIndicator
-                  animating={loadingRekomendasi}
-                  size="large"
-                  color="#209fae"
-                />
-              ) : (
-                <FlatList
-                  scrollEnabled={false}
-                  contentContainerStyle={{
-                    marginTop: 5,
-                    justifyContent: "space-evenly",
-                    paddingHorizontal: 15,
-                  }}
-                  data={list_rekomendasi_user}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        width: "100%",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        alignContent: "center",
-                        paddingVertical: 10,
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={
-                          () => {
-                            BackHandler.removeEventListener(
-                              "hardwareBackPress",
-                              onBackPress
-                            );
-                            props.navigation.push("ProfileStack", {
-                              screen: "otherprofile",
-                              params: {
-                                idUser: item.id,
-                                token: token,
-                              },
-                            });
-                          }
-                          // props.navigation.push("otherprofile", { idUser: item.id })
-                        }
-                        style={{ flexDirection: "row" }}
+              {token ? (
+                loadingRekomendasi ? (
+                  <ActivityIndicator
+                    animating={loadingRekomendasi}
+                    size="large"
+                    color="#209fae"
+                  />
+                ) : (
+                  <FlatList
+                    scrollEnabled={false}
+                    contentContainerStyle={{
+                      marginTop: 5,
+                      justifyContent: "space-evenly",
+                      paddingHorizontal: 15,
+                    }}
+                    data={list_rekomendasi_user}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          width: "100%",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          alignContent: "center",
+                          paddingVertical: 10,
+                        }}
                       >
-                        <FunImage
-                          source={
-                            item.picture
-                              ? {
-                                  uri: item.picture,
-                                }
-                              : DefaultProfile
+                        <TouchableOpacity
+                          onPress={
+                            () => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.id,
+                                  token: token,
+                                },
+                              });
+                            }
+                            // props.navigation.push("otherprofile", { idUser: item.id })
                           }
-                          style={{
-                            resizeMode: "cover",
-                            height: 50,
-                            width: 50,
-                            borderRadius: 25,
-                          }}
-                        />
-                        <View
-                          style={{
-                            marginLeft: 20,
-                            justifyContent: "center",
-                          }}
+                          style={{ flexDirection: "row" }}
                         >
-                          {item.last_name !== null ? (
-                            <Text size="label" type="bold">
-                              {item.first_name + "" + item.last_name}
+                          <FunImage
+                            source={
+                              item.picture
+                                ? {
+                                    uri: item.picture,
+                                  }
+                                : DefaultProfile
+                            }
+                            style={{
+                              resizeMode: "cover",
+                              height: 50,
+                              width: 50,
+                              borderRadius: 25,
+                            }}
+                          />
+                          <View
+                            style={{
+                              marginLeft: 20,
+                              justifyContent: "center",
+                            }}
+                          >
+                            {item.last_name !== null ? (
+                              <Text size="label" type="bold">
+                                {item.first_name + "" + item.last_name}
+                              </Text>
+                            ) : (
+                              <Text size="label" type="bold">
+                                {item.first_name}
+                              </Text>
+                            )}
+                            <Text size="label" type="regular">
+                              {`@${item.username}`}
                             </Text>
-                          ) : (
-                            <Text size="label" type="bold">
-                              {item.first_name}
-                            </Text>
-                          )}
-                          <Text size="label" type="regular">
-                            {`@${item.username}`}
-                          </Text>
-                          {/* <Text style={{ fontSize: 10, fontFamily: 'lato-light' }}>
-							{item.bio ? item.bio : 'Funtravia'}
-						</Text> */}
-                        </View>
-                      </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
 
-                      <View style={{}}>
-                        {item.status_following === false ? (
-                          <Button
-                            size="small"
-                            type="circle"
-                            variant="bordered"
-                            style={{ width: 100 }}
-                            text={t("follow")}
-                            onPress={() => {
-                              _follow_rekomendasi(item.id, index);
-                            }}
-                          ></Button>
-                        ) : (
-                          <Button
-                            size="small"
-                            type="circle"
-                            style={{ width: 100 }}
-                            onPress={() => {
-                              _unfollow_rekomendasi(item.id, index);
-                            }}
-                            text={t("following")}
-                          ></Button>
-                        )}
+                        <View style={{}}>
+                          {item.status_following === false ? (
+                            <Button
+                              size="small"
+                              type="circle"
+                              variant="bordered"
+                              style={{ width: 100 }}
+                              text={t("follow")}
+                              onPress={() => {
+                                _follow_rekomendasi(item.id, index);
+                              }}
+                            ></Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              type="circle"
+                              style={{ width: 100 }}
+                              onPress={() => {
+                                _unfollow_rekomendasi(item.id, index);
+                              }}
+                              text={t("following")}
+                            ></Button>
+                          )}
+                        </View>
                       </View>
-                    </View>
-                  )}
-                  keyExtractor={(item) => item.id}
-                  showsVerticalScrollIndicator={false}
-                />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                  />
+                )
+              ) : (
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width,
+                    marginTop: 20,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text size="label" type="regular">
+                    {t("emptys")}
+                  </Text>
+                </View>
               )}
             </View>
           </View>

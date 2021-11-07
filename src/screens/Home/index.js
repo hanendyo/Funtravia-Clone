@@ -3,28 +3,23 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
-  ImageBackground,
   Animated,
-  SafeAreaView,
   RefreshControl,
-  Image,
   Pressable,
   StyleSheet,
-  Modal,
   ActivityIndicator,
   BackHandler,
-  Alert,
   Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Text,
-  CustomImage,
   StatusBar,
   NavigateAction,
   FunImage,
+  ModalLogin,
 } from "../../component";
-import { search_black, sampul2, DefaultProfileSquare } from "../../assets/png";
+import { DefaultProfileSquare } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import PopularDestination from "./PopularDestination";
@@ -46,6 +41,7 @@ export default function Home(props) {
   let [data, setdata] = useState(null);
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
+  let [modalLogin, setModalLogin] = useState(false);
 
   console.log(token);
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
@@ -59,7 +55,7 @@ export default function Home(props) {
         },
       },
       onCompleted: () => {
-        setdata(dataProfiles.user_profile);
+        setdata(dataProfiles?.user_profile);
       },
     }
   );
@@ -291,6 +287,11 @@ export default function Home(props) {
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
@@ -376,7 +377,11 @@ export default function Home(props) {
             </Animated.View>
 
             <Pressable
-              onPress={() => props.navigation.navigate("Notification")}
+              onPress={() => {
+                token
+                  ? props.navigation.navigate("Notification")
+                  : setModalLogin(true);
+              }}
               style={{
                 alignItems: "flex-end",
                 flex: 1,
@@ -538,8 +543,8 @@ export default function Home(props) {
                       }}
                     >
                       <Text size="title" type="black">
-                        {data && data.first_name ? `${data.first_name}` : null}
-                        {data && data.last_name ? ` ${data.last_name}` : null}
+                        {data && data.first_name ? `${data.first_name}` : ""}
+                        {data && data.last_name ? ` ${data.last_name}` : ""}
                       </Text>
                       <View
                         style={{
@@ -549,7 +554,7 @@ export default function Home(props) {
                         }}
                       >
                         <Text size="description" type="regular">
-                          {data && data.username ? `@${data.username}` : null}
+                          {data && data.username ? `@${data.username}` : ""}
                         </Text>
                         <TouchableOpacity
                           onPress={goToProfile}
@@ -637,11 +642,6 @@ export default function Home(props) {
                   alignItems: "center",
                   alignSelf: "center",
                   justifyContent: "center",
-                  // shadowColor: "#6F7273",
-                  // shadowOffset: { width: 0, height: 1 },
-                  // shadowOpacity: 1,
-                  // shadowRadius: 1,
-                  // elevation: 3,
                   padding: 10,
                 }}
               >
@@ -659,10 +659,8 @@ export default function Home(props) {
                       flex: 1,
                       justifyContent: "center",
                       alignContent: "center",
-                      // marginLeft: 10,
                       height: "100%",
                       width: "100%",
-                      // borderWidth: 1,
                     }}
                   >
                     <View
@@ -675,12 +673,14 @@ export default function Home(props) {
                     >
                       <TouchableOpacity
                         style={styles.statView}
-                        onPress={() =>
-                          props.navigation.navigate("BottomStack", {
-                            screen: "TripBottomPlaning",
-                            params: { screen: "TripPlaning" },
-                          })
-                        }
+                        onPress={() => {
+                          token
+                            ? props.navigation.navigate("BottomStack", {
+                                screen: "TripBottomPlaning",
+                                params: { screen: "TripPlaning" },
+                              })
+                            : setModalLogin(true);
+                        }}
                       >
                         <Text
                           size="label"
@@ -699,11 +699,13 @@ export default function Home(props) {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.statView}
-                        onPress={() =>
-                          props.navigation.navigate("ProfileStack", {
-                            screen: "FollowerPage",
-                          })
-                        }
+                        onPress={() => {
+                          token
+                            ? props.navigation.navigate("ProfileStack", {
+                                screen: "FollowerPage",
+                              })
+                            : setModalLogin(true);
+                        }}
                       >
                         <Text
                           size="label"
@@ -722,11 +724,13 @@ export default function Home(props) {
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.statView}
-                        onPress={() =>
-                          props.navigation.navigate("ProfileStack", {
-                            screen: "FollowingPage",
-                          })
-                        }
+                        onPress={() => {
+                          token
+                            ? props.navigation.navigate("ProfileStack", {
+                                screen: "FollowingPage",
+                              })
+                            : setModalLogin(true);
+                        }}
                       >
                         <Text
                           size="label"

@@ -26,7 +26,7 @@ import {
   FunImage,
   StatusBar as StaBar,
   Text,
-  Truncate,
+  ModalLogin,
   Peringatan,
 } from "../../component";
 import {
@@ -81,6 +81,7 @@ const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function SearchListEventHome(props) {
+  let [modalLogin, setModalLogin] = useState(false);
   let [heightjudul, setheightjudul] = useState(150);
   let HeaderHeight = Dimensions.get("screen").height * 0.15 + heightjudul;
   let [heightview, setheight] = useState(0);
@@ -2499,13 +2500,7 @@ export default function SearchListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -2560,13 +2555,7 @@ export default function SearchListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -2788,6 +2777,11 @@ export default function SearchListEventHome(props) {
 
   return (
     <View style={{ flex: 1 }}>
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
       {renderTabView()}
       {renderFilterAndSearchHeader()}

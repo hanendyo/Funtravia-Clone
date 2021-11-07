@@ -175,15 +175,17 @@ export default function RenderAlbum({
             //   data.itinerary !== null ? goToItinerary(data) : null
             // }
             onPress={() => {
-              props.navigation.push("ProfileStack", {
-                screen: "albumdetail",
-                params: {
-                  id: data?.album?.id,
-                  type: null,
-                  token: token,
-                  judul: data?.album?.title,
-                },
-              });
+              token
+                ? props.navigation.push("ProfileStack", {
+                    screen: "albumdetail",
+                    params: {
+                      id: data?.album?.id,
+                      type: null,
+                      token: token,
+                      judul: data?.album?.title,
+                    },
+                  })
+                : setModalLogin(true);
             }}
             style={({ pressed }) => [
               {

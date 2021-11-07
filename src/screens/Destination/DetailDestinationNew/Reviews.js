@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, View, Image, Alert, Pressable } from "react-native";
-import { Text, FunImage } from "../../../component";
+import { Text, FunImage, ModalLogin } from "../../../component";
 import {
   dateFormatMDY,
   dateFormats,
@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 import { useTranslation } from "react-i18next";
+import { RNToasty } from "react-native-toasty";
 
 export default function Reviews({ props, id }) {
   const { t, i18n } = useTranslation();
@@ -20,6 +21,7 @@ export default function Reviews({ props, id }) {
   const [token, setToken] = useState("");
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
+  let [modalLogin, setModalLogin] = useState(false);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -77,6 +79,11 @@ export default function Reviews({ props, id }) {
 
   return (
     <>
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <ImageSlide
         show={modalss}
         dataImage={gambar}
@@ -94,21 +101,26 @@ export default function Reviews({ props, id }) {
                     flexDirection: "row",
                   }}
                   onPress={() => {
-                    item && item.user && item.user.id !== null
-                      ? item?.user?.id !== setting?.user?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: item.user.id,
-                            },
+                    token
+                      ? item && item.user && item.user.id !== null
+                        ? item?.user?.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.user.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                              params: {
+                                token: token,
+                              },
+                            })
+                        : RNToasty.Show({
+                            title: t("somethingwrong"),
+                            position: "bottom",
                           })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                            params: {
-                              token: token,
-                            },
-                          })
-                      : Alert.alert("User has been deleted");
+                      : setModalLogin(true);
                   }}
                 >
                   <FunImage

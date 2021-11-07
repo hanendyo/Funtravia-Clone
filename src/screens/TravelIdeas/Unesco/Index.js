@@ -4,51 +4,25 @@ import {
   Animated,
   Dimensions,
   Image,
-  ImageBackground,
   PanResponder,
   Platform,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
   Pressable,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import {
-  Akunsaya,
-  default_image,
-  unesco,
-  tropical_rainforest,
-  badak_jawa,
-  lorenz,
-  comodo,
-  sangiran,
-  prambanan,
-  ombilin,
-  cultural_lanscape,
-  borobudur,
-} from "../../../assets/png";
+import { unesco } from "../../../assets/png";
 import {
   Kosong,
-  Pin,
   Select,
-  PinHitam,
   Arrowbackwhite,
   PinHijau,
   Arrowbackios,
-  OptionsVertWhite,
 } from "../../../assets/svg";
-import {
-  Button,
-  Text,
-  Truncate,
-  FunImageBackground,
-  StatusBar as StaBar,
-} from "../../../component";
+import { Button, Text, StatusBar as StaBar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
-import Ripple from "react-native-material-ripple";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
 import CountrySrc from "./CountrySrc";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
@@ -60,19 +34,12 @@ const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
-// const HeaderHeight = width - 100;
-// const SafeStatusBar = Platform.select({
-//   ios: 44,
-//   android: StatusBar.currentHeight,
-// });
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
 const HeaderHeight = Platform.select({
   ios: Notch ? 420 - 48 : 360 - 20,
-  // android: 305 - StatusBar.currentHeight,
-  // android: 320 - StatusBar.currentHeight,
   android: 340 - StatusBar.currentHeight,
 });
 

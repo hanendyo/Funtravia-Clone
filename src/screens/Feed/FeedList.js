@@ -554,24 +554,20 @@ export default function FeedList({ props, token }) {
   };
 
   const viewcomment = (data, index, time) => {
-    if (token) {
-      props.navigation.navigate("FeedStack", {
-        screen: "CommentPost",
-        params: {
-          data: data,
-          token: token,
-          ref: ref,
-          _liked: (e) => _liked(e),
-          _unliked: (e) => _unliked(e),
-          indeks: index,
-          countKoment: (e) => countKoment(e),
-          time: time,
-          _deletepost: (e) => _deletepost(e),
-        },
-      });
-    } else {
-      setModalLogin(true);
-    }
+    props.navigation.navigate("FeedStack", {
+      screen: "CommentPost",
+      params: {
+        data: data,
+        token: token,
+        ref: ref,
+        _liked: (e) => _liked(e),
+        _unliked: (e) => _unliked(e),
+        indeks: index,
+        countKoment: (e) => countKoment(e),
+        time: time,
+        _deletepost: (e) => _deletepost(e),
+      },
+    });
   };
 
   const OptionOpen = (data, index, setting) => {
@@ -1676,7 +1672,24 @@ export default function FeedList({ props, token }) {
                 justifyContent: "space-between",
               }}
             >
-              <View
+              <Pressable
+                onPress={() => {
+                  token
+                    ? item.node.user.id !== setting?.user?.id
+                      ? props.navigation.push("ProfileStack", {
+                          screen: "otherprofile",
+                          params: {
+                            idUser: item.node.user.id,
+                          },
+                        })
+                      : props.navigation.push("ProfileStack", {
+                          screen: "ProfileTab",
+                          params: {
+                            token: token,
+                          },
+                        })
+                    : setModalLogin(true);
+                }}
                 style={{
                   flexDirection: "row",
                   flex: 1,
@@ -1694,31 +1707,8 @@ export default function FeedList({ props, token }) {
                     marginLeft: 15,
                   }}
                   onPress={() => {
-                    item.node.user.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: item.node.user.id,
-                          },
-                        })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                          params: {
-                            token: token,
-                          },
-                        });
-                  }}
-                  source={{ uri: item.node.user.picture }}
-                />
-                <View
-                  style={{
-                    justifyContent: "center",
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Text
-                    onPress={() => {
-                      item.node.user.id !== setting?.user?.id
+                    token
+                      ? item.node.user.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
                             screen: "otherprofile",
                             params: {
@@ -1730,7 +1720,34 @@ export default function FeedList({ props, token }) {
                             params: {
                               token: token,
                             },
-                          });
+                          })
+                      : setModalLogin(true);
+                  }}
+                  source={{ uri: item.node.user.picture }}
+                />
+                <View
+                  style={{
+                    justifyContent: "center",
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <Text
+                    onPress={() => {
+                      token
+                        ? item.node.user.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.node.user.id,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                              params: {
+                                token: token,
+                              },
+                            })
+                        : setModalLogin(true);
                     }}
                     size="title"
                     type="bold"
@@ -1783,9 +1800,13 @@ export default function FeedList({ props, token }) {
                     ) : null}
                   </View>
                 </View>
-              </View>
+              </Pressable>
               <TouchableOpacity
-                onPress={() => OptionOpen(item.node, index, setting)}
+                onPress={() =>
+                  token
+                    ? OptionOpen(item.node, index, setting)
+                    : setModalLogin(true)
+                }
                 style={{
                   width: 50,
                   alignItems: "center",
@@ -1829,6 +1850,7 @@ export default function FeedList({ props, token }) {
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
                   token={token}
+                  setModalLogin={(e) => setModalLogin(e)}
                 />
               )}
             </View>
@@ -1856,7 +1878,6 @@ export default function FeedList({ props, token }) {
                     alignSelf: "flex-start",
                     alignContent: "space-between",
                     alignItems: "center",
-                    // justifyContent: 'space-evenly',
                   }}
                 >
                   {item.node.liked ? (
@@ -1871,8 +1892,6 @@ export default function FeedList({ props, token }) {
                         marginRight: 15,
                         borderRadius: 16,
                         backgroundColor: "#F2DAE5",
-                        // minidth: 70,
-                        // right: 10,
                       }}
                     >
                       <LikeRed height={15} width={15} />
@@ -1898,7 +1917,6 @@ export default function FeedList({ props, token }) {
                         paddingHorizontal: 10,
                         marginRight: 15,
                         borderRadius: 16,
-                        // right: 10,
                       }}
                     >
                       <LikeBlack height={15} width={15} />
@@ -1941,26 +1959,28 @@ export default function FeedList({ props, token }) {
 
                 <Button
                   onPress={() =>
-                    // props.navigation.push("FeedStack", {
-                    //   screen: "SendPost",
-                    //   params: {
-                    //     post: item.node,
-                    //   },
-                    // })
-                    props.navigation.navigate("ChatStack", {
-                      screen: "SendToChat",
-                      params: {
-                        dataSend: {
-                          id: item.node?.id,
-                          assets: item.node?.assets,
-                          caption: item.node?.caption,
-                          user: item.node?.user,
-                          media_orientation: item.node?.media_orientation,
-                        },
-                        title: "Post",
-                        tag_type: "tag_post",
-                      },
-                    })
+                    token
+                      ? // props.navigation.push("FeedStack", {
+                        //   screen: "SendPost",
+                        //   params: {
+                        //     post: item.node,
+                        //   },
+                        // })
+                        props.navigation.navigate("ChatStack", {
+                          screen: "SendToChat",
+                          params: {
+                            dataSend: {
+                              id: item.node?.id,
+                              assets: item.node?.assets,
+                              caption: item.node?.caption,
+                              user: item.node?.user,
+                              media_orientation: item.node?.media_orientation,
+                            },
+                            title: "Post",
+                            tag_type: "tag_post",
+                          },
+                        })
+                      : setModalLogin(true)
                   }
                   type="icon"
                   variant="transparent"

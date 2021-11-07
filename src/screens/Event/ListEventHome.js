@@ -26,7 +26,7 @@ import {
   FunImage,
   StatusBar as StaBar,
   Text,
-  Truncate,
+  ModalLogin,
 } from "../../component";
 import {
   Arrowbackios,
@@ -86,6 +86,8 @@ export default function ListEventHome(props) {
   let [heightjudul, setheightjudul] = useState(150);
   let [tambahanJudul, setTambahanJudul] = useState(0);
   let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
+  let [modalLogin, setModalLogin] = useState(false);
+
   const HeaderHeight = Platform.select({
     ios: Notch ? 340 - StatusBar.currentHeight : 300 - StatusBar.currentHeight,
     android: 340 - StatusBar.currentHeight,
@@ -2270,13 +2272,7 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -2331,13 +2327,7 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -2550,6 +2540,11 @@ export default function ListEventHome(props) {
     // </View>
     <View style={styles.container}>
       <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       {/* <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}

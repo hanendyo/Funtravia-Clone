@@ -19,6 +19,7 @@ import {
   Truncate,
   StatusBar as Satbar,
   CopyLink,
+  ModalLogin,
 } from "../../component";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
@@ -60,6 +61,7 @@ import DeviceInfo from "react-native-device-info";
 import AutoHeightImage from "react-native-auto-height-image";
 
 export default function EventDetail(props) {
+  const [modalLogin, setModalLogin] = useState(false);
   const { t, i18n } = useTranslation();
   let [showside, setshowside] = useState(false);
   let [modalShare, setModalShare] = useState(false);
@@ -237,13 +239,7 @@ export default function EventDetail(props) {
             },
           });
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -609,13 +605,7 @@ export default function EventDetail(props) {
         Alert.alert("" + error);
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -657,13 +647,7 @@ export default function EventDetail(props) {
         Alert.alert("" + error);
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -777,6 +761,11 @@ export default function EventDetail(props) {
         width: Dimensions.get("screen").width,
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <ModalRN
         useNativeDriver={true}
         visible={modalShare}
@@ -1082,7 +1071,9 @@ export default function EventDetail(props) {
                 }}
               >
                 <Button
-                  onPress={() => setModalShare(true)}
+                  onPress={() => {
+                    token ? setModalShare(true) : setModalLogin(true);
+                  }}
                   type="circle"
                   size="small"
                   style={{
@@ -1325,11 +1316,13 @@ export default function EventDetail(props) {
                     style={{
                       alignItems: "center",
                       justifyContent: "center",
+                      flex: 1,
                     }}
                   >
                     <Text
                       size="readable"
                       type="regular"
+                      numberOfLines={2}
                       style={{
                         lineHeight: 20,
                       }}

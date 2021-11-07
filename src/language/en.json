@@ -648,7 +648,7 @@
   "SubDestinationPhoto": "Photos collection from visitor",
   "seedetail": "See details",
   "CategoryItin": "Category Itinerary",
-  "LoginFirst": "LoginFirst",
+  "LoginFirst": "Login First",
   "reUpload": "Reupload",
   "AboutEvent": "About This Event",
   "noItinerary": "No itinerary",
@@ -826,5 +826,9 @@
   "dayEmptyTrip": "There are still days that haven't been filled with your holiday activities.",
   "FailedSetGender": "Failed to set gender",
   "FailedSetDateofBirth": "Failed to set date of birth",
-  "FailedLikeItinerary": "Failed to like itinerary"
+  "FailedLikeItinerary": "Failed to like itinerary",
+  "nextLogin": "Login to continue",
+  "textLogin": "Login to view photos and upload your vacation",
+  "createAkunLogin": "Create new account",
+  "failedCommentTPost": "Failed comment this post"
 }
