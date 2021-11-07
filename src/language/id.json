@@ -827,5 +827,6 @@
   "dayEmptyTrip": "Masih ada hari yang belum terisi aktivitas liburanmu.",
   "FailedSetGender": "Gagal mengatur jenis kelamin",
   "FailedSetDateofBirth": "Gagal mengatur tanggal lahir",
-  "FailedLikeItinerary": "Gagal menyukai itinerary"
+  "FailedLikeItinerary": "Gagal menyukai itinerary",
+  "failedCommentTPost": "Gagal memberikan komentar di post ini"
 }

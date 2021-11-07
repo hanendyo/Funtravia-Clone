@@ -5,20 +5,19 @@ import {
   FlatList,
   Alert,
   RefreshControl,
-  ActivityIndicator,
   Keyboard,
-  StatusBar,
+  StatusBar as StatsBar,
   Modal,
   Platform,
-  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Text,
   Button,
-  StatusBar as StaBar,
+  StatusBar,
   shareAction,
   CopyLink,
+  ModalLogin,
 } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
@@ -30,14 +29,9 @@ import {
   Xgray,
 } from "../../assets/svg";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { Truncate, Loading } from "../../component";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import JournalCommentList from "../../graphQL/Query/Journal/JournalCommentList";
-import {
-  dateFormatForNotif,
-  dateFormat,
-} from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import AddCommentLike from "./AddCommentLike";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
@@ -48,9 +42,11 @@ const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
+import { RNToasty } from "react-native-toasty";
 
 export default function DetailJournal(props) {
   let [modalShare, setModalShare] = useState(false);
+  let [modalLogin, setModalLogin] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
@@ -478,6 +474,11 @@ export default function DetailJournal(props) {
             : 0,
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Modal
         useNativeDriver={true}
         visible={modalShare}
@@ -624,18 +625,23 @@ export default function DetailJournal(props) {
             >
               <TouchableOpacity
                 onPress={() => {
-                  data.journal_byid.userby
-                    ? data.journal_byid.userby.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: data.journal_byid.userby.id,
-                          },
+                  token
+                    ? data.journal_byid.userby
+                      ? data.journal_byid.userby.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: data.journal_byid.userby.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                          })
+                      : RNToasty.Show({
+                          title: `${t("createdBy")} funtravia`,
+                          position: "bottom",
                         })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                        })
-                    : Alert.alert("Journal By Funtravia");
+                    : setModalLogin(true);
                 }}
               >
                 <Image
@@ -972,21 +978,26 @@ export default function DetailJournal(props) {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        item && item.user && item.user.id !== null
-                          ? item?.user?.id !== setting?.user?.id
-                            ? props.navigation.push("ProfileStack", {
-                                screen: "otherprofile",
-                                params: {
-                                  idUser: item.user.id,
-                                },
+                        token
+                          ? item && item.user && item.user.id !== null
+                            ? item?.user?.id !== setting?.user?.id
+                              ? props.navigation.push("ProfileStack", {
+                                  screen: "otherprofile",
+                                  params: {
+                                    idUser: item.user.id,
+                                  },
+                                })
+                              : props.navigation.push("ProfileStack", {
+                                  screen: "ProfileTab",
+                                  params: {
+                                    token: token,
+                                  },
+                                })
+                            : RNToasty.Show({
+                                title: t("somethingwrong"),
+                                position: "bottom",
                               })
-                            : props.navigation.push("ProfileStack", {
-                                screen: "ProfileTab",
-                                params: {
-                                  token: token,
-                                },
-                              })
-                          : Alert.alert("User has been deleted");
+                          : setModalLogin(true);
                       }}
                     >
                       <Thumbnail
@@ -1080,9 +1091,11 @@ export default function DetailJournal(props) {
                   >
                     <Pressable
                       onPress={() =>
-                        props.navigation.navigate("JournalComment", {
-                          dataJournalById: dataPopuler.id,
-                        })
+                        token
+                          ? props.navigation.navigate("JournalComment", {
+                              dataJournalById: dataPopuler.id,
+                            })
+                          : setModalLogin(true)
                       }
                       style={{
                         height: "100%",
@@ -1134,7 +1147,7 @@ export default function DetailJournal(props) {
         </ScrollView>
       ) : null}
       {/* ==================================== Add Comment, Like and Unlike ============================================== */}
-      {data && data.journal_byid && token !== null && token !== "null" ? (
+      {data && data.journal_byid ? (
         <AddCommentLike
           data={data.journal_byid}
           token={token}
@@ -1142,6 +1155,7 @@ export default function DetailJournal(props) {
           listComments={() => afterComment()}
           setting={setting}
           setModalShare={(e) => setModalShare(e)}
+          props={props}
         />
       ) : null}
     </View>

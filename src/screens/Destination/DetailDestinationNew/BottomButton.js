@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { PensilPutih } from "../../../assets/svg";
-import { Button } from "../../../component";
+import { Button, ModalLogin } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
 
 export default function BottomButton({ routed, props, data, token, addTo }) {
   const { t, i18n } = useTranslation();
+  const [modalLogin, setModalLogin] = useState(false);
   let lengthartikel = data?.article_header.length + 1;
 
   const Ceklogin = () => {
@@ -15,13 +16,7 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
         data: data,
       });
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -31,6 +26,11 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
         alignItems: "flex-end",
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       {routed === 1 ? (
         <View style={{ position: "absolute", top: -75, right: 15, zIndex: 10 }}>
           <Button

@@ -40,6 +40,7 @@ import {
   shareAction,
   CopyLink,
   StatusBar as Satbar,
+  ModalLogin,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
@@ -61,11 +62,12 @@ const SafeStatusBar = Platform.select({
 });
 
 export default function Detail_movie(props) {
+  const { t } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
   let movie_id = props?.route?.params?.movie_id;
   let [modalShare, setModalShare] = useState(false);
+  let [modalLogin, setModalLogin] = useState(false);
   let [movie_byid, setMoviebyid] = useState({});
-  const { t } = useTranslation();
 
   let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);
   const [fetchDataAnotherDes, { data, loading, error }] = useLazyQuery(
@@ -345,11 +347,16 @@ export default function Detail_movie(props) {
         backgroundColor: "#fff",
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Satbar backgroundColor="#14646E" />
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT + normalize(30),
+          paddingTop: HEADER_MAX_HEIGHT + normalize(20),
           backgroundColor: "#fff",
           paddingBottom: 20,
         }}
@@ -368,13 +375,35 @@ export default function Detail_movie(props) {
         >
           <View
             style={{
-              width: "85%",
+              width: "100%",
               marginBottom: 5,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <Text size="title" type="bold" style={{ marginBottom: 5 }}>
+            <Text size="title" type="bold" style={{ marginBottom: 5, flex: 1 }}>
               {movie_byid?.title}
             </Text>
+            <TouchableOpacity
+              type="circle"
+              color="secondary"
+              style={{
+                alignSelf: "flex-end",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                backgroundColor: "#F6F6F6",
+                height: 30,
+                width: 30,
+                borderRadius: 30,
+              }}
+              onPress={() => {
+                token ? setModalShare(true) : setModalLogin(true);
+              }}
+            >
+              <ShareBlack height={20} width={20} />
+            </TouchableOpacity>
           </View>
           <Text
             type="regular"
@@ -774,7 +803,6 @@ export default function Detail_movie(props) {
             style={{
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              // paddingHorizontal: 20,
               borderRadius: 5,
             }}
           >
@@ -879,7 +907,9 @@ export default function Detail_movie(props) {
           </View>
         </View>
       </Modal>
+
       {/* Button Share */}
+      {/*       
       <Animated.View
         style={{
           width: "100%",
@@ -906,7 +936,6 @@ export default function Detail_movie(props) {
           color="secondary"
           style={{
             position: "absolute",
-            // width: Dimensions.get("screen").width / 2.5,
             right: 20,
             zIndex: 20,
             alignSelf: "flex-end",
@@ -919,13 +948,12 @@ export default function Detail_movie(props) {
             borderRadius: 17,
           }}
           onPress={() => {
-            setModalShare(true);
+            token ? setModalShare(true) : setModalLogin(true);
           }}
         >
           <ShareBlack height={20} width={20} />
-          {/* <Text style={{ color: "#fff", marginLeft: 10 }}>Share</Text> */}
         </TouchableOpacity>
-      </Animated.View>
+      </Animated.View> */}
 
       {/* End Button Share */}
 

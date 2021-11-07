@@ -28,6 +28,7 @@ import {
   FunImage,
   CopyLink,
   PagenotFound,
+  ModalLogin,
 } from "../../../component";
 import {
   LikeRed,
@@ -67,9 +68,6 @@ import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 import normalize from "react-native-normalize";
 
 export default function Comments(props) {
-  let { width, height } = Dimensions.get("screen");
-  // console.log("propscoment", props);
-
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState();
@@ -81,6 +79,7 @@ export default function Comments(props) {
   const [modalMenuOther, setModalMenuOther] = useState(false);
   const [modalHapus, setModalHapus] = useState(false);
   const [datasFollow, setDatasFollow] = useState();
+  const [modalLogin, setModalLogin] = useState(false);
 
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
@@ -175,12 +174,9 @@ export default function Comments(props) {
       setDataPost({ ...props?.route?.params?.data });
       setIdPost(props?.route?.params?.data?.id);
     } else {
-      console.log("notif");
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
-
-    console.log("datapost", dataPost);
 
     const unsubscribe = props.navigation.addListener("focus", async () => {});
     loadAsync();
@@ -347,17 +343,19 @@ export default function Comments(props) {
         >
           <Pressable
             onPress={() => {
-              dataComment?.user?.id !== setting?.user?.id
-                ? props.navigation.push("ProfileStack", {
-                    screen: "otherprofile",
-                    params: {
-                      idUser: dataComment?.user?.id,
-                    },
-                  })
-                : props.navigation.push("ProfileStack", {
-                    screen: "ProfileTab",
-                    params: { token: token },
-                  });
+              token
+                ? dataComment?.user?.id !== setting?.user?.id
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: dataComment?.user?.id,
+                      },
+                    })
+                  : props.navigation.push("ProfileStack", {
+                      screen: "ProfileTab",
+                      params: { token: token },
+                    })
+                : setModalLogin(true);
             }}
             style={{
               flexDirection: "row",
@@ -472,7 +470,6 @@ export default function Comments(props) {
           }
         }
       } catch (error) {
-        // console.log(error);
         RNToasty.Show({
           title: "Failed to delete this post",
           position: "bottom",
@@ -511,73 +508,75 @@ export default function Comments(props) {
   });
 
   const _liked = async (id) => {
-    let tmpData = { ...dataPost };
-    tmpData.liked = true;
-    tmpData.response_count = tmpData.response_count + 1;
-    setDataPost(tmpData);
-    if (!props.route.params._liked) {
-      try {
-        let response = await MutationLike({
-          variables: {
-            post_id: id,
-          },
-        });
-        if (response.data) {
-          if (
-            response.data.like_post.code === 200 ||
-            response.data.like_post.code === "200"
-          ) {
-          } else {
-            throw new Error(response.data.delete_post.message);
-          }
-        }
-      } catch (error) {
-        let tmpData = { ...dataPost };
-
-        tmpData.liked = false;
-        tmpData.response_count = tmpData.response_count - 1;
-        setDataPost(tmpData);
-      }
+    if (!token) {
+      setModalLogin(true);
     } else {
-      props.route.params._liked(dataPost?.id, props.route.params.indeks);
+      let tmpData = { ...dataPost };
+      tmpData.liked = true;
+      tmpData.response_count = tmpData.response_count + 1;
+      setDataPost(tmpData);
+      if (!props.route.params._liked) {
+        try {
+          let response = await MutationLike({
+            variables: {
+              post_id: id,
+            },
+          });
+          if (response.data) {
+            if (
+              response.data.like_post.code === 200 ||
+              response.data.like_post.code === "200"
+            ) {
+            } else {
+              throw new Error(response.data.delete_post.message);
+            }
+          }
+        } catch (error) {
+          let tmpData = { ...dataPost };
+
+          tmpData.liked = false;
+          tmpData.response_count = tmpData.response_count - 1;
+          setDataPost(tmpData);
+        }
+      } else {
+        props.route.params._liked(dataPost?.id, props.route.params.indeks);
+      }
     }
   };
 
   const _unliked = async (id) => {
-    let tmpData = { ...dataPost };
-    tmpData.liked = false;
-    tmpData.response_count = tmpData.response_count - 1;
-    setDataPost(tmpData);
-    if (!props.route.params._unliked) {
-      try {
-        let response = await MutationunLike({
-          variables: {
-            post_id: id,
-          },
-        });
-
-        if (response.data) {
-          if (
-            response.data.unlike_post.code === 200 ||
-            response.data.unlike_post.code === "200"
-          ) {
-          } else {
-            throw new Error(response.data.unlike_post.message);
-          }
-        }
-      } catch (error) {
-        tmpData.liked = true;
-        tmpData.response_count = tmpData.response_count + 1;
-        setDataPost(tmpData);
-        // Toast.show({
-        //   text: "Failed to unlike this post",
-        //   position: "bottom",
-        //   buttonText: "Ok",
-        //   duration: 3000,
-        // });
-      }
+    if (!token) {
+      setModalLogin(true);
     } else {
-      props.route.params._unliked(dataPost?.id, props.route.params.indeks);
+      let tmpData = { ...dataPost };
+      tmpData.liked = false;
+      tmpData.response_count = tmpData.response_count - 1;
+      setDataPost(tmpData);
+      if (!props.route.params._unliked) {
+        try {
+          let response = await MutationunLike({
+            variables: {
+              post_id: id,
+            },
+          });
+
+          if (response.data) {
+            if (
+              response.data.unlike_post.code === 200 ||
+              response.data.unlike_post.code === "200"
+            ) {
+            } else {
+              throw new Error(response.data.unlike_post.message);
+            }
+          }
+        } catch (error) {
+          tmpData.liked = true;
+          tmpData.response_count = tmpData.response_count + 1;
+          setDataPost(tmpData);
+        }
+      } else {
+        props.route.params._unliked(dataPost?.id, props.route.params.indeks);
+      }
     }
   };
 
@@ -606,8 +605,8 @@ export default function Comments(props) {
   });
 
   const comment = async (id, text) => {
-    if (text !== "") {
-      if (token || token !== "") {
+    if (token) {
+      if (text !== "") {
         let gen_uuid = create_UUID();
         let tempData = [...dataComment];
         let pushcomment = {
@@ -649,7 +648,6 @@ export default function Comments(props) {
               tempData[idx].is_send = true;
               setDataComment(tempData);
               scroll_to();
-              console.log("id", tempDataPost.id);
               try {
                 if (props?.route?.params?.countKoment) {
                   props?.route?.params?.countKoment(tempDataPost.id);
@@ -665,21 +663,18 @@ export default function Comments(props) {
           tempData.splice(idx, 1);
           setDataComment(tempData);
           RNToasty.Show({
-            title: "Failed to comment this post",
+            title: t("failedCommentTPost"),
             position: "bottom",
           });
         }
       } else {
         RNToasty.Show({
-          title: "Please Login!",
+          title: t("messagesEmpty"),
           position: "bottom",
         });
       }
     } else {
-      RNToasty.Show({
-        title: t("messagesEmpty"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
@@ -890,6 +885,11 @@ export default function Comments(props) {
         justifyContent: "space-between",
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <Modal
         useNativeDriver={true}
         visible={modalMenu}
@@ -1338,17 +1338,19 @@ export default function Comments(props) {
               >
                 <Pressable
                   onPress={() => {
-                    dataPost?.user?.id !== setting?.user?.id
-                      ? props.navigation.push("ProfileStack", {
-                          screen: "otherprofile",
-                          params: {
-                            idUser: dataPost?.user?.id,
-                          },
-                        })
-                      : props.navigation.push("ProfileStack", {
-                          screen: "ProfileTab",
-                          params: { token: token },
-                        });
+                    token
+                      ? dataPost?.user?.id !== setting?.user?.id
+                        ? props.navigation.push("ProfileStack", {
+                            screen: "otherprofile",
+                            params: {
+                              idUser: dataPost?.user?.id,
+                            },
+                          })
+                        : props.navigation.push("ProfileStack", {
+                            screen: "ProfileTab",
+                            params: { token: token },
+                          })
+                      : setModalLogin(true);
                   }}
                   style={{
                     flexDirection: "row",
@@ -1378,7 +1380,7 @@ export default function Comments(props) {
                       {dataPost?.user?.first_name}{" "}
                       {dataPost?.user?.first_name
                         ? dataPost?.user?.last_name
-                        : null}
+                        : ""}
                     </Text>
                     <Text size={"small"} style={{}}>
                       {/* {duration(dataPost?.created_at)} */}
@@ -1390,7 +1392,7 @@ export default function Comments(props) {
                 </Pressable>
                 <TouchableOpacity
                   onPress={() => {
-                    OptionOpen(dataPost);
+                    token ? OptionOpen(dataPost) : setModalLogin(true);
                   }}
                   style={{
                     position: "absolute",
@@ -1423,6 +1425,7 @@ export default function Comments(props) {
                       isFocused={isFocused}
                       isComment={true}
                       index
+                      setModalLogin={(e) => setModalLogin(e)}
                     />
                   ) : (
                     <RenderSinglePhoto
@@ -1433,6 +1436,7 @@ export default function Comments(props) {
                       setMuted={(e) => setMuted(e)}
                       isFocused={isFocused}
                       isComment={true}
+                      setModalLogin={(e) => setModalLogin(e)}
                     />
                   )
                 ) : null}
@@ -1518,7 +1522,6 @@ export default function Comments(props) {
                     )}
 
                     <Button
-                      // onPress={() => console.log("dataPost")}
                       type="icon"
                       variant="transparent"
                       position="left"
@@ -1548,20 +1551,22 @@ export default function Comments(props) {
                       //     post: dataPost,
                       //   },
                       // })
-                      props.navigation.navigate("ChatStack", {
-                        screen: "SendToChat",
-                        params: {
-                          dataSend: {
-                            id: dataPost?.id,
-                            assets: dataPost?.assets,
-                            caption: dataPost?.caption,
-                            user: dataPost?.user,
-                            media_orientation: dataPost?.media_orientation,
-                          },
-                          title: "Post",
-                          tag_type: "tag_post",
-                        },
-                      })
+                      token
+                        ? props.navigation.navigate("ChatStack", {
+                            screen: "SendToChat",
+                            params: {
+                              dataSend: {
+                                id: dataPost?.id,
+                                assets: dataPost?.assets,
+                                caption: dataPost?.caption,
+                                user: dataPost?.user,
+                                media_orientation: dataPost?.media_orientation,
+                              },
+                              title: "Post",
+                              tag_type: "tag_post",
+                            },
+                          })
+                        : setModalLogin(true)
                     }
                     type="icon"
                     variant="transparent"
@@ -1581,7 +1586,7 @@ export default function Comments(props) {
                     flexDirection: "row",
                   }}
                 >
-                  {dataPost?.is_single == false ? (
+                  {dataPost?.itinerary == false ? (
                     <View>
                       {dataPost?.itinerary !== null ? (
                         <Pressable

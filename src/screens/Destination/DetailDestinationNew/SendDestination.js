@@ -42,11 +42,9 @@ export default function SendDestination({ navigation, route }) {
     },
   });
   let [search, setSearch] = useState("");
-  // console.log(route.params);
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [data_buddy, SetDatBuddy] = useState([]);
-  // console.log(data_buddy);
   const [
     querywith,
     { loading: loadingwith, data: DataBuddy, error: errorwith },
@@ -117,8 +115,6 @@ export default function SendDestination({ navigation, route }) {
 
   const setChatHistory = async (data) => {
     let history = await AsyncStorage.getItem("history_" + data.room);
-    console.log("history", history);
-
     if (history) {
       let recent = JSON.parse(history);
       if (data) {
@@ -151,7 +147,6 @@ export default function SendDestination({ navigation, route }) {
       await setToken(token);
       await _setSearch(null);
       await querywith();
-      console.log(token);
     }
 
     let data = await AsyncStorage.getItem("setting");
@@ -166,9 +161,7 @@ export default function SendDestination({ navigation, route }) {
 
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
-  // console.log(dataGroupRes);
   const getRoomGroup = async () => {
-    console.log("EXEC");
     setloading(true);
     let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
@@ -240,12 +233,10 @@ export default function SendDestination({ navigation, route }) {
       );
 
       let responseJson = await response.json();
-      // console.log(responseJson);
       if (responseJson) {
         socket.emit("join", responseJson.id);
         socket.on("connection", (socket) => {
           console.log(socket);
-          console.log("socket");
         });
         let dataDestination = route.params.destination;
         let constain = {
@@ -318,18 +309,15 @@ export default function SendDestination({ navigation, route }) {
         position: "bottom",
       });
       setloadingsend(false);
-      console.error(error);
     }
   };
   const _sendMessageGroup = async (value, index) => {
     try {
-      // console.log(index);
       setloadingsend(true);
       setIndexGroup(index);
       await socket.emit("join", value.group_id);
       await socket.on("connection", (socket) => {
         console.log(socket);
-        console.log("socket");
       });
       let from = value.itinerary ? "itinerary" : "group";
       let dataDestination = route.params.destination;
@@ -363,7 +351,6 @@ export default function SendDestination({ navigation, route }) {
         } ${user.last_name}`,
       });
       await socket.emit("message", chatData);
-      console.log("kal", value);
       RNToasty.Show({
         duration: 1,
         title: t("successfullySent"),
@@ -389,7 +376,6 @@ export default function SendDestination({ navigation, route }) {
         position: "bottom",
       });
       setloadingsend(false);
-      console.error(error);
     }
   };
 
@@ -486,7 +472,6 @@ export default function SendDestination({ navigation, route }) {
   };
 
   const RenderBuddy = (value, index) => {
-    // console.log(value);
     return (
       <View style={{ borderBottomWidth: 0.5, borderBottomColor: "#D1D1D1" }}>
         <TouchableOpacity
@@ -581,7 +566,6 @@ export default function SendDestination({ navigation, route }) {
     );
   };
   const RenderGroup = (value, index) => {
-    // console.log(value);
     return (
       <View style={{ borderBottomWidth: 0.5, borderBottomColor: "#D1D1D1" }}>
         <TouchableOpacity

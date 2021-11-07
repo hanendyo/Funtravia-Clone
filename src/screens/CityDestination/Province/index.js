@@ -2849,7 +2849,7 @@ export default function CityDetail(props) {
           }}
         >
           <Pressable
-            onPress={() => SetShareModal(true)}
+            onPress={() => (token ? SetShareModal(true) : setModalLogin(true))}
             style={{
               backgroundColor: "#F6F6F6",
               marginRight: 2,

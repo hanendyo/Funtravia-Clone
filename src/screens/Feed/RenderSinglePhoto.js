@@ -5,10 +5,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { FunImageAutoSize, FunVideo, FunImage, Text } from "../../component";
-import Video from "react-native-video";
+import { FunImageAutoSize, FunVideo } from "../../component";
 import { Mute, Unmute, AlbumFeed } from "../../assets/svg";
-import { default_image } from "../../assets/png";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderSinglePhoto({
@@ -20,6 +18,7 @@ export default function RenderSinglePhoto({
   setMuted,
   isComment,
   token,
+  setModalLogin,
 }) {
   let videoView = useRef(null);
   const [heightScaled, setHeightScaled] = useState(width);
@@ -102,15 +101,17 @@ export default function RenderSinglePhoto({
           <>
             <Pressable
               onPress={() => {
-                props.navigation.push("ProfileStack", {
-                  screen: "albumdetail",
-                  params: {
-                    id: data?.album?.id,
-                    type: null,
-                    token: token,
-                    judul: data?.album?.title,
-                  },
-                });
+                token
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: data?.album?.id,
+                        type: null,
+                        token: token,
+                        judul: data?.album?.title,
+                      },
+                    })
+                  : setModalLogin(true);
               }}
               style={{
                 backgroundColor: "#040404",
@@ -125,15 +126,17 @@ export default function RenderSinglePhoto({
             ></Pressable>
             <AlbumFeed
               onPress={() => {
-                props.navigation.push("ProfileStack", {
-                  screen: "albumdetail",
-                  params: {
-                    id: data?.album?.id,
-                    type: null,
-                    token: token,
-                    judul: data?.album?.title,
-                  },
-                });
+                token
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: data?.album?.id,
+                        type: null,
+                        token: token,
+                        judul: data?.album?.title,
+                      },
+                    })
+                  : setModalLogin(true);
               }}
               height={15}
               width={15}
@@ -197,15 +200,17 @@ export default function RenderSinglePhoto({
             ></Pressable>
             <AlbumFeed
               onPress={() => {
-                props.navigation.push("ProfileStack", {
-                  screen: "albumdetail",
-                  params: {
-                    id: data?.album?.id,
-                    type: null,
-                    token: token,
-                    judul: data?.album?.title,
-                  },
-                });
+                token
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: data?.album?.id,
+                        type: null,
+                        token: token,
+                        judul: data?.album?.title,
+                      },
+                    })
+                  : setModalLogin(true);
               }}
               height={17}
               width={17}

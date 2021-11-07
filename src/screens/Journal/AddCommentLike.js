@@ -5,10 +5,10 @@ import {
   KeyboardAvoidingView,
   View,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { LikeRed, LikeEmpty, Sharegreen } from "../../assets/svg";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Loading, Truncate, Text, shareAction } from "../../component";
+import { Truncate, Text, ModalLogin } from "../../component";
 import { useTranslation } from "react-i18next";
 import Liked from "../../graphQL/Mutation/Journal/likedJournal";
 import UnLiked from "../../graphQL/Mutation/Journal/unlikedJournal";
@@ -16,19 +16,21 @@ import AddCommentJournal from "../../graphQL/Mutation/Journal/AddCommentJournal"
 import { useMutation } from "@apollo/react-hooks";
 import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
+import { RNToasty } from "react-native-toasty";
 
 export default function AddCommentLike({
   data,
   token,
-  fetchData,
   listComments,
   setting,
   setModalShare,
+  props,
 }) {
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
+  const [modalLogin, setModalLogin] = useState(false);
 
   const [
     mutationliked,
@@ -73,41 +75,51 @@ export default function AddCommentLike({
 
   const comment = async (id, text) => {
     Keyboard.dismiss();
-    if ((token || token !== "") && text !== "") {
-      try {
-        let response = await MutationAddComment({
-          variables: {
-            id: id,
-            text: text,
-          },
-        });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          if (
-            response.data.comment_journal.code === 200 ||
-            response.data.comment_journal.code === "200"
-          ) {
-            setText("");
-            listComments();
-          } else {
-            throw new Error(response.data.comment_journal.message);
+    if (token) {
+      if (text) {
+        try {
+          let response = await MutationAddComment({
+            variables: {
+              id: id,
+              text: text,
+            },
+          });
+          if (loadingLike) {
+            Alert.alert("Loading!!");
           }
+          if (errorLike) {
+            throw new Error("Error Input");
+          }
+          if (response.data) {
+            if (
+              response.data.comment_journal.code === 200 ||
+              response.data.comment_journal.code === "200"
+            ) {
+              setText("");
+              listComments();
+            } else {
+              throw new Error(response.data.comment_journal.message);
+            }
+          }
+        } catch (error) {
+          RNToasty.Show({
+            title: t("somethingwrong"),
+            position: "bottom",
+          });
         }
-      } catch (error) {
-        Alert.alert("" + error);
+      } else {
+        RNToasty.Show({
+          title: t("messagesEmpty"),
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Please Insert a Text");
+      setModalLogin(true);
     }
   };
 
   const _liked = async (id) => {
-    if (token || token !== "") {
+    if (token) {
       var tempData = { ...dataList };
       tempData.liked = true;
       setDataList(tempData);
@@ -117,12 +129,7 @@ export default function AddCommentLike({
             id: id,
           },
         });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
+        console.log("response like", response);
         if (response.data) {
           if (
             response.data.like_journal.code === 200 ||
@@ -142,12 +149,13 @@ export default function AddCommentLike({
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      setModalLogin(true);
     }
   };
+  console.log(modalLogin);
 
   const _unliked = async (id) => {
-    if (token || token !== "") {
+    if (token) {
       var tempData = { ...dataList };
       tempData.liked = false;
       setDataList(tempData);
@@ -157,12 +165,8 @@ export default function AddCommentLike({
             id: id,
           },
         });
-        if (loadingUnLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
+        console.log("response unlike", response);
+
         if (response.data) {
           if (
             response.data.unlike_journal.code === 200 ||
@@ -179,10 +183,9 @@ export default function AddCommentLike({
         var tempData = { ...dataList };
         tempData.liked = true;
         setDataList(tempData);
-        Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      setModalLogin(true);
     }
   };
 
@@ -249,6 +252,11 @@ export default function AddCommentLike({
           : null,
       }}
     >
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <View
         style={{
           backgroundColor: "#f6f6f6",
@@ -324,8 +332,7 @@ export default function AddCommentLike({
       </View>
       {keyboardStatus == false ? (
         <TouchableOpacity
-          // onPress={() => shareAction({ from: "journal", target: dataList.id })}
-          onPress={() => setModalShare(true)}
+          onPress={() => (token ? setModalShare(true) : setModalLogin(true))}
         >
           <View
             style={{

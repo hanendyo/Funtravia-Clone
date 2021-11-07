@@ -50,7 +50,6 @@ export default function TravelGoalList(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
     },
     headerLeft: () => (
