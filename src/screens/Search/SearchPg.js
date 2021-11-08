@@ -2761,7 +2761,7 @@ export default function SearchPg(props, { navigation, route }) {
                   >
                     <Text
                       type="bold"
-                      size="readable"
+                      size="label"
                       style={{
                         // fontFamily: "Lato-Bold",
                         textAlign: "right",
@@ -2960,22 +2960,22 @@ export default function SearchPg(props, { navigation, route }) {
           <FriendList props={props} datanya={dataUser} token={token} /> */}
             {/* <RekomendasiUser token={token} /> */}
 
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  // width: viewWidth + 10,
-                  justifyContent: "space-between",
-                  paddingTop: 10,
-                  paddingHorizontal: 15,
-                }}
-              >
-                <Text size="label" type="bold" style={{ textAlign: "left" }}>
-                  {t("people")}
-                </Text>
-              </View>
-              {token ? (
-                loadingRekomendasi ? (
+            {token ? (
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    // width: viewWidth + 10,
+                    justifyContent: "space-between",
+                    paddingTop: 10,
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  <Text size="label" type="bold" style={{ textAlign: "left" }}>
+                    {t("people")}
+                  </Text>
+                </View>
+                {loadingRekomendasi ? (
                   <ActivityIndicator
                     animating={loadingRekomendasi}
                     size="large"
@@ -3085,21 +3085,9 @@ export default function SearchPg(props, { navigation, route }) {
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
                   />
-                )
-              ) : (
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width,
-                    marginTop: 20,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text size="label" type="regular">
-                    {t("emptys")}
-                  </Text>
-                </View>
-              )}
-            </View>
+                )}
+              </View>
+            ) : null}
           </View>
         )}
       </Root>

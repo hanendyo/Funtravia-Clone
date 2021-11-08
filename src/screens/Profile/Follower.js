@@ -1,15 +1,23 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { View, Alert, FlatList, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Pressable,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import FollowerQuery from "../../graphQL/Query/Profile/Follower";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
-import { Text, Button, Truncate } from "../../component";
+import { Text, Button } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
+import normalize from "react-native-normalize";
 
 export default function Follower(props) {
   const { t, i18n } = useTranslation();
@@ -215,7 +223,7 @@ export default function Follower(props) {
         backgroundColor: "white",
       }}
     >
-      <Loading show={loadin} />
+      {/* <Loading show={loadin} /> */}
       <FlatList
         contentContainerStyle={{
           justifyContent: "space-evenly",
@@ -226,33 +234,31 @@ export default function Follower(props) {
         renderItem={({ item, index }) => (
           <View
             style={{
-              width: "100%",
+              width: Dimensions.get("screen").width,
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "flex-start",
-              alignContent: "center",
-              // paddingHorizontal: 15,
-              paddingLeft: 20,
-              paddingRight: "8%",
+              alignItems: "center",
+              paddingHorizontal: 15,
               paddingVertical: 15,
               borderBottomWidth: 1,
               borderBottomColor: "#F6F6F6",
             }}
           >
             <TouchableOpacity
-              onPress={
-                () => {
-                  props.navigation.push("ProfileStack", {
-                    screen: "otherprofile",
-                    params: {
-                      idUser: item.id,
-                      token: token,
-                    },
-                  });
-                }
-                // props.navigation.push("otherprofile", { idUser: item.id })
-              }
-              style={{ flexDirection: "row", width: "75%" }}
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "otherprofile",
+                  params: {
+                    idUser: item.id,
+                    token: token,
+                  },
+                });
+              }}
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                alignItems: "center",
+              }}
             >
               <Image
                 source={
@@ -264,74 +270,88 @@ export default function Follower(props) {
                 }
                 style={{
                   resizeMode: "cover",
-                  height: 55,
-                  width: 55,
-                  borderRadius: 40,
+                  height: normalize(50),
+                  width: normalize(50),
+                  borderRadius: 50,
                 }}
               />
               <View
                 style={{
-                  width: "70%",
-                  marginLeft: 20,
-                  justifyContent: "center",
-                  paddingVertical: 1,
+                  marginLeft: 10,
+                  justifyContent: "space-around",
+                  flex: 1,
                 }}
               >
                 {item.last_name !== null ? (
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ marginBottom: 5 }}
-                  >
-                    {item.first_name + " " + item.last_name}
+                  <Text size="description" type="black" numberOfLines={2}>
+                    {`${item.first_name} ${item.last_name}`}
                   </Text>
                 ) : (
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ marginBottom: 5 }}
-                  >
+                  <Text size="description" type="black" numberOfLines={2}>
                     {item.first_name}
                   </Text>
                 )}
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{ marginBottom: 5 }}
-                >
+                <Text size="description" type="regular">
                   {`@${item.username}`}
                 </Text>
                 {item?.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
                     {item?.bio ? item.bio : ""}
-                    {/* <Truncate text={item?.bio ? item.bio : ""} length={40} /> */}
                   </Text>
                 ) : null}
               </View>
             </TouchableOpacity>
 
-            <View style={{}}>
+            <View style={{ width: "25%", marginLeft: 15 }}>
               {item.status_following === false ? (
-                <Button
-                  size="small"
-                  type="circle"
-                  variant="bordered"
-                  style={{ width: 100 }}
-                  text={t("follow")}
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#209fae",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
                   onPress={() => {
                     _follow(item.id, index);
                   }}
-                ></Button>
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#209fae",
+                    }}
+                  >
+                    {t("follow")}
+                  </Text>
+                </Pressable>
               ) : (
-                <Button
-                  size="small"
-                  type="circle"
-                  style={{ width: 100 }}
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    width: "100%",
+                    backgroundColor: "#209fae",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
                   onPress={() => {
                     _unfollow(item.id, index);
                   }}
-                  text={t("following")}
-                ></Button>
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#fff",
+                    }}
+                  >
+                    {t("following")}
+                  </Text>
+                </Pressable>
               )}
             </View>
           </View>

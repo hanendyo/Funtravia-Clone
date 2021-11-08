@@ -1017,10 +1017,10 @@ export default function ItineraryPopuler(props) {
               <Ripple
                 onPress={() => setActives("Itinerary")}
                 style={{
-                  width: Dimensions.get("screen").width * 0.32,
+                  width: Dimensions.get("screen").width * 0.333,
                   alignItems: "center",
                   justifyContent: "center",
-                  borderBottomWidth: actives == "Itinerary" ? 1 : 0,
+                  borderBottomWidth: actives == "Itinerary" ? 2 : 1,
                   borderBottomColor:
                     actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
                   // paddingTop: 10,
@@ -1061,10 +1061,10 @@ export default function ItineraryPopuler(props) {
               <Ripple
                 onPress={() => setActives("Album")}
                 style={{
-                  width: Dimensions.get("screen").width * 0.32,
+                  width: Dimensions.get("screen").width * 0.333,
                   alignItems: "center",
                   justifyContent: "center",
-                  borderBottomWidth: actives == "Album" ? 1 : 0,
+                  borderBottomWidth: actives == "Album" ? 2 : 1,
                   borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
                   // paddingTop: 10,
                   // paddingBottom: 15,
@@ -1102,10 +1102,10 @@ export default function ItineraryPopuler(props) {
               <Ripple
                 onPress={() => setSoon(true)}
                 style={{
-                  width: Dimensions.get("screen").width * 0.32,
+                  width: Dimensions.get("screen").width * 0.333,
                   alignItems: "center",
                   justifyContent: "center",
-                  borderBottomWidth: actives == "Stories" ? 1 : 0,
+                  borderBottomWidth: actives == "Stories" ? 2 : 1,
                   borderBottomColor:
                     actives == "Stories" ? "#249FAE" : "#EEEEEE",
                   // paddingTop: 10,
