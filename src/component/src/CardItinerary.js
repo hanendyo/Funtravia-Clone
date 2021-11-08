@@ -177,7 +177,7 @@ export default function CardItinerary({
         renderItem={({ item, index }) => (
           <View
             style={{
-              height: normalize(167),
+              height: normalize(175),
               paddingHorizontal: 15,
               marginBottom: 7,
             }}

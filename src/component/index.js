@@ -32,6 +32,8 @@ import PagenotFound from "./src/PagenotFound";
 import Uuid from "./src/Uuid";
 import CardItinerary from "./src/CardItinerary";
 import ModalLogin from "./src/ModalLogin";
+import CardDestination from "./src/CardDestination";
+import CardEvents from "./src/CardEvents";
 
 export {
   Text,
@@ -68,4 +70,6 @@ export {
   Uuid,
   CardItinerary,
   ModalLogin,
+  CardDestination,
+  CardEvents,
 };

@@ -828,5 +828,7 @@
   "FailedSetGender": "Gagal mengatur jenis kelamin",
   "FailedSetDateofBirth": "Gagal mengatur tanggal lahir",
   "FailedLikeItinerary": "Gagal menyukai itinerary",
-  "failedCommentTPost": "Gagal memberikan komentar di post ini"
+  "failedCommentTPost": "Gagal memberikan komentar di post ini",
+  "FailedLikeDestination": "Gagal menyukai destinasi",
+  "FailedLikeEvents": "Gagal menyukai event"
 }
