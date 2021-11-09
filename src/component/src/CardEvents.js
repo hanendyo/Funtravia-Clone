@@ -21,6 +21,8 @@ export default function CardEvents({ data, props, setData, token }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
 
+  console.log("data", data);
+
   const [
     mutationliked,
     { loading: loadingLike, data: dataLike, error: errorLike },

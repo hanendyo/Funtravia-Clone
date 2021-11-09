@@ -61,6 +61,7 @@ import {
   FunMaps,
   shareAction,
   CopyLink,
+  CardItinerary,
 } from "../../../component";
 import { Input, Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
@@ -102,6 +103,7 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function CityDetail(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
+  let [setting, setSetting] = useState("");
   let [search, setTextc] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
@@ -267,6 +269,8 @@ export default function CityDetail(props) {
 
   const refreshData = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
     await setToken(tkn);
     await getPackageDetail();
     await getJournalCity();
@@ -724,11 +728,11 @@ export default function CityDetail(props) {
               </Text>
               {full == false && render.description.length > 120 ? (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
-                    // lineHeight: normalize(30),
+                    lineHeight: normalize(20),
                   }}
                 >
                   <Truncate
@@ -738,11 +742,11 @@ export default function CityDetail(props) {
                 </Text>
               ) : (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
-                    // lineHeight: 30,
+                    lineHeight: normalize(20),
                   }}
                 >
                   {render ? render.description : null}
@@ -758,7 +762,7 @@ export default function CityDetail(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{
                       color: "#209FAE",
@@ -775,7 +779,7 @@ export default function CityDetail(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
@@ -1237,7 +1241,6 @@ export default function CityDetail(props) {
                   style={{
                     borderTopLeftRadius: 5,
                     borderTopRightRadius: 5,
-
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
@@ -1258,8 +1261,8 @@ export default function CityDetail(props) {
                               flexDirection: "row",
                               width: width - 50,
                               height: width * 0.2,
-
                               padding: 5,
+                              alignItems: "center",
                             }}
                           >
                             {dataX && dataX.userby ? (
@@ -1296,21 +1299,24 @@ export default function CityDetail(props) {
                                 }}
                               >
                                 <Text
+                                  numberOfLines={1}
+                                  size="label"
                                   style={{
-                                    width: "80%",
+                                    width: "100%",
+                                    color: "#209fae",
+                                    marginBottom: 3,
                                   }}
                                   type="bold"
                                 >
-                                  <Truncate
-                                    text={dataX?.title ? dataX.title : ""}
-                                    length={28}
-                                  />
+                                  {dataX?.title}
                                 </Text>
-                                <Text>
-                                  <Truncate
-                                    text={dataX?.text ? dataX.text : ""}
-                                    length={60}
-                                  />
+                                <Text
+                                  size="description"
+                                  type="regular"
+                                  numberOfLines={2}
+                                  style={{ lineHeight: 15 }}
+                                >
+                                  {dataX?.text}
                                 </Text>
                               </View>
                               <View
@@ -2007,513 +2013,32 @@ export default function CityDetail(props) {
         {renderItinerary.length > 0 ? (
           <View
             style={{
-              paddingTop: 15,
               flexDirection: "column",
+              width: Dimensions.get("screen").width,
+              marginLeft: -15,
             }}
           >
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-
-                paddingHorizontal: 5,
+                paddingHorizontal: 15,
+                marginBottom: 10,
               }}
             >
               <Text type="bold" size="title" style={{}}>
                 {t("Itinerary")}
               </Text>
-              <Ripple
-                onPress={() => {
-                  props.navigation.navigate("ItineraryStack", {
-                    screen: "ItineraryCategory",
-                    params: {
-                      typeCategory: null,
-                      idcity: render.id,
-                      typeOrder: null,
-                    },
-
-                    // idcountries:
-                  });
-                }}
-              >
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  {t("viewAll")}
-                </Text>
-              </Ripple>
             </View>
             {loadingCity ? (
               <View style={{ marginVertical: 20 }}>
                 <ActivityIndicator animating={true} color="#209FAE" />
               </View>
             ) : renderItinerary.length > 0 ? (
-              <FlatList
-                data={renderItinerary}
-                keyExtractor={(item) => item.id}
-                horizontal={true}
-                contentContainerStyle={{
-                  paddingLeft: 2,
-                  paddingVertical: 15,
-                }}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      height: 145,
-
-                      marginTop: 0,
-                      width: Dimensions.get("screen").width - 35,
-                      marginRight: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        borderRadius: 10,
-                        backgroundColor: "#FFF",
-                        shadowColor: "#000",
-                        shadowOffset: {
-                          width: 0,
-                          height: 5,
-                        },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 6.27,
-                        elevation: 6,
-                        width: "100%",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Pressable
-                        onPress={() =>
-                          props.navigation.navigate("ItineraryStack", {
-                            screen: "itindetail",
-                            params: {
-                              itintitle: item.name,
-                              country: item.id,
-                              token: token,
-                              status: "favorite",
-                              index: 0,
-                            },
-                          })
-                        }
-                        style={{
-                          backgroundColor: "#FFFFFF",
-                          height: "80%",
-                          flexDirection: "row",
-                          zIndex: -1,
-                          borderWidth: 1,
-                          borderTopLeftRadius: 10,
-                          borderTopRightRadius: 10,
-                          borderColor: "#d1d1d1",
-                        }}
-                      >
-                        <View
-                          style={{
-                            width: "40%",
-                          }}
-                        >
-                          <Image
-                            source={
-                              item && item.cover
-                                ? {
-                                    uri: item.cover,
-                                  }
-                                : default_image
-                            }
-                            style={{
-                              height: "100%",
-                              width: "100%",
-                              borderTopLeftRadius: 10,
-                            }}
-                          />
-                          <View
-                            style={{
-                              position: "absolute",
-                              height: 30,
-                              marginTop: 10,
-                              // borderWidth: 1,
-                              margin: 5,
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Image
-                              style={{
-                                height: 30,
-                                width: 30,
-                                borderRadius: 16,
-                                borderColor: "rgba(52, 52, 52, 0.75)",
-                                zIndex: 1,
-                              }}
-                              source={
-                                item &&
-                                item.user_created &&
-                                item.user_created.picture
-                                  ? {
-                                      uri: item.user_created.picture,
-                                    }
-                                  : default_image
-                              }
-                            />
-                            <Text
-                              size="description"
-                              type="bold"
-                              style={{
-                                zIndex: 0,
-                                paddingLeft: 10,
-                                paddingRight: 8,
-                                backgroundColor: "rgba(52, 52, 52, 0.8)",
-                                borderRadius: 5,
-                                color: "white",
-                                marginLeft: -5,
-                                padding: 2,
-                              }}
-                            >
-                              {Truncate({
-                                text: item?.user_created?.first_name
-                                  ? item?.user_created?.first_name
-                                  : "user_deleted",
-                                length: 17,
-                              })}
-                            </Text>
-                          </View>
-                        </View>
-
-                        <View
-                          style={{
-                            width: "60%",
-                            backgroundColor: "#FFFFFF",
-                            borderTopRightRadius: 10,
-                            paddingVertical: 10,
-                            overflow: "hidden",
-                          }}
-                        >
-                          <View
-                            style={{
-                              paddingHorizontal: 10,
-                              height: "100%",
-                            }}
-                          >
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-
-                                alignItems: "center",
-                              }}
-                            >
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    backgroundColor: "#DAF0F2",
-                                    borderWidth: 0.5,
-                                    borderRadius: 3,
-                                    borderColor: "#209FAE",
-                                    paddingHorizontal: 5,
-                                    paddingVertical: 2,
-                                  }}
-                                >
-                                  <Text
-                                    type="regular"
-                                    size="description"
-                                    style={{
-                                      color: "#209FAE",
-                                    }}
-                                  >
-                                    {item?.categori?.name
-                                      ? item?.categori?.name
-                                      : "No Category"}
-                                  </Text>
-                                </View>
-                                <View
-                                  style={{
-                                    height: 5,
-                                    width: 5,
-                                    borderRadius: 5,
-                                    backgroundColor: "#000000",
-                                    marginHorizontal: 10,
-                                    alignSelf: "center",
-                                  }}
-                                />
-                                <View
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  {item.isprivate == false ? (
-                                    <Newglobe width={20} height={20} />
-                                  ) : (
-                                    <Padlock width={20} height={20} />
-                                  )}
-                                </View>
-                              </View>
-
-                              <View>
-                                {item.liked === false ? (
-                                  <Ripple
-                                    onPress={() =>
-                                      _likeditinerary(item.id, index)
-                                    }
-                                  >
-                                    <LikeEmpty height={12} width={12} />
-                                  </Ripple>
-                                ) : (
-                                  <Ripple
-                                    onPress={() =>
-                                      _unlikeditinerary(item.id, index)
-                                    }
-                                  >
-                                    <LikeRed height={12} width={12} />
-                                  </Ripple>
-                                )}
-                              </View>
-                            </View>
-                            <View
-                              style={{
-                                justifyContent: "space-between",
-
-                                height: "90%",
-                              }}
-                            >
-                              <View
-                                style={{
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <Text
-                                  size="readable"
-                                  type="black"
-                                  style={{
-                                    marginTop: 5,
-                                  }}
-                                >
-                                  <Truncate
-                                    text={item?.name ? item.name : ""}
-                                    length={40}
-                                  />
-                                </Text>
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    marginTop: 5,
-                                  }}
-                                >
-                                  <PinHijau width={15} height={15} />
-                                  <Text
-                                    style={{
-                                      marginLeft: 5,
-                                    }}
-                                    size="description"
-                                    type="regular"
-                                  >
-                                    {item?.country?.name}
-                                  </Text>
-                                  <Text>,</Text>
-                                  <Text
-                                    size="description"
-                                    type="regular"
-                                    style={{
-                                      marginLeft: 3,
-                                    }}
-                                  >
-                                    {item?.city?.name}
-                                  </Text>
-                                </View>
-                              </View>
-                              <View
-                                style={{
-                                  flexDirection: "row",
-                                  marginTop: 20,
-                                  marginBottom: Platform.OS == "ios" ? 5 : 10,
-                                }}
-                              >
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-
-                                    marginLeft: 5,
-                                  }}
-                                >
-                                  <Calendargrey
-                                    width={10}
-                                    height={10}
-                                    style={{
-                                      marginRight: 5,
-                                    }}
-                                  />
-
-                                  <Text size="description" type="regular">
-                                    {item.start_date && item.end_date
-                                      ? getDN(item.start_date, item.end_date)
-                                      : null}
-                                  </Text>
-                                </View>
-
-                                <View
-                                  style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    marginLeft: 15,
-                                  }}
-                                >
-                                  <User
-                                    width={10}
-                                    height={10}
-                                    style={{
-                                      marginRight: 5,
-                                    }}
-                                  />
-                                  {item.buddy_count > 1 ? (
-                                    <Text size="description" type="regular">
-                                      {(item && item.buddy_count
-                                        ? item.buddy_count
-                                        : null) +
-                                        " " +
-                                        t("persons")}
-                                    </Text>
-                                  ) : (
-                                    <Text size="description" type="regular">
-                                      {(item && item.buddy_count
-                                        ? item.buddy_count
-                                        : null) +
-                                        " " +
-                                        t("person")}
-                                    </Text>
-                                  )}
-                                </View>
-                              </View>
-                            </View>
-                          </View>
-                        </View>
-                      </Pressable>
-                      <View
-                        style={{
-                          height: "22%",
-                          width: "100%",
-                          flexDirection: "row",
-                          backgroundColor: "#FFFFFF",
-                          borderBottomLeftRadius: 10,
-                          borderBottomRightRadius: 10,
-                          marginRight: 10,
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Pressable
-                          onPress={() =>
-                            props.navigation.navigate("ItineraryStack", {
-                              screen: "itindetail",
-                              params: {
-                                itintitle: item.name,
-                                country: item.id,
-                                token: token,
-                                status: "favorite",
-                                index: 1,
-                              },
-                            })
-                          }
-                          style={{
-                            width: "50%",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderLeftWidth: 1,
-                            borderBottomWidth: 1,
-                            borderColor: "#d1d1d1",
-                            borderBottomLeftRadius: 10,
-                            // borderRightWidth: 1,
-                            borderColor: "#D1D1D1",
-                            // marginBottom: 5,
-                          }}
-                        >
-                          <TravelAlbum
-                            style={{
-                              marginRight: 5,
-                            }}
-                            height={12}
-                            width={12}
-                          />
-                          <Text
-                            size="description"
-                            type="bold"
-                            style={{
-                              color: "#209FAE",
-                            }}
-                          >
-                            Travel Album
-                          </Text>
-                        </Pressable>
-                        <View
-                          style={{
-                            alignContent: "center",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <View
-                            style={{
-                              height: "100%",
-                              width: 1,
-                              backgroundColor: "#d1d1d1",
-                              borderBottomWidth: 1,
-                              borderBottomColor: "#D1D1D1",
-                            }}
-                          />
-                        </View>
-                        <Pressable
-                          onPress={() =>
-                            props.navigation.navigate("ItineraryStack", {
-                              screen: "itindetail",
-                              params: {
-                                itintitle: item.name,
-                                country: item.id,
-                                token: token,
-                                status: "favorite",
-                                index: 2,
-                              },
-                            })
-                          }
-                          style={{
-                            width: "49%",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            borderRightWidth: 1,
-                            borderBottomWidth: 1,
-                            borderColor: "#d1d1d1",
-                            borderBottomRightRadius: 10,
-                            justifyContent: "center",
-                            // marginBottom: 5,
-                          }}
-                        >
-                          <TravelStories
-                            style={{
-                              marginRight: 5,
-                            }}
-                            height={12}
-                            width={12}
-                          />
-                          <Text
-                            size="description"
-                            type="bold"
-                            style={{
-                              color: "#209FAE",
-                            }}
-                          >
-                            Travel Stories
-                          </Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </View>
-                )}
+              <CardItinerary
+                data={list_populer}
+                props={props}
+                token={token}
+                setting={setting}
+                setData={(e) => setList_populer(e)}
               />
             ) : null}
           </View>
@@ -2767,7 +2292,6 @@ export default function CityDetail(props) {
         startRefreshAction();
       }
     }
-
     // check pull to refresh
   };
 
