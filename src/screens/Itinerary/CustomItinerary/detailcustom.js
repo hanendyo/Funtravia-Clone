@@ -9,6 +9,8 @@ import {
   Linking,
   Image,
   Platform,
+  Modal,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -20,6 +22,7 @@ import {
   More,
   New,
   Xhitam,
+  Xgray,
 } from "../../../assets/svg";
 import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
 import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
@@ -30,8 +33,15 @@ import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
 import ImageSlide from "../../../component/src/ImageSlide";
+import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
+import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
+import { StackActions } from "@react-navigation/native";
+import FileViewer from "react-native-file-viewer";
+import RNFetchBlob from "rn-fetch-blob";
+import { RNToasty } from "react-native-toasty";
 
 export default function detailCustomItinerary(props) {
+  console.log(props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -100,6 +110,7 @@ export default function detailCustomItinerary(props) {
   };
 
   let [dataParent, setDataParent] = useState({});
+  console.log("dataParent", dataParent);
   let [dataChild, setDataChild] = useState([]);
   let [modalmenu, setModalmenu] = useState(false);
 
@@ -124,6 +135,134 @@ export default function detailCustomItinerary(props) {
 
     await setDataParent(dataparents);
     await setDataChild(dataX);
+  };
+
+  const hitungDuration = ({ startt, dur }) => {
+    var duration = dur ? dur.split(":") : "00:00:00";
+    var starttime = startt ? startt.split(":") : "00:00:00";
+
+    var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
+
+    var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
+    if (menit > 59) {
+      menit = menit - 60;
+    }
+
+    return (
+      (jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam) +
+      ":" +
+      (menit < 10 ? "0" + menit : menit) +
+      ":00"
+    );
+  };
+
+  const [
+    mutationSaveTimeline,
+    { loading: loadingSave, data: dataSave, error: errorSave },
+  ] = useMutation(UpdateTimeline, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationDeleteActivity,
+    {
+      loading: Loadingdeleteactivity,
+      data: datadeleteactivity,
+      error: errordeleteactivity,
+    },
+  ] = useMutation(DeleteActivity, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const deleteactivity = async () => {
+    try {
+      let response = await mutationDeleteActivity({
+        variables: {
+          itinerary_id: props.route.params.idItin,
+          id_activity: props.route.params.id,
+          type: "custom",
+        },
+      });
+      if (errordeleteactivity) {
+        throw new Error("Error Input");
+      }
+      if (response.data) {
+        if (response.data.delete_activity.code !== 200) {
+          throw new Error(response.data.delete_activity.message);
+        }
+
+        var Xdata = [...props.route.params.data];
+        var inde = Xdata.findIndex((k) => k["id"] === props.route.params.id);
+
+        if (inde !== -1) {
+          Xdata.splice(inde, 1);
+
+          var x = 0;
+          var order = 1;
+          for (var y in Xdata) {
+            Xdata[y].order = order;
+
+            if (Xdata[y - 1]) {
+              Xdata[y].time = hitungDuration({
+                startt: Xdata[y - 1].time,
+                dur: Xdata[y - 1].duration,
+              });
+            }
+            x++;
+            order++;
+          }
+
+          if ((x = Xdata.length)) {
+            try {
+              let response = await mutationSaveTimeline({
+                variables: {
+                  idday: props.route.params.datadayaktif.id,
+                  value: JSON.stringify(Xdata),
+                },
+              });
+
+              if (errorSave) {
+                throw new Error("Error Input");
+              }
+              if (response.data) {
+                if (response.data.update_timeline.code !== 200) {
+                  throw new Error(response.data.update_timeline.message);
+                }
+                props.navigation.dispatch(
+                  StackActions.replace("ItineraryStack", {
+                    screen: "itindetail",
+                    params: {
+                      itintitle: props.route.params.nameitin,
+                      country: props.route.params.idItin,
+                      token: token,
+                      status: "edit",
+                    },
+                  })
+                );
+              }
+            } catch (error) {
+              Alert.alert("" + error);
+            }
+          }
+          await props.navigation.goBack();
+        }
+
+        setModalDeleteActivity(false);
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+      setModalDeleteActivity(false);
+    }
   };
 
   useEffect(() => {
@@ -215,6 +354,39 @@ export default function detailCustomItinerary(props) {
       },
     },
   });
+
+  const handleEdit = () => {
+    // if (dataParent.detail_flight !== null) {
+    //   props.navigation.navigate("ItineraryStack"),
+    //     {
+    //       screen: "customFlight",
+    //       params: {
+    //         itineraryId: props.route.params.idItin,
+    //         idDay: props.route.params.idDay,
+    //         startDate: props.route.params.startDate,
+    //         endDate: props.route.params.startDate,
+    //       },
+    //     };
+    // } else if (dataParent.detail_accomodation !== null) {
+    //   props.navigation.navigate("ItineraryStack"),
+    //     {
+    //       screen: "customStay",
+    //       params: {
+    //         itineraryId: props.route.params.idItin,
+    //         idDay: props.route.params.idDay,
+    //         startDate: props.route.params.startDate,
+    //         endDate: props.route.params.startDate,
+    //       },
+    //     };
+    // } else {
+    //   setModalMore(false);
+    // }
+    RNToasty.Show({
+      title: "Sorry, feature is not available yet",
+      position: "bottom",
+    });
+    setModalMore(false);
+  };
 
   const handleUpload = async (files, id, sumber, res) => {
     try {
@@ -321,6 +493,41 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  const handleAttachment = (data) => {
+    const fileUrl = data.filepath;
+    const ext = fileUrl
+      .split(/[#?]/)[0]
+      .split(".")
+      .pop()
+      .trim();
+    return new Promise((resolve, reject) => {
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: ext,
+      })
+        .fetch("GET", fileUrl)
+        .then((res) => {
+          console.log("The file saved to ", res.path());
+          const downloadFile =
+            Platform.OS === "android"
+              ? "file://" + res.path()
+              : "" + res.path();
+          setTimeout(() => {
+            FileViewer.open(downloadFile, {
+              // showOpenWithDialog: true,
+              showAppsSuggestions: true,
+              onDismiss: () => RNFetchBlob.fs.unlink(res.path()),
+            });
+          }, 350);
+          resolve(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  };
+
   const _handle_hapusChild = async (item, index, indah, dataChild) => {
     try {
       let response = await mutationdelete({
@@ -352,10 +559,14 @@ export default function detailCustomItinerary(props) {
   };
 
   const x = dataChild.length - 1;
+  console.log("dataChild", dataChild);
+  console.log("dataParent", dataParent);
 
   let [indeks, setIndeks] = useState(0);
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
+  const [modalMore, setModalMore] = useState(false);
+  const [modalDeleteActivity, setModalDeleteActivity] = useState(false);
 
   const ImagesSlider = async (index, data) => {
     // console.log(index, data, "masuk paji masuk");
@@ -384,6 +595,10 @@ export default function detailCustomItinerary(props) {
     await setIndeks(index);
     await setGambar(tempdatas);
     await setModalss(true);
+  };
+
+  const bukamodalmenu = (id, type) => {
+    setModalMore(true);
   };
 
   return (
@@ -523,9 +738,9 @@ export default function detailCustomItinerary(props) {
                   type="circle"
                   variant="transparent"
                   style={{}}
-                  // onPress={() => {
-                  //   bukamodalmenu(item.id, item.type);
-                  // }}
+                  onPress={() => {
+                    bukamodalmenu(item.id, item.type);
+                  }}
                 >
                   <More width={15} height={15} />
                 </Button>
@@ -658,9 +873,14 @@ export default function detailCustomItinerary(props) {
                               }}
                             >
                               <Text style={{ width: 30 }}>{indah + 1}. </Text>
-                              <Text style={{ flex: 1, paddingBottom: 5 }}>
-                                {data.file_name}
-                              </Text>
+                              <TouchableOpacity
+                                onPress={() => handleAttachment()}
+                              >
+                                <Text style={{ flex: 1, paddingBottom: 5 }}>
+                                  {data.file_name}
+                                </Text>
+                              </TouchableOpacity>
+
                               <TouchableOpacity
                                 onPress={() => {
                                   _handle_hapusChild(
@@ -841,7 +1061,8 @@ export default function detailCustomItinerary(props) {
                 variant="transparent"
                 style={{}}
                 onPress={() => {
-                  bukamodalmenu(item.id, item.type);
+                  // console.log(dataParent.id, dataParent.type);
+                  bukamodalmenu(dataParent.id, dataParent.type);
                 }}
               >
                 <More width={15} height={15} />
@@ -1041,11 +1262,12 @@ export default function detailCustomItinerary(props) {
                                 flex: 1,
                               }}
                               onPress={() => {
-                                data.extention === "JPG" ||
-                                data.extention === "JPEG" ||
-                                data.extention === "PNG"
-                                  ? ImagesSlider(index, dataParent.attachment)
-                                  : null;
+                                // data.extention === "JPG" ||
+                                // data.extention === "JPEG" ||
+                                // data.extention === "PNG"
+                                //   ? ImagesSlider(index, dataParent.attachment)
+                                //   : null;
+                                handleAttachment(data, index);
                               }}
                             >
                               <Text style={{ flex: 1, paddingBottom: 5 }}>
@@ -1116,6 +1338,218 @@ export default function detailCustomItinerary(props) {
           </View>
         )}
       />
+
+      {/* Modal edit activity */}
+      <Modal
+        onBackdropPress={() => {
+          setModalMore(false);
+        }}
+        onRequestClose={() => setModalMore(false)}
+        onDismiss={() => setModalMore(false)}
+        animationType="fade"
+        visible={modalMore}
+        transparent={true}
+      >
+        <Pressable
+          onPress={() => setModalMore(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            // backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: Dimensions.get("screen").height / 2.5,
+            borderRadius: 5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                alignItems: "center",
+                backgroundColor: "#f6f6f6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalMore(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                handleEdit();
+              }}
+            >
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  color: "#464646",
+                  marginVertical: 15,
+                }}
+              >
+                {t("edit")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setModalMore(false);
+                setModalDeleteActivity(true);
+              }}
+            >
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  color: "#d75995",
+                  marginVertical: 15,
+                }}
+              >
+                {t("delete")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Delete Activity */}
+      <Modal
+        useNativeDriver={true}
+        visible={modalDeleteActivity}
+        onRequestClose={() => setModalDeleteActivity(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalDeleteActivity(false)}
+          style={{
+            width: Dimensions.get("screen").width + 25,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            left: -21,
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 140,
+            // marginHorizontal: 70,
+            alignSelf: "center",
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 2.5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 140,
+              justifyContent: "center",
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("deleteActivity")}
+              </Text>
+            </View>
+            <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 20,
+                marginHorizontal: 10,
+              }}
+              size="label"
+              type="regular"
+            >
+              {t("DeleteActivityfromItinerary")}
+            </Text>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <Button
+                onPress={() => {
+                  // _handledeleteDay(
+                  //   datadayaktif?.itinerary_id,
+                  //   datadayaktif?.id
+                  // );
+                  // setModalDeleteActivity(false);
+                  deleteactivity();
+                }}
+                color="secondary"
+                text={t("delete")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalDeleteActivity(false);
+                }}
+                style={{ marginVertical: 5 }}
+                variant="transparent"
+                text={t("discard")}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

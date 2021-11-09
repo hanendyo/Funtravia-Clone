@@ -6,6 +6,7 @@ export default function FloatingInput({
   customStyle,
   customTextStyle,
   label,
+  customInput,
   ...otherProps
 }) {
   let [isFocused, setIsFocused] = useState(false);
@@ -41,14 +42,24 @@ export default function FloatingInput({
   return (
     <View style={containerStyle}>
       <Animated.Text style={labelStyle}>{label}</Animated.Text>
-      <TextInput
-        style={textStyle}
-        {...otherProps}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        blurOnSubmit
-        selection={{ start: 0, end: 0 }}
-      />
+      {customInput ? (
+        <TextInput
+          style={textStyle}
+          {...otherProps}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          blurOnSubmit
+          selection={{ start: 0, end: 0 }}
+        />
+      ) : (
+        <TextInput
+          style={textStyle}
+          {...otherProps}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          blurOnSubmit
+        />
+      )}
     </View>
   );
 }

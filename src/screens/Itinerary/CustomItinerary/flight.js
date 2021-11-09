@@ -499,6 +499,7 @@ export default function detailCustomItinerary(props) {
                 value={from}
                 onChangeText={(e) => setFrom(e)}
                 style={styles.textInputOneLine}
+                customInput
               />
               {from.length === 0 ? (
                 itemValid.from === false ? (
@@ -525,6 +526,7 @@ export default function detailCustomItinerary(props) {
                 value={to}
                 onChangeText={(e) => setTo(e)}
                 style={styles.textInputOneLineTo}
+                customInput
               />
               {to.length === 0 ? (
                 itemValid.to === false ? (

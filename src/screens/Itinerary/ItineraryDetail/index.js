@@ -195,6 +195,14 @@ export default function ItineraryDetail(props) {
     "13n": "w-snowflakes",
     "50n": "w-windy",
   });
+
+  const type = {
+    custom: t("customActivity"),
+    event: t("event"),
+    google: t("destinationFromGoogle"),
+    destination: t("destination"),
+  };
+
   const jams = [
     "00",
     "01",
@@ -2414,7 +2422,10 @@ export default function ItineraryDetail(props) {
                             token: token,
                             idItin: itineraryId,
                             id: item.id,
+                            idDay: idDay,
                             nameitin: datadetail.itinerary_detail.name,
+                            startDate: datadetail?.itinerary_detail?.start_date,
+                            endDate: datadetail?.itinerary_detail?.end_date,
                             datadayaktif: datadayaktif,
                           })
                         : null;
@@ -2426,12 +2437,7 @@ export default function ItineraryDetail(props) {
                     {!item?.type_custom ? (
                       <Text>
                         {Capital({
-                          text:
-                            item.type !== "custom"
-                              ? item.type !== "google"
-                                ? item.type
-                                : t("destinationFromGoogle")
-                              : t("customActivity"),
+                          text: type[item.type],
                         })}
                       </Text>
                     ) : null}
