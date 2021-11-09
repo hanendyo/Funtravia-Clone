@@ -295,6 +295,7 @@ import ChatItinerary from "./files/chat_itinerary.svg";
 import CalendarItinerary from "./files/calendar_itinerary.svg";
 import PeopleItinerary from "./files/people_itinerary.svg";
 import CalendarBiru from "./files/calendar_biru.svg";
+import SavePutih from "./files/savePutih.svg";
 
 export {
   PeopleItinerary,
@@ -594,4 +595,5 @@ export {
   PopularItineraryImage,
   NewItineraryImage,
   CalendarBiru,
+  SavePutih,
 };

@@ -43,7 +43,6 @@ export default function Home(props) {
   let [loadingModal, setLoadingModal] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
 
-  console.log(token);
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
     Account,
     {
