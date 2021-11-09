@@ -52,6 +52,7 @@
     "react-native-fast-image": "^8.3.4",
     "react-native-fast-toast": "^2.3.0",
     "react-native-fbsdk": "^3.0.0",
+    "react-native-file-viewer": "^2.1.4",
     "react-native-fs": "^2.17.0",
     "react-native-geolocation-service": "^5.1.1",
     "react-native-gesture-handler": "^1.10.3",
@@ -92,6 +93,7 @@
     "react-native-view-more-text": "^2.1.0",
     "react-native-webview": "^11.4.3",
     "react-show-more-text": "^1.5.0",
+    "rn-fetch-blob": "^0.12.0",
     "runes": "^0.4.3",
     "shorthash": "^0.0.2",
     "socket.io-client": "^3.0.5"
