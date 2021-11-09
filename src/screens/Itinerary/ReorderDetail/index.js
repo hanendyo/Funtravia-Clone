@@ -28,6 +28,7 @@ import {
   Complete,
   Stay,
   Flights,
+  SavePutih,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import DraggableFlatList from "react-native-draggable-flatlist";
@@ -43,7 +44,7 @@ export default function ReoderDetail({ navigation, route }) {
   const { t } = useTranslation();
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
-  console.log(`LISTDATACUI: `, listData);
+  // console.log(`LISTDATACUI: `, listData);
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
     route.params.child[0] ? route.params.child[0].time : "00:00"
@@ -169,7 +170,7 @@ export default function ReoderDetail({ navigation, route }) {
       // if (error) {
       //   throw new Error("Error Input");
       // }
-      console.log(`RESPONSE CUI: `, response);
+      // console.log(`RESPONSE CUI: `, response);
       if (response.data) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
@@ -196,8 +197,6 @@ export default function ReoderDetail({ navigation, route }) {
       });
     } catch (error) {
       console.log(`ERROR CUI: `, error);
-
-      // Alert.alert("Oops, Problem Save Detail Itinerary !");
       setModalSave(false);
       RNToasty.Show({
         title: t("somethingWrong"),
@@ -682,33 +681,30 @@ export default function ReoderDetail({ navigation, route }) {
   };
 
   const handleDrag = async (data) => {
-    console.log(`DRAG DATA: `, data);
-    let tmpData = [...data];
+    let tmpData = JSON.parse(JSON.stringify(data));
     tmpData[0].time = startTime;
     let x = 0;
     let order = 1;
     for (let i in tmpData) {
       tmpData[i].order = order;
-
       if (tmpData[i - 1]) {
         tmpData[i].time = hitungDuration({
           start: tmpData[i - 1].time,
           duration: tmpData[i - 1].duration,
         });
         // tmpData.push(order);
-        console.log(`TMPD: `, tmpData[i]);
       }
       x++;
       order++;
     }
     isEdited = true;
-    if (x == tmpData.length) {
-      setListData(tmpData);
-    }
+    // if (x == tmpData.length) {
+    setListData(tmpData);
+    // }
     // saveTimeLine();
   };
-  console.log(`SATU: `, listData);
-  console.log(`DUA: `, listData[1]);
+  // console.log(`SATU: `, listData);
+  // console.log(`DUA: `, listData[1]);
 
   const hitungDuration = ({ start, duration }) => {
     duration = duration ? duration.split(":") : "00:00:00";
@@ -729,7 +725,7 @@ export default function ReoderDetail({ navigation, route }) {
 
   let isEdited = false;
   const _backHandler = () => {
-    console.log(isEdited);
+    // console.log(isEdited);
     if (isEdited) {
       Alert.alert("Data Not Saved", "Are you sure ?", [
         {
@@ -773,6 +769,9 @@ export default function ReoderDetail({ navigation, route }) {
       background: "#FFF",
       marginLeft: 10,
     },
+    headerRightContainerStyle: {
+      marginRight: 10,
+    },
     headerLeft: () => (
       <Button
         text={""}
@@ -792,18 +791,23 @@ export default function ReoderDetail({ navigation, route }) {
       </Button>
     ),
     headerRight: () => (
-      <Button
+      <Pressable
         onPress={() => setModalSave(true)}
-        size="medium"
-        type="circle"
-        variant="transparent"
         style={{
-          height: 55,
-          marginRight: 10,
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <Complete width={25} height={25} />
-      </Button>
+        <SavePutih width={25} height={25} />
+        <Text
+          style={{
+            color: "#FFF",
+            marginLeft: 5,
+          }}
+        >
+          {t("save")}
+        </Text>
+      </Pressable>
     ),
   };
   useEffect(() => {
