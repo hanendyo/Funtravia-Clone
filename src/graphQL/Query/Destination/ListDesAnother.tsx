@@ -24,6 +24,14 @@ const ListDesAnother = gql`
       images {
         image
       }
+      movie_location {
+        id
+        title
+        description
+        cover
+        is_populer
+        populer_order
+      }
     }
   }
 `;

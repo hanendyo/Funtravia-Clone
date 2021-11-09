@@ -209,6 +209,7 @@ export default function listItinPlaning(props) {
   };
 
   const RenderActive = ({ data }) => {
+    console.log("data itinerary", data);
     return (
       <View
         style={{

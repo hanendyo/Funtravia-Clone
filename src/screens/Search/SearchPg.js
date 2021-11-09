@@ -24,6 +24,7 @@ import {
   FunIcon,
   FunImage,
   FunImageBackground,
+  CardEvents,
 } from "../../component";
 import {
   LikeRed,
@@ -829,10 +830,6 @@ export default function SearchPg(props, { navigation, route }) {
           },
         });
 
-        if (errorUnfolMut) {
-          throw new Error("Error Input");
-        }
-
         if (response.data) {
           if (response.data.unfollow_user.code !== 200) {
             throw new Error(response.data.unfollow_user.message);
@@ -1618,235 +1615,11 @@ export default function SearchPg(props, { navigation, route }) {
                     />
                   </View>
                 ) : (
-                  <FlatList
-                    contentContainerStyle={{
-                      marginBottom: 15,
-                      justifyContent: "space-evenly",
-                      paddingBottom: 5,
-                      marginHorizontal: 15,
-                    }}
-                    horizontal={false}
+                  <CardEvents
                     data={event_search}
-                    renderItem={({ item, index }) => (
-                      <View
-                        style={{
-                          justifyContent: "center",
-
-                          width: Dimensions.get("screen").width * 0.5 - 25,
-                          height: Dimensions.get("screen").width * 0.7,
-                          margin: 5,
-                          flexDirection: "column",
-                          backgroundColor: "white",
-                          borderRadius: 5,
-                          shadowColor: "gray",
-                          shadowOffset: {
-                            width: 2,
-                            height: 2,
-                          },
-                          shadowOpacity: 1,
-                          shadowRadius: 3,
-                          elevation: 3,
-                        }}
-                      >
-                        <View
-                          style={{
-                            position: "absolute",
-                            top: 15,
-                            left: 10,
-                            right: 10,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignContent: "center",
-                            zIndex: 9999,
-                          }}
-                        >
-                          <View
-                            style={{
-                              // bottom: (9),
-                              height: 21,
-                              minWidth: 60,
-                              borderRadius: 11,
-                              alignSelf: "center",
-                              justifyContent: "center",
-                              backgroundColor: "rgba(226, 236, 248, 0.85)",
-                              paddingHorizontal: 10,
-                            }}
-                          >
-                            <Text
-                              size="readable"
-                              style={{
-                                textAlign: "center",
-                              }}
-                            >
-                              {item.category.name}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              height: 26,
-                              width: 26,
-                              borderRadius: 50,
-                              alignSelf: "center",
-                              alignItems: "center",
-                              alignContent: "center",
-                              justifyContent: "center",
-                              backgroundColor: "rgba(226, 236, 248, 0.85)",
-                              // zIndex: 999,
-                            }}
-                          >
-                            {item.liked === false ? (
-                              <TouchableOpacity
-                                style={{
-                                  height: 26,
-                                  width: 26,
-                                  borderRadius: 50,
-                                  alignSelf: "center",
-                                  alignItems: "center",
-                                  alignContent: "center",
-                                  justifyContent: "center",
-
-                                  zIndex: 9999,
-                                }}
-                                onPress={() => _likedevent(item.id, index)}
-                              >
-                                <LikeEmpty height={13} width={13} />
-                              </TouchableOpacity>
-                            ) : (
-                              <TouchableOpacity
-                                style={{
-                                  height: 26,
-                                  width: 26,
-                                  borderRadius: 50,
-                                  alignSelf: "center",
-                                  alignItems: "center",
-                                  alignContent: "center",
-                                  justifyContent: "center",
-
-                                  zIndex: 9999,
-                                }}
-                                onPress={() => _unlikedevent(item.id, index)}
-                              >
-                                <LikeRed height={13} width={13} />
-                              </TouchableOpacity>
-                            )}
-                          </View>
-                        </View>
-
-                        <TouchableOpacity
-                          onPress={() => eventdetail(item)}
-                          style={{
-                            height: Dimensions.get("window").width * 0.47 - 16,
-                          }}
-                        >
-                          <FunImageBackground
-                            key={item.id}
-                            source={
-                              item.images.length
-                                ? {
-                                    uri: item.images[0].image,
-                                  }
-                                : default_image
-                            }
-                            style={[styles.ImageView]}
-                            imageStyle={[styles.Image]}
-                          ></FunImageBackground>
-                        </TouchableOpacity>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: "column",
-                            justifyContent: "space-around",
-                            height: 230,
-                            marginVertical: 5,
-                            marginHorizontal: 10,
-                          }}
-                        >
-                          <Text
-                            onPress={() => eventdetail(item)}
-                            size="title"
-                            type="bold"
-                            style={{}}
-                          >
-                            <Truncate text={item.name} length={27} />
-                          </Text>
-                          <View
-                            style={{
-                              height: "50%",
-                              flexDirection: "column",
-                              justifyContent: "space-around",
-                            }}
-                          >
-                            <View
-                              style={{
-                                // flex: 1,
-                                flexDirection: "row",
-                                width: "100%",
-                                borderColor: "grey",
-                              }}
-                            >
-                              <PinHijau width={15} height={15} />
-
-                              <Text
-                                size="readable"
-                                style={{
-                                  width: "100%",
-                                  marginLeft: 5,
-                                }}
-                              >
-                                {item.city.name}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                // flex: 1,
-                                flexDirection: "row",
-                                width: "100%",
-                                marginBottom: 3,
-                              }}
-                            >
-                              <Calendargrey width={15} height={15} />
-
-                              <Text
-                                size="readable"
-                                style={{
-                                  paddingRight: 20,
-                                  width: "100%",
-                                  marginLeft: 5,
-                                }}
-                              >
-                                {dateFormatBetween(
-                                  item.start_date,
-                                  item.end_date
-                                )}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                    )}
-                    numColumns={2}
-                    keyExtractor={(item, index) => index.toString()}
-                    showsVerticalScrollIndicator={false}
-                    ListFooterComponent={
-                      searchtext !== "" && event_search.length <= 0 ? (
-                        <View
-                          style={{
-                            // position: 'absolute',
-                            // bottom:0,
-                            width: width,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginTop: 30,
-                            marginLeft: -15,
-                            // borderWidth: 1,
-                          }}
-                        >
-                          <Text size="label" type="regular">
-                            {t("noData")}
-                          </Text>
-                        </View>
-                      ) : null
-                    }
+                    props={props}
+                    setData={(e) => SetEventSearch(e)}
+                    token={token}
                   />
                 )
               ) : null}
@@ -2761,7 +2534,7 @@ export default function SearchPg(props, { navigation, route }) {
                   >
                     <Text
                       type="bold"
-                      size="label"
+                      size="description"
                       style={{
                         // fontFamily: "Lato-Bold",
                         textAlign: "right",
@@ -2888,7 +2661,7 @@ export default function SearchPg(props, { navigation, route }) {
               >
                 <Text
                   type="bold"
-                  size="label"
+                  size="description"
                   style={{
                     // fontFamily: "Lato-Bold",
                     textAlign: "right",
@@ -2983,7 +2756,7 @@ export default function SearchPg(props, { navigation, route }) {
                   />
                 ) : (
                   <FlatList
-                    scrollEnabled={false}
+                    scrollEnabled={true}
                     contentContainerStyle={{
                       marginTop: 5,
                       justifyContent: "space-evenly",

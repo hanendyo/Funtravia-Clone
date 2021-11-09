@@ -18,6 +18,7 @@ import {
   PinHijau,
   TravelAlbum,
   TravelStoriesdis,
+  TravelAlbumdis,
 } from "../../assets/svg";
 import { Text, Truncate, Button } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -36,6 +37,8 @@ export default function CardItinerary({
   token,
   setting,
 }) {
+  console.log("Setting", setting);
+  console.log("data", data);
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
@@ -365,25 +368,29 @@ export default function CardItinerary({
                           <Newglobe height={20} width={20} />
                         )}
                       </View>
-                      {item.liked === false ? (
-                        <TouchableOpacity
-                          style={{
-                            padding: 5,
-                          }}
-                          onPress={() => _liked(item.id, index, item)}
-                        >
-                          <LikeEmpty height={15} width={15} />
-                        </TouchableOpacity>
-                      ) : (
-                        <TouchableOpacity
-                          style={{
-                            padding: 5,
-                          }}
-                          onPress={() => _unliked(item.id, index, item)}
-                        >
-                          <LikeRed height={15} width={15} />
-                        </TouchableOpacity>
-                      )}
+                      {item?.status == "F" &&
+                      !item?.isprivate &&
+                      item?.user_created?.id !== setting?.user_id ? (
+                        item.liked === false ? (
+                          <TouchableOpacity
+                            style={{
+                              padding: 5,
+                            }}
+                            onPress={() => _liked(item.id, index, item)}
+                          >
+                            <LikeEmpty height={15} width={15} />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            style={{
+                              padding: 5,
+                            }}
+                            onPress={() => _unliked(item.id, index, item)}
+                          >
+                            <LikeRed height={15} width={15} />
+                          </TouchableOpacity>
+                        )
+                      ) : null}
                     </View>
                     <Text
                       size="title"
@@ -417,17 +424,16 @@ export default function CardItinerary({
                   <View
                     style={{
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      justifyContent: "flex-start",
                       marginBottom: 8,
+                      overflow: "hidden",
                     }}
                   >
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "center",
-                        marginLeft: 3,
-                        marginRight: 10,
+                        justifyContent: "flex-start",
                       }}
                     >
                       <CalendarItinerary
@@ -437,7 +443,6 @@ export default function CardItinerary({
                           marginRight: 5,
                         }}
                       />
-
                       {item.start_date && item.end_date
                         ? getDN(item.start_date, item.end_date)
                         : null}
@@ -445,8 +450,8 @@ export default function CardItinerary({
                     <View
                       style={{
                         flexDirection: "row",
-                        alignItems: "center",
-                        marginRight: 10,
+                        alignItems: "flex-start",
+                        marginLeft: 7,
                       }}
                     >
                       <PeopleItinerary
@@ -459,10 +464,9 @@ export default function CardItinerary({
                           size="description"
                           type="regular"
                           numberOfLines={1}
+                          style={{ overflow: "hidden" }}
                         >
-                          {(item && item.buddy_count
-                            ? item.buddy_count
-                            : null) +
+                          {(item && item.buddy_count ? item.buddy_count : "0") +
                             " " +
                             t("persons")}
                         </Text>
@@ -491,6 +495,7 @@ export default function CardItinerary({
                 }}
               >
                 <Pressable
+                  disabled={item?.status == "D" ? true : false}
                   onPress={() =>
                     token
                       ? props.navigation.navigate("ItineraryStack", {
@@ -512,21 +517,39 @@ export default function CardItinerary({
                     justifyContent: "center",
                     borderRightWidth: 1,
                     borderColor: "#D1D1D1",
-                    //   marginBottom: 5,
                   }}
                 >
-                  <TravelAlbum
-                    style={{ marginRight: 5 }}
-                    height={20}
-                    width={20}
-                  />
-                  <Text
-                    size="description"
-                    type="bold"
-                    style={{ color: "#209FAE" }}
-                  >
-                    Travel Album
-                  </Text>
+                  {item?.status == "D" ? (
+                    <>
+                      <TravelAlbumdis
+                        style={{ marginRight: 5 }}
+                        height={20}
+                        width={20}
+                      />
+                      <Text
+                        size="description"
+                        type="regular"
+                        style={{ color: "#c7c7c7" }}
+                      >
+                        Travel Album
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <TravelAlbum
+                        style={{ marginRight: 5 }}
+                        height={20}
+                        width={20}
+                      />
+                      <Text
+                        size="description"
+                        type="bold"
+                        style={{ color: "#209FAE" }}
+                      >
+                        Travel Album
+                      </Text>
+                    </>
+                  )}
                 </Pressable>
                 <Pressable
                   onPress={() => setSoon(true)}

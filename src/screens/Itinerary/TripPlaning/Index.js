@@ -67,7 +67,8 @@ export default function TripPlaning(props) {
     ),
   };
 
-  let [token, setToken] = useState(null);
+  let [token, setToken] = useState("");
+  let [setting, setSetting] = useState("");
   let [loading, setloading] = useState(false);
   let [rData, setData] = useState([]);
   let [AData, setDataActive] = useState([]);
@@ -76,6 +77,8 @@ export default function TripPlaning(props) {
   const loadAsync = async () => {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
     setToken(tkn);
     if (tkn === null) {
       setModalLogin(true);
@@ -111,7 +114,6 @@ export default function TripPlaning(props) {
     },
   });
 
-  // console.log(planCount, "planC");
   const [
     GetData,
     { data, loading: loadingdata, error: errordata },
@@ -127,7 +129,6 @@ export default function TripPlaning(props) {
     onCompleted: () => {
       setData(data?.itinerary_list_draf);
     },
-    // variables: { status: "D" },
   });
 
   const [
@@ -437,6 +438,7 @@ export default function TripPlaning(props) {
         name="Edit"
         component={() => (
           <PlanList
+            setData={(e) => setData(e)}
             props={props}
             token={token}
             rData={rData}
@@ -445,6 +447,7 @@ export default function TripPlaning(props) {
             GetDataActive={(e) => GetDataActive(e)}
             GetDataFinish={(e) => GetDataFinish(e)}
             loadingdata={loadingdata}
+            setting={setting}
           />
         )}
         options={{ tabBarLabel: t("planList") }}
@@ -454,6 +457,7 @@ export default function TripPlaning(props) {
         name="Save"
         component={(e) => (
           <ActivePlan
+            setData={(e) => setDataActive(e)}
             props={props}
             token={token}
             AData={AData}
@@ -462,6 +466,7 @@ export default function TripPlaning(props) {
             GetDataActive={(e) => GetDataActive(e)}
             GetDataFinish={(e) => GetDataFinish(e)}
             loadingdataActive={loadingdataActive}
+            setting={setting}
           />
         )}
         options={{ tabBarLabel: t("activePlan") }}
@@ -480,6 +485,8 @@ export default function TripPlaning(props) {
               GetDataActive={(e) => GetDataActive(e)}
               GetDataFinish={(e) => GetDataFinish(e)}
               loadingdataFinish={loadingdataFinish}
+              setDataFinish={(e) => setDataFinish(e)}
+              setting={setting}
             />
           )
           // FinishTrip(props, token, FData, GetDataFinish, loadingdataFinish)
@@ -542,5 +549,3 @@ export default function TripPlaning(props) {
   //   );
   // }
 }
-
-const styles = StyleSheet.create({});

@@ -946,7 +946,8 @@ export default function ListEventHome(props) {
           style={{
             justifyContent: "center",
             width: (Dimensions.get("screen").width - 40) / 2,
-            height: Dimensions.get("screen").width * 0.7,
+            // height: Dimensions.get("screen").width * 0.7,
+            height: normalize(250),
             margin: 5,
             marginBottom: -5,
             flexDirection: "column",
