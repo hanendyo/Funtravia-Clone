@@ -16,6 +16,7 @@ import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
+import { dateFormatBetween } from "../../component/src/dateformatter";
 
 export default function CardEvents({ data, props, setData, token }) {
   const { t } = useTranslation();
@@ -116,6 +117,26 @@ export default function CardEvents({ data, props, setData, token }) {
     }
   };
 
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const handlerepeat = (date) => {
+    let dates = date.split("-");
+    return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ModalLogin
@@ -186,6 +207,7 @@ export default function CardEvents({ data, props, setData, token }) {
                       paddingHorizontal: 10,
                       alignSelf: "flex-start",
                       borderRadius: 20,
+                      overflow: "hidden",
                     }}
                     size="description"
                     type="regular"
@@ -260,13 +282,31 @@ export default function CardEvents({ data, props, setData, token }) {
                   }}
                 >
                   <CalendarBiru height={17} width={17} />
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ flex: 1, marginLeft: 5 }}
-                  >
-                    kalender
-                  </Text>
+                  {item.is_repeat === true ? (
+                    <Text
+                      size="description"
+                      style={{
+                        marginLeft: 5,
+                        flex: 1,
+                      }}
+                      numberOfLines={1}
+                      type="regular"
+                    >
+                      {handlerepeat(item.start_date, item.end_date)}
+                    </Text>
+                  ) : (
+                    <Text
+                      size="description"
+                      style={{
+                        flex: 1,
+                        marginLeft: 5,
+                      }}
+                      numberOfLines={1}
+                      type="regular"
+                    >
+                      {dateFormatBetween(item.start_date, item.end_date)}
+                    </Text>
+                  )}
                 </View>
                 <View
                   style={{

@@ -31,6 +31,8 @@ export default function CardDestination({ data, props, setData, token }) {
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
 
+  console.log("data", data);
+
   const [
     mutationlikedAnother,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -275,7 +277,7 @@ export default function CardDestination({ data, props, setData, token }) {
                   >
                     <Star height={normalize(15)} width={normalize(15)} />
                     <Text size="description" type="bold">
-                      {item.rating.substr(0, 3)}
+                      {item?.rating?.substr(0, 3)}
                     </Text>
                   </View>
                 ) : null}
