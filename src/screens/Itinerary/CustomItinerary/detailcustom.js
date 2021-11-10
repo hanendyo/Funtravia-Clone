@@ -11,6 +11,7 @@ import {
   Platform,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -39,6 +40,7 @@ import { StackActions } from "@react-navigation/native";
 import FileViewer from "react-native-file-viewer";
 import RNFetchBlob from "rn-fetch-blob";
 import { RNToasty } from "react-native-toasty";
+import * as Progress from "react-native-progress";
 
 export default function detailCustomItinerary(props) {
   console.log(props);
@@ -492,10 +494,41 @@ export default function detailCustomItinerary(props) {
       Alert.alert("" + error);
     }
   };
+  // const attachment = [];
 
+  // const FunAttachment = (data) => {
+  //   let dataAttachment = data.attachment;
+
+  //   for (let i of dataAttachment) {
+  //     let fileUrl = i.filepath;
+  //     let ext = fileUrl
+  //       .split(/[#?]/)[0]
+  //       .split(".")
+  //       .pop()
+  //       .trim();
+  //     return new Promise((resolve, reject) => {
+  //       RNFetchBlob.config({
+  //         fileCache: true,
+  //         appendExt: ext,
+  //       })
+  //         .fetch("GET", fileUrl)
+  //         .then((res) => {
+  //           console.log("The file saved to ", res.path());
+  //           attachment.push(res.path());
+  //           resolve(true);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //           reject(err);
+  //         });
+  //     });
+  //   }
+  // };
+
+  const [progressAttach, setprogressAttach] = useState(false);
   const handleAttachment = (data) => {
-    const fileUrl = data.filepath;
-    const ext = fileUrl
+    let fileUrl = data.filepath;
+    let ext = fileUrl
       .split(/[#?]/)[0]
       .split(".")
       .pop()
@@ -506,7 +539,15 @@ export default function detailCustomItinerary(props) {
         appendExt: ext,
       })
         .fetch("GET", fileUrl)
+        .progress((received, total) => {
+          setprogressAttach(true);
+          // console.log("progress", received / total);
+          // setprogressAttach({
+          //   downloadProgress: (received / total) * 100,
+          // });
+        })
         .then((res) => {
+          setprogressAttach(false);
           console.log("The file saved to ", res.path());
           const downloadFile =
             Platform.OS === "android"
@@ -514,8 +555,8 @@ export default function detailCustomItinerary(props) {
               : "" + res.path();
           setTimeout(() => {
             FileViewer.open(downloadFile, {
-              // showOpenWithDialog: true,
-              showAppsSuggestions: true,
+              showOpenWithDialog: true,
+              // showAppsSuggestions: true,
               onDismiss: () => RNFetchBlob.fs.unlink(res.path()),
             });
           }, 350);
@@ -1547,6 +1588,42 @@ export default function detailCustomItinerary(props) {
                 text={t("discard")}
               ></Button>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        useNativeDriver={true}
+        visible={progressAttach}
+        onRequestClose={() => setprogressAttach(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        >
+          <View
+            style={{
+              // position: 'absolute',
+              // bottom:0,
+              // width: width,
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 30,
+            }}
+          >
+            <ActivityIndicator
+              animating={progressAttach}
+              size="large"
+              color="#209fae"
+            />
           </View>
         </View>
       </Modal>
