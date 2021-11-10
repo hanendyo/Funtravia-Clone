@@ -676,7 +676,6 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
-    console.log(`RENDER PROVINCE: `, render);
 
     return (
       // Deskripsi
@@ -1615,13 +1614,11 @@ export default function CityDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    params: {
-                      idcity: render.id,
-                      idcountries: "",
-                      countryName: render.countries.name,
-                      events: render.event,
-                      // idcountries:
-                    },
+                    idcity: render?.id,
+                    idcountries: render?.countries.id,
+                    countryName: render.countries.name,
+                    eventList: render.event,
+                    // idcountries:
                   });
                 }}
               ></Ripple>
@@ -1653,13 +1650,11 @@ export default function CityDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    params: {
-                      idcity: render.id,
-                      idcountries: "",
-                      countryName: render.countries.name,
-                      events: render.event,
-                      // idcountries:
-                    },
+                    idcity: render?.id,
+                    idcountries: render?.countries.id,
+                    countryName: render.countries.name,
+                    eventList: render.event,
+                    // idcountries:
                   });
                 }}
               >

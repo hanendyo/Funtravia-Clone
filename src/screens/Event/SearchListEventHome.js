@@ -33,7 +33,6 @@ import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
 
 export default function SearchListEventHome(props) {
-  console.log(`DATA SEARCH LIST: `, props);
   const { t, i18n } = useTranslation();
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
@@ -875,9 +874,6 @@ export default function SearchListEventHome(props) {
 
   //! End FUNCTION UPDATE FILTER
 
-  console.log("dataEventAll", dataEventAll);
-  console.log("dataEventPublic", dataEventPublic);
-
   const HeaderComponent = {
     headerShown: true,
     title: "Wishlist",
@@ -927,9 +923,8 @@ export default function SearchListEventHome(props) {
     date_until: null,
     price_start: null,
     price_end: null,
+    city: null,
   });
-
-  console.log("search", search);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -952,13 +947,13 @@ export default function SearchListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
-        search.country && search.country.length > `0`
+        search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
       price_start: search.price_start,
@@ -988,13 +983,13 @@ export default function SearchListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
         search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
       price_start: search.price_start,

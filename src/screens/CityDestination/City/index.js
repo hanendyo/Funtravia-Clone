@@ -313,7 +313,6 @@ export default function CityDetail(props) {
           }
         });
       }
-      console.log(`EVENT AVAIL: `, eventavailable);
       setdataevent(eventavailable);
       getJournalCity();
       // setLoadings(false);
@@ -723,7 +722,6 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
-    console.log(`RENDER CITY: `, render);
     return (
       // Deskripsi
       <View
@@ -1673,13 +1671,11 @@ export default function CityDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    params: {
-                      idcity: render?.id,
-                      idcountries: "",
-                      countryName: render.countries.name,
-                      events: render.event,
-                      // idcountries:
-                    },
+                    idcity: render?.id,
+                    idcountries: render?.countries.id,
+                    countryName: render.countries.name,
+                    eventList: render.event,
+                    // idcountries:
                   });
                 }}
               ></Ripple>
@@ -1712,13 +1708,11 @@ export default function CityDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    params: {
-                      idcity: render?.id,
-                      idcountries: "",
-                      countryName: render.countries.name,
-                      events: render.event,
-                      // idcountries:
-                    },
+                    idcity: render?.id,
+                    idcountries: render?.countries.id,
+                    countryName: render.countries.name,
+                    eventList: render.event,
+                    // idcountries:
                   });
                 }}
               >
@@ -1942,15 +1936,9 @@ export default function CityDetail(props) {
                   flexDirection: "row",
                 }}
               >
-                {
-                  (console.log(`DATAMONTH: `, dataevent.month),
-                  console.log(`BULAN: `, bulan),
-                  console.log(`TANGGAL: `, getNewDate),
-                  console.log(`RENDEREVENT: `, render?.event))
-                }
+                {}
                 {render?.event
                   ? render?.event.map((item, index) => {
-                      // console.log(`ITEM CITY: `, item);
                       return (
                         <Ripple
                           key={"keyevent1" + index}
