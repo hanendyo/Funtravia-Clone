@@ -28,6 +28,7 @@ export default function TravelIdeaStackNavigation() {
           headerTransparent: false,
           headerTintColor: "white",
           headerBackTitleVisible: false,
+          headerShown: false,
         }}
       />
       <TravelIdeaStack.Screen

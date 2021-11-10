@@ -768,7 +768,6 @@ const Index = (props) => {
         if (activeTouches === 1) {
           pan.setValue({ y: gestureState.dy });
         }
-        console.log("activeTouches", activeTouches);
       },
       onPanResponderRelease: (evt, gestureState) => {},
     })
@@ -789,7 +788,7 @@ const Index = (props) => {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           flex: 1,
-          transform: [{ translateY: y }],
+          // transform: [{ translateY: y }],
           // transform: [{ translateY: pan.y }, { translateX: pan.x }],
           top: SafeStatusBar,
           height: HeaderHeight,

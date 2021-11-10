@@ -29,6 +29,7 @@ const ListItinerary = gql`
           picture
         }
       }
+      buddy_count
       day {
         id
         day

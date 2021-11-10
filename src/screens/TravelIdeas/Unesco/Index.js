@@ -43,59 +43,14 @@ const HeaderHeight = Platform.select({
   android: 340 - StatusBar.currentHeight,
 });
 
-const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function Unesco({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
-  let [selectedCountry, SetselectedCountry] = useState({
-    // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
-    // name: "Indonesia",
-  });
+  let [selectedCountry, SetselectedCountry] = useState({});
   const { t } = useTranslation();
-  const HeaderComponent = {
-    headerShown: false,
-    transparent: false,
-    tabBarVisble: false,
-    tabBarLabel: "Unesco",
-    headerTintColor: "white",
-    headerTitle: "UNESCO World Heritage",
-    headerMode: "none",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          marginLeft: 10,
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-  };
-  /**
-   * stats
-   */
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "culture", title: t("Culture") },
@@ -124,12 +79,8 @@ export default function Unesco({ navigation, route }) {
     },
   });
 
-  /**
-   * ref
-   */
   const scrollY = useRef(new Animated.Value(0)).current;
   const headerScrollY = useRef(new Animated.Value(0)).current;
-  // for capturing header scroll on Android
   const headerMoveScrollY = useRef(new Animated.Value(0)).current;
   const listRefArr = useRef([]);
   const listOffset = useRef({});
@@ -138,7 +89,7 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
-  let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
+  let HEADER_MAX_HEIGHT = normalize(100);
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -166,17 +117,6 @@ export default function Unesco({ navigation, route }) {
   const imageTranslate = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-
-  // let HEADER_MAX_HEIGHT = HeaderHeight;
-  // let HEADER_MIN_HEIGHT = 55;
-  // let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-  const PosisiCountry = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    // outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
-    outputRange: [HeaderHeight - 135, -10, -100],
     extrapolate: "clamp",
   });
 
@@ -288,12 +228,7 @@ export default function Unesco({ navigation, route }) {
     })
   ).current;
 
-  /**
-   * effect
-   */
   useEffect(() => {
-    navigation.setOptions(HeaderComponent);
-    // navigation.setOptions(HeaderComponentCustom);
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
@@ -493,148 +428,7 @@ export default function Unesco({ navigation, route }) {
           position: "absolute",
           backgroundColor: "#209fae",
         }}
-      >
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            width: width,
-            height: HeaderHeight - 135,
-          }}
-        >
-          {Banner && Banner.banner_asset.length > 0 ? (
-            // <FunImageBackground
-            //   source={{ uri: Banner.banner_asset[0].filepath }}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 130,
-            //   }}
-            //   resizeMode="cover"
-            // />
-            <Animated.Image
-              style={{
-                width: "100%",
-                height: "100%",
-                resizeMode: "cover",
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              }}
-              source={{ uri: Banner.banner_asset[0].filepath }}
-            />
-          ) : (
-            // <ImageBackground
-            //   source={unesco}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 125,
-            //   }}
-            //   resizeMode="cover"
-            // />
-            <Animated.Image
-              style={{
-                width: "100%",
-                height: "100%",
-                resizeMode: "cover",
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-              }}
-              source={unesco}
-            />
-          )}
-        </View>
-        <Animated.View
-          style={{
-            flex: 1,
-            marginTop: 0,
-            paddingTop: Platform.OS == "ios" ? 35 : 45,
-            paddingHorizontal: 20,
-            zIndex: -10,
-            backgroundColor: "#fff",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
-          }}
-        >
-          <Text size="title" type="bold" style={{ marginBottom: 0 }}>
-            {/* {Banner && Banner.title ? Banner.title : t("UnescoTitle")} */}
-            {t("UnescoTitle")}
-          </Text>
-          <Text
-            size="label"
-            // size={Platform.OS == "ios" ? "description" : "label"}
-            style={{
-              textAlign: "justify",
-              lineHeight: 20,
-              paddingBottom: 10,
-            }}
-          >
-            {/* {Banner && Banner.description
-              ? Banner.description
-              : t("UnescoDescription")}{" "}
-            {selectedCountry?.name}. */}
-            {t("UnescoDescription")} {selectedCountry?.name}.
-          </Text>
-        </Animated.View>
-        <Animated.View
-          style={{
-            position: "absolute",
-            top: HeaderHeight - 160,
-            // top: height - (Platform.OS == "ios" ? (Notch ? 745 : 488) : 630),
-            // transform: [{ translateY: PosisiCountry }],
-            alignItems: "center",
-            width: "100%",
-            height: normalize(44),
-            // backgroundColor: "#FFFFFF",
-            // zIndex: 100,
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
-          }}
-        >
-          <Pressable
-            onPress={() => setModelCountry(true)}
-            style={({ pressed }) => [
-              {
-                height: normalize(45),
-                borderRadius: 50,
-                borderWidth: 1,
-                borderColor: "#d8d8d8",
-                paddingVertical: 10,
-                paddingHorizontal: 0,
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                backgroundColor: pressed ? "#F6F6F7" : "white",
-                flexDirection: "row",
-                width: "35%",
-              },
-            ]}
-          >
-            {loadingcountry ? (
-              <ActivityIndicator
-                animating
-                size="small"
-                color="#209fae"
-                style={{
-                  paddingTop: 10,
-                  paddingHorizontal: 10,
-                }}
-              />
-            ) : (
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginRight: 10,
-                  // borderWidth: 1,
-                  marginBottom: 5,
-                }}
-              >
-                {selectedCountry?.name}
-              </Text>
-            )}
-            <Select height={10} width={10} />
-          </Pressable>
-        </Animated.View>
-      </Animated.View>
+      ></Animated.View>
     );
   };
 
@@ -1125,9 +919,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(18), color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(16),
+    fontSize: normalize(18),
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

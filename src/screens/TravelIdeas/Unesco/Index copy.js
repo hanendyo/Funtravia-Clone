@@ -4,44 +4,25 @@ import {
   Animated,
   Dimensions,
   Image,
-  ImageBackground,
   PanResponder,
   Platform,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
   View,
   Pressable,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import {
-  Akunsaya,
-  default_image,
-  unesco,
-  tropical_rainforest,
-  badak_jawa,
-  lorenz,
-  comodo,
-  sangiran,
-  prambanan,
-  ombilin,
-  cultural_lanscape,
-  borobudur,
-} from "../../../assets/png";
+import { unesco } from "../../../assets/png";
 import {
   Kosong,
-  Pin,
   Select,
-  PinHitam,
   Arrowbackwhite,
   PinHijau,
   Arrowbackios,
 } from "../../../assets/svg";
-import { Button, Text, Truncate, FunImageBackground } from "../../../component";
+import { Button, Text, StatusBar as StaBar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
-import Ripple from "react-native-material-ripple";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
 import CountrySrc from "./CountrySrc";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
@@ -53,177 +34,17 @@ const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
-// const HeaderHeight = width - 100;
-// const SafeStatusBar = Platform.select({
-//   ios: 44,
-//   android: StatusBar.currentHeight,
-// });
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
 const HeaderHeight = Platform.select({
-  ios: Notch ? 360 - 48 : 360 - 20,
-  // android: 305 - StatusBar.currentHeight,
-  // android: 320 - StatusBar.currentHeight,
+  ios: Notch ? 420 - 48 : 360 - 20,
   android: 340 - StatusBar.currentHeight,
 });
 
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
-
-const data_unesco = [
-  {
-    id: "1",
-    name: "Borobudur Temple Compounds",
-    year: "1991",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: borobudur,
-  },
-  {
-    id: "2",
-    name: "Cultural Landscape of Bali Province: the Subak System ",
-    year: "2012",
-    address: "East Nusa Tenggara Province",
-    type: "culture",
-    cover: cultural_lanscape,
-  },
-  {
-    id: "3",
-    name: "Ombilin Coal Mining",
-    year: "2019",
-    address: "Kota Sawahlunto, Sumatera Barat",
-    type: "culture",
-    cover: ombilin,
-  },
-  {
-    id: "4",
-    name: "Prambanan Temple",
-    year: "1991",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: prambanan,
-  },
-  {
-    id: "5",
-    name: "Sangiran Early Man Site",
-    year: "1996",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: sangiran,
-  },
-  {
-    id: "6",
-    name: "Komodo National Park",
-    year: "1991",
-    address: "East Nusa Tenggara Province",
-    type: "natural",
-    cover: comodo,
-  },
-  {
-    id: "7",
-    name: "Lorentz National Park ",
-    year: "1999",
-    address: "Kota Sawahlunto, Sumatera Barat",
-    type: "natural",
-    cover: lorenz,
-  },
-  {
-    id: "8",
-    name: "Tropical Rainforest Heritage of Sumatra",
-    year: "2004",
-    address: "West Sumatera",
-    type: "natural",
-    cover: tropical_rainforest,
-  },
-  {
-    id: "9",
-    name: "Ujung Kulon National Park",
-    year: "1991",
-    address: "Banten",
-    type: "natural",
-    cover: badak_jawa,
-  },
-];
-
-const data_unesco_nature = [
-  {
-    id: "6",
-    name: "Komodo National Park",
-    year: "1991",
-    address: "East Nusa Tenggara Province",
-    type: "natural",
-    cover: comodo,
-  },
-  {
-    id: "7",
-    name: "Lorentz National Park ",
-    year: "1999",
-    address: "Kota Sawahlunto, Sumatera Barat",
-    type: "natural",
-    cover: lorenz,
-  },
-  {
-    id: "8",
-    name: "Tropical Rainforest Heritage of Sumatra",
-    year: "2004",
-    address: "West Sumatera",
-    type: "natural",
-    cover: tropical_rainforest,
-  },
-  {
-    id: "9",
-    name: "Ujung Kulon National Park",
-    year: "1991",
-    address: "Banten",
-    type: "natural",
-    cover: badak_jawa,
-  },
-];
-
-const data_unesco_culture = [
-  {
-    id: "1",
-    name: "Borobudur Temple Compounds",
-    year: "1991",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: borobudur,
-  },
-  {
-    id: "2",
-    name: "Cultural Landscape of Bali Province: the Subak System ",
-    year: "2012",
-    address: "East Nusa Tenggara Province",
-    type: "culture",
-    cover: cultural_lanscape,
-  },
-  {
-    id: "3",
-    name: "Ombilin Coal Mining",
-    year: "2019",
-    address: "Kota Sawahlunto, Sumatera Barat",
-    type: "culture",
-    cover: ombilin,
-  },
-  {
-    id: "4",
-    name: "Prambanan Temple",
-    year: "1991",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: prambanan,
-  },
-  {
-    id: "5",
-    name: "Sangiran Early Man Site",
-    year: "1996",
-    address: "Magelang, Central Java",
-    type: "culture",
-    cover: sangiran,
-  },
-];
 
 export default function Unesco({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
@@ -235,13 +56,13 @@ export default function Unesco({ navigation, route }) {
   });
   const { t } = useTranslation();
   const HeaderComponent = {
-    headerShown: true,
+    headerShown: false,
     transparent: false,
     tabBarVisble: false,
     tabBarLabel: "Unesco",
     headerTintColor: "white",
     headerTitle: "UNESCO World Heritage",
-    headerMode: "screen",
+    headerMode: "none",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
@@ -277,9 +98,9 @@ export default function Unesco({ navigation, route }) {
    */
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "culture", title: "Culture" },
-    { key: "natural", title: "Natural site" },
-    { key: "mix", title: "Mix" },
+    { key: "culture", title: t("Culture") },
+    { key: "natural", title: t("NaturalSite") },
+    { key: "mix", title: t("Mix") },
   ]);
 
   const {
@@ -303,6 +124,8 @@ export default function Unesco({ navigation, route }) {
     },
   });
 
+  console.log("datacountry", datacountry);
+
   /**
    * ref
    */
@@ -317,9 +140,40 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
-  let HEADER_MAX_HEIGHT = HeaderHeight;
+  let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -50],
+    extrapolate: "clamp",
+  });
+
+  // let HEADER_MAX_HEIGHT = HeaderHeight;
+  // let HEADER_MIN_HEIGHT = 55;
+  // let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   const PosisiCountry = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
@@ -343,12 +197,12 @@ export default function Unesco({ navigation, route }) {
     }
   );
 
+  console.log("data", data);
+
   let listdestinasi_unesco = [];
   if (data && data.listdestinasi_unesco) {
     listdestinasi_unesco = data.listdestinasi_unesco;
   }
-
-  console.log("listdestinasi_unesco", listdestinasi_unesco);
 
   /**
    * PanResponder for header
@@ -443,6 +297,7 @@ export default function Unesco({ navigation, route }) {
    */
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
+    // navigation.setOptions(HeaderComponentCustom);
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
@@ -623,70 +478,107 @@ export default function Unesco({ navigation, route }) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight - 5],
+      outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
     return (
       <Animated.View
+        // pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
         style={[styles.header, { transform: [{ translateY: y }] }]}
+        style={{
+          transform: [{ translateY: y }],
+          top: SafeStatusBar,
+          height: HeaderHeight,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "absolute",
+          backgroundColor: "#209fae",
+        }}
       >
         <View
           style={{
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 150,
+            height: HeaderHeight - 135,
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
-            <FunImageBackground
-              source={{ uri: Banner.banner_asset[0].filepath }}
+            // <FunImageBackground
+            //   source={{ uri: Banner.banner_asset[0].filepath }}
+            //   style={{
+            //     width: width,
+            //     height: HeaderHeight - 130,
+            //   }}
+            //   resizeMode="cover"
+            // />
+            <Animated.Image
               style={{
-                width: width,
-                height: HeaderHeight - 120,
+                width: "100%",
+                height: "100%",
+                resizeMode: "cover",
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
               }}
-              resizeMode="cover"
+              source={{ uri: Banner.banner_asset[0].filepath }}
             />
           ) : (
-            <ImageBackground
-              source={unesco}
+            // <ImageBackground
+            //   source={unesco}
+            //   style={{
+            //     width: width,
+            //     height: HeaderHeight - 125,
+            //   }}
+            //   resizeMode="cover"
+            // />
+            <Animated.Image
               style={{
-                width: width,
-                height: HeaderHeight - 120,
+                width: "100%",
+                height: "100%",
+                resizeMode: "cover",
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
               }}
-              resizeMode="cover"
+              source={unesco}
             />
           )}
         </View>
-        <View
+        <Animated.View
           style={{
             flex: 1,
-            marginTop: 55,
+            marginTop: 0,
+            paddingTop: Platform.OS == "ios" ? 35 : 45,
             paddingHorizontal: 20,
             zIndex: -10,
+            backgroundColor: "#fff",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
-          <Text size="title" type="bold" style={{ marginBottom: 5 }}>
-            {Banner && Banner.title
-              ? Banner.title
-              : "UNESCO World Heritage Centre"}
+          <Text size="title" type="bold" style={{ marginBottom: 0 }}>
+            {/* {Banner && Banner.title ? Banner.title : t("UnescoTitle")} */}
+            {t("UnescoTitle")}
           </Text>
           <Text
             size="label"
+            // size={Platform.OS == "ios" ? "description" : "label"}
             style={{
-              textAlign: "left",
-              lineHeight: 22,
+              textAlign: "justify",
+              lineHeight: 20,
+              paddingBottom: 10,
             }}
           >
-            {Banner && Banner.description
+            {/* {Banner && Banner.description
               ? Banner.description
-              : "The UNESCO (United Nations Educational, Scientific and Cultural Organization) has designated nine World Heritage Sites in"}{" "}
-            {selectedCountry?.name}.
+              : t("UnescoDescription")}{" "}
+            {selectedCountry?.name}. */}
+            {t("UnescoDescription")} {selectedCountry?.name}.
           </Text>
-        </View>
-        <View
+        </Animated.View>
+        <Animated.View
           style={{
             position: "absolute",
             top: HeaderHeight - 160,
@@ -694,39 +586,29 @@ export default function Unesco({ navigation, route }) {
             // transform: [{ translateY: PosisiCountry }],
             alignItems: "center",
             width: "100%",
-            height: 44,
+            height: normalize(44),
             // backgroundColor: "#FFFFFF",
-            zIndex: 100,
+            // zIndex: 100,
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
             onPress={() => setModelCountry(true)}
             style={({ pressed }) => [
               {
-                height: 50,
-                borderRadius: 25,
-                // borderWidth: 1,
-                borderColor: "grey",
+                height: normalize(45),
+                borderRadius: 50,
+                borderWidth: 1,
+                borderColor: "#d8d8d8",
                 paddingVertical: 10,
-                paddingHorizontal: 30,
+                paddingHorizontal: 0,
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
-                // bottom: -22,
-                // left: "30%",
                 backgroundColor: pressed ? "#F6F6F7" : "white",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.22,
-                shadowRadius: 1.46,
-                elevation: 3,
                 flexDirection: "row",
-                // position: "absolute",
-                // transform: [{ translateY: PosisiCountry }],
-                // alignItems: "center",
+                width: "35%",
               },
             ]}
           >
@@ -742,7 +624,7 @@ export default function Unesco({ navigation, route }) {
               />
             ) : (
               <Text
-                size="title"
+                size="label"
                 type="bold"
                 style={{
                   marginRight: 10,
@@ -755,15 +637,15 @@ export default function Unesco({ navigation, route }) {
             )}
             <Select height={10} width={10} />
           </Pressable>
-        </View>
+        </Animated.View>
       </Animated.View>
     );
   };
 
   const renderCulture = ({ item, index }) => {
-    console.log("item", item);
     return (
       <Pressable
+        key={index.toString()}
         // onPress={() => {
         //   navigation.navigate("detailStack", {
         //     id: item.id,
@@ -831,7 +713,7 @@ export default function Unesco({ navigation, route }) {
             </Text> */}
             <Text
               numberOfLines={2}
-              style={{ lineHeight: 16 }}
+              style={{ lineHeight: 26 }}
               size="label"
               type="regular"
             >
@@ -855,7 +737,7 @@ export default function Unesco({ navigation, route }) {
         style={[
           focused ? styles.labelActive : styles.label,
           {
-            opacity: focused ? 1 : 0.7,
+            opacity: focused ? 1 : 0.8,
           },
         ]}
       >
@@ -966,7 +848,9 @@ export default function Unesco({ navigation, route }) {
               }}
             >
               <Text size="title" type="bold">
-                {dataR.length} sites
+                {dataR.length > 1 && dataR.length != 0
+                  ? `${dataR.length} sites`
+                  : `${dataR.length} site`}
               </Text>
             </View>
           }
@@ -994,7 +878,7 @@ export default function Unesco({ navigation, route }) {
       inputRange: [0, HeaderHeight],
       // outputRange: [HeaderHeight - 6, 0],
       outputRange:
-        Platform.OS == "ios" ? [HeaderHeight, 0] : [HeaderHeight - 6, 0],
+        Platform.OS == "ios" ? [HeaderHeight, 55] : [HeaderHeight, 55],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1103,7 +987,8 @@ export default function Unesco({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
       <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}
@@ -1111,10 +996,123 @@ export default function Unesco({ navigation, route }) {
         setModelCountry={(e) => setModelCountry(e)}
       />
 
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hides.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+      </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 55,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => navigation.goBack()}
+          style={{
+            height: 50,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 95,
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Text
+            size="title"
+            type="bold"
+            style={{
+              color: "#FFFFFF",
+            }}
+          >
+            {t("UnescoTitle")}
+          </Text>
+        </View>
+      </Animated.View>
+
+      {/* {renderNavigation()} */}
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -1131,9 +1129,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: normalize(14), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(14),
+    fontSize: normalize(16),
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
@@ -1142,7 +1140,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
     // height: TabBarHeight + 5,
-    height: Platform.OS == "ios" ? TabBarHeight + 5 : TabBarHeight,
+    height: Platform.OS == "ios" ? TabBarHeight : TabBarHeight,
 
     // borderWidth: 2,
   },
