@@ -4,9 +4,15 @@ const ListDesAnother = gql`
     destination_another_place(destination_id: $id) {
       id
       name
+      cover
       rating
       count_review
       liked
+      type {
+        id
+        name
+        icon
+      }
       cities {
         id
         name

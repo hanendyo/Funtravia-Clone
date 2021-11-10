@@ -23,7 +23,6 @@ import {
   FunImage,
   FunImageBackground,
   CardEvents,
-  CardDestination,
 } from "../../component";
 import {
   LikeRed,
@@ -47,6 +46,10 @@ import SearchEventQuery from "../../graphQL/Query/Search/SearchEvent";
 import SearchLocationQuery from "../../graphQL/Query/Search/SearchLocation";
 import { useTranslation } from "react-i18next";
 import BerandaPopuler from "../../graphQL/Query/Home/BerandaPopuler";
+import Liked from "../../graphQL/Mutation/Destination/Liked";
+import UnLiked from "../../graphQL/Mutation/unliked";
+import LikedEvent from "../../graphQL/Mutation/Event/likedEvent";
+import UnLikedEvent from "../../graphQL/Mutation/unliked";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import { RNToasty } from "react-native-toasty";
@@ -112,6 +115,7 @@ export default function SearchPg(props, { navigation, route }) {
     setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
+    // refetch();
     let recent_src = await AsyncStorage.getItem("recent_src");
     if (recent_src) {
       setRecent(JSON.parse(recent_src));
@@ -203,6 +207,16 @@ export default function SearchPg(props, { navigation, route }) {
     setRecent(arryrecent);
     await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
   };
+  const gotodestinasi = async (item) => {
+    recent_save(searchtext);
+    await BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+
+    props.navigation.push("DestinationUnescoDetail", {
+      id: item.id,
+      name: item.name,
+      token: token,
+    });
+  };
 
   const recent_save = async (data) => {
     let arryrecent = [...recent];
@@ -255,7 +269,6 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   let [destinationSearch, SetdestinationSearch] = useState([]);
-  console.log("destinationSearch"), destinationSearch;
 
   const [
     GetListDestination,
@@ -279,11 +292,9 @@ export default function SearchPg(props, { navigation, route }) {
       },
     },
     onCompleted: () => {
-      SetdestinationSearch(dataDestination?.destinationSearch);
+      SetdestinationSearch(dataDestination.destinationSearch);
     },
   });
-
-  console.log("dataDestination", dataDestination);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -343,10 +354,15 @@ export default function SearchPg(props, { navigation, route }) {
     notifyOnNetworkStatusChange: true,
   });
 
+  // if (dataEvent && dataEvent.event_searchv2) {
+  //     event_search = dataEvent.event_searchv2;
+  // }
+
   let search_location = [];
   if (dataLocation && dataLocation.search_location) {
     search_location = dataLocation.search_location;
   }
+  // console.log(search_location);
   const {
     data: dataCityPopuler,
     loading: loadingCityPopuler,
@@ -360,6 +376,248 @@ export default function SearchPg(props, { navigation, route }) {
   useEffect(() => {
     loadAsync();
   }, []);
+
+  const [
+    mutationliked,
+    { loading: loadingLike, data: dataLike, error: errorLike },
+  ] = useMutation(Liked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnliked,
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
+  ] = useMutation(UnLiked, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _liked = async (id, index) => {
+    if (loadingLike == false) {
+      if (token && token !== null && token !== "") {
+        try {
+          let response = await mutationliked({
+            variables: {
+              destination_id: id,
+            },
+          });
+          // console.log(response);
+          if (errorLike) {
+            throw new Error("Error Input");
+          }
+
+          if (response.data) {
+            GetListDestination();
+            if (response.data.setDestination_wishlist.code === "200") {
+              // console.log("berhasil");
+            } else {
+              throw new Error(response.data.setDestination_wishlist.message);
+            }
+          }
+        } catch (error) {
+          GetListDestination();
+          // RNToasty.Show({
+          //   title: "Failed add to favorit Destination!",
+          //   position: "bottom",
+          // });
+        }
+      } else {
+        props.navigation.navigate("AuthStack", {
+          screen: "LoginScreen",
+        });
+        RNToasty.Show({
+          title: t("pleaselogin"),
+          position: "bottom",
+        });
+      }
+    }
+  };
+
+  const _unliked = async (id, index) => {
+    if (loadingUnLike == false) {
+      if (token && token !== null && token !== "") {
+        try {
+          let response = await mutationUnliked({
+            variables: {
+              id: id,
+              type: "destination",
+            },
+          });
+          // console.log(response);
+          if (errorUnLike) {
+            throw new Error("Error Input");
+          }
+
+          if (response.data) {
+            GetListDestination();
+            if (response.data.unset_wishlist.code === "200") {
+              // console.log("berhasil");
+            } else {
+              throw new Error(response.data.unset_wishlist.message);
+            }
+          }
+        } catch (error) {
+          GetListDestination();
+          // let tempdestination = [...destinationSearch];
+          // let _temStatus = { ...tempdestination[index] };
+          // _temStatus.liked = true;
+          // tempdestination.splice(index, 1, _temStatus);
+          // SetdestinationSearch(tempdestination);
+          // RNToasty.Show({
+          //   title: "Failed remove favorit Destination!",
+          //   position: "bottom",
+          // });
+        }
+      } else {
+        props.navigation.navigate("AuthStack", {
+          screen: "LoginScreen",
+        });
+        RNToasty.Show({
+          title: t("pleaselogin"),
+          position: "bottom",
+        });
+      }
+    }
+  };
+
+  const [
+    mutationlikedEvent,
+    { loading: loadingLikeevent, data: dataLikeevent, error: errorLikeevent },
+  ] = useMutation(LikedEvent, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const [
+    mutationUnlikedEvent,
+    {
+      loading: loadingUnLikeevent,
+      data: dataUnLikeevent,
+      error: errorUnLikeevent,
+    },
+  ] = useMutation(UnLikedEvent, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const eventdetail = (data) => {
+    BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    recent_save(searchtext);
+    props.navigation.navigate("eventdetail", {
+      data: data,
+      name: data.name,
+      token: token,
+    });
+  };
+
+  const _likedevent = async (id, index) => {
+    if (token && token !== null && token !== "") {
+      let tempEvent = [...event_search];
+      let _temStatus = { ...tempEvent[index] };
+      _temStatus.liked = true;
+      tempEvent.splice(index, 1, _temStatus);
+      SetEventSearch(tempEvent);
+      try {
+        let response = await mutationlikedEvent({
+          variables: {
+            event_id: id,
+          },
+        });
+        if (errorLike) {
+          throw new Error("Error Input");
+        }
+
+        if (response.data) {
+          if (response.data.setEvent_wishlist.code === "200") {
+            // refetchSrcEvent();
+          } else {
+            throw new Error(response.data.setEvent_wishlist.message);
+          }
+        }
+      } catch (error) {
+        let tempEvent = [...event_search];
+        let _temStatus = { ...tempEvent[index] };
+        _temStatus.liked = true;
+        tempEvent.splice(index, 1, _temStatus);
+        SetEventSearch(tempEvent);
+        RNToasty.Show({
+          title: "Failed add favorit Event!",
+          position: "bottom",
+        });
+      }
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
+
+  const _unlikedevent = async (id, index) => {
+    if (token && token !== null && token !== "") {
+      let tempEvent = [...event_search];
+      let _temStatus = { ...tempEvent[index] };
+      _temStatus.liked = false;
+      tempEvent.splice(index, 1, _temStatus);
+      SetEventSearch(tempEvent);
+      try {
+        let response = await mutationUnlikedEvent({
+          variables: {
+            id: id,
+            type: "event",
+          },
+        });
+
+        if (errorUnLike) {
+          throw new Error("Error Input");
+        }
+        console.log(response);
+        if (response.data.unset_wishlist.code === "200") {
+          console.log("berhasil");
+        } else {
+          throw new Error(response.data.unset_wishlist.message);
+        }
+      } catch (error) {
+        let tempEvent = [...event_search];
+        let _temStatus = { ...tempEvent[index] };
+        _temStatus.liked = true;
+        tempEvent.splice(index, 1, _temStatus);
+        SetEventSearch(tempEvent);
+        RNToasty.Show({
+          title: "Failed remove favorit Event!",
+          position: "bottom",
+        });
+      }
+    } else {
+      props.navigation.navigate("AuthStack", {
+        screen: "LoginScreen",
+      });
+      RNToasty.Show({
+        title: t("pleaselogin"),
+        position: "bottom",
+      });
+    }
+  };
 
   const [
     FollowMutation,
@@ -586,6 +844,7 @@ export default function SearchPg(props, { navigation, route }) {
         let _temStatus = { ...temStatus[index] };
         _temStatus.status_following = false;
         temStatus.splice(index, 1, _temStatus);
+        console.log(error);
         SetListrequser(list_rekomendasi_user);
         RNToasty.Show({
           title: "Failed To Follow This User!",
@@ -618,7 +877,7 @@ export default function SearchPg(props, { navigation, route }) {
           }}
         >
           <Image
-            source={search_button ? search_button : DefaultProfile}
+            source={search_button}
             imageStyle={{ resizeMode: "cover" }}
             style={{
               height: 15,
@@ -1047,30 +1306,247 @@ export default function SearchPg(props, { navigation, route }) {
                 )
               ) : null}
               {active_src === "destination" && searchtext ? (
-                loadingDestination == true ? (
-                  <View
-                    style={{
-                      flex: 1,
-                      width: width,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginHorizontal: 15,
-                    }}
-                  >
-                    <ActivityIndicator
-                      animating={loadingDestination}
-                      size="large"
-                      color="#209fae"
-                    />
-                  </View>
-                ) : (
-                  <CardDestination
-                    data={destinationSearch}
-                    props={props}
-                    setData={(e) => SetdestinationSearch(e)}
-                    token={token}
-                  />
-                )
+                <FlatList
+                  data={destinationSearch}
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    justifyContent: "space-evenly",
+                    paddingStart: 10,
+                    paddingEnd: 10,
+                    paddingBottom: 120,
+                  }}
+                  horizontal={false}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => {
+                        gotodestinasi(item);
+                      }}
+                      key={index}
+                      style={{
+                        borderWidth: 1,
+                        borderColor: "#F3F3F3",
+                        borderRadius: 10,
+                        height: 170,
+                        // padding: 10,
+                        marginTop: 10,
+                        width: "100%",
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        shadowColor: "#FFF",
+                        shadowOffset: {
+                          width: 0,
+                          height: 5,
+                        },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 6.27,
+
+                        elevation: 6,
+                      }}
+                    >
+                      <View
+                        style={{
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Image */}
+                        <FunImage
+                          source={{
+                            uri: item.images.image,
+                          }}
+                          style={{
+                            width: 150,
+                            height: "100%",
+                            borderBottomLeftRadius: 10,
+                            borderTopLeftRadius: 10,
+                          }}
+                        />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            left: 10,
+                            width: 130,
+                            zIndex: 2,
+                          }}
+                        >
+                          {item.liked === true ? (
+                            <Pressable
+                              onPress={() => _unliked(item.id, index)}
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Love height={15} width={15} />
+                            </Pressable>
+                          ) : (
+                            <Pressable
+                              onPress={() =>
+                                loadingLike ? null : _liked(item.id, index)
+                              }
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <LikeEmpty height={15} width={15} />
+                            </Pressable>
+                          )}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              backgroundColor: "#F3F3F3",
+                              borderRadius: 3,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              paddingHorizontal: 5,
+                              height: 25,
+                            }}
+                          >
+                            <Star height={15} width={15} />
+                            <Text size="label" type="bold">
+                              {item.rating.substr(0, 3)}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {/* Keterangan */}
+                      {/* rating */}
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: 10,
+                          height: 170,
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View>
+                          {/* Title */}
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{ marginTop: 2 }}
+                            numberOfLines={1}
+                          >
+                            {item.name}
+                          </Text>
+
+                          {/* Maps */}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              marginTop: 5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <PinHijau height={15} width={15} />
+                            <Text
+                              size="label"
+                              type="regular"
+                              style={{
+                                marginLeft: 5,
+                              }}
+                              numberOfLines={1}
+                            >
+                              {item.cities.name}
+                            </Text>
+                          </View>
+                        </View>
+                        {/* Great for */}
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            height: 50,
+                            marginTop: 10,
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <View>
+                            <Text size="label" type="bold">
+                              {t("GreatFor")} :
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                              }}
+                            >
+                              {item.greatfor.length > 0 ? (
+                                item.greatfor.map((item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={35}
+                                      width={35}
+                                    />
+                                  ) : null;
+                                })
+                              ) : (
+                                <Text>-</Text>
+                              )}
+                            </View>
+                          </View>
+                          <Button
+                            onPress={() => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ItineraryStack", {
+                                screen: "ItineraryPlaning",
+                                params: {
+                                  idkiriman: item.id,
+                                  Position: "destination",
+                                },
+                              });
+                            }}
+                            size="small"
+                            text={t("add")}
+                            // style={{ marginTop: 15 }}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  )}
+                  ListFooterComponent={
+                    searchtext !== "" && destinationSearch.length <= 0 ? (
+                      <View
+                        style={{
+                          // position: 'absolute',
+                          // bottom:0,
+                          width: width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 30,
+                          marginLeft: -15,
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
+                      </View>
+                    ) : null
+                  }
+                  showsHorizontalScrollIndicator={false}
+                />
               ) : null}
               {active_src === "event" ? (
                 loadingEvent == true ? (
@@ -1460,35 +1936,273 @@ export default function SearchPg(props, { navigation, route }) {
                 )
               ) : null}
               {active_src === "destination" && searchtext ? (
-                loadingDestination == true ? (
-                  <View
-                    style={{
-                      flex: 1,
-                      width: width,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginHorizontal: 15,
-                    }}
-                  >
-                    <ActivityIndicator
-                      animating={loadingDestination}
-                      size="large"
-                      color="#209fae"
-                    />
-                  </View>
-                ) : (
-                  <CardDestination
-                    data={destinationSearch}
-                    props={props}
-                    setData={(e) => SetdestinationSearch(e)}
-                    token={token}
-                  />
-                )
+                // loadingDestination ? (
+                //   <View
+                //     style={{
+                //       // position: 'absolute',
+                //       // bottom:0,
+                //       flex: 1,
+                //       width: width,
+                //       justifyContent: "center",
+                //       alignItems: "center",
+                //       marginHorizontal: 15,
+                //     }}
+                //   >
+                //     <ActivityIndicator
+                //       animating={loadingDestination}
+                //       size="large"
+                //       color="#209fae"
+                //     />
+                //   </View>
+                // ) : (
+                <FlatList
+                  data={destinationSearch}
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    justifyContent: "space-evenly",
+                    paddingStart: 10,
+                    paddingEnd: 10,
+                    paddingBottom: 120,
+                  }}
+                  horizontal={false}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => {
+                        gotodestinasi(item);
+                      }}
+                      key={index}
+                      style={{
+                        borderWidth: 1,
+                        borderColor: "#F3F3F3",
+                        borderRadius: 10,
+                        height: 170,
+                        // padding: 10,
+                        marginTop: 10,
+                        width: "100%",
+                        flexDirection: "row",
+                        backgroundColor: "#FFF",
+                        shadowColor: "#FFF",
+                        shadowOffset: {
+                          width: 0,
+                          height: 5,
+                        },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 6.27,
+
+                        elevation: 6,
+                      }}
+                    >
+                      <View
+                        style={{
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* Image */}
+                        <FunImage
+                          source={{
+                            uri: item.images.image,
+                          }}
+                          style={{
+                            width: 150,
+                            height: "100%",
+                            borderBottomLeftRadius: 10,
+                            borderTopLeftRadius: 10,
+                          }}
+                        />
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            position: "absolute",
+                            top: 10,
+                            right: 10,
+                            left: 10,
+                            width: 130,
+                            zIndex: 2,
+                          }}
+                        >
+                          {item.liked === true ? (
+                            <Pressable
+                              onPress={() => _unliked(item.id, index)}
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Love height={15} width={15} />
+                            </Pressable>
+                          ) : (
+                            <Pressable
+                              onPress={() =>
+                                loadingLike ? null : _liked(item.id, index)
+                              }
+                              style={{
+                                backgroundColor: "#F3F3F3",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 17,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <LikeEmpty height={15} width={15} />
+                            </Pressable>
+                          )}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              backgroundColor: "#F3F3F3",
+                              borderRadius: 3,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              paddingHorizontal: 5,
+                              height: 25,
+                            }}
+                          >
+                            <Star height={15} width={15} />
+                            <Text size="label" type="bold">
+                              {item.rating.substr(0, 3)}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      {/* Keterangan */}
+                      {/* rating */}
+                      <View
+                        style={{
+                          flex: 1,
+                          padding: 10,
+                          height: 170,
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <View>
+                          {/* Title */}
+                          <Text
+                            size="title"
+                            type="bold"
+                            style={{ marginTop: 2 }}
+                            numberOfLines={1}
+                          >
+                            {item.name}
+                          </Text>
+
+                          {/* Maps */}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              marginTop: 5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <PinHijau height={15} width={15} />
+                            <Text
+                              size="label"
+                              type="regular"
+                              style={{
+                                marginLeft: 5,
+                              }}
+                              numberOfLines={1}
+                            >
+                              {item.cities.name}
+                            </Text>
+                          </View>
+                        </View>
+                        {/* Great for */}
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            height: 50,
+                            marginTop: 10,
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <View>
+                            <Text size="label" type="bold">
+                              {t("GreatFor")} :
+                            </Text>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                              }}
+                            >
+                              {item.greatfor.length > 0 ? (
+                                item.greatfor.map((item, index) => {
+                                  return index < 3 ? (
+                                    <FunIcon
+                                      key={index}
+                                      icon={item.icon}
+                                      fill="#464646"
+                                      height={35}
+                                      width={35}
+                                    />
+                                  ) : null;
+                                })
+                              ) : (
+                                <Text>-</Text>
+                              )}
+                            </View>
+                          </View>
+                          <Button
+                            onPress={() => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              recent_save(searchtext);
+                              props.navigation.push("ItineraryStack", {
+                                screen: "ItineraryPlaning",
+                                params: {
+                                  idkiriman: item.id,
+                                  Position: "destination",
+                                },
+                              });
+                            }}
+                            size="small"
+                            text={t("add")}
+                            // style={{ marginTop: 15 }}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  )}
+                  ListFooterComponent={
+                    searchtext !== "" && destinationSearch.length <= 0 ? (
+                      <View
+                        style={{
+                          // position: 'absolute',
+                          // bottom:0,
+                          width: width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 30,
+                          marginLeft: -15,
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
+                      </View>
+                    ) : null
+                  }
+                  showsHorizontalScrollIndicator={false}
+                />
               ) : null}
               {active_src === "event" ? (
                 loadingEvent == true ? (
                   <View
                     style={{
+                      // position: 'absolute',
+                      // bottom:0,
                       flex: 1,
                       width: width,
                       justifyContent: "center",
@@ -1503,11 +2217,235 @@ export default function SearchPg(props, { navigation, route }) {
                     />
                   </View>
                 ) : (
-                  <CardEvents
+                  <FlatList
+                    contentContainerStyle={{
+                      marginBottom: 15,
+                      justifyContent: "space-evenly",
+                      paddingBottom: 5,
+                      marginHorizontal: 15,
+                    }}
+                    horizontal={false}
                     data={event_search}
-                    props={props}
-                    setData={(e) => SetEventSearch(e)}
-                    token={token}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+
+                          width: Dimensions.get("screen").width * 0.5 - 25,
+                          height: Dimensions.get("screen").width * 0.7,
+                          margin: 5,
+                          flexDirection: "column",
+                          backgroundColor: "white",
+                          borderRadius: 5,
+                          shadowColor: "gray",
+                          shadowOffset: {
+                            width: 2,
+                            height: 2,
+                          },
+                          shadowOpacity: 1,
+                          shadowRadius: 3,
+                          elevation: 3,
+                        }}
+                      >
+                        <View
+                          style={{
+                            position: "absolute",
+                            top: 15,
+                            left: 10,
+                            right: 10,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignContent: "center",
+                            zIndex: 9999,
+                          }}
+                        >
+                          <View
+                            style={{
+                              // bottom: (9),
+                              height: 21,
+                              minWidth: 60,
+                              borderRadius: 11,
+                              alignSelf: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              paddingHorizontal: 10,
+                            }}
+                          >
+                            <Text
+                              size="readable"
+                              style={{
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.category.name}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              height: 26,
+                              width: 26,
+                              borderRadius: 50,
+                              alignSelf: "center",
+                              alignItems: "center",
+                              alignContent: "center",
+                              justifyContent: "center",
+                              backgroundColor: "rgba(226, 236, 248, 0.85)",
+                              // zIndex: 999,
+                            }}
+                          >
+                            {item.liked === false ? (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _likedevent(item.id, index)}
+                              >
+                                <LikeEmpty height={13} width={13} />
+                              </TouchableOpacity>
+                            ) : (
+                              <TouchableOpacity
+                                style={{
+                                  height: 26,
+                                  width: 26,
+                                  borderRadius: 50,
+                                  alignSelf: "center",
+                                  alignItems: "center",
+                                  alignContent: "center",
+                                  justifyContent: "center",
+
+                                  zIndex: 9999,
+                                }}
+                                onPress={() => _unlikedevent(item.id, index)}
+                              >
+                                <LikeRed height={13} width={13} />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+
+                        <TouchableOpacity
+                          onPress={() => eventdetail(item)}
+                          style={{
+                            height: Dimensions.get("window").width * 0.47 - 16,
+                          }}
+                        >
+                          <FunImageBackground
+                            key={item.id}
+                            source={
+                              item.images.length
+                                ? {
+                                    uri: item.images[0].image,
+                                  }
+                                : default_image
+                            }
+                            style={[styles.ImageView]}
+                            imageStyle={[styles.Image]}
+                          ></FunImageBackground>
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            justifyContent: "space-around",
+                            height: 230,
+                            marginVertical: 5,
+                            marginHorizontal: 10,
+                          }}
+                        >
+                          <Text
+                            onPress={() => eventdetail(item)}
+                            size="title"
+                            type="bold"
+                            style={{}}
+                          >
+                            <Truncate text={item.name} length={27} />
+                          </Text>
+                          <View
+                            style={{
+                              height: "50%",
+                              flexDirection: "column",
+                              justifyContent: "space-around",
+                            }}
+                          >
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                borderColor: "grey",
+                              }}
+                            >
+                              <PinHijau width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {item.city.name}
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                // flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                marginBottom: 3,
+                              }}
+                            >
+                              <Calendargrey width={15} height={15} />
+
+                              <Text
+                                size="readable"
+                                style={{
+                                  paddingRight: 20,
+                                  width: "100%",
+                                  marginLeft: 5,
+                                }}
+                              >
+                                {dateFormatBetween(
+                                  item.start_date,
+                                  item.end_date
+                                )}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                    )}
+                    numColumns={2}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={
+                      searchtext !== "" && event_search.length <= 0 ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 30,
+                            marginLeft: -15,
+                            // borderWidth: 1,
+                          }}
+                        >
+                          <Text size="label" type="regular">
+                            {t("noData")}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
                   />
                 )
               ) : null}

@@ -28,10 +28,7 @@ import { useMutation } from "@apollo/client";
 
 export default function CardDestination({ data, props, setData, token }) {
   const { t } = useTranslation();
-  const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
-
-  console.log("data", data);
 
   const [
     mutationlikedAnother,
@@ -71,8 +68,9 @@ export default function CardDestination({ data, props, setData, token }) {
             qty: 1,
           },
         });
+
         if (response.data) {
-          if (!response.data.setDestination_wishlist.code === 200) {
+          if (response.data.setDestination_wishlist.code != 200) {
             RNToasty.Show({
               title: t("FailedLikeDestination"),
               position: "bottom",
@@ -104,8 +102,9 @@ export default function CardDestination({ data, props, setData, token }) {
             destination_id: id,
           },
         });
+
         if (response.data) {
-          if (!response.data.unset_wishlist_destinasi.code === 200) {
+          if (response.data.unset_wishlist_destinasi.code != 200) {
             RNToasty.Show({
               title: t("somethingwrong"),
               position: "bottom",
@@ -117,6 +116,7 @@ export default function CardDestination({ data, props, setData, token }) {
         const temptDataUnlike = { ...temptData[index] };
         temptDataUnlike.liked = true;
         temptData.splice(index, 1, temptDataUnlike);
+        setData(temptData);
       }
     } else {
       setModalLogin(true);
@@ -250,7 +250,7 @@ export default function CardDestination({ data, props, setData, token }) {
                   </Pressable>
                 ) : (
                   <Pressable
-                    onPress={() => _likedAnother(item.id)}
+                    onPress={() => _likedAnother(item.id, index)}
                     style={{
                       backgroundColor: "#F3F3F3",
                       height: normalize(30),
@@ -363,23 +363,25 @@ export default function CardDestination({ data, props, setData, token }) {
                       flexDirection: "row",
                     }}
                   >
-                    {item?.type?.name.toLowerCase().substr(0, 6) == "unesco" ? (
+                    {item?.type?.name &&
+                    item?.type?.name.toLowerCase().substr(0, 6) == "unesco" ? (
                       <UnescoIcon
                         height={normalize(33)}
                         width={normalize(33)}
                         style={{ marginRight: 8 }}
                       />
                     ) : null}
-                    {item?.movie_location.length > 0 ? (
+                    {item?.movie_location && item?.movie_location.length > 0 ? (
                       <MovieIcon height={normalize(33)} width={normalize(33)} />
                     ) : null}
                   </View>
                   <View
                     style={{
-                      marginBottom: item.greatfor.length > 0 ? 0 : 7,
+                      marginBottom:
+                        item?.greatfor && item?.greatfor.length > 0 ? 0 : 7,
                     }}
                   >
-                    {item.greatfor.length > 0 ? (
+                    {item?.greatfor && item?.greatfor.length > 0 ? (
                       <Text
                         size="description"
                         type="bold"
@@ -394,8 +396,8 @@ export default function CardDestination({ data, props, setData, token }) {
                         marginLeft: -5,
                       }}
                     >
-                      {item.greatfor.length > 0
-                        ? item.greatfor.map((item, index) => {
+                      {item?.greatfor && item?.greatfor.length > 0
+                        ? item?.greatfor.map((item, index) => {
                             return index < 3 ? (
                               <FunIcon
                                 key={"grat" + index}

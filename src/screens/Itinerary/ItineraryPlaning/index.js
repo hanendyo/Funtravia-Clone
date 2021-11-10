@@ -16,7 +16,7 @@ import {
   Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CustomImage } from "../../../component";
+import { CardItinerary, CustomImage } from "../../../component";
 import { default_image, imgPrivate } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import listitinerary from "../../../graphQL/Query/Itinerary/listitinerary";
@@ -89,18 +89,22 @@ export default function listItinPlaning(props) {
 
   let [token, setToken] = useState("");
   let idkiriman = props.route.params.idkiriman;
+  let [datas, setDatas] = useState();
 
   const [
     GetListitinaktif,
     { data: datalistaktif, loading: loadinglistaktif, error: errorlistaktif },
   ] = useLazyQuery(listitinerary, {
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
-    // variables: { status: "D" },
+    onCompleted: () => {
+      setDatas(datalistaktif?.itinerary_list_draf);
+    },
   });
 
   const getdate = (start, end) => {
@@ -209,7 +213,6 @@ export default function listItinPlaning(props) {
   };
 
   const RenderActive = ({ data }) => {
-    console.log("data itinerary", data);
     return (
       <View
         style={{
@@ -698,28 +701,13 @@ export default function listItinPlaning(props) {
           </View>
         </View>
       </Modal>
-      {datalistaktif && datalistaktif.itinerary_list_draf.length > 0 ? (
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
-          }
-          contentContainerStyle={{
-            marginTop: 5,
-            justifyContent: "space-evenly",
-            paddingStart: 10,
-            paddingEnd: 10,
-            paddingBottom: 100,
-          }}
-          horizontal={false}
-          data={
-            datalistaktif && datalistaktif.itinerary_list_draf.length
-              ? datalistaktif.itinerary_list_draf
-              : null
-          }
-          renderItem={({ item }) => <RenderActive data={item} />}
-          // keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          // extraData={selected}
+      {datas && datas.length > 0 ? (
+        <CardItinerary
+          data={datas}
+          props={props}
+          token={token}
+          //  setting={setting}
+          setData={(e) => setDatas(e)}
         />
       ) : null}
 

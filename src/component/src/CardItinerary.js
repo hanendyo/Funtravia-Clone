@@ -23,7 +23,7 @@ import {
 import { Text, Truncate, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
-import { Bg_soon, default_profile } from "../../assets/png";
+import { Bg_soon, default_profile, ItineraryKosong } from "../../assets/png";
 import { ModalLogin } from "../../component";
 import { useMutation } from "@apollo/client";
 import ItineraryLiked from "../../graphQL/Mutation/Itinerary/ItineraryLike";

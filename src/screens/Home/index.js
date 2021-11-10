@@ -265,6 +265,8 @@ export default function Home(props) {
     extrapolate: "clamp",
   });
 
+  console.log(token);
+
   const colorBG = scrollY.interpolate({
     inputRange: [0, height / 4],
     outputRange: ["rgba(231, 247, 247, 255)", "rgba(255, 255, 255, 1)"],
@@ -272,7 +274,7 @@ export default function Home(props) {
 
   const searchBG = scrollY.interpolate({
     inputRange: [0, height / 4],
-    outputRange: ["#FFF", "#F6F6F6"],
+    outputRange: ["#FFF", "#f9f9f9"],
   });
 
   if (loadingModal) {
@@ -366,7 +368,7 @@ export default function Home(props) {
                     type="bold"
                     numberOfLines={1}
                     style={{
-                      color: "#A9A9A9",
+                      color: "#a1a1a1",
                     }}
                   >
                     {t("searchHome")}

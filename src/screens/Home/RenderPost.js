@@ -107,18 +107,20 @@ export default function RenderVideo({
               paddingHorizontal: 3,
               borderRadius: 2,
               height: 20,
+              width: "68%",
             }}
           >
             <Text
               size="small"
               type="bold"
+              numberOfLines={1}
               style={{
                 textAlign: "center",
-                marginHorizontal: 12,
+                marginHorizontal: 7,
                 color: "rgba(255,255,255,1)",
               }}
             >
-              <Truncate text={`@${data.user.username}`} length={15} />
+              {`@${data.user.username}`}
             </Text>
           </View>
         </TouchableOpacity>

@@ -12,6 +12,11 @@ const SearchDestinationQuery = gql`
       rating
       cover
       count_review
+      type {
+        id
+        name
+        icon
+      }
       cities {
         id
         name
@@ -31,6 +36,14 @@ const SearchDestinationQuery = gql`
         image
       }
       liked
+      movie_location {
+        id
+        title
+        description
+        cover
+        is_populer
+        populer_order
+      }
     }
   }
 `;
