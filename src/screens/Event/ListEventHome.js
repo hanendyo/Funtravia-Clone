@@ -1947,6 +1947,7 @@ export default function ListEventHome(props) {
                 ))
               : datacountry.map((item, index) => (
                   <Pressable
+                    key={"country" + index}
                     onPress={() => handlecountry(item, index)}
                     style={{
                       paddingVertical: 15,

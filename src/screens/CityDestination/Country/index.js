@@ -623,7 +623,7 @@ export default function Country(props) {
               </Text>
               {full == false && render.description.length > 120 ? (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
@@ -637,7 +637,7 @@ export default function Country(props) {
                 </Text>
               ) : (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
@@ -657,7 +657,7 @@ export default function Country(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{
                       color: "#209FAE",
@@ -674,7 +674,7 @@ export default function Country(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
@@ -940,8 +940,8 @@ export default function Country(props) {
                               flexDirection: "row",
                               width: width - 50,
                               height: width * 0.2,
-
                               padding: 5,
+                              alignItems: "center",
                             }}
                           >
                             {dataX && dataX.userby ? (
@@ -978,8 +978,12 @@ export default function Country(props) {
                                 }}
                               >
                                 <Text
+                                  numberOfLines={1}
+                                  size="label"
                                   style={{
-                                    width: "80%",
+                                    width: "100%",
+                                    color: "#209fae",
+                                    marginBottom: 3,
                                   }}
                                   type="bold"
                                 >

@@ -293,15 +293,8 @@ export default function CityDetail(props) {
       let eventavailable = [];
       if (dataProvince.province_detail_v2?.event) {
         dataProvince.province_detail_v2?.event.map((item, index) => {
-          if (item?.event && item?.event?.length && item?.event?.length > 0) {
-            loop = loop + 1;
-
-            if (item.month == datenow) {
-              eventavailable = item;
-            }
-            if (loop == 1) {
-              eventavailable = item;
-            }
+          if (item.month == datenow) {
+            eventavailable = item;
           }
         });
       }
@@ -683,6 +676,7 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
+    console.log(`RENDER PROVINCE: `, render);
 
     return (
       // Deskripsi
@@ -704,7 +698,7 @@ export default function CityDetail(props) {
               </Text>
               {full == false && render.description.length > 120 ? (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
@@ -718,7 +712,7 @@ export default function CityDetail(props) {
                 </Text>
               ) : (
                 <Text
-                  size="readable"
+                  size="label"
                   type="regular"
                   style={{
                     textAlign: "left",
@@ -738,7 +732,7 @@ export default function CityDetail(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{
                       color: "#209FAE",
@@ -755,7 +749,7 @@ export default function CityDetail(props) {
                   }}
                 >
                   <Text
-                    size="readable"
+                    size="label"
                     type="regular"
                     style={{ color: "#209FAE" }}
                   >
@@ -1277,8 +1271,12 @@ export default function CityDetail(props) {
                                 }}
                               >
                                 <Text
+                                  numberOfLines={1}
+                                  size="label"
                                   style={{
-                                    width: "80%",
+                                    width: "100%",
+                                    color: "#209fae",
+                                    marginBottom: 3,
                                   }}
                                   type="bold"
                                 >
@@ -1616,10 +1614,12 @@ export default function CityDetail(props) {
               </Text>
               <Ripple
                 onPress={() => {
-                  props.navigation.navigate("listevent", {
+                  props.navigation.navigate("searchListEventHome", {
                     params: {
                       idcity: render.id,
                       idcountries: "",
+                      countryName: render.countries.name,
+                      events: render.event,
                       // idcountries:
                     },
                   });
@@ -1650,16 +1650,29 @@ export default function CityDetail(props) {
                   {t("exprolefestival&eventcity")}
                 </Text>
               </View>
-
-              <Text
-                type="bold"
-                size="description"
-                style={{
-                  color: "#209fae",
+              <Ripple
+                onPress={() => {
+                  props.navigation.navigate("searchListEventHome", {
+                    params: {
+                      idcity: render.id,
+                      idcountries: "",
+                      countryName: render.countries.name,
+                      events: render.event,
+                      // idcountries:
+                    },
+                  });
                 }}
               >
-                {t("viewAll")}
-              </Text>
+                <Text
+                  type="bold"
+                  size="description"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  {t("viewAll")}
+                </Text>
+              </Ripple>
             </View>
             <View
               style={{
