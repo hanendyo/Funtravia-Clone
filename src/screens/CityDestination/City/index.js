@@ -116,8 +116,6 @@ export default function CityDetail(props) {
   } else {
     Bln1 = Bln + 1;
   }
-
-  console.log("token", token);
   // let Bln1 = Bln + 1;
   let years = new Date().getFullYear();
 
@@ -310,18 +308,12 @@ export default function CityDetail(props) {
       let eventavailable = [];
       if (dataCity.CitiesInformation?.event) {
         dataCity.CitiesInformation?.event.map((item, index) => {
-          if (item?.event && item?.event?.length && item?.event?.length > 0) {
-            loop = loop + 1;
-
-            if (item.month == datenow) {
-              eventavailable = item;
-            }
-            if (loop == 1) {
-              eventavailable = item;
-            }
+          if (item.month == datenow) {
+            eventavailable = item;
           }
         });
       }
+      console.log(`EVENT AVAIL: `, eventavailable);
       setdataevent(eventavailable);
       getJournalCity();
       // setLoadings(false);
@@ -695,6 +687,30 @@ export default function CityDetail(props) {
     }
   };
 
+  let [getNewDate, setGetNewDate] = useState("");
+
+  const getDate = async () => {
+    const date = new Date();
+    const checkTime = (time) => {
+      if (time < 10) {
+        time = "0" + time;
+      }
+      return time;
+    };
+    let year = date.getFullYear();
+    let months = checkTime(date.getMonth() + 1);
+    let monthStringify = months.toString();
+    let day = checkTime(date.getDate());
+    let h = checkTime(date.getHours());
+    let m = checkTime(date.getMinutes());
+    let s = checkTime(date.getSeconds());
+    let formattedDate = `${year}-${months}`;
+    setGetNewDate(formattedDate);
+  };
+
+  useEffect(() => {
+    getDate();
+  }, []);
   // RenderGeneral
   const RenderGeneral = ({}) => {
     let render = [];
@@ -707,7 +723,7 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
-
+    console.log(`RENDER CITY: `, render);
     return (
       // Deskripsi
       <View
@@ -841,7 +857,7 @@ export default function CityDetail(props) {
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id_type,
-                              idcity: render.id,
+                              idcity: render?.id,
                               token: token,
                             });
                           }}
@@ -921,7 +937,7 @@ export default function CityDetail(props) {
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id,
-                              idcity: render.id,
+                              idcity: render?.id,
                             });
                           }}
                           style={{
@@ -1656,10 +1672,12 @@ export default function CityDetail(props) {
               </Text>
               <Ripple
                 onPress={() => {
-                  props.navigation.navigate("listevent", {
+                  props.navigation.navigate("searchListEventHome", {
                     params: {
-                      idcity: render.id,
+                      idcity: render?.id,
                       idcountries: "",
+                      countryName: render.countries.name,
+                      events: render.event,
                       // idcountries:
                     },
                   });
@@ -1693,8 +1711,14 @@ export default function CityDetail(props) {
 
               <Ripple
                 onPress={() => {
-                  props.navigation.navigate("listevent", {
-                    idcity: render.id,
+                  props.navigation.navigate("searchListEventHome", {
+                    params: {
+                      idcity: render?.id,
+                      idcountries: "",
+                      countryName: render.countries.name,
+                      events: render.event,
+                      // idcountries:
+                    },
                   });
                 }}
               >
@@ -1918,8 +1942,15 @@ export default function CityDetail(props) {
                   flexDirection: "row",
                 }}
               >
+                {
+                  (console.log(`DATAMONTH: `, dataevent.month),
+                  console.log(`BULAN: `, bulan),
+                  console.log(`TANGGAL: `, getNewDate),
+                  console.log(`RENDEREVENT: `, render?.event))
+                }
                 {render?.event
                   ? render?.event.map((item, index) => {
+                      // console.log(`ITEM CITY: `, item);
                       return (
                         <Ripple
                           key={"keyevent1" + index}
@@ -3210,7 +3241,7 @@ export default function CityDetail(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              idcity: dataCity.CitiesInformation.id,
+              idcity: dataCity?.CitiesInformation?.id,
               searchInput: "",
               locationname: listCity.name,
               aktifsearch: true,
@@ -3320,7 +3351,7 @@ export default function CityDetail(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              idcity: dataCity.CitiesInformation.id,
+              idcity: dataCity?.CitiesInformation?.id,
               searchInput: "",
               locationname: listCity.name,
               aktifsearch: true,

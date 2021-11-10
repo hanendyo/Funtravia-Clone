@@ -30,8 +30,10 @@ import { RNToasty } from "react-native-toasty";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
+import DeviceInfo from "react-native-device-info";
 
 export default function SearchListEventHome(props) {
+  console.log(`DATA SEARCH LIST: `, props);
   const { t, i18n } = useTranslation();
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
@@ -50,6 +52,7 @@ export default function SearchListEventHome(props) {
   const [isValidDate, setIsValidDate] = useState(true);
   const [isValidPrice, setIsValidPrice] = useState(true);
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
+  const Notch = DeviceInfo.hasNotch();
 
   useEffect(() => {
     dateUseEffect();

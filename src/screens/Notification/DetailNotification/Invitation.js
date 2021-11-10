@@ -539,10 +539,11 @@ export default function Invitation({ navigation, token }) {
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
+    await GetListInvitation();
   };
 
   useEffect(() => {
-    GetListInvitation();
+    // GetListInvitation();
     loadAsync();
     const unsubscribe = navigation.addListener("focus", () => {
       GetListInvitation();
@@ -585,222 +586,223 @@ export default function Invitation({ navigation, token }) {
 
   if (loadingnotif && datanotif.length < 1) {
     return (
-      <SkeletonPlaceholder
-        speed={1000}
-        // backgroundColor="#FFFFFF"
-        // highlightColor="#D1D1D1"
-      >
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-        <SkeletonPlaceholder.Item
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          marginTop={20}
-          marginHorizontal={15}
-        >
-          <SkeletonPlaceholder.Item flexDirection="row">
-            <SkeletonPlaceholder.Item
-              width={40}
-              height={40}
-              borderRadius={20}
-            />
-            <SkeletonPlaceholder.Item marginLeft={20}>
-              <SkeletonPlaceholder.Item
-                width={80}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={120}
-                height={10}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={60}
-                height={10}
-                borderRadius={4}
-              />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-        </SkeletonPlaceholder.Item>
-      </SkeletonPlaceholder>
+      // <SkeletonPlaceholder
+      //   speed={1000}
+      //   // backgroundColor="#FFFFFF"
+      //   // highlightColor="#D1D1D1"
+      // >
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      //   <SkeletonPlaceholder.Item
+      //     flexDirection="row"
+      //     justifyContent="space-between"
+      //     alignItems="flex-start"
+      //     marginTop={20}
+      //     marginHorizontal={15}
+      //   >
+      //     <SkeletonPlaceholder.Item flexDirection="row">
+      //       <SkeletonPlaceholder.Item
+      //         width={40}
+      //         height={40}
+      //         borderRadius={20}
+      //       />
+      //       <SkeletonPlaceholder.Item marginLeft={20}>
+      //         <SkeletonPlaceholder.Item
+      //           width={80}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={120}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //         <SkeletonPlaceholder.Item
+      //           marginTop={6}
+      //           width={60}
+      //           height={10}
+      //           borderRadius={4}
+      //         />
+      //       </SkeletonPlaceholder.Item>
+      //     </SkeletonPlaceholder.Item>
+      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
+      //   </SkeletonPlaceholder.Item>
+      // </SkeletonPlaceholder>
+      null
     );
   }
   const RenderTrans = ({ item }) => {
@@ -1582,7 +1584,7 @@ export default function Invitation({ navigation, token }) {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "space-between" }}>
+    <View style={{ flex: 1, justifyContent: "space-between", marginTop: 50 }}>
       <Loading show={loadings} />
       {datanotif && datanotif.length ? (
         <FlatList
