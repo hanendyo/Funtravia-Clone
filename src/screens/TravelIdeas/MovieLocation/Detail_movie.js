@@ -41,6 +41,7 @@ import {
   CopyLink,
   StatusBar as Satbar,
   ModalLogin,
+  CardDestination,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
@@ -70,6 +71,7 @@ export default function Detail_movie(props) {
   let [movie_byid, setMoviebyid] = useState({});
 
   let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);
+  console.log("listdestinasi_bymovie", listdestinasi_bymovie);
   const [fetchDataAnotherDes, { data, loading, error }] = useLazyQuery(
     ListDestinationByMovie,
     {
@@ -340,6 +342,10 @@ export default function Detail_movie(props) {
     extrapolate: "clamp",
   });
 
+  let indeks = useRef();
+
+  console.log("indeks", indeks);
+
   return (
     <View
       style={{
@@ -417,6 +423,7 @@ export default function Detail_movie(props) {
           </Text>
         </View>
         {movie_byid?.movie_destination?.map((item, index) => {
+          indeks = index;
           return (
             <View
               key={index}
@@ -479,7 +486,6 @@ export default function Detail_movie(props) {
               backgroundColor: "#f6f6f6",
               justifyContent: "center",
               paddingHorizontal: 15,
-              marginBottom: 15,
             }}
           >
             <Text
@@ -498,275 +504,14 @@ export default function Detail_movie(props) {
             </Text>
           </View>
         )}
-        {movie_byid?.movie_destination?.map((item, index) => {
-          return (
-            <View
-              key={index}
-              style={{
-                width: Dimensions.get("screen").width,
-                marginBottom: 15,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: 20,
-                  alignItems: "center",
-                  marginBottom: 15,
-                }}
-              >
-                <BlockDestination
-                  height={20}
-                  width={20}
-                  style={{ marginLeft: -5 }}
-                />
-                <Text size="label" type="bold" style={{}}>
-                  {t("location") + " " + (index + 1)} :
-                </Text>
-              </View>
-              <Pressable
-                onPress={() => {
-                  props.navigation.push("DestinationUnescoDetail", {
-                    id: item.list_destination.id,
-                    name: item.list_destination.name,
-                    token: token,
-                  });
-                }}
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#F3F3F3",
-                  borderRadius: 10,
-                  height: 190,
-                  width: Dimensions.get("screen").width - 30,
-                  marginHorizontal: 15,
-                  flexDirection: "row",
-                  backgroundColor: "#FFF",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 1,
-                  },
-                  shadowOpacity: 0.22,
-                  shadowRadius: 2.22,
-                  elevation: 3,
-                }}
-              >
-                <View style={{ justifyContent: "center" }}>
-                  <FunImage
-                    source={item ? { uri: item.image } : default_image}
-                    style={{
-                      width: 160,
-                      height: "100%",
-                      borderBottomLeftRadius: 10,
-                      borderTopLeftRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      position: "absolute",
-                      top: 10,
-                      right: 10,
-                      left: 10,
-                      width: "87%",
-                      zIndex: 2,
-                      // borderWidth: 3,
-                      borderColor: "#209fae",
-                    }}
-                  >
-                    {/* {item.list_destination.liked === true ? (
-                    <Pressable
-                      // onPress={() => _unlikedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Love height={15} width={15} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      // onPress={() => _likedAnother(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <LikeEmpty height={15} width={15} />
-                    </Pressable>
-                  )} */}
-                    {item?.list_destination?.rating > 0 ? (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          backgroundColor: "#F3F3F3",
-                          borderRadius: 3,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 5,
-                          height: 25,
-                        }}
-                      >
-                        <Star height={15} width={15} />
-                        <Text size="description" type="bold">
-                          {item.list_destination.rating.substr(0, 3)}
-                        </Text>
-                      </View>
-                    ) : null}
-                  </View>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    paddingHorizontal: 8,
-                    paddingVertical: 7,
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View style={{ borderWidth: 0 }}>
-                    {/* Title */}
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        paddingHorizontal: 3,
-                      }}
-                    >
-                      <BlockDestination
-                        height={16}
-                        width={16}
-                        style={{ marginTop: 5 }}
-                      />
-                      <Text
-                        size="title"
-                        type="bold"
-                        numberOfLines={2}
-                        style={{
-                          marginLeft: 5,
-                          marginBottom: 5,
-                          flexWrap: "wrap",
-                          width: "90%",
-                        }}
-                      >
-                        {item.list_destination.name}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginLeft: 5,
-                      }}
-                    >
-                      <PinHijau height={15} width={15} />
-                      <Text
-                        size="description"
-                        type="regular"
-                        style={{ marginLeft: 5 }}
-                        numberOfLines={1}
-                      >
-                        {item.list_destination.cities.name}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      marginTop: 5,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "flex-end",
-                        paddingHorizontal: 7,
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                        }}
-                      >
-                        {item.list_destination?.movie_location?.length > 0 ? (
-                          <MovieIcon
-                            height={33}
-                            width={33}
-                            style={{ marginRight: 5 }}
-                          />
-                        ) : null}
-                        {item.list_destination.type?.name
-                          .toLowerCase()
-                          .substr(0, 6) == "unesco" ? (
-                          <UnescoIcon height={33} width={33} />
-                        ) : null}
-                      </View>
-                      <View
-                        style={{
-                          marginBottom:
-                            item.list_destination.greatfor.length > 0 ? 0 : 7,
-                        }}
-                      >
-                        {item.list_destination.greatfor.length > 0 ? (
-                          <Text size="label" type="bold">
-                            {t("GreatFor") + " :"}
-                          </Text>
-                        ) : null}
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            marginLeft: -5,
-                          }}
-                        >
-                          {item.list_destination.greatfor.length > 0
-                            ? item.list_destination.greatfor.map(
-                                (item, index) => {
-                                  return index < 3 ? (
-                                    <FunIcon
-                                      key={"grat" + index}
-                                      icon={item.icon}
-                                      fill="#464646"
-                                      height={40}
-                                      width={40}
-                                    />
-                                  ) : null;
-                                }
-                              )
-                            : null}
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        justifyContent: "flex-end",
-                        width: 70,
-                        paddingBottom: 5,
-                        paddingRight: 5,
-                      }}
-                    >
-                      <Button
-                        onPress={() => addToPlan(item.list_destination)}
-                        size="small"
-                        text={"Add"}
-                        // style={{ marginTop: 15 }}
-                      />
-                    </View>
-                  </View>
-                </View>
-              </Pressable>
-            </View>
-          );
-        })}
+        {listdestinasi_bymovie && listdestinasi_bymovie.length > 0 ? (
+          <CardDestination
+            data={listdestinasi_bymovie}
+            props={props}
+            setData={(e) => setlistdestinasi_bymovie(e)}
+            token={token}
+          />
+        ) : null}
       </Animated.ScrollView>
       <Modal
         useNativeDriver={true}

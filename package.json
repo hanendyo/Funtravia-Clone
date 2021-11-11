@@ -44,6 +44,7 @@
     "react-native-auto-height-image": "^3.2.3",
     "react-native-auto-scale-image": "^1.0.1",
     "react-native-bidirectional-infinite-scroll": "^0.3.3",
+    "react-native-collapsible-tab-view": "^4.4.0",
     "react-native-dashed-line": "^1.1.0",
     "react-native-device-info": "^8.0.8",
     "react-native-document-picker": "^5.0.2",
