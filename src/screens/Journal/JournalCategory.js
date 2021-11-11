@@ -490,7 +490,7 @@ export default function JournalCategory(props) {
               style={{ backgroundColor: "white", paddingVertical: 20, flex: 1 }}
             >
               <Text size="label" type="bold">
-                Tidak Ada Data
+                {t("noData")}
               </Text>
             </View>
           )}

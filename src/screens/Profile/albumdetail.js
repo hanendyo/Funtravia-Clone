@@ -1210,7 +1210,7 @@ export default function albumdetail(props) {
       ) : (
         <View style={{ alignItems: "center", marginTop: 20 }}>
           <Text size="title" type="bold">
-            Tidak ada data
+            {t("noData")}
           </Text>
         </View>
       )}

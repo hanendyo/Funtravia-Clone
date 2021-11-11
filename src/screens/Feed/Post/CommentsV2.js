@@ -66,6 +66,8 @@ import DeviceInfo from "react-native-device-info";
 import likepost from "../../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 import normalize from "react-native-normalize";
+import Ripple from "react-native-material-ripple";
+import ViewMoreText from "react-native-view-more-text";
 
 export default function Comments(props) {
   const Notch = DeviceInfo.hasNotch();
@@ -91,6 +93,44 @@ export default function Comments(props) {
   let [idComment, setIdComment] = useState("");
   let [idPost, setIdPost] = useState("");
   const [play, setPlay] = useState();
+
+  const goToItinerary = (data) => {
+    token
+      ? props.navigation.push("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: data.itinerary.name,
+            country: data.itinerary.id,
+            dateitin: "",
+            token: token,
+            status: "",
+            index: 1,
+            datadayaktif: data.day,
+          },
+        })
+      : setModalLogin(true);
+  };
+
+  const renderViewMore = (onPress) => {
+    return (
+      <Text
+        size="description"
+        type="bold"
+        onPress={onPress}
+        style={{
+          color: "#209fae",
+          marginTop: 2,
+          marginBottom: 5,
+        }}
+      >
+        {t("readMoreCaption")}
+      </Text>
+    );
+  };
+
+  const renderViewLess = (onPress) => {
+    return <Text></Text>;
+  };
 
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
     if (viewableItems) {
@@ -1586,7 +1626,7 @@ export default function Comments(props) {
                     flexDirection: "row",
                   }}
                 >
-                  {dataPost?.itinerary == false ? (
+                  {/* {dataPost?.itinerary == false ? (
                     <View>
                       {dataPost?.itinerary !== null ? (
                         <Pressable
@@ -1657,6 +1697,116 @@ export default function Comments(props) {
                         {dataPost?.caption}
                       </Text>
                     </ReadMore>
+                  ) : null} */}
+                  {dataPost?.itinerary !== null ? (
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginBottom: 10,
+                          width: Dimensions.get("screen").width - 40,
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: "#209fae",
+                            // height: 23,
+                            width: 7,
+                            borderRadius: 4,
+                            marginRight: 10,
+                            marginLeft: 2,
+                          }}
+                        />
+                        <Pressable
+                          onPress={() => goToItinerary(dataPost)}
+                          style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text size="label" type="bold" style>
+                            {dataPost?.itinerary?.name}
+                          </Text>
+                          <Ripple
+                            onPress={() => goToItinerary(dataPost)}
+                            style={{
+                              borderRadius: 10,
+                              borderWidth: 1,
+                              borderColor: "#209FAE",
+                              marginLeft: 5,
+                            }}
+                          >
+                            <Text
+                              size="small"
+                              type="regular"
+                              style={{
+                                marginHorizontal: 10,
+                                marginVertical: 3,
+                              }}
+                            >
+                              Trip
+                            </Text>
+                          </Ripple>
+                        </Pressable>
+                      </View>
+                      {dataPost?.caption ? (
+                        <ViewMoreText
+                          numberOfLines={3}
+                          renderViewMore={renderViewMore}
+                          renderViewLess={renderViewLess}
+                          // textStyle={{ color: "#209fae" }}
+                        >
+                          <Text
+                            size="label"
+                            style={{
+                              textAlign: "left",
+                              lineHeight: 20,
+                            }}
+                          >
+                            {dataPost?.caption}
+                          </Text>
+                        </ViewMoreText>
+                      ) : null}
+                    </View>
+                  ) : dataPost?.caption ? (
+                    <View
+                      style={
+                        {
+                          // marginBottom: 8,
+                        }
+                      }
+                    >
+                      <ViewMoreText
+                        numberOfLines={3}
+                        renderViewMore={renderViewMore}
+                        renderViewLess={renderViewLess}
+                      >
+                        <Text
+                          size="label"
+                          style={{
+                            textAlign: "left",
+                            lineHeight: 20,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <Text
+                            type="bold"
+                            size="label"
+                            style={{
+                              marginRight: 5,
+                            }}
+                          >
+                            {dataPost?.user?.first_name}{" "}
+                            {dataPost?.user?.first_name
+                              ? dataPost?.user?.last_name
+                              : null}{" "}
+                          </Text>
+                          {dataPost?.caption}
+                        </Text>
+                      </ViewMoreText>
+                    </View>
                   ) : null}
                 </View>
               </View>

@@ -286,7 +286,7 @@ export default function SettingCity(props) {
       ) : (
         <View style={{ marginVertical: 20, alignItems: "center" }}>
           <Text size="description" type="bold">
-            Tidak ada data
+            {t("noData")}
           </Text>
         </View>
       )}
