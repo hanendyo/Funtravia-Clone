@@ -785,7 +785,7 @@ const Index = (props) => {
         pointerEvents="none"
         // {...headerPanResponder.panHandlers}
         // {...panResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           flex: 1,
           transform: [{ translateY: y }],
@@ -799,7 +799,7 @@ const Index = (props) => {
       >
         <Animated.View
           style={{
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
             opacity: imageOpacity,
             // height:"100%",
             flex: 1,
@@ -992,23 +992,31 @@ const Index = (props) => {
                 backgroundColor: "#FFF",
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  marginRight: 5,
-                  backgroundColor: "#DAF0F2",
-                  paddingVertical: 8,
-                  paddingHorizontal: 15,
-                }}
-              >
-                <UnescoIcon height={27} width={27} style={{ marginRight: 5 }} />
-                <Text size="description" type="regular">
-                  UNESCO
-                </Text>
-              </View>
+              {dataDestination &&
+              dataDestination?.type?.name.toLowerCase().substr(0, 6) ==
+                "unesco" ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 5,
+                    marginRight: 5,
+                    backgroundColor: "#DAF0F2",
+                    paddingVertical: 8,
+                    paddingHorizontal: 15,
+                  }}
+                >
+                  <UnescoIcon
+                    height={27}
+                    width={27}
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text size="description" type="regular">
+                    UNESCO
+                  </Text>
+                </View>
+              ) : null}
               {data?.destinationById?.movie_location?.length > 0 ? (
                 <View
                   style={{

@@ -204,6 +204,8 @@ export default function TravelIdeas(props) {
             style={{
               flexDirection: "row",
               alignItems: "center",
+              flex: 1,
+              marginRight: 10,
             }}
           >
             <View
@@ -219,11 +221,11 @@ export default function TravelIdeas(props) {
             >
               <Unesco width={35} height={35} />
             </View>
-            <View>
-              <Text type="bold" size="label">
+            <View style={{ flex: 1 }}>
+              <Text type="bold" size="label" numberOfLines={1}>
                 Unesco World Heritage
               </Text>
-              <Text type="regular" size="description">
+              <Text type="regular" size="description" numberOfLines={2}>
                 {t("subUnescoIndex")}
               </Text>
             </View>
@@ -269,7 +271,8 @@ export default function TravelIdeas(props) {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              width: "90%",
+              flex: 1,
+              marginRight: 10,
             }}
           >
             <View
@@ -287,13 +290,13 @@ export default function TravelIdeas(props) {
             </View>
             <View
               style={{
-                width: "75%",
+                flex: 1,
               }}
             >
-              <Text type="bold" size="label">
+              <Text type="bold" size="label" numberOfLines={1}>
                 {t("MovieLocation")}
               </Text>
-              <Text type="regular" size="description">
+              <Text type="regular" size="description" numberOfLines={2}>
                 {t("subFilmingLocationIndex")}
               </Text>
             </View>

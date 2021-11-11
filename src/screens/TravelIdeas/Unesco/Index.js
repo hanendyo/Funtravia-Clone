@@ -38,61 +38,77 @@ const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
-const HeaderHeight = Platform.select({
-  ios: Notch ? 420 - 48 : 360 - 20,
-  android: 340 - StatusBar.currentHeight,
-});
+// const HeaderHeight = Platform.select({
+//   ios: Notch ? normalize(420) - 48 : normalize(360) - 20,
+//   android: normalize(340) - StatusBar.currentHeight,
+// });
+
+// let HEADER_MAX_HEIGHT = Platform.select({
+//   ios: Notch ? 420 - 48 : 360 - 20,
+//   android: 340 - StatusBar.currentHeight,
+// });
 
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function Unesco({ navigation, route }) {
+  let [tambahan, setTambahan] = useState(0);
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
+  const HeaderHeight = Platform.select({
+    ios: Notch ? normalize(420) - 48 : normalize(360) - 20,
+    android: normalize(340) - StatusBar.currentHeight,
+  });
+
+  let HEADER_MAX_HEIGHT = Platform.select({
+    ios: Notch ? 420 + tambahan - 48 : 360 + tambahan - 20,
+    android: 340 + tambahan - StatusBar.currentHeight,
+  });
+
   let [selectedCountry, SetselectedCountry] = useState({
     // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
     // name: "Indonesia",
   });
   const { t } = useTranslation();
-  const HeaderComponent = {
-    headerShown: false,
-    transparent: false,
-    tabBarVisble: false,
-    tabBarLabel: "Unesco",
-    headerTintColor: "white",
-    headerTitle: "UNESCO World Heritage",
-    headerMode: "none",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          marginLeft: 10,
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-  };
+  // const HeaderComponent = {
+  //   headerShown: false,
+  //   transparent: false,
+  //   tabBarVisble: false,
+  //   tabBarLabel: "Unesco",
+  //   headerTintColor: "white",
+  //   headerTitle: "UNESCO World Heritage",
+  //   headerMode: "none",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 18,
+  //     color: "white",
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => navigation.goBack()}
+  //       style={{
+  //         marginLeft: 10,
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={15} width={15}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+  // };
   /**
    * stats
    */
@@ -124,8 +140,6 @@ export default function Unesco({ navigation, route }) {
     },
   });
 
-  console.log("datacountry", datacountry);
-
   /**
    * ref
    */
@@ -140,7 +154,6 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
-  let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -171,17 +184,6 @@ export default function Unesco({ navigation, route }) {
     extrapolate: "clamp",
   });
 
-  // let HEADER_MAX_HEIGHT = HeaderHeight;
-  // let HEADER_MIN_HEIGHT = 55;
-  // let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-  const PosisiCountry = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    // outputRange: [HeaderHeight - 125, 50, TabBarHeight + 10],
-    outputRange: [HeaderHeight - 135, -10, -100],
-    extrapolate: "clamp",
-  });
-
   const [getUnesco, { data, loading, error, refetch }] = useLazyQuery(
     ListDestinationByUnesco,
     {
@@ -196,8 +198,6 @@ export default function Unesco({ navigation, route }) {
       },
     }
   );
-
-  console.log("data", data);
 
   let listdestinasi_unesco = [];
   if (data && data.listdestinasi_unesco) {
@@ -296,7 +296,7 @@ export default function Unesco({ navigation, route }) {
    * effect
    */
   useEffect(() => {
-    navigation.setOptions(HeaderComponent);
+    // navigation.setOptions(HeaderComponent);
     // navigation.setOptions(HeaderComponentCustom);
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
@@ -484,9 +484,9 @@ export default function Unesco({ navigation, route }) {
     });
     return (
       <Animated.View
-        // pointerEvents={"none"}
+        pointerEvents={"box-none"}
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
@@ -503,94 +503,77 @@ export default function Unesco({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - 135,
+            height: HeaderHeight - normalize(110),
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
-            // <FunImageBackground
-            //   source={{ uri: Banner.banner_asset[0].filepath }}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 130,
-            //   }}
-            //   resizeMode="cover"
-            // />
             <Animated.Image
               style={{
                 width: "100%",
                 height: "100%",
                 resizeMode: "cover",
                 opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
+                // transform: [{ translateY: imageTranslate }],
               }}
               source={{ uri: Banner.banner_asset[0].filepath }}
             />
           ) : (
-            // <ImageBackground
-            //   source={unesco}
-            //   style={{
-            //     width: width,
-            //     height: HeaderHeight - 125,
-            //   }}
-            //   resizeMode="cover"
-            // />
             <Animated.Image
               style={{
                 width: "100%",
                 height: "100%",
                 resizeMode: "cover",
                 opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
+                // transform: [{ translateY: imageTranslate }],
               }}
               source={unesco}
             />
           )}
         </View>
         <Animated.View
+          pointerEvents="box-none"
           style={{
             flex: 1,
             marginTop: 0,
-            paddingTop: Platform.OS == "ios" ? 35 : 45,
+            paddingTop: Platform.OS == "ios" ? 15 : 25,
             paddingHorizontal: 20,
             zIndex: -10,
             backgroundColor: "#fff",
             opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
-          <Text size="title" type="bold" style={{ marginBottom: 0 }}>
-            {/* {Banner && Banner.title ? Banner.title : t("UnescoTitle")} */}
+          <Text size="title" type="bold" style={{ textAlign: "left" }}>
             {t("UnescoTitle")}
           </Text>
           <Text
             size="label"
-            // size={Platform.OS == "ios" ? "description" : "label"}
             style={{
-              textAlign: "justify",
+              textAlign: "left",
               lineHeight: 20,
               paddingBottom: 10,
             }}
+            type="regular"
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = line - 3;
+              setTambahan(lines * 20);
+            }}
           >
-            {/* {Banner && Banner.description
-              ? Banner.description
-              : t("UnescoDescription")}{" "}
-            {selectedCountry?.name}. */}
             {t("UnescoDescription")} {selectedCountry?.name}.
           </Text>
         </Animated.View>
+
+        {/* FILTER COUNTRY */}
         <Animated.View
           style={{
             position: "absolute",
-            top: HeaderHeight - 160,
-            // top: height - (Platform.OS == "ios" ? (Notch ? 745 : 488) : 630),
-            // transform: [{ translateY: PosisiCountry }],
+            top: HeaderHeight - normalize(130),
             alignItems: "center",
             width: "100%",
             height: normalize(44),
-            // backgroundColor: "#FFFFFF",
-            // zIndex: 100,
             opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -628,7 +611,6 @@ export default function Unesco({ navigation, route }) {
                 type="bold"
                 style={{
                   marginRight: 10,
-                  // borderWidth: 1,
                   marginBottom: 5,
                 }}
               >
@@ -638,6 +620,7 @@ export default function Unesco({ navigation, route }) {
             <Select height={10} width={10} />
           </Pressable>
         </Animated.View>
+        {/* END FILTER COUNTRY */}
       </Animated.View>
     );
   };
@@ -646,12 +629,6 @@ export default function Unesco({ navigation, route }) {
     return (
       <Pressable
         key={index.toString()}
-        // onPress={() => {
-        //   navigation.navigate("detailStack", {
-        //     id: item.id,
-        //     name: item.name,
-        //   });
-        // }}
         onPress={() =>
           navigation.navigate("DestinationUnescoDetail", {
             id: item.id,
@@ -708,9 +685,6 @@ export default function Unesco({ navigation, route }) {
             <Text type="bold" size="label" numberOfLines={1}>
               {item.name}
             </Text>
-            {/* <Text numberOfLines={2} style={{ lineHeight: 16 }}>
-              {item.description}
-            </Text> */}
             <Text
               numberOfLines={2}
               style={{ lineHeight: 26 }}
@@ -875,11 +849,10 @@ export default function Unesco({ navigation, route }) {
 
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
+      // inputRange: [0, HEADER_SCROLL_DISTANCE],
+      // outputRange: [0, -HEADER_SCROLL_DISTANCE],
       inputRange: [0, HeaderHeight],
-      // outputRange: [HeaderHeight - 6, 0],
-      outputRange:
-        Platform.OS == "ios" ? [HeaderHeight, 55] : [HeaderHeight, 55],
-      // extrapolate: 'clamp',
+      outputRange: [HeaderHeight, 55],
       extrapolateRight: "clamp",
     });
     return (
@@ -1122,7 +1095,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   header: {
-    height: HeaderHeight,
+    height:
+      Platform.OS == "ios"
+        ? Notch
+          ? normalize(420) - 48
+          : normalize(360) - 20
+        : normalize(340) - StatusBar.currentHeight,
     width: "100%",
     alignItems: "center",
     // justifyContent: "center",
