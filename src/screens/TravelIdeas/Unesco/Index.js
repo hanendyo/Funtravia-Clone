@@ -57,13 +57,17 @@ export default function Unesco({ navigation, route }) {
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
   const HeaderHeight = Platform.select({
-    ios: Notch ? normalize(420) - 48 : normalize(360) - 20,
-    android: normalize(340) - StatusBar.currentHeight,
+    ios: Notch
+      ? normalize(420) + tambahan - 48
+      : normalize(360) + tambahan - 20,
+    android: normalize(380) + tambahan - StatusBar.currentHeight,
   });
 
   let HEADER_MAX_HEIGHT = Platform.select({
-    ios: Notch ? 420 + tambahan - 48 : 360 + tambahan - 20,
-    android: 340 + tambahan - StatusBar.currentHeight,
+    ios: Notch
+      ? normalize(420) + tambahan - 48
+      : normalize(360) + tambahan - 20,
+    android: normalize(380) + tambahan - StatusBar.currentHeight,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({
@@ -71,47 +75,6 @@ export default function Unesco({ navigation, route }) {
     // name: "Indonesia",
   });
   const { t } = useTranslation();
-  // const HeaderComponent = {
-  //   headerShown: false,
-  //   transparent: false,
-  //   tabBarVisble: false,
-  //   tabBarLabel: "Unesco",
-  //   headerTintColor: "white",
-  //   headerTitle: "UNESCO World Heritage",
-  //   headerMode: "none",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //   },
-  //   headerTitleStyle: {
-  //     fontFamily: "Lato-Bold",
-  //     fontSize: 18,
-  //     color: "white",
-  //   },
-  //   headerLeft: () => (
-  //     <Button
-  //       text={""}
-  //       size="medium"
-  //       type="circle"
-  //       variant="transparent"
-  //       onPress={() => navigation.goBack()}
-  //       style={{
-  //         marginLeft: 10,
-  //         height: 55,
-  //       }}
-  //     >
-  //       {Platform.OS == "ios" ? (
-  //         <Arrowbackios height={15} width={15}></Arrowbackios>
-  //       ) : (
-  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //       )}
-  //     </Button>
-  //   ),
-  // };
-  /**
-   * stats
-   */
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "culture", title: t("Culture") },
@@ -503,7 +466,7 @@ export default function Unesco({ navigation, route }) {
             justifyContent: "center",
             alignItems: "center",
             width: width,
-            height: HeaderHeight - normalize(110),
+            height: normalize(250),
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
@@ -535,11 +498,12 @@ export default function Unesco({ navigation, route }) {
           style={{
             flex: 1,
             marginTop: 0,
-            paddingTop: Platform.OS == "ios" ? 15 : 25,
+            paddingTop: Platform.OS == "ios" ? 35 : 30,
             paddingHorizontal: 20,
             zIndex: -10,
             backgroundColor: "#fff",
             opacity: imageOpacity,
+            width: width,
             // transform: [{ translateY: imageTranslate }],
           }}
         >
@@ -550,14 +514,14 @@ export default function Unesco({ navigation, route }) {
             size="label"
             style={{
               textAlign: "left",
-              lineHeight: 20,
+              lineHeight: normalize(22),
               paddingBottom: 10,
             }}
             type="regular"
             onTextLayout={(x) => {
               let line = x.nativeEvent.lines.length;
               let lines = line - 3;
-              setTambahan(lines * 20);
+              setTambahan(lines * normalize(15));
             }}
           >
             {t("UnescoDescription")} {selectedCountry?.name}.
@@ -568,7 +532,7 @@ export default function Unesco({ navigation, route }) {
         <Animated.View
           style={{
             position: "absolute",
-            top: HeaderHeight - normalize(130),
+            top: normalize(230),
             alignItems: "center",
             width: "100%",
             height: normalize(44),
