@@ -8,6 +8,11 @@ const ListDestinationByMovie = gql`
       cover
       count_review
       liked
+      type {
+        id
+        name
+        icon
+      }
       cities {
         id
         name
@@ -26,6 +31,14 @@ const ListDestinationByMovie = gql`
       }
       images {
         image
+      }
+      movie_location {
+        id
+        title
+        description
+        cover
+        is_populer
+        populer_order
       }
     }
   }

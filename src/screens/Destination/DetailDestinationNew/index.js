@@ -785,10 +785,10 @@ const Index = (props) => {
         pointerEvents="none"
         // {...headerPanResponder.panHandlers}
         // {...panResponder.panHandlers}
-        // style={[styles.header, { transform: [{ translateY: y }] }]}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           flex: 1,
-          // transform: [{ translateY: y }],
+          transform: [{ translateY: y }],
           // transform: [{ translateY: pan.y }, { translateX: pan.x }],
           top: SafeStatusBar,
           height: HeaderHeight,
