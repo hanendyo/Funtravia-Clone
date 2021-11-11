@@ -255,7 +255,6 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   let [destinationSearch, SetdestinationSearch] = useState([]);
-  console.log("destinationSearch"), destinationSearch;
 
   const [
     GetListDestination,
@@ -282,8 +281,6 @@ export default function SearchPg(props, { navigation, route }) {
       SetdestinationSearch(dataDestination?.destinationSearch);
     },
   });
-
-  console.log("dataDestination", dataDestination);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -571,12 +568,10 @@ export default function SearchPg(props, { navigation, route }) {
         if (errorUnfolMut) {
           throw new Error("Error Input");
         }
-        // console.log(response);
         if (response.data) {
           if (response.data.follow_user.code !== 200) {
             throw new Error(response.data.unfollow_user.message);
           } else {
-            // console.log("berhasil");
             // refetchRekomendasi();
           }
         }
@@ -1778,98 +1773,100 @@ export default function SearchPg(props, { navigation, route }) {
                       paddingHorizontal: 15,
                     }}
                     data={list_rekomendasi_user}
-                    renderItem={({ item, index }) => (
-                      <View
-                        style={{
-                          width: "100%",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          alignContent: "center",
-                          paddingVertical: 10,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={
-                            () => {
-                              BackHandler.removeEventListener(
-                                "hardwareBackPress",
-                                onBackPress
-                              );
-                              props.navigation.push("ProfileStack", {
-                                screen: "otherprofile",
-                                params: {
-                                  idUser: item.id,
-                                  token: token,
-                                },
-                              });
-                            }
-                            // props.navigation.push("otherprofile", { idUser: item.id })
-                          }
-                          style={{ flexDirection: "row" }}
+                    renderItem={({ item, index }) =>
+                      setting?.user_id != item.id && (
+                        <View
+                          style={{
+                            width: "100%",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            alignContent: "center",
+                            paddingVertical: 10,
+                          }}
                         >
-                          <FunImage
-                            source={
-                              item.picture
-                                ? {
-                                    uri: item.picture,
-                                  }
-                                : DefaultProfile
+                          <TouchableOpacity
+                            onPress={
+                              () => {
+                                BackHandler.removeEventListener(
+                                  "hardwareBackPress",
+                                  onBackPress
+                                );
+                                props.navigation.push("ProfileStack", {
+                                  screen: "otherprofile",
+                                  params: {
+                                    idUser: item.id,
+                                    token: token,
+                                  },
+                                });
+                              }
+                              // props.navigation.push("otherprofile", { idUser: item.id })
                             }
-                            style={{
-                              resizeMode: "cover",
-                              height: 50,
-                              width: 50,
-                              borderRadius: 25,
-                            }}
-                          />
-                          <View
-                            style={{
-                              marginLeft: 20,
-                              justifyContent: "center",
-                            }}
+                            style={{ flexDirection: "row" }}
                           >
-                            {item.last_name !== null ? (
-                              <Text size="label" type="bold">
-                                {item.first_name + "" + item.last_name}
+                            <FunImage
+                              source={
+                                item.picture
+                                  ? {
+                                      uri: item.picture,
+                                    }
+                                  : DefaultProfile
+                              }
+                              style={{
+                                resizeMode: "cover",
+                                height: 50,
+                                width: 50,
+                                borderRadius: 25,
+                              }}
+                            />
+                            <View
+                              style={{
+                                marginLeft: 20,
+                                justifyContent: "center",
+                              }}
+                            >
+                              {item.last_name !== null ? (
+                                <Text size="label" type="bold">
+                                  {item.first_name + "" + item.last_name}
+                                </Text>
+                              ) : (
+                                <Text size="label" type="bold">
+                                  {item.first_name}
+                                </Text>
+                              )}
+                              <Text size="label" type="regular">
+                                {`@${item.username}`}
                               </Text>
-                            ) : (
-                              <Text size="label" type="bold">
-                                {item.first_name}
-                              </Text>
-                            )}
-                            <Text size="label" type="regular">
-                              {`@${item.username}`}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
+                            </View>
+                          </TouchableOpacity>
 
-                        <View style={{}}>
-                          {item.status_following === false ? (
-                            <Button
-                              size="small"
-                              type="circle"
-                              variant="bordered"
-                              style={{ width: 100 }}
-                              text={t("follow")}
-                              onPress={() => {
-                                _follow_rekomendasi(item.id, index);
-                              }}
-                            ></Button>
-                          ) : (
-                            <Button
-                              size="small"
-                              type="circle"
-                              style={{ width: 100 }}
-                              onPress={() => {
-                                _unfollow_rekomendasi(item.id, index);
-                              }}
-                              text={t("following")}
-                            ></Button>
-                          )}
+                          <View style={{}}>
+                            {item.status_following === false ? (
+                              <Button
+                                size="small"
+                                type="circle"
+                                variant="bordered"
+                                style={{ width: 100 }}
+                                text={t("follow")}
+                                onPress={() => {
+                                  _follow_rekomendasi(item.id, index);
+                                }}
+                              ></Button>
+                            ) : (
+                              <Button
+                                size="small"
+                                type="circle"
+                                style={{ width: 100 }}
+                                onPress={() => {
+                                  _unfollow_rekomendasi(item.id, index);
+                                }}
+                                text={t("following")}
+                              ></Button>
+                            )}
+                          </View>
                         </View>
-                      </View>
-                    )}
+                      )
+                    }
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
                   />
