@@ -2100,7 +2100,7 @@ export default function ItineraryDetail(props) {
     return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
   };
 
-  // console.log(itineraryId);
+  console.log("data List :", dataList);
 
   const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
@@ -2159,60 +2159,63 @@ export default function ItineraryDetail(props) {
                 zIndex: 99,
               }}
             >
-              <View
-                style={{
-                  width: "80%",
-                  paddingVertical: 5,
-                  paddingHorizontal: 5,
-                  backgroundColor: "#daf0f2",
-                  borderRadius: 5,
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    status !== "saved" && Anggota === "true"
-                      ? openModaldate(
-                          index,
-                          item.time ? item.time : "00:00:00",
-                          item.duration ? item.duration : "00:00:00"
-                        )
-                      : null
-                  }
-                >
-                  {item.time ? (
-                    <GetStartTime startt={item.time} />
-                  ) : (
-                    <Text size="description" type="bold">
-                      00:00
-                    </Text>
-                  )}
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    status !== "saved" && Anggota === "true"
-                      ? openModaldate(
-                          index,
-                          item.time ? item.time : "00:00:00",
-                          item.duration ? item.duration : "00:00:00"
-                        )
-                      : null;
+              {item.detail_accomodation ? null : (
+                <View
+                  style={{
+                    width: "80%",
+                    paddingVertical: 5,
+                    paddingHorizontal: 5,
+                    backgroundColor: "#daf0f2",
+                    borderRadius: 5,
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  {item.duration ? (
-                    <GetEndTime
-                      startt={item.time ? item.time : "00:00"}
-                      dur={item.duration ? item.duration : "00:00"}
-                    />
-                  ) : (
-                    <Text size="description" type="bold">
-                      00:00
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      status !== "saved" && Anggota === "true"
+                        ? openModaldate(
+                            index,
+                            item.time ? item.time : "00:00:00",
+                            item.duration ? item.duration : "00:00:00"
+                          )
+                        : null
+                    }
+                  >
+                    {item.time ? (
+                      <GetStartTime startt={item.time} />
+                    ) : (
+                      <Text size="description" type="bold">
+                        00:00
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      status !== "saved" && Anggota === "true"
+                        ? openModaldate(
+                            index,
+                            item.time ? item.time : "00:00:00",
+                            item.duration ? item.duration : "00:00:00"
+                          )
+                        : null;
+                    }}
+                  >
+                    {item.duration ? (
+                      <GetEndTime
+                        startt={item.time ? item.time : "00:00"}
+                        dur={item.duration ? item.duration : "00:00"}
+                      />
+                    ) : (
+                      <Text size="description" type="bold">
+                        00:00
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+
               {index > 0 &&
               dataList[index - 1] &&
               dataList[index].latitude == dataList[index - 1].latitude &&
@@ -2231,6 +2234,7 @@ export default function ItineraryDetail(props) {
                     height: 10,
                     width: 10,
                     marginLeft: 5,
+                    marginTop: item.detail_accomodation ? 20 : 0,
                     borderRadius: 10,
                     backgroundColor: "#209fae",
                     elevation: 3,
@@ -2529,11 +2533,7 @@ export default function ItineraryDetail(props) {
                   // borderWidth: 1,
                 }}
               >
-                <View
-                  style={{
-                    flex: 1,
-                  }}
-                >
+                <View>
                   {item?.type_custom ? (
                     item?.type_custom === "flight_outside" &&
                     item?.detail_flight?.booking_ref ? (
@@ -2589,23 +2589,16 @@ export default function ItineraryDetail(props) {
 
                   <View
                     style={{
-                      width: 80,
+                      // width: 100,
                       backgroundColor: "#daf0f2",
                       paddingVertical: 5,
                       paddingHorizontal: 15,
                       borderRadius: 5,
                       // borderWidth: 1,
-                      alignItems: "center",
+                      // alignItems: "flex-start",
                     }}
                   >
-                    <Text
-                      type="bold"
-                      style={
-                        {
-                          // borderWidth: 1,
-                        }
-                      }
-                    >
+                    <Text type="bold">
                       {Getdurasi(item.duration ? item.duration : "00:00:00")}
                     </Text>
                   </View>
