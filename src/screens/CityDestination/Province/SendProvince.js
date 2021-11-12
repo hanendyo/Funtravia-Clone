@@ -32,8 +32,6 @@ import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
 
 export default function SendProvince({ navigation, route }) {
-  console.log("navigate", navigation);
-  console.log("route", route);
   const socket = io(CHATSERVER);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
@@ -374,7 +372,7 @@ export default function SendProvince({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null
@@ -411,7 +409,7 @@ export default function SendProvince({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null

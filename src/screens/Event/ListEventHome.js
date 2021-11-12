@@ -292,7 +292,6 @@ export default function ListEventHome(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  // get current date
   useEffect(() => {
     getDate();
   }, []);
@@ -939,237 +938,253 @@ export default function ListEventHome(props) {
   }, []);
 
   const rederTab1Item = ({ item, index, loading }, position) => {
-    return (
-      <>
-        <View
-          key={index.toString()}
-          style={{
-            justifyContent: "center",
-            width: (Dimensions.get("screen").width - 40) / 2,
-            // height: Dimensions.get("screen").width * 0.7,
-            height: normalize(250),
-            margin: 5,
-            marginBottom: -5,
-            flexDirection: "column",
-            backgroundColor: "white",
-            borderRadius: 5,
-            shadowColor: "gray",
-            shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 3,
-            elevation: 3,
-          }}
-        >
+    if (item.id != 0) {
+      return (
+        <>
           <View
+            key={index.toString()}
             style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              right: 10,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignContent: "center",
-              zIndex: 9999,
+              justifyContent: "center",
+              width: (Dimensions.get("screen").width - 40) / 2,
+              // height: Dimensions.get("screen").width * 0.7,
+              height: normalize(250),
+              margin: 5,
+              marginBottom: -5,
+              flexDirection: "column",
+              backgroundColor: "white",
+              borderRadius: 5,
+              shadowColor: "gray",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 0.5,
+              shadowRadius: 3,
+              elevation: 3,
             }}
           >
             <View
               style={{
-                // bottom: (9),
-                height: 21,
-                minWidth: 60,
-                borderRadius: 11,
-                alignSelf: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(226, 236, 248, 0.85)",
-                paddingHorizontal: 10,
+                position: "absolute",
+                top: 10,
+                left: 10,
+                right: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignContent: "center",
+                zIndex: 9999,
+              }}
+            >
+              <View
+                style={{
+                  // bottom: (9),
+                  height: 21,
+                  minWidth: 60,
+                  borderRadius: 11,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text
+                  size="small"
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {item.category.name}
+                </Text>
+              </View>
+              <View
+                style={{
+                  height: 26,
+                  width: 26,
+                  borderRadius: 50,
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  // zIndex: 999,
+                }}
+              >
+                {item.liked === false ? (
+                  <TouchableOpacity
+                    style={{
+                      height: 26,
+                      width: 26,
+                      borderRadius: 50,
+                      alignSelf: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+
+                      zIndex: 9999,
+                    }}
+                    onPress={() => _liked(item.id, item, position)}
+                  >
+                    <LikeEmpty height={13} width={13} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      height: 26,
+                      width: 26,
+                      borderRadius: 50,
+                      alignSelf: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+
+                      zIndex: 9999,
+                    }}
+                    onPress={() => _unliked(item.id, item, position)}
+                  >
+                    <LikeRed height={13} width={13} />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => eventdetail(item)}
+              style={{
+                height: Dimensions.get("window").width * 0.47 - 16,
+              }}
+            >
+              <FunImageBackground
+                key={item.id}
+                source={
+                  item.cover
+                    ? { uri: item.cover }
+                    : item.images.length > 0
+                    ? { uri: item.images[0].image }
+                    : { default_image }
+                }
+                style={[styles.ImageView]}
+                imageStyle={[styles.Image]}
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "space-around",
+                height: 230,
+                marginVertical: 3,
+                marginHorizontal: 10,
               }}
             >
               <Text
-                size="small"
-                style={{
-                  textAlign: "center",
-                }}
+                onPress={() => eventdetail(item)}
+                size="label"
+                type="bold"
+                numberOfLines={2}
+                style={{}}
               >
-                {item.category.name}
+                {item.name}
+                {/* <Truncate text={item.name} length={36} /> */}
               </Text>
-            </View>
-            <View
-              style={{
-                height: 26,
-                width: 26,
-                borderRadius: 50,
-                alignSelf: "center",
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(226, 236, 248, 0.85)",
-                // zIndex: 999,
-              }}
-            >
-              {item.liked === false ? (
-                <TouchableOpacity
-                  style={{
-                    height: 26,
-                    width: 26,
-                    borderRadius: 50,
-                    alignSelf: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
-
-                    zIndex: 9999,
-                  }}
-                  onPress={() => _liked(item.id, item, position)}
-                >
-                  <LikeEmpty height={13} width={13} />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={{
-                    height: 26,
-                    width: 26,
-                    borderRadius: 50,
-                    alignSelf: "center",
-                    alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
-
-                    zIndex: 9999,
-                  }}
-                  onPress={() => _unliked(item.id, item, position)}
-                >
-                  <LikeRed height={13} width={13} />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => eventdetail(item)}
-            style={{
-              height: Dimensions.get("window").width * 0.47 - 16,
-            }}
-          >
-            <FunImageBackground
-              key={item.id}
-              source={
-                item.cover
-                  ? { uri: item.cover }
-                  : item.images.length > 0
-                  ? { uri: item.images[0].image }
-                  : { default_image }
-              }
-              style={[styles.ImageView]}
-              imageStyle={[styles.Image]}
-            />
-          </TouchableOpacity>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "space-around",
-              height: 230,
-              marginVertical: 3,
-              marginHorizontal: 10,
-            }}
-          >
-            <Text
-              onPress={() => eventdetail(item)}
-              size="label"
-              type="bold"
-              numberOfLines={2}
-              style={{}}
-            >
-              {item.name}
-              {/* <Truncate text={item.name} length={36} /> */}
-            </Text>
-            <View
-              style={{
-                height: "50%",
-                flexDirection: "column",
-                justifyContent: "space-around",
-              }}
-            >
               <View
                 style={{
-                  // flex: 1,
-                  flexDirection: "row",
-                  width: "100%",
-                  marginBottom: 3,
-                  alignContent: "center",
-                  alignItems: "center",
+                  height: "50%",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
                 }}
               >
-                <CustomImage
-                  customStyle={{
-                    width: 15,
-                    height: 15,
-                    marginRight: 5,
-                  }}
-                  customImageStyle={{
-                    width: 15,
-                    height: 15,
-                    resizeMode: "contain",
-                  }}
-                  source={CalenderGrey}
-                />
-                {item.is_repeat === true ? (
-                  <Text
-                    size="description"
-                    style={{
-                      paddingRight: 20,
-                      width: "100%",
-                    }}
-                  >
-                    {handlerepeat(item.start_date, item.end_date)}
-                  </Text>
-                ) : (
-                  <Text
-                    size="description"
-                    style={{
-                      paddingRight: 20,
-                      width: "100%",
-                    }}
-                  >
-                    {dateFormatBetween(item.start_date, item.end_date)}
-                  </Text>
-                )}
-              </View>
-              <View
-                style={{
-                  // flex: 1,
-                  flexDirection: "row",
-                  width: "100%",
-                  borderColor: "grey",
-                }}
-              >
-                <CustomImage
-                  customStyle={{
-                    width: 15,
-                    height: 15,
-                    marginRight: 5,
-                  }}
-                  customImageStyle={{
-                    width: 15,
-                    height: 15,
-                    resizeMode: "contain",
-                  }}
-                  source={MapIconGreen}
-                />
-                <Text
-                  size="description"
+                <View
                   style={{
+                    // flex: 1,
+                    flexDirection: "row",
                     width: "100%",
+                    marginBottom: 3,
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  {item.city.name}
-                </Text>
+                  <CustomImage
+                    customStyle={{
+                      width: 15,
+                      height: 15,
+                      marginRight: 5,
+                    }}
+                    customImageStyle={{
+                      width: 15,
+                      height: 15,
+                      resizeMode: "contain",
+                    }}
+                    source={CalenderGrey}
+                  />
+                  {item.is_repeat === true ? (
+                    <Text
+                      size="description"
+                      style={{
+                        paddingRight: 20,
+                        width: "100%",
+                      }}
+                    >
+                      {handlerepeat(item.start_date, item.end_date)}
+                    </Text>
+                  ) : (
+                    <Text
+                      size="description"
+                      style={{
+                        paddingRight: 20,
+                        width: "100%",
+                      }}
+                    >
+                      {dateFormatBetween(item.start_date, item.end_date)}
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    // flex: 1,
+                    flexDirection: "row",
+                    width: "100%",
+                    borderColor: "grey",
+                  }}
+                >
+                  <CustomImage
+                    customStyle={{
+                      width: 15,
+                      height: 15,
+                      marginRight: 5,
+                    }}
+                    customImageStyle={{
+                      width: 15,
+                      height: 15,
+                      resizeMode: "contain",
+                    }}
+                    source={MapIconGreen}
+                  />
+                  <Text
+                    size="description"
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    {item.city.name}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
+        </>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: Dimensions.get("screen").height,
+          }}
+        >
+          <Text size="label" type="bold">
+            {t("noData")}
+          </Text>
         </View>
-      </>
-    );
+      );
+    }
   };
 
   // const [tab1, set]
@@ -2031,16 +2046,18 @@ export default function ListEventHome(props) {
           style={{
             // height: 100,
             width: Dimensions.get("screen").width - 30,
-            borderRadius: 5,
+            borderRadius: 10,
           }}
         >
           <DatePicker
             mode="monthYear"
             style={{
-              borderRadius: 5,
+              borderRadius: 10,
             }}
             selectorStartingYear={2000}
-            onMonthYearChange={(selectedDate) => _handledate(selectedDate)}
+            onMonthYearChange={(selectedDate) => {
+              _handledate(selectedDate);
+            }}
           />
         </View>
       </Modal>
@@ -2104,13 +2121,13 @@ export default function ListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
-        search.country && search.country.length > `0`
+        search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
       price_start: null,
@@ -2140,13 +2157,13 @@ export default function ListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
         search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
       price_start: null,
@@ -2445,17 +2462,21 @@ export default function ListEventHome(props) {
 
   const getDate = async () => {
     const dateObj = new Date();
+    let hari = parseFloat(dateObj.getUTCDate());
+    let bulan = parseFloat(dateObj.getUTCMonth() + 1); //months from 1-12
+    let tahun = parseFloat(dateObj.getUTCFullYear());
+    let arrDate = [];
 
-    let hari = dateObj.getUTCDate();
-    let bulan = dateObj.getUTCMonth() + 1; //months from 1-12
-    let tahun = dateObj.getUTCFullYear();
+    arrDate.push(tahun);
+    arrDate.push(bulan);
 
-    let awal = new Date(tahun, bulan - 1, hari);
-    let akhir = new Date(tahun, bulan, hari);
+    let awalArr = new Date(arrDate[0], bulan - 1, 1);
+    let akhirArr = new Date(arrDate[0], bulan, 1);
+    let dateNow = `${tahun}-${bulan}-${hari}`;
 
     let datas = { ...search };
-    datas["date_from"] = awal;
-    datas["date_until"] = akhir;
+    datas["date_from"] = awalArr;
+    datas["date_until"] = awalArr;
     await setSearch(datas);
     await setModaldate(false);
     await setmonth(monthNames[bulan - 1]);
@@ -2463,16 +2484,16 @@ export default function ListEventHome(props) {
 
   const _handledate = async (selected) => {
     let data = selected.split(" ");
-    let month = data[1]; // January
-    let awal = new Date(data[0], parseFloat(month) - 1, 1);
-    let akhir = new Date(data[0], parseFloat(month), 1);
+    let bulan = data[1]; // January
+    let awal = new Date(data[0], parseFloat(bulan) - 1, 1);
+    let akhir = new Date(data[0], parseFloat(bulan), 1);
 
     let datas = { ...search };
     datas["date_from"] = awal;
     datas["date_until"] = akhir;
     await setSearch(datas);
     await setModaldate(false);
-    await setmonth(monthNames[parseFloat(month - 1)]);
+    await setmonth(monthNames[bulan - 1]);
   };
 
   const ClearAllFilter = async () => {
@@ -2529,17 +2550,6 @@ export default function ListEventHome(props) {
   };
 
   return (
-    // <View style={{ flex: 1 }}>
-    //   {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
-    //   {renderTabView()}
-    //   {/* {renderFilterAndSearchHeader()} */}
-    //   {renderHeader()}
-    //   {renderCustomRefresh()}
-    //   {/* {renderCountryAndMonthModal()} */}
-    //   {renderFilterCategory()}
-    //   {renderCountryFilter()}
-    //   {renderMonthFilter()}
-    // </View>
     <View style={styles.container}>
       <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
       <ModalLogin
@@ -2547,13 +2557,6 @@ export default function ListEventHome(props) {
         setModalLogin={() => setModalLogin(false)}
         props={props}
       />
-      {/* <CountrySrc
-        selectedCountry={selectedCountry}
-        SetselectedCountry={(e) => SetselectedCountry(e)}
-        modalshown={modalcountry}
-        setModelCountry={(e) => setModelCountry(e)}
-      /> */}
-
       {/* {renderFilterAndSearchHeader()} */}
       {renderNavDefault()}
       {renderNavInterpolated()}
@@ -2561,7 +2564,7 @@ export default function ListEventHome(props) {
       {renderHeader()}
       {renderCustomRefresh()}
       {/* {renderCountryAndMonthModal()} */}
-      {renderFilterCategory()}
+      {/* {renderFilterCategory()} */}
       {renderCountryFilter()}
       {renderMonthFilter()}
     </View>

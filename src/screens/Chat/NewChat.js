@@ -325,7 +325,7 @@ export default function NewChat({ navigation }) {
               }}
             >
               <Text size="label" type="bold">
-                Tidak ada data
+                {t("noData")}
               </Text>
             </View>
           )}

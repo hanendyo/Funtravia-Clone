@@ -424,7 +424,7 @@ export default function SendDestination({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null
@@ -461,7 +461,7 @@ export default function SendDestination({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null

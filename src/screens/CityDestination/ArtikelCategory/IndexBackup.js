@@ -23,6 +23,7 @@ export default function ArtikelCategory(props) {
   let [category, setCategory] = useState(props.route.params.id);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
+  const { t } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -59,8 +60,6 @@ export default function ArtikelCategory(props) {
       </Button>
     ),
   };
-
-  const { t } = useTranslation();
 
   const {
     data: dataList,
@@ -402,7 +401,7 @@ export default function ArtikelCategory(props) {
               style={{ backgroundColor: "white", paddingVertical: 20, flex: 1 }}
             >
               <Text size="label" type="bold">
-                Tidak Ada Data
+                {t("noData")}
               </Text>
             </View>
           )}

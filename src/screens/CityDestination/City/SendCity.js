@@ -374,7 +374,7 @@ export default function SendCity({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null
@@ -411,7 +411,7 @@ export default function SendCity({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null

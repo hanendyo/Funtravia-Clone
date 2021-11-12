@@ -25,6 +25,7 @@ import io from "socket.io-client";
 import normalize from "react-native-normalize";
 
 export default function SendToChat({ navigation, route }) {
+  const { t, i18n } = useTranslation();
   const [token, setToken] = useState("");
   const socket = useRef();
   useEffect(() => {
@@ -35,8 +36,6 @@ export default function SendToChat({ navigation, route }) {
       },
     });
   }, [token]);
-
-  const { t, i18n } = useTranslation();
 
   let [search, setSearch] = useState("");
   const [user, setUser] = useState({});
@@ -432,7 +431,7 @@ export default function SendToChat({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null
@@ -469,7 +468,7 @@ export default function SendToChat({ navigation, route }) {
                 }}
               >
                 <Text size="label" type="bold">
-                  Tidak ada data
+                  {t("noData")}
                 </Text>
               </View>
             ) : null
