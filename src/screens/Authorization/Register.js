@@ -321,7 +321,7 @@ export default function Register({ navigation }) {
             <FloatingInput
               customTextStyle={{}}
               value={state.last_name}
-              onChangeText={state.last_name}
+              onChangeText={onChange("last_name")}
               label={t("lastName")}
             />
           </View>
