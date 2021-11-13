@@ -117,7 +117,7 @@
   "timezone": "Timezone",
   "bestTime": "Best Times to Visit",
   "comments": "Comment",
-  "commentAs": "Comment As",
+  "commentAs": "comment as",
   "inbox": "Inbox",
   "information": "Information",
   "notification": "Notification",
@@ -832,5 +832,6 @@
   "createAkunLogin": "Create new account",
   "failedCommentTPost": "Failed comment this post",
   "FailedLikeDestination": "Failed to like destination",
-  "FailedLikeEvents": "Failed to like events"
+  "FailedLikeEvents": "Failed to like events",
+  "removeTagAlbum": "Remove from album"
 }

@@ -117,7 +117,7 @@
   "timezone": "Zona Waktu",
   "bestTime": "Waktu terbaik untuk berkunjung",
   "comments": "Komentar",
-  "commentAs": "Komentar Sebagai",
+  "commentAs": "komentar sebagai",
   "inbox": "Pesan Masuk",
   "information": "Informasi",
   "notification": "Notifikasi",
@@ -830,5 +830,6 @@
   "FailedLikeItinerary": "Gagal menyukai itinerary",
   "failedCommentTPost": "Gagal memberikan komentar di post ini",
   "FailedLikeDestination": "Gagal menyukai destinasi",
-  "FailedLikeEvents": "Gagal menyukai event"
+  "FailedLikeEvents": "Gagal menyukai event",
+  "removeTagAlbum": "Lepaskan dari album"
 }

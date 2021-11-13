@@ -8,7 +8,7 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
-  Image as ImageRN,
+  Image,
   Pressable,
   SafeAreaView,
   Modal,
@@ -26,6 +26,7 @@ import {
   Errorr,
   CheckWhite,
 } from "../../assets/svg";
+import { Bg_soon } from "../../assets/png";
 import { gql } from "apollo-boost";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import likepost from "../../graphQL/Mutation/Post/likepost";
@@ -102,6 +103,8 @@ export default function FeedList({ props, token }) {
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
   const [dataFeed, setDataFeed] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [soon, setSoon] = useState(false);
 
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -111,7 +114,7 @@ export default function FeedList({ props, token }) {
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
 
-  const [loaded, setLoaded] = useState(false);
+  console.log("selectedOption", selectedOption);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -768,6 +771,71 @@ export default function FeedList({ props, token }) {
   return (
     <SafeAreaView>
       {/* {test()} */}
+      <Modal
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width / 5,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
       <View
       // style={{
       //   zIndex: modalmenu || modalmenuother || modalhapus === true ? 1 : -2,
@@ -1161,38 +1229,57 @@ export default function FeedList({ props, token }) {
                   {t("edit")}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                  borderBottomWidth: 1,
-                  borderColor: "#d1d1d1",
-                }}
-                onPress={() => {
-                  setModalmenu(false),
-                    token
-                      ? props.navigation.push("FeedStack", {
-                          screen: "CreateListAlbum",
-                          params: {
-                            user_id: setting?.user_id,
-                            token: props.route.params.token,
-                            file: "",
-                            type: "",
-                            location: "",
-                            isAlbum: true,
-                            post_id: selectedOption?.id,
-                          },
-                        })
-                      : setModalLogin(true);
-                }}
-              >
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginVertical: 15 }}
+              {selectedOption?.album ? (
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                    borderBottomWidth: 1,
+                    borderColor: "#d1d1d1",
+                  }}
+                  onPress={() => setSoon(true)}
                 >
-                  {t("TagAlbum")}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginVertical: 15 }}
+                  >
+                    {t("removeTagAlbum")}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                    borderBottomWidth: 1,
+                    borderColor: "#d1d1d1",
+                  }}
+                  onPress={() => {
+                    setModalmenu(false),
+                      token
+                        ? props.navigation.push("FeedStack", {
+                            screen: "CreateListAlbum",
+                            params: {
+                              user_id: setting?.user_id,
+                              token: props.route.params.token,
+                              file: "",
+                              type: "",
+                              location: "",
+                              isAlbum: true,
+                              post_id: selectedOption?.id,
+                            },
+                          })
+                        : setModalLogin(true);
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginVertical: 15 }}
+                  >
+                    {t("TagAlbum")}
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={{
                   alignItems: "center",

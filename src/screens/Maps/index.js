@@ -25,6 +25,7 @@ import { SvgCss } from "react-native-svg";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
+import { Arrowbackwhite } from "../../assets/svg";
 const Notch = DeviceInfo.hasNotch();
 
 const HeightFlatlist = Platform.select({
@@ -43,11 +44,10 @@ export default function World({ navigation }) {
 
   const HeaderComponent = {
     headerShown: true,
-    // title: "List Event",
-    headerTransparent: false,
+    transparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("destination")}
       </Text>
     ),
@@ -57,6 +57,25 @@ export default function World({ navigation }) {
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          height: 55,
+          marginLeft: 5,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
+    ),
   };
 
   useEffect(() => {
@@ -145,7 +164,6 @@ export default function World({ navigation }) {
         animationType="fade"
       >
         <Pressable
-          // onPress={() => setModalLogin(false)}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,

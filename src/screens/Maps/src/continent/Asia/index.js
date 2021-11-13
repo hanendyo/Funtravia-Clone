@@ -278,9 +278,11 @@ export default function Asia({ navigation }) {
                   style={{
                     color: "#464646",
                     marginLeft: 10,
-                    fontSize: 18,
-                    fontFamily: "Lato-Bold",
+                    // fontSize: 18,
+                    // fontFamily: "Lato-Bold",
                   }}
+                  type="bold"
+                  size="header"
                 >
                   {t("destination")}
                 </Text>
@@ -436,29 +438,31 @@ export default function Asia({ navigation }) {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         marginHorizontal: 5,
-                        marginVertical: 20,
+                        // marginVertical: 20,
                       }}
                     >
                       <View
                         style={{
                           flexDirection: "row",
-
                           alignItems: "center",
                         }}
                       >
                         <View
                           style={{
                             width: 5,
-                            height: "60%",
+                            height: "40%",
                             borderTopRightRadius: 30,
                             borderBottomRightRadius: 30,
                             marginRight: 10,
                             backgroundColor: "#209FAE",
+                            marginTop: 15,
+                            marginBottom: 17,
                           }}
                         ></View>
                         <Text
                           type="regular"
-                          size="readable"
+                          size="label"
+                          style={{ marginTop: 15, marginBottom: 17 }}
                         >{`${item.label}`}</Text>
                       </View>
                       <View style={{ justifyContent: "center" }}>

@@ -115,6 +115,8 @@ export default function CreateAlbum(props) {
     variables: { status: ["A", "F"], keyword: searchText },
   });
 
+  console.log("dataItinerary", dataItinerary);
+
   const [
     QueryFeed,
     { data: listAlbum, loading: loadingAlbum, error: errorAlbum },
