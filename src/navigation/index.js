@@ -339,12 +339,6 @@ export default function MainStackNavigator({
           component={DestinationMaps}
           options={{
             headerShown: true,
-            headerTitle: "Destination",
-            headerTitleStyle: {
-              fontFamily: "Lato-Bold",
-              fontSize: 18,
-              color: "white",
-            },
             headerBackTitleVisible: false,
             headerTintColor: "#FFF",
             headerStyle: { backgroundColor: "#209FAE" },

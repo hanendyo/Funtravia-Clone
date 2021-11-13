@@ -17,6 +17,7 @@ import { useMutation } from "@apollo/react-hooks";
 import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 export default function AddCommentLike({
   data,
@@ -265,7 +266,6 @@ export default function AddCommentLike({
             keyboardStatus == false
               ? Dimensions.get("window").width * 0.6
               : Dimensions.get("window").width - 20,
-          // height: Dimensions.get("window").width * 0.13,
           minHeight: Dimensions.get("window").width * 0.1,
           maxHeight: Dimensions.get("window").width * 0.3,
           flexDirection: "row",
@@ -273,6 +273,28 @@ export default function AddCommentLike({
           paddingHorizontal: 10,
         }}
       >
+        {!text ? (
+          <View
+            style={{
+              justifyContent: "center",
+              height: "100%",
+              width: "80%",
+              position: "absolute",
+              paddingLeft: 20,
+            }}
+          >
+            <Text
+              size="label"
+              type="regular"
+              numberOfLines={1}
+              style={{ color: "#464646" }}
+            >
+              {`${t("commentAs")} ${setting?.user?.first_name} ${
+                setting?.user?.last_name ? setting?.user?.last_name : ""
+              }`}
+            </Text>
+          </View>
+        ) : null}
         <TextInput
           autoCorrect={keyboardStatus}
           style={{
@@ -281,7 +303,7 @@ export default function AddCommentLike({
             width: "80%",
             // flexWrap: "wrap",
             color: "#2c2c2c",
-            fontSize: 14,
+            fontSize: normalize(16),
             lineHeight: 16,
             marginVertical: 5,
             marginBottom: Platform.OS == "ios" ? 10 : 0,
@@ -292,16 +314,6 @@ export default function AddCommentLike({
             setText(text);
           }}
           value={text}
-          placeholder={Truncate({
-            text:
-              t("commentAs") +
-              " " +
-              setting?.user?.first_name +
-              " " +
-              setting?.user?.last_name,
-            // length: keyboardStatus == false ? (Notch ? 24 : 22) : 22,
-            length: textLength(),
-          })}
         />
         <Ripple
           rippleCentered={true}

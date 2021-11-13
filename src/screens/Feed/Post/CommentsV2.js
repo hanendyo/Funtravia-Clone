@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   BackHandler,
   Platform,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -40,6 +41,7 @@ import {
   Xgray,
   Arrowbackios,
 } from "../../../assets/svg";
+import { Bg_soon } from "../../../assets/svg";
 import { gql } from "apollo-boost";
 import ReadMore from "react-native-read-more-text";
 import RenderAlbum from "../RenderAlbumItinerary";
@@ -82,6 +84,7 @@ export default function Comments(props) {
   const [modalHapus, setModalHapus] = useState(false);
   const [datasFollow, setDatasFollow] = useState();
   const [modalLogin, setModalLogin] = useState(false);
+  const [soon, setSoon] = useState(false);
 
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
@@ -932,6 +935,75 @@ export default function Comments(props) {
       />
       <Modal
         useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            height: Dimensions.get("screen").width - 180,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: Dimensions.get("screen").height / 10,
+            borderRadius: 5,
+          }}
+        >
+          <View
+            style={{
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width / 5,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        useNativeDriver={true}
         visible={modalMenu}
         onRequestClose={() => setModalMenu(false)}
         transparent={true}
@@ -1055,32 +1127,57 @@ export default function Comments(props) {
                 {t("edit")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                setModalMenu(false),
-                  props.navigation.push("FeedStack", {
-                    screen: "CreateListAlbum",
-                    params: {
-                      user_id: setting?.user_id,
-                      token: token,
-                      file: "",
-                      type: "",
-                      location: "",
-                      isAlbum: true,
-                      post_id: selectedOption?.id,
-                    },
-                  });
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("TagAlbum")}
-              </Text>
-            </TouchableOpacity>
+            {selectedOption?.album ? (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => setSoon(true)}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("removeTagAlbum")}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  setModalmenu(false),
+                    token
+                      ? props.navigation.push("FeedStack", {
+                          screen: "CreateListAlbum",
+                          params: {
+                            user_id: setting?.user_id,
+                            token: props.route.params.token,
+                            file: "",
+                            type: "",
+                            location: "",
+                            isAlbum: true,
+                            post_id: selectedOption?.id,
+                          },
+                        })
+                      : setModalLogin(true);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("TagAlbum")}
+                </Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={{
                 alignItems: "center",
@@ -1843,17 +1940,31 @@ export default function Comments(props) {
               alignContent: "center",
             }}
           >
+            {!statusText ? (
+              <View
+                style={{
+                  justifyContent: "center",
+                  height: "100%",
+                  width: "80%",
+                  position: "absolute",
+                  paddingLeft: 20,
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  numberOfLines={1}
+                  style={{ color: "#464646" }}
+                >
+                  {`${t("commentAs")} ${setting?.user?.first_name} ${
+                    setting?.user?.last_name ? setting?.user?.last_name : ""
+                  }`}
+                </Text>
+              </View>
+            ) : null}
             <TextInput
               allowFontScaling={false}
               multiline
-              placeholder={
-                t("commentAs") +
-                " " +
-                setting?.user?.first_name +
-                " " +
-                // setting?.user?.last_name +
-                "..."
-              }
               maxLength={1000}
               style={{
                 width: Dimensions.get("screen").width - 150,
@@ -1862,7 +1973,6 @@ export default function Comments(props) {
                 marginLeft: 20,
                 fontFamily: "Lato-Regular",
                 maxHeight: 100,
-                // backgroundColor: "red",
                 marginBottom: Platform.OS == "ios" ? 5 : 0,
               }}
               onChangeText={(text) => setStatusText(text)}
@@ -1892,7 +2002,7 @@ export default function Comments(props) {
                   color: "#209fae",
                 }}
               >
-                {t("Post")}
+                {t("Send")}
               </Text>
             </Pressable>
           </View>
