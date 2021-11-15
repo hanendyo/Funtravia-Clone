@@ -64,6 +64,15 @@ const FeedByID = gql`
         day
         total_hours
       }
+      album {
+        id
+        title
+        cover
+        itinerary {
+          id
+          name
+        }
+      }
     }
   }
 `;

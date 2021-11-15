@@ -1,8 +1,8 @@
 import { gql } from "apollo-boost";
 const FeedListCursorBased = gql`
   query($first: Int!, $after: String) {
-    post_cursor_based(first:$first, after:$after){
-      pageInfo{
+    post_cursor_based(first: $first, after: $after) {
+      pageInfo {
         hasNextPage
         hasPreviousPage
         startCursor
@@ -12,7 +12,7 @@ const FeedListCursorBased = gql`
         currentPage
         lastPage
       }
-      edges{
+      edges {
         cursor
         node {
           id
@@ -81,6 +81,10 @@ const FeedListCursorBased = gql`
               first_name
               last_name
               picture
+            }
+            itinerary {
+              id
+              name
             }
           }
         }

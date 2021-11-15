@@ -312,8 +312,9 @@ export default function Feed(props) {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            width: "100%",
+            width: Dimensions.get("screen").width - 30,
             justifyContent: "space-between",
+            marginHorizontal: 15,
           }}
         >
           <Pressable
@@ -325,6 +326,7 @@ export default function Feed(props) {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 20,
+                marginLeft: -10,
                 backgroundColor: pressed ? "#178b99" : "#209FAE",
               },
             ]}
@@ -340,18 +342,14 @@ export default function Feed(props) {
               marginVertical: 10,
               backgroundColor: "#FFFFFF",
               flexDirection: "row",
-              borderRadius: 3,
-              alignContent: "center",
+              borderRadius: 2,
               alignItems: "center",
-              // borderWidth: 1,
-              width: Dimensions.get("screen").width - 55,
+              flex: 1,
+              paddingHorizontal: 10,
+              // width: Dimensions.get("screen").width - 55,
             }}
           >
-            <Magnifying
-              width={20}
-              height={20}
-              style={{ marginHorizontal: 10 }}
-            />
+            <Magnifying width={20} height={20} style={{ marginRight: 10 }} />
             <TextInput
               value={searchtext}
               onChangeText={(e) => _searchHandle(e)}
@@ -359,13 +357,12 @@ export default function Feed(props) {
               placeholder={t("SearchFeed")}
               placeholderTextColor="#464646"
               style={{
-                color: "#000",
-                height: 40,
-                // width: "70%",
-                width: "80%",
+                height: 35,
+                padding: 0,
+                flex: 1,
               }}
             />
-            {searchtext.length !== 0 ? (
+            {searchtext ? (
               <TouchableOpacity
                 onPress={() => {
                   SetSearchtext("");
@@ -374,26 +371,15 @@ export default function Feed(props) {
                 <Xblue
                   width="20"
                   height="20"
-                  style={{
-                    alignSelf: "center",
-                  }}
+                  style={
+                    {
+                      // alignSelf: "center",
+                    }
+                  }
                 />
               </TouchableOpacity>
             ) : null}
           </View>
-          <Pressable
-            onPress={() => {
-              console.log("Function Tri Dots Here");
-            }}
-            style={{
-              height: 40,
-              width: 35,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {/* <OptionsVertWhite width={20} height={20} /> */}
-          </Pressable>
         </View>
       </View>
 
@@ -426,7 +412,7 @@ export default function Feed(props) {
               }}
             >
               <Text
-                size="description"
+                size="title"
                 type={active_src == "account" ? "bold" : "bold"}
                 style={{
                   color: active_src == "account" ? "#209FAE" : "#D1D1D1",
@@ -451,7 +437,7 @@ export default function Feed(props) {
               }}
             >
               <Text
-                size="description"
+                size="title"
                 type={active_src == "tag" ? "bold" : "bold"}
                 style={{
                   color: active_src == "tag" ? "#209FAE" : "#D1D1D1",
@@ -477,7 +463,7 @@ export default function Feed(props) {
               }}
             >
               <Text
-                size="description"
+                size="title"
                 type={active_src == "places" ? "bold" : "bold"}
                 style={{
                   color: active_src == "places" ? "#209FAE" : "#D1D1D1",
@@ -698,7 +684,7 @@ export default function Feed(props) {
               }}
             >
               <Text
-                size="description"
+                size="title"
                 type={active == "personal" ? "bold" : "bold"}
                 style={{
                   color: active == "personal" ? "#209FAE" : "#D1D1D1",
