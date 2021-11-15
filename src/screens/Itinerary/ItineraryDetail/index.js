@@ -2595,7 +2595,7 @@ export default function ItineraryDetail(props) {
                       paddingHorizontal: 15,
                       borderRadius: 5,
                       // borderWidth: 1,
-                      // alignItems: "flex-start",
+                      alignItems: "center",
                     }}
                   >
                     <Text type="bold">
@@ -4937,80 +4937,6 @@ export default function ItineraryDetail(props) {
           setClose={() => setModalsss(!modalsss)}
         />
 
-        {/* <Modal
-          onBackdropPress={() => {
-            setModalmenuday(false);
-          }}
-          onRequestClose={() => setModalmenuday(false)}
-          onDismiss={() => setModalmenuday(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalmenuday}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                setModalmenuday(false);
-
-                Alert.alert(
-                  "",
-                  t("delete") +
-                    " " +
-                    t("day") +
-                    " " +
-                    datadayaktif?.day +
-                    " " +
-                    t("from") +
-                    " " +
-                    t("Itinerary") +
-                    "?",
-                  [
-                    {
-                      text: t("cancel"),
-                      onPress: () => {
-                        setModalmenuday(false);
-                      },
-                      style: "cancel",
-                    },
-                    {
-                      text: t("delete"),
-                      onPress: () => {
-                        _handledeleteDay(
-                          datadayaktif?.itinerary_id,
-                          datadayaktif?.id
-                        );
-                      },
-                    },
-                  ]
-                );
-                return true;
-              }}
-
-              // onPress={() => {
-
-              //   _handledeleteDay(datadayaktif?.itinerary_id, datadayaktif?.id);
-              // }}
-            >
-              <Text style={{ color: "#d75995" }}>
-                {t("delete")} {t("day")} {datadayaktif?.day} {t("from")}{" "}
-                {t("Itinerary")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal> */}
-
         <Modal
           onRequestClose={() => {
             setModalcustom(false);
@@ -6053,7 +5979,7 @@ export default function ItineraryDetail(props) {
               >
                 {t("DeleteActivityfromItinerary")}
               </Text>
-              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                 <Button
                   onPress={() => {
                     deleteactivity(itineraryId, idactivity, types),
@@ -6066,7 +5992,7 @@ export default function ItineraryDetail(props) {
                   onPress={() => {
                     setModalDelete(false);
                   }}
-                  style={{ marginVertical: 5 }}
+                  style={{ marginVertical: 7 }}
                   variant="transparent"
                   text={t("discard")}
                 ></Button>
@@ -6145,7 +6071,7 @@ export default function ItineraryDetail(props) {
               >
                 {`${t("deleteDay")} ${datadayaktif?.day} ${t("fromItinerary")}`}
               </Text>
-              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                 <Button
                   onPress={() => {
                     _handledeleteDay(
@@ -6160,7 +6086,7 @@ export default function ItineraryDetail(props) {
                   onPress={() => {
                     setModalmenuday(false);
                   }}
-                  style={{ marginVertical: 5 }}
+                  style={{ marginVertical: 7 }}
                   variant="transparent"
                   text={t("discard")}
                 ></Button>
@@ -6828,7 +6754,7 @@ export default function ItineraryDetail(props) {
                   {t("leave")} {t("trip")}
                 </Text>
               </View>
-              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                 <Button
                   onPress={() => {
                     _handleLeave(itineraryId), setModalLeaveTrip(false);
@@ -6840,7 +6766,7 @@ export default function ItineraryDetail(props) {
                   onPress={() => {
                     setModalLeaveTrip(false);
                   }}
-                  style={{ marginVertical: 5 }}
+                  style={{ marginVertical: 7 }}
                   variant="transparent"
                   text={t("discard")}
                 ></Button>
@@ -6905,7 +6831,7 @@ export default function ItineraryDetail(props) {
                   {t("delete")} {t("trip")}
                 </Text>
               </View>
-              <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                 <Button
                   onPress={() => {
                     _handlehapus(itineraryId), setModalDeleteTrip(false);
@@ -6917,7 +6843,7 @@ export default function ItineraryDetail(props) {
                   onPress={() => {
                     setModalDeleteTrip(false);
                   }}
-                  style={{ marginVertical: 5 }}
+                  style={{ marginVertical: 7 }}
                   variant="transparent"
                   text={t("discard")}
                 ></Button>
