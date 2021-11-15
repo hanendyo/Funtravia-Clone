@@ -70,11 +70,12 @@ import unlikepost from "../../../graphQL/Mutation/Post/unlikepost";
 import normalize from "react-native-normalize";
 import Ripple from "react-native-material-ripple";
 import ViewMoreText from "react-native-view-more-text";
+import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 
 export default function Comments(props) {
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
-  const [dataPost, setDataPost] = useState();
+  const [dataPost, setDataPost] = useState(null);
   const [dataComment, setDataComment] = useState();
   const [setting, setSetting] = useState();
   const [token, setToken] = useState();
@@ -85,6 +86,8 @@ export default function Comments(props) {
   const [datasFollow, setDatasFollow] = useState();
   const [modalLogin, setModalLogin] = useState(false);
   const [soon, setSoon] = useState(false);
+
+  console.log("data", dataPost);
 
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
@@ -194,22 +197,22 @@ export default function Comments(props) {
     setSetting(JSON.parse(setsetting));
   };
 
-  const backAction = () => {
-    props.navigation.goBack();
-    return true;
-  };
+  // const backAction = () => {
+  //   props.navigation.goBack();
+  //   return true;
+  // };
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [backAction]);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, [backAction]);
 
-  useEffect(() => {
-    props.navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-    });
-  }, [backAction]);
+  // useEffect(() => {
+  //   props.navigation.addListener("blur", () => {
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  //   });
+  // }, [backAction]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -220,9 +223,10 @@ export default function Comments(props) {
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
-
-    const unsubscribe = props.navigation.addListener("focus", async () => {});
-    loadAsync();
+    const unsubscribe = props.navigation.addListener("focus", async () => {
+      loadAsync();
+    });
+    viewcomment;
     return unsubscribe;
   }, []);
 
@@ -256,7 +260,7 @@ export default function Comments(props) {
     { data: queryDataPost, loading: queryLoadingPost, error: queryErrorPost },
   ] = useLazyQuery(FeedByID, {
     fetchPolicy: "network-only",
-    variables: { post_id: props.route.params.post_id },
+    variables: { post_id: idPost },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -264,9 +268,16 @@ export default function Comments(props) {
       },
     },
     onCompleted: () => {
-      setDataPost(queryDataPost.feed_post_byid);
+      console.log("queryDataPost di dalam", queryDataPost);
+      setDataPost(queryDataPost?.feed_post_byid);
     },
   });
+
+  console.log("idPost", idPost);
+  console.log("queryErrorPost", queryErrorPost);
+  console.log("queryDataPost", queryDataPost);
+  console.log("queryLoadingPost", queryLoadingPost);
+  console.log("dataPost", dataPost);
 
   const [
     LoadFollowing,
@@ -457,7 +468,9 @@ export default function Comments(props) {
   };
 
   const Refresh = React.useCallback(() => {
+    console.log("refresh");
     setRefreshing(true);
+    GetPost();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -827,6 +840,44 @@ export default function Comments(props) {
     }
   };
 
+  const [
+    MutationRemoveAlbum,
+    { loading: loadingALbum, data: dataAlbum, error: errorAlbum },
+  ] = useMutation(RemoveAlbum, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const removeTagAlbum = async (post_id, album_id) => {
+    try {
+      let response = await MutationRemoveAlbum({
+        variables: {
+          album_id: album_id,
+          post_id: post_id,
+        },
+      });
+      console.log("response", response);
+      if (response.data.remove_albums_post.code == 200) {
+        setModalMenu(false);
+      } else {
+        RNToasty({
+          title: t("failRemoveTagAlbum"),
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      console.log("error", error);
+      RNToasty({
+        title: t("failRemoveTagAlbum"),
+        position: "bottom",
+      });
+    }
+  };
+
   if (queryLoadingPost) {
     return (
       <SkeletonPlaceholder
@@ -1134,7 +1185,9 @@ export default function Comments(props) {
                   borderBottomWidth: 1,
                   borderColor: "#d1d1d1",
                 }}
-                onPress={() => setSoon(true)}
+                onPress={() =>
+                  removeTagAlbum(dataPost?.id, dataPost?.album?.id)
+                }
               >
                 <Text
                   size="label"
@@ -1152,7 +1205,7 @@ export default function Comments(props) {
                   borderColor: "#d1d1d1",
                 }}
                 onPress={() => {
-                  setModalmenu(false),
+                  setModalMenu(false),
                     token
                       ? props.navigation.push("FeedStack", {
                           screen: "CreateListAlbum",
@@ -1795,7 +1848,7 @@ export default function Comments(props) {
                       </Text>
                     </ReadMore>
                   ) : null} */}
-                  {dataPost?.itinerary !== null ? (
+                  {dataPost?.album && dataPost?.album?.itinerary !== null ? (
                     <View>
                       <View
                         style={{
@@ -1824,7 +1877,7 @@ export default function Comments(props) {
                           }}
                         >
                           <Text size="label" type="bold" style>
-                            {dataPost?.itinerary?.name}
+                            {dataPost?.album?.itinerary?.name}
                           </Text>
                           <Ripple
                             onPress={() => goToItinerary(dataPost)}

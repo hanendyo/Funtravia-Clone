@@ -46,6 +46,7 @@ import { useIsFocused } from "@react-navigation/native";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
+import RemoveAlbum from "../../graphQL/Mutation/Album/RemoveAlbum";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
@@ -105,6 +106,7 @@ export default function FeedList({ props, token }) {
   const [dataFeed, setDataFeed] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [soon, setSoon] = useState(false);
+  console.log("data Feed", dataFeed);
 
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -113,8 +115,6 @@ export default function FeedList({ props, token }) {
   let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
   let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
-
-  console.log("selectedOption", selectedOption);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -193,14 +193,6 @@ export default function FeedList({ props, token }) {
         },
       });
 
-      // if (errorMutationPost) {
-      //   RNToasty({
-      //     duration: 1,
-      //     title: t("failPost"),
-      //     position: "bottom",
-      //   });
-      // }
-
       if (response.data) {
         if (response.data.create_post.code === 200) {
           await refetch();
@@ -224,11 +216,6 @@ export default function FeedList({ props, token }) {
     } catch (err) {
       setLoaded(false);
       setUploadFailed(true);
-      // RNToasty.Show({
-      //   duration: 1,
-      //   title: t("failPost"),
-      //   position: "bottom",
-      // });
     }
   };
 
@@ -361,7 +348,6 @@ export default function FeedList({ props, token }) {
       first: 5,
       after: "",
     },
-    // pollInterval: 1000,
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -380,12 +366,12 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      refetch();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
+  // useEffect(() => {
+  //   const unsubscribe = props.navigation.addListener("focus", () => {
+  //     refetch();
+  //   });
+  //   return unsubscribe;
+  // }, [props.navigation]);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -766,7 +752,44 @@ export default function FeedList({ props, token }) {
     }
   }, [status]);
 
-  const [loads, setLoads] = useState(true);
+  const [
+    MutationRemoveAlbum,
+    { loading: loadingALbum, data: dataAlbum, error: errorAlbum },
+  ] = useMutation(RemoveAlbum, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const removeTagAlbum = async (post_id, album_id) => {
+    try {
+      let response = await MutationRemoveAlbum({
+        variables: {
+          album_id: album_id,
+          post_id: post_id,
+        },
+      });
+      console.log("response", response);
+      if (response.data.remove_albums_post.code == 200) {
+        refetch();
+        setModalmenu(false);
+      } else {
+        RNToasty({
+          title: t("failRemoveTagAlbum"),
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      RNToasty({
+        title: t("failRemoveTagAlbum"),
+        position: "bottom",
+      });
+      refetch();
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -1236,7 +1259,12 @@ export default function FeedList({ props, token }) {
                     borderBottomWidth: 1,
                     borderColor: "#d1d1d1",
                   }}
-                  onPress={() => setSoon(true)}
+                  onPress={() =>
+                    removeTagAlbum(
+                      selectedOption?.id,
+                      selectedOption?.album?.id
+                    )
+                  }
                 >
                   <Text
                     size="label"
@@ -2091,7 +2119,7 @@ export default function FeedList({ props, token }) {
                   flexDirection: "row",
                 }}
               >
-                {item.node.itinerary !== null ? (
+                {item?.node?.album && item?.node?.album?.itinerary !== null ? (
                   <View>
                     <View
                       style={{
@@ -2120,7 +2148,7 @@ export default function FeedList({ props, token }) {
                         }}
                       >
                         <Text size="label" type="bold" style>
-                          {item.node.itinerary.name}
+                          {item.node.album.itinerary.name}
                         </Text>
                         <Ripple
                           onPress={() => goToItinerary(item.node)}

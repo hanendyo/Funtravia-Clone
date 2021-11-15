@@ -636,55 +636,59 @@ export default function ItineraryDestination(props) {
             width: Dimensions.get("screen").width,
           }}
         >
-          <Button
-            size="small"
-            type="icon"
-            variant="bordered"
-            color="primary"
+          <Pressable
             onPress={() => {
               setshow(true), searchs("");
             }}
             style={{
-              marginRight: 5,
-
-              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: "#209fae",
+              height: 35,
+              borderRadius: 2,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            <Filternewbiru width={18} height={18} />
+            <Filternewbiru
+              width={18}
+              height={18}
+              style={{ marginHorizontal: 7 }}
+            />
             {datafilterAll.length > 0 ? (
               <View
                 style={{
                   backgroundColor: "#209fae",
-                  marginLeft: 5,
-                  paddingHorizontal: 5,
                   borderRadius: 2,
+                  marginRight: 7,
                 }}
               >
                 <Text
+                  size="label"
+                  type="regular"
                   style={{
-                    fontFamily: "Lato-Regular",
-                    color: "#ffff",
-                    fontSize: 13,
-                    // alignSelf: "center",
+                    paddingHorizontal: 5,
+                    color: "#fff",
                   }}
                 >
                   {datafilterAll?.length}
                 </Text>
               </View>
             ) : null}
-          </Button>
+          </Pressable>
 
           <View
             style={{
-              backgroundColor: "#F0F0F0",
-              borderRadius: 5,
+              backgroundColor: "#f6f6f6",
+              borderRadius: 2,
               flex: 1,
               paddingHorizontal: 10,
-              marginLeft: 5,
+              marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
               height: 35,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
             }}
           >
             <Search width={15} height={15} />
@@ -694,7 +698,6 @@ export default function ItineraryDestination(props) {
               placeholder={t("search")}
               style={{
                 width: "85%",
-
                 marginLeft: 5,
                 padding: 0,
               }}
@@ -731,15 +734,15 @@ export default function ItineraryDestination(props) {
             }
             style={{
               backgroundColor: "white",
-              borderRadius: 5,
+              borderRadius: 2,
               borderWidth: 1,
               width: "10%",
-              borderColor: "#F0F0F0",
+              borderColor: "#e8e8e8",
               paddingVertical: 10,
               alignItems: "flex-start",
               justifyContent: "center",
               flexDirection: "row",
-              marginLeft: 10,
+              marginLeft: 7,
             }}
           >
             <Google height={15} width={15} />

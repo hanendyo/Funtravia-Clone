@@ -831,5 +831,6 @@
   "failedCommentTPost": "Gagal memberikan komentar di post ini",
   "FailedLikeDestination": "Gagal menyukai destinasi",
   "FailedLikeEvents": "Gagal menyukai event",
-  "removeTagAlbum": "Lepaskan dari album"
+  "removeTagAlbum": "Lepaskan dari album",
+  "failRemoveTagAlbum": "Gagal melepaskan tag album"
 }
