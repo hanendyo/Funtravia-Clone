@@ -94,6 +94,8 @@ export default function MyAccount(props) {
     }
   };
 
+  const [userData, setUserData] = useState(null);
+
   const [
     LoadUserProfile,
     { data: datauser, loading: loadinguser, error: erroruser },
@@ -104,6 +106,9 @@ export default function MyAccount(props) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    },
+    onCompleted: () => {
+      setUserData(datauser.user_profile);
     },
   });
 
@@ -324,8 +329,8 @@ export default function MyAccount(props) {
             >
               <Image
                 source={
-                  datauser && datauser.user_profile.picture
-                    ? { uri: datauser.user_profile.picture }
+                  userData && userData.picture
+                    ? { uri: userData.picture }
                     : default_image
                 }
                 style={{
@@ -348,18 +353,11 @@ export default function MyAccount(props) {
           >
             <View style={{ width: "70%", justifyContent: "center" }}>
               <Text type="bold" size="title">
-                {datauser && datauser.user_profile.first_name
-                  ? datauser.user_profile.first_name
-                  : null}{" "}
-                {datauser && datauser.user_profile.last_name
-                  ? datauser.user_profile.last_name
-                  : null}
+                {userData && userData.first_name ? userData.first_name : null}{" "}
+                {userData && userData.last_name ? userData.last_name : null}
               </Text>
               <Text size="label" type="regular">
-                @
-                {datauser && datauser.user_profile.username
-                  ? datauser.user_profile.username
-                  : null}
+                @{userData && userData.username ? userData.username : null}
               </Text>
               <Pressable
                 onPress={() => {
@@ -402,7 +400,7 @@ export default function MyAccount(props) {
               onPress={() =>
                 props.navigation.navigate("AccountStack", {
                   screen: "settings",
-                  params: { datauser: datauser },
+                  params: { userData: userData },
                 })
               }
               style={{
@@ -463,12 +461,8 @@ export default function MyAccount(props) {
               {t("fullName")}
             </Text>
             <Text size="label" type="regular">
-              {datauser && datauser.user_profile.first_name
-                ? datauser.user_profile.first_name
-                : null}{" "}
-              {datauser && datauser.user_profile.last_name
-                ? datauser.user_profile.last_name
-                : null}
+              {userData && userData.first_name ? userData.first_name : null}{" "}
+              {userData && userData.last_name ? userData.last_name : null}
             </Text>
           </View>
           <View
@@ -494,10 +488,8 @@ export default function MyAccount(props) {
             >
               <Truncate
                 text={
-                  datauser &&
-                  datauser.user_profile &&
-                  datauser.user_profile.email
-                    ? datauser.user_profile.email
+                  userData && userData.user_profile && userData.email
+                    ? userData.email
                     : t("notSet")
                 }
                 length={30}
@@ -525,8 +517,8 @@ export default function MyAccount(props) {
               size="label"
               type="regular"
             >
-              {datauser && datauser.user_profile && datauser.user_profile.phone
-                ? datauser.user_profile.phone
+              {userData && userData.user_profile && userData.phone
+                ? userData.phone
                 : t("notSet")}
             </Text>
           </View>
@@ -591,10 +583,8 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
-                {datauser &&
-                datauser.user_profile &&
-                datauser.user_profile.count_wishlist
-                  ? datauser.user_profile.count_wishlist + " " + "Wishlist"
+                {userData && userData.user_profile && userData.count_wishlist
+                  ? userData.count_wishlist + " " + "Wishlist"
                   : "0"}
               </Text>
               <Next width={15} height={15} />
@@ -629,12 +619,10 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
-                {datauser &&
-                datauser.user_profile &&
-                datauser.user_profile.count_itinerary_favorit
-                  ? datauser.user_profile.count_itinerary_favorit +
-                    " " +
-                    "Itinerary"
+                {userData &&
+                userData.user_profile &&
+                userData.count_itinerary_favorit
+                  ? userData.count_itinerary_favorit + " " + "Itinerary"
                   : "0"}
               </Text>
               <Next width={15} height={15} />
