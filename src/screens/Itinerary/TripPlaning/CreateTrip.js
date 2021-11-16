@@ -24,6 +24,7 @@ import {
   Picker,
   Pressable,
   TextInput,
+  Animated,
 } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,6 +52,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
 import { StackActions } from "@react-navigation/routers";
 import { gql } from "apollo-boost";
+import Ripple from "react-native-material-ripple";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -1048,19 +1050,20 @@ export default function Trip(props) {
                         style={{
                           width: "100%",
                           maxHeight: Dimensions.get("screen").width - 40,
+                          // borderWidth: 2,
                         }}
-                        showsVerticalScrollIndicator={false}
+                        showsVerticalScrollIndicator={true}
                         keyExtractor={(item, index) => `${index}`}
                         data={datacity.cities_search}
                         renderItem={({ item }) => (
-                          <TouchableOpacity
+                          <Ripple
                             style={{
                               width: "100%",
                               padding: 10,
                             }}
                             onPress={() => setcity(item.id, item.name)}
                           >
-                            <View
+                            <Animated.View
                               style={{
                                 flexDirection: "row",
                                 alignItems: "center",
@@ -1077,8 +1080,8 @@ export default function Trip(props) {
                               {item.id == idCity ? (
                                 <Check width={20} height={15} />
                               ) : null}
-                            </View>
-                          </TouchableOpacity>
+                            </Animated.View>
+                          </Ripple>
                         )}
                       />
                     ) : null}
