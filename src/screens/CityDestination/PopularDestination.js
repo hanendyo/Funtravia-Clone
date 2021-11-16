@@ -217,9 +217,12 @@ export default function AllDestination(props) {
     GetContinent();
   }, []);
   let [showcity, setShowCity] = useState(null);
+
+  // render list
   const RenderList = ({ item }) => {
     let sumdestination = item.count_destination;
 
+    console.log("item", item);
     return item && item.city.length > 0 ? (
       <View
         style={{
@@ -473,7 +476,6 @@ export default function AllDestination(props) {
     <View
       style={{
         flex: 1,
-        // backgroundColor: "white",
       }}
     >
       <View
@@ -482,69 +484,75 @@ export default function AllDestination(props) {
           // setHeight(height);
         }}
         style={{
-          flexDirection: "row",
-          zIndex: 5,
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
           paddingHorizontal: 15,
-          // paddingTop: 10,
-          // paddingBottom: 10,
-          backgroundColor: "#fff",
-          position: "absolute",
-          top: 0,
+
+          backgroundColor: "#FFFFFF",
+
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
-        <Button
-          size="small"
-          type="icon"
-          variant="bordered"
-          color="primary"
+        <Pressable
           onPress={() => {
             setShow(true);
           }}
           style={{
-            marginRight: 7,
-            borderRadius: 3,
-            paddingHorizontal: 10,
-            borderColor: "#209FAE",
-            marginVertical: 10,
+            borderWidth: 1,
+            borderColor: "#209fae",
+            height: 35,
+            borderRadius: 2,
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <Filternewbiru width={18} height={18} />
+          <Filternewbiru
+            width={18}
+            height={18}
+            style={{ marginHorizontal: 7 }}
+          />
           {cekData() > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
-                marginLeft: 10,
-                width: 20,
-                paddingHorizontal: 5,
                 borderRadius: 2,
+                marginRight: 7,
               }}
             >
               <Text
+                size="label"
+                type="regular"
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#ffff",
-                  fontSize: 15,
+                  paddingHorizontal: 5,
+                  color: "#fff",
                 }}
               >
                 {cekData()}
               </Text>
             </View>
           ) : null}
-        </Button>
+        </Pressable>
         <View
           style={{
             backgroundColor: "#f6f6f6",
-            borderRadius: 3,
+            borderRadius: 2,
             flex: 1,
+            paddingHorizontal: 10,
+            marginLeft: 7,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
-            marginVertical: 10,
+            height: 35,
 
-            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
-          <Search width={15} height={15} />
+          <Search width={15} height={15} style={{ marginRight: 5 }} />
 
           <TextInput
             underlineColorAndroid="transparent"
@@ -555,6 +563,7 @@ export default function AllDestination(props) {
               marginLeft: 5,
               padding: 0,
             }}
+            placeholderTextColor="#464646"
             returnKeyType="search"
             value={search["keyword"]}
             onChangeText={(x) => {
@@ -584,7 +593,7 @@ export default function AllDestination(props) {
           ) : null}
         </View>
       </View>
-
+      {/* modal filter */}
       <Modal
         isVisible={show}
         onBackdropPress={() => {
@@ -693,17 +702,17 @@ export default function AllDestination(props) {
               <View style={{ padding: 15 }}>
                 <View
                   style={{
+                    height: 35,
                     backgroundColor: "#f6f6f6",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} />
+                  <Search width={15} height={15} style={{ marginRight: 5 }} />
 
                   <TextInput
                     underlineColorAndroid="transparent"
@@ -718,6 +727,7 @@ export default function AllDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    placeholderTextColor="#464646"
                     value={region}
                     onChangeText={(x) => {
                       searchRegion(x);
@@ -855,7 +865,6 @@ export default function AllDestination(props) {
 
       <FlatList
         contentContainerStyle={{
-          marginVertical: 50,
           justifyContent: "space-evenly",
           paddingStart: 10,
           paddingBottom: Platform.OS === "ios" ? 0 : 60,

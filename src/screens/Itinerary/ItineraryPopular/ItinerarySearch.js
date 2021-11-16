@@ -931,22 +931,33 @@ export default function ItinerarySearchCategory(props) {
       >
         <View
           style={{
+            alignContent: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 15,
+            marginVertical: 5,
+            // borderWidth: 1,
+            height: 50,
+            zIndex: 5,
             flexDirection: "row",
-            marginTop: 15,
-            width: Dimensions.get("screen").width - 30,
-            marginHorizontal: 15,
+            width: Dimensions.get("screen").width,
           }}
         >
           <View
             style={{
-              height: 40,
-              borderRadius: 5,
+              backgroundColor: "#f6f6f6",
+              borderRadius: 2,
+              flex: 1,
+              borderBottomLeftRadius: 5,
+              borderTopLeftRadius: 5,
+              // paddingHorizontal: 10,
+              marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: "#f6f6f6",
-              // marginVertical: 10,
-              // width: "80%",
-              flex: 1,
+              alignContent: "center",
+              height: 35,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
             }}
           >
             <View
@@ -960,7 +971,7 @@ export default function ItinerarySearchCategory(props) {
                 width: 40,
               }}
             >
-              <SearchWhite height={20} width={20} />
+              <SearchWhite height={15} width={15} />
             </View>
             <TextInput
               fontSize={16}
@@ -968,7 +979,7 @@ export default function ItinerarySearchCategory(props) {
               placeholder={t("search")}
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
-              style={{ marginHorizontal: 10, flex: 1 }}
+              style={{ marginHorizontal: 10, marginLeft: 10, padding: 0 }}
             />
             {textSearch.length !== 0 ? (
               <TouchableOpacity

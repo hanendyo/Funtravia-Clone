@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import {
   Xblue,
@@ -259,17 +260,17 @@ export default function SearchListEventHome(props) {
         >
           <View
             style={{
+              height: 35,
               backgroundColor: "#f6f6f6",
-              borderRadius: 5,
-              // flex: 1,
-              flexDirection: "row",
+              borderRadius: 2,
               alignItems: "center",
-              alignContent: "center",
+              flexDirection: "row",
               paddingHorizontal: 10,
-              paddingVertical: 5,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
             }}
           >
-            <Search width={15} height={15} />
+            <Search width={15} height={15} style={{ marginRight: 5 }} />
 
             <TextInput
               value={categoryName}
@@ -281,6 +282,7 @@ export default function SearchListEventHome(props) {
                 padding: 0,
               }}
               returnKeyType="search"
+              placeholderTextColor="#464646"
               onChangeText={(x) => {
                 searchkategori(x);
                 setCategoryName(x);
@@ -344,11 +346,11 @@ export default function SearchListEventHome(props) {
                     android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                   }),
                 }}
-                // onValueChange={() =>
-                //   Platform.OS == "ios"
-                //     ? null
-                //     : _handleCheck(item["id"], index, item)
-                // }
+                onValueChange={() =>
+                  Platform.OS == "ios"
+                    ? null
+                    : _handleCheck(item["id"], index, item)
+                }
                 value={item["checked"]}
               />
 
@@ -1113,60 +1115,70 @@ export default function SearchListEventHome(props) {
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
-          flexDirection: "row",
-          zIndex: 5,
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: "#FFFFFF",
           paddingHorizontal: 15,
           paddingTop: 15,
-          backgroundColor: "white",
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
-        <Button
-          size="small"
-          type="icon"
-          variant="bordered"
-          color="primary"
+        <Pressable
           onPress={() => {
             setShow(true);
           }}
           style={{
-            marginRight: 5,
-            borderRadius: 3,
-            paddingHorizontal: 10,
+            borderWidth: 1,
             borderColor: "#209fae",
+            height: 35,
+            borderRadius: 2,
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <Filternewbiru width={18} height={18} />
+          <Filternewbiru
+            width={18}
+            height={18}
+            style={{ marginHorizontal: 7 }}
+          />
           {cekData() > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
-                marginLeft: 10,
-                width: 20,
-                paddingHorizontal: 5,
                 borderRadius: 2,
+                marginRight: 7,
               }}
             >
               <Text
+                size="label"
+                type="regular"
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#ffff",
-                  fontSize: 14,
+                  paddingHorizontal: 5,
+                  color: "#fff",
                 }}
               >
                 {cekData(dataFilterCategori)}
               </Text>
             </View>
           ) : null}
-        </Button>
+        </Pressable>
         <View
           style={{
-            backgroundColor: "#F0F0F0",
-            borderRadius: 3,
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
             flex: 1,
+            paddingHorizontal: 10,
+            marginLeft: 7,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
-            paddingHorizontal: 10,
+            height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
           <Search width={15} height={15} />
@@ -1175,9 +1187,10 @@ export default function SearchListEventHome(props) {
             placeholder={t("search")}
             style={{
               width: "85%",
-              marginLeft: 5,
+              marginLeft: 7,
               padding: 0,
             }}
+            placeholderTextColor="#464646"
             returnKeyType="search"
             value={search.keyword}
             onKeyPress={(e) => {

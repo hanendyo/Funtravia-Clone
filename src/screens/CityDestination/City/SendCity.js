@@ -615,6 +615,7 @@ export default function SendCity({ navigation, route }) {
             backgroundColor: "white",
             paddingTop: 10,
             borderTopLeftRadius: 15,
+
             borderTopRightRadius: 15,
           }}
         >
@@ -623,21 +624,28 @@ export default function SendCity({ navigation, route }) {
               alignContent: "center",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              paddingHorizontal: 15,
+
+              // borderWidth: 1,
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 30,
+              width: Dimensions.get("screen").width,
             }}
           >
             <View
               style={{
-                backgroundColor: "#f1f1f1",
-                borderRadius: 5,
-                width: "100%",
-                height: 40,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 2,
+                flex: 1,
+                paddingHorizontal: 10,
+
                 flexDirection: "row",
                 alignItems: "center",
+                alignContent: "center",
+                height: 35,
+                borderWidth: 1,
+                borderColor: "#e8e8e8",
               }}
             >
               <View>
