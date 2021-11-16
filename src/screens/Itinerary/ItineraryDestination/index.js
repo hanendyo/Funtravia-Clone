@@ -629,7 +629,9 @@ export default function ItineraryDestination(props) {
             alignContent: "center",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingHorizontal: 10,
+            paddingHorizontal: 15,
+            marginVertical: 5,
+            // borderWidth: 1,
             height: 50,
             zIndex: 5,
             flexDirection: "row",
@@ -703,6 +705,7 @@ export default function ItineraryDestination(props) {
               }}
               returnKeyType="search"
               value={search["keyword"]}
+              placeholderTextColor="#464646"
               onChangeText={(x) => _setSearch(x)}
               onSubmitEditing={(x) => _setSearch(x)}
             />
@@ -770,7 +773,7 @@ export default function ItineraryDestination(props) {
             paddingVertical: 10,
           }}
         >
-          <Text>Explore :</Text>
+          <Text>{t("explore")} :</Text>
           <TouchableOpacity
             onPress={() => {
               setshowCountry(true), searchs("");
@@ -787,17 +790,26 @@ export default function ItineraryDestination(props) {
             </Text>
             <View
               style={{
-                paddingVertical: 6,
-                paddingHorizontal: 5,
-                backgroundColor: "#dae0f2",
+                width: 20,
+                height: 20,
+                backgroundColor: "#F6F6F6",
                 borderRadius: 30,
-                alignContent: "center",
-                alignItems: "center",
+
                 justifyContent: "center",
+                borderColor: "#d1d1d1",
+                borderWidth: 0.5,
                 marginLeft: 10,
               }}
             >
-              <Select width="10" height="10" style={{ marginBottom: -2 }} />
+              <View
+                style={{
+                  marginTop: 2,
+                  marginLeft: 0.5,
+                  alignItems: "center",
+                }}
+              >
+                <Select width="10" height="10" />
+              </View>
             </View>
           </TouchableOpacity>
           <Text
@@ -824,17 +836,26 @@ export default function ItineraryDestination(props) {
             </Text>
             <View
               style={{
-                paddingVertical: 6,
-                paddingHorizontal: 5,
-                backgroundColor: "#dae0f2",
+                width: 20,
+                height: 20,
+                backgroundColor: "#F6F6F6",
                 borderRadius: 30,
-                alignContent: "center",
-                alignItems: "center",
+
                 justifyContent: "center",
+                borderColor: "#d1d1d1",
+                borderWidth: 0.5,
                 marginLeft: 10,
               }}
             >
-              <Select width="10" height="10" style={{ marginBottom: -2 }} />
+              <View
+                style={{
+                  marginTop: 2,
+                  marginLeft: 0.5,
+                  alignItems: "center",
+                }}
+              >
+                <Select width="10" height="10" />
+              </View>
             </View>
           </TouchableOpacity>
         </View>
@@ -999,17 +1020,17 @@ export default function ItineraryDestination(props) {
               >
                 <View
                   style={{
+                    height: 35,
                     backgroundColor: "#f6f6f6",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} />
+                  <Search width={15} height={15} style={{ marginRight: 5 }} />
 
                   <TextInput
                     underlineColorAndroid="transparent"
@@ -1017,11 +1038,10 @@ export default function ItineraryDestination(props) {
                     Text={keyword}
                     style={{
                       width: "80%",
-                      // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
-                    // returnKeyType="search"
+                    placeholderTextColor="#464646"
                     value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
@@ -1483,22 +1503,24 @@ export default function ItineraryDestination(props) {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  padding: 15,
+                  paddingTop: 15,
+                  paddingLeft: 15,
+                  paddingRight: 15,
                 }}
               >
                 <View
                   style={{
-                    backgroundColor: "#F0F0F0",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    height: 35,
+                    backgroundColor: "#f6f6f6",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} />
+                  <Search width={15} height={15} style={{ marginRight: 5 }} />
 
                   <TextInput
                     underlineColorAndroid="transparent"
@@ -1511,6 +1533,7 @@ export default function ItineraryDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    placeholderTextColor="#464646"
                     value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
@@ -1738,19 +1761,22 @@ export default function ItineraryDestination(props) {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  padding: 15,
+                  paddingTop: 15,
+                  paddingLeft: 15,
+                  paddingRight: 15,
                 }}
               >
                 <View
                   style={{
-                    backgroundColor: "#F0F0F0",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    height: 35,
+                    backgroundColor: "#f6f6f6",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
+
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
                   <Search width={15} height={15} />
@@ -1766,6 +1792,7 @@ export default function ItineraryDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    placeholderTextColor="#464646"
                     value={keyword}
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
@@ -1795,7 +1822,6 @@ export default function ItineraryDestination(props) {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                   paddingHorizontal: 15,
-                  paddingTop: 10,
                 }}
               >
                 {dataFilterCitys.map((item, index) => (

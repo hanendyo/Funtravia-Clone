@@ -310,11 +310,16 @@ export default function Feed(props) {
       <View style={{ backgroundColor: "#209FAE" }}>
         <View
           style={{
-            flexDirection: "row",
+            alignContent: "center",
             alignItems: "center",
-            width: Dimensions.get("screen").width - 30,
             justifyContent: "space-between",
-            marginHorizontal: 15,
+            paddingHorizontal: 15,
+            marginVertical: 5,
+            // borderWidth: 1,
+            height: 50,
+            zIndex: 5,
+            flexDirection: "row",
+            width: Dimensions.get("screen").width,
           }}
         >
           <Pressable
@@ -339,17 +344,21 @@ export default function Feed(props) {
           </Pressable>
           <View
             style={{
-              marginVertical: 10,
               backgroundColor: "#FFFFFF",
-              flexDirection: "row",
               borderRadius: 2,
-              alignItems: "center",
               flex: 1,
               paddingHorizontal: 10,
+
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+              height: 35,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
               // width: Dimensions.get("screen").width - 55,
             }}
           >
-            <Magnifying width={20} height={20} style={{ marginRight: 10 }} />
+            <Magnifying width={15} height={15} style={{ marginRight: 10 }} />
             <TextInput
               value={searchtext}
               onChangeText={(e) => _searchHandle(e)}

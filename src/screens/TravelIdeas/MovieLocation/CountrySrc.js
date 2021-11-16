@@ -225,88 +225,81 @@ export default function CountrySrc({
               width: Dimensions.get("screen").width,
               backgroundColor: "white",
 
-              shadowColor: "#d3d3d3",
-              shadowOffset: {
-                width: 2,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 1,
-              elevation: 3,
+              borderBottomWidth: 1,
+              borderBottomColor: "#d1d1d1",
             }}
           >
             <View
               style={{
                 alignContent: "center",
                 alignItems: "center",
-                paddingHorizontal: 10,
-                height: 50,
                 justifyContent: "space-between",
+                paddingHorizontal: 15,
+                marginVertical: 5,
+                // borderWidth: 1,
+                height: 50,
+                zIndex: 5,
                 flexDirection: "row",
                 width: Dimensions.get("screen").width,
               }}
             >
-              <Button
-                size="small"
-                type="icon"
-                variant="bordered"
-                color="primary"
+              <Pressable
                 onPress={() => {
                   setmodalFilter(true);
                   _handleCheckonModal();
                 }}
                 style={{
-                  marginRight: 5,
-                  borderRadius: 3,
-                  paddingHorizontal: 10,
-                  borderColor: "#209FAE",
-                  paddingBottom: 1,
+                  borderWidth: 1,
+                  borderColor: "#209fae",
+                  height: 35,
+                  borderRadius: 2,
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <Filternewbiru width={18} height={18} />
+                <Filternewbiru
+                  width={18}
+                  height={18}
+                  style={{ marginHorizontal: 7 }}
+                />
                 {filterResults.length > 0 ? (
                   <View
                     style={{
                       backgroundColor: "#209fae",
-                      marginLeft: 10,
-                      width: 20,
-                      paddingHorizontal: 5,
                       borderRadius: 2,
+                      marginRight: 7,
                     }}
                   >
                     <Text
+                      size="label"
+                      type="regular"
                       style={{
-                        fontFamily: "Lato-Regular",
-                        color: "#ffff",
-                        fontSize: 15,
-                        // alignSelf: "center",
+                        paddingHorizontal: 5,
+                        color: "#fff",
                       }}
                     >
                       {filterResults.length}
                     </Text>
                   </View>
                 ) : null}
-              </Button>
+              </Pressable>
 
               <View
                 style={{
-                  backgroundColor: "#F0F0F0",
-                  borderRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 2,
                   flex: 1,
                   paddingHorizontal: 10,
+                  marginLeft: 7,
                   flexDirection: "row",
                   alignItems: "center",
                   alignContent: "center",
                   height: 35,
+                  borderWidth: 1,
+                  borderColor: "#e8e8e8",
                 }}
               >
-                <View
-                  style={{
-                    marginHorizontal: 5,
-                  }}
-                >
-                  <Search width={15} height={15} />
-                </View>
+                <Search width={15} height={15} />
 
                 <TextInput
                   underlineColorAndroid="transparent"
@@ -315,9 +308,11 @@ export default function CountrySrc({
                   style={{
                     width: "88%",
                     // borderWidth: 1,
+                    marginLeft: 5,
                     padding: 0,
                   }}
                   returnKeyType="search"
+                  placeholderTextColor="#464646"
                   value={keyword}
                   onChangeText={(x) => setKeyword(x)}
                   onSubmitEditing={(x) => setKeyword(x)}
@@ -343,9 +338,6 @@ export default function CountrySrc({
           <FlatList
             ref={slider}
             data={list_country_src_movie}
-            contentContainerStyle={{
-              paddingTop: 10,
-            }}
             renderItem={({ item }) => {
               return (
                 <Pressable
@@ -535,17 +527,18 @@ export default function CountrySrc({
               >
                 <View
                   style={{
+                    height: 35,
                     backgroundColor: "#f6f6f6",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} />
+                  <Search width={15} height={15} style={{ marginRight: 5 }} />
+
                   <TextInput
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
@@ -556,6 +549,7 @@ export default function CountrySrc({
                       padding: 0,
                     }}
                     returnKeyType="search"
+                    placeholderTextColor="#464646"
                     value={continent}
                     onChangeText={(x) => {
                       searchContinent(x);

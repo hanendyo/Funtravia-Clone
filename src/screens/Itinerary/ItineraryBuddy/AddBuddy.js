@@ -475,17 +475,17 @@ export default function AddBuddy(props) {
     >
       <Loading show={loading} />
 
-      <View
-        style={{
-          paddingTop: 15,
-        }}
-      >
+      <View>
         <View
           style={{
             alignContent: "center",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: 20,
+            // paddingHorizontal: 15,
+            paddingRight: 15,
+            paddingLeft: 5,
+
+            // borderWidth: 1,
             height: 50,
             zIndex: 5,
             flexDirection: "row",
@@ -494,14 +494,17 @@ export default function AddBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#F6F6F6",
-              borderRadius: 5,
-              width: "100%",
-              height: 35,
-              paddingHorizontal: 15,
-
+              backgroundColor: "#f6f6f6",
+              borderRadius: 2,
+              flex: 1,
+              paddingHorizontal: 10,
+              marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
+              alignContent: "center",
+              height: 35,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
             }}
           >
             <View>
@@ -510,13 +513,13 @@ export default function AddBuddy(props) {
 
             <TextInput
               underlineColorAndroid="transparent"
+              placeholderTextColor="#464646"
               placeholder={t("search")}
               style={{
-                width: "88%",
-                fontFamily: "Lato-Regular",
-                marginLeft: 5,
+                width: "85%",
+                marginLeft: 10,
                 fontSize: 14,
-                color: "#464646",
+                padding: 0,
               }}
               value={search}
               onChangeText={(text) => _setSearch(text)}

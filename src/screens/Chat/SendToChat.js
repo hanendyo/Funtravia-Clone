@@ -680,7 +680,9 @@ export default function SendToChat({ navigation, route }) {
               alignContent: "center",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              paddingHorizontal: 15,
+
+              // borderWidth: 1,
               height: 50,
               zIndex: 5,
               flexDirection: "row",
@@ -689,12 +691,17 @@ export default function SendToChat({ navigation, route }) {
           >
             <View
               style={{
-                backgroundColor: "#f1f1f1",
-                borderRadius: 5,
-                width: "100%",
-                height: 40,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 2,
+                flex: 1,
+                paddingHorizontal: 10,
+
                 flexDirection: "row",
                 alignItems: "center",
+                alignContent: "center",
+                height: 35,
+                borderWidth: 1,
+                borderColor: "#e8e8e8",
               }}
             >
               <View>
@@ -706,7 +713,6 @@ export default function SendToChat({ navigation, route }) {
                     width: 15,
                     alignSelf: "center",
                     zIndex: 100,
-                    marginHorizontal: 5,
                   }}
                 />
               </View>
@@ -716,8 +722,8 @@ export default function SendToChat({ navigation, route }) {
                 placeholder={t("search")}
                 style={{
                   width: "100%",
-                  fontFamily: "Lato-Regular",
-                  fontSize: 14,
+                  marginLeft: 10,
+                  padding: 0,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}
