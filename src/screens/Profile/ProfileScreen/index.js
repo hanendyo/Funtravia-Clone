@@ -845,7 +845,7 @@ export default function OtherProfile(props) {
       inputRange: [0, HeaderHeight],
       outputRange: [
         0,
-        -HeaderHeight + (Platform.OS === "ios" ? (Notch ? 55 : 95) : 85),
+        -HeaderHeight + (Platform.OS === "ios" ? (Notch ? 55 : 95) : 35),
       ],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
@@ -864,7 +864,7 @@ export default function OtherProfile(props) {
               ? Notch
                 ? HeaderHeight
                 : HeaderHeight - 40
-              : HeaderHeight - 30,
+              : HeaderHeight + 20,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -876,12 +876,12 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             width: "100%",
-            height: Platform.OS === "ios" ? (Notch ? "90%" : "87%") : "87%",
+            height: Platform.OS === "ios" ? (Notch ? "90%" : "87%") : "90%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-            paddingTop: Platform.OS === "ios" ? (Notch ? "5%" : "5%") : "17%",
+            paddingTop: Platform.OS === "ios" ? (Notch ? "5%" : "5%") : "10%",
             marginTop: Platform.OS === "ios" ? (Notch ? "15%" : "15%") : "13%",
           }}
         >
@@ -1170,11 +1170,11 @@ export default function OtherProfile(props) {
 
           <View
             style={{
-              marginVertical: 10,
+              marginVertical: "5%",
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
               // borderWidth: 1,
-              marginBottom: Platform.OS === "ios" ? null : "15%",
+              // marginBottom: Platform.OS === "ios" ? null : null,
             }}
           >
             <Text
@@ -1318,7 +1318,7 @@ export default function OtherProfile(props) {
             tabIndex === 0
               ? HeaderHeight +
                 TabBarHeight +
-                (Platform.OS === "ios" ? (Notch ? 75 : 20) : 35)
+                (Platform.OS === "ios" ? (Notch ? 75 : 20) : 90)
               : HeaderHeight + TabBarHeight,
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingBottom: 10,
@@ -1346,7 +1346,7 @@ export default function OtherProfile(props) {
       inputRange: [0, HeaderHeight],
       outputRange: [
         HeaderHeight,
-        Platform.OS === "ios" ? (Notch ? 45 : 95) : 90,
+        Platform.OS === "ios" ? (Notch ? 45 : 95) : 34,
       ],
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
@@ -1354,7 +1354,8 @@ export default function OtherProfile(props) {
     return (
       <Animated.View
         style={{
-          top: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : "-5%",
+          // top: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : null,
+          marginVertical: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : "5%",
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -1850,7 +1851,7 @@ export default function OtherProfile(props) {
           alignContent: "flex-start",
           alignItems: "center",
           marginLeft: 10,
-          height: 55,
+          height: Platform.OS == "ios" ? 55 : 45,
 
           width: Dimensions.get("screen").width,
         }}

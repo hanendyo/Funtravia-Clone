@@ -520,7 +520,7 @@ export default function Unesco({ navigation, route }) {
             type="regular"
             onTextLayout={(x) => {
               let line = x.nativeEvent.lines.length;
-              let lines = line - 3;
+              let lines = line - (Platform.OS == "ios" ? 2.7 : 2);
               setTambahan(lines * normalize(15));
             }}
           >
