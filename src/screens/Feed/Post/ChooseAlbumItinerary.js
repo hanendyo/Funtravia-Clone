@@ -188,6 +188,8 @@ export default function ChooseAlbumItinerary(props) {
             type: props.route.params.type,
             location: props.route.params.location,
             post_id: props.route.params.post_id,
+            from: props.route.params.from,
+            data_post: props.route.params.data_post,
           },
         });
   };

@@ -34,9 +34,7 @@ import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
 import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
-import FeedPageing from "../../graphQL/Query/Feed/FeedPageing";
 import FeedListCursorBased from "../../graphQL/Query/Feed/FeedListCursorBased";
-import ReadMore from "react-native-read-more-text";
 import ViewMoreText from "react-native-view-more-text";
 import { useScrollToTop } from "@react-navigation/native";
 import { NetworkStatus } from "@apollo/client";
@@ -106,7 +104,6 @@ export default function FeedList({ props, token }) {
   const [dataFeed, setDataFeed] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [soon, setSoon] = useState(false);
-  console.log("data Feed", dataFeed);
 
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -351,7 +348,6 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${tkn}`,
         Authorization: `Bearer ${props.route.params.token}`,
       },
     },
@@ -764,7 +760,7 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  const removeTagAlbum = async (post_id, album_id) => {
+  const removeTagAlbum = async (post_id, album_id, index) => {
     try {
       let response = await MutationRemoveAlbum({
         variables: {
@@ -772,9 +768,7 @@ export default function FeedList({ props, token }) {
           post_id: post_id,
         },
       });
-      console.log("response", response);
       if (response.data.remove_albums_post.code == 200) {
-        refetch();
         setModalmenu(false);
       } else {
         RNToasty({
@@ -1294,6 +1288,7 @@ export default function FeedList({ props, token }) {
                               location: "",
                               isAlbum: true,
                               post_id: selectedOption?.id,
+                              from: "funFeed",
                             },
                           })
                         : setModalLogin(true);

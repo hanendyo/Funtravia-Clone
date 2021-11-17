@@ -115,8 +115,6 @@ export default function CreateAlbum(props) {
     variables: { status: ["A", "F"], keyword: searchText },
   });
 
-  console.log("dataItinerary", dataItinerary);
-
   const [
     QueryFeed,
     { data: listAlbum, loading: loadingAlbum, error: errorAlbum },
@@ -148,6 +146,8 @@ export default function CreateAlbum(props) {
             location: props.route.params.location,
             post_id: props.route.params.post_id,
             isAlbum: true,
+            from: props.route.params.from,
+            data_post: props.route.params.data_post,
           },
         })
       : props.navigation.navigate("FeedStack", {
@@ -160,6 +160,8 @@ export default function CreateAlbum(props) {
             token: token,
             post_id: props.route.params.post_id,
             isAlbum: false,
+            from: props.route.params.from,
+            data_post: props.route.params.data_post,
           },
         });
     // setIdItinerary(id);
@@ -450,6 +452,7 @@ export default function CreateAlbum(props) {
                             type: props.route.params.type,
                             location: props.route.params.location,
                             post_id: props.route.params.post_id,
+                            from: props.route.params.from,
                           },
                         });
                   }}

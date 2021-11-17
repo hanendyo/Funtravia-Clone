@@ -1,888 +1,776 @@
-import React from "react";
+import React, { useRef } from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
 import { Play, PlayVideo } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
-import { FunVideo } from "../../../../component";
+import { FunVideo, FunImage } from "../../../../component";
 
 export default function Posts({ item, index, navigation, user }) {
-  if (item?.length > 2) {
-    if (item[3]?.grid == 1) {
-      return (
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            paddingHorizontal: 2.5,
-            marginHorizontal: 10,
-          }}
-        >
-          <Pressable
-            onPress={() => {
-              // navigation.push("FeedStack", {
-              // 	screen: "CommentsById",
-              // 	params: {
-              // 		post_id: item[0]?.id,
-              // 	},
-              // });
-              navigation.push("ProfileStack", {
-                screen: "myfeed",
-                params: {
-                  token: token,
-                  // index: index,
-                  datauser: user,
-                  post_id: item[0]?.id,
-                },
-              });
-            }}
-            style={{
-              width: ((width - 12) / 3.25) * 2,
-              height: ((width - 12) / 3) * 2,
-              margin: 2.5,
-            }}
-          >
-            {item[0]?.assets[0]?.type === "video" ? (
-              <>
-                <FunVideo
-                  poster={item[0]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  paused={true}
-                  key={"posted" + item.id}
-                  source={{
-                    uri: item[0]?.assets[0]?.filepath,
-                  }}
-                  muted={true}
-                  // defaultSource={default_image}
-                  resizeMode="cover"
-                  style={{
-                    // resizeMode: "cover",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    // flexDirection: "row",
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                    justifyContent: "flex-end",
-                    borderRadius: 10,
-                    // bottom: "35%",
-                    // left: "35%",
-                  }}
-                >
-                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                </View>
-              </>
-            ) : (
-              // <FunVideo
-              //   poster={item[0]?.assets[0]?.filepath.replace(
-              //     "output.m3u8",
-              //     "thumbnail.png"
-              //   )}
-              //   posterResizeMode={"cover"}
-              //   source={{
-              //     uri: item[0]?.assets[0]?.filepath,
-              //   }}
-              //   repeat={true}
-              //   style={{
-              //     width: "100%",
-              //     height: "100%",
-              //     backgroundColor: "#fff",
-              //     borderRadius: 10,
-              //   }}
-              //   resizeMode="cover"
-              //   muted={true}
-              //   paused={true}
-              // />
-              <Image
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 10,
-                }}
-                source={
-                  item[0]?.assets[0]?.filepath
-                    ? { uri: item[0]?.assets[0]?.filepath }
-                    : default_image
-                }
-              />
-            )}
-          </Pressable>
-          <View>
-            <Pressable
-              onPress={() => {
-                // navigation.push("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: item[1]?.id,
-                //   },
-                // });
-                navigation.push("ProfileStack", {
-                  screen: "myfeed",
-                  params: {
-                    token: token,
-                    datauser: user,
-                    post_id: item[1]?.id,
-                  },
-                });
-              }}
-              style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
-                margin: 2.5,
-              }}
-            >
-              {item[1]?.assets[0] && item[1]?.assets[0]?.type === "video" ? (
-                <>
-                  <FunVideo
-                    poster={item[1]?.assets[0]?.filepath.replace(
-                      "output.m3u8",
-                      "thumbnail.png"
-                    )}
-                    posterResizeMode={"cover"}
-                    paused={true}
-                    key={"posted" + item.id}
-                    source={{
-                      uri: item[1]?.assets[0] && item[1]?.assets[0]?.filepath,
-                    }}
-                    muted={true}
-                    // defaultSource={default_image}
-                    resizeMode="cover"
-                    style={{
-                      // resizeMode: "cover",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "#fff",
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      // flexDirection: "row",
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.4)",
-                      justifyContent: "flex-end",
-                      borderRadius: 10,
-
-                      // bottom: "35%",
-                      // left: "35%",
-                    }}
-                  >
-                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                  </View>
-                </>
-              ) : (
-                // <FunVideo
-                //   poster={item[1]?.assets[0]?.filepath.replace(
-                //     "output.m3u8",
-                //     "thumbnail.png"
-                //   )}
-                //   posterResizeMode={"cover"}
-                //   source={{
-                //     uri: item[1]?.assets[0] && item[1]?.assets[0]?.filepath,
-                //   }}
-                //   repeat={true}
-                //   style={{
-                //     width: "100%",
-                //     height: "100%",
-                //     backgroundColor: "#fff",
-                //     borderRadius: 10,
-                //   }}
-                //   resizeMode="cover"
-                //   muted={true}
-                //   paused={true}
-                // />
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                  source={
-                    item[1]?.assets[0] && item[1]?.assets[0]?.filepath
-                      ? {
-                          uri: item[1]?.assets[0].filepath,
-                        }
-                      : default_image
-                  }
-                />
-              )}
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                // navigation.push("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: item[2]?.id,
-                //   },
-                // });
-                navigation.push("ProfileStack", {
-                  screen: "myfeed",
-                  params: {
-                    token: token,
-                    datauser: user,
-                    post_id: item[2]?.id,
-                  },
-                });
-              }}
-              style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
-                margin: 2.5,
-              }}
-            >
-              {item[2]?.assets[0]?.type === "video" ? (
-                <>
-                  <FunVideo
-                    poster={item[2]?.assets[0]?.filepath.replace(
-                      "output.m3u8",
-                      "thumbnail.png"
-                    )}
-                    posterResizeMode={"cover"}
-                    paused={true}
-                    key={"posted" + item.id}
-                    source={{
-                      uri: item[2]?.assets[0]?.filepath,
-                    }}
-                    muted={true}
-                    // defaultSource={default_image}
-                    resizeMode="cover"
-                    style={{
-                      // resizeMode: "cover",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "#fff",
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      // flexDirection: "row",
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.4)",
-                      justifyContent: "flex-end",
-                      borderRadius: 10,
-
-                      // bottom: "35%",
-                      // left: "35%",
-                    }}
-                  >
-                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                  </View>
-                </>
-              ) : (
-                // <FunVideo
-                //   poster={item[2]?.assets[0]?.filepath.replace(
-                //     "output.m3u8",
-                //     "thumbnail.png"
-                //   )}
-                //   posterResizeMode={"cover"}
-                //   source={{
-                //     uri: item[2]?.assets[0]?.filepath,
-                //   }}
-                //   repeat={true}
-                //   style={{
-                //     width: "100%",
-                //     height: "100%",
-                //     backgroundColor: "#fff",
-                //     borderRadius: 10,
-                //   }}
-                //   resizeMode="cover"
-                //   muted={true}
-                //   paused={true}
-                // />
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                  source={
-                    item[2]?.assets[0]?.filepath
-                      ? {
-                          uri: item[2]?.assets[0].filepath,
-                        }
-                      : default_image
-                  }
-                />
-              )}
-            </Pressable>
-          </View>
-        </View>
-      );
-    } else if (item[3]?.grid == 2) {
-      return (
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            paddingHorizontal: 2.5,
-            marginHorizontal: 10,
-          }}
-        >
-          <View>
-            <Pressable
-              onPress={() => {
-                // navigation.push("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: item[0]?.id,
-                //   },
-                // });
-                navigation.push("ProfileStack", {
-                  screen: "myfeed",
-                  params: {
-                    token: token,
-                    datauser: user,
-                    post_id: item[0]?.id,
-                  },
-                });
-              }}
-              style={{
-                width: (width - 20) / 3.25,
-                height: (width - 20) / 3.4,
-                margin: 2.5,
-              }}
-            >
-              {item[0]?.assets[0]?.type === "video" ? (
-                <>
-                  <FunVideo
-                    poster={item[0]?.assets[0]?.filepath.replace(
-                      "output.m3u8",
-                      "thumbnail.png"
-                    )}
-                    posterResizeMode={"cover"}
-                    paused={true}
-                    key={"posted" + item.id}
-                    source={{
-                      uri: item[0]?.assets[0]?.filepath,
-                    }}
-                    muted={true}
-                    // defaultSource={default_image}
-                    resizeMode="cover"
-                    style={{
-                      // resizeMode: "cover",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "#fff",
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      // flexDirection: "row",
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.4)",
-                      justifyContent: "flex-end",
-                      borderRadius: 10,
-
-                      // bottom: "35%",
-                      // left: "35%",
-                    }}
-                  >
-                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                  </View>
-                </>
-              ) : (
-                // <FunVideo
-                //   poster={item[0]?.assets[0]?.filepath.replace(
-                //     "output.m3u8",
-                //     "thumbnail.png"
-                //   )}
-                //   posterResizeMode={"cover"}
-                //   source={{
-                //     uri: item[0]?.assets[0]?.filepath,
-                //   }}
-                //   repeat={true}
-                //   style={{
-                //     width: "100%",
-                //     height: "100%",
-                //     backgroundColor: "#fff",
-                //     borderRadius: 10,
-                //   }}
-                //   resizeMode="cover"
-                //   muted={true}
-                //   paused={false}
-                // />
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                  source={
-                    item[0]?.assets[0]?.filepath
-                      ? {
-                          uri: item[0]?.assets[0].filepath,
-                        }
-                      : default_image
-                  }
-                />
-              )}
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                // navigation.push("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: item[1]?.id,
-                //   },
-                // });
-                navigation.push("ProfileStack", {
-                  screen: "myfeed",
-                  params: {
-                    token: token,
-                    datauser: user,
-                    post_id: item[1]?.id,
-                  },
-                });
-              }}
-              style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
-                margin: 2.5,
-              }}
-            >
-              {item[1]?.assets[0]?.type === "video" ? (
-                <>
-                  <FunVideo
-                    poster={item[1]?.assets[0]?.filepath.replace(
-                      "output.m3u8",
-                      "thumbnail.png"
-                    )}
-                    posterResizeMode={"cover"}
-                    paused={true}
-                    key={"posted" + item.id}
-                    source={{
-                      uri: item[1]?.assets[0]?.filepath,
-                    }}
-                    muted={true}
-                    // defaultSource={default_image}
-                    resizeMode="cover"
-                    style={{
-                      // resizeMode: "cover",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "#fff",
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      // flexDirection: "row",
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.4)",
-                      justifyContent: "flex-end",
-                      borderRadius: 10,
-
-                      // bottom: "35%",
-                      // left: "35%",
-                    }}
-                  >
-                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                  </View>
-                </>
-              ) : (
-                // <FunVideo
-                //   poster={item[1]?.assets[0]?.filepath.replace(
-                //     "output.m3u8",
-                //     "thumbnail.png"
-                //   )}
-                //   posterResizeMode={"cover"}
-                //   source={{
-                //     uri: item[1]?.assets[0]?.filepath,
-                //   }}
-                //   repeat={true}
-                //   style={{
-                //     width: "100%",
-                //     height: "100%",
-                //     backgroundColor: "#fff",
-                //     borderRadius: 10,
-                //   }}
-                //   resizeMode="cover"
-                //   muted={true}
-                //   paused={false}
-                // />
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                  source={
-                    item[1]?.assets[0]?.filepath
-                      ? {
-                          uri: item[1]?.assets[0].filepath,
-                        }
-                      : default_image
-                  }
-                />
-              )}
-            </Pressable>
-          </View>
-          <Pressable
-            onPress={() => {
-              //   navigation.push("FeedStack", {
-              //     screen: "CommentsById",
-              //     params: {
-              //       post_id: item[2]?.id,
-              //     },
-              //   });
-              navigation.push("ProfileStack", {
-                screen: "myfeed",
-                params: {
-                  token: token,
-                  datauser: user,
-                  post_id: item[2]?.id,
-                },
-              });
-            }}
-            style={{
-              width: ((width - 12) / 3) * 2,
-              height: ((width - 12) / 3) * 2,
-              margin: 2.5,
-            }}
-          >
-            {item[2]?.assets[0]?.type === "video" ? (
-              <>
-                <FunVideo
-                  poster={item[2]?.assets[0]?.filepath.replace(
-                    "output.m3u8",
-                    "thumbnail.png"
-                  )}
-                  posterResizeMode={"cover"}
-                  paused={true}
-                  key={"posted" + item.id}
-                  source={{
-                    uri: item[2]?.assets[0]?.filepath,
-                  }}
-                  muted={true}
-                  // defaultSource={default_image}
-                  resizeMode="cover"
-                  style={{
-                    // resizeMode: "cover",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    // flexDirection: "row",
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                    justifyContent: "flex-end",
-                    borderRadius: 10,
-
-                    // bottom: "35%",
-                    // left: "35%",
-                  }}
-                >
-                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                </View>
-              </>
-            ) : (
-              // <FunVideo
-              //   poster={item[2]?.assets[0]?.filepath.replace(
-              //     "output.m3u8",
-              //     "thumbnail.png"
-              //   )}
-              //   posterResizeMode={"cover"}
-              //   source={{
-              //     uri: item[2]?.assets[0]?.filepath,
-              //   }}
-              //   repeat={true}
-              //   style={{
-              //     width: "100%",
-              //     height: "100%",
-              //     backgroundColor: "#fff",
-              //     borderRadius: 10,
-              //   }}
-              //   resizeMode="cover"
-              //   muted={true}
-              //   paused={false}
-              // />
-              <Image
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 10,
-                }}
-                source={
-                  item[2]?.assets[0]?.filepath
-                    ? { uri: item[2]?.assets[0]?.filepath }
-                    : default_image
-                }
-              />
-            )}
-          </Pressable>
-        </View>
-      );
-    } else {
-      return (
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            paddingHorizontal: 2.5,
-            marginHorizontal: 15,
-          }}
-        >
-          {item.map((data, index) => {
-            if (index < 3) {
-              return (
-                <Pressable
-                  key={"a" + index}
-                  onPress={() => {
-                    // navigation.push("FeedStack", {
-                    //   screen: "CommentsById",
-                    //   params: {
-                    //     post_id: data.id,
-                    //   },
-                    // });
-                    navigation.push("ProfileStack", {
-                      screen: "myfeed",
-                      params: {
-                        token: token,
-                        datauser: user,
-                        post_id: data.id,
-                      },
-                    });
-                  }}
-                  style={{
-                    width: (width - 20) / 3.25,
-                    height: (width - 20) / 3.4,
-                    margin: 2.5,
-                  }}
-                >
-                  {data.assets[0]?.type === "video" ? (
-                    <>
-                      <FunVideo
-                        poster={data.assets[0]?.filepath.replace(
-                          "output.m3u8",
-                          "thumbnail.png"
-                        )}
-                        posterResizeMode={"cover"}
-                        paused={true}
-                        key={"posted" + data.id}
-                        source={{
-                          uri: data.assets[0]?.filepath,
-                        }}
-                        muted={true}
-                        // defaultSource={default_image}
-                        resizeMode="cover"
-                        style={{
-                          // resizeMode: "cover",
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "#fff",
-                          borderRadius: 10,
-                        }}
-                      />
-                      <View
-                        style={{
-                          // flexDirection: "row",
-                          position: "absolute",
-                          width: "100%",
-                          height: "100%",
-                          backgroundColor: "rgba(0,0,0,0.4)",
-                          justifyContent: "flex-end",
-                          borderRadius: 10,
-
-                          // bottom: "35%",
-                          // left: "35%",
-                        }}
-                      >
-                        <PlayVideo
-                          width={15}
-                          height={15}
-                          style={{ margin: 10 }}
-                        />
-                      </View>
-                    </>
-                  ) : (
-                    // <FunVideo
-                    //   poster={data.assets[0]?.filepath.replace(
-                    //     "output.m3u8",
-                    //     "thumbnail.png"
-                    //   )}
-                    //   posterResizeMode={"cover"}
-                    //   source={{
-                    //     uri: data.assets[0]?.filepath,
-                    //   }}
-                    //   repeat={true}
-                    //   style={{
-                    //     width: "100%",
-                    //     height: "100%",
-                    //     backgroundColor: "#fff",
-                    //     borderRadius: 10,
-                    //   }}
-                    //   resizeMode="cover"
-                    //   muted={true}
-                    //   paused={false}
-                    // />
-                    <Image
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: 10,
-                      }}
-                      source={
-                        data.assets[0]?.filepath
-                          ? {
-                              uri: data.assets[0].filepath,
-                            }
-                          : default_image
-                      }
-                    />
-                  )}
-                </Pressable>
-              );
-            } else {
-              null;
-            }
-          })}
-        </View>
-      );
-    }
-  } else {
+  let { width, height } = Dimensions.get("screen");
+  let videoView = useRef(null);
+  if (item.length == 4 && item[3].grid == 1) {
     return (
       <View
         style={{
-          width: "100%",
           flexDirection: "row",
-          justifyContent: "flex-start",
-          paddingHorizontal: 2.5,
+          width: width - 20,
           marginHorizontal: 10,
         }}
       >
-        {item.map((data, index) => {
-          return (
-            <Pressable
-              key={"b" + index}
-              onPress={() => {
-                // navigation.push("FeedStack", {
-                //   screen: "CommentsById",
-                //   params: {
-                //     post_id: data.id,
-                //   },
-                // });
-                navigation.push("ProfileStack", {
-                  screen: "myfeed",
-                  params: {
-                    token: token,
-                    index: index,
-                    datauser: user,
-                    post_id: data.id,
-                  },
-                });
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                // index: index,
+                datauser: user,
+                post_id: item[0].id,
+              },
+            })
+          }
+        >
+          {item[0].assets[0].type === "video" ? (
+            <FunVideo
+              innerRef={(ref) => {
+                videoView = ref;
+              }}
+              onBuffer={videoView?.current?.onBuffer}
+              onError={videoView?.current?.videoError}
+              poster={item[0].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: (width + width) / 3 - 15,
+                width: (width + width) / 3 - 20,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[0].assets[0].filepath,
               }}
               style={{
-                width: (width - 20) / 3.25,
-                height: (width - 20) / 3.4,
-                margin: 2.5,
+                height: (width + width) / 3 - 15,
+                width: (width + width) / 3 - 20,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
               }}
-            >
-              {data.assets[0]?.type === "video" ? (
-                <>
-                  <FunVideo
-                    poster={data.assets[0]?.filepath.replace(
-                      "output.m3u8",
-                      "thumbnail.png"
-                    )}
-                    posterResizeMode={"cover"}
-                    paused={true}
-                    key={"posted" + data.id}
-                    source={{
-                      uri: data.assets[0]?.filepath,
-                    }}
-                    muted={true}
-                    // defaultSource={default_image}
-                    resizeMode="cover"
-                    style={{
-                      // resizeMode: "cover",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "#fff",
-                      borderRadius: 10,
-                    }}
-                  />
-                  <View
-                    style={{
-                      // flexDirection: "row",
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.4)",
-                      justifyContent: "flex-end",
-                      borderRadius: 10,
-
-                      // bottom: "35%",
-                      // left: "35%",
-                    }}
-                  >
-                    <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-                  </View>
-                </>
-              ) : (
-                // <FunVideo
-                //   poster={data.assets[0]?.filepath.replace(
-                //     "output.m3u8",
-                //     "thumbnail.png"
-                //   )}
-                //   posterResizeMode={"cover"}
-                //   source={{
-                //     uri: data.assets[0]?.filepath,
-                //   }}
-                //   repeat={true}
-                //   style={{
-                //     width: "100%",
-                //     height: "100%",
-                //     backgroundColor: "#fff",
-                //     borderRadius: 10,
-                //   }}
-                //   resizeMode="cover"
-                //   muted={true}
-                //   paused={false}
-                // />
-                <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10,
-                  }}
-                  source={
-                    data.assets[0]?.filepath
-                      ? { uri: data.assets[0]?.filepath }
-                      : default_image
-                  }
-                />
+            />
+          )}
+        </Pressable>
+        <View style={{}}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[1].id,
+                },
+              })
+            }
+          >
+            {item[1].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[1].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[0].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[2].id,
+                },
+              })
+            }
+          >
+            {item[2].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[2].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[2].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[2].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+  if (item.length == 4 && item[3].grid == 2) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          width: width - 20,
+          marginHorizontal: 10,
+        }}
+      >
+        <View style={{}}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[0].id,
+                },
+              })
+            }
+          >
+            {item[0].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[0].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[0].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[0].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[1].id,
+                },
+              })
+            }
+          >
+            {item[1].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[1].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+        </View>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[2].id,
+              },
+            })
+          }
+        >
+          {item[2].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[2].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
               )}
-            </Pressable>
-          );
-        })}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[2].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: (width + width) / 3 - 15,
+                width: (width + width) / 3 - 20,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[2].assets[0].filepath,
+              }}
+              style={{
+                height: (width + width) / 3 - 15,
+                width: (width + width) / 3 - 20,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+      </View>
+    );
+  }
+  if (item.length == 4 && item[3].grid == 3) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          width: width - 20,
+          marginHorizontal: 10,
+        }}
+      >
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[0].id,
+              },
+            })
+          }
+        >
+          {item[0].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[0].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[1].id,
+              },
+            })
+          }
+        >
+          {item[1].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[0].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[1].assets[0].filepath,
+              }}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[2].id,
+              },
+            })
+          }
+        >
+          {item[2].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[2].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[2].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[2].assets[0].filepath,
+              }}
+              style={{
+                height: width / 3 - 12,
+                width: width / 3 - 12,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+      </View>
+    );
+  }
+  if (item.length < 3) {
+    const grid = 1;
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          width: width - 20,
+          marginHorizontal: 10,
+        }}
+      >
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[0].id,
+              },
+            })
+          }
+        >
+          {item[0].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[0].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: width / 3 - 10,
+                width: width / 3 - 10,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              style={{
+                height: width / 3 - 10,
+                width: width / 3 - 10,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+        {item[1] ? (
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[1].id,
+                },
+              })
+            }
+            style={{}}
+          >
+            {item[1].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[1].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+        ) : null}
+      </View>
+    );
+  }
+  if (item.length === 3) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          width: width - 20,
+          marginHorizontal: 10,
+        }}
+      >
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                token: token,
+                datauser: user,
+                post_id: item[0].id,
+              },
+            })
+          }
+        >
+          {item[0].assets[0].type === "video" ? (
+            <FunVideo
+              poster={item[0].assets[0].filepath.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              repeat={true}
+              style={{
+                height: width / 3 - 10,
+                width: width / 3 - 10,
+                borderRadius: 5,
+                margin: 2,
+              }}
+              resizeMode="cover"
+              muted={true}
+              paused={true}
+            />
+          ) : (
+            <FunImage
+              source={{
+                uri: item[0].assets[0].filepath,
+              }}
+              style={{
+                height: width / 3 - 10,
+                width: width / 3 - 10,
+                borderRadius: 5,
+                margin: 2,
+                alignSelf: "center",
+                resizeMode: "cover",
+              }}
+            />
+          )}
+        </Pressable>
+        {item[1] ? (
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[1].id,
+                },
+              })
+            }
+            style={{}}
+          >
+            {item[1].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[1].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[1].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+        ) : null}
+        {item[2] ? (
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  token: token,
+                  datauser: user,
+                  post_id: item[2].id,
+                },
+              })
+            }
+            style={{}}
+          >
+            {item[1].assets[0].type === "video" ? (
+              <FunVideo
+                poster={item[2].assets[0].filepath.replace(
+                  "output.m3u8",
+                  "thumbnail.png"
+                )}
+                posterResizeMode={"cover"}
+                source={{
+                  uri: item[2].assets[0].filepath,
+                }}
+                repeat={true}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                }}
+                resizeMode="cover"
+                muted={true}
+                paused={true}
+              />
+            ) : (
+              <FunImage
+                source={{
+                  uri: item[2].assets[0].filepath,
+                }}
+                style={{
+                  height: width / 3 - 10,
+                  width: width / 3 - 10,
+                  borderRadius: 5,
+                  margin: 2,
+                  alignSelf: "center",
+                  resizeMode: "cover",
+                }}
+              />
+            )}
+          </Pressable>
+        ) : null}
       </View>
     );
   }

@@ -87,8 +87,6 @@ export default function Comments(props) {
   const [modalLogin, setModalLogin] = useState(false);
   const [soon, setSoon] = useState(false);
 
-  console.log("data", dataPost);
-
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
   let isFocused = useIsFocused(true);
@@ -268,16 +266,9 @@ export default function Comments(props) {
       },
     },
     onCompleted: () => {
-      console.log("queryDataPost di dalam", queryDataPost);
       setDataPost(queryDataPost?.feed_post_byid);
     },
   });
-
-  console.log("idPost", idPost);
-  console.log("queryErrorPost", queryErrorPost);
-  console.log("queryDataPost", queryDataPost);
-  console.log("queryLoadingPost", queryLoadingPost);
-  console.log("dataPost", dataPost);
 
   const [
     LoadFollowing,
@@ -468,7 +459,6 @@ export default function Comments(props) {
   };
 
   const Refresh = React.useCallback(() => {
-    console.log("refresh");
     setRefreshing(true);
     GetPost();
     wait(1000).then(() => {
@@ -860,9 +850,9 @@ export default function Comments(props) {
           post_id: post_id,
         },
       });
-      console.log("response", response);
       if (response.data.remove_albums_post.code == 200) {
         setModalMenu(false);
+        GetPost();
       } else {
         RNToasty({
           title: t("failRemoveTagAlbum"),
@@ -870,7 +860,6 @@ export default function Comments(props) {
         });
       }
     } catch (error) {
-      console.log("error", error);
       RNToasty({
         title: t("failRemoveTagAlbum"),
         position: "bottom",
@@ -1217,6 +1206,8 @@ export default function Comments(props) {
                             location: "",
                             isAlbum: true,
                             post_id: selectedOption?.id,
+                            from: "comment",
+                            data_post: selectedOption,
                           },
                         })
                       : setModalLogin(true);

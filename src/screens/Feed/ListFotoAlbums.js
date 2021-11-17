@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView,
-  FlatList,
-  Pressable,
-  Dimensions,
-  ScrollView,
-} from "react-native";
+import { View, SafeAreaView, FlatList, Dimensions } from "react-native";
 import { Text, Button } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
@@ -16,11 +9,14 @@ import RenderGridAlbum from "./RenderGridAlbum";
 import AddAlbumFeed from "../../graphQL/Mutation/Post/AddAlbumFeed";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ListFotoAlbums(props) {
   const { t } = useTranslation();
   const [show, setShow] = useState(true);
   const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState();
+  const froms = props.route.params.from;
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -90,8 +86,14 @@ export default function ListFotoAlbums(props) {
     ),
   };
 
+  const loadAsync = async () => {
+    let setsetting = await AsyncStorage.getItem("setting");
+    await setSetting(JSON.parse(setsetting));
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    loadAsync();
     // props.navigation.setOptions({ headerLeft: View });
     QueryFotoAlbum();
   }, []);
@@ -145,18 +147,35 @@ export default function ListFotoAlbums(props) {
             duration: 1,
           });
           setTimeout(() => {
-            props.navigation.navigate("BottomStack", {
-              screen: "FeedBottomScreen",
-              params: {
-                screen: "FeedScreen",
+            if (froms == "funFeed") {
+              props.navigation.navigate("BottomStack", {
+                screen: "FeedBottomScreen",
                 params: {
-                  isTag: true,
-                  isPost: false,
-                  isComment: false,
-                  isItinerary: false,
+                  screen: "FeedScreen",
+                  params: {
+                    isTag: true,
+                    isPost: false,
+                    isComment: false,
+                    isItinerary: false,
+                  },
                 },
-              },
-            });
+              });
+            } else if (froms == "feedProfil") {
+              props.navigation.push("ProfileStack", {
+                screen: "myfeed",
+                params: {
+                  datauser: setting?.user,
+                },
+              });
+            } else {
+              props.navigation.push("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: props.route.params.data_post.id,
+                  data: props.route.params.data_post,
+                },
+              });
+            }
           }, 1000);
         } else {
           console.log("gagal");
