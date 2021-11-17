@@ -38,6 +38,7 @@ import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 
 export default function ItineraryDestination(props) {
   let [filtershow, setfiltershow] = useState([]);
@@ -814,9 +815,9 @@ export default function ItineraryDestination(props) {
         <FlatList
           data={dataDestination}
           contentContainerStyle={{
-            marginHorizontal: 15,
-
-            paddingBottom: 120,
+            paddingTop: 15,
+            paddingHorizontal: 15,
+            width: Dimensions.get("screen").width,
           }}
           horizontal={false}
           renderItem={({ item, index }) => (
@@ -839,22 +840,13 @@ export default function ItineraryDestination(props) {
               key={"lst" + index}
               style={{
                 borderWidth: 1,
-                borderColor: "#F3F3F3",
+                borderColor: "#d1d1d1",
                 borderRadius: 10,
-                height: 190,
-                // padding: 10,
-                marginTop: 5,
+                height: normalize(175),
+                marginBottom: 10,
                 width: "100%",
                 flexDirection: "row",
                 backgroundColor: "#FFF",
-                shadowColor: "#FFF",
-                shadowOffset: {
-                  width: 0,
-                  height: 5,
-                },
-                shadowOpacity: 0.1,
-                shadowRadius: 6.27,
-                elevation: 6,
               }}
             >
               <View style={{ justifyContent: "center" }}>
@@ -862,7 +854,7 @@ export default function ItineraryDestination(props) {
                 <FunImage
                   source={{ uri: item.images.image }}
                   style={{
-                    width: 160,
+                    width: normalize(140),
                     height: "100%",
                     borderBottomLeftRadius: 10,
                     borderTopLeftRadius: 10,
@@ -887,9 +879,9 @@ export default function ItineraryDestination(props) {
                       onPress={() => _unliked(item.id)}
                       style={{
                         backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
+                        height: normalize(30),
+                        width: normalize(30),
+                        borderRadius: normalize(30),
                         justifyContent: "center",
                         alignItems: "center",
                       }}
@@ -901,9 +893,9 @@ export default function ItineraryDestination(props) {
                       onPress={() => _liked(item.id)}
                       style={{
                         backgroundColor: "#F3F3F3",
-                        height: 30,
-                        width: 30,
-                        borderRadius: 17,
+                        height: normalize(30),
+                        width: normalize(30),
+                        borderRadius: normalize(30),
                         justifyContent: "center",
                         alignItems: "center",
                       }}
@@ -920,10 +912,10 @@ export default function ItineraryDestination(props) {
                         justifyContent: "center",
                         alignItems: "center",
                         paddingHorizontal: 5,
-                        height: 25,
+                        height: normalize(25),
                       }}
                     >
-                      <Star height={15} width={15} />
+                      <Star height={normalize(15)} width={normalize(15)} />
                       <Text size="description" type="bold">
                         {item.rating.substr(0, 3)}
                       </Text>
@@ -948,7 +940,7 @@ export default function ItineraryDestination(props) {
                     style={{
                       flexDirection: "row",
                       paddingHorizontal: 3,
-                      // alignItems: "center",
+                      marginBottom: 3,
                     }}
                   >
                     <BlockDestination
@@ -962,9 +954,10 @@ export default function ItineraryDestination(props) {
                       numberOfLines={2}
                       style={{
                         marginLeft: 5,
-                        marginBottom: 2,
                         flexWrap: "wrap",
-                        width: "90%",
+                        marginTop: Platform.OS === "ios" ? 3 : 5,
+                        flex: 1,
+                        lineHeight: Platform.OS === "ios" ? 20 : 17,
                       }}
                     >
                       {item.name}
@@ -1013,15 +1006,18 @@ export default function ItineraryDestination(props) {
                       }}
                     >
                       {item?.movie_location?.length > 0 ? (
-                        <UnescoIcon
-                          height={33}
-                          width={33}
-                          style={{ marginRight: 5 }}
+                        <MovieIcon
+                          height={normalize(33)}
+                          width={normalize(33)}
                         />
                       ) : null}
                       {item?.name_type.toLowerCase().substr(0, 6) ==
                       "unesco" ? (
-                        <MovieIcon height={33} width={33} />
+                        <UnescoIcon
+                          height={normalize(33)}
+                          width={normalize(33)}
+                          style={{ marginRight: 8 }}
+                        />
                       ) : null}
                     </View>
                     <View
@@ -1031,9 +1027,9 @@ export default function ItineraryDestination(props) {
                     >
                       {item.greatfor.length > 0 ? (
                         <Text
-                          size="label"
+                          size="description"
                           type="bold"
-                          // style={{ marginLeft: 5 }}
+                          style={{ marginTop: 0 }}
                         >
                           {t("GreatFor") + " :"}
                         </Text>
@@ -1051,8 +1047,8 @@ export default function ItineraryDestination(props) {
                                   key={"grat" + index}
                                   icon={item.icon}
                                   fill="#464646"
-                                  height={40}
-                                  width={40}
+                                  height={37}
+                                  width={37}
                                 />
                               ) : null;
                             })
@@ -1063,12 +1059,11 @@ export default function ItineraryDestination(props) {
                   <View
                     style={{
                       justifyContent: "flex-end",
-                      width: 70,
+                      width: 65,
                       paddingBottom: 5,
-                      paddingRight: 5,
                     }}
                   >
-                    <Button
+                    <Pressable
                       onPress={() => {
                         if (token && token !== "" && token !== null) {
                           props.route.params && props.route.params.iditinerary
@@ -1102,10 +1097,24 @@ export default function ItineraryDestination(props) {
                           });
                         }
                       }}
-                      size="small"
-                      text={"Add"}
+                      style={{
+                        width: "100%",
+                        height: 30,
+                        borderRadius: 3,
+                        backgroundColor: "#209fae",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
                       // style={{ marginTop: 15 }}
-                    />
+                    >
+                      <Text
+                        size="description"
+                        type="bold"
+                        style={{ color: "#fff" }}
+                      >
+                        {"add"}
+                      </Text>
+                    </Pressable>
                   </View>
                 </View>
               </View>
