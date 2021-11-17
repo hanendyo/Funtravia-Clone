@@ -1041,6 +1041,7 @@ export default function Room({ navigation, route }) {
                 borderRadius: 20,
                 flexDirection: "row",
                 maxHeight: 70,
+                justifyContent: "space-between",
               }}
             >
               <TextInput
@@ -1056,7 +1057,7 @@ export default function Room({ navigation, route }) {
                         maxHeight: 100,
                         marginVertical: 10,
                         marginLeft: 10,
-                        width: "80%",
+                        width: width - 180,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                       }
@@ -1065,7 +1066,7 @@ export default function Room({ navigation, route }) {
                         marginVertical: 5,
                         marginLeft: 10,
                         padding: 0,
-                        width: "80%",
+                        width: width - 180,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                         // borderWidth: 1,
@@ -1078,13 +1079,14 @@ export default function Room({ navigation, route }) {
                 }}
                 style={{
                   // borderWidth: 1,
-                  width: "15%",
+                  // width: "15%",
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
+                  marginRight: 10,
                 }}
               >
-                <CameraChat width={25} height={25} />
+                <CameraChat width={22} height={22} />
               </Pressable>
             </View>
             <Button
@@ -1177,6 +1179,7 @@ export default function Room({ navigation, route }) {
               borderRadius: 20,
               flexDirection: "row",
               maxHeight: 70,
+              justifyContent: "space-between",
             }}
           >
             <TextInput
@@ -1192,7 +1195,7 @@ export default function Room({ navigation, route }) {
                       maxHeight: 100,
                       marginVertical: 10,
                       marginLeft: 10,
-                      width: "80%",
+                      width: width - 180,
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
@@ -1201,7 +1204,7 @@ export default function Room({ navigation, route }) {
                       marginVertical: 5,
                       marginLeft: 10,
                       padding: 0,
-                      width: "80%",
+                      width: width - 180,
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                       // borderWidth: 1,
@@ -1214,13 +1217,14 @@ export default function Room({ navigation, route }) {
               }}
               style={{
                 // borderWidth: 1,
-                width: "15%",
+                // width: "15%",
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
+                marginRight: 10,
               }}
             >
-              <CameraChat width={25} height={25} />
+              <CameraChat width={22} height={22} />
             </Pressable>
           </View>
           <Button
