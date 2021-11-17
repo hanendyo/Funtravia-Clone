@@ -87,7 +87,7 @@ export default function Trip({ item, props, token, position }) {
     <View
       style={{
         height: 150,
-        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : -25,
+        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : 30,
         marginBottom: Platform.OS === "ios" ? (Notch ? 0 : 50) : 40,
         borderRadius: 10,
         shadowOffset: { width: 0, height: 1 },

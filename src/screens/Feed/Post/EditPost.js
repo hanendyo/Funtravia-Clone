@@ -256,6 +256,7 @@ export default function EditPost(props) {
       return t("justNow");
     }
   };
+
   const SubmitData = async (statusText) => {
     setLoading(true);
     let caption = statusText ? statusText : "-";
@@ -269,9 +270,6 @@ export default function EditPost(props) {
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          // props.navigation.goBack();
-          // props.navigation.navigate("FeedScreen", { isposting: false });
-
           props.navigation.dispatch(
             StackActions.replace("FeedStack", {
               screen: "CommentPost",
@@ -290,8 +288,6 @@ export default function EditPost(props) {
           setLoading(false);
           throw new Error(response.data.edit_post.message);
         }
-
-        // Alert.alert('Succes');
       } else {
         throw new Error("Error Input");
       }

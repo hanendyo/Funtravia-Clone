@@ -2,7 +2,6 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
-  Text,
   Dimensions,
   Platform,
   KeyboardAvoidingView,
@@ -10,13 +9,14 @@ import {
   Pressable,
 } from "react-native";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   Pointmapblack,
   Search,
   Xblue,
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import { StatusBar, Truncate } from "../../../component";
+import { StatusBar, Truncate, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 
 export default function LocationSelector({
@@ -77,54 +77,33 @@ export default function LocationSelector({
         >
           <TouchableOpacity
             style={{
-              // borderWidth: 1,
               height: 55,
               width: 55,
-              position: "absolute",
               alignItems: "center",
               alignContent: "center",
               paddingTop: 20,
-              // marginTop: 5,
-              // top: 20,
-              // left: 20,
             }}
             onPress={() => setModellocation(false)}
           >
-            <Arrowbackwhite width={20} height={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </TouchableOpacity>
-          <Text
-            style={{
-              top: 13,
-              left: 55,
-              fontFamily: "Lato-Regular",
-              fontSize: 14,
-              color: "white",
-              height: 55,
-              // width: 50,
-              position: "absolute",
-              alignItems: "center",
-              alignContent: "center",
-              // paddingTop: 15,
-              marginTop: 7,
-            }}
-          >
+          <Text size="header" type="bold" style={{ color: "#fff" }}>
             {t("selectLocation")}
           </Text>
         </View>
         <View
           style={{
             width: Dimensions.get("screen").width,
-            // height: '100%',
             height: Dimensions.get("screen").height,
             backgroundColor: "white",
-            paddingTop: 20,
-            paddingHorizontal: 20,
+            paddingHorizontal: 15,
+            paddingTop: 15,
           }}
         >
-          {/* <View
-                        style={{
-                            marginHorizontal: 20,
-                        }}> */}
           <GooglePlacesAutocomplete
             query={{
               key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
@@ -153,7 +132,7 @@ export default function LocationSelector({
               );
             }}
             renderRightButton={() => {
-              return (
+              return text ? (
                 <Pressable
                   style={{
                     justifyContent: "center",
@@ -168,7 +147,7 @@ export default function LocationSelector({
                 >
                   <Xblue width={20} height={20} />
                 </Pressable>
-              );
+              ) : null;
             }}
             textInputProps={{
               onChangeText: (text) => {
@@ -216,7 +195,7 @@ export default function LocationSelector({
               );
             }}
             styles={{
-              // container: { backgroundColor: 'red' },
+              borderWidth: 1,
               textInputContainer: {
                 backgroundColor: "#f6f6f6",
                 borderTopWidth: 0,
@@ -227,7 +206,7 @@ export default function LocationSelector({
               textInput: {
                 marginLeft: 0,
                 marginRight: 0,
-                height: 38,
+                height: 35,
                 color: "#464646",
                 fontSize: 14,
                 fontFamily: "Lato-Regular",
@@ -236,7 +215,6 @@ export default function LocationSelector({
             }}
           />
         </View>
-        {/* </View> */}
       </KeyboardAvoidingView>
     </Modal>
   );

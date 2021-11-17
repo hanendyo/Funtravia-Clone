@@ -306,64 +306,70 @@ export default function TravelGoalList(props) {
           setHeights(height);
         }}
         style={{
-          flexDirection: "row",
-          zIndex: 5,
-          paddingHorizontal: 15,
-          paddingTop: 10,
-          paddingBottom: 10,
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
           backgroundColor: "white",
-          position: "absolute",
-          top: 0,
+          paddingHorizontal: 15,
+
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
-        <Button
-          size="small"
-          type="icon"
-          variant="bordered"
-          color="primary"
+        <Pressable
           onPress={() => {
             setModal(true);
           }}
           style={{
-            marginRight: 5,
-            borderRadius: 3,
-            paddingHorizontal: 10,
+            borderWidth: 1,
             borderColor: "#209fae",
-            paddingBottom: 0,
+            height: 35,
+            borderRadius: 2,
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <Filternewbiru width={18} height={18} />
+          <Filternewbiru
+            width={18}
+            height={18}
+            style={{ marginHorizontal: 7 }}
+          />
           {idFilterCategory.length > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
-                marginLeft: 10,
-                width: 20,
-                paddingHorizontal: 5,
                 borderRadius: 2,
+                marginRight: 7,
               }}
             >
               <Text
+                size="label"
+                type="regular"
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#ffff",
-                  fontSize: 15,
+                  paddingHorizontal: 5,
+                  color: "#fff",
                 }}
               >
                 {idFilterCategory.length}
               </Text>
             </View>
           ) : null}
-        </Button>
+        </Pressable>
         <View
           style={{
-            backgroundColor: "#F0F0F0",
-            borderRadius: 3,
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
             flex: 1,
+            paddingHorizontal: 10,
+            marginLeft: 7,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
-            paddingHorizontal: 10,
+            height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
           <Search width={15} height={15} />
@@ -377,6 +383,7 @@ export default function TravelGoalList(props) {
               padding: 0,
             }}
             returnKeyType="search"
+            placeholderTextColor="#464646"
             value={texts}
             // onChangeText={(x) => _setSearch(x)}
             // onSubmitEditing={(x) => _setSearch(x)}
@@ -407,11 +414,11 @@ export default function TravelGoalList(props) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }
-        contentContainerStyle={{
-          paddingBottom: 2,
-          paddingHorizontal: 15,
-          paddingTop: heights + 10,
-        }}
+        // contentContainerStyle={{
+        //   paddingBottom: 2,
+        //   paddingHorizontal: 15,
+        //   paddingTop: heights + 10,
+        // }}
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
         onEndThreshold={3000}
@@ -599,29 +606,29 @@ export default function TravelGoalList(props) {
                 </Text>
               </Pressable>
             </View>
-            <View style={{ height: "100%", flex: 1, padding: 10 }}>
+            <View style={{ height: "100%", flex: 1, padding: 15 }}>
               <View
                 style={{
-                  borderRadius: 3,
-                  width: "100%",
                   height: 35,
-                  paddingHorizontal: 10,
                   backgroundColor: "#f6f6f6",
-                  flexDirection: "row",
+                  borderRadius: 2,
                   alignItems: "center",
-                  marginBottom: 20,
+                  flexDirection: "row",
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: "#e8e8e8",
                 }}
               >
-                <Search width={18} height={18} />
+                <Search width={15} height={15} style={{ marginRight: 5 }} />
                 <TextInput
                   style={{
-                    flex: 1,
+                    width: "80%",
+                    marginLeft: 5,
                     padding: 0,
-                    marginLeft: 2,
-                    fontFamily: "Lato-Regular",
                     fontSize: normalize(14),
                   }}
                   onChangeText={(e) => setTextCategory(e)}
+                  placeholderTextColor="#464646"
                   value={textCategory}
                   placeholder={t("search")}
                 ></TextInput>
@@ -639,7 +646,7 @@ export default function TravelGoalList(props) {
               </View>
               <ScrollView
                 showsVerticalScrollIndicator={false}
-                style={{ marginBottom: 50 }}
+                style={{ marginBottom: 50, marginTop: 10 }}
               >
                 {datacategory && datacategory.length > 0
                   ? datacategory.map((item, index) => {

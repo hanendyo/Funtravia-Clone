@@ -133,6 +133,7 @@ export default function ItineraryFavorite(props) {
             justifyContent: "center",
             opacity: 0.7,
             backgroundColor: "#000",
+
             position: "absolute",
             borderRadius: 5,
           }}
@@ -191,32 +192,29 @@ export default function ItineraryFavorite(props) {
       <View
         style={{
           backgroundColor: "#fff",
-          backgroundColor: "#FFF",
-          shadowColor: "#FFF",
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
-          elevation: 6,
+          // height: 65,
+          alignItems: "center",
         }}
       >
         <View
           style={{
-            marginVertical: 15,
+            marginVertical: 10,
+            // mrarginBottom: 15,
             marginHorizontal: 15,
             width: Dimensions.get("screen").width - 30,
-            height: 40,
+            height: 35,
             backgroundColor: "#f6f6f6",
-            borderRadius: 5,
+            borderRadius: 2,
             alignItems: "center",
             flexDirection: "row",
+            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
-          <Search height={20} width={20} style={{ marginHorizontal: 10 }} />
+          <Search height={15} width={15} style={{ marginRight: 5 }} />
           <TextInput
-            style={{ flex: 1, borderRadius: 5, marginRight: 5 }}
+            style={{ flex: 1, marginRight: 5, padding: 0 }}
             value={textInput}
             underlineColorAndroid="transparent"
             onChangeText={(x) => setTextInput(x)}

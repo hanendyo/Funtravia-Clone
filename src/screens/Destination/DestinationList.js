@@ -725,83 +725,84 @@ export default function ItineraryDestination(props) {
         style={{
           alignContent: "center",
           alignItems: "center",
-          backgroundColor: "white",
-          paddingHorizontal: 10,
-          height: 50,
           justifyContent: "space-between",
+          paddingHorizontal: 15,
+
+          backgroundColor: "#FFFFFF",
+          // borderWidth: 1,
+          height: 50,
+          zIndex: 5,
           flexDirection: "row",
           width: Dimensions.get("screen").width,
         }}
       >
-        <Button
-          size="small"
-          type="icon"
-          variant="bordered"
-          color="primary"
+        <Pressable
           onPress={() => {
             setshow(true);
           }}
           style={{
-            marginRight: 5,
-            borderRadius: 3,
-            paddingHorizontal: 10,
-            borderColor: "#209FAE",
-            paddingBottom: 1,
+            borderWidth: 1,
+            borderColor: "#209fae",
+            height: 35,
+            borderRadius: 2,
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <Filternewbiru width={18} height={18} />
+          <Filternewbiru
+            width={18}
+            height={18}
+            style={{ marginHorizontal: 7 }}
+          />
 
           {filterResults > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
-                marginLeft: 10,
-                width: 20,
-                paddingHorizontal: 5,
                 borderRadius: 2,
+                marginRight: 7,
               }}
             >
               <Text
+                size="label"
+                type="regular"
                 style={{
-                  fontFamily: "Lato-Regular",
-                  color: "#ffff",
-                  fontSize: 15,
-                  // alignSelf: "center",
+                  paddingHorizontal: 5,
+                  color: "#fff",
                 }}
               >
                 {filterResults}
               </Text>
             </View>
           ) : null}
-        </Button>
+        </Pressable>
         <View
           style={{
-            backgroundColor: "#F0F0F0",
-            borderRadius: 5,
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
             flex: 1,
             paddingHorizontal: 10,
+            marginLeft: 7,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
             height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
-          <View
-            style={{
-              marginHorizontal: 5,
-            }}
-          >
-            <Search width={15} height={15} />
-          </View>
+          <Search width={15} height={15} style={{ marginRight: 5 }} />
 
           <TextInput
             underlineColorAndroid="transparent"
             placeholder={t("search")}
             style={{
-              width: "100%",
+              width: "85%",
+              marginLeft: 5,
               padding: 0,
             }}
             returnKeyType="search"
+            placeholderTextColor="#464646"
             onChangeText={(x) => _setSearch(x)}
             onSubmitEditing={(x) => _setSearch(x)}
           />
@@ -813,11 +814,8 @@ export default function ItineraryDestination(props) {
         <FlatList
           data={dataDestination}
           contentContainerStyle={{
-            marginHorizontal: 10,
-            // marginTop: 5,
-            // justifyContent: "space-evenly",
-            // paddingStart: 10,
-            // paddingEnd: 10,
+            marginHorizontal: 15,
+
             paddingBottom: 120,
           }}
           horizontal={false}
@@ -1309,17 +1307,17 @@ export default function ItineraryDestination(props) {
               >
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
-                    borderRadius: 5,
-                    // flex: 1,
-                    flexDirection: "row",
+                    height: 35,
+                    backgroundColor: "#f6f6f6",
+                    borderRadius: 2,
                     alignItems: "center",
-                    alignContent: "center",
+                    flexDirection: "row",
                     paddingHorizontal: 10,
-                    paddingVertical: 5,
+                    borderWidth: 1,
+                    borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} />
+                  <Search width={15} height={15} style={{ marginRight: 5 }} />
 
                   <TextInput
                     underlineColorAndroid="transparent"
@@ -1332,6 +1330,7 @@ export default function ItineraryDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    placeholderTextColor="#464646"
                     onChangeText={(x) => searchs(x)}
                     onSubmitEditing={(x) => searchs(x)}
                   />

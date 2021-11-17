@@ -178,32 +178,35 @@ export default function Wishlist(props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ backgroundColor: "#fff" }}>
+      <View
+        style={{ backgroundColor: "#fff", height: 50, alignItems: "center" }}
+      >
         <View
           style={{
             marginTop: 15,
             marginHorizontal: 15,
             width: Dimensions.get("screen").width - 30,
-            height: 40,
+            height: 35,
             backgroundColor: "#f6f6f6",
-            borderRadius: 5,
+            borderRadius: 2,
             alignItems: "center",
             flexDirection: "row",
+            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
-          <Search height={20} width={20} style={{ marginHorizontal: 10 }} />
+          <Search height={15} width={15} style={{ marginRight: 5 }} />
           <TextInput
-            style={{ flex: 1, borderRadius: 5, marginRight: 5 }}
+            underlineColorAndroid="transparent"
+            style={{ flex: 1, marginRight: 5, padding: 0 }}
             value={texts}
             underlineColorAndroid="transparent"
             onChangeText={async (x) => {
               search(x);
             }}
             placeholder={t("search")}
-            placeholderTextColor="#464646"
             returnKeyType="search"
-            autoFocus={false}
-            fontSize={16}
           />
           {texts.length !== 0 ? (
             <TouchableOpacity
@@ -216,7 +219,7 @@ export default function Wishlist(props) {
                 height="20"
                 style={{
                   alignSelf: "center",
-                  marginRight: 10,
+                  // marginRight: 10,
                 }}
               />
             </TouchableOpacity>

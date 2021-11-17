@@ -462,29 +462,35 @@ export default function ChatsearchPage({ navigation, route }) {
       <View
         style={{
           backgroundColor: "#FFFFFF",
-          // borderTopLeftRadius: 15,
-          // borderTopRightRadius: 15,
+          alignContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 15,
+
+          // borderWidth: 1,
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
         <View
           style={{
-            marginHorizontal: 15,
-            marginTop: 15,
             backgroundColor: "#f6f6f6",
+            borderRadius: 2,
+            flex: 1,
+            paddingHorizontal: 10,
+
             flexDirection: "row",
-            borderRadius: 3,
-            alignContent: "center",
             alignItems: "center",
-            justifyContent: "space-between",
-            paddingRight: 10,
+            alignContent: "center",
+            height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Magnifying
-              width="15"
-              height="15"
-              style={{ marginHorizontal: 10 }}
-            />
+            <Magnifying width="15" height="15" />
             <TextInput
               ref={srcinpt}
               onChangeText={(e) => _searchHandle(e)}
@@ -492,10 +498,10 @@ export default function ChatsearchPage({ navigation, route }) {
               placeholder="Search"
               placeholderTextColor="#464646"
               style={{
-                color: "#464646",
-                fontFamily: "Lato-Regular",
-                height: 40,
-                width: "80%",
+                width: "85%",
+                marginLeft: 10,
+                fontSize: 14,
+                padding: 0,
               }}
             />
           </View>

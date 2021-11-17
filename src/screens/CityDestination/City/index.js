@@ -862,9 +862,6 @@ export default function CityDetail(props) {
                           style={{
                             width: "25%",
 
-                            // alignContent: "center",
-                            // alignItems: "center",
-                            // alignSelf: "center",
                             padding: 5,
                           }}
                         >
@@ -3189,12 +3186,12 @@ export default function CityDetail(props) {
           opacity: hides.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          // borderWidth: 1,
+          height: 52,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
+          marginHorizontal: 15,
+
+          width: Dimensions.get("screen").width - 35,
         }}
       >
         <Button
@@ -3241,14 +3238,14 @@ export default function CityDetail(props) {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            padding: 10,
+            height: 35,
           }}
         >
           <Image
             source={search_button}
             style={{
-              height: 20,
-              width: 20,
+              height: 15,
+              width: 15,
               resizeMode: "contain",
               marginHorizontal: 10,
             }}
@@ -3257,39 +3254,18 @@ export default function CityDetail(props) {
           <View>
             <Text
               size="readable"
-              type="bold"
+              type="regular"
               style={{
                 color: "#FFFFFF",
               }}
             >
-              {t("searchin") + listCity.name}
+              <Truncate
+                text={listCity?.name ? t("searchin") + listCity.name : ""}
+                length={25}
+              />
             </Text>
           </View>
         </TouchableOpacity>
-        {/* <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          // onPress={() => setshowside(true)}
-          style={{
-            height: 50,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-          </Animated.View>
-        </Button> */}
       </Animated.View>
 
       {/* jika scrollheader, animated show */}
@@ -3301,12 +3277,13 @@ export default function CityDetail(props) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          // borderWidth: 1,
+
+          height: 52,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
+          marginHorizontal: 15,
+
+          width: Dimensions.get("screen").width - 35,
         }}
       >
         <Button
@@ -3351,14 +3328,14 @@ export default function CityDetail(props) {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            padding: 10,
+            height: 35,
           }}
         >
           <Image
             source={search_button}
             style={{
-              height: 20,
-              width: 20,
+              height: 15,
+              width: 15,
               resizeMode: "contain",
               marginHorizontal: 10,
             }}
@@ -3367,12 +3344,15 @@ export default function CityDetail(props) {
           <View>
             <Text
               size="readable"
-              type="bold"
+              type="regular"
               style={{
                 color: "#FFFFFF",
               }}
             >
-              {t("searchin") + listCity.name}
+              <Truncate
+                text={listCity?.name ? t("searchin") + listCity.name : ""}
+                length={25}
+              />
             </Text>
           </View>
         </TouchableOpacity>

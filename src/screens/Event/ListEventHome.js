@@ -816,7 +816,7 @@ export default function ListEventHome(props) {
                   ? Notch
                     ? setTambahanDeskripsi(lines * 16)
                     : setTambahanDeskripsi(lines - 20)
-                  : setTambahanDeskripsi(lines - 10);
+                  : setTambahanDeskripsi(lines);
               }
             }}
             size="label"
@@ -1287,7 +1287,7 @@ export default function ListEventHome(props) {
           ? Notch
             ? [HeaderHeight, tambahanJudul % 3 === 0 ? 5 : 35]
             : [HeaderHeight, tambahanJudul % 3 === 0 ? 17 : 37]
-          : [HeaderHeight, tambahanJudul % 3 === 0 ? 13 : 55],
+          : [HeaderHeight, tambahanJudul % 3 === 0 ? 13 : 45],
       extrapolateRight: "clamp",
     });
     return (

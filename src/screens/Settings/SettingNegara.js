@@ -187,45 +187,63 @@ export default function SettingCity(props) {
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View
         style={{
-          width: Dimensions.get("screen").width - 30,
-          height: 35,
-          marginVertical: 10,
-          marginHorizontal: 15,
-          borderRadius: 5,
-          backgroundColor: "#f1f1f1",
-          flexDirection: "row",
-          justifyContent: "flex-start",
+          alignContent: "center",
           alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 15,
+
+          // borderWidth: 1,
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
-        <Search height={15} width={15} style={{ marginLeft: 10 }} />
-        <TextInput
-          value={country}
-          id={"inputData"}
+        <View
           style={{
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
             flex: 1,
-            paddingLeft: 10,
+            paddingHorizontal: 10,
+
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+            height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
-          onChangeText={(e) => {
-            setCountry(e);
-          }}
-          onSubmitEditing={(e) => setCountry(e)}
-          autoCorrect={false}
-          // autoCompleteType={false}
-          placeholder={t("Search")}
-        />
-        {country.length !== 0 ? (
-          <TouchableOpacity onPress={() => clearFilter()}>
-            <Xblue
-              width="20"
-              height="20"
-              style={{
-                alignSelf: "center",
-                marginRight: 5,
-              }}
-            />
-          </TouchableOpacity>
-        ) : null}
+        >
+          <Search width={15} height={15} />
+          <TextInput
+            value={country}
+            id={"inputData"}
+            style={{
+              width: "85%",
+              marginLeft: 10,
+              padding: 0,
+            }}
+            onChangeText={(e) => {
+              setCountry(e);
+            }}
+            onSubmitEditing={(e) => setCountry(e)}
+            autoCorrect={false}
+            // autoCompleteType={false}
+            placeholder={t("Search")}
+          />
+          {country.length !== 0 ? (
+            <TouchableOpacity onPress={() => clearFilter()}>
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginRight: 5,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
+        </View>
       </View>
       {loadingNegara ? (
         <View style={{ paddingVertical: 20 }}>

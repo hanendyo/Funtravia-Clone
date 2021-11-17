@@ -182,44 +182,62 @@ export default function SettingCity(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <KeyboardAvoidingView
-        enabled
+      <View
         style={{
-          width: Dimensions.get("screen").width - 30,
-          height: 35,
-          marginVertical: 10,
-          marginHorizontal: 15,
-          borderRadius: 5,
-          backgroundColor: "#f1f1f1",
-          flexDirection: "row",
-          justifyContent: "flex-start",
+          alignContent: "center",
           alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 15,
+
+          // borderWidth: 1,
+          height: 50,
+          zIndex: 5,
+          flexDirection: "row",
+          width: Dimensions.get("screen").width,
         }}
       >
-        <Search height={15} width={15} style={{ marginLeft: 10 }} />
-        <TextInput
+        <KeyboardAvoidingView
+          enabled
           style={{
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
             flex: 1,
-            paddingLeft: 10,
+            paddingHorizontal: 10,
+
+            flexDirection: "row",
+            alignItems: "center",
+            alignContent: "center",
+            height: 35,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
           }}
-          onChangeText={(e) => setCity(e)}
-          onSubmitEditing={(e) => setCity(e)}
-          placeholder={t("Search")}
-          value={city}
-        />
-        {city.length !== 0 ? (
-          <TouchableOpacity onPress={() => setCity("")}>
-            <Xblue
-              width="20"
-              height="20"
-              style={{
-                alignSelf: "center",
-                marginRight: 5,
-              }}
-            />
-          </TouchableOpacity>
-        ) : null}
-      </KeyboardAvoidingView>
+        >
+          <Search width={15} height={15} />
+          <TextInput
+            style={{
+              width: "85%",
+              marginLeft: 10,
+              padding: 0,
+            }}
+            onChangeText={(e) => setCity(e)}
+            onSubmitEditing={(e) => setCity(e)}
+            placeholder={t("Search")}
+            value={city}
+          />
+          {city.length !== 0 ? (
+            <TouchableOpacity onPress={() => setCity("")}>
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginRight: 5,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
+        </KeyboardAvoidingView>
+      </View>
       {loadingKota ? (
         <View style={{ paddingVertical: 20 }}>
           <ActivityIndicator animating={true} color="#209FAE" size="large" />

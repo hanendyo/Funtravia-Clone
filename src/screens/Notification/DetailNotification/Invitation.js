@@ -965,12 +965,13 @@ export default function Invitation({ navigation, token }) {
                 item.itinerary_buddy.accepted_at != null &&
                 item.itinerary_buddy.rejected_at == null ? (
                 <View style={{ flexDirection: "row", marginTop: 10 }}>
-                  <AcceptNotif width="14" height="14" />
+                  <AcceptNotif width="20" height="20" />
                   <Text
                     size="description"
                     type="regular"
                     style={{
                       color: "#209FAE",
+                      marginLeft: 5,
                     }}
                   >
                     {t("youAccept")}

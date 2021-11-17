@@ -3499,9 +3499,9 @@ export default function CityDetail(props) {
           // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
+          marginHorizontal: 15,
+          height: 52,
+          width: Dimensions.get("screen").width - 35,
         }}
       >
         <Button
@@ -3548,14 +3548,14 @@ export default function CityDetail(props) {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            padding: 10,
+            height: 35,
           }}
         >
           <Image
             source={search_button}
             style={{
-              height: 20,
-              width: 20,
+              height: 15,
+              width: 15,
               resizeMode: "contain",
               marginHorizontal: 10,
             }}
@@ -3564,12 +3564,15 @@ export default function CityDetail(props) {
           <View>
             <Text
               size="readable"
-              type="bold"
+              type="regular"
               style={{
                 color: "#FFFFFF",
               }}
             >
-              {t("searchin") + lisProvince.name}
+              <Truncate
+                text={lisProvince?.name ? t("searchin") + lisProvince.name : ""}
+                length={25}
+              />
             </Text>
           </View>
         </TouchableOpacity>
@@ -3608,12 +3611,13 @@ export default function CityDetail(props) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          // borderWidth: 1,
+
+          height: 52,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
+          marginHorizontal: 15,
+
+          width: Dimensions.get("screen").width - 35,
         }}
       >
         <Button
@@ -3658,14 +3662,14 @@ export default function CityDetail(props) {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            padding: 10,
+            height: 35,
           }}
         >
           <Image
             source={search_button}
             style={{
-              height: 20,
-              width: 20,
+              height: 15,
+              width: 15,
               resizeMode: "contain",
               marginHorizontal: 10,
             }}
@@ -3674,7 +3678,7 @@ export default function CityDetail(props) {
           <View>
             <Text
               size="readable"
-              type="bold"
+              type="regular"
               style={{
                 color: "#FFFFFF",
               }}

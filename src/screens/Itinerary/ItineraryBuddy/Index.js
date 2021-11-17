@@ -934,6 +934,7 @@ export default function ItineraryBuddy(props) {
             width: Dimensions.get("screen").width,
             paddingHorizontal: 20,
             paddingVertical: 10,
+
             justifyContent: "space-between",
             alignItems: "center",
             alignContent: "center",
@@ -985,18 +986,15 @@ export default function ItineraryBuddy(props) {
         backgroundColor: "#FFFFFF",
       }}
     >
-      <View
-        style={{
-          paddingTop: 15,
-        }}
-      >
+      <View>
         <View
           style={{
             flexDirection: "row",
             justifyContent: "center",
+
             alignContent: "center",
             alignItems: "center",
-            marginVertical: 5,
+            marginTop: 10,
           }}
         >
           <Member height={15} width={15} />
@@ -1018,7 +1016,9 @@ export default function ItineraryBuddy(props) {
             alignContent: "center",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: 20,
+            paddingHorizontal: 15,
+
+            // borderWidth: 1,
             height: 50,
             zIndex: 5,
             flexDirection: "row",
@@ -1027,31 +1027,33 @@ export default function ItineraryBuddy(props) {
         >
           <View
             style={{
-              backgroundColor: "#F6F6F6",
-              borderRadius: 5,
-              width: "100%",
-              height: 35,
-              paddingHorizontal: 15,
+              backgroundColor: "#f6f6f6",
+              borderRadius: 2,
+              flex: 1,
+              paddingHorizontal: 10,
+              marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
+              alignContent: "center",
+              height: 35,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
             }}
           >
-            <View>
-              <Search width={15} height={15} />
-            </View>
+            <Search width={15} height={15} />
 
             <Input
               // editable={false}
               style={{
                 width: "85%",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-                color: "#464646",
+                marginLeft: 10,
+                padding: 0,
               }}
               placeholder={t("search")}
               autoCorrect={false}
               value={search}
               onChangeText={_Search}
+              placeholderTextColor="#464646"
               keyboardType="default"
             />
             {search.length !== 0 ? (
