@@ -25,7 +25,7 @@ import { SvgCss } from "react-native-svg";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
-import { Arrowbackwhite } from "../../assets/svg";
+import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 const Notch = DeviceInfo.hasNotch();
 
 const HeightFlatlist = Platform.select({
