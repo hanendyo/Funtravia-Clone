@@ -1030,11 +1030,12 @@ export default function Room({ navigation, route }) {
                 borderColor: "#D1D1D1",
                 borderWidth: 1,
                 width: width - 130,
-                maxHeight: 70,
                 alignSelf: "center",
                 backgroundColor: "#f3f3f3",
                 borderRadius: 20,
-                paddingHorizontal: 15,
+                flexDirection: "row",
+                maxHeight: 70,
+                justifyContent: "space-between",
               }}
             >
               <TextInput
@@ -1047,23 +1048,40 @@ export default function Room({ navigation, route }) {
                 style={
                   Platform.OS == "ios"
                     ? {
-                        maxHeight: 70,
-                        margin: 10,
-                        paddingBottom: 5,
-                        paddingLeft: 15,
+                        maxHeight: 100,
+                        marginVertical: 10,
+                        marginLeft: 10,
+                        width: width - 180,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
                       }
                     : {
-                        maxHeight: 70,
+                        maxHeight: 100,
                         marginVertical: 5,
-                        marginHorizontal: 10,
+                        marginLeft: 10,
                         padding: 0,
+                        width: width - 180,
                         fontFamily: "Lato-Regular",
                         backgroundColor: "#f3f3f3",
+                        // borderWidth: 1,
                       }
                 }
               />
+              <Pressable
+                onPress={() => {
+                  setmodalCamera(true);
+                }}
+                style={{
+                  // borderWidth: 1,
+                  // width: "15%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  marginRight: 10,
+                }}
+              >
+                <CameraChat width={22} height={22} />
+              </Pressable>
             </View>
             <Button
               text=""
@@ -1154,6 +1172,7 @@ export default function Room({ navigation, route }) {
               alignSelf: "center",
               backgroundColor: "#f3f3f3",
               borderRadius: 20,
+              justifyContent: "space-between",
               // paddingHorizontal: 15,
               flexDirection: "row",
             }}
@@ -1171,7 +1190,8 @@ export default function Room({ navigation, route }) {
                       maxHeight: 100,
                       marginVertical: 10,
                       marginLeft: 10,
-                      width: "80%",
+                      width: width - 180,
+                      // width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
@@ -1180,7 +1200,8 @@ export default function Room({ navigation, route }) {
                       marginVertical: 5,
                       marginLeft: 10,
                       padding: 0,
-                      width: "80%",
+                      width: width - 180,
+                      // width: "80%",
                       fontFamily: "Lato-Regular",
                       backgroundColor: "#f3f3f3",
                     }
@@ -1191,13 +1212,15 @@ export default function Room({ navigation, route }) {
                 setmodalCamera(true);
               }}
               style={{
-                flex: 1,
+                // borderWidth: 1,
+                // width: "15%",
                 justifyContent: "center",
                 alignContent: "center",
                 alignItems: "center",
+                marginRight: 10,
               }}
             >
-              <CameraChat width={25} height={25} />
+              <CameraChat width={22} height={22} />
             </Pressable>
           </View>
           <Button
