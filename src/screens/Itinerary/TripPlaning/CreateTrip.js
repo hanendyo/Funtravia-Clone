@@ -1049,10 +1049,10 @@ export default function Trip(props) {
                       <FlatList
                         style={{
                           width: "100%",
-                          maxHeight: Dimensions.get("screen").width - 40,
+                          maxHeight: Dimensions.get("screen").width - 90,
                           // borderWidth: 2,
                         }}
-                        showsVerticalScrollIndicator={true}
+                        showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => `${index}`}
                         data={datacity.cities_search}
                         renderItem={({ item }) => (
