@@ -678,6 +678,7 @@ export default function CreatePost(props) {
                             type: props.route.params.type,
                             location: props.route.params.location,
                             isAlbum: false,
+                            from: "createPost",
                           },
                         });
                   }}

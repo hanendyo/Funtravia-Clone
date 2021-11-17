@@ -18,6 +18,22 @@ const post = gql`
         response_count
         created_at
         updated_at
+        album {
+          id
+          title
+          cover
+          itinerary {
+            id
+            name
+          }
+          user {
+            id
+            username
+            first_name
+            last_name
+            picture
+          }
+        }
         assets {
           id
           type

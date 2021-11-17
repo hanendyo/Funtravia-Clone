@@ -48,6 +48,7 @@ import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
+import RemoveAlbums from "../../graphQL/Mutation/Album/RemoveAlbum";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -63,7 +64,6 @@ export default function myfeed(props) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
-    // title: () => <Text style={{ color: "white" }}>{t("posts")}</Text>,
     headerTintColor: "white",
     headerTitle: () => (
       <Text size="header" type="bold" style={{ color: "white" }}>
@@ -116,10 +116,24 @@ export default function myfeed(props) {
   let { width, height } = Dimensions.get("screen");
   let [activelike, setactivelike] = useState(true);
   let [setting, setSetting] = useState();
-  let [datas, setDatas] = useState(null);
+  let [datas, setDatas] = useState([]);
+  let [indekScrollto, setIndeksScrollto] = useState(0);
+
+  const Scroll_to = (indekScrollto) => {
+    setTimeout(() => {
+      if (ref && ref.current) {
+        ref.current.scrollToIndex({
+          animation: false,
+          index: indekScrollto ? indekScrollto : 0,
+        });
+      }
+    }, 1000);
+  };
 
   const loadAsync = async () => {
     await LoadFollowing();
+    await refetch();
+    await Scroll_to();
   };
 
   const {
@@ -128,8 +142,13 @@ export default function myfeed(props) {
     error: errorpost,
     fetchMore,
     refetch,
+    networkStatus,
   } = useQuery(User_Post, {
-    fetchPolicy: "network-only",
+    options: {
+      fetchPolicy: "network-only",
+      // errorPolicy: "ignore",
+    },
+    // pollInterval: 100,
     variables: {
       user_id: datauser.id,
       limit: 50,
@@ -141,9 +160,19 @@ export default function myfeed(props) {
         Authorization: `Bearer ${token}`,
       },
     },
-    onCompleted: () => setDatas(datapost?.user_post_paging?.datas),
+    notifyOnNetworkStatusChange: true,
+    onCompleted: async () => {
+      setDatas(datapost?.user_post_paging?.datas);
+      const tempData = [...datapost?.user_post_paging?.datas];
+      const indeks = tempData.findIndex(
+        (k) => k["id"] == props.route.params.post_id
+      );
+      if (indeks != -1) {
+        await setIndeksScrollto(indeks);
+        await Scroll_to(indeks);
+      }
+    },
   });
-  let indeks = 0;
 
   useScrollToTop(ref);
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
@@ -154,6 +183,18 @@ export default function myfeed(props) {
 
   const viewConfigRef = React.useRef({
     viewAreaCoveragePercentThreshold: 50,
+  });
+
+  const [
+    AlbumMutation,
+    { loading: loadAlbum, data: dataAlbum, error: errorAlbum },
+  ] = useMutation(RemoveAlbums, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
   });
 
   const loadasync = async () => {
@@ -213,6 +254,7 @@ export default function myfeed(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadasync();
+    loadAsync();
   }, []);
 
   const [
@@ -707,6 +749,61 @@ export default function myfeed(props) {
     );
   }
 
+  const scrollToIndexFailed = (error) => {
+    const offset = error.averageItemLength * error.index;
+    ref.current.scrollToOffset({ offset });
+    setTimeout(
+      () =>
+        ref.current.scrollToIndex({
+          index: error.index ? error.index : 0,
+        }),
+      1000
+    );
+  };
+
+  const goToItinerary = (data) => {
+    token
+      ? props.navigation.push("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: data.itinerary.name,
+            country: data.itinerary.id,
+            dateitin: "",
+            token: token,
+            status: "",
+            index: 1,
+            datadayaktif: data.day,
+          },
+        })
+      : setModalLogin(true);
+  };
+
+  const removeTagAlbum = async (post_id, album_id, index) => {
+    try {
+      let response = await AlbumMutation({
+        variables: {
+          album_id: album_id,
+          post_id: post_id,
+        },
+      });
+      if (response.data.remove_albums_post.code == 200) {
+        refetch();
+        setModalmenu(false);
+      } else {
+        RNToasty({
+          title: t("failRemoveTagAlbum"),
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      RNToasty({
+        title: t("failRemoveTagAlbum"),
+        position: "bottom",
+      });
+      refetch();
+    }
+  };
+
   return (
     <View
       style={{
@@ -718,37 +815,16 @@ export default function myfeed(props) {
         data={datas}
         onViewableItemsChanged={onViewRef.current}
         viewabilityConfig={viewConfigRef.current}
-        style={
-          {
-            // paddingVertical: 7,
-          }
-        }
-        // initialNumToRender={7}
         keyExtractor={(item) => item.id}
-        // extraData={liked}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
-        initialScrollIndex={indeks}
+        scrollToIndex={indekScrollto}
+        onScrollToIndexFailed={(e) => {
+          scrollToIndexFailed(e);
+        }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }
-        // ListFooterComponent={
-        //   //   loadingPost ? (
-        //   <View
-        //     style={{
-        //       // position: 'absolute',
-        //       // bottom:0,
-        //       width: width,
-        //       justifyContent: "center",
-        //       alignItems: "center",
-        //       marginBottom: 30,
-        //     }}
-        //   >
-        //     <ActivityIndicator animating={true} size="large" color="#209fae" />
-        //   </View>
-        //   //   ) : null
-        // }
-        // initialNumToRender={1}
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
         onEndThreshold={3000}
@@ -1072,7 +1148,7 @@ export default function myfeed(props) {
                 }}
                 More
               >
-                {item.is_single == false && item.itinerary !== null ? (
+                {item?.album && item?.album?.itinerary !== null ? (
                   <View>
                     <Pressable
                       onPress={() => goToItinerary(item)}
@@ -1092,7 +1168,7 @@ export default function myfeed(props) {
                         }}
                       />
                       <Text type="bold" size="title">
-                        {item.itinerary.name}
+                        {item.album.itinerary.name}
                       </Text>
                     </Pressable>
                     {item.caption ? (
@@ -1277,34 +1353,60 @@ export default function myfeed(props) {
                 {t("edit")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                setModalmenu(false),
-                  token
-                    ? props.navigation.push("FeedStack", {
-                        screen: "CreateListAlbum",
-                        params: {
-                          user_id: setting?.user_id,
-                          token: isPunctuatorToken,
-                          file: "",
-                          type: "",
-                          location: "",
-                          isAlbum: true,
-                          post_id: selectedOption?.id,
-                        },
-                      })
-                    : setModalLogin(true);
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("TagAlbum")}
-              </Text>
-            </TouchableOpacity>
+            {selectedOption?.album ? (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() =>
+                  removeTagAlbum(selectedOption?.id, selectedOption?.album?.id)
+                }
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("removeTagAlbum")}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  setModalmenu(false),
+                    token
+                      ? props.navigation.push("FeedStack", {
+                          screen: "CreateListAlbum",
+                          params: {
+                            user_id: setting?.user_id,
+                            token: props.route.params.token,
+                            file: "",
+                            type: "",
+                            location: "",
+                            isAlbum: true,
+                            post_id: selectedOption?.id,
+                            from: "feedProfil",
+                          },
+                        })
+                      : setModalLogin(true);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("TagAlbum")}
+                </Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={{
                 alignItems: "center",
