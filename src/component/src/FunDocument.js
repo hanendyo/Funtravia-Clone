@@ -1,23 +1,27 @@
 import React, { useState } from "react";
-import {
-  Platform,
-  ImageBackground as RNImageBackground,
-  Pressable,
-  View,
-  ActivityIndicator,
-} from "react-native";
+import { Platform, TouchableOpacity, Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
-import { Refresh } from "../../assets/svg";
+import FileViewer from "react-native-file-viewer";
+import Text from "./Text";
+import * as Progress from "react-native-progress";
 
-export default function FunDocument({ filepath }) {
+export default function FunDocument({
+  filepath,
+  filename,
+  format,
+  style,
+  size,
+  progressBar,
+  children,
+  ...otherProps
+}) {
+  const { t } = useTranslation();
   let [loading, setLoading] = useState(false);
-  // let [timeout, setTimeOut] = useState(false);
-  let [progress, setProgress] = useState();
-  let [temp, setTemp] = useState([]);
+  let [progress, setProgress] = useState(0);
   let isUri = filepath ? true : false;
   let uri;
   if (size) {
@@ -25,17 +29,24 @@ export default function FunDocument({ filepath }) {
   } else {
     uri = filepath;
   }
-  // let uri = filepath + "?size=m";
   let path;
+  const handleAttachment = (path) => {
+    setTimeout(() => {
+      FileViewer.open(path, {
+        showOpenWithDialog: true,
+      });
+    }, 350);
+  };
   if (uri && uri !== undefined && isUri) {
     let extension = Platform.OS === "android" ? "file://" : "";
     let name = sh.unique(uri);
-    path = `${extension}${RNFS.CachesDirectoryPath}/${name}.png`;
+    path = `${extension}${RNFS.CachesDirectoryPath}/${name}.${format}`;
     let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]funtravia+)\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim;
     let hvdm = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)/gim;
     let chvdm = hvdm.test(uri);
     uri = chvdm ? uri : ASSETS_SERVER + uri;
     let check = regex.test(uri);
+
     if (check) {
       RNFS.exists(path)
         .then((exists) => {
@@ -46,37 +57,56 @@ export default function FunDocument({ filepath }) {
               fromUrl: uri,
               toFile: path,
               background: true,
-              begin: (res: DownloadBeginCallbackResult) => {
+              begin: (res) => {
                 // console.log("Response begin ===\n\n");
                 // console.log(res);
               },
-              progress: (res: DownloadProgressCallbackResult) => {
-                //here you can calculate your progress for file download
-                // console.log("Response written ===\n\n");
-                let progressPercent =
-                  (res.bytesWritten / res.contentLength) * 100; // to calculate in percentage
-                setProgress(progressPercent.toString());
-                // item.downloadProgress = progressPercent;
-                // console.log("res", res);
+              progress: (res) => {
+                setProgress(
+                  ((res.bytesWritten / res.contentLength) * 100).toFixed()
+                );
               },
             }).promise.then((res) => {
-              setTimeout(() => {
-                setLoading(false);
-                // setTimeOut(true);
-              }, 1000);
-              // console.log("SUCCESS BACKGROUND CACHED", uri);
+              setLoading(false);
+              setProgress(100);
             });
           }
         })
         .catch((error) => {
-          // setTimeOut(true);
           setLoading(false);
-          console.warn(error);
+          Alert.alert(t("fileCouldNotBeDownloaded"));
         });
     } else {
       path = filepath;
     }
   }
 
-  return true;
+  return (
+    <TouchableOpacity
+      style={style}
+      {...otherProps}
+      onPress={() => handleAttachment(path)}
+    >
+      <Text size="description" type="regular" style={{ color: "#464646" }}>
+        {filename}
+      </Text>
+
+      {progressBar ? (
+        progress !== 0 && progress !== 100 ? (
+          <Progress.Bar
+            width={80}
+            height={10}
+            color={"#209FAE"}
+            progress={progress}
+            borderColor={"#DAF0F2"}
+            style={{
+              marginLeft: 10,
+              height: 10,
+              marginTop: 5,
+            }}
+          />
+        ) : null
+      ) : null}
+    </TouchableOpacity>
+  );
 }

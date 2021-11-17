@@ -6,6 +6,7 @@ import {
   Pressable,
   Image,
   Modal,
+  Platform,
 } from "react-native";
 import {
   LikeEmpty,
@@ -25,6 +26,7 @@ import { RNToasty } from "react-native-toasty";
 import Liked from "../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../graphQL/Mutation/Destination/UnLiked";
 import { useMutation } from "@apollo/client";
+import { StackActions } from "@react-navigation/native";
 
 export default function CardDestination({ data, props, setData, token }) {
   const { t } = useTranslation();
@@ -126,12 +128,12 @@ export default function CardDestination({ data, props, setData, token }) {
   const addToPlan = (kiriman) => {
     if (token) {
       if (kiriman) {
-        props?.route?.params && props?.route?.params?.iditinerary
+        props?.route?.params && props?.route?.params?.IdItinerary
           ? props.navigation.dispatch(
               StackActions.replace("ItineraryStack", {
                 screen: "ItineraryChooseday",
                 params: {
-                  Iditinerary: props?.route?.params?.iditinerary,
+                  Iditinerary: props?.route?.params?.IdItinerary,
                   Kiriman: kiriman.id,
                   token: token,
                   Position: "destination",
@@ -331,9 +333,9 @@ export default function CardDestination({ data, props, setData, token }) {
                       style={{
                         marginLeft: 5,
                         flexWrap: "wrap",
-                        marginTop: 5,
+                        marginTop: Platform.OS === "ios" ? 3 : 5,
                         flex: 1,
-                        lineHeight: 17,
+                        lineHeight: Platform.OS === "ios" ? 20 : 17,
                       }}
                     >
                       {item.name}
@@ -437,7 +439,6 @@ export default function CardDestination({ data, props, setData, token }) {
                   <View
                     style={{
                       justifyContent: "flex-end",
-                      width: 65,
                       paddingBottom: 5,
                     }}
                   >
@@ -447,6 +448,7 @@ export default function CardDestination({ data, props, setData, token }) {
                         width: "100%",
                         height: 30,
                         borderRadius: 3,
+                        paddingHorizontal: 15,
                         backgroundColor: "#209fae",
                         justifyContent: "center",
                         alignItems: "center",
@@ -457,7 +459,7 @@ export default function CardDestination({ data, props, setData, token }) {
                         type="bold"
                         style={{ color: "#fff" }}
                       >
-                        {"add"}
+                        {t("add")}
                       </Text>
                     </Pressable>
                   </View>

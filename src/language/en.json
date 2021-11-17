@@ -834,5 +834,6 @@
   "FailedLikeDestination": "Failed to like destination",
   "FailedLikeEvents": "Failed to like events",
   "removeTagAlbum": "Remove from album",
+  "fileCouldNotBeDownloaded": "File could not be downloaded",
   "failRemoveTagAlbum": "Failed to remove album tag"
 }

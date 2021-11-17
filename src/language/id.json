@@ -832,5 +832,6 @@
   "FailedLikeDestination": "Gagal menyukai destinasi",
   "FailedLikeEvents": "Gagal menyukai event",
   "removeTagAlbum": "Lepaskan dari album",
+  "fileCouldNotBeDownloaded": "File tidak dapat diunduh",
   "failRemoveTagAlbum": "Gagal melepaskan tag album"
 }
