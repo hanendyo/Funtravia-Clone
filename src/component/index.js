@@ -21,6 +21,7 @@ import RenderMaps from "./src/RenderMaps";
 import shareAction from "./src/Share";
 import NavigateAction from "./src/NavigateAction";
 import FunImage from "./src/FunImage";
+import FunDocument from "./src/FunDocument";
 import FunImageBackground from "./src/FunImageBackground";
 import FunImageAutoSize from "./src/FunImageAutoSize";
 import FunAnimatedImage from "./src/FunAnimatedImage";
@@ -36,6 +37,7 @@ import CardDestination from "./src/CardDestination";
 import CardEvents from "./src/CardEvents";
 
 export {
+  FunDocument,
   Text,
   Button,
   CustomImage,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   View,
   Dimensions,
@@ -13,13 +13,10 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
-  ArrowRight,
-  Delete,
   More,
   New,
   Xhitam,
@@ -27,8 +24,14 @@ import {
 } from "../../../assets/svg";
 import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
 import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
-import Swipeout from "react-native-swipeout";
-import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
+import {
+  Button,
+  Text,
+  FunIcon,
+  Capital,
+  FunImage,
+  FunDocument,
+} from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
@@ -37,13 +40,9 @@ import ImageSlide from "../../../component/src/ImageSlide";
 import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import { StackActions } from "@react-navigation/native";
-import FileViewer from "react-native-file-viewer";
-import RNFetchBlob from "rn-fetch-blob";
 import { RNToasty } from "react-native-toasty";
-import * as Progress from "react-native-progress";
 
 export default function detailCustomItinerary(props) {
-  console.log(props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -136,8 +135,13 @@ export default function detailCustomItinerary(props) {
     }
 
     await setDataParent(dataparents);
+    // await FunAttachment(dataparents);
     await setDataChild(dataX);
   };
+
+  // useEffect(() => {
+  //   FunAttachment(dataParent);
+  // }, [dataParent]);
 
   const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
@@ -404,7 +408,10 @@ export default function detailCustomItinerary(props) {
       }
       if (response.data) {
         if (response.data.upload_attach_custom.code !== 200) {
-          throw new Error(response.data.upload_attach_custom.message);
+          throw new Error(
+            "error 200",
+            response.data.upload_attach_custom.message
+          );
         } else {
           if (sumber === "parent") {
             let datan = { ...dataParent };
@@ -449,7 +456,7 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      Alert.alert("" + error);
+      Alert.alert("error upload" + error);
     }
   };
 
@@ -494,80 +501,6 @@ export default function detailCustomItinerary(props) {
       Alert.alert("" + error);
     }
   };
-  // const attachment = [];
-
-  // const FunAttachment = (data) => {
-  //   let dataAttachment = data.attachment;
-
-  //   for (let i of dataAttachment) {
-  //     let fileUrl = i.filepath;
-  //     let ext = fileUrl
-  //       .split(/[#?]/)[0]
-  //       .split(".")
-  //       .pop()
-  //       .trim();
-  //     return new Promise((resolve, reject) => {
-  //       RNFetchBlob.config({
-  //         fileCache: true,
-  //         appendExt: ext,
-  //       })
-  //         .fetch("GET", fileUrl)
-  //         .then((res) => {
-  //           console.log("The file saved to ", res.path());
-  //           attachment.push(res.path());
-  //           resolve(true);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //           reject(err);
-  //         });
-  //     });
-  //   }
-  // };
-
-  const [progressAttach, setprogressAttach] = useState(false);
-  const handleAttachment = (data) => {
-    let fileUrl = data.filepath;
-    let ext = fileUrl
-      .split(/[#?]/)[0]
-      .split(".")
-      .pop()
-      .trim();
-    return new Promise((resolve, reject) => {
-      RNFetchBlob.config({
-        fileCache: true,
-        appendExt: ext,
-      })
-        .fetch("GET", fileUrl)
-        .progress((received, total) => {
-          setprogressAttach(true);
-          // console.log("progress", received / total);
-          // setprogressAttach({
-          //   downloadProgress: (received / total) * 100,
-          // });
-        })
-        .then((res) => {
-          setprogressAttach(false);
-          console.log("The file saved to ", res.path());
-          const downloadFile =
-            Platform.OS === "android"
-              ? "file://" + res.path()
-              : "" + res.path();
-          setTimeout(() => {
-            FileViewer.open(downloadFile, {
-              showOpenWithDialog: true,
-              // showAppsSuggestions: true,
-              onDismiss: () => RNFetchBlob.fs.unlink(res.path()),
-            });
-          }, 350);
-          resolve(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          reject(err);
-        });
-    });
-  };
 
   const _handle_hapusChild = async (item, index, indah, dataChild) => {
     try {
@@ -600,8 +533,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const x = dataChild.length - 1;
-  console.log("dataChild", dataChild);
-  console.log("dataParent", dataParent);
 
   let [indeks, setIndeks] = useState(0);
   let [gambar, setGambar] = useState([]);
@@ -911,21 +842,23 @@ export default function detailCustomItinerary(props) {
                                 flexDirection: "row",
                                 alignContent: "flex-start",
                                 alignItems: "flex-start",
+                                paddingVertical: 10,
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#d1d1d1",
                               }}
                             >
-                              <Text style={{ width: 30 }}>{indah + 1}. </Text>
-                              <TouchableOpacity
-                                onPress={() => handleAttachment()}
-                              >
-                                <Text style={{ flex: 1, paddingBottom: 5 }}>
-                                  {data.file_name}
-                                </Text>
-                              </TouchableOpacity>
-
+                              <Text style={{ width: 30 }}>{index + 1}.</Text>
+                              <FunDocument
+                                filename={data.file_name}
+                                filepath={data.filepath}
+                                format={data.extention}
+                                progressBar
+                                style={{ flex: 1, flexDirection: "row" }}
+                              />
                               <TouchableOpacity
                                 onPress={() => {
                                   _handle_hapusChild(
-                                    item,
+                                    data,
                                     index,
                                     indah,
                                     dataChild
@@ -935,7 +868,9 @@ export default function detailCustomItinerary(props) {
                                   flexDirection: "row",
                                   paddingRight: 10,
                                   paddingLeft: 25,
+                                  paddingVertical: 5,
                                   height: "100%",
+                                  alignItems: "center",
                                 }}
                               >
                                 <Xhitam style={{}} width={10} height={10} />
@@ -1058,7 +993,7 @@ export default function detailCustomItinerary(props) {
                 borderBottomWidth: 0.5,
               }}
             >
-              {dataParent.icon ? (
+              {/* {dataParent.icon ? (
                 <FunIcon
                   icon={dataParent.icon}
                   height={30}
@@ -1076,7 +1011,7 @@ export default function detailCustomItinerary(props) {
                     borderRadius: 15,
                   }}
                 />
-              )}
+              )} */}
               <TouchableOpacity
                 style={{ flex: 1, paddingHorizontal: 10 }}
                 // onLongPress={status !== "saved" ? drag : null}
@@ -1102,7 +1037,6 @@ export default function detailCustomItinerary(props) {
                 variant="transparent"
                 style={{}}
                 onPress={() => {
-                  // console.log(dataParent.id, dataParent.type);
                   bukamodalmenu(dataParent.id, dataParent.type);
                 }}
               >
@@ -1295,26 +1229,19 @@ export default function detailCustomItinerary(props) {
                               flexDirection: "row",
                               alignContent: "flex-start",
                               alignItems: "flex-start",
+                              paddingVertical: 10,
+                              borderBottomWidth: 1,
+                              borderBottomColor: "#d1d1d1",
                             }}
                           >
-                            <Text style={{ width: 30 }}>{index + 1}. </Text>
-                            <TouchableOpacity
-                              style={{
-                                flex: 1,
-                              }}
-                              onPress={() => {
-                                // data.extention === "JPG" ||
-                                // data.extention === "JPEG" ||
-                                // data.extention === "PNG"
-                                //   ? ImagesSlider(index, dataParent.attachment)
-                                //   : null;
-                                handleAttachment(data, index);
-                              }}
-                            >
-                              <Text style={{ flex: 1, paddingBottom: 5 }}>
-                                {data.file_name}
-                              </Text>
-                            </TouchableOpacity>
+                            <Text style={{ width: 30 }}>{index + 1}.</Text>
+                            <FunDocument
+                              filename={data.file_name}
+                              filepath={data.filepath}
+                              format={data.extention}
+                              progressBar
+                              style={{ flex: 1, flexDirection: "row" }}
+                            />
                             <TouchableOpacity
                               onPress={() => {
                                 _handle_hapusParent(data, index, dataParent);
@@ -1323,7 +1250,9 @@ export default function detailCustomItinerary(props) {
                                 flexDirection: "row",
                                 paddingRight: 10,
                                 paddingLeft: 25,
+                                paddingVertical: 5,
                                 height: "100%",
+                                alignItems: "center",
                               }}
                             >
                               <Xhitam style={{}} width={10} height={10} />
@@ -1588,42 +1517,6 @@ export default function detailCustomItinerary(props) {
                 text={t("discard")}
               ></Button>
             </View>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        useNativeDriver={true}
-        visible={progressAttach}
-        onRequestClose={() => setprogressAttach(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        >
-          <View
-            style={{
-              // position: 'absolute',
-              // bottom:0,
-              // width: width,
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 30,
-            }}
-          >
-            <ActivityIndicator
-              animating={progressAttach}
-              size="large"
-              color="#209fae"
-            />
           </View>
         </View>
       </Modal>

@@ -20,6 +20,7 @@ export default function Image({
   source,
   imageStyle,
   size,
+  filename,
   ...otherProps
 }) {
   let [loading, setLoading] = useState(false);

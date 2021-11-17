@@ -833,5 +833,6 @@
   "failedCommentTPost": "Failed comment this post",
   "FailedLikeDestination": "Failed to like destination",
   "FailedLikeEvents": "Failed to like events",
-  "removeTagAlbum": "Remove from album"
+  "removeTagAlbum": "Remove from album",
+  "fileCouldNotBeDownloaded": "File could not be downloaded"
 }
