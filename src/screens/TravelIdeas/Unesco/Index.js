@@ -1071,9 +1071,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: normalize(16), color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
-    fontSize: normalize(16),
+    fontSize: 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
