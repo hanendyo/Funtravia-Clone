@@ -29,7 +29,14 @@ import DeviceInfo from "react-native-device-info";
 
 const Notch = DeviceInfo.hasNotch();
 
-export default function Review({ item, index }, onSelect, props, token, t) {
+export default function Review(
+  { item, index },
+  onSelect,
+  props,
+  token,
+  t,
+  capHeight
+) {
   return (
     <View
       style={{
@@ -39,8 +46,30 @@ export default function Review({ item, index }, onSelect, props, token, t) {
         // borderBottomWidth: 1,
         // borderBottomColor: "#f3f3f3",
         backgroundColor: "#fff",
-        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : 30,
-        marginBottom: Platform.OS === "ios" ? (Notch ? null : 45) : -10,
+        marginTop:
+          capHeight <= 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 45
+                : 45
+              : -10
+            : Platform.OS === "ios"
+            ? Notch
+              ? 45
+              : 100
+            : 45,
+        marginBottom:
+          capHeight <= 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -5
+                : -5
+              : 25
+            : Platform.OS === "ios"
+            ? Notch
+              ? -25
+              : -25
+            : -25,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
