@@ -397,6 +397,7 @@ export default function AddBuddy(props) {
                   borderBottomColor: "#F6F6F6",
                   paddingHorizontal: 20,
                   paddingVertical: 20,
+                  marginBottom: databuddy.length === i + 1 ? 250 : 0,
                   justifyContent: "space-between",
                   alignItems: "center",
                   alignContent: "center",

@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 
 export default function ItineraryChooseday(props) {
+  console.log("props", props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,

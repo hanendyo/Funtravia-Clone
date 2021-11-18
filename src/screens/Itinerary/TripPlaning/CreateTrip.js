@@ -1732,7 +1732,8 @@ export default function Trip(props) {
                                 }}
                               ></Image>
                               <Text type="regular" size="title" style={{}}>
-                                {item.first_name}
+                                {item.first_name}{" "}
+                                {item.last_name ? item.last_name : ""}
                               </Text>
                             </TouchableOpacity>
                           )}
