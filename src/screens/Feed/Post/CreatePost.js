@@ -560,6 +560,9 @@ export default function CreatePost(props) {
           >
             <Arrowbackwhite height={20} width={20} />
           </Button>
+          <Text size="header" style={{ color: "#fff" }}>
+            {t("newPost")}
+          </Text>
           <View
             style={{
               flexDirection: "row",

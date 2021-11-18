@@ -40,6 +40,7 @@ import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 
 export default function ItineraryBuddy(props) {
+  console.log("props", props);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
@@ -110,8 +111,6 @@ export default function ItineraryBuddy(props) {
       key: search,
     },
   });
-
-  // console.log(dataAlls);
 
   const [
     mutationMakeAdmin,
@@ -919,7 +918,11 @@ export default function ItineraryBuddy(props) {
   const GetTombolplus = ({ datanya }) => {
     var inde = datanya.findIndex((k) => k["user_id"] === users.id);
 
-    if (inde !== -1 && datanya[inde].isadmin === true) {
+    if (
+      inde !== -1 &&
+      datanya[inde].isadmin === true &&
+      props.route.params?.dataitin.itinerary_detail?.status !== "F"
+    ) {
       return (
         <TouchableOpacity
           onPress={() =>

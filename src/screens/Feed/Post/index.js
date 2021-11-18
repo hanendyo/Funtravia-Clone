@@ -672,6 +672,8 @@ export default function Post(props) {
           justifyContent: "space-between",
           alignItems: "center",
           alignContent: "center",
+
+          marginTop: -10,
           paddingLeft: 5,
         }}
       >

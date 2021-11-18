@@ -320,8 +320,8 @@ export default function MyAccount(props) {
               style={{
                 zIndex: 999,
                 borderColor: "white",
-                borderRadius: 50,
-                borderWidth: 3,
+                borderRadius: 60,
+                borderWidth: 1,
                 backgroundColor: "#B8E0E5",
                 height: normalize(100),
                 width: normalize(100),
@@ -583,7 +583,7 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
-                {userData && userData.user_profile && userData.count_wishlist
+                {userData && userData.count_wishlist
                   ? userData.count_wishlist + " " + "Wishlist"
                   : "0"}
               </Text>
@@ -619,9 +619,7 @@ export default function MyAccount(props) {
               }}
             >
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
-                {userData &&
-                userData.user_profile &&
-                userData.count_itinerary_favorit
+                {userData && userData.count_itinerary_favorit
                   ? userData.count_itinerary_favorit + " " + "Itinerary"
                   : "0"}
               </Text>

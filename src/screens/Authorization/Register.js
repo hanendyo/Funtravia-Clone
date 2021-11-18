@@ -578,6 +578,7 @@ export default function Register({ navigation }) {
         <View
           style={{
             alignItems: "center",
+            marginBottom: 180,
           }}
         >
           <View
