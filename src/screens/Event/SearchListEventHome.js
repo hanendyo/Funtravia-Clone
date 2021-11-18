@@ -1045,6 +1045,7 @@ export default function SearchListEventHome(props) {
           justifyContent: "center",
           alignItems: "center",
           marginTop: -10,
+          marginBottom: -10,
         }}
       >
         <Text
@@ -1052,7 +1053,7 @@ export default function SearchListEventHome(props) {
             opacity: focused ? 1 : 0.7,
             color: focused ? "#209fae" : "#464646",
           }}
-          size="title"
+          size="label"
           type={focused ? "bold" : "regular"}
         >
           {route.title}
@@ -1233,7 +1234,10 @@ export default function SearchListEventHome(props) {
                 backgroundColor: "white",
               }}
               renderLabel={renderLabel}
-              indicatorStyle={{ backgroundColor: "#209FAE", height: 2 }}
+              indicatorStyle={{
+                backgroundColor: "#209FAE",
+                height: 2,
+              }}
             />
           );
         }}

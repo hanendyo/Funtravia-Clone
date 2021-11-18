@@ -70,8 +70,9 @@ export default function Trip(props) {
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
-      elevation: 0,
-      // borderBottomWidth: 0,
+      elevation: 0, // remove shadow on Android
+      shadowOpacity: 0, // remove shadow on iOS
+      borderBottomWidth: 0, // Just in case.
     },
     headerLeftContainerStyle: {
       background: "#FFF",
