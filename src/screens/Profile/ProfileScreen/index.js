@@ -845,7 +845,18 @@ export default function OtherProfile(props) {
       inputRange: [0, HeaderHeight],
       outputRange: [
         0,
-        -HeaderHeight + (Platform.OS === "ios" ? (Notch ? 55 : 95) : 35),
+        -HeaderHeight +
+          (captionHeight <= 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 95
+                : 95
+              : 75
+            : Platform.OS === "ios"
+            ? Notch
+              ? 25
+              : 55
+            : 25),
       ],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
@@ -859,12 +870,24 @@ export default function OtherProfile(props) {
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
+          // height:
+          //   Platform.OS === "ios"
+          //     ? Notch
+          //       ? HeaderHeight
+          //       : HeaderHeight - 40
+          //     : HeaderHeight + 20,
           height:
-            Platform.OS === "ios"
+            captionHeight <= 50
+              ? Platform.OS === "ios"
+                ? Notch
+                  ? HeaderHeight
+                  : HeaderHeight - 40
+                : HeaderHeight - 20
+              : Platform.OS === "ios"
               ? Notch
-                ? HeaderHeight
-                : HeaderHeight - 40
-              : HeaderHeight + 20,
+                ? HeaderHeight + 35
+                : HeaderHeight + 40
+              : HeaderHeight + 35,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -876,13 +899,46 @@ export default function OtherProfile(props) {
         <Animated.View
           style={{
             width: "100%",
-            height: Platform.OS === "ios" ? (Notch ? "90%" : "87%") : "90%",
+            height:
+              captionHeight <= 50
+                ? Platform.OS === "ios"
+                  ? Notch
+                    ? "86%"
+                    : "86%"
+                  : "86%"
+                : Platform.OS === "ios"
+                ? Notch
+                  ? "86%"
+                  : "86%"
+                : "86%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-            paddingTop: Platform.OS === "ios" ? (Notch ? "5%" : "5%") : "10%",
-            marginTop: Platform.OS === "ios" ? (Notch ? "15%" : "15%") : "13%",
+            paddingTop:
+              captionHeight <= 50
+                ? Platform.OS === "ios"
+                  ? Notch
+                    ? "5%"
+                    : "5%"
+                  : "10%"
+                : Platform.OS === "ios"
+                ? Notch
+                  ? "10%"
+                  : "10%"
+                : "10%",
+            marginTop:
+              captionHeight <= 50
+                ? Platform.OS === "ios"
+                  ? Notch
+                    ? "15%"
+                    : "15%"
+                  : "15%"
+                : Platform.OS === "ios"
+                ? Notch
+                  ? "15%"
+                  : "15%"
+                : "15%",
           }}
         >
           <View
@@ -1255,23 +1311,24 @@ export default function OtherProfile(props) {
     let data;
     let renderItem;
     let paddingHorizontal;
+    let capHeight = captionHeight;
     switch (route.key) {
       case "tab1":
         numCols = tabPost === 2 ? 3 : 1;
         data = renderdataPost(tabPost);
-        renderItem = (e) => renderPost(tabPost, e);
+        renderItem = (e) => renderPost(tabPost, e, capHeight);
         paddingHorizontal = tabPost === 2 ? 2.5 : 0;
         break;
       case "tab2":
         numCols = 1;
         data = dataReview;
-        renderItem = (e) => Review(e, onSelect, props, token, t);
+        renderItem = (e) => Review(e, onSelect, props, token, t, capHeight);
         paddingHorizontal = 0;
         break;
       case "tab3":
         numCols = 1;
         data = dataTrip;
-        renderItem = (e) => Trip(e);
+        renderItem = (e) => Trip(e, capHeight);
         paddingHorizontal = 15;
         break;
       default:
@@ -1318,7 +1375,17 @@ export default function OtherProfile(props) {
             tabIndex === 0
               ? HeaderHeight +
                 TabBarHeight +
-                (Platform.OS === "ios" ? (Notch ? 75 : 20) : 90)
+                (captionHeight <= 50
+                  ? Platform.OS === "ios"
+                    ? Notch
+                      ? 45
+                      : 45
+                    : 45
+                  : Platform.OS === "ios"
+                  ? Notch
+                    ? 100
+                    : 100
+                  : 105)
               : HeaderHeight + TabBarHeight,
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingBottom: 10,
@@ -1346,8 +1413,19 @@ export default function OtherProfile(props) {
       inputRange: [0, HeaderHeight],
       outputRange: [
         HeaderHeight,
-        Platform.OS === "ios" ? (Notch ? 45 : 95) : 34,
+        captionHeight <= 50
+          ? Platform.OS === "ios"
+            ? Notch
+              ? 90
+              : 90
+            : 70
+          : Platform.OS === "ios"
+          ? Notch
+            ? 25
+            : 55
+          : 20,
       ],
+
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
@@ -1355,7 +1433,18 @@ export default function OtherProfile(props) {
       <Animated.View
         style={{
           // top: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : null,
-          marginVertical: Platform.OS === "ios" ? (Notch ? "1%" : "-7%") : "5%",
+          marginVertical:
+            captionHeight <= 50
+              ? Platform.OS === "ios"
+                ? Notch
+                  ? "5%"
+                  : "5%"
+                : "-5%"
+              : Platform.OS === "ios"
+              ? Notch
+                ? "8%"
+                : "5%"
+              : "9%",
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -1851,7 +1940,18 @@ export default function OtherProfile(props) {
           alignContent: "flex-start",
           alignItems: "center",
           marginLeft: 10,
-          height: Platform.OS == "ios" ? 55 : 45,
+          height:
+            captionHeight <= 50
+              ? Platform.OS === "ios"
+                ? Notch
+                  ? 95
+                  : 95
+                : 55
+              : Platform.OS === "ios"
+              ? Notch
+                ? 60
+                : 60
+              : 60,
 
           width: Dimensions.get("screen").width,
         }}
@@ -1937,7 +2037,18 @@ export default function OtherProfile(props) {
           justifyContent: position === "other" ? "space-between" : null,
           alignItems: "center",
           marginLeft: 10,
-          height: 55,
+          height:
+            captionHeight <= 50
+              ? Platform.OS === "ios"
+                ? Notch
+                  ? 95
+                  : 95
+                : 55
+              : Platform.OS === "ios"
+              ? Notch
+                ? 60
+                : 60
+              : 60,
 
           width: Dimensions.get("screen").width,
         }}
