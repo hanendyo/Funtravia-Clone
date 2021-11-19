@@ -58,6 +58,7 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 
 export default function ItineraryDestination(props) {
+  console.log("props", props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -164,6 +165,7 @@ export default function ItineraryDestination(props) {
       await setdataCountrys(xc);
     },
   });
+  console.log("negara", dataNegara);
 
   let [token, setToken] = useState(props.route.params.token);
   let [datadayaktif] = useState(props.route.params.datadayaktif);
@@ -832,7 +834,14 @@ export default function ItineraryDestination(props) {
             }}
           >
             <Text type="bold">
-              <Capital text={dataKota?.name ? dataKota?.name : ""} />
+              <Capital
+                text={
+                  dataKota?.name
+                    ? dataKota?.name
+                    : props?.route?.params?.dataDes?.itinerary_detail?.city
+                        ?.name
+                }
+              />
             </Text>
             <View
               style={{
@@ -1824,40 +1833,42 @@ export default function ItineraryDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {dataFilterCitys.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() =>
-                      _handleCheckCitySingle(item["id"], index, item)
-                    }
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor:
-                        item.checked === true ? "#daf0f2" : "#ffff",
-                      // borderColor: "#464646",
-                      width: "100%",
-                      marginRight: 3,
-                      // marginBottom: 20,
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                      // borderWidth: 1,
-                      paddingHorizontal: 10,
-                      paddingVertical: 10,
-                    }}
-                  >
-                    <Text
-                      size="label"
-                      type={item.checked === true ? "bold" : "regular"}
+                {dataFilterCitys.map((item, index) => {
+                  return item.head2 === dataNegara?.name ? (
+                    <TouchableOpacity
+                      onPress={() =>
+                        _handleCheckCitySingle(item["id"], index, item)
+                      }
                       style={{
-                        marginLeft: 0,
-                        color: "#464646",
-                        // borderWidth: 5,
+                        flexDirection: "row",
+                        backgroundColor:
+                          item.checked === true ? "#daf0f2" : "#ffff",
+                        // borderColor: "#464646",
+                        width: "100%",
+                        marginRight: 3,
+                        // marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
+                        // borderWidth: 1,
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
                       }}
                     >
-                      {Capital({ text: item?.name })}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <Text
+                        size="label"
+                        type={item.checked === true ? "bold" : "regular"}
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {Capital({ text: item?.name })}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null;
+                })}
 
                 {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}

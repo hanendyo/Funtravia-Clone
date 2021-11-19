@@ -3819,7 +3819,7 @@ export default function CityDetail(props) {
               onPress={() => {
                 shareAction({
                   from: "province",
-                  target: dataProvince.province_detail_v2,
+                  target: dataProvince.province_detail_v2.id,
                 });
                 SetShareModal(false);
               }}
