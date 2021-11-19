@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
 
 export default function Feed(props) {
+  console.log("porps index", props);
   const { t } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {

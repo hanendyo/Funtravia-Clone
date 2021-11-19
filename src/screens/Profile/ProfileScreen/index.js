@@ -84,6 +84,7 @@ const TabBarHeight = 48;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
+  console.log("props profil", props);
   let capHeight = useRef();
   const [captionHeight, setCaptionHeight] = useState(0);
   const Notch = DeviceInfo.hasNotch();

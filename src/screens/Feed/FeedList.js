@@ -97,6 +97,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("props feedlist", props);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
@@ -104,6 +105,8 @@ export default function FeedList({ props, token }) {
   const [dataFeed, setDataFeed] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [soon, setSoon] = useState(false);
+
+  console.log("datafeed", dataFeed);
 
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
@@ -487,8 +490,7 @@ export default function FeedList({ props, token }) {
 
   useEffect(() => {
     count < countLeft && setTimeout(() => setCount(count + 1), 1000);
-    refetch();
-    loadAsync();
+
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         Refresh();
@@ -516,10 +518,27 @@ export default function FeedList({ props, token }) {
           setRefreshing(false);
         }, 800);
       }
+
+      if (props.route.params.updateDataPost) {
+        let tempdata = [...dataFeed];
+        let indeks = tempdata.findIndex(
+          (k) => k.node.id == props.route.params.updateDataPost.id
+        );
+        let tempdataIndex = { ...tempdata[indeks] };
+        let tempdataNode = { ...tempdataIndex.node };
+        tempdataNode = props.route.params.updateDataPost;
+        tempdataIndex.node = tempdataNode;
+        tempdata.splice(indeks, 1, tempdataIndex);
+        console.log("tempdata", tempdata);
+        setDataFeed(tempdata);
+      }
     }
-    const unsubscribe = props.navigation.addListener("focus", () => {});
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      refetch();
+      loadAsync();
+    });
     return unsubscribe;
-  }, [props.route.params?.isPost, count]);
+  }, [props.route.params?.isPost, count, props.route.params.updateDataPost]);
 
   const createPost = () => {
     if (token && token !== null && token !== "") {
@@ -593,8 +612,8 @@ export default function FeedList({ props, token }) {
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
-            itintitle: data.itinerary.name,
-            country: data.itinerary.id,
+            itintitle: data.album.itinerary.name,
+            country: data.album.itinerary.id,
             dateitin: "",
             token: token,
             status: "",
@@ -760,7 +779,7 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  const removeTagAlbum = async (post_id, album_id, index) => {
+  const removeTagAlbum = async (post_id, album_id) => {
     try {
       let response = await MutationRemoveAlbum({
         variables: {
@@ -769,7 +788,15 @@ export default function FeedList({ props, token }) {
         },
       });
       if (response.data.remove_albums_post.code == 200) {
-        setModalmenu(false);
+        let tempdata = [...dataFeed];
+        let indeks = tempdata.findIndex((k) => k.node.id == post_id);
+        let tempdataIndex = { ...tempdata[indeks] };
+        let tempdataNode = { ...tempdataIndex.node };
+        tempdataNode.album = null;
+        tempdataIndex.node = tempdataNode;
+        tempdata.splice(indeks, 1, tempdataIndex);
+        await setDataFeed(tempdata);
+        await setModalmenu(false);
       } else {
         RNToasty({
           title: t("failRemoveTagAlbum"),
@@ -781,7 +808,6 @@ export default function FeedList({ props, token }) {
         title: t("failRemoveTagAlbum"),
         position: "bottom",
       });
-      refetch();
     }
   };
 
@@ -1289,6 +1315,7 @@ export default function FeedList({ props, token }) {
                               isAlbum: true,
                               post_id: selectedOption?.id,
                               from: "funFeed",
+                              data_post: selectedOption,
                             },
                           })
                         : setModalLogin(true);
@@ -2102,9 +2129,6 @@ export default function FeedList({ props, token }) {
                   }}
                 >
                   <Send_to height={17} width={17} />
-                  <Text size="description" style={{ marginLeft: 3 }}>
-                    {t("send_to")}
-                  </Text>
                 </Button>
               </View>
               <View
