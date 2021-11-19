@@ -20,6 +20,7 @@ import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
 import Crop from "../../screens/Feed/Post/Crop";
 import SendPost from "../../screens/Feed/Post/SendPost";
+import FeedList from "../../screens/Feed";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -33,6 +34,7 @@ export default function FeedStackNavigation() {
         ...TransitionPresets.SlideFromRightIOS,
       }}
     >
+      {/* <FeedStack.Screen name="FeedList" component={FeedList} /> */}
       <FeedStack.Screen
         name="Post"
         component={Postscreen}

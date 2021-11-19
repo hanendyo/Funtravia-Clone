@@ -10,8 +10,14 @@ import AddAlbumFeed from "../../graphQL/Mutation/Post/AddAlbumFeed";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  StackActions,
+  NavigationActions,
+  CommonActions,
+} from "@react-navigation/native";
 
 export default function ListFotoAlbums(props) {
+  console.log("rpops", props);
   const { t } = useTranslation();
   const [show, setShow] = useState(true);
   const [token, setToken] = useState(props.route.params.token);
@@ -125,6 +131,7 @@ export default function ListFotoAlbums(props) {
   });
 
   const SubmitAdd = async () => {
+    console.log("submit album");
     try {
       let response = await MutationAddAlbumFeed({
         variables: {
@@ -148,33 +155,71 @@ export default function ListFotoAlbums(props) {
           });
           setTimeout(() => {
             if (froms == "funFeed") {
-              props.navigation.navigate("BottomStack", {
-                screen: "FeedBottomScreen",
-                params: {
-                  screen: "FeedScreen",
-                  params: {
-                    isTag: true,
-                    isPost: false,
-                    isComment: false,
-                    isItinerary: false,
-                  },
-                },
+              props.navigation.navigate("FeedScreen", {
+                token: token,
+                updateDataPost: response.data.link_post_to_album.data,
               });
             } else if (froms == "feedProfil") {
-              props.navigation.push("ProfileStack", {
-                screen: "myfeed",
-                params: {
-                  datauser: setting?.user,
-                },
-              });
+              props.navigation.dispatch(
+                CommonActions.navigate({
+                  name: "ProfileStack",
+                  params: {
+                    screen: "myfeed",
+                    params: {
+                      datauser: setting?.user,
+                      updateDataPost: response.data.link_post_to_album.data,
+                    },
+                  },
+                })
+              );
+
+              // props.navigation.push("ProfileStack", {
+              //   screen: "myfeed",
+              //   params: {
+              //     datauser: setting?.user,
+              //     updateDataPost: response.data.link_post_to_album.data,
+              //   },
+              // });
             } else {
-              props.navigation.push("FeedStack", {
-                screen: "CommentPost",
-                params: {
-                  post_id: props.route.params.data_post.id,
-                  data: props.route.params.data_post,
-                },
-              });
+              console.log("comment");
+              props.navigation.dispatch(
+                CommonActions.reset({
+                  routes: [
+                    // { name: "CommentPost", key: props.route.params.key },
+                    {
+                      name: "CommentPost",
+                      params: {
+                        post_id: response.data.link_post_to_album.data.id,
+                        data: response.data.link_post_to_album.data,
+                        token: token,
+                      },
+                    },
+                  ],
+                  index: 4,
+                })
+              );
+              // props.navigation.reset({
+              //   index: 0,
+              //   routes: [
+              //     { name: "CommentPost" },
+              //     {
+              //       name: "CommentPost",
+              //       params: {
+              //         post_id: response.data.link_post_to_album.data.id,
+              //         data: response.data.link_post_to_album.data,
+              //         token: token,
+              //       },
+              //     },
+              //   ],
+              // });
+
+              // props.navigation.push("FeedStack", {
+              //   screen: "CommentPost",
+              //   params: {
+              //     post_id: response.data.link_post_to_album.data.id,
+              //     data: response.data.link_post_to_album.data,
+              //   },
+              // });
             }
           }, 1000);
         } else {

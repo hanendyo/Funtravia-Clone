@@ -119,21 +119,22 @@ export default function myfeed(props) {
   let [datas, setDatas] = useState([]);
   let [indekScrollto, setIndeksScrollto] = useState(0);
 
-  const Scroll_to = (indekScrollto) => {
+  const Scroll_to = async (index) => {
+    index = index ? index : indekScrollto;
     setTimeout(() => {
-      if (ref && ref.current) {
-        ref.current.scrollToIndex({
+      if (ref && ref?.current) {
+        ref?.current?.scrollToIndex({
           animation: false,
-          index: indekScrollto ? indekScrollto : 0,
+          index: index,
         });
       }
-    }, 1000);
+    }, 100);
   };
 
   const loadAsync = async () => {
     await LoadFollowing();
-    await refetch();
-    await Scroll_to();
+    // await refetch();
+    // await Scroll_to(indekScrollto);
   };
 
   const {
@@ -146,12 +147,11 @@ export default function myfeed(props) {
   } = useQuery(User_Post, {
     options: {
       fetchPolicy: "network-only",
-      // errorPolicy: "ignore",
+      errorPolicy: "ignore",
     },
-    // pollInterval: 100,
     variables: {
       user_id: datauser.id,
-      limit: 50,
+      limit: 15,
       offset: 0,
     },
     context: {
@@ -162,7 +162,7 @@ export default function myfeed(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: async () => {
-      setDatas(datapost?.user_post_paging?.datas);
+      await setDatas(datapost?.user_post_paging?.datas);
       const tempData = [...datapost?.user_post_paging?.datas];
       const indeks = tempData.findIndex(
         (k) => k["id"] == props.route.params.post_id
@@ -252,10 +252,27 @@ export default function myfeed(props) {
   };
 
   useEffect(() => {
+    if (props.route.params) {
+      if (props.route.params.updateDataPost) {
+        let tempdata = [...datapost?.user_post_paging?.datas];
+        console.log("tempadat feed rpofil", tempdata);
+        if (tempdata) {
+          let indeks = tempdata.findIndex(
+            (k) => k["id"] == props.route.params.updateDataPost.id
+          );
+          let tempdataIndeks = { ...tempdata[indeks] };
+          tempdataIndeks = props.route.params.updateDataPost;
+          tempdata.splice(indeks, 1, tempdataIndeks);
+          setDatas(tempdata);
+          setIndeksScrollto(indeks);
+          Scroll_to(indeks);
+        }
+      }
+    }
     props.navigation.setOptions(HeaderComponent);
     loadasync();
     loadAsync();
-  }, []);
+  }, [props.route.params.updateDataPost]);
 
   const [
     MutationLike,
@@ -754,10 +771,10 @@ export default function myfeed(props) {
     ref.current.scrollToOffset({ offset });
     setTimeout(
       () =>
-        ref.current.scrollToIndex({
-          index: error.index ? error.index : 0,
+        ref?.current?.scrollToIndex({
+          index: error.index,
         }),
-      1000
+      100
     );
   };
 
@@ -766,8 +783,8 @@ export default function myfeed(props) {
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
-            itintitle: data.itinerary.name,
-            country: data.itinerary.id,
+            itintitle: data.album.itinerary.name,
+            country: data.album.itinerary.id,
             dateitin: "",
             token: token,
             status: "",
@@ -778,7 +795,7 @@ export default function myfeed(props) {
       : setModalLogin(true);
   };
 
-  const removeTagAlbum = async (post_id, album_id, index) => {
+  const removeTagAlbum = async (post_id, album_id) => {
     try {
       let response = await AlbumMutation({
         variables: {
@@ -787,8 +804,13 @@ export default function myfeed(props) {
         },
       });
       if (response.data.remove_albums_post.code == 200) {
-        refetch();
-        setModalmenu(false);
+        let tempdata = [...datas];
+        let indeks = tempdata.findIndex((k) => k["id"] == post_id);
+        let tempdataIndex = { ...tempdata[indeks] };
+        tempdataIndex.album = null;
+        tempdata.splice(indeks, 1, tempdataIndex);
+        await setDatas(tempdata);
+        await setModalmenu(false);
       } else {
         RNToasty({
           title: t("failRemoveTagAlbum"),
@@ -800,7 +822,6 @@ export default function myfeed(props) {
         title: t("failRemoveTagAlbum"),
         position: "bottom",
       });
-      refetch();
     }
   };
 
@@ -835,8 +856,8 @@ export default function myfeed(props) {
               backgroundColor: "#FFFFFF",
               // flex: 1,
               marginHorizontal: 10,
-              marginVertical: 5,
-              marginTop: 15,
+              // marginVertical: 5,
+              marginTop: 10,
               borderRadius: 20,
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
@@ -1104,12 +1125,6 @@ export default function myfeed(props) {
 
                 <Button
                   onPress={() =>
-                    // props.navigation.push("FeedStack", {
-                    //   screen: "SendPost",
-                    //   params: {
-                    //     post: item,
-                    //   },
-                    // }),
                     props.navigation.navigate("ChatStack", {
                       screen: "SendToChat",
                       params: {
@@ -1135,9 +1150,6 @@ export default function myfeed(props) {
                   }}
                 >
                   <Send_to height={17} width={17} />
-                  <Text size="description" style={{ marginLeft: 3 }}>
-                    {t("send_to")}
-                  </Text>
                 </Button>
               </View>
               <View
@@ -1382,7 +1394,7 @@ export default function myfeed(props) {
                 onPress={() => {
                   setModalmenu(false),
                     token
-                      ? props.navigation.push("FeedStack", {
+                      ? props.navigation.navigate("FeedStack", {
                           screen: "CreateListAlbum",
                           params: {
                             user_id: setting?.user_id,

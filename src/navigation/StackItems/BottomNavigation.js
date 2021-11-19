@@ -48,7 +48,6 @@ function HomeStack(props) {
 
 const Tripstack = createStackNavigator();
 function TripPlaningscreen(props) {
-  console.log("props bottom", props);
   return (
     <Tripstack.Navigator initialRouteName={"TripPlaning"}>
       <Tripstack.Screen
@@ -65,12 +64,18 @@ function TripPlaningscreen(props) {
 }
 const Feedstack = createStackNavigator();
 function Feedstackscreen(props) {
+  console.log("props feed stack", props);
   return (
     <Feedstack.Navigator initialRouteName={"FeedScreen"}>
       <Feedstack.Screen
         name="FeedScreen"
         component={FeedScreen}
-        initialParams={{ token: props.route.params.token }}
+        initialParams={{
+          token: props.route.params.token,
+          updateDataPost: props.route.params.updateDataPost
+            ? props.route.params.updateDataPost
+            : null,
+        }}
         options={{
           headerShown: true,
         }}
@@ -83,8 +88,8 @@ const Chatstack = createStackNavigator();
 function Chatstackscreen(props) {
   const { t } = useTranslation();
   return (
-    <Feedstack.Navigator initialRouteName={"ChatScreen"}>
-      <Feedstack.Screen
+    <Chatstack.Navigator initialRouteName={"ChatScreen"}>
+      <Chatstack.Screen
         name="ChatScreen"
         component={ChatScreen}
         options={{
@@ -101,15 +106,15 @@ function Chatstackscreen(props) {
           ),
         }}
       />
-    </Feedstack.Navigator>
+    </Chatstack.Navigator>
   );
 }
 
 const MyAccountStack = createStackNavigator();
 function MyAccountStackScreen() {
   return (
-    <Feedstack.Navigator initialRouteName={"AccountScreen"}>
-      <Feedstack.Screen
+    <MyAccountStack.Navigator initialRouteName={"AccountScreen"}>
+      <MyAccountStack.Screen
         name="AccountScreen"
         component={MyAccount}
         options={{
@@ -118,12 +123,13 @@ function MyAccountStackScreen() {
           headerTitle: "",
         }}
       />
-    </Feedstack.Navigator>
+    </MyAccountStack.Navigator>
   );
 }
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
+  console.log("props bottom", props);
   const { t, i18n } = useTranslation();
 
   return (
@@ -160,10 +166,13 @@ export default function BottomNavigationItems(props) {
       <MainNavigator.Screen
         name="FeedBottomScreen"
         component={Feedstackscreen}
-        initialParams={{ token: props.route.params.token }}
+        initialParams={{
+          token: props.route.params.token,
+          updateDataPost: props.route.params.updateDataPost
+            ? props.route.params.updateDataPost
+            : null,
+        }}
         options={{
-          // headerShown: false,
-          // headerTransparent: true,
           tabBarLabel: t("feed"),
           tabBarIcon: ({ focused }) =>
             focused ? (

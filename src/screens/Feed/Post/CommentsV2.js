@@ -73,6 +73,7 @@ import ViewMoreText from "react-native-view-more-text";
 import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 
 export default function Comments(props) {
+  console.log("props comment", props);
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState(null);
@@ -103,8 +104,8 @@ export default function Comments(props) {
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
-            itintitle: data.itinerary.name,
-            country: data.itinerary.id,
+            itintitle: data.album.itinerary.name,
+            country: data.album.itinerary.id,
             dateitin: "",
             token: token,
             status: "",
@@ -1756,9 +1757,6 @@ export default function Comments(props) {
                     size="small"
                   >
                     <Send_to height={17} width={17} />
-                    <Text size="description" style={{ marginLeft: 3 }}>
-                      {t("send_to")}
-                    </Text>
                   </Button>
                 </View>
                 <View

@@ -38,6 +38,7 @@ import get from "lodash.get";
 import { RNToasty } from "react-native-toasty";
 
 export default function ProfileSettings(props) {
+  console.log("props setting", props);
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   let [modalhapus, setModalhapus] = useState(false);
