@@ -833,5 +833,6 @@
   "FailedLikeEvents": "Gagal menyukai event",
   "removeTagAlbum": "Lepaskan dari album",
   "fileCouldNotBeDownloaded": "File tidak dapat diunduh",
-  "failRemoveTagAlbum": "Gagal melepaskan tag album"
+  "failRemoveTagAlbum": "Gagal melepaskan tag album",
+  "successcopylink" :"Sukses Salin Tautan Ke Papan Klip"
 }

@@ -3111,7 +3111,7 @@ export default function Country(props) {
               onPress={() => {
                 shareAction({
                   from: "country",
-                  target: data.country_detail,
+                  target: data.country_detail?.id,
                 });
                 SetShareModal(false);
               }}

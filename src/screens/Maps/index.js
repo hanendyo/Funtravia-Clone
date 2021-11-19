@@ -5,7 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   Dimensions,
-  StatusBar,
   Image,
   Alert,
   Modal as ModalRN,
@@ -19,13 +18,18 @@ import Australia from "./src/world/australia.svg";
 import NortAmerica from "./src/world/north_america.svg";
 import SouthAmerica from "./src/world/south_america.svg";
 import Africa from "./src/world/africa.svg";
-import { Text, Button } from "../../component";
+import { Text, Button, StatusBar } from "../../component";
 import { View } from "native-base";
 import { SvgCss } from "react-native-svg";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
-import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
+import {
+  Arrowbackblack,
+  Arrowbackios,
+  Arrowbackiosblack,
+  Arrowbackwhite,
+} from "../../assets/svg";
 const Notch = DeviceInfo.hasNotch();
 
 const HeightFlatlist = Platform.select({
@@ -42,45 +46,7 @@ export default function World({ navigation }) {
   const MapHeight = (ContentHeight * 22) / 150;
   const MapWidth = width / 2 - 20;
 
-  const HeaderComponent = {
-    headerShown: true,
-    transparent: false,
-    headerTintColor: "white",
-    headerTitle: (
-      <Text type="bold" size="header" style={{ color: "#fff" }}>
-        {t("destination")}
-      </Text>
-    ),
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => navigation.goBack()}
-        style={{
-          height: 55,
-          marginLeft: 5,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-  };
-
-  useEffect(() => {
-    navigation.setOptions(HeaderComponent);
-  }, []);
+  useEffect(() => {}, []);
   const data = [
     {
       name: t("europe"),
@@ -127,7 +93,51 @@ export default function World({ navigation }) {
   ];
   return (
     <View style={{ flex: 1, backgroundColor: "#F6F6F6", paddingBottom: 50 }}>
-      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+      <StatusBar backgroundColor="#14646E" />
+      {/* backhandler */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => navigation.goBack()}
+            style={{
+              height: 55,
+              marginLeft: 5,
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
+            ) : (
+              <Arrowbackblack height={20} width={20}></Arrowbackblack>
+            )}
+          </Button>
+          <View
+            style={{
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              onPress={() => onBackPress()}
+              style={{
+                color: "#464646",
+                marginLeft: 10,
+              }}
+              type="bold"
+              size="header"
+            >
+              {t("destination")}
+            </Text>
+          </View>
+        </View>
+      </View>
       <View
         style={{
           height: (height * 34) / 110,
