@@ -166,7 +166,7 @@ export default function Country(props) {
     refreshData();
     setTimeout(() => {
       setLoadings(false);
-    }, 2000);
+    }, 4000);
     const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation]);
@@ -233,7 +233,6 @@ export default function Country(props) {
         });
 
         setRoutes(tab);
-        // setLoadings(false);
       },
     }
   );
@@ -2007,7 +2006,7 @@ export default function Country(props) {
         <Animated.Image
           style={{
             width: "100%",
-            height: "85%",
+            height: "82%",
             resizeMode: "cover",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],

@@ -127,14 +127,14 @@ export default function Asia({ navigation }) {
 
   const onBackPress = useCallback(() => {
     if (BackUse.current.id !== "142") {
-      navigation.goBack();
+      // navigation.goBack();
       // console.log("not go back");
-      // setSubContinent({ id: "142" });
-      // InitialCountry({ id: "142" });
-      // BackUse.current = {
-      //   id: "142",
-      //   label: "All",
-      // };
+      setSubContinent({ id: "142" });
+      InitialCountry({ id: "142" });
+      BackUse.current = {
+        id: "142",
+        label: "All",
+      };
     } else {
       console.log("go back");
       navigation.goBack();
@@ -165,6 +165,9 @@ export default function Asia({ navigation }) {
     // console.log("d", data);
     setCountries(data);
   };
+  useEffect(() => {
+    InitialCountry();
+  }, []);
 
   // awal keyboardheight
   const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -184,12 +187,6 @@ export default function Asia({ navigation }) {
       BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     };
   }, [navigation, onBackPress]);
-
-  useEffect(() => {
-    navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    });
-  }, [onBackPress]);
 
   useEffect(() => {
     keyboardDidShowListener.current = Keyboard.addListener(
@@ -214,32 +211,30 @@ export default function Asia({ navigation }) {
         backgroundColor: "#FFFFFF",
       }}
     >
-      <StatusBar backgroundColor="#14646E" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
       <View
         style={{
           height: Platform.select({
             ios: Notch
               ? Dimensions.get("screen").height * 0.5
-              : Dimensions.get("screen").height * 0.6,
+              : Dimensions.get("screen").height * 0.52,
             android: Dimensions.get("screen").height * 0.5,
           }),
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#f6f6f6",
         }}
       >
         {/* view for map destination */}
         <View
           style={{
             overflow: "hidden",
-            width: Dimensions.get("screen").width - 30,
+            width: Dimensions.get("screen").width,
             backgroundColor: "#f6f6f6",
-            marginHorizontal: 15,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
-            marginTop: 15,
             height: Platform.select({
               ios: Notch
-                ? Dimensions.get("screen").height * 0.5 - 15
-                : Dimensions.get("screen").height * 0.6 - 15,
+                ? Dimensions.get("screen").height * 0.6 - 15
+                : Dimensions.get("screen").height * 0.7 - 15,
               android: Dimensions.get("screen").height * 0.5 - 15,
             }),
           }}
@@ -249,6 +244,7 @@ export default function Asia({ navigation }) {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
+              paddingHorizontal: 15,
             }}
           >
             <View style={{ flexDirection: "row" }}>
@@ -278,13 +274,11 @@ export default function Asia({ navigation }) {
                   style={{
                     color: "#464646",
                     marginLeft: 10,
-                    // fontSize: 18,
-                    // fontFamily: "Lato-Bold",
                   }}
                   type="bold"
                   size="header"
                 >
-                  {t("destination")}
+                  {subContinent.id != "142" ? subContinent.label : "Asia"}
                 </Text>
               </View>
             </View>
@@ -336,35 +330,7 @@ export default function Asia({ navigation }) {
 
               justifyContent: "flex-end",
             }}
-          >
-            <Pressable style={{}}>
-              <View
-                style={{
-                  borderRadius: 10,
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignSelf: "center",
-                  borderColor: "#d3d3d3",
-                  borderWidth: 1,
-                  marginBottom: 10,
-                  backgroundColor: "#FFF",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#209FAE",
-                    textAlign: "center",
-                    fontSize: 18,
-                    paddingVertical: 5,
-                    paddingHorizontal: 40,
-                    fontFamily: "Lato-Bold",
-                  }}
-                >
-                  {subContinent.id != "142" ? subContinent.label : "Asia"}
-                </Text>
-              </View>
-            </Pressable>
-          </View>
+          ></View>
         </View>
       </View>
 
@@ -374,31 +340,29 @@ export default function Asia({ navigation }) {
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height * 0.5,
+            backgroundColor: "#F6F6F6",
           }}
         >
           <View
             style={{
               borderWidth: 1,
               borderColor: "#d3d3d3",
-              borderTopRightRadius: 20,
-              borderTopLeftRadius: 20,
+              borderRadius: 15,
+              marginHorizontal: 15,
               backgroundColor: "#FFFFFF",
-              height: "100%",
+              height: Platform.select({
+                ios: Notch ? "85%" : "85%",
+                android: "78%",
+              }),
             }}
           >
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-              }}
-            >
+            <View>
               <Text
                 size="title"
-                type="regular"
+                type="bold"
                 style={{
                   paddingVertical: 15,
+                  marginLeft: 25,
                   color: "#209FAE",
                 }}
               >
@@ -412,7 +376,7 @@ export default function Asia({ navigation }) {
                   paddingHorizontal: 5,
                   marginTop: 5,
 
-                  marginBottom: 100,
+                  marginBottom: 50,
                 }}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
@@ -450,7 +414,7 @@ export default function Asia({ navigation }) {
                         <View
                           style={{
                             width: 5,
-                            height: "40%",
+                            height: "20%",
                             borderTopRightRadius: 30,
                             borderBottomRightRadius: 30,
                             marginRight: 10,
@@ -480,17 +444,21 @@ export default function Asia({ navigation }) {
         <View
           style={{
             width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
+            height: Dimensions.get("screen").height * 0.5,
+            backgroundColor: "#F6F6F6",
           }}
         >
           <View
             style={{
               borderWidth: 1,
               borderColor: "#d3d3d3",
-              borderTopRightRadius: 20,
-              borderTopLeftRadius: 20,
+              borderRadius: 15,
               backgroundColor: "#FFFFFF",
-              height: "100%",
+              marginHorizontal: 15,
+              height: Platform.select({
+                ios: Notch ? "85%" : "85%",
+                android: "78%",
+              }),
             }}
           >
             <View
@@ -499,45 +467,19 @@ export default function Asia({ navigation }) {
                 flexDirection: "row",
                 alignItems: "center",
                 alignContent: "center",
-
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
               }}
             >
-              <View
-                style={{
-                  width: "70%",
-                  paddingLeft: 50,
-                  // alignItems: "center",
-                  // alignContent: "center",
-                }}
-              >
+              <View>
                 <Text
                   size="title"
-                  type="regular"
+                  type="bold"
                   style={{
                     paddingVertical: 15,
+                    color: "#209FAE",
+                    marginLeft: 20,
                   }}
                 >
                   {t("country")}
-                </Text>
-              </View>
-              <View
-                style={{
-                  width: "30%",
-                  paddingLeft: 15,
-                  // alignItems: "center",
-                  // alignContent: "center",
-                }}
-              >
-                <Text
-                  size="title"
-                  type="regular"
-                  style={{
-                    paddingVertical: 15,
-                  }}
-                >
-                  {t("location")}
                 </Text>
               </View>
             </View>
@@ -548,130 +490,141 @@ export default function Asia({ navigation }) {
                 renderItem={({ item, index }) => (
                   <View
                     style={{
-                      paddingVertical: 15,
                       paddingHorizontal: 15,
-                      borderBottomColor: "#dedede",
-                      borderBottomWidth: index === countries.length - 1 ? 0 : 1,
                       marginVertical: 5,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
                     }}
                   >
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate("CountryStack", {
-                          screen: "Country",
-                          params: {
-                            data: { id: Country[item["alpha-3"]].id },
-                          },
-                        })
-                      }
-                      key={index}
+                    <View
                       style={{
-                        flex: 1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        borderBottomColor: "#dedede",
+                        borderBottomWidth:
+                          index === countries.length - 1 ? 1 : 1,
+                        paddingVertical: 15,
                       }}
                     >
+                      <Pressable
+                        onPress={() =>
+                          navigation.navigate("CountryStack", {
+                            screen: "Country",
+                            params: {
+                              data: { id: Country[item["alpha-3"]].id },
+                            },
+                          })
+                        }
+                        key={index}
+                        style={{
+                          flex: 1,
+                        }}
+                      >
+                        <View
+                          style={{
+                            width: "80%",
+
+                            flexDirection: "row",
+                          }}
+                        >
+                          <View
+                            style={{
+                              shadowColor: "#000",
+                              shadowOffset: {
+                                width: 0,
+                                height: 3,
+                              },
+                              shadowOpacity: 0.1,
+                              shadowRadius: 4.65,
+                              width: 25,
+
+                              elevation: 7,
+                              marginRight: 10,
+                            }}
+                          >
+                            <Flag
+                              countryid={item["alpha-3"]}
+                              width={60}
+                              height={20}
+                            />
+                          </View>
+                          <Text
+                            size="label"
+                            type="reguler"
+                            style={{ marginLeft: 35 }}
+                          >
+                            {item.name}
+                          </Text>
+                        </View>
+                      </Pressable>
                       <View
                         style={{
-                          width: "70%",
+                          width: "15%",
 
+                          justifyContent: "center",
+                          alignContent: "center",
+                          alignItems: "center",
                           flexDirection: "row",
                         }}
                       >
                         <View
                           style={{
-                            shadowColor: "#000",
-                            shadowOffset: {
-                              width: 0,
-                              height: 3,
-                            },
-                            shadowOpacity: 0.1,
-                            shadowRadius: 2.65,
-                            width: 25,
-
-                            elevation: 7,
-                            marginRight: 10,
-                          }}
-                        >
-                          <Flag
-                            countryid={item["alpha-3"]}
-                            style={{ width: 50, marginRight: 15 }}
-                          />
-                        </View>
-                        <Text
-                          size="label"
-                          type="reguler"
-                          style={{ marginLeft: 20 }}
-                        >
-                          {item.name}
-                        </Text>
-                      </View>
-                    </Pressable>
-                    <View
-                      style={{
-                        width: "30%",
-
-                        justifyContent: "center",
-                        alignContent: "center",
-                        alignItems: "center",
-                        flexDirection: "row",
-                      }}
-                    >
-                      <View
-                        style={{
-                          height: 30,
-                          width: 30,
-                          borderRadius: 50,
-                          alignSelf: "center",
-                          alignItems: "center",
-                          alignContent: "center",
-                          justifyContent: "center",
-                          // backgroundColor: "rgba(226, 236, 248, 0.85)",
-                          backgroundColor:
-                            Idcountry == item["alpha-3"]
-                              ? "#DAF0F2"
-                              : "#F6F6F6",
-                        }}
-                      >
-                        <Pressable
-                          key={index}
-                          onPress={() => {
-                            {
-                              setSubContinent({
-                                id: item["sub-region-code"],
-                                label: item["sub-region"],
-                              }),
-                                setIdcountry(
-                                  item["alpha-3"] === Idcountry
-                                    ? null
-                                    : item["alpha-3"]
-                                );
-                              // setHeader(item["sub-region-code"]);
-
-                              BackUse.current = {
-                                id: item["sub-region-code"],
-                                label: item["sub-region"],
-                              };
-                            }
-                          }}
-                          style={{
-                            height: 30,
-                            width: 30,
+                            height: 40,
+                            width: 40,
                             borderRadius: 50,
                             alignSelf: "center",
                             alignItems: "center",
                             alignContent: "center",
                             justifyContent: "center",
-                            zIndex: 9999,
+                            borderWidth: 1,
+                            borderColor:
+                              Idcountry == item["alpha-3"]
+                                ? "#209FAE"
+                                : "#F6F6F6",
+                            backgroundColor:
+                              Idcountry == item["alpha-3"]
+                                ? "#DAF0F2"
+                                : "#F6F6F6",
                           }}
                         >
-                          {Idcountry == item["alpha-3"] ? (
-                            <PinBiru height={18} width={18} />
-                          ) : (
-                            <PinAbu height={18} width={18} />
-                          )}
-                        </Pressable>
+                          <Pressable
+                            key={index}
+                            onPress={() => {
+                              {
+                                setSubContinent({
+                                  id: item["sub-region-code"],
+                                  label: item["sub-region"],
+                                }),
+                                  setIdcountry(
+                                    item["alpha-3"] === Idcountry
+                                      ? null
+                                      : item["alpha-3"]
+                                  );
+                                // setHeader(item["sub-region-code"]);
+
+                                BackUse.current = {
+                                  id: item["sub-region-code"],
+                                  label: item["sub-region"],
+                                };
+                              }
+                            }}
+                            style={{
+                              height: 30,
+                              width: 30,
+                              borderRadius: 50,
+                              alignSelf: "center",
+                              alignItems: "center",
+                              alignContent: "center",
+                              justifyContent: "center",
+                              zIndex: 9999,
+                            }}
+                          >
+                            {Idcountry == item["alpha-3"] ? (
+                              <PinBiru height={18} width={18} />
+                            ) : (
+                              <PinAbu height={18} width={18} />
+                            )}
+                          </Pressable>
+                        </View>
                       </View>
                     </View>
                   </View>

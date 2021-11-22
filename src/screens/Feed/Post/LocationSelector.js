@@ -18,6 +18,8 @@ import {
 import Modal from "react-native-modal";
 import { StatusBar, Truncate, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
 
 export default function LocationSelector({
   modals,
@@ -50,6 +52,10 @@ export default function LocationSelector({
         alignItems: "center",
         alignSelf: "center",
         alignContent: "center",
+        marginTop: Platform.select({
+          ios: Notch ? -25 : 0,
+          android: 0,
+        }),
       }}
     >
       {/* <StatusBar backgroundColor="#14646E" /> */}
@@ -131,24 +137,24 @@ export default function LocationSelector({
                 </View>
               );
             }}
-            renderRightButton={() => {
-              return text ? (
-                <Pressable
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 50,
-                    marginRight: -10,
-                  }}
-                  onPress={() => {
-                    setText("");
-                    GooglePlacesRef.current.setAddressText("");
-                  }}
-                >
-                  <Xblue width={20} height={20} />
-                </Pressable>
-              ) : null;
-            }}
+            // renderRightButton={() => {
+            //   return text ? (
+            //     <Pressable
+            //       style={{
+            //         justifyContent: "center",
+            //         alignItems: "center",
+            //         width: 50,
+            //         marginRight: -10,
+            //       }}
+            //       onPress={() => {
+            //         setText("");
+            //         GooglePlacesRef.current.setAddressText("");
+            //       }}
+            //     >
+            //       <Xblue width={20} height={20} />
+            //     </Pressable>
+            //   ) : null;
+            // }}
             textInputProps={{
               onChangeText: (text) => {
                 setText(text);

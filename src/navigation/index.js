@@ -288,6 +288,7 @@ export default function MainStackNavigator({
             headerShown: false,
             headerTintColor: "white",
             headerBackTitleVisible: false,
+            gestureEnabled: false,
           }}
         />
         <Tab.Screen

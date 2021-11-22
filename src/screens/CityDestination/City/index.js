@@ -228,7 +228,7 @@ export default function CityDetail(props) {
     refreshData();
     setTimeout(() => {
       setLoadings(false);
-    }, 2000);
+    }, 4000);
     const Journalitinerarydata = props.navigation.addListener("focus", () => {
       getJournalCity();
       getItineraryCity;
@@ -315,7 +315,6 @@ export default function CityDetail(props) {
       }
       setdataevent(eventavailable);
       getJournalCity();
-      // setLoadings(false);
     },
   });
 
@@ -2368,7 +2367,7 @@ export default function CityDetail(props) {
         <Animated.Image
           style={{
             width: "100%",
-            height: "85%",
+            height: "82%",
             resizeMode: "cover",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslate }],
