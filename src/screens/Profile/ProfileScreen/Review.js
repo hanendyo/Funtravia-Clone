@@ -47,29 +47,105 @@ export default function Review(
         // borderBottomColor: "#f3f3f3",
         backgroundColor: "#fff",
         marginTop:
-          capHeight <= 50
+          capHeight == 10
             ? Platform.OS === "ios"
               ? Notch
-                ? 45
-                : 45
-              : -10
-            : Platform.OS === "ios"
-            ? Notch
-              ? 45
-              : 100
-            : 45,
+                ? 0
+                : 0
+              : -15
+            : capHeight == 20
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : 10
+            : capHeight == 30
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : -15
+            : capHeight == 40
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 20
+                : 20
+              : 25
+            : capHeight == 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : -15
+            : capHeight == 60
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 25
+                : 25
+              : 25
+            : capHeight == 70
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : -25
+            : capHeight == 80
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 10
+                : 10
+              : 20
+            : 50,
         marginBottom:
-          capHeight <= 50
+          capHeight == 10
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 15
+              : 30
+            : capHeight == 20
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 15
+              : 10
+            : capHeight == 30
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 15
+              : 30
+            : capHeight == 40
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : -5
+            : capHeight == 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 15
+              : 30
+            : capHeight == 60
             ? Platform.OS === "ios"
               ? Notch
                 ? -5
                 : -5
-              : 25
-            : Platform.OS === "ios"
-            ? Notch
-              ? -25
-              : -25
-            : -25,
+              : -5
+            : capHeight == 70
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 5
+                : 5
+              : 40
+            : capHeight == 80
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 10
+                : 10
+              : 0
+            : 30,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
