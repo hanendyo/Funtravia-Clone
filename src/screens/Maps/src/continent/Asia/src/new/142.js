@@ -5,14 +5,9 @@ import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 
-const HeightMaps = Platform.select({
-  ios: Notch ? 90 : 160,
-  android: 90,
-});
-
-const WidthMaps = Platform.select({
-  ios: Notch ? 40 : 30,
-  android: 40,
+const ViewBox = Platform.select({
+  ios: Notch ? "-20 0 890 480" : "-20 0 890 600",
+  android: "-20 0 890 480",
 });
 
 export default function Maps({
@@ -21,13 +16,12 @@ export default function Maps({
   defaultColor,
   setChange,
 }) {
-  console.log(subContinent.id, colorChange, defaultColor, setChange);
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
-      width={width - normalize(40)}
-      height={width - normalize(150)}
-      viewBox="0 0 865 591"
+      width={width - normalize(10)}
+      height={width - normalize(80)}
+      viewBox={ViewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/Svg"
     >

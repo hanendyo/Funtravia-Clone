@@ -5,13 +5,18 @@ import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
 
 const HeightMaps = Platform.select({
-  ios: Notch ? 90 : 90,
-  android: 90,
+  ios: Notch ? 80 : 60,
+  android: 78,
 });
 
 const WidthMaps = Platform.select({
-  ios: Notch ? 40 : 40,
-  android: 40,
+  ios: Notch ? 30 : 15,
+  android: 15,
+});
+
+const ViewBox = Platform.select({
+  ios: Notch ? "-10 0 252 223" : "-5 0 252 250",
+  android: "-0.5 0 252 223",
 });
 
 export default function Maps({
@@ -27,7 +32,7 @@ export default function Maps({
     <Svg
       width={width - WidthMaps}
       height={width - HeightMaps}
-      viewBox="0 0 252 223"
+      viewBox={ViewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

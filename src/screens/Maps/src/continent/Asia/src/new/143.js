@@ -1,6 +1,23 @@
 import React from "react";
 import Svg, { Path, G } from "react-native-svg";
 import { Dimensions } from "react-native";
+import DeviceInfo from "react-native-device-info";
+const Notch = DeviceInfo.hasNotch();
+
+const HeightMaps = Platform.select({
+  ios: Notch ? 80 : 60,
+  android: 90,
+});
+
+const WidthMaps = Platform.select({
+  ios: Notch ? 30 : 15,
+  android: 40,
+});
+
+const ViewBox = Platform.select({
+  ios: Notch ? "-10 0 200 139" : "-10 0 200 149",
+  android: "-10 0 200 139",
+});
 
 export default function Maps({
   subContinent,
@@ -13,9 +30,9 @@ export default function Maps({
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
-      width={width - 30}
-      height={width - 150}
-      viewBox="0 0 200 139"
+      width={width - WidthMaps}
+      height={width - HeightMaps}
+      viewBox={ViewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

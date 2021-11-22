@@ -1502,8 +1502,17 @@ const Index = (props) => {
   };
 
   const renderGeneral = () => {
+    const y = scrollY.interpolate({
+      inputRange: [0, 55],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
     return (
-      <View>
+      <Animated.View
+        style={{
+          transform: [{ translateY: y }],
+        }}
+      >
         <ImageSlide
           index={indeks}
           show={modalss}
@@ -1983,7 +1992,7 @@ const Index = (props) => {
             token={token}
           />
         </View>
-      </View>
+      </Animated.View>
     );
   };
 

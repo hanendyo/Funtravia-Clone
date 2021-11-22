@@ -9,6 +9,7 @@ import {
   Alert,
   Modal as ModalRN,
   Pressable,
+  Platform,
 } from "react-native";
 import { calendar_blue, Bg_soon } from "../../assets/png";
 import WorldMap from "./src/world/world.svg";
@@ -93,7 +94,7 @@ export default function World({ navigation }) {
   ];
   return (
     <View style={{ flex: 1, backgroundColor: "#F6F6F6", paddingBottom: 50 }}>
-      <StatusBar backgroundColor="#14646E" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
       {/* backhandler */}
       <View
         style={{
@@ -234,14 +235,17 @@ export default function World({ navigation }) {
       </ModalRN>
       <View
         style={{
-          width: Dimensions.get("screen").width - 20,
-          marginHorizontal: 10,
+          width: Dimensions.get("screen").width - 30,
+          marginHorizontal: 15,
           backgroundColor: "#fff",
           borderWidth: 1,
           borderColor: "#d1d1d1",
           borderRadius: 15,
           overflow: "hidden",
-          height: "66%",
+          height: Platform.select({
+            ios: Notch ? "58%" : "60%",
+            android: "59%",
+          }),
         }}
       >
         <FlatList
