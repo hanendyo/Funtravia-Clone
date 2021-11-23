@@ -14,6 +14,7 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
     if (token) {
       props.navigation.navigate("DestinationUnescoReview", {
         data: data,
+        token: token,
       });
     } else {
       setModalLogin(true);

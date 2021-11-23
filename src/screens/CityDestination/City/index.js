@@ -122,7 +122,7 @@ export default function CityDetail(props) {
   let datenow = years + "-" + Bln1;
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(100).fill(0));
+  const [routes, setRoutes] = useState(Array(1).fill(0));
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -226,9 +226,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 4000);
+    // setTimeout(() => {
+    //   setLoadings(false);
+    // }, 4000);
     const Journalitinerarydata = props.navigation.addListener("focus", () => {
       getJournalCity();
       getItineraryCity;
@@ -273,6 +273,7 @@ export default function CityDetail(props) {
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
+    await setLoadings(false);
   };
 
   let [listCity, setListCity] = useState([]);
@@ -721,11 +722,18 @@ export default function CityDetail(props) {
     renderjournal = list_journal;
 
     let renderItinerary = list_populer;
+
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
     return (
       // Deskripsi
-      <View
+      <Animated.View
         style={{
           marginTop: 5,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.description ? (
@@ -2058,17 +2066,24 @@ export default function CityDetail(props) {
             ) : null}
           </View>
         ) : null}
-      </View>
+      </Animated.View>
     );
   };
   const RenderArticle = (e, dataR) => {
     let render = [];
     render = dataR;
 
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
-      <View
+      <Animated.View
         style={{
           paddingVertical: 5,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.length
@@ -2172,7 +2187,7 @@ export default function CityDetail(props) {
               }
             })
           : null}
-      </View>
+      </Animated.View>
     );
   };
   /**
@@ -2456,54 +2471,47 @@ export default function CityDetail(props) {
                       type="regular"
                       style={{ marginLeft: 10 }}
                     >
-                      {t("cityof")} {t("province")}{" "}
-                      {/* {dataCity && dataCity.CitiesInformation
-                        ? dataCity.CitiesInformation.province.name
-                        : "-"} */}
-                      {Capital({
-                        text:
-                          dataCity && dataCity.CitiesInformation
-                            ? dataCity.CitiesInformation.province.name
-                            : "-",
-                      })}
+                      <Truncate
+                        text={
+                          t("cityof") +
+                          " " +
+                          t("province") +
+                          " " +
+                          Capital({
+                            text:
+                              dataCity && dataCity.CitiesInformation
+                                ? dataCity.CitiesInformation.province.name
+                                : "-",
+                          })
+                        }
+                        length={30}
+                      />
                     </Text>
                   ) : (
                     <Text
-                      size="description"
+                      size="label"
                       type="regular"
                       style={{ marginLeft: 10 }}
                     >
                       {t("cityof")}{" "}
-                      {dataCity && dataCity.CitiesInformation
-                        ? dataCity.CitiesInformation.province.name
-                        : "-"}{" "}
-                      {t("province")}
+                      <Truncate
+                        text={
+                          Capital({
+                            text:
+                              dataCity && dataCity.CitiesInformation
+                                ? dataCity.CitiesInformation.province.name
+                                : "-",
+                          }) +
+                          t("province") +
+                          " "
+                        }
+                        length={30}
+                      />{" "}
                     </Text>
                   )}
                 </View>
               </View>
             </View>
-            {/* <View
-              style={{
-                justifyContent: "center",
-                display: "flex",
-              }}
-            >
-              <Pressable
-                onPress={() => SetShareModal(true)}
-                style={{
-                  backgroundColor: "#F6F6F6",
-                  marginRight: 2,
-                  height: 30,
-                  width: 30,
-                  borderRadius: 17,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ShareBlack height={20} width={20} />
-              </Pressable>
-            </View> */}
           </View>
         </Animated.View>
       </Animated.View>

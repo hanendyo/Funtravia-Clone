@@ -51,20 +51,16 @@ import {
   Text,
   FunIcon,
   FunImage,
-  FunImageBackground,
-  FunAnimatedImage,
-  RenderMaps,
   FunMaps,
   CopyLink,
   shareAction,
 } from "../../../component";
-import { Input, Tab, Tabs } from "native-base";
-import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
-import CityItinerary from "../../../graphQL/Query/Cities/ItineraryCity";
+import { Tab, Tabs } from "native-base";
+
 import CountrisInformation from "../../../graphQL/Query/Countries/Countrydetail";
 import CountrisJournal from "../../../graphQL/Query/Countries/CountryJournal";
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native-gesture-handler";
+
 import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
 import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
@@ -114,7 +110,7 @@ export default function Country(props) {
   let years = new Date().getFullYear();
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(100).fill(0));
+  const [routes, setRoutes] = useState(Array(1).fill(0));
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -164,9 +160,7 @@ export default function Country(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 4000);
+
     const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation]);
@@ -206,6 +200,7 @@ export default function Country(props) {
     await getJournal();
     await getPackageDetail();
     await getCountryfact();
+    await setLoadings(false);
   };
 
   const [getPackageDetail, { loading, data, error }] = useLazyQuery(
@@ -607,8 +602,18 @@ export default function Country(props) {
     let renderjournal = [];
     renderjournal = list_journal;
 
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
-      <View>
+      <Animated.View
+        style={{
+          transform: [{ translateY: y }],
+        }}
+      >
         {render && render.description ? (
           <View
             style={{
@@ -1695,17 +1700,24 @@ export default function Country(props) {
             </View>
           </View>
         ) : null}
-      </View>
+      </Animated.View>
     );
   };
   const RenderArticle = (e, dataR) => {
     let render = [];
     render = dataR;
 
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
-      <View
+      <Animated.View
         style={{
           paddingVertical: 5,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.length
@@ -1809,7 +1821,7 @@ export default function Country(props) {
               }
             })
           : null}
-      </View>
+      </Animated.View>
     );
   };
   /**

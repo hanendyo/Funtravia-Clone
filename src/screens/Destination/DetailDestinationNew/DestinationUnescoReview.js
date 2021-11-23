@@ -206,16 +206,15 @@ export default function DestinationUnescoReview(props) {
           if (response.data.create_review_without_img.code !== 200) {
             throw new Error(response.data.create_review_without_img.message);
           }
-          // setTimeout(async () => {
-          //   await (
-          //     <View style={{ marginTop: 20 }}>
-          //       <ActivityIndicator />
-          //     </View>
-          //   );
-          // }, 2000);
+
           setloading(false);
 
-          await props.navigation.navigate("DestinationUnescoDetail");
+          await props.navigation.push("DestinationUnescoDetail", {
+            id: data.id,
+            name: data.name,
+            token: props.route.params.token,
+            indexscroll: 1,
+          });
         }
       } catch (err) {
         Alert.alert("" + err);
@@ -243,7 +242,12 @@ export default function DestinationUnescoReview(props) {
           // }, 2000);
           setloading(false);
 
-          await props.navigation.navigate("DestinationUnescoDetail");
+          await props.navigation.push("DestinationUnescoDetail", {
+            id: data.id,
+            name: data.name,
+            token: props.route.params.token,
+            indexscroll: 1,
+          });
         }
       } catch (err) {
         setloading(false);

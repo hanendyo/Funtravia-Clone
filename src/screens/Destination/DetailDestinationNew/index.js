@@ -103,30 +103,17 @@ const Index = (props) => {
     android: 440 + tambahan + tambahan1 + tambahan2 - unesco,
   });
 
-  // let TabBarHeight = 75;
-
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
     android: StatusBar.currentHeight,
   });
 
-  // let hide = React.useRef(
-  //   scrollY.interpolate({
-  //     inputRange: [0, HEADER_SCROLL_DISTANCE],
-  //     outputRange: [0, 1],
-  //     extrapolate: "clamp",
-  //   })
-  // );
-  // let SafeStatusBar = 0;
-
   let [newHeight, setNewHeight] = useState(0);
   let scrollRef = useRef();
 
-  const [tabIndex, setIndex] = useState(0);
-  //   const [routes] = useState([
-  //     { key: "tab1", title: "General" },
-  //     { key: "tab2", title: "Review" },
-  //   ]);
+  const [tabIndex, setIndex] = useState(
+    props?.route?.params?.indexscroll ? props?.route.params.indexscroll : 0
+  );
 
   const [routes, setRoutes] = useState(Array(100).fill(0));
   const [canScroll, setCanScroll] = useState(true);
@@ -1250,7 +1237,10 @@ const Index = (props) => {
                     setTambahan2(lines * 20);
                   }}
                 >
-                  {dataDestination?.website ? dataDestination?.website : "-"}
+                  {dataDestination?.website &&
+                  dataDestination.website !== "null"
+                    ? dataDestination?.website
+                    : "-"}
                 </Text>
               </View>
               {/* {data?.destinationById?.website ? (
@@ -1332,12 +1322,6 @@ const Index = (props) => {
       setModalLogin(true);
     }
   };
-
-  // const renderGeneral = ({ item, index, props }) => {
-  //   return (
-  //     <Generals data={item} props={props} addTo={addToPlan} token={token} />
-  //   );
-  // };
 
   const [
     mutationlikedAnother,
@@ -1503,7 +1487,7 @@ const Index = (props) => {
 
   const renderGeneral = () => {
     const y = scrollY.interpolate({
-      inputRange: [0, 55],
+      inputRange: [0, HeaderHeight],
       outputRange: [0, 55],
       extrapolateRight: "clamp",
     });
@@ -1997,18 +1981,31 @@ const Index = (props) => {
   };
 
   const renderReview = ({ item, props }) => {
-    return <Reviews id={item?.id} props={props} />;
+    return (
+      <Reviews
+        id={item?.id}
+        props={props}
+        HeaderHeight={HeaderHeight}
+        token={token}
+      />
+    );
   };
 
   const renderArticle = (e, dataA) => {
     let render = [];
     render = dataA;
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
 
     return (
-      <View
+      <Animated.View
         style={{
           paddingHorizontal: 15,
           paddingVertical: 10,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.length
@@ -2108,7 +2105,7 @@ const Index = (props) => {
               }
             })
           : null}
-      </View>
+      </Animated.View>
     );
   };
 
@@ -2550,7 +2547,7 @@ const Index = (props) => {
           top:
             deviceId == "LYA-L29"
               ? normalize(layoutImage) + normalize(40)
-              : normalize(layoutImage) + normalize(10),
+              : normalize(layoutImage) + normalize(20),
           transform: [{ translateY: yButtonLikeShare }],
           right: 20,
           zIndex: 9999,
@@ -2658,7 +2655,7 @@ const Index = (props) => {
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
-                normalize(5),
+                normalize(35),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
@@ -2963,7 +2960,10 @@ const Index = (props) => {
                 width={15}
                 style={{ marginBottom: 18, marginTop: 15 }}
               />
-              {data && data.destinationById && data.destinationById.phone1 ? (
+              {data &&
+              data.destinationById &&
+              data.destinationById.phone1 &&
+              data.destinationById.phone1 !== "null" ? (
                 <Text
                   size="label"
                   type="reguler"
@@ -3002,7 +3002,10 @@ const Index = (props) => {
                 width={15}
                 style={{ marginBottom: 18, marginTop: 15 }}
               />
-              {data && data.destinationById && data.destinationById.website ? (
+              {data &&
+              data.destinationById &&
+              data.destinationById.website &&
+              data.destinationById.website !== "null" ? (
                 <Text
                   size="label"
                   type="reguler"
@@ -3041,7 +3044,8 @@ const Index = (props) => {
               />
               {data &&
               data.destinationById &&
-              data.destinationById.instagram ? (
+              data.destinationById.instagram &&
+              data.destinationById.instagram !== "null" ? (
                 <Text
                   size="label"
                   type="reguler"
