@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Dimensions, View, Image, Alert, Pressable } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Dimensions,
+  View,
+  Image,
+  Alert,
+  Pressable,
+  Animated,
+} from "react-native";
 import { Text, FunImage, ModalLogin } from "../../../component";
 import {
   dateFormatMDY,
@@ -15,10 +22,10 @@ import ImageSlide from "../../../component/src/ImageSlide";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
 
-export default function Reviews({ props, id }) {
+export default function Reviews({ props, id, HeaderHeight, token }) {
   const { t, i18n } = useTranslation();
   const [setting, setSetting] = useState("");
-  const [token, setToken] = useState("");
+  // const [token, setToken] = useState("");
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
@@ -77,8 +84,18 @@ export default function Reviews({ props, id }) {
     await setModalss(true);
   };
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const y = scrollY.interpolate({
+    inputRange: [0, HeaderHeight ? HeaderHeight : 420],
+    outputRange: [0, 55],
+    extrapolateRight: "clamp",
+  });
   return (
-    <>
+    <Animated.View
+      style={{
+        transform: [{ translateY: y }],
+      }}
+    >
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -143,7 +160,8 @@ export default function Reviews({ props, id }) {
                     }}
                   >
                     <Text size="label" type="bold" numberOfLines={1}>
-                      {item?.user?.first_name + " " + item?.user?.last_name}
+                      {item?.user?.first_name + " "}
+                      {item?.user?.last_name ? item?.user?.last_name : ""}
                     </Text>
                     <View style={{ flexDirection: "row" }}>
                       {set.map((value, index) =>
@@ -314,6 +332,6 @@ export default function Reviews({ props, id }) {
           </Text>
         </View>
       )}
-    </>
+    </Animated.View>
   );
 }

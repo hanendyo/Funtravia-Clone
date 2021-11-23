@@ -112,7 +112,7 @@ export default function CityDetail(props) {
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(100).fill(0));
+  const [routes, setRoutes] = useState(Array(1).fill(0));
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -212,9 +212,7 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 4000);
+
     const Journaldata = props.navigation.addListener("focus", () => {
       getJournalCity();
     });
@@ -256,6 +254,10 @@ export default function CityDetail(props) {
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
+    setTimeout(() => {
+      setLoadings(false);
+    }, 4000);
+    await setLoadings(false);
   };
 
   let [lisProvince, setlisProvince] = useState([]);
@@ -676,11 +678,18 @@ export default function CityDetail(props) {
 
     let renderItinerary = list_populer;
 
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
       // Deskripsi
-      <View
+      <Animated.View
         style={{
           marginTop: 5,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.description ? (
@@ -2409,17 +2418,24 @@ export default function CityDetail(props) {
             ) : null}
           </View>
         ) : null}
-      </View>
+      </Animated.View>
     );
   };
   const RenderArticle = (e, dataR) => {
     let render = [];
     render = dataR;
 
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     return (
-      <View
+      <Animated.View
         style={{
           paddingVertical: 5,
+          transform: [{ translateY: y }],
         }}
       >
         {render && render.length
@@ -2523,7 +2539,7 @@ export default function CityDetail(props) {
               }
             })
           : null}
-      </View>
+      </Animated.View>
     );
   };
   /**
