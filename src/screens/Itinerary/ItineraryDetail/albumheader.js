@@ -23,6 +23,7 @@ import { PlusBlack, GridAll, GridDay, Bottom } from "../../../assets/svg";
 import { Item, Input, Label } from "native-base";
 import CreateAlbum from "../../../graphQL/Mutation/Itinerary/CreateNewAlbum";
 import { useMutation } from "@apollo/client";
+import normalize from "react-native-normalize";
 
 export default function Albumheader({
   dataAlbum,
@@ -112,7 +113,7 @@ export default function Albumheader({
           <Menu>
             <MenuTrigger
               style={{
-                paddingVertical: 7.5,
+                height: normalize(32),
                 paddingHorizontal: 10,
                 alignContent: "center",
                 justifyContent: "center",
@@ -171,7 +172,7 @@ export default function Albumheader({
 
                 flexDirection: "row",
                 backgroundColor: "#daf0f2",
-
+                height: normalize(32),
                 marginHorizontal: 2.5,
                 borderRadius: 5,
               }}
@@ -189,7 +190,7 @@ export default function Albumheader({
                   justifyContent: "center",
                 }}
               >
-                <Text size={"description"} type={"regular"}>
+                <Text size={"small"} type={"bold"}>
                   {"Create New"}
                 </Text>
               </View>
@@ -262,6 +263,7 @@ export default function Albumheader({
           style={{
             backgroundColor: "white",
             width: Dimensions.get("screen").width - 60,
+            borderRadius: 5,
             padding: 20,
           }}
         >

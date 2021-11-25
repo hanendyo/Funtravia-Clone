@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Platform, TouchableOpacity, Alert } from "react-native";
+import { Platform, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
@@ -8,6 +8,7 @@ import CACHE from "../cache.json";
 import FileViewer from "react-native-file-viewer";
 import Text from "./Text";
 import * as Progress from "react-native-progress";
+import { FileGray, PhotoGray } from "../../assets/svg";
 
 export default function FunDocument({
   filepath,
@@ -16,6 +17,7 @@ export default function FunDocument({
   style,
   size,
   progressBar,
+  icon,
   children,
   ...otherProps
 }) {
@@ -62,9 +64,7 @@ export default function FunDocument({
                 // console.log(res);
               },
               progress: (res) => {
-                setProgress(
-                  ((res.bytesWritten / res.contentLength) * 100).toFixed()
-                );
+                setProgress(+(res.bytesWritten / res.contentLength) * 100);
               },
             }).promise.then((res) => {
               setLoading(false);
@@ -77,7 +77,7 @@ export default function FunDocument({
           Alert.alert(t("fileCouldNotBeDownloaded"));
         });
     } else {
-      path = filepath;
+      path = uri;
     }
   }
 
@@ -85,9 +85,16 @@ export default function FunDocument({
     <TouchableOpacity
       style={style}
       {...otherProps}
-      onPress={() => handleAttachment(path)}
+      onPress={() => handleAttachment(format === undefined ? filepath : path)}
     >
-      <Text size="description" type="regular" style={{ color: "#464646" }}>
+      {icon ? (
+        format === "pdf" ? (
+          <FileGray width={15} height={15} style={styles.Icon} />
+        ) : (
+          <PhotoGray width={15} height={15} style={styles.Icon} />
+        )
+      ) : null}
+      <Text size="description" type="regular" style={styles.Filename}>
         {filename}
       </Text>
 
@@ -99,14 +106,23 @@ export default function FunDocument({
             color={"#209FAE"}
             progress={progress}
             borderColor={"#DAF0F2"}
-            style={{
-              marginLeft: 10,
-              height: 10,
-              marginTop: 5,
-            }}
+            style={styles.ProgressBar}
           />
         ) : null
       ) : null}
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  Icon: {
+    marginRight: 10,
+    alignSelf: "center",
+  },
+  Filename: { color: "#464646" },
+  ProgressBar: {
+    marginLeft: 10,
+    height: 10,
+    marginTop: 5,
+  },
+});

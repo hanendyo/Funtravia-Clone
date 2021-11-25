@@ -11,6 +11,8 @@ import {
   Platform,
   Modal,
   Pressable,
+  StyleSheet,
+  Picker,
   ActivityIndicator,
 } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
@@ -18,9 +20,13 @@ import {
   Arrowbackios,
   Arrowbackwhite,
   More,
+  Bottom,
   New,
   Xhitam,
   Xgray,
+  PinMapGreen,
+  Flights,
+  Stay,
 } from "../../../assets/svg";
 import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
 import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
@@ -41,9 +47,12 @@ import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
+import moment from "moment";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
+  const indexinput = props.route.params.indexdata;
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -113,7 +122,12 @@ export default function detailCustomItinerary(props) {
   let [dataParent, setDataParent] = useState({});
   console.log("dataParent", dataParent);
   let [dataChild, setDataChild] = useState([]);
-  let [modalmenu, setModalmenu] = useState(false);
+  let [modaldate, setModaldate] = useState(false);
+
+  const [hourFrom, setHourFrom] = useState("00");
+  const [minuteFrom, setminuteFrom] = useState("00");
+  const [hourTo, sethourTo] = useState("00");
+  const [minuteTo, setminuteTo] = useState("00");
 
   const pecahData = async (data, id) => {
     let dataX = [];
@@ -139,9 +153,32 @@ export default function detailCustomItinerary(props) {
     await setDataChild(dataX);
   };
 
-  // useEffect(() => {
-  //   FunAttachment(dataParent);
-  // }, [dataParent]);
+  const OpenModaldate = (starts, duration) => {
+    setModaldate(true);
+
+    let startTime = starts
+      .split(" ")[1]
+      .split(":")
+      .map((x) => +x);
+    let durationTime = duration.split(":").map((x) => +x);
+
+    let jam = `${startTime[0] + durationTime[0]}`;
+    let menit = `${startTime[1] + durationTime[1]}`;
+
+    if (menit > 59) {
+      menit -= 60;
+      jam += 1;
+    }
+
+    setHourFrom(
+      `${startTime[0]}`.length === 1 ? `0${startTime[0]}` : `${startTime[0]}`
+    );
+    setminuteFrom(
+      `${startTime[1]}`.length === 1 ? `0${startTime[1]}` : `${startTime[1]}`
+    );
+    sethourTo(jam.length === 1 ? "0" + jam : jam);
+    setminuteTo(menit.length === 1 ? "0" + menit : menit);
+  };
 
   const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
@@ -161,6 +198,13 @@ export default function detailCustomItinerary(props) {
       ":00"
     );
   };
+  // const setdatadayaktif = (data) => {
+  //   setdatadayaktifs(data);
+  //   props.navigation.setParams({ datadayaktif: data });
+  // };
+  const [datadayaktif, setdatadayaktif] = useState(
+    props.route.params?.datadayaktif ? props.route.params?.datadayaktif : ""
+  );
 
   const [
     mutationSaveTimeline,
@@ -173,6 +217,35 @@ export default function detailCustomItinerary(props) {
       },
     },
   });
+
+  const savetimeline = async (datakiriman) => {
+    try {
+      let response = await mutationSaveTimeline({
+        variables: {
+          idday: props.route.params.datadayaktif.id,
+          value: JSON.stringify(datakiriman),
+        },
+      });
+      if (loadingSave) {
+        Alert.alert("Loading!!");
+      }
+      if (errorSave) {
+        throw new Error("Error Input");
+      }
+
+      if (response.data) {
+        if (response.data.update_timeline.code !== 200) {
+          throw new Error(response.data.update_timeline.message);
+        }
+
+        // startRefreshAction();
+        // GetTimelin();
+        props.navigation.goBack();
+      }
+    } catch (error) {
+      Alert.alert("" + error);
+    }
+  };
 
   const [
     mutationDeleteActivity,
@@ -347,6 +420,137 @@ export default function detailCustomItinerary(props) {
     );
   };
 
+  const hour = [...Array(24).keys()]
+    .map((x) => `${x}`)
+    .map((y) => (y.length === 1 ? `0${y}` : y));
+  const minute = [...Array(60).keys()]
+    .map((x) => `${x}`)
+    .map((y) => (y.length === 1 ? `0${y}` : y));
+
+  const SetTimeline = async (
+    hourStart,
+    minStart,
+    hourEnd,
+    minEnd,
+    dataLists
+  ) => {
+    setModaldate(false);
+
+    let starttimes = hourStart + ":" + minStart + ":00";
+
+    let jams = parseFloat(hourEnd) - parseFloat(hourStart);
+
+    let menits = parseFloat(minEnd) + 60 - parseFloat(minStart);
+
+    if (menits > 59) {
+      menits = menits - 60;
+    }
+
+    let jamakhirs = jams < 10 ? "0" + (jams < 0 ? 0 : jams) : jams;
+    let menitakhirs = menits < 10 ? "0" + menits : menits;
+    let durations = jamakhirs + ":" + menitakhirs + ":00";
+
+    let dataganti = { ...dataLists[indexinput] };
+
+    dataganti.time = starttimes;
+    dataganti.duration = durations;
+
+    if (dataganti.detail_flight) {
+      let dateArr = dataganti.detail_flight.arrival.split(" ")[0];
+      let timeArr = dataganti.detail_flight.arrival.split(" ")[1];
+      let timeFinal = `${dateArr} ${hourEnd}:${minEnd}:00`;
+
+      dataganti.detail_flight = {
+        ...dataganti.detail_flight,
+        arrival: timeFinal,
+      };
+    }
+
+    if (dataLists[parseFloat(indexinput) - 1]) {
+      let timesebelum = hitungDuration({
+        startt: dataLists[parseFloat(indexinput) - 1].time,
+        dur: dataLists[parseFloat(indexinput) - 1].duration,
+      });
+
+      let timestartsebelum = dataLists[parseFloat(indexinput) - 1].time.split(
+        ":"
+      );
+
+      timesebelum = timesebelum.split(":");
+      let bandingan = starttimes.split(":");
+
+      timestartsebelum = parseFloat(timestartsebelum[0]);
+      let jamsebelum = parseFloat(timesebelum[0]);
+      let jamsesesudah = parseFloat(bandingan[0]);
+
+      if (jamsesesudah > timestartsebelum) {
+        let a = caridurasi(
+          dataLists[parseFloat(indexinput) - 1].time,
+          starttimes
+        );
+
+        let dataset = { ...dataLists[parseFloat(indexinput) - 1] };
+        dataset.duration = a;
+        dataLists.splice(parseFloat(indexinput) - 1, 1, dataset);
+      } else {
+        dataganti.time = hitungDuration({
+          startt: dataLists[parseFloat(indexinput) - 1].time,
+          dur: dataLists[parseFloat(indexinput) - 1].duration,
+        });
+      }
+    }
+
+    dataLists.splice(indexinput, 1, dataganti);
+
+    var x = 0;
+    var order = 1;
+
+    for (var y in dataLists) {
+      if (dataLists[y - 1]) {
+        let datareplace = { ...dataLists[y] };
+        datareplace.order = order;
+        datareplace.time = await hitungDuration({
+          startt: dataLists[y - 1].time,
+          dur: dataLists[y - 1].duration,
+        });
+        await dataLists.splice(y, 1, datareplace);
+      }
+      x++;
+      order++;
+    }
+
+    let sum = dataLists.reduce(
+      (itinerary, item) => itinerary.add(moment.duration(item.duration)),
+      moment.duration()
+    );
+
+    let jampert = dataLists[0].time.split(":");
+    let jampertama = parseFloat(jampert[0]);
+    let menitpertama = parseFloat(jampert[1]);
+    let durjam = Math.floor(sum.asHours());
+    let durmin = sum.minutes();
+    let hasiljam = jampertama + durjam;
+    let hasilmenit = menitpertama + durmin;
+
+    if (hasiljam <= 23) {
+      let dataday = { ...datadayaktif };
+
+      if (hasiljam === 23 && hasilmenit <= 59) {
+        savetimeline(dataLists);
+        dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+        await setdatadayaktif(dataday);
+      } else if (hasiljam < 23) {
+        savetimeline(dataLists);
+        dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+        await setdatadayaktif(dataday);
+      } else {
+        Alert.alert("Waktu sudah melewati batas maksimal");
+      }
+    } else {
+      Alert.alert("Waktu sudah melewati batas maksimal");
+    }
+  };
+
   const [
     mutationUpload,
     { loading: loadingSaved, data: dataSaved, error: errorSaved },
@@ -362,36 +566,51 @@ export default function detailCustomItinerary(props) {
   });
 
   const handleEdit = () => {
-    // if (dataParent.detail_flight !== null) {
-    //   props.navigation.navigate("ItineraryStack"),
-    //     {
-    //       screen: "customFlight",
-    //       params: {
-    //         itineraryId: props.route.params.idItin,
-    //         idDay: props.route.params.idDay,
-    //         startDate: props.route.params.startDate,
-    //         endDate: props.route.params.startDate,
-    //       },
-    //     };
-    // } else if (dataParent.detail_accomodation !== null) {
-    //   props.navigation.navigate("ItineraryStack"),
-    //     {
-    //       screen: "customStay",
-    //       params: {
-    //         itineraryId: props.route.params.idItin,
-    //         idDay: props.route.params.idDay,
-    //         startDate: props.route.params.startDate,
-    //         endDate: props.route.params.startDate,
-    //       },
-    //     };
-    // } else {
-    //   setModalMore(false);
-    // }
-    RNToasty.Show({
-      title: "Sorry, feature is not available yet",
-      position: "bottom",
-    });
-    setModalMore(false);
+    if (dataParent.detail_flight) {
+      props.navigation.navigate("customFlight", {
+        activityId: props.route.params.id,
+        itineraryId: props.route.params.idItin,
+        dayId: props.route.params.idDay,
+        startDate: props.route.params.startDate,
+        endDate: props.route.params.endDate,
+        name: dataParent.name,
+        departure: dataParent.detail_flight.from,
+        arrival: dataParent.detail_flight.destination,
+        latitude: dataParent.latitude,
+        longitude: dataParent.longitude,
+        latitude_departure: dataParent.detail_flight.latitude_departure,
+        longitude_departure: dataParent.detail_flight.longitude_departure,
+        attachment: dataParent.attachment,
+        timeDep: dataParent.detail_flight.departure,
+        timeArr: dataParent.detail_flight.arrival,
+        note: dataParent.note,
+        guestName: dataParent.detail_flight.guest_name,
+        carrier: dataParent.detail_flight.carrier,
+        booking_ref: dataParent.detail_flight.booking_ref,
+      });
+      setModalMore(false);
+    } else if (dataParent.detail_accomodation) {
+      props.navigation.navigate("customStay", {
+        activityId: props.route.params.id,
+        itineraryId: props.route.params.idItin,
+        dayId: props.route.params.idDay,
+        detail_accomodation: dataParent.detail_accomodation,
+        address: dataParent.address,
+        attachment: dataParent.attachment,
+        latitude: dataParent.latitude,
+        longitude: dataParent.longitude,
+        startDate: props.route.params.startDate,
+        endDate: props.route.params.endDate,
+        note: dataParent.note,
+      }),
+        setModalMore(false);
+    } else {
+      RNToasty.Show({
+        title: "Sorry, feature is not available yet",
+        position: "bottom",
+      });
+      setModalMore(false);
+    }
   };
 
   const handleUpload = async (files, id, sumber, res) => {
@@ -993,15 +1212,40 @@ export default function detailCustomItinerary(props) {
                 borderBottomWidth: 0.5,
               }}
             >
-              {/* {dataParent.icon ? (
-                <FunIcon
-                  icon={dataParent.icon}
-                  height={30}
-                  width={30}
-                  style={{
-                    borderRadius: 15,
-                  }}
-                />
+              {dataParent.detail_accomodation || dataParent.detail_flight ? (
+                dataParent.detail_flight ? (
+                  <View
+                    style={{
+                      backgroundColor: "#f6f6f6",
+                      width: 47,
+                      height: 47,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignSelf: "center",
+                      borderRadius: 40,
+                      borderWidth: 0.5,
+                      borderColor: "#d1d1d1",
+                    }}
+                  >
+                    <Flights height={35} width={35} />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      backgroundColor: "#f6f6f6",
+                      width: 47,
+                      height: 47,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignSelf: "center",
+                      borderRadius: 40,
+                      borderWidth: 0.5,
+                      borderColor: "#d1d1d1",
+                    }}
+                  >
+                    <Stay height={35} width={35} />
+                  </View>
+                )
               ) : (
                 <FunIcon
                   icon={"i-tour"}
@@ -1011,7 +1255,7 @@ export default function detailCustomItinerary(props) {
                     borderRadius: 15,
                   }}
                 />
-              )} */}
+              )}
               <TouchableOpacity
                 style={{ flex: 1, paddingHorizontal: 10 }}
                 // onLongPress={status !== "saved" ? drag : null}
@@ -1021,12 +1265,11 @@ export default function detailCustomItinerary(props) {
                 </Text>
                 <Text>
                   {Capital({
-                    text:
-                      dataParent.type !== "custom"
-                        ? dataParent.type !== "google"
-                          ? dataParent.type
-                          : t("destinationFromGoogle")
-                        : t("customActivity"),
+                    text: dataParent.detail_flight
+                      ? t("flight")
+                      : dataParent.detail_accomodation
+                      ? t("hotel")
+                      : t("customActivity"),
                   })}
                 </Text>
               </TouchableOpacity>
@@ -1043,118 +1286,20 @@ export default function detailCustomItinerary(props) {
                 <More width={15} height={15} />
               </Button>
             </View>
-            <View
-              style={{
-                paddingHorizontal: 15,
-                paddingVertical: 10,
-
-                borderBottomColor: "#f1f1f1",
-                borderBottomWidth: 0.5,
-              }}
-            >
-              <Text>{t("location")}</Text>
-              <MapView
-                style={{
-                  // flex: 1,
-                  marginTop: 10,
-                  width: "100%",
-                  marginBottom: 10,
-                  height: 80,
-                  //   borderRadius: 10,
-                }} //window pake Dimensions
-                region={{
-                  latitude: parseFloat(
-                    dataParent?.latitude ? dataParent?.latitude : 0
-                  ),
-                  longitude: parseFloat(
-                    dataParent?.longitude ? dataParent?.longitude : 0
-                  ),
-                  latitudeDelta: 0.007,
-                  longitudeDelta: 0.007,
-                }}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: parseFloat(
-                      dataParent?.latitude ? dataParent?.latitude : 0
-                    ),
-                    longitude: parseFloat(
-                      dataParent?.longitude ? dataParent?.longitude : 0
-                    ),
-                  }}
-                  title={dataParent.name}
-                  description={dataParent.address}
-                  onPress={() => {
-                    Linking.openURL(
-                      Platform.OS == "ios"
-                        ? "maps://app?daddr=" +
-                            dataParent.latitude +
-                            "+" +
-                            dataParent.longitude
-                        : "google.navigation:q=" +
-                            dataParent.latitude +
-                            "+" +
-                            dataParent.longitude
-                    );
-                  }}
-                />
-              </MapView>
-              <Text>{dataParent.address}</Text>
-            </View>
-            <View
-              style={{
-                paddingVertical: 10,
-
-                paddingHorizontal: 15,
-                borderBottomColor: "#f1f1f1",
-                borderBottomWidth: 0.5,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <View
-                  style={{
-                    marginRight: 40,
-                  }}
-                >
-                  <Text>{t("duration")} :</Text>
-                  <View
-                    style={{
-                      marginTop: 10,
-                      //   width: "80%",
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#daf0f2",
-                      borderRadius: 5,
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text type="bold">
-                      {Getdurasi(
-                        dataParent.duration ? dataParent.duration : "00:00:00"
-                      )}
-                    </Text>
-                  </View>
-                </View>
-                <View>
-                  <Text>{t("time")} :</Text>
-                  <View
-                    style={{
-                      marginTop: 10,
-                      //   width: "80%",
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#daf0f2",
-                      borderRadius: 5,
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <TouchableOpacity>
+            {dataParent.detail_flight || dataParent.detail_accomodation ? (
+              <View style={styles.ViewFlight}>
+                {dataParent.detail_flight ? (
+                  <View style={styles.ViewDepArr}>
+                    <View style={styles.DepArrContainer}>
+                      <Text type="light">{t("Departure")}</Text>
+                      <Text type="bold">
+                        {dataParent.detail_flight.departure.split(" ")[0]}
+                      </Text>
+                      {/* <Text type="bold">
+                        {dataParent.detail_flight.departure
+                          .split(" ")[1]
+                          .substring(0, 5)}
+                      </Text> */}
                       {dataParent.time ? (
                         <GetStartTime startt={dataParent.time} />
                       ) : (
@@ -1162,9 +1307,17 @@ export default function detailCustomItinerary(props) {
                           00:00
                         </Text>
                       )}
-                    </TouchableOpacity>
-
-                    <TouchableOpacity>
+                    </View>
+                    <View style={styles.DepArrContainer}>
+                      <Text type="light">{t("Arrival")}</Text>
+                      <Text type="bold">
+                        {dataParent.detail_flight.arrival.split(" ")[0]}
+                      </Text>
+                      {/* <Text type="bold">
+                        {dataParent.detail_flight.arrival
+                          .split(" ")[1]
+                          .substring(0, 5)}
+                      </Text> */}
                       {dataParent.duration ? (
                         <GetEndTime
                           startt={dataParent.time ? dataParent.time : "00:00"}
@@ -1177,12 +1330,126 @@ export default function detailCustomItinerary(props) {
                           00:00
                         </Text>
                       )}
-                    </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
+                ) : (
+                  <View style={styles.ViewDepArr}>
+                    <View style={styles.CheckContainer}>
+                      <Text type="light">{t("checkIn")}</Text>
+                      <Text type="bold">
+                        {dataParent.detail_accomodation.checkin.split(" ")[0]}
+                      </Text>
+                    </View>
+                    <View style={styles.CheckContainer}>
+                      <Text type="light">{t("checkOut")}</Text>
+                      <Text type="bold">
+                        {dataParent.detail_accomodation.checkout.split(" ")[0]}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                {dataParent.detail_flight ? (
+                  <>
+                    <View style={styles.FlightContainerMap}>
+                      <View
+                        style={{
+                          justifyContent: "space-between",
+                          width: "85%",
+                        }}
+                      >
+                        <Text type="light" style={{ marginBottom: 3 }}>
+                          {t("From")}
+                        </Text>
+                        <Text type="bold">{dataParent.detail_flight.from}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Linking.openURL(
+                            Platform.OS == "ios"
+                              ? `maps:0,0?q=${dataParent.detail_flight.from}@${dataParent.detail_flight?.latitude_departure},${dataParent.detail_flight?.longitude_departure}`
+                              : `geo:0,0?q=${dataParent.detail_flight?.latitude_departure},${dataParent.detail_flight?.longitude_departure}(${dataParent.detail_flight.from})`
+                          );
+                        }}
+                        style={{ alignSelf: "center", marginHorizontal: 5 }}
+                      >
+                        <PinMapGreen width={30} height={30} />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.FlightContainerMap}>
+                      <View
+                        style={{
+                          justifyContent: "space-between",
+                          width: "85%",
+                        }}
+                      >
+                        <Text type="light" style={{ marginBottom: 3 }}>
+                          {t("To")}
+                        </Text>
+                        <Text type="bold">
+                          {dataParent.detail_flight.destination}
+                        </Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Linking.openURL(
+                            Platform.OS == "ios"
+                              ? `maps:0,0?q=${dataParent.detail_flight.destination}@${dataParent.detail_flight?.latitude_arrival},${dataParent.detail_flight?.longitude_arrival}`
+                              : `geo:0,0?q=${dataParent.detail_flight?.latitude_arrival},${dataParent.detail_flight?.longitude_arrival}(${dataParent.detail_flight.destination})`
+                          );
+                        }}
+                        style={{ alignSelf: "center", marginHorizontal: 5 }}
+                      >
+                        <PinMapGreen width={30} height={30} />
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : null}
+
+                {dataParent?.detail_flight ? (
+                  <View style={styles.FlightContainer}>
+                    <Text type="light">{t("Passanger Name")}</Text>
+                    <Text type="bold">
+                      {dataParent?.detail_flight?.guest_name
+                        ? dataParent?.detail_flight?.guest_name
+                        : "-"}
+                    </Text>
+                  </View>
+                ) : null}
+
+                {dataParent?.detail_accomodation ? (
+                  <View style={styles.FlightContainer}>
+                    <Text type="light">{t("Guest Name")}</Text>
+                    <Text type="bold">
+                      {dataParent?.detail_accomodation?.guest_name
+                        ? dataParent?.detail_accomodation?.guest_name
+                        : "-"}
+                    </Text>
+                  </View>
+                ) : null}
+
+                {dataParent?.detail_flight ? (
+                  <View style={styles.FlightContainer}>
+                    <Text type="light">{t("bookingRef")}</Text>
+                    <Text type="bold">
+                      {dataParent?.detail_flight?.booking_ref
+                        ? dataParent?.detail_flight?.booking_ref
+                        : "-"}
+                    </Text>
+                  </View>
+                ) : null}
+                {dataParent?.detail_accomodation ? (
+                  <View style={styles.FlightContainer}>
+                    <Text type="light">{t("bookingRef")}</Text>
+                    <Text type="bold">
+                      {dataParent?.detail_accomodation?.booking_ref
+                        ? dataParent?.detail_accomodation?.booking_ref
+                        : "-"}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-            </View>
-            {dataParent.note ? (
+            ) : null}
+            {dataParent.detail_flight ? null : (
               <View
                 style={{
                   paddingHorizontal: 15,
@@ -1192,10 +1459,162 @@ export default function detailCustomItinerary(props) {
                   borderBottomWidth: 0.5,
                 }}
               >
-                <Text>{t("notes")}</Text>
-                <Text style={{ marginTop: 10 }}>{dataParent.note}</Text>
+                <Text size="small">{t("location")}</Text>
+                <MapView
+                  style={{
+                    // flex: 1,
+                    marginTop: 10,
+                    width: "100%",
+                    marginBottom: 10,
+                    height: 80,
+                    //   borderRadius: 10,
+                  }} //window pake Dimensions
+                  region={{
+                    latitude: parseFloat(
+                      dataParent?.latitude ? dataParent?.latitude : 0
+                    ),
+                    longitude: parseFloat(
+                      dataParent?.longitude ? dataParent?.longitude : 0
+                    ),
+                    latitudeDelta: 0.007,
+                    longitudeDelta: 0.007,
+                  }}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: parseFloat(
+                        dataParent?.latitude ? dataParent?.latitude : 0
+                      ),
+                      longitude: parseFloat(
+                        dataParent?.longitude ? dataParent?.longitude : 0
+                      ),
+                    }}
+                    title={dataParent.name}
+                    description={dataParent.address}
+                    onPress={() => {
+                      Linking.openURL(
+                        Platform.OS == "ios"
+                          ? "maps://app?daddr=" +
+                              dataParent.latitude +
+                              "+" +
+                              dataParent.longitude
+                          : "google.navigation:q=" +
+                              dataParent.latitude +
+                              "+" +
+                              dataParent.longitude
+                      );
+                    }}
+                  />
+                </MapView>
+                <Text size="small">{dataParent.address}</Text>
               </View>
-            ) : null}
+            )}
+            {dataParent.detail_accomodation ? null : (
+              <View style={styles.ViewFlight}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  <View
+                    style={{
+                      marginRight: 40,
+                    }}
+                  >
+                    <Text size="small">{t("duration")} :</Text>
+                    <View
+                      style={{
+                        marginTop: 10,
+                        //   width: "80%",
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                        backgroundColor: "#daf0f2",
+                        borderRadius: 5,
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text type="bold">
+                        {Getdurasi(
+                          dataParent.duration ? dataParent.duration : "00:00:00"
+                        )}
+                      </Text>
+                    </View>
+                  </View>
+                  <View>
+                    <Text size="small">{t("time")} :</Text>
+                    <View
+                      style={{
+                        marginTop: 10,
+                        //   width: "80%",
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                        backgroundColor: "#daf0f2",
+                        borderRadius: 5,
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() =>
+                          OpenModaldate(
+                            dataParent.detail_flight.departure,
+                            dataParent.duration
+                          )
+                        }
+                      >
+                        {dataParent.time ? (
+                          <GetStartTime startt={dataParent.time} />
+                        ) : (
+                          <Text size="description" type="bold">
+                            00:00
+                          </Text>
+                        )}
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() =>
+                          OpenModaldate(
+                            dataParent.detail_flight.departure,
+                            dataParent.duration
+                          )
+                        }
+                      >
+                        {dataParent.duration ? (
+                          <GetEndTime
+                            startt={dataParent.time ? dataParent.time : "00:00"}
+                            dur={
+                              dataParent.duration
+                                ? dataParent.duration
+                                : "00:00"
+                            }
+                          />
+                        ) : (
+                          <Text size="description" type="bold">
+                            00:00
+                          </Text>
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            <View
+              style={{
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                borderBottomColor: "#f1f1f1",
+                borderBottomWidth: 0.5,
+              }}
+            >
+              <Text size="small">{t("notes")}</Text>
+              <Text style={{ marginTop: 10 }}>
+                {dataParent.note ? dataParent.note : "-"}
+              </Text>
+            </View>
+
             <View
               style={{
                 paddingVertical: 10,
@@ -1206,7 +1625,7 @@ export default function detailCustomItinerary(props) {
             >
               <View style={{}}>
                 <Text
-                  size="label"
+                  size="description"
                   type="bold"
                   style={
                     {
@@ -1230,16 +1649,18 @@ export default function detailCustomItinerary(props) {
                               alignContent: "flex-start",
                               alignItems: "flex-start",
                               paddingVertical: 10,
-                              borderBottomWidth: 1,
-                              borderBottomColor: "#d1d1d1",
+                              borderBottomWidth: 0.5,
+                              borderBottomColor: "#f1f1f1",
                             }}
+                            key={index}
                           >
-                            <Text style={{ width: 30 }}>{index + 1}.</Text>
+                            {/* <Text style={{ width: 30 }}>{index + 1}.</Text> */}
                             <FunDocument
                               filename={data.file_name}
                               filepath={data.filepath}
                               format={data.extention}
                               progressBar
+                              icon
                               style={{ flex: 1, flexDirection: "row" }}
                             />
                             <TouchableOpacity
@@ -1520,6 +1941,339 @@ export default function detailCustomItinerary(props) {
           </View>
         </View>
       </Modal>
+
+      {/* Modal Date */}
+      <Modal
+        onBackdropPress={() => {
+          setModaldate(false);
+        }}
+        onRequestClose={() => setModaldate(false)}
+        animationType="fade"
+        visible={modaldate}
+        transparent={true}
+        style={{}}
+      >
+        <Pressable
+          onPress={() => setModaldate(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            borderRadius: 5,
+          }}
+        />
+
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 80,
+            backgroundColor: "white",
+            marginBottom: 70,
+            paddingVertical: 30,
+            paddingHorizontal: 20,
+            alignContent: "center",
+            alignItems: "center",
+            borderRadius: 5,
+            alignSelf: "center",
+            marginTop: Dimensions.get("screen").height / 8,
+          }}
+        >
+          <Text size="label">{t("setTimeForActivity")}</Text>
+          <Text size="title" type="bold">
+            {dataParent.name}
+          </Text>
+
+          <View
+            style={{
+              marginTop: 20,
+              backgroundColor: "#f3f3f3",
+              padding: 15,
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              size="label"
+              // type="bold"
+              style={{ alignSelf: "center" }}
+            >
+              {t("From")}
+            </Text>
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ width: "40%" }}>
+                <Picker
+                  iosIcon={
+                    <View>
+                      <Bottom />
+                    </View>
+                  }
+                  iosHeader="Select Hours"
+                  note
+                  mode="dropdown"
+                  selectedValue={hourFrom}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
+                  itemTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
+                  placeholderStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  headerTitleStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  style={{
+                    color: "#209fae",
+                    fontFamily: "Lato-Regular",
+                  }}
+                  onValueChange={(e) => setHourFrom(e)}
+                >
+                  {hour.map((item, index) => {
+                    return (
+                      <Picker.Item key={index} label={item} value={item} />
+                    );
+                  })}
+                </Picker>
+              </View>
+
+              <View
+                style={{
+                  width: "5%",
+                  alignItems: "center",
+                  // alignContent: "flex-end",
+                }}
+              >
+                <Text size="description" type="bold" style={{}}>
+                  :
+                </Text>
+              </View>
+              <View style={{ width: "40%" }}>
+                <Picker
+                  iosHeader="Select Minutes"
+                  headerBackButtonTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  note
+                  mode="dropdown"
+                  selectedValue={minuteFrom}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
+                  itemTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
+                  placeholderStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  iosIcon={
+                    <View>
+                      <Bottom />
+                    </View>
+                  }
+                  headerTitleStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  style={{
+                    color: "#209fae",
+                    fontFamily: "Lato-Regular",
+                  }}
+                  onValueChange={(itemValue) => setminuteFrom(itemValue)}
+                >
+                  {minute.map((item, index) => {
+                    return (
+                      <Picker.Item key={index} label={item} value={item} />
+                    );
+                  })}
+                </Picker>
+              </View>
+            </View>
+
+            <Text
+              size="label"
+              // type="bold"
+              style={{ alignSelf: "center" }}
+            >
+              {t("To")}
+            </Text>
+
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ width: "40%" }}>
+                <Picker
+                  iosIcon={
+                    <View>
+                      <Bottom />
+                    </View>
+                  }
+                  iosHeader="Select Hours"
+                  note
+                  mode="dropdown"
+                  selectedValue={hourTo}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
+                  itemTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
+                  placeholderStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  headerTitleStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  style={{
+                    color: "#209fae",
+                    fontFamily: "Lato-Regular",
+                  }}
+                  onValueChange={(item) =>
+                    sethourTo(item > hourFrom ? item : hourFrom)
+                  }
+                >
+                  {hour.map((item, index) => {
+                    return (
+                      <Picker.Item key={index} label={item} value={item} />
+                    );
+                  })}
+                </Picker>
+              </View>
+
+              <View
+                style={{
+                  width: "5%",
+                  alignItems: "center",
+                  // alignContent: "flex-end",
+                }}
+              >
+                <Text size="description" type="bold" style={{}}>
+                  :
+                </Text>
+              </View>
+              <View style={{ width: "40%" }}>
+                <Picker
+                  iosHeader="Select Minutes"
+                  headerBackButtonTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  note
+                  mode="dropdown"
+                  selectedValue={minuteTo}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
+                  itemTextStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
+                  placeholderStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  iosIcon={
+                    <View>
+                      <Bottom />
+                    </View>
+                  }
+                  headerTitleStyle={{
+                    fontFamily: "Lato-Regular",
+                  }}
+                  style={{
+                    color: "#209fae",
+                    fontFamily: "Lato-Regular",
+                  }}
+                  onValueChange={(item) =>
+                    setminuteTo(
+                      hourTo >= hourFrom
+                        ? minuteTo >= minuteFrom
+                          ? item
+                          : minuteFrom
+                        : minuteFrom
+                    )
+                  }
+                >
+                  {minute.map((item, index) => {
+                    return (
+                      <Picker.Item key={index} label={item} value={item} />
+                    );
+                  })}
+                </Picker>
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            onPress={() =>
+              SetTimeline(
+                hourFrom,
+                minuteFrom,
+                hourTo,
+                minuteTo,
+                props.route.params.data
+              )
+            }
+            style={{
+              marginTop: 20,
+              backgroundColor: "#209fae",
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              size="description"
+              type="regular"
+              style={{
+                color: "white",
+              }}
+            >
+              {t("save")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  ViewFlight: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderBottomColor: "#f1f1f1",
+    borderBottomWidth: 0.5,
+  },
+  ViewDepArr: {
+    flexDirection: "row",
+  },
+  DepArrContainer: {
+    marginRight: 40,
+    height: normalize(60),
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  CheckContainer: {
+    marginRight: 40,
+    height: normalize(40),
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  FlightContainer: {
+    marginVertical: 5,
+    justifyContent: "space-between",
+  },
+  FlightContainerMap: {
+    marginVertical: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+});

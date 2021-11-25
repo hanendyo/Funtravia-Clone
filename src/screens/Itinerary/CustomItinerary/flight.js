@@ -29,7 +29,12 @@ import {
   Pointmapgray,
   Arrowbackios,
 } from "../../../assets/svg";
-import { FloatingInput, Truncate, Peringatan } from "../../../component";
+import {
+  FloatingInput,
+  Truncate,
+  Peringatan,
+  FunDocument,
+} from "../../../component";
 import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -38,6 +43,7 @@ import { ReactNativeFile } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 import Modal from "react-native-modal";
 import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
+import UpdateCustomFlight from "../../../graphQL/Mutation/Itinerary/UpdateCustomFlight";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import { Input } from "native-base";
@@ -47,6 +53,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
+  console.log("props", props.route.params);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -114,12 +121,16 @@ export default function detailCustomItinerary(props) {
   };
   const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [token, setToken] = useState("");
 
   //params data
   const dayId = [props.route.params.dayId];
   const itineraryId = props.route.params.itineraryId;
   const startDate = props.route.params.startDate.split(" ").join("T");
   const endDate = props.route.params.endDate.split(" ").join("T");
+
+  //params edit data
 
   //modal
   const [modalFrom, setModalFrom] = useState(false);
@@ -128,13 +139,34 @@ export default function detailCustomItinerary(props) {
   const [dateTimeModalArrival, setDateTimeModalArrival] = useState(false);
 
   //input data
-  const [flightNumber, setFlightNumber] = useState("");
-  const [timeDeparture, setTimeDeparture] = useState(null);
-  const [timeArrival, setTimeArrival] = useState(null);
-  const [bookingRef, setBookingRef] = useState("");
-  const [guestName, setGuestName] = useState("");
-  const [carrier, setCarrier] = useState("");
-  const [note, setNote] = useState("");
+  const [flightNumber, setFlightNumber] = useState(
+    props.route.params.name ? props.route.params.name : ""
+  );
+  const [timeDeparture, setTimeDeparture] = useState(
+    props.route.params.timeDep
+      ? props.route.params.timeDep.split(" ").join("T")
+      : null
+  );
+  const [timeArrival, setTimeArrival] = useState(
+    props.route.params.timeArr
+      ? props.route.params.timeArr.split(" ").join("T")
+      : null
+  );
+  const [bookingRef, setBookingRef] = useState(
+    props.route.params.booking_ref ? props.route.params.booking_ref : ""
+  );
+  const [guestName, setGuestName] = useState(
+    props.route.params.guestName ? props.route.params.guestName : ""
+  );
+  const [carrier, setCarrier] = useState(
+    props.route.params.carrier ? props.route.params.carrier : ""
+  );
+  const [note, setNote] = useState(
+    props.route.params.note ? props.route.params.note : ""
+  );
+  const [attachmentCustom, setAttachmentCustom] = useState(
+    props.route.params.attachment ? props.route.params.attachment : null
+  );
   const [attachment, setAttachment] = useState([]);
 
   //constant data
@@ -148,21 +180,49 @@ export default function detailCustomItinerary(props) {
   const time = "00:00:00";
 
   //-- Google API data
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [address, setAddress] = useState("");
-  const [lat, setLat] = useState("");
-  const [long, setLong] = useState("");
+  const [from, setFrom] = useState(
+    props.route.params.departure ? props.route.params.departure : ""
+  );
+  const [to, setTo] = useState(
+    props.route.params.arrival ? props.route.params.arrival : ""
+  );
+  const [address, setAddress] = useState(
+    props.route.params.arrival ? props.route.params.arrival : ""
+  );
+  const [lat, setLat] = useState(
+    props.route.params.latitude ? props.route.params.latitude : ""
+  );
+  const [long, setLong] = useState(
+    props.route.params.longitude ? props.route.params.longitude : ""
+  );
+
+  const [latDep, setLatDep] = useState(
+    props.route.params?.latitude_departure
+      ? props.route.params?.latitude_departure
+      : ""
+  );
+  const [longDep, setLongDep] = useState(
+    props.route.params?.longitude_departure
+      ? props.route.params?.longitude_departure
+      : ""
+  );
 
   const inputFromGoogle = (input) => {
-    setAddress(input.formatted_address);
-    setLat(input.geometry.location.lat);
-    setLong(input.geometry.location.lng);
+    modalFrom
+      ? (setLatDep(input.geometry.location.lat),
+        setLongDep(input.geometry.location.lng))
+      : (setLat(input.geometry.location.lat),
+        setLong(input.geometry.location.lng),
+        setAddress(input.formatted_address));
   };
   //-- End of Google API
 
-  const [timeDepCheck, setTimeDepCheck] = useState("");
-  const [timeArrCheck, setTimeArrCheck] = useState("");
+  const [timeDepCheck, setTimeDepCheck] = useState(
+    props.route.params.timeDep ? props.route.params.timeDep : ""
+  );
+  const [timeArrCheck, setTimeArrCheck] = useState(
+    props.route.params.timeArr ? props.route.params.timeArr : ""
+  );
 
   //DATE TIME PICKER
   const timeConverter = (date) => {
@@ -212,6 +272,21 @@ export default function detailCustomItinerary(props) {
       },
     }
   );
+
+  const [
+    mutationUpdate,
+    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
+  ] = useMutation(UpdateCustomFlight, {
+    context: {
+      headers: {
+        "Content-Type": (file = []
+          ? `application/json`
+          : `multipart/form-data`),
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   const [itemValid, setItemValid] = useState({
     flightNumber: true,
     timeArrCheck: true,
@@ -246,10 +321,39 @@ export default function detailCustomItinerary(props) {
     return unsubscribe;
   }, [props.navigation]);
 
-  const mutationInput = async () => {
+  const mutationUpdateFlight = async () => {
+    console.log("update", {
+      id: props.route.params.activityId,
+      day_id: dayId,
+      title: flightNumber,
+      icon: icon,
+      qty: qty,
+      address: address,
+      latitude: lat,
+      longitude: long,
+      latitude_departure: latDep,
+      longitude_departure: longDep,
+      latitude_arrival: lat,
+      longitude_arrival: long,
+      note: note,
+      time: time,
+      duration: duration,
+      status: status,
+      order: order,
+      total_price: totalPrice,
+      departure: timeDeparture,
+      arrival: timeArrival,
+      from: from,
+      destination: to,
+      guest_name: guestName,
+      booking_ref: bookingRef,
+      carrier: carrier,
+      file: attachment,
+    });
     try {
-      let response = await mutation({
+      let response = await mutationUpdate({
         variables: {
+          id: props.route.params.activityId,
           day_id: dayId,
           title: flightNumber,
           icon: icon,
@@ -257,6 +361,10 @@ export default function detailCustomItinerary(props) {
           address: address,
           latitude: lat,
           longitude: long,
+          latitude_departure: latDep,
+          longitude_departure: longDep,
+          latitude_arrival: lat,
+          longitude_arrival: long,
           note: note,
           time: time,
           duration: duration,
@@ -273,6 +381,91 @@ export default function detailCustomItinerary(props) {
           file: attachment,
         },
       });
+      console.log("response", response);
+      if (loading) {
+        setLoadingApp(true);
+      }
+
+      if (errorSaved) {
+        console.log(errorSaved);
+        throw new Error("Error Input");
+      }
+
+      if (response.data) {
+        if (response.data.update_custom_flight.code !== 200) {
+          throw new Error(response.data.update_custom_flight.message);
+        } else {
+          props.navigation.navigate("itindetail");
+        }
+      }
+      setLoadingApp(false);
+    } catch (error) {
+      // Alert.alert("" + error);
+      console.log("error catch :", error);
+      setLoadingApp(false);
+      setButtonDisabled(false);
+    }
+  };
+
+  const mutationInput = async () => {
+    console.log("variables:", {
+      day_id: dayId,
+      title: flightNumber,
+      icon: icon,
+      qty: qty,
+      address: address,
+      latitude: lat,
+      longitude: long,
+      latitude_departure: latDep,
+      longitude_departure: longDep,
+      latitude_arrival: lat,
+      longitude_arrival: long,
+      note: note,
+      time: time,
+      duration: duration,
+      status: status,
+      order: order,
+      total_price: totalPrice,
+      departure: timeDeparture,
+      arrival: timeArrival,
+      from: from,
+      destination: to,
+      guest_name: guestName,
+      booking_ref: bookingRef,
+      carrier: carrier,
+      file: attachment,
+    });
+    try {
+      let response = await mutation({
+        variables: {
+          day_id: dayId,
+          title: flightNumber,
+          icon: icon,
+          qty: qty,
+          address: address,
+          latitude: lat,
+          longitude: long,
+          latitude_departure: latDep,
+          longitude_departure: longDep,
+          latitude_arrival: lat,
+          longitude_arrival: long,
+          note: note,
+          time: time,
+          duration: duration,
+          status: status,
+          order: order,
+          total_price: totalPrice,
+          departure: timeDeparture,
+          arrival: timeArrival,
+          from: from,
+          destination: to,
+          guest_name: guestName,
+          booking_ref: bookingRef,
+          carrier: carrier,
+          file: attachment,
+        },
+      });
+      console.log(response);
       if (loading) {
         setLoadingApp(true);
       }
@@ -292,19 +485,25 @@ export default function detailCustomItinerary(props) {
       setLoadingApp(false);
     } catch (error) {
       // Alert.alert("" + error);
-      console.log("error catch :", error);
+      console.error("error catch :", error);
       setLoadingApp(false);
+      setButtonDisabled(false);
     }
   };
 
   const getToken = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    if (tkn !== null) {
-      setToken(tkn);
-    } else {
-      setToken("");
+    try {
+      let tkn = await AsyncStorage.getItem("access_token");
+      if (tkn) {
+        setToken(tkn);
+      } else {
+        setToken("");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
+  // console.log("token", token);
 
   const validateData = () => {
     setItemValid({
@@ -333,7 +532,7 @@ export default function detailCustomItinerary(props) {
       });
     }
     if (flightNumber && timeArrCheck && timeDepCheck && from && to) {
-      mutationInput();
+      props.route.params.activityId ? mutationUpdateFlight() : mutationInput();
       // console.log(attachment);
     }
   };
@@ -436,6 +635,7 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalDeparture}
               mode="datetime"
               locale="en_id"
+              is24Hour
               minimumDate={new Date(startDate)}
               maximumDate={new Date(endDate)}
               onConfirm={(date) => {
@@ -482,6 +682,7 @@ export default function detailCustomItinerary(props) {
               isVisible={dateTimeModalArrival}
               mode="datetime"
               locale="en_id"
+              is24Hour
               minimumDate={new Date(startDate)}
               maximumDate={new Date(endDate)}
               onConfirm={(date) => {
@@ -542,13 +743,13 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
           <FloatingInput
-            label={t("guestNameOptional")}
+            label={t("passengerNameOptional")}
             value={guestName}
             onChangeText={setGuestName}
           />
 
           <FloatingInput
-            label={t("bookingRefOptional")}
+            label={t("bookingCodeOptional")}
             value={bookingRef}
             onChangeText={setBookingRef}
           />
@@ -581,11 +782,58 @@ export default function detailCustomItinerary(props) {
           <Text size="label" type="bold">
             {t("Attachment")}
           </Text>
+          {attachmentCustom
+            ? attachmentCustom.map((data, index) => {
+                return (
+                  <View style={styles.attachment}>
+                    <Text style={{ width: 30 }}>{index + 1}. </Text>
+                    <FunDocument
+                      filename={data.file_name}
+                      filepath={data.filepath}
+                      format={data.extention}
+                      style={{ flex: 1, flexDirection: "row" }}
+                      progressBar
+                      icon
+                    />
+                    {/* <Text style={{ flex: 1, paddingBottom: 5 }}>
+                    {data.file_name}
+                  </Text> */}
+                    <TouchableOpacity
+                      // onPress={() => {
+                      //   let temp = [...attachment];
+                      //   temp.splice(index, 1);
+                      //   setAttachment(temp);
+                      // }}
+                      style={styles.attachmentTimes}
+                    >
+                      <Xhitam width={10} height={10} />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })
+            : null}
+
           {attachment.map((data, index) => {
             return (
               <View style={styles.attachment}>
-                <Text style={{ width: 30 }}>{index + 1}. </Text>
-                <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                <Text style={{ width: 30 }}>
+                  {(props.route.params.attachment
+                    ? props.route.params.attachment.length
+                    : null) +
+                    index +
+                    1}
+                  .{" "}
+                </Text>
+                <FunDocument
+                  filename={data.name}
+                  filepath={data.uri}
+                  style={{ flex: 1, flexDirection: "row" }}
+                  progressBar
+                  icon
+                />
+                {/* <Text style={{ flex: 1, paddingBottom: 5 }}>
+                  {data.file_name}
+                </Text> */}
                 <TouchableOpacity
                   onPress={() => {
                     let temp = [...attachment];
@@ -709,6 +957,7 @@ export default function detailCustomItinerary(props) {
               onPress={(data, details = null, search = null) => {
                 if (modalFrom) {
                   setFrom(data.structured_formatting.secondary_text);
+                  inputFromGoogle(details);
                   setModalFrom(false);
                 }
 
@@ -830,8 +1079,10 @@ export default function detailCustomItinerary(props) {
           }}
         >
           <Button
+            // disabled={buttonDisabled}
             onPress={() => {
               mutationValid();
+              setButtonDisabled(true);
             }}
             text={t("save")}
           />
@@ -992,12 +1243,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignContent: "flex-start",
     alignItems: "flex-start",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d1d1d1",
   },
   attachmentTimes: {
     flexDirection: "row",
     paddingRight: 10,
     paddingLeft: 25,
+    paddingVertical: 5,
     height: "100%",
+    alignItems: "center",
   },
   floatPlaceholder: {
     position: "absolute",

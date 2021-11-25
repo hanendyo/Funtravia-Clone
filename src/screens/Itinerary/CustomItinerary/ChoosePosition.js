@@ -111,7 +111,7 @@ export default function ChoosePosition(props) {
     );
   };
 
-  // console.log(datatimeline);
+  console.log(datatimeline);
 
   const bukaModal = (text = null, index) => {
     // console.log(text);
@@ -210,7 +210,10 @@ export default function ChoosePosition(props) {
                     justifyContent: "flex-start",
                   }}
                 >
-                  {item.type !== "custom" ? (
+                  {item.icon ? (
+                    <FunIcon icon={"i-tour"} height={50} width={50} />
+                  ) : null}
+                  {/* {item.type !== "custom" ? (
                     <Image
                       source={
                         item.images
@@ -230,7 +233,7 @@ export default function ChoosePosition(props) {
                     <FunIcon icon={item.icon} height={50} width={50} />
                   ) : (
                     <FunIcon icon={"i-tour"} height={50} width={50} />
-                  )}
+                  )} */}
                 </TouchableOpacity>
               </View>
               <View style={{ height: "100%", width: "70%", paddingTop: 10 }}>

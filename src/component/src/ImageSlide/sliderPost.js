@@ -37,7 +37,6 @@ export default function ImageSlide({
   let [paused, setPaused] = useState(true);
   let [muted, setMuted] = useState(false);
 
-  console.log("dataImage :", dataImage);
   //BUG handel_select
   // const handel_select = async (index) => {
   //   var tempdata = [...slider];

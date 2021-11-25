@@ -296,8 +296,14 @@ import CalendarItinerary from "./files/calendar_itinerary.svg";
 import PeopleItinerary from "./files/people_itinerary.svg";
 import CalendarBiru from "./files/calendar_biru.svg";
 import SavePutih from "./files/savePutih.svg";
+import PinMapGreen from "./files/pinMapGreen.svg";
+import PhotoGray from "./files/photoGray.svg";
+import FileGray from "./files/fileGray.svg";
 
 export {
+  PhotoGray,
+  PinMapGreen,
+  FileGray,
   PeopleItinerary,
   CalendarItinerary,
   ChatItinerary,
