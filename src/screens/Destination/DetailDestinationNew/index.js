@@ -2641,7 +2641,7 @@ const Index = (props) => {
               ? Notch
                 ? normalize(layoutImage) +
                   normalize(layoutHeader) +
-                  normalize(layoutHeader) / normalize(4.3) +
+                  normalize(layoutHeader) / normalize(2.5) +
                   normalize(layoutUnesco)
                 : normalize(layoutImage) +
                   normalize(layoutHeader) +
