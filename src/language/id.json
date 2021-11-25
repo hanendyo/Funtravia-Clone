@@ -619,9 +619,12 @@
   "From": "Dari",
   "To": "Ke",
   "Guest Name": "Nama Tamu",
-  "guestNameOptional": "Nama Tamu(Opsional)",
+  "Passenger Name": "Nama Penumpang",
+  "guestNameOptional": "Nama Tamu (Opsional)",
+  "passengerNameOptional": "Nama Penumpang (Optional)",
   "BookingRef": "Referensi Pemesanan",
   "bookingRefOptional": "Referensi Pemesanan (Opsional)",
+  "bookingCodeOptional": "Kode Pemesanan (Optional)",
   "Carrier": "Pembawa",
   "carrierOptional": "Pembawa (Opsional)",
   "Notes": "Catatan",
@@ -834,5 +837,6 @@
   "removeTagAlbum": "Lepaskan dari album",
   "fileCouldNotBeDownloaded": "File tidak dapat diunduh",
   "failRemoveTagAlbum": "Gagal melepaskan tag album",
-  "successcopylink" :"Sukses Salin Tautan Ke Papan Klip"
+  "successcopylink" :"Sukses Salin Tautan Ke Papan Klip",
+  "setTimeForActivity": "Atur waktu untuk aktivitas"
 }

@@ -1,6 +1,8 @@
 import { gql } from "apollo-boost";
-const AddFlight = gql`
+
+const UpdateCustomFlight = gql`
   mutation(
+    $id: ID!
     $day_id: [ID]!
     $title: String!
     $icon: String!
@@ -27,8 +29,9 @@ const AddFlight = gql`
     $carrier: String
     $file: [Upload]
   ) {
-    add_custom_flight(
+    update_custom_flight(
       input: {
+        id: $id
         day_id: $day_id
         title: $title
         icon: $icon
@@ -76,4 +79,5 @@ const AddFlight = gql`
     }
   }
 `;
-export default AddFlight;
+
+export default UpdateCustomFlight;

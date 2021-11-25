@@ -119,6 +119,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ReactNativeFile } from "apollo-upload-client";
 import DocumentPicker from "react-native-document-picker";
 import DeviceInfo from "react-native-device-info";
+import normalize from "react-native-normalize";
 
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -159,6 +160,7 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let [dataList, setDataListItem] = useState([]);
+  console.log("dataList", dataList);
   const [tab3Data] = useState([]);
   let itineraryId = props.route.params.country;
   let token = props.route.params.token;
@@ -203,46 +205,54 @@ export default function ItineraryDetail(props) {
     destination: t("destination"),
   };
 
-  const jams = [
-    "00",
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-  ];
-  const menits = [
-    "00",
-    "05",
-    "15",
-    "20",
-    "25",
-    "30",
-    "35",
-    "40",
-    "45",
-    "50",
-    "59",
-  ];
+  // const jams = [
+  //   "00",
+  //   "01",
+  //   "02",
+  //   "03",
+  //   "04",
+  //   "05",
+  //   "06",
+  //   "07",
+  //   "08",
+  //   "09",
+  //   "10",
+  //   "11",
+  //   "12",
+  //   "13",
+  //   "14",
+  //   "15",
+  //   "16",
+  //   "17",
+  //   "18",
+  //   "19",
+  //   "20",
+  //   "21",
+  //   "22",
+  //   "23",
+  //   "24",
+  // ];
+  // const menits = [
+  //   "00",
+  //   "05",
+  //   "15",
+  //   "20",
+  //   "25",
+  //   "30",
+  //   "35",
+  //   "40",
+  //   "45",
+  //   "50",
+  //   "59",
+  // ];
+
+  const jams = [...Array(24).keys()]
+    .map((x) => `${x}`)
+    .map((y) => (y.length === 1 ? `0${y}` : y));
+  const menits = [...Array(60).keys()]
+    .map((x) => `${x}`)
+    .map((y) => (y.length === 1 ? `0${y}` : y));
+
   let [modalmenuday, setModalmenuday] = useState(false);
   let [Modalcustom, setModalcustom] = useState(false);
   let [textinput, setInput] = useState("");
@@ -311,6 +321,11 @@ export default function ItineraryDetail(props) {
   const GetTimeline = async (id) => {
     await setidDay(id ? id : idDay);
     await GetTimelin();
+  };
+
+  const EndTimeConverter = (datetime) => {
+    let date = datetime.split(" ")[0];
+    return `${date} 23:59:59`;
   };
 
   const [
@@ -458,17 +473,17 @@ export default function ItineraryDetail(props) {
     props.navigation.setParams({ datadayaktif: data });
   };
 
-  const GetStartTime = ({ startt }) => {
+  const GetStartTime = ({ startt, type = "bold", size = "description" }) => {
     var starttime = startt.split(":");
 
     return (
-      <Text size="description" type="bold" style={{}}>
+      <Text size={size} type={type} style={{}}>
         {starttime[0]}:{starttime[1]}
       </Text>
     );
   };
 
-  const GetEndTime = ({ startt, dur }) => {
+  const GetEndTime = ({ startt, dur, type = "bold", size = "description" }) => {
     var duration = dur.split(":");
     var starttime = startt.split(":");
 
@@ -480,7 +495,7 @@ export default function ItineraryDetail(props) {
     }
 
     return (
-      <Text size="description" type="bold" style={{}}>
+      <Text size={size} type={type} style={{}}>
         {jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam}:
         {menit < 10 ? "0" + menit : menit}
       </Text>
@@ -849,6 +864,7 @@ export default function ItineraryDetail(props) {
   };
 
   const openModaldate = async (index, starts, durati) => {
+    console.log("open", index, starts, durati);
     var duration = durati.split(":");
     var starttime = starts.split(":");
 
@@ -857,7 +873,7 @@ export default function ItineraryDetail(props) {
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
 
     if (menit > 59) {
-      menit = menit - 60;
+      menit -= 60;
     }
 
     await setjamstart(starttime[0]);
@@ -896,6 +912,14 @@ export default function ItineraryDetail(props) {
     menitends,
     dataLists
   ) => {
+    console.log(
+      "Settime",
+      jamstarts,
+      menitstarts,
+      jamends,
+      menitends,
+      dataLists
+    );
     await setModaldate(false);
 
     let starttimes = jamstarts + ":" + menitstarts + ":00";
@@ -917,6 +941,17 @@ export default function ItineraryDetail(props) {
 
     dataganti.time = starttimes;
     dataganti.duration = durations;
+
+    if (dataganti.detail_flight) {
+      let dateArr = dataganti.detail_flight.arrival.split(" ")[0];
+      let timeArr = dataganti.detail_flight.arrival.split(" ")[1];
+      let timeFinal = `${dateArr} ${jamends}:${menitends}:00`;
+
+      dataganti.detail_flight = {
+        ...dataganti.detail_flight,
+        arrival: timeFinal,
+      };
+    }
 
     if (datax[parseFloat(indexinput) - 1]) {
       let timesebelum = hitungDuration({
@@ -981,6 +1016,7 @@ export default function ItineraryDetail(props) {
 
     if (hasiljam <= 23) {
       let dataday = { ...datadayaktif };
+      console.log("dataday", datadayaktif);
 
       if (hasiljam === 23 && hasilmenit <= 59) {
         savetimeline(datax);
@@ -1030,6 +1066,7 @@ export default function ItineraryDetail(props) {
   });
 
   const savetimeline = async (datakiriman) => {
+    console.log("datakiriman", datakiriman);
     try {
       let response = await mutationSaveTimeline({
         variables: {
@@ -2100,8 +2137,6 @@ export default function ItineraryDetail(props) {
     return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
   };
 
-  console.log("data List :", dataList);
-
   const renderItinerary = ({ item, index }) => {
     const x = dataList.length - 1;
     return (
@@ -2429,8 +2464,11 @@ export default function ItineraryDetail(props) {
                             idDay: idDay,
                             nameitin: datadetail.itinerary_detail.name,
                             startDate: datadetail?.itinerary_detail?.start_date,
-                            endDate: datadetail?.itinerary_detail?.end_date,
+                            endDate: EndTimeConverter(
+                              datadetail?.itinerary_detail?.end_date
+                            ),
                             datadayaktif: datadayaktif,
+                            indexdata: index,
                           })
                         : null;
                     }}
@@ -2461,16 +2499,40 @@ export default function ItineraryDetail(props) {
                               }}
                             >
                               <CalendarIcon
-                                width={10}
-                                height={10}
+                                width={15}
+                                height={15}
                                 style={{ marginRight: 5 }}
                               />
-                              <Text>
+                              {/* <Text>
                                 {Formattime(
                                   item?.detail_flight?.departure,
                                   item?.detail_flight?.arrival
                                 )}
-                              </Text>
+                              </Text> */}
+                              {item.time ? (
+                                <GetStartTime
+                                  startt={item.time}
+                                  type="regular"
+                                  size="description"
+                                />
+                              ) : (
+                                <Text size="description" type="regular">
+                                  00:00
+                                </Text>
+                              )}
+                              <Text> - </Text>
+                              {item.duration ? (
+                                <GetEndTime
+                                  startt={item.time ? item.time : "00:00"}
+                                  dur={item.duration ? item.duration : "00:00"}
+                                  type="regular"
+                                  size="description"
+                                />
+                              ) : (
+                                <Text size="small" type="regular">
+                                  00:00
+                                </Text>
+                              )}
                             </View>
                           ) : null}
                           {/* <Text>flight_outside</Text> */}
@@ -2540,6 +2602,7 @@ export default function ItineraryDetail(props) {
                       <View
                         style={{
                           flexDirection: "row",
+                          width: normalize(100),
                         }}
                       >
                         <Text style={{ marginBottom: 5 }}>
@@ -2558,6 +2621,7 @@ export default function ItineraryDetail(props) {
                       <View
                         style={{
                           flexDirection: "row",
+                          width: normalize(100),
                         }}
                       >
                         <Text style={{ marginBottom: 5 }}>
@@ -2575,9 +2639,10 @@ export default function ItineraryDetail(props) {
                       <View
                         style={{
                           flexDirection: "row",
+                          width: normalize(100),
                         }}
                       >
-                        <Text style={{ marginBottom: 5 }}>
+                        <Text style={{ marginBottom: 5, flexWrap: "wrap" }}>
                           {t("bookingRef")} :{" "}
                         </Text>
                         <Text type="bold">
@@ -2586,22 +2651,23 @@ export default function ItineraryDetail(props) {
                       </View>
                     ) : null
                   ) : null}
-
-                  <View
-                    style={{
-                      // width: 100,
-                      backgroundColor: "#daf0f2",
-                      paddingVertical: 5,
-                      paddingHorizontal: 15,
-                      borderRadius: 5,
-                      // borderWidth: 1,
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text type="bold">
-                      {Getdurasi(item.duration ? item.duration : "00:00:00")}
-                    </Text>
-                  </View>
+                  {item?.detail_accomodation ? null : (
+                    <View
+                      style={{
+                        // width: 100,
+                        backgroundColor: "#daf0f2",
+                        paddingVertical: 5,
+                        paddingHorizontal: 15,
+                        borderRadius: 5,
+                        // borderWidth: 1,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text type="bold">
+                        {Getdurasi(item.duration ? item.duration : "00:00:00")}
+                      </Text>
+                    </View>
+                  )}
                 </View>
 
                 {item.type === "custom" ? (
@@ -4857,6 +4923,7 @@ export default function ItineraryDetail(props) {
                   fontFamily: "Lato-Black",
                   color: "#ffff",
                   textAlign: "left",
+                  fontSize: normalize(16),
                 }}
                 numberOfLines={1}
               >
@@ -4870,7 +4937,7 @@ export default function ItineraryDetail(props) {
                 }}
               >
                 {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
-                  <Errorx width={15} height={15} style={{ marginRight: 5 }} />
+                  <Errorx width={18} height={18} style={{ marginRight: 5 }} />
                 ) : null}
 
                 <Animated.Text
@@ -4880,7 +4947,7 @@ export default function ItineraryDetail(props) {
                     color: "#ffffff",
                     opacity: textOpacitys,
                     fontFamily: "Lato-Bold",
-                    fontSize: 12,
+                    fontSize: normalize(14),
                   }}
                 >
                   {/* {t("dates")} :{" "} */}
@@ -5075,7 +5142,9 @@ export default function ItineraryDetail(props) {
                     itineraryId: itineraryId,
                     dayId: idDay,
                     startDate: datadetail?.itinerary_detail?.start_date,
-                    endDate: datadetail?.itinerary_detail?.end_date,
+                    endDate: EndTimeConverter(
+                      datadetail?.itinerary_detail?.end_date
+                    ),
                   },
                 });
               }}
@@ -5121,7 +5190,9 @@ export default function ItineraryDetail(props) {
                     itineraryId: itineraryId,
                     dayId: idDay,
                     startDate: datadetail?.itinerary_detail?.start_date,
-                    endDate: datadetail?.itinerary_detail?.end_date,
+                    endDate: EndTimeConverter(
+                      datadetail?.itinerary_detail?.end_date
+                    ),
                   },
                 });
               }}
@@ -5645,21 +5716,12 @@ export default function ItineraryDetail(props) {
               // paddingBottom: 30,
               alignContent: "center",
               alignItems: "center",
+              borderRadius: 5,
             }}
           >
-            {/* <TouchableOpacity
-              style={{
-                position: "absolute",
-                top: 20,
-                left: 20,
-              }}
-              onPress={() => setModaldate(false)}
-            >
-              <Xhitam width={15} height={15} />
-            </TouchableOpacity> */}
-            <Text size="label">Atur waktu untuk aktivitas</Text>
+            <Text size="label">{t("setTimeForActivity")}</Text>
             <Text size="title" type="bold">
-              "{datadetail?.itinerary_detail?.name}"
+              "{dataList[indexinput]?.name}"
             </Text>
 
             <View
@@ -5667,6 +5729,7 @@ export default function ItineraryDetail(props) {
                 marginTop: 20,
                 backgroundColor: "#f3f3f3",
                 padding: 15,
+                borderRadius: 5,
               }}
             >
               <Text
@@ -5674,7 +5737,7 @@ export default function ItineraryDetail(props) {
                 // type="bold"
                 style={{ alignSelf: "center" }}
               >
-                {t("Dari")}
+                {t("From")}
               </Text>
               <View
                 style={{
@@ -5781,7 +5844,7 @@ export default function ItineraryDetail(props) {
                 // type="bold"
                 style={{ alignSelf: "center" }}
               >
-                {t("Sampai")}
+                {t("To")}
               </Text>
 
               <View

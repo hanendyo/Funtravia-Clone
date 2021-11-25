@@ -618,9 +618,12 @@
   "From": "From",
   "To": "To",
   "Guest Name": "Guest Name",
+  "Passenger Name": "Passenger Name",
   "guestNameOptional": "Guest Name (Optional)",
+  "passengerNameOptional": "Passenger Name (Optional)",
   "BookingRef": "Booking Reference",
   "bookingRefOptional": "Booking Reference (Optional)",
+  "bookingCodeOptional": "Booking Code (Optional)",
   "Carrier": "Carrier",
   "carrierOptional": "Carrier (Optional)",
   "Notes": "Notes",
@@ -836,5 +839,6 @@
   "removeTagAlbum": "Remove from album",
   "fileCouldNotBeDownloaded": "File could not be downloaded",
   "failRemoveTagAlbum": "Failed to remove album tag",
-  "successcopylink" :"Success Copy Link To Clipboard"
+  "successcopylink": "Success Copy Link To Clipboard",
+  "setTimeForActivity": "Set time for activity"
 }

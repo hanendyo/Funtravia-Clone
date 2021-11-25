@@ -39,6 +39,10 @@ const Timeline = gql`
         guest_name
         booking_ref
         carrier
+        latitude_departure
+        longitude_departure
+        latitude_arrival
+        longitude_arrival
       }
       detail_accomodation {
         id

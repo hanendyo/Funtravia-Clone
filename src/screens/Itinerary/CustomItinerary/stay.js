@@ -41,16 +41,16 @@ import {
   Truncate,
   Peringatan,
   FloatingInput,
+  FunDocument,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
-import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
-import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { API_KEY } from "../../../config";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AddCustomAccomodation from "../../../graphQL/Mutation/Itinerary/AddCustomAccomodation";
+import UpdateCustomStay from "../../../graphQL/Mutation/Itinerary/UpdateCustomStay";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
 
@@ -119,7 +119,7 @@ export default function detailCustomItinerary(props) {
       </View>
     ),
   };
-
+  console.log("props hotel", props.route.params);
   const Notch = DeviceInfo.hasNotch();
   let [dataParent, setDataParent] = useState({});
   let [dataChild, setDataChild] = useState([]);
@@ -130,8 +130,8 @@ export default function detailCustomItinerary(props) {
   const itineraryId = props.route.params.itineraryId;
 
   // modal
-  let [timeModalCheckIn, setTimeModalCheckIn] = useState("");
-  let [timeModalCheckOut, setTimeModalCheckOut] = useState("");
+  let [timeModalCheckIn, setTimeModalCheckIn] = useState(false);
+  let [timeModalCheckOut, setTimeModalCheckOut] = useState(false);
   let [modalHotelName, setModalHotelName] = useState(false);
 
   //  Alert
@@ -191,25 +191,41 @@ export default function detailCustomItinerary(props) {
 
   // state
   let [dataState, setdataState] = useState({
-    day_id: "", //wajib
-    title: "", // == hotel_name
-    icon: "", //gb_tour
+    id: props.route.params?.activityId ? props.route.params.activityId : "", //edit custom stay
+    day_id: props.route.params?.dayId ? props.route.params.dayId : "", //wajib
+    title: props.route.params?.detail_accomodation
+      ? props.route.params.detail_accomodation.hotel_name
+      : "", // == hotel_name
+    icon: "gb_tour", //gb_tour
     qty: 1, //
-    address: "", //wajib
-    latitude: 0, //wajib
-    longitude: 0, //wajib
-    note: "", //ga wajib
-    time: "", //hardcode
-    duration: "", //hardcode
+    address: props.route.params?.address ? props.route.params.address : "", //wajib
+    latitude: props.route.params?.latitude ? props.route.params.latitude : 0, //wajib
+    longitude: props.route.params?.longitude ? props.route.params.longitude : 0, //wajib
+    note: props.route.params?.note ? props.route.params.note : "", //ga wajib
+    time: "00:00:00", //hardcode
+    duration: "01:00:00", //hardcode
     status: false, //
-    order: [], //0
+    order: ["0"], //0
     total_price: 0,
-    hotel_name: "", //wajib
-    guest_name: "", //wajib
-    booking_ref: "", //wajib
-    checkin: "", //wajib
-    checkout: "", //wajib
-    file: [], //wajib
+    hotel_name: props.route.params?.detail_accomodation
+      ? props.route.params.detail_accomodation.hotel_name
+      : "", //wajib
+    guest_name: props.route.params?.detail_accomodation
+      ? props.route.params.detail_accomodation.guest_name
+      : "", //wajib
+    booking_ref: props.route.params?.detail_accomodation?.booking_ref
+      ? props.route.params.detail_accomodation?.booking_ref
+      : "", //wajib
+    checkin: props.route.params?.detail_accomodation?.checkin
+      ? props.route.params?.detail_accomodation?.checkin.split(" ").join("T")
+      : "", //wajib
+    checkout: props.route.params?.detail_accomodation?.checkout
+      ? props.route.params?.detail_accomodation?.checkout.split(" ").join("T")
+      : "", //wajib
+    fileCustom: props.route.params?.attachment
+      ? props.route.params.attachment
+      : [], //wajib
+    file: [],
   });
 
   const [itemValid, setItemValid] = useState({
@@ -373,7 +389,54 @@ export default function detailCustomItinerary(props) {
         detail: "",
       });
     } else {
-      submitDataAPI();
+      props.route.params.activityId ? submitDataEditAPI() : submitDataAPI();
+    }
+  };
+
+  const submitDataEditAPI = async () => {
+    try {
+      let response = await mutationUpdate({
+        variables: {
+          id: dataState.id,
+          day_id: dataState.day_id,
+          title: dataState.title, // == hotel_name
+          icon: dataState.icon, //gb_tour
+          qty: dataState.qty, // ==
+          address: dataState.address, // ==wajib
+          latitude: dataState.latitude, //wajib
+          longitude: dataState.longitude, //wajib
+          note: dataState.note, // ==ga wajib
+          time: dataState.time, //hardcode
+          duration: dataState.duration, //hardcode
+          status: dataState.status, // ==
+          order: dataState.order, // ==0
+          total_price: dataState.total_price, //
+          hotel_name: dataState.hotel_name, //wajib
+          guest_name: dataState.guest_name, //wajib
+          booking_ref: dataState.booking_ref, //wajib
+          checkin: dataState.checkin, // ==wajib
+          checkout: dataState.checkout, //wajib
+          file: dataState.file, //wajib
+        },
+      });
+      console.log("resp", response);
+      if (error) {
+        throw new Error("Error input");
+      }
+      if (response.data) {
+        if (response.data.update_custom_accomodation.code !== 200) {
+          throw new Error(response.data.update_custom_accomodation.message);
+        } else {
+          props.navigation.navigate("itindetail");
+        }
+      }
+    } catch (error) {
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Submit Update Data Error",
+        detail: error,
+      });
     }
   };
 
@@ -383,8 +446,12 @@ export default function detailCustomItinerary(props) {
   });
 
   let [renderDate, setRenderDate] = useState({
-    renderCheckIn: "",
-    renderCheckOut: "",
+    renderCheckIn: props.route.params?.detail_accomodation?.checkin
+      ? props.route.params?.detail_accomodation?.checkin
+      : "",
+    renderCheckOut: props.route.params?.detail_accomodation?.checkout
+      ? props.route.params.detail_accomodation.checkout
+      : "",
   });
 
   const timeConverter = (date) => {
@@ -432,6 +499,20 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  const [
+    mutationUpdate,
+    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
+  ] = useMutation(UpdateCustomStay, {
+    context: {
+      headers: {
+        "Content-Type": (file = []
+          ? `application/json`
+          : `multipart/form-data`),
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
   const [mutation, { loading, data, error }] = useMutation(
     AddCustomAccomodation,
     {
@@ -454,9 +535,54 @@ export default function detailCustomItinerary(props) {
     modalValidation();
   };
 
+  const updateDataAPI = async () => {
+    try {
+      let response = await mutationUpdate({
+        variables: {
+          id: dataState.id,
+          day_id: dataState.day_id,
+          title: dataState.title, // == hotel_name
+          icon: dataState.icon, //gb_tour
+          qty: dataState.qty, // ==
+          address: dataState.address, // ==wajib
+          latitude: dataState.latitude, //wajib
+          longitude: dataState.longitude, //wajib
+          note: dataState.note, // ==ga wajib
+          time: dataState.time, //hardcode
+          duration: dataState.duration, //hardcode
+          status: dataState.status, // ==
+          order: dataState.order, // ==0
+          total_price: dataState.total_price, //
+          hotel_name: dataState.hotel_name, //wajib
+          guest_name: dataState.guest_name, //wajib
+          booking_ref: dataState.booking_ref, //wajib
+          checkin: dataState.checkin, // ==wajib
+          checkout: dataState.checkout, //wajib
+          file: dataState.file, //wajib
+        },
+      });
+      console.log("response", response);
+      if (error) {
+        throw new Error("Error input");
+      }
+      if (response.data) {
+        if (response.data.update_custom_accomodation.code !== 200) {
+          throw new Error(response.data.update_custom_accomodation.message);
+        } else {
+          props.navigation.navigate("itindetail");
+        }
+      }
+    } catch (error) {
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Submit Data Error",
+        detail: error,
+      });
+    }
+  };
+
   const submitDataAPI = async () => {
-    //! Hanendyo's work
-    // POST DATA STATE ke https://dev-gql.funtravia.com/graphql
     try {
       let response = await mutation({
         variables: {
@@ -583,7 +709,7 @@ export default function detailCustomItinerary(props) {
                   color: "#464646",
                   paddingBottom: 5,
                 }}
-                editable={false}
+                // editable={false}
                 value={dataState.hotel_name}
               />
               {dataState.hotel_name == "" ? (
@@ -818,6 +944,7 @@ export default function detailCustomItinerary(props) {
               <TextInput
                 placeholder={t("checkOut")}
                 autoCorrect={false}
+                disabled
                 style={{
                   flex: 1,
                   paddingBottom: 5,
@@ -967,7 +1094,27 @@ export default function detailCustomItinerary(props) {
             </Text>
           </View>
 
-          <View style={{ flex: 1, marginVertical: 10 }}>
+          <View style={{ flex: 1, marginBottom: 10 }}>
+            {dataState.fileCustom.map((data, index) => {
+              return (
+                <View style={styles.attachment}>
+                  <Text style={{ width: 30 }}>{index + 1}.</Text>
+                  <FunDocument
+                    filename={data.file_name}
+                    filepath={data.filepath}
+                    format={data.extention}
+                    style={{ flex: 1, flexDirection: "row" }}
+                    progressBar
+                  />
+                  <TouchableOpacity
+                    onPress={() => {}}
+                    style={styles.attachmentTimes}
+                  >
+                    <Xhitam width={10} height={10} />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
             {dataState.file.map((data, index) => {
               return (
                 <View
@@ -975,10 +1122,25 @@ export default function detailCustomItinerary(props) {
                     flexDirection: "row",
                     alignContent: "flex-start",
                     alignItems: "flex-start",
+                    paddingVertical: 10,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
                   }}
                 >
-                  <Text style={{ width: 30 }}>{index + 1}. </Text>
-                  <Text style={{ flex: 1, paddingBottom: 5 }}>{data.name}</Text>
+                  <Text style={{ width: 30 }}>
+                    {(props.route.params.attachment
+                      ? props.route.params.attachment.length
+                      : null) +
+                      index +
+                      1}
+                    .{" "}
+                  </Text>
+                  <FunDocument
+                    filename={data.name}
+                    filepath={data.uri}
+                    style={{ flex: 1, flexDirection: "row" }}
+                    progressBar
+                  />
                   <TouchableOpacity
                     onPress={() => {
                       let temp = [...dataState.file];
@@ -992,8 +1154,11 @@ export default function detailCustomItinerary(props) {
                     }}
                     style={{
                       flexDirection: "row",
-                      alignContent: "flex-start",
-                      alignItems: "flex-start",
+                      paddingRight: 10,
+                      paddingLeft: 25,
+                      paddingVertical: 5,
+                      height: "100%",
+                      alignItems: "center",
                     }}
                   >
                     <Xhitam width={10} height={10} />
@@ -1001,36 +1166,36 @@ export default function detailCustomItinerary(props) {
                 </View>
               );
             })}
-            <TouchableOpacity
-              onPress={() => {
-                pickFile();
-              }}
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              pickFile();
+            }}
+            style={{
+              width: "100%",
+              // borderColor: "black",
+              borderWidth: 1,
+              borderStyle: "dashed",
+              borderRadius: 5,
+              borderColor: "#d3d3d3",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              paddingVertical: 10,
+              flexDirection: "row",
+              marginBottom: 10,
+            }}
+          >
+            <New height={15} width={15} />
+            <Text
               style={{
-                width: "100%",
-                // borderColor: "black",
-                borderWidth: 1,
-                borderStyle: "dashed",
-                borderRadius: 5,
-                borderColor: "#d3d3d3",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                paddingVertical: 10,
-                flexDirection: "row",
-                marginBottom: 10,
+                marginLeft: 5,
+                color: "#d1d1d1",
               }}
             >
-              <New height={15} width={15} />
-              <Text
-                style={{
-                  marginLeft: 5,
-                  color: "#d1d1d1",
-                }}
-              >
-                {t("ChooseFile")}
-              </Text>
-            </TouchableOpacity>
-          </View>
+              {t("ChooseFile")}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <Modal
@@ -1336,3 +1501,22 @@ export default function detailCustomItinerary(props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  attachmentTimes: {
+    flexDirection: "row",
+    paddingRight: 10,
+    paddingLeft: 25,
+    paddingVertical: 5,
+    height: "100%",
+    alignItems: "center",
+  },
+  attachment: {
+    flexDirection: "row",
+    alignContent: "flex-start",
+    alignItems: "flex-start",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d1d1d1",
+  },
+});
