@@ -837,6 +837,7 @@
   "removeTagAlbum": "Lepaskan dari album",
   "fileCouldNotBeDownloaded": "File tidak dapat diunduh",
   "failRemoveTagAlbum": "Gagal melepaskan tag album",
-  "successcopylink" :"Sukses Salin Tautan Ke Papan Klip",
-  "setTimeForActivity": "Atur waktu untuk aktivitas"
+  "successcopylink": "Sukses Salin Tautan Ke Papan Klip",
+  "setTimeForActivity": "Atur waktu untuk aktivitas",
+  "descMaxUpload": "Maksimal ukuran file adalah 20 MB"
 }

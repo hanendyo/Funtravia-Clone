@@ -106,7 +106,7 @@ export default function ImageSlide({ aler, setClose }) {
                       textAlign: "center",
                       marginTop: 5,
                       marginBottom: 7,
-                      marginHorizontal: 5,
+                      marginHorizontal: 10,
                     }}
                   >
                     {t(aler?.detail)}

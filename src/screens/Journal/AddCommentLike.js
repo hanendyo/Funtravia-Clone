@@ -301,8 +301,6 @@ export default function AddCommentLike({
             // flex: 1,
             marginLeft: 10,
             width: "80%",
-            // flexWrap: "wrap",
-            color: "#2c2c2c",
             fontSize: normalize(16),
             lineHeight: 16,
             marginVertical: 5,
@@ -337,7 +335,7 @@ export default function AddCommentLike({
           }}
           onPress={() => comment(dataList.id, text)}
         >
-          <Text type="bold" size="description" style={{ color: "#209FAE" }}>
+          <Text type="bold" size="label" style={{ color: "#209FAE" }}>
             {t("Send")}
           </Text>
         </Ripple>

@@ -255,7 +255,6 @@ export default function myfeed(props) {
     if (props.route.params) {
       if (props.route.params.updateDataPost) {
         let tempdata = [...datapost?.user_post_paging?.datas];
-        console.log("tempadat feed rpofil", tempdata);
         if (tempdata) {
           let indeks = tempdata.findIndex(
             (k) => k["id"] == props.route.params.updateDataPost.id
@@ -832,6 +831,7 @@ export default function myfeed(props) {
       }}
     >
       <FlatList
+        pinchGestureEnabled={false}
         ref={ref}
         data={datas}
         onViewableItemsChanged={onViewRef.current}

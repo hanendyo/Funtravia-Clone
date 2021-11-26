@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import { Text, FunImageBackground, FunImage, FunVideo } from "../../component";
 import { AllPostWhite, AlbumFeed, Mute, Unmute } from "../../assets/svg";
@@ -25,6 +26,7 @@ export default function RenderAlbum({
 }) {
   let videoView = useRef(null);
   const [indexAktif, setIndexAktive] = useState(0);
+  console.log("data", data);
   const { t } = useTranslation();
   const goToItinerary = (data) => {
     token
@@ -43,10 +45,6 @@ export default function RenderAlbum({
       : setModalLogin(true);
   };
 
-  const onBuffer = (isBuffer) => {
-    console.log(isBuffer);
-  };
-
   const [time, setTime] = useState(false);
 
   const durationTime = (data) => {
@@ -56,6 +54,19 @@ export default function RenderAlbum({
   const L = (2.2 / 3) * Dimensions.get("screen").width - 40;
   const P = (5 / 4) * Dimensions.get("screen").width - 40;
   const S = Dimensions.get("screen").width - 40;
+
+  let opacity = useRef(0);
+  const onLoadStart = () => {
+    opacity.current = 1;
+  };
+
+  const onLoad = () => {
+    opacity.current = 0;
+  };
+
+  const onBuffer = ({ isBuffering }) => {
+    isBuffering ? (opacity.current = 1) : (opacity.current = 0);
+  };
 
   return (
     <View
@@ -67,6 +78,9 @@ export default function RenderAlbum({
         <>
           <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
             <FunVideo
+              onBuffer={() => onBuffer()}
+              onLoadStart={() => onLoadStart()}
+              onLoad={() => onLoad()}
               poster={data?.assets[0]?.filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -79,8 +93,6 @@ export default function RenderAlbum({
               innerRef={(ref) => {
                 videoView = ref;
               }}
-              // onBuffer={videoView?.current?.onBuffer}
-              onBuffer={() => onBuffer()}
               onError={videoView?.current?.videoError}
               onProgress={durationTime}
               repeat={true}
@@ -103,6 +115,31 @@ export default function RenderAlbum({
               }
             />
           </TouchableWithoutFeedback>
+          <View
+            style={{
+              // opacity: opacity,
+              position: "absolute",
+              borderColor: "#209fae",
+              height: "100%",
+              width: "102%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              opacity: opacity.current == 1 ? 0.5 : 0,
+            }}
+          >
+            <ActivityIndicator
+              animating
+              size="large"
+              color={"#209fae"}
+              style={{
+                opacity: opacity.current,
+                // opacity: 1,
+                position: "absolute",
+                borderColor: "#209fae",
+              }}
+            />
+          </View>
           <Pressable
             onPress={() => setMuted(!muted)}
             style={{
@@ -135,15 +172,14 @@ export default function RenderAlbum({
               flexDirection: "row",
             }}
           >
-            <AllPostWhite width={13} height={13} />
+            {/* <AllPostWhite width={13} height={13} /> */}
             <Text
               type="bold"
               style={{
                 color: "white",
-                marginLeft: 5,
               }}
             >
-              {data.assets.length}
+              {indexAktif + 1} {"/"} {data.assets.length}
             </Text>
           </View>
         </>
@@ -170,54 +206,56 @@ export default function RenderAlbum({
           size="f"
           source={{ uri: data.assets[indexAktif].filepath }}
         >
-          <Pressable
-            // onPress={() =>
-            //   data.itinerary !== null ? goToItinerary(data) : null
-            // }
-            onPress={() => {
-              token
-                ? props.navigation.push("ProfileStack", {
-                    screen: "albumdetail",
-                    params: {
-                      id: data?.album?.id,
-                      type: null,
-                      token: token,
-                      judul: data?.album?.title,
-                    },
-                  })
-                : setModalLogin(true);
-            }}
-            style={({ pressed }) => [
-              {
-                position: "absolute",
-                top: 15,
-                right: 10,
-                backgroundColor: "#040404",
-                opacity: pressed ? 1 : 0.8,
-                //   paddingHorizontal: 15,
-                borderRadius: 14,
-                height: 27,
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              },
-            ]}
-          >
-            <AlbumFeed
-              height={15}
-              width={15}
-              style={{
-                marginHorizontal: 15,
-                marginVertical: 5,
+          {data.album ? (
+            <Pressable
+              // onPress={() =>
+              //   data.itinerary !== null ? goToItinerary(data) : null
+              // }
+              onPress={() => {
+                token
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: data?.album?.id,
+                        type: null,
+                        token: token,
+                        judul: data?.album?.title,
+                      },
+                    })
+                  : setModalLogin(true);
               }}
-            />
-          </Pressable>
+              style={({ pressed }) => [
+                {
+                  position: "absolute",
+                  top: 15,
+                  right: 10,
+                  backgroundColor: "#040404",
+                  opacity: pressed ? 1 : 0.8,
+                  //   paddingHorizontal: 15,
+                  borderRadius: 14,
+                  height: 27,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                },
+              ]}
+            >
+              <AlbumFeed
+                height={15}
+                width={15}
+                style={{
+                  marginHorizontal: 15,
+                  marginVertical: 5,
+                }}
+              />
+            </Pressable>
+          ) : null}
 
           <View
             style={{
               position: "absolute",
               top: 15,
-              right: 60,
+              right: data.album ? 60 : 20,
               backgroundColor: "#040404",
               opacity: 0.8,
               paddingHorizontal: 10,
@@ -231,7 +269,7 @@ export default function RenderAlbum({
             {/* <AllPostWhite width={13} height={13} /> */}
             <Text
               type="bold"
-              size="small"
+              size="description"
               style={{
                 color: "white",
                 // marginLeft: 5,

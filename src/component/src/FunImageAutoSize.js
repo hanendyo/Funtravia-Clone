@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Platform, View, ActivityIndicator } from "react-native";
+import { Platform, View, ActivityIndicator, Animated } from "react-native";
 import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
@@ -7,6 +7,7 @@ import Image from "react-native-auto-scale-image";
 import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
 import FastImage from "react-native-fast-image";
+import { default_image } from "../../assets/png";
 
 export default function FunImageAutoSize({
   children,
@@ -88,5 +89,11 @@ export default function FunImageAutoSize({
     );
   }
 
-  return <Image {...otherProps} style={style} uri={path} />;
+  return (
+    <Animated.Image
+      {...otherProps}
+      style={style}
+      source={uri ? { uri: path } : default_image}
+    />
+  );
 }

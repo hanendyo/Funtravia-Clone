@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   SafeAreaView,
-  TouchableWithoutFeedback,
   View,
   Image,
   FlatList,
-  TouchableOpacity,
   Pressable,
-  BackHandler,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Arrowbackios, Arrowbackwhite, Check } from "../../../assets/svg";
-import { default_image } from "../../../assets/png";
-import { Text, Button } from "../../../component";
-import Video from "react-native-video";
+import { Text, Button, FunVideo } from "../../../component";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { useTranslation } from "react-i18next";
+import { Video } from "react-native-compressor";
+import { stat } from "react-native-fs";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
@@ -26,6 +24,9 @@ export default function Crop(props) {
   const [indexAktif, setIndexAktive] = useState(0);
   const [croped, setCroped] = useState(0);
   const { t } = useTranslation();
+  let [loadVid, setLoadVid] = useState(false);
+
+  console.log("data", data);
 
   const HeaderComponent = {
     headerShown: true,
@@ -99,7 +100,7 @@ export default function Crop(props) {
   const P = (5 / 4) * Dimensions.get("screen").width - 30;
   const S = Dimensions.get("screen").width - 30;
 
-  const Next = (datas, index) => {
+  const Next = async (datas, index) => {
     let height;
     let width;
     if (ratio == "L") {
@@ -115,11 +116,20 @@ export default function Crop(props) {
 
     if (!datas[index].node.image.cropRect) {
       if (datas[index].node.type.substr(0, 5) == "video") {
+        setLoadVid(true);
+        let tempData = [...data];
+        const result = await Video.compress(datas[index].node.image.uri, {
+          compressionMethod: "auto",
+        });
+        const statResult = await stat(result);
+        const tempDatas = { ...datas[index].node.image };
+        tempDatas.path = statResult.path;
+        tempDatas.size = statResult.size;
+        tempData[index].node.image = tempDatas;
         setNewRatio(ratio);
         setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
         setCroped((e) => e + 1);
         if (indexAktif + 1 == datas.length) {
-          // console.log("index", index);
           props.navigation.dispatch(
             StackActions.replace("FeedStack", {
               screen: "CreatePostScreen",
@@ -141,7 +151,10 @@ export default function Crop(props) {
             })
           );
         }
+        setLoadVid(false);
       } else {
+        console.log("cropped fto");
+
         ImagePicker.openCropper({
           path: data[index].node.image.uri,
           // path: data[index].node.image.path,
@@ -163,6 +176,8 @@ export default function Crop(props) {
           .catch((error) => console.log(error));
       }
     } else {
+      console.log("cropped else");
+
       props.navigation.dispatch(
         StackActions.replace("FeedStack", {
           screen: "CreatePostScreen",
@@ -199,15 +214,34 @@ export default function Crop(props) {
         {data &&
         data[indexAktif] &&
         data[indexAktif]?.node?.type?.substr(0, 5) == "video" ? (
-          <Video
-            style={{
-              width: Dimensions.get("window").width - 30,
-              height: newRatio == "L" ? L : newRatio == "P" ? P : S,
-              borderRadius: 10,
-            }}
-            resizeMode="cover"
-            source={{ uri: data[indexAktif].node.image.uri }}
-          />
+          <>
+            <FunVideo
+              style={{
+                width: Dimensions.get("window").width - 30,
+                height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+                borderRadius: 10,
+              }}
+              resizeMode="cover"
+              source={{ uri: data[indexAktif].node.image.uri }}
+            />
+            {loadVid ? (
+              <View
+                style={{
+                  position: "absolute",
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  opacity: 0.5,
+                  height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+                  width: Dimensions.get("window").width - 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginHorizontal: 15,
+                  borderRadius: 10,
+                }}
+              >
+                <ActivityIndicator size="large" color="#209fae" />
+              </View>
+            ) : null}
+          </>
         ) : (
           <Image
             style={{
@@ -249,7 +283,7 @@ export default function Crop(props) {
                 </View>
               ) : null}
               {item.type === "video" ? (
-                <Video
+                <FunVideo
                   // poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
                   posterResizeMode={"cover"}
                   source={{
