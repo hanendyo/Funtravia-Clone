@@ -33,14 +33,13 @@ import {
   StatusBar,
   FunImage,
   FunVideo,
-  FunImageBackground,
+  Peringatan,
 } from "../../../component";
 import CameraRoll from "@react-native-community/cameraroll";
 import Modal from "react-native-modal";
 import { Loading } from "../../../component";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
-import Video from "react-native-video";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -48,6 +47,8 @@ import ImageCropper from "react-native-simple-image-cropper";
 import { useIsFocused } from "@react-navigation/native";
 import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
+import { stat } from "react-native-fs";
+import { Video } from "react-native-compressor";
 
 export default function Post(props) {
   const isFocused = useIsFocused();
@@ -69,6 +70,9 @@ export default function Post(props) {
   const [loadimg, setLoadimg] = useState(false);
   const [checklistVideo, setChecklistVideo] = useState([]);
   const [token, setToken] = useState(null);
+  const [mute, setMute] = useState(false);
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
+  let [loadVid, setLoadVid] = useState(false);
 
   const loadAsync = async () => {
     let access_token = await AsyncStorage.getItem("access_token");
@@ -147,8 +151,6 @@ export default function Post(props) {
       });
   };
 
-  const [size, setSize] = useState(null);
-
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
@@ -164,19 +166,24 @@ export default function Post(props) {
           width = 1080;
           height = 1080;
         }
-
         let tempData = { ...recent.node.image };
+        await setLoadVid(true);
+        const result = await Video.compress(tempData.uri, {
+          compressionMethod: "auto",
+        });
+        const statResult = await stat(result);
         tempData.height = height;
         tempData.width = width;
-
+        tempData.size = statResult.size;
+        tempData.path = statResult.path;
         props.navigation.navigate("CreatePostScreen", {
           location: recent.node.location,
           type: recent.node.type.substr(0, 5),
-          // file: recent.node.image,
           file: tempData,
           token: token,
           ratio: ratio,
         });
+        setLoadVid(false);
       } else if (type.substr(0, 5) === "image") {
         let height;
         let width;
@@ -231,9 +238,6 @@ export default function Post(props) {
       for (var i = 0; i < checklistVideo.length; i++) {
         checklistVideo[i].node.image.width = width;
       }
-      // for (var i = 0; i < checklistVideo.length; i++) {
-      //   checklistVideo[i].node.image.path = checklistVideo[i].node.image.uri;
-      // }
 
       props.navigation.navigate("FeedStack", {
         screen: "Crop",
@@ -251,12 +255,15 @@ export default function Post(props) {
       });
 
       // for (var i = 0; i < checklistVideo.length; i++) {
+      //   checklistVideo[i].node.image.path = checklistVideo[i].node.image.uri;
+      // }
+      // for (var i = 0; i < checklistVideo.length; i++) {
       //   RNFetchBlob.fs
       //     .stat(checklistVideo[i].node.image.uri)
       //     .then((stats) => {
       //       for (var i = 0; i < checklistVideo.length; i++) {
       //         checklistVideo[i].node.image.fileSize = stats.size;
-      //       }
+      //       }RNFetchBlob
       //       // setSize(stats.size);
       //     })
       //     .catch((error) => {
@@ -656,8 +663,6 @@ export default function Post(props) {
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
 
-  const [mute, setMute] = useState(false);
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
@@ -729,38 +734,52 @@ export default function Post(props) {
         }}
       >
         {recent?.node?.type.substr(0, 5) === "video" ? (
-          <FunVideo
-            source={{
-              uri:
-                Platform.OS === "ios"
-                  ? `assets-library://asset/asset.${recent.node.image.filename.substring(
-                      recent.node.image.filename.length - 3
-                    )}?id=${recent.node.image.uri.substring(
-                      5,
-                      41
-                    )}&ext=${recent.node.image.filename.substring(
-                      recent.node.image.filename.length - 3
-                    )}`
-                  : recent.node?.image?.uri,
-            }}
-            ref={(slider) => {
-              videoView = slider;
-            }}
-            onProgress={(e) => durationTime(e)}
-            paused={props.route.name == "Post" && isFocused ? false : true}
-            // paused={mute ? true : false}
-            repeat={time ? true : false}
-            // onBuffer={videoView?.current?.onBuffer}
-            onError={videoView?.current?.videoError}
-            style={{
-              // width: width,
-              // height: width,
-              width: ratio.label == "P" ? width * (4 / 5) : width,
-              height: ratio.label == "L" ? width * (2.2 / 3) : width,
-            }}
-            muted={mute ? true : false}
-            resizeMode="cover"
-          ></FunVideo>
+          <>
+            <FunVideo
+              source={{
+                uri:
+                  Platform.OS === "ios"
+                    ? `assets-library://asset/asset.${recent.node.image.filename.substring(
+                        recent.node.image.filename.length - 3
+                      )}?id=${recent.node.image.uri.substring(
+                        5,
+                        41
+                      )}&ext=${recent.node.image.filename.substring(
+                        recent.node.image.filename.length - 3
+                      )}`
+                    : recent.node?.image?.uri,
+              }}
+              ref={(slider) => {
+                videoView = slider;
+              }}
+              onProgress={(e) => durationTime(e)}
+              paused={props.route.name == "Post" && isFocused ? false : true}
+              repeat={time ? true : false}
+              // onBuffer={videoView?.current?.onBuffer}
+              onError={videoView?.current?.videoError}
+              style={{
+                width: ratio.label == "P" ? width * (4 / 5) : width,
+                height: ratio.label == "L" ? width * (2.2 / 3) : width,
+              }}
+              muted={mute ? true : false}
+              resizeMode="cover"
+            ></FunVideo>
+            {loadVid ? (
+              <View
+                style={{
+                  position: "absolute",
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  opacity: 0.5,
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator size="large" color="#209fae" />
+              </View>
+            ) : null}
+          </>
         ) : (
           <View
             style={{
@@ -1210,6 +1229,10 @@ export default function Post(props) {
         onEndReached={getMoreImage}
         onEndThreshold={3000}
         onScroll={() => setPreview(false)}
+      />
+      <Peringatan
+        aler={aler}
+        setClose={() => showAlert({ ...aler, show: false })}
       />
     </View>
   );

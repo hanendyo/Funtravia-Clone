@@ -840,5 +840,6 @@
   "fileCouldNotBeDownloaded": "File could not be downloaded",
   "failRemoveTagAlbum": "Failed to remove album tag",
   "successcopylink": "Success Copy Link To Clipboard",
-  "setTimeForActivity": "Set time for activity"
+  "setTimeForActivity": "Set time for activity",
+  "descMaxUpload": "Maximum file size is 20 MB"
 }

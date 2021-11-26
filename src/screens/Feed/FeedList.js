@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from "react";
+import React, { useState, useEffect, forwardRef, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -22,9 +22,10 @@ import {
   LikeBlack,
   CommentBlack,
   Xgray,
-  AcceptNotif,
-  Errorr,
   CheckWhite,
+  UploadFailed,
+  ReuploadFeed,
+  XFailedFeed,
 } from "../../assets/svg";
 import { Bg_soon } from "../../assets/png";
 import { gql } from "apollo-boost";
@@ -48,9 +49,8 @@ import RemoveAlbum from "../../graphQL/Mutation/Album/RemoveAlbum";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
-import ProgressBar from "react-native-progress/Bar";
 import moment from "moment";
-import ShowMoreText from "react-show-more-text";
+import LoadingFeed from "../../component/src/LoaadingFeed";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -97,7 +97,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("props feedlist", props);
+  // console.log("props feedlist", props);
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
@@ -105,9 +105,8 @@ export default function FeedList({ props, token }) {
   const [dataFeed, setDataFeed] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [soon, setSoon] = useState(false);
-
-  console.log("datafeed", dataFeed);
-
+  const [uploadFailed, setUploadFailed] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -169,10 +168,43 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  const SubmitData = async () => {
+  let [tempDataLoading, setTempDataLoading] = useState(false);
+  let [timeMiliSecond, setTimeMiliSecond] = useState(0);
+  const [count, setCount] = useState(0);
+  const countLeft =
+    props?.route?.params?.assets?.length === undefined
+      ? 10
+      : props?.route?.params?.assets?.length;
+  console.log("count", count);
+  console.log("countleft", countLeft);
+  const timePercentage = count / countLeft;
+
+  useEffect(() => {
+    count < props?.route?.params?.assets?.length &&
+      setTimeout(
+        () => setCount(count + 1),
+        Math.floor(
+          props.route?.params?.allTime / props?.route?.params?.assets?.length
+        )
+      );
+    if (props.route.params) {
+      if (props.route.params.isPost === true) {
+        SubmitData(props?.route?.params?.allTime);
+        props.route.params.isPost = false;
+      }
+    }
+  }, [
+    props.route.params?.isPost,
+    count,
+    props.route.params.updateDataPost,
+    props.route.params.allTime,
+    timeMiliSecond,
+  ]);
+
+  const SubmitData = async (time) => {
     setLoaded(true);
     setCount(0);
-
+    setTempDataLoading(true);
     setTimeout(() => {
       if (ref) {
         ref?.current.scrollToIndex({ animated: true, index: 0 });
@@ -193,38 +225,40 @@ export default function FeedList({ props, token }) {
         },
       });
 
+      console.log("response", response);
+
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          await refetch();
+          setTimeout(() => {
+            setTempDataLoading(false);
+            setUploadSuccess(true);
+            setTimeout(() => {
+              setLoaded(false);
+              refetch();
+            }, 2000);
+          }, props.route.params.allTime);
           setTimeout(() => {
             if (ref) {
               ref?.current.scrollToIndex({ animated: true, index: 0 });
             }
           });
-          setTimeout(() => {
-            setLoaded(false);
-          }, 4000);
         } else {
-          setLoaded(false);
+          setTempDataLoading(false);
+          setUploadSuccess(false);
+          setUploadFailed(true);
           throw new Error(response.data.create_post.message);
         }
       } else {
-        setLoaded(false);
+        setTempDataLoading(false);
+        setUploadSuccess(false);
         setUploadFailed(true);
-        throw new Error("Error Input");
       }
     } catch (err) {
-      setLoaded(false);
+      setTempDataLoading(false);
+      setUploadSuccess(false);
       setUploadFailed(true);
     }
   };
-
-  const [count, setCount] = useState(0);
-  const countLeft =
-    props?.route?.params?.assets?.length === undefined
-      ? 10
-      : props?.route?.params?.assets?.length;
-  const timePercentage = count / countLeft;
 
   const _liked = async (id, index) => {
     let tempData = [...dataFeed];
@@ -335,7 +369,6 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const [uploadFailed, setUploadFailed] = useState(false);
   const {
     loading: loadingPost,
     data: dataPost,
@@ -485,20 +518,14 @@ export default function FeedList({ props, token }) {
     let setsetting = await AsyncStorage.getItem("setting");
     let tkn = await AsyncStorage.getItem("access_token");
     setSetting(JSON.parse(setsetting));
+    // durationTime;
     await LoadFollowing();
   };
 
   useEffect(() => {
-    count < countLeft && setTimeout(() => setCount(count + 1), 1000);
-
     if (props.route.params) {
       if (props.route.params.isItinerary === true) {
         Refresh();
-      }
-
-      if (props.route.params.isPost === true) {
-        SubmitData();
-        props.route.params.isPost = false;
       }
 
       if (props.route.params.isComment === true) {
@@ -529,7 +556,6 @@ export default function FeedList({ props, token }) {
         tempdataNode = props.route.params.updateDataPost;
         tempdataIndex.node = tempdataNode;
         tempdata.splice(indeks, 1, tempdataIndex);
-        console.log("tempdata", tempdata);
         setDataFeed(tempdata);
       }
     }
@@ -538,18 +564,12 @@ export default function FeedList({ props, token }) {
       loadAsync();
     });
     return unsubscribe;
-  }, [props.route.params?.isPost, count, props.route.params.updateDataPost]);
-
-  const createPost = () => {
-    if (token && token !== null && token !== "") {
-      props.navigation.navigate("FeedStack", {
-        screen: "Post",
-      });
-      const uploading = true;
-    } else {
-      setModalLogin(true);
-    }
-  };
+  }, [
+    props.route.params?.isPost,
+    count,
+    props.route.params.updateDataPost,
+    props.route.params.allTime,
+  ]);
 
   const countKoment = (id) => {
     const tempd = [...dataFeed];
@@ -810,6 +830,14 @@ export default function FeedList({ props, token }) {
       });
     }
   };
+
+  const dataLoadingFeed = [
+    {
+      percentage: 100,
+      color: "#209fae",
+      max: 100,
+    },
+  ];
 
   return (
     <SafeAreaView>
@@ -1621,9 +1649,10 @@ export default function FeedList({ props, token }) {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
+            height: 70,
           }}
         >
-          {loadingMutationPost ? (
+          {tempDataLoading ? (
             <>
               <View
                 style={{
@@ -1639,14 +1668,27 @@ export default function FeedList({ props, token }) {
                     width: 40,
                     height: 40,
                     borderRadius: 40,
-                    backgroundColor: "#DAF0F2",
+                    // backgroundColor: "#DAF0F2",
                   }}
                 />
-                <Progress.Circle
+                {dataLoadingFeed.map((p, i) => {
+                  return (
+                    <LoadingFeed
+                      key={i}
+                      percentage={p.percentage}
+                      color={p.color}
+                      delay={0}
+                      max={p.max}
+                      duration={props?.route?.params?.allTime}
+                    />
+                  );
+                })}
+                {/* <Progress.Circle
                   size={60}
                   color={"#209fae"}
-                  progress={timePercentage}
-                  indeterminateAnimationDuration={500}
+                  progress={progress}
+                  // indeterminate={!indeterminate}
+                  indeterminateAnimationDuration={timeMiliSecond}
                   borderWidth={6}
                   thickness={5}
                   borderColor={"#DAF0F2"}
@@ -1659,14 +1701,12 @@ export default function FeedList({ props, token }) {
                   }}
                   strokeCap={"square"}
                   style={{ marginVertical: 10 }}
-                />
-                <View style={{ marginLeft: 10 }}>
+                /> */}
+                <View style={{ marginLeft: 15, borderWidth: 1 }}>
                   <Text type={"bold"} size={"label"}>
-                    Uploading photo
+                    Uploading
                   </Text>
-                  <Text>
-                    {count}/{countLeft} photos
-                  </Text>
+                  <Text>{`${count} / ${countLeft}`}</Text>
                 </View>
               </View>
               <View
@@ -1678,103 +1718,130 @@ export default function FeedList({ props, token }) {
                   alignItems: "center",
                   borderRadius: 20,
                   borderColor: "#E9E9E9",
-                  borderWidth: 1,
                 }}
               >
                 <Xgray width={12} height={12} />
               </View>
-              {uploadFailed ? (
-                <>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Errorr
-                      height="40"
-                      width="40"
-                      style={{ marginVertical: 20 }}
-                    />
-                    <Text
-                      style={{ marginLeft: 15 }}
-                      size="label"
-                      type="regular"
-                    >
-                      {`Oops! ${t("uploadFailed")}`}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity
-                      onPress={() => createPost()}
-                      style={{
-                        backgroundColor: "#209FAE",
-                        padding: 7,
-                        borderRadius: 5,
-                      }}
-                    >
-                      <Text
-                        style={{ color: "#FFF" }}
-                        size="label"
-                        type="regular"
-                      >
-                        {t("reupload")}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => setUploadFailed(false)}
-                      style={{
-                        backgroundColor: "#d1d1d1",
-                        padding: 7,
-                        borderRadius: 5,
-                        marginLeft: 10,
-                      }}
-                    >
-                      <Text
-                        style={{ color: "#FFF" }}
-                        size="label"
-                        type="regular"
-                      >
-                        {t("cancel")}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : null}
             </>
           ) : (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#79C05A",
-                width: Dimensions.get("screen").width - 20,
-                borderRadius: 10,
-                marginLeft: -15,
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "#fff",
-                  marginLeft: 20,
-                  marginVertical: 10,
-                }}
-              >
-                <CheckWhite
-                  height="20"
-                  width="20"
-                  // style={{ marginVertical: 20 }}
-                />
-              </View>
-              <Text
-                style={{ marginLeft: 15, color: "#fff" }}
-                size="title "
-                type="bold"
-              >
-                {`Wohoo! ${t("uploaded")}`}
-              </Text>
-            </View>
+            <>
+              {uploadFailed ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flex: 1,
+                      height: "100%",
+                    }}
+                  >
+                    <UploadFailed
+                      height="50"
+                      width="50"
+                      // style={{ marginVertical: 10 }}
+                    />
+                    <View
+                      style={{
+                        height: "100%",
+                        justifyContent: "center",
+                        flex: 1,
+                      }}
+                    >
+                      <Text
+                        style={{ marginLeft: 15, color: "#D75995" }}
+                        size="label"
+                        type="bold"
+                      >
+                        {`Oops! ${t("uploadFailed")}`}
+                      </Text>
+                      <Text
+                        style={{ marginLeft: 15 }}
+                        size="description"
+                        type="regular"
+                      >
+                        {`1/8 Files`}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Pressable
+                      onPress={() => SubmitData(timeMiliSecond)}
+                      style={{
+                        marginRight: 10,
+                        height: "100%",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ReuploadFeed width="30" height="30" />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setLoaded(false);
+                        setUploadFailed(false);
+                      }}
+                      style={{
+                        height: "100%",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <XFailedFeed width="30" height="30" />
+                    </Pressable>
+                  </View>
+                </View>
+              ) : null}
+              {uploadSuccess ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "#79C05A",
+                    width: Dimensions.get("screen").width - 20,
+                    borderRadius: 10,
+                    marginLeft: -15,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 40,
+                      width: 40,
+                      borderRadius: 40,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderWidth: 2,
+                      borderColor: "#fff",
+                      marginLeft: 20,
+                      marginVertical: 10,
+                    }}
+                  >
+                    <CheckWhite
+                      height="20"
+                      width="20"
+                      // style={{ marginVertical: 20 }}
+                    />
+                  </View>
+                  <Text
+                    style={{ marginLeft: 15, color: "#fff" }}
+                    size="title "
+                    type="bold"
+                  >
+                    {`Wohoo! ${t("uploaded")}`}
+                  </Text>
+                </View>
+              ) : null}
+            </>
           )}
         </View>
       ) : null}
@@ -1797,7 +1864,7 @@ export default function FeedList({ props, token }) {
               borderBottomWidth: 1,
               borderBottomColor: "#EEEEEE",
             }}
-            key={item.id}
+            key={item.node.id}
           >
             <View
               style={{
@@ -2258,11 +2325,7 @@ export default function FeedList({ props, token }) {
           paddingVertical: 7,
         }}
         contentContainerStyle={{ flexGrow: 1 }}
-        // initialNumToRender={7}
-        keyExtractor={(item, index) => {
-          item.cursor + toString(index);
-        }}
-        // extraData={liked}
+        keyExtractor={(item) => item.node.id}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
         refreshControl={

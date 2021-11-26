@@ -224,7 +224,7 @@ export default function Comments(props) {
     }
     const unsubscribe = props.navigation.addListener("focus", async () => {
       loadAsync();
-      Refresh();
+      // Refresh();
     });
     // viewcomment;
     return unsubscribe;

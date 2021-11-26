@@ -299,6 +299,9 @@ import SavePutih from "./files/savePutih.svg";
 import PinMapGreen from "./files/pinMapGreen.svg";
 import PhotoGray from "./files/photoGray.svg";
 import FileGray from "./files/fileGray.svg";
+import UploadFailed from "./files/uploadFailed.svg";
+import ReuploadFeed from "./files/reloadFeed.svg";
+import XFailedFeed from "./files/XFailedUpload.svg";
 
 export {
   PhotoGray,
@@ -602,4 +605,7 @@ export {
   NewItineraryImage,
   CalendarBiru,
   SavePutih,
+  UploadFailed,
+  ReuploadFeed,
+  XFailedFeed,
 };

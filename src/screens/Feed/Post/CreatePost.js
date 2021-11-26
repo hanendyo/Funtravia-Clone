@@ -17,7 +17,14 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
-import { Text, Button, Loading, StatusBar, FunImage } from "../../../component";
+import {
+  Text,
+  Button,
+  Loading,
+  StatusBar,
+  FunImage,
+  FunVideo,
+} from "../../../component";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import AutoHeightImage from "react-native-auto-height-image";
@@ -105,6 +112,8 @@ export default function CreatePost(props) {
     longitude: "",
   });
 
+  console.log("chosenFile", chosenFile);
+
   const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
     context: {
       headers: {
@@ -191,12 +200,14 @@ export default function CreatePost(props) {
     let assets = [];
     if (props?.route.params.type === "video") {
       const data = new ReactNativeFile({
-        uri: chosenFile.uri,
+        // uri: chosenFile.uri,
+        uri: chosenFile.path,
         type: `video/${chosenFile.filename.substring(
           chosenFile.filename.length - 3
         )}`,
         name: chosenFile.filename,
       });
+      data.size = chosenFile.size;
       assets.push(data);
     } else if (props?.route.params.type === "image") {
       const data = new ReactNativeFile({
@@ -204,6 +215,7 @@ export default function CreatePost(props) {
         type: chosenFile.mime,
         name: "image.jpeg",
       });
+      data.size = chosenFile.size;
       assets.push(data);
     } else {
       chosenFile.map((item, index) => {
@@ -211,10 +223,12 @@ export default function CreatePost(props) {
         let typeExt = item?.node?.image?.filename.split(".");
         if (typeMedia[0] === "video") {
           const data = new ReactNativeFile({
-            uri: item?.node?.image?.uri,
+            // uri: item?.node?.image?.uri,
+            uri: item?.node?.image?.path,
             type: `video/${typeExt[typeExt.length - 1]}`,
             name: item?.node?.image?.filename,
           });
+          data.size = item?.node?.image?.size;
           assets.push(data);
         } else {
           const data = new ReactNativeFile({
@@ -222,10 +236,21 @@ export default function CreatePost(props) {
             type: item?.node?.type,
             name: "image.jpeg",
           });
+          data.size = item?.node?.image?.size;
           assets.push(data);
         }
       });
     }
+
+    let sizeAssets = [];
+
+    for (var i = 0; i < assets.length; i++) {
+      sizeAssets.push(parseInt(assets[i].size));
+    }
+    const reducer = (previousValue, currentValue) =>
+      previousValue + currentValue;
+    let joinSize = sizeAssets.reduce(reducer);
+    let timeLoad = Math.round(joinSize / 250);
 
     props.navigation.navigate("BottomStack", {
       screen: "FeedBottomScreen",
@@ -242,6 +267,7 @@ export default function CreatePost(props) {
           day_id: day_id,
           oriented: oriented,
           assets: assets,
+          allTime: timeLoad,
         },
       },
     });
@@ -371,10 +397,13 @@ export default function CreatePost(props) {
   const S = Dimensions.get("screen").width;
   const [indexAktif, setIndexAktive] = useState(0);
 
+  const usries =
+    "file://data/user/0/com.funtravia.apps/cache/f2307502-01d6-4d4d-ade2-d1c0c617806e.mp4";
+
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {
       return (
-        <Video
+        <FunVideo
           source={{
             uri:
               Platform.OS === "ios"
@@ -549,20 +578,31 @@ export default function CreatePost(props) {
             paddingLeft: 5,
           }}
         >
-          <Button
-            onPress={() => {
-              props?.navigation.goBack();
-              setIdAlbums("");
-              setAlbum("");
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
             }}
-            type="circle"
-            variant="transparent"
           >
-            <Arrowbackwhite height={20} width={20} />
-          </Button>
-          <Text size="header" style={{ color: "#fff" }}>
-            {t("newPost")}
-          </Text>
+            <Button
+              onPress={() => {
+                props?.navigation.goBack();
+                setIdAlbums("");
+                setAlbum("");
+              }}
+              type="circle"
+              variant="transparent"
+            >
+              <Arrowbackwhite height={20} width={20} />
+            </Button>
+            <Text
+              size="header"
+              type="bold"
+              style={{ color: "#fff", marginLeft: 10 }}
+            >
+              {t("newPost")}
+            </Text>
+          </View>
           <View
             style={{
               flexDirection: "row",
