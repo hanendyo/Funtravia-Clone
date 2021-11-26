@@ -76,7 +76,7 @@ import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 45;
+const TabBarHeight = 40;
 const HeaderHeight = 300;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
@@ -689,6 +689,7 @@ export default function CityDetail(props) {
       <Animated.View
         style={{
           marginTop: 5,
+          marginBottom: 60,
           transform: [{ translateY: y }],
         }}
       >

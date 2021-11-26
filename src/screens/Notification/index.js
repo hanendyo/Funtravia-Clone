@@ -129,7 +129,7 @@ export default function Notification(props) {
     { key: "tab2", title: t("information") },
   ]);
   const isListGliding = useRef(false);
-  const TabBarHeight = 43;
+  const TabBarHeight = 45;
   const [dataNotification, setDataNotification] = useState([]);
   const [dataInformation, setDataInformation] = useState([]);
   const headerScrollY = useRef(new Animated.Value(0)).current;
@@ -293,6 +293,7 @@ export default function Notification(props) {
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
+
       borderBottomWidth: 0,
     },
     headerLeftContainerStyle: {
@@ -374,6 +375,7 @@ export default function Notification(props) {
         style={{
           top: 5,
           zIndex: 1,
+
           position: "absolute",
           width: "100%",
           borderBottomWidth: 2,
@@ -389,9 +391,11 @@ export default function Notification(props) {
           }}
           style={{
             elevation: 0,
+
             shadowOpacity: 0,
             backgroundColor: "#fff",
-            height: TabBarHeight + 5,
+            height: TabBarHeight,
+
             // borderWidth: 1,
             // paddingTop: 0,
             marginTop: Platform.OS === "ios" ? -5 : -10,
@@ -601,6 +605,7 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 100,
+
     width: "100%",
     alignItems: "center",
     justifyContent: "center",

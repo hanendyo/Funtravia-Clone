@@ -76,7 +76,7 @@ import categoryArticle from "../../../graphQL/Query/Countries/Articlecategory";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 45;
+const TabBarHeight = 40;
 const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({

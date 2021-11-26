@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
+  Platform,
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Text, Button, Loading, FunImage } from "../../../component";
@@ -27,6 +28,10 @@ import IsReadAll from "../../../graphQL/Mutation/Notification/IsReadAll";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Checkblok } from "../../../assets/svg";
 import moment from "moment";
+import normalize from "react-native-normalize";
+import DeviceInfo from "react-native-device-info";
+const deviceId = DeviceInfo.getModel();
+const Notch = DeviceInfo.hasNotch();
 
 const InvitationNotif = gql`
   query {
@@ -814,6 +819,7 @@ export default function Invitation({ navigation, token }) {
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
             borderBottomWidth: 0.5,
+            // borderWidth: 1,
             borderBottomColor: "#D1D1D1",
             width: Dimensions.get("screen").width,
           }}
@@ -822,14 +828,18 @@ export default function Invitation({ navigation, token }) {
             style={{
               flexDirection: "row",
               width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
-              paddingVertical: 15,
+              paddingHorizontal: normalize(20),
+              paddingVertical: normalize(20),
             }}
           >
             <Pressable
               style={{
                 width: "15%",
                 alignContent: "flex-start",
+                marginLeft: Platform.select({
+                  ios: Notch ? -3 : 5,
+                  android: deviceId == "LYA-L29" ? -2 : 0,
+                }),
               }}
               onPress={() => {
                 item?.itinerary_buddy?.userinvite?.id !== setting?.user?.id
@@ -844,8 +854,8 @@ export default function Invitation({ navigation, token }) {
             >
               <FunImage
                 style={{
-                  height: 50,
-                  width: 50,
+                  height: 45,
+                  width: 45,
                   alignSelf: "center",
                   borderRadius: 25,
                   resizeMode: "cover",
@@ -889,7 +899,7 @@ export default function Invitation({ navigation, token }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "flex-start",
-                  alignItems: "center",
+
                   flexWrap: "wrap",
                 }}
               >
@@ -914,8 +924,6 @@ export default function Invitation({ navigation, token }) {
 
                     // width: '30%',
                     // fontSize: 15,
-                    marginBottom: 10,
-                    marginTop: -5,
                   }}
                 >
                   {duration(item.tgl_buat)}
@@ -929,7 +937,7 @@ export default function Invitation({ navigation, token }) {
                   style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    paddingHorizontal: 3,
+                    paddingHorizontal: deviceId == "LYA-L29" ? 0 : 3,
                     paddingTop: 5,
                     marginBottom: 5,
                     width: "100%",
@@ -1020,6 +1028,7 @@ export default function Invitation({ navigation, token }) {
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
             borderBottomWidth: 0.5,
+            // borderWidth: 1,
             borderBottomColor: "#D1D1D1",
           }}
         >
@@ -1027,10 +1036,11 @@ export default function Invitation({ navigation, token }) {
             style={{
               flexDirection: "row",
               alignItems: "center",
+              // borderWidth: 1,
               width: Dimensions.get("screen").width,
-              paddingHorizontal: 15,
-
-              paddingVertical: 15,
+              paddingHorizontal: normalize(20),
+              paddingTop: normalize(20),
+              paddingBottom: normalize(8),
             }}
           >
             <Pressable
@@ -1046,13 +1056,18 @@ export default function Invitation({ navigation, token }) {
               }}
               style={{
                 width: "15%",
-                alignContent: "flex-start",
+
+                marginLeft: Platform.select({
+                  ios: Notch ? -3 : 5,
+                  android: deviceId == "LYA-L29" ? -2 : 0,
+                }),
+                // alignContent: "flex-start",
               }}
             >
               <FunImage
                 style={{
-                  height: 50,
-                  width: 50,
+                  height: 45,
+                  width: 45,
                   alignSelf: "center",
 
                   borderRadius: 25,
@@ -1080,7 +1095,6 @@ export default function Invitation({ navigation, token }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  // borderWidth: 1,
                 }}
               >
                 <Text
@@ -1097,8 +1111,7 @@ export default function Invitation({ navigation, token }) {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
+
                   flexWrap: "wrap",
                 }}
               >
@@ -1118,6 +1131,7 @@ export default function Invitation({ navigation, token }) {
                   type="regular"
                   style={{
                     // textAlign: "right",
+
                     color: "#6c6c6c",
 
                     // width: '30%',
@@ -1128,29 +1142,6 @@ export default function Invitation({ navigation, token }) {
                   {duration(item.tgl_buat)}
                 </Text>
               </View>
-              {/* <View
-								style={{
-									backgroundColor:
-										item.isread == false
-											? "#FFFFFF"
-											: "#F6F6F6",
-									padding: 10,
-									borderRadius: 5,
-								}}
-							>
-								<Text
-									type="regular"
-									size="label"
-									numberOfLines={3}
-									style={
-										{
-											// color: '#209fae',
-										}
-									}
-								>
-									"{item.comment_feed.text}"
-								</Text>
-							</View> */}
             </View>
             <View
               style={{
@@ -1188,8 +1179,8 @@ export default function Invitation({ navigation, token }) {
                         ),
                       }}
                       style={{
-                        width: 50,
-                        height: 50,
+                        width: 45,
+                        height: 45,
                         borderRadius: 5,
                       }}
                     />
@@ -1205,16 +1196,19 @@ export default function Invitation({ navigation, token }) {
                     />
                   </View>
                 ) : (
-                  <FunImage
-                    source={{
-                      uri: item.comment_feed?.post_asset?.filepath,
-                    }}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 5,
-                    }}
-                  />
+                  <View>
+                    <FunImage
+                      source={{
+                        uri: item.comment_feed?.post_asset?.filepath,
+                      }}
+                      style={{
+                        width: 45,
+                        height: 45,
+
+                        borderRadius: 5,
+                      }}
+                    />
+                  </View>
                 )}
               </View>
             </View>
@@ -1223,13 +1217,14 @@ export default function Invitation({ navigation, token }) {
             style={{
               flexDirection: "row",
               // justifyContent: "",
+
               width: Dimensions.get("screen").width,
               paddingBottom: 15,
             }}
           >
             <View
               style={{
-                width: "19%",
+                width: "20%",
               }}
             ></View>
             <View
@@ -1237,7 +1232,7 @@ export default function Invitation({ navigation, token }) {
                 backgroundColor: item.isread == false ? "#FFFFFF" : "#F6F6F6",
                 padding: 10,
                 borderRadius: 5,
-                width: "77%",
+                width: deviceId == "LYA-L29" ? "75%" : "74%",
               }}
             >
               <Text
@@ -1274,8 +1269,8 @@ export default function Invitation({ navigation, token }) {
               alignItems: "center",
               // borderWidth: 1,
               width: Dimensions.get("screen").width,
-              paddingVertical: 15,
-              paddingHorizontal: 15,
+              paddingVertical: normalize(20),
+              paddingHorizontal: normalize(20),
             }}
           >
             <Pressable
@@ -1292,12 +1287,17 @@ export default function Invitation({ navigation, token }) {
               style={{
                 alignContent: "flex-start",
                 width: "15%",
+
+                marginLeft: Platform.select({
+                  ios: Notch ? -3 : 5,
+                  android: deviceId == "LYA-L29" ? -2 : 0,
+                }),
               }}
             >
               <FunImage
                 style={{
-                  height: 50,
-                  width: 50,
+                  height: 45,
+                  width: 45,
                   alignSelf: "center",
 
                   borderRadius: 25,
@@ -1346,7 +1346,8 @@ export default function Invitation({ navigation, token }) {
                   flexDirection: "row",
                   justifyContent: "flex-start",
                   flexWrap: "wrap",
-                  alignItems: "center",
+
+                  // alignItems: "center",
                 }}
               >
                 <Text
@@ -1399,8 +1400,8 @@ export default function Invitation({ navigation, token }) {
                     uri: item.like_feed?.post_asset?.filepath,
                   }}
                   style={{
-                    width: 50,
-                    height: 50,
+                    width: 45,
+                    height: 45,
                     borderRadius: 5,
                   }}
                 />
@@ -1425,8 +1426,8 @@ export default function Invitation({ navigation, token }) {
               flexDirection: "row",
 
               width: Dimensions.get("screen").width,
-              paddingVertical: 15,
-              paddingHorizontal: 15,
+              paddingVertical: normalize(20),
+              paddingHorizontal: normalize(20),
             }}
           >
             <View
@@ -1434,12 +1435,16 @@ export default function Invitation({ navigation, token }) {
                 width: "15%",
                 alignContent: "flex-start",
                 // borderWidth: 1,
+                marginLeft: Platform.select({
+                  ios: Notch ? -3 : 5,
+                  android: deviceId == "LYA-L29" ? -2 : 0,
+                }),
               }}
             >
               <FunImage
                 style={{
-                  height: 50,
-                  width: 50,
+                  height: 45,
+                  width: 45,
                   alignSelf: "center",
 
                   borderRadius: 25,
@@ -1498,7 +1503,7 @@ export default function Invitation({ navigation, token }) {
                   style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    alignItems: "center",
+                    // alignItems: "center",
                     flexWrap: "wrap",
                   }}
                 >
@@ -1585,7 +1590,14 @@ export default function Invitation({ navigation, token }) {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "space-between", marginTop: 50 }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "space-between",
+        marginTop: normalize(45),
+        borderWidth: 1,
+      }}
+    >
       <Loading show={loadings} />
       {datanotif && datanotif.length ? (
         <FlatList
@@ -1610,7 +1622,12 @@ export default function Invitation({ navigation, token }) {
       )}
       <View
         style={{
-          padding: 20,
+          paddingTop: 12,
+          paddingBottom: Platform.select({
+            ios: Notch ? 25 : 12,
+            android: 12,
+          }),
+          paddingHorizontal: 34,
           backgroundColor: "#FFFFFF",
           shadowColor: "#6F7273",
 
@@ -1618,7 +1635,7 @@ export default function Invitation({ navigation, token }) {
           shadowOpacity: 1,
           shadowRadius: 2,
           elevation: 3,
-          borderTopWidth: 2,
+          borderTopWidth: 1,
           borderTopColor: "#f6f6f6",
         }}
       >
