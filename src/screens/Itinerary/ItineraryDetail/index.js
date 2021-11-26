@@ -160,7 +160,6 @@ export default function ItineraryDetail(props) {
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let [dataList, setDataListItem] = useState([]);
-  console.log("dataList", dataList);
   const [tab3Data] = useState([]);
   let itineraryId = props.route.params.country;
   let token = props.route.params.token;
@@ -615,9 +614,9 @@ export default function ItineraryDetail(props) {
         }
 
         if (response.data) {
-          // if (response.data.upload_cover_itinerary_v2.code !== 200) {
-          //   throw new Error(response.data.upload_cover_itinerary_v2.message);
-          // }
+          if (response.data.upload_cover_itinerary_v2.code !== 200) {
+            throw new Error(response.data.upload_cover_itinerary_v2.message);
+          }
           startRefreshAction();
         }
         setloading(false);
@@ -864,7 +863,6 @@ export default function ItineraryDetail(props) {
   };
 
   const openModaldate = async (index, starts, durati) => {
-    console.log("open", index, starts, durati);
     var duration = durati.split(":");
     var starttime = starts.split(":");
 
@@ -912,14 +910,6 @@ export default function ItineraryDetail(props) {
     menitends,
     dataLists
   ) => {
-    console.log(
-      "Settime",
-      jamstarts,
-      menitstarts,
-      jamends,
-      menitends,
-      dataLists
-    );
     await setModaldate(false);
 
     let starttimes = jamstarts + ":" + menitstarts + ":00";
@@ -1016,7 +1006,6 @@ export default function ItineraryDetail(props) {
 
     if (hasiljam <= 23) {
       let dataday = { ...datadayaktif };
-      console.log("dataday", datadayaktif);
 
       if (hasiljam === 23 && hasilmenit <= 59) {
         savetimeline(datax);
@@ -1066,7 +1055,6 @@ export default function ItineraryDetail(props) {
   });
 
   const savetimeline = async (datakiriman) => {
-    console.log("datakiriman", datakiriman);
     try {
       let response = await mutationSaveTimeline({
         variables: {

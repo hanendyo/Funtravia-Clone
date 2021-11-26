@@ -654,7 +654,7 @@ export default function Trip(props) {
                   />
                   <View
                     style={{
-                      backgroundColor: "#F0F0F0",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 3,
                       flex: 1,
                       flexDirection: "row",
@@ -969,7 +969,7 @@ export default function Trip(props) {
                   />
                   <View
                     style={{
-                      backgroundColor: "#F0F0F0",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 3,
                       flex: 1,
                       flexDirection: "row",

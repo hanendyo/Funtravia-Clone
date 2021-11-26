@@ -8,6 +8,7 @@ import {
   Image,
   ImageBackground,
   TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 import { default_image, imgPrivate } from "../../../assets/png";
 
@@ -15,8 +16,13 @@ import User_Post from "../../../graphQL/Query/Profile/post";
 import {
   Calendargrey,
   Kosong,
+  LikeEmpty,
+  LikeRed,
+  Newglobe,
+  Padlock,
   PinHijau,
   TravelAlbum,
+  TravelAlbumdis,
   TravelStories,
   TravelStoriesdis,
   User,
@@ -27,6 +33,7 @@ import { useQuery } from "@apollo/client";
 import Ripple from "react-native-material-ripple";
 import { dateFormats } from "../../../component/src/dateformatter";
 import DeviceInfo from "react-native-device-info";
+import normalize from "react-native-normalize";
 
 const Notch = DeviceInfo.hasNotch();
 const arrayShadow = {
@@ -36,7 +43,16 @@ const arrayShadow = {
   elevation: Platform.OS == "ios" ? 3 : 3,
 };
 
-export default function Trip({ item, props, token, position }) {
+export default function Trip(
+  { item, props, token, position },
+  capHeight,
+  setting,
+  data,
+  modalLogin,
+  setModalLogin,
+  soon,
+  setSoon
+) {
   const getDN = (start, end) => {
     var x = start;
     var y = end,
@@ -83,13 +99,88 @@ export default function Trip({ item, props, token, position }) {
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
   };
 
+  const _liked = async (id, index) => {
+    if (token) {
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+
+        if (response.data) {
+          if (
+            response.data.setItineraryFavorit.code === 200 ||
+            response.data.setItineraryFavorit.code === "200"
+          ) {
+            const tempData = [...data];
+            const tempDataDetail = { ...tempData[index] };
+            tempDataDetail.liked = true;
+            tempData.splice(index, 1, tempDataDetail);
+            setData(tempData);
+          } else {
+            RNToasty.Show({
+              title: "FailedLikeItinerary",
+              position: "bottom",
+            });
+          }
+        }
+      } catch (error) {
+        RNToasty.Show({
+          title: "FailedLikeItinerary",
+          position: "bottom",
+        });
+      }
+    } else {
+      return setModalLogin(true);
+    }
+  };
+  const _unliked = async (id, index) => {
+    if (token) {
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+
+        if (response.data) {
+          if (
+            response.data.unsetItineraryFavorit.code === 200 ||
+            response.data.unsetItineraryFavorit.code === "200"
+          ) {
+            const tempData = [...data];
+            const tempDataDetail = { ...tempData[index] };
+            tempDataDetail.liked = false;
+            tempData.splice(index, 1, tempDataDetail);
+            setData(tempData);
+          } else {
+            RNToasty.Show({
+              title: "somethingwrong",
+              position: "bottom",
+            });
+          }
+        }
+      } catch (error) {
+        RNToasty.Show({
+          title: "somethingwrong",
+          position: "bottom",
+        });
+      }
+    } else {
+      return setModalLogin(true);
+    }
+  };
+
   return (
     <View
       style={{
-        height: 150,
-        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : 30,
+        height: normalize(175),
+        marginTop: Platform.OS === "ios" ? (Notch ? 25 : -35) : 30,
         marginBottom: Platform.OS === "ios" ? (Notch ? 0 : 50) : -10,
-        borderRadius: 10,
+        borderRadius: 5,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
@@ -221,66 +312,73 @@ export default function Trip({ item, props, token, position }) {
             paddingVertical: 10,
             overflow: "hidden",
             justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#d1d1d1",
           }}
         >
           <View>
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                aligndatas: "center",
+                alignItems: "center",
+                maxWidth: Dimensions.get("screen").width / 3.5,
               }}
             >
               <View
                 style={{
                   backgroundColor: "#DAF0F2",
-                  borderWidth: 1,
                   borderRadius: 3,
                   borderColor: "#209FAE",
-                  paddingHorizontal: 5,
+                  paddingHorizontal: 4,
+                  paddingVertical: 1,
                 }}
               >
                 <Text
                   type="bold"
                   size="description"
                   style={{ color: "#209FAE" }}
+                  numberOfLines={1}
                 >
                   {item?.categori?.name ? item?.categori?.name : "No Category"}
                 </Text>
               </View>
-              <View>
-                {item.isprivate == true ? (
-                  <View
+              <View
+                style={{
+                  height: 5,
+                  width: 5,
+                  borderRadius: 5,
+                  marginHorizontal: 10,
+                  backgroundColor: "#000",
+                }}
+              />
+              {item?.isprivate ? (
+                <Padlock height={20} width={20} />
+              ) : (
+                <Newglobe height={20} width={20} />
+              )}
+              {item?.status == "F" &&
+              !item?.isprivate &&
+              item?.user_created?.id !== setting?.user_id ? (
+                item.liked === false ? (
+                  <TouchableOpacity
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      paddingVertical: 3,
-                      paddingHorizontal: 10,
-                      borderRadius: 3,
-                      overflow: "hidden",
+                      padding: 5,
                     }}
+                    onPress={() => _liked(item.id, index, item)}
                   >
-                    <Image
-                      source={imgPrivate}
-                      style={{
-                        height: 10,
-                        width: 10,
-                        marginRight: 5,
-                      }}
-                    />
-                    <Text
-                      size="small"
-                      type={"regular"}
-                      style={{
-                        color: "white",
-                      }}
-                    >
-                      private
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
+                    <LikeEmpty height={15} width={15} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      padding: 5,
+                    }}
+                    onPress={() => _unliked(item.id, index, item)}
+                  >
+                    <LikeRed height={15} width={15} />
+                  </TouchableOpacity>
+                )
+              ) : null}
             </View>
             <Text size="label" type="black" style={{ marginTop: 5 }}>
               <Truncate text={item.name} length={40} />
@@ -329,7 +427,7 @@ export default function Trip({ item, props, token, position }) {
               }}
             >
               <User width={10} height={10} style={{ marginRight: 5 }} />
-              <Text size="small" type="regular">
+              <Text size="description" type="regular">
                 {(item && item.buddy.length ? item.buddy.length : null) + " "}
                 person
               </Text>
@@ -348,13 +446,21 @@ export default function Trip({ item, props, token, position }) {
           justifyContent: "space-between",
         }}
       >
-        <Ripple
+        <Pressable
+          disabled={item?.status == "D" ? true : false}
           onPress={() =>
-            props.navigation.push("tripalbum", {
-              iditinerary: item.id,
-              token: token,
-              position: position,
-            })
+            token
+              ? props.navigation.navigate("ItineraryStack", {
+                  screen: "itindetail",
+                  params: {
+                    itintitle: item.name,
+                    country: item.id,
+                    token: token,
+                    status: "favorite",
+                    index: 1,
+                  },
+                })
+              : setModalLogin(true)
           }
           style={{
             width: "50%",
@@ -362,16 +468,34 @@ export default function Trip({ item, props, token, position }) {
             alignItems: "center",
             justifyContent: "center",
             borderRightWidth: 1,
-            borderColor: "#d3d3d3",
-            paddingVertical: 5,
+            borderColor: "#D1D1D1",
           }}
         >
-          <TravelAlbum height={15} width={15} style={{ marginRight: 5 }} />
-          <Text size="small" type="bold" style={{ color: "#209fae" }}>
-            Travel Album
-          </Text>
-        </Ripple>
-        <Ripple
+          {item?.status == "D" ? (
+            <>
+              <TravelAlbumdis
+                style={{ marginRight: 5 }}
+                height={20}
+                width={20}
+              />
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#c7c7c7" }}
+              >
+                Travel Album
+              </Text>
+            </>
+          ) : (
+            <>
+              <TravelAlbum style={{ marginRight: 5 }} height={20} width={20} />
+              <Text size="description" type="bold" style={{ color: "#209FAE" }}>
+                Travel Album
+              </Text>
+            </>
+          )}
+        </Pressable>
+        <Pressable
           // onPress={() =>
           //   props.navigation.push("tripalbum", {
           //     iditinerary: item.id,
@@ -379,6 +503,7 @@ export default function Trip({ item, props, token, position }) {
           //     position: position,
           //   })
           // }
+          onPress={() => setSoon(true)}
           style={{
             width: "50%",
             flexDirection: "row",
@@ -386,12 +511,424 @@ export default function Trip({ item, props, token, position }) {
             justifyContent: "center",
           }}
         >
-          <TravelStoriesdis height={15} width={15} style={{ marginRight: 5 }} />
-          <Text size="small" type="bold" style={{ color: "#d3d3d3" }}>
+          <TravelStoriesdis height={20} width={20} style={{ marginRight: 5 }} />
+          <Text size="description" type="regular" style={{ color: "#d3d3d3" }}>
             Travel Stories
           </Text>
-        </Ripple>
+        </Pressable>
       </View>
     </View>
+
+    // <FlatList
+    //   // data={dataTrip}
+    //   keyExtractor={(item) => item.id}
+    //   contentContainerStyle={{
+    //     marginBottom: 10,
+    //     paddingTop: 10,
+    //   }}
+    //   renderItem={({ item, index }) => (
+    //     <View
+    //       style={{
+    //         height: normalize(175),
+    //         paddingHorizontal: 15,
+    //         marginBottom: 7,
+    //       }}
+    //     >
+    //       <View
+    //         style={{
+    //           borderRadius: 5,
+    //           borderWidth: 1,
+    //           borderColor: "#d1d1d1",
+    //           justifyContent: "space-between",
+    //           backgroundColor: "#fff",
+    //           overflow: "hidden",
+    //         }}
+    //       >
+    //         <Pressable
+    //           onPress={() =>
+    //             props.navigation.navigate("ItineraryStack", {
+    //               screen: "itindetail",
+    //               params: {
+    //                 itintitle: item.name,
+    //                 country: item.id,
+    //                 token: token,
+    //                 status: "favorite",
+    //                 index: 0,
+    //               },
+    //             })
+    //           }
+    //           style={{
+    //             backgroundColor: "#FFFFFF",
+    //             height: "75%",
+    //             borderTopLeftRadius: 5,
+    //             borderTopRightRadius: 5,
+    //             flexDirection: "row",
+    //           }}
+    //         >
+    //           <Pressable
+    //             onPress={() =>
+    //               props.navigation.navigate("ItineraryStack", {
+    //                 screen: "itindetail",
+    //                 params: {
+    //                   itintitle: item.name,
+    //                   country: item.id,
+    //                   token: token,
+    //                   status: "favorite",
+    //                 },
+    //               })
+    //             }
+    //           >
+    //             <Image
+    //               source={
+    //                 item && item.cover ? { uri: item.cover } : ItineraryKosong
+    //               }
+    //               style={{
+    //                 height: "100%",
+    //                 width: Dimensions.get("screen").width * 0.35,
+    //                 borderTopLeftRadius: 5,
+    //               }}
+    //             />
+    //             <Pressable
+    //               onPress={() => {
+    //                 token
+    //                   ? item.user_created.id !== setting?.user?.id
+    //                     ? props.navigation.push("ProfileStack", {
+    //                         screen: "otherprofile",
+    //                         params: {
+    //                           idUser: item.user_created.id,
+    //                         },
+    //                       })
+    //                     : props.navigation.push("ProfileStack", {
+    //                         screen: "ProfileTab",
+    //                         params: {
+    //                           token: token,
+    //                         },
+    //                       })
+    //                   : setModalLogin(true);
+    //               }}
+    //               style={{
+    //                 position: "absolute",
+    //                 height: 30,
+    //                 marginTop: 7,
+    //                 marginLeft: 7,
+    //                 flexDirection: "row",
+    //                 alignItems: "center",
+    //               }}
+    //             >
+    //               <Image
+    //                 style={{
+    //                   height: 30,
+    //                   width: 30,
+    //                   borderRadius: 15,
+    //                   borderWidth: 1,
+    //                   borderColor: "#fff",
+    //                   zIndex: 1,
+    //                 }}
+    //                 source={
+    //                   item && item.user_created && item.user_created.picture
+    //                     ? { uri: item.user_created.picture }
+    //                     : default_profile
+    //                 }
+    //               />
+    //               <Text
+    //                 size="small"
+    //                 type="regular"
+    //                 style={{
+    //                   zIndex: 0,
+    //                   paddingLeft: 10,
+    //                   paddingRight: 5,
+    //                   backgroundColor: "rgba(0, 0, 0, 0.6)",
+    //                   borderRadius: 2,
+    //                   color: "white",
+    //                   marginLeft: -5,
+    //                   padding: 2,
+    //                   paddingBottom: 5,
+    //                 }}
+    //               >
+    //                 {Truncate({
+    //                   text: item?.user_created?.first_name
+    //                     ? item?.user_created?.first_name
+    //                     : "unknown",
+    //                   length: 13,
+    //                 })}
+    //               </Text>
+    //             </Pressable>
+    //           </Pressable>
+    //           <View
+    //             style={{
+    //               flex: 1,
+    //               paddingHorizontal: 10,
+    //               backgroundColor: "#FFFFFF",
+    //               overflow: "hidden",
+    //               borderTopRightRadius: 3,
+    //               justifyContent: "space-between",
+    //               borderBottomWidth: 1,
+    //               borderBottomColor: "#d1d1d1",
+    //             }}
+    //           >
+    //             <View style={{ justifyContent: "flex-start" }}>
+    //               <View
+    //                 style={{
+    //                   flexDirection: "row",
+    //                   justifyContent: "space-between",
+    //                   alignItems: "center",
+    //                   marginTop: 10,
+    //                 }}
+    //               >
+    //                 <View
+    //                   style={{
+    //                     flexDirection: "row",
+    //                     alignItems: "center",
+    //                     maxWidth: Dimensions.get("screen").width / 3.5,
+    //                   }}
+    //                 >
+    //                   <View
+    //                     style={{
+    //                       backgroundColor: "#DAF0F2",
+    //                       borderRadius: 3,
+    //                       borderColor: "#209FAE",
+    //                       paddingHorizontal: 4,
+    //                       paddingVertical: 1,
+    //                     }}
+    //                   >
+    //                     <Text
+    //                       type="bold"
+    //                       size="description"
+    //                       style={{ color: "#209FAE" }}
+    //                       numberOfLines={1}
+    //                     >
+    //                       {item?.categori?.name
+    //                         ? item?.categori?.name
+    //                         : "No Category"}
+    //                     </Text>
+    //                   </View>
+    //                   <View
+    //                     style={{
+    //                       height: 5,
+    //                       width: 5,
+    //                       borderRadius: 5,
+    //                       marginHorizontal: 10,
+    //                       backgroundColor: "#000",
+    //                     }}
+    //                   />
+    //                   {item?.isprivate ? (
+    //                     <Padlock height={20} width={20} />
+    //                   ) : (
+    //                     <Newglobe height={20} width={20} />
+    //                   )}
+    //                 </View>
+    //                 {item?.status == "F" &&
+    //                 !item?.isprivate &&
+    //                 item?.user_created?.id !== setting?.user_id ? (
+    //                   item.liked === false ? (
+    //                     <TouchableOpacity
+    //                       style={{
+    //                         padding: 5,
+    //                       }}
+    //                       onPress={() => _liked(item.id, index, item)}
+    //                     >
+    //                       <LikeEmpty height={15} width={15} />
+    //                     </TouchableOpacity>
+    //                   ) : (
+    //                     <TouchableOpacity
+    //                       style={{
+    //                         padding: 5,
+    //                       }}
+    //                       onPress={() => _unliked(item.id, index, item)}
+    //                     >
+    //                       <LikeRed height={15} width={15} />
+    //                     </TouchableOpacity>
+    //                   )
+    //                 ) : null}
+    //               </View>
+    //               <Text
+    //                 size="title"
+    //                 type="black"
+    //                 style={{}}
+    //                 numberOfLines={2}
+    //                 style={{ marginTop: 3 }}
+    //               >
+    //                 {item.name}
+    //               </Text>
+    //               <View
+    //                 style={{
+    //                   flexDirection: "row",
+    //                   alignItems: "center",
+    //                   marginTop: Platform.OS === "ios" ? 5 : 3,
+    //                   width: "90%",
+    //                   marginTop: 5,
+    //                 }}
+    //               >
+    //                 <PinHijau width={13} height={13} />
+    //                 <Text
+    //                   size="description"
+    //                   type="regular"
+    //                   numberOfLines={1}
+    //                   style={{ marginLeft: 3 }}
+    //                 >
+    //                   {`${item?.country?.name}, ${item?.city?.name}`}
+    //                 </Text>
+    //               </View>
+    //             </View>
+    //             <View
+    //               style={{
+    //                 flexDirection: "row",
+    //                 justifyContent: "flex-start",
+    //                 marginBottom: 8,
+    //                 overflow: "hidden",
+    //               }}
+    //             >
+    //               <View
+    //                 style={{
+    //                   flexDirection: "row",
+    //                   alignItems: "center",
+    //                   justifyContent: "flex-start",
+    //                 }}
+    //               >
+    //                 <CalendarItinerary
+    //                   width={14}
+    //                   height={14}
+    //                   style={{
+    //                     marginRight: 5,
+    //                   }}
+    //                 />
+    //                 {item.start_date && item.end_date
+    //                   ? getDN(item.start_date, item.end_date)
+    //                   : null}
+    //               </View>
+    //               <View
+    //                 style={{
+    //                   flexDirection: "row",
+    //                   alignItems: "flex-start",
+    //                   marginLeft: 7,
+    //                 }}
+    //               >
+    //                 <PeopleItinerary
+    //                   width={14}
+    //                   height={14}
+    //                   style={{ marginRight: 5 }}
+    //                 />
+    //                 {item.buddy_count > 1 ? (
+    //                   <Text
+    //                     size="description"
+    //                     type="regular"
+    //                     numberOfLines={1}
+    //                     style={{ overflow: "hidden" }}
+    //                   >
+    //                     {(item && item.buddy_count ? item.buddy_count : "0") +
+    //                       " " +
+    //                       "persons"}
+    //                   </Text>
+    //                 ) : (
+    //                   <Text size="description" type="regular">
+    //                     {(item && item.buddy_count ? item.buddy_count : null) +
+    //                       " " +
+    //                       "person"}
+    //                   </Text>
+    //                 )}
+    //               </View>
+    //             </View>
+    //           </View>
+    //         </Pressable>
+    //         <View
+    //           style={{
+    //             height: "25%",
+    //             flexDirection: "row",
+    //             backgroundColor: "#fff",
+    //             borderBottomLeftRadius: 5,
+    //             borderBottomRightRadius: 5,
+    //             paddingVertical: 5,
+    //             justifyContent: "space-between",
+    //           }}
+    //         >
+    //           <Pressable
+    //             disabled={item?.status == "D" ? true : false}
+    //             onPress={() =>
+    //               token
+    //                 ? props.navigation.navigate("ItineraryStack", {
+    //                     screen: "itindetail",
+    //                     params: {
+    //                       itintitle: item.name,
+    //                       country: item.id,
+    //                       token: token,
+    //                       status: "favorite",
+    //                       index: 1,
+    //                     },
+    //                   })
+    //                 : setModalLogin(true)
+    //             }
+    //             style={{
+    //               width: "50%",
+    //               flexDirection: "row",
+    //               alignItems: "center",
+    //               justifyContent: "center",
+    //               borderRightWidth: 1,
+    //               borderColor: "#D1D1D1",
+    //             }}
+    //           >
+    //             {item?.status == "D" ? (
+    //               <>
+    //                 <TravelAlbumdis
+    //                   style={{ marginRight: 5 }}
+    //                   height={20}
+    //                   width={20}
+    //                 />
+    //                 <Text
+    //                   size="description"
+    //                   type="regular"
+    //                   style={{ color: "#c7c7c7" }}
+    //                 >
+    //                   Travel Album
+    //                 </Text>
+    //               </>
+    //             ) : (
+    //               <>
+    //                 <TravelAlbum
+    //                   style={{ marginRight: 5 }}
+    //                   height={20}
+    //                   width={20}
+    //                 />
+    //                 <Text
+    //                   size="description"
+    //                   type="bold"
+    //                   style={{ color: "#209FAE" }}
+    //                 >
+    //                   Travel Album
+    //                 </Text>
+    //               </>
+    //             )}
+    //           </Pressable>
+    //           <Pressable
+    //             onPress={() => setSoon(true)}
+    //             style={{
+    //               width: "50%",
+    //               flexDirection: "row",
+    //               alignItems: "center",
+    //               justifyContent: "center",
+    //               marginBottom: 5,
+    //             }}
+    //           >
+    //             <TravelStoriesdis
+    //               style={{ marginRight: 5 }}
+    //               height={20}
+    //               width={20}
+    //             />
+    //             <Text
+    //               size="description"
+    //               type="regular"
+    //               style={{
+    //                 color: "#c7c7c7",
+    //               }}
+    //             >
+    //               Travel Stories
+    //             </Text>
+    //           </Pressable>
+    //         </View>
+    //       </View>
+    //     </View>
+    //   )}
+    //   showsVerticalScrollIndicator={false}
+    //   onEndReachedThreshold={1}
+    // />
   );
 }

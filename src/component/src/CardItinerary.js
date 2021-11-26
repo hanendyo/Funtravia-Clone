@@ -37,8 +37,6 @@ export default function CardItinerary({
   token,
   setting,
 }) {
-  console.log("Setting", setting);
-  console.log("data", data);
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);

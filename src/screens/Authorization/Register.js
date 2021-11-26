@@ -294,6 +294,7 @@ export default function Register({ navigation }) {
         >
           <View style={{ flex: 1 }}>
             <FloatingInput
+              autoCorrect={false}
               customTextStyle={
                 registerFailed === true && state.first_name === ""
                   ? styles.InputTextStyleFailed
@@ -319,6 +320,7 @@ export default function Register({ navigation }) {
           </View>
           <View style={{ flex: 1, marginLeft: 15 }}>
             <FloatingInput
+              autoCorrect={false}
               customTextStyle={{}}
               value={state.last_name}
               onChangeText={onChange("last_name")}
@@ -328,6 +330,7 @@ export default function Register({ navigation }) {
         </View>
         <View style={{ marginTop: 10 }}>
           <FloatingInput
+            autoCorrect={false}
             value={state.email}
             keyboardType="default"
             onChangeText={onChange("email")}
@@ -405,6 +408,7 @@ export default function Register({ navigation }) {
           />
           <View style={{ paddingLeft: 15, flex: 1 }}>
             <FloatingInput
+              autoCorrect={false}
               value={state.phone}
               onChangeText={onChange("phone")}
               customTextStyle={
@@ -453,6 +457,7 @@ export default function Register({ navigation }) {
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
             <FloatingInput
+              autoCorrect={false}
               value={state.password}
               onChangeText={onChange("password")}
               label={t("password")}
@@ -509,6 +514,7 @@ export default function Register({ navigation }) {
         <View style={{ flex: 1, marginTop: 15 }}>
           <View style={{ flex: 1 }}>
             <FloatingInput
+              autoCorrect={false}
               customTextStyle={
                 registerFailed === true && state.password_confirmation === ""
                   ? styles.InputTextStyleFailed
