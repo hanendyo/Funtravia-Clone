@@ -24,8 +24,6 @@ import {
   StatusBar as StaBar,
   Text,
   shareAction,
-  ModalLogin,
-  // CardItinerary,
 } from "../../../component";
 import {
   Akunsaya,
@@ -62,7 +60,6 @@ import Post from "./Posting/Post";
 import Albums from "./Posting/Album";
 import Tags from "./Posting/Tag";
 import Review from "./Review";
-import CardItinerary from "../../../component/src/CardItinerary";
 import Trip from "./Trip";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
@@ -72,8 +69,6 @@ import { RNToasty } from "react-native-toasty";
 import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import ListFotoAlbumAll from "../../../graphQL/Query/Itinerary/ListAlbumAll";
 import Ripple from "react-native-material-ripple";
-import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
-import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -101,10 +96,8 @@ export default function OtherProfile(props) {
 
   const { t } = useTranslation();
   let [soon, setSoon] = useState(false);
-  let [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
   let [token, setToken] = useState(null);
-  let [setting, setSetting] = useState("");
   const [dataPost, setdataPost] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
   const [dataReview, setdataReview] = useState([]);
@@ -112,6 +105,7 @@ export default function OtherProfile(props) {
   let [users, setuser] = useState(null);
   let [id, seID] = useState(props.route.params.idUser);
   let [position, setposition] = useState(false);
+
   const captionHeightCalculation = (value) => {
     if (value <= 18) {
       return setCaptionHeight(10);
@@ -129,8 +123,6 @@ export default function OtherProfile(props) {
       return setCaptionHeight(70);
     } else if (value >= 70 && value <= 80) {
       return setCaptionHeight(80);
-    } else {
-      return setCaptionHeight(90);
     }
   };
 
@@ -168,9 +160,6 @@ export default function OtherProfile(props) {
     }
 
     await setToken(tkn);
-
-    let settingData = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(settingData));
 
     await LoadUserProfile();
   };
@@ -215,30 +204,6 @@ export default function OtherProfile(props) {
   //     setdataalbums(dataalbum.user_post_album_v2?.datas);
   //   },
   // });
-
-  const [
-    mutationliked,
-    { loading: loadingLike, data: dataLike, error: errorLike },
-  ] = useMutation(ItineraryLiked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  ] = useMutation(ItineraryUnliked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
 
   const [
     QueryFotoAlbum,
@@ -479,7 +444,6 @@ export default function OtherProfile(props) {
     } catch (error) {}
   };
 
-  const [tabThree, setTabThree] = useState(0);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: t("profilePost") },
@@ -884,8 +848,6 @@ export default function OtherProfile(props) {
   };
 
   const refresh = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
     loadAsync();
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
@@ -908,20 +870,20 @@ export default function OtherProfile(props) {
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
-                : 95
-              : 57
+                : 55
+              : 85
             : captionHeight == 20
             ? Platform.OS === "ios"
               ? Notch
-                ? 50
+                ? 55
                 : 55
               : 55
             : captionHeight == 30
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
-                : 85
-              : 58
+                : 55
+              : 75
             : captionHeight == 40
             ? Platform.OS === "ios"
               ? Notch
@@ -938,26 +900,20 @@ export default function OtherProfile(props) {
             ? Platform.OS === "ios"
               ? Notch
                 ? 35
-                : 95
-              : 120
+                : 55
+              : 40
             : captionHeight == 70
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
                 : 55
-              : 65
+              : 105
             : captionHeight == 80
             ? Platform.OS === "ios"
               ? Notch
                 ? 45
                 : 55
               : 55
-            : captionHeight == 90
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 45
-                : 85
-              : 57
             : HeaderHeight),
       ],
       extrapolateRight: "clamp",
@@ -983,20 +939,20 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight - 10
-                  : HeaderHeight - 50
-                : HeaderHeight
+                  : HeaderHeight
+                : HeaderHeight - 30
               : captionHeight == 20
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight
+                  ? HeaderHeight - 10
                   : HeaderHeight
                 : HeaderHeight
               : captionHeight == 30
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight
-                  : HeaderHeight - 40
-                : HeaderHeight
+                  : HeaderHeight
+                : HeaderHeight - 20
               : captionHeight == 40
               ? Platform.OS === "ios"
                 ? Notch
@@ -1008,31 +964,25 @@ export default function OtherProfile(props) {
                 ? Notch
                   ? HeaderHeight + 40
                   : HeaderHeight
-                : HeaderHeight - 40
+                : HeaderHeight - 65
               : captionHeight == 60
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight + 10
-                  : HeaderHeight - 50
-                : HeaderHeight - 65
+                  : HeaderHeight
+                : HeaderHeight + 15
               : captionHeight == 70
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight + 20
                   : HeaderHeight
-                : HeaderHeight - 10
+                : HeaderHeight - 50
               : captionHeight == 80
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight
                   : HeaderHeight
                 : HeaderHeight + 10
-              : captionHeight == 90
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 10
-                  : HeaderHeight - 30
-                : HeaderHeight
               : HeaderHeight,
           width: "100%",
           alignItems: "center",
@@ -1050,19 +1000,19 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "87%"
-                    : "90%"
+                    : "85%"
                   : "85%"
                 : captionHeight == 20
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "90%"
+                    ? "85%"
                     : "85%"
-                  : "90%"
+                  : "85%"
                 : captionHeight == 30
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "85%"
-                    : "90%"
+                    : "85%"
                   : "85%"
                 : captionHeight == 40
                 ? Platform.OS === "ios"
@@ -1080,7 +1030,7 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "90%"
-                    : "90%"
+                    : "85%"
                   : "87%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
@@ -1094,12 +1044,6 @@ export default function OtherProfile(props) {
                     ? "88%"
                     : "85%"
                   : "85%"
-                : captionHeight == 90
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "90%"
-                    : "87%"
-                  : "87%"
                 : "85%",
             backgroundColor: "#fff",
             opacity: imageOpacity,
@@ -1110,19 +1054,19 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "15%"
-                    : "6%"
-                  : "5%"
+                    : "15%"
+                  : "12%"
                 : captionHeight == 20
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "5%"
                     : "5%"
-                  : "10%"
+                  : "15%"
                 : captionHeight == 30
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "40%"
-                    : "5%"
+                    : "40%"
                   : "7%"
                 : captionHeight == 40
                 ? Platform.OS === "ios"
@@ -1140,7 +1084,7 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "8%"
-                    : "5%"
+                    : "8%"
                   : "8%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
@@ -1151,34 +1095,28 @@ export default function OtherProfile(props) {
                 : captionHeight == 80
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "5%"
-                    : "5%"
-                  : "5%"
-                : captionHeight == 90
-                ? Platform.OS === "ios"
-                  ? Notch
                     ? "7%"
-                    : "5%"
-                  : "5%"
+                    : "8%"
+                  : "8%"
                 : "5%",
             marginTop:
               captionHeight == 10
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "11%"
-                    : "15%"
+                    : "40%"
                   : "15%"
                 : captionHeight == 20
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "15%"
+                    ? "40%"
                     : "40%"
-                  : "18%"
+                  : "15%"
                 : captionHeight == 30
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "40%"
-                    : "15%"
+                    : "40%"
                   : "15%"
                 : captionHeight == 40
                 ? Platform.OS === "ios"
@@ -1196,8 +1134,8 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "12%"
-                    : "15%"
-                  : "18%"
+                    : "10%"
+                  : "14%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
                   ? Notch
@@ -1210,12 +1148,6 @@ export default function OtherProfile(props) {
                     ? "13%"
                     : "6%"
                   : "15%"
-                : captionHeight == 90
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "17%"
-                    : "15%"
-                  : "16%"
                 : "15%",
           }}
         >
@@ -1245,7 +1177,7 @@ export default function OtherProfile(props) {
                   alignSelf: "center",
                   width: width / 3.8,
                   height: width / 3.8,
-                  borderRadius: width / 6,
+                  borderRadius: width / 8,
                   borderWidth: 2,
                   borderColor: "#FFF",
                   // position: "absolute",
@@ -1611,17 +1543,7 @@ export default function OtherProfile(props) {
       case "tab3":
         numCols = 1;
         data = dataTrip;
-        renderItem = (e) =>
-          Trip(
-            e,
-            capHeight,
-            setting,
-            data,
-            modalLogin,
-            setModalLogin,
-            soon,
-            setSoon
-          );
+        renderItem = (e) => Trip(e, capHeight);
         paddingHorizontal = 15;
         break;
       default:
@@ -1672,20 +1594,20 @@ export default function OtherProfile(props) {
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 60
-                      : 25
-                    : 65
+                      : 60
+                    : 40
                   : captionHeight == 20
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 75
-                      : 70
-                    : 85
+                      ? 40
+                      : 40
+                    : 70
                   : captionHeight == 30
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 40
-                      : 25
-                    : 65
+                      : 40
+                    : 45
                   : captionHeight == 40
                   ? Platform.OS === "ios"
                     ? Notch
@@ -1697,31 +1619,25 @@ export default function OtherProfile(props) {
                     ? Notch
                       ? 40
                       : 40
-                    : 65
+                    : 35
                   : captionHeight == 60
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 80
-                      : 15
-                    : 5
+                      : 80
+                    : 85
                   : captionHeight == 70
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 40
                       : 40
-                    : 65
+                    : 30
                   : captionHeight == 80
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 65
                       : 65
                     : 80
-                  : captionHeight == 90
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 85
-                      : 25
-                    : 70
                   : 50)
               : HeaderHeight + TabBarHeight,
           minHeight: height - SafeStatusBar + HeaderHeight,
@@ -1743,6 +1659,8 @@ export default function OtherProfile(props) {
 
   let [tabPost, settabPost] = useState(0);
 
+  // hhhhh
+
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -1752,20 +1670,20 @@ export default function OtherProfile(props) {
           ? Platform.OS === "ios"
             ? Notch
               ? 50
-              : 80
-            : 55
+              : 50
+            : 80
           : captionHeight == 20
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
-            : 40
+            : 50
           : captionHeight == 30
           ? Platform.OS === "ios"
             ? Notch
               ? 40
-              : 80
-            : 55
+              : 40
+            : 70
           : captionHeight == 40
           ? Platform.OS === "ios"
             ? Notch
@@ -1782,26 +1700,20 @@ export default function OtherProfile(props) {
           ? Platform.OS === "ios"
             ? Notch
               ? 30
-              : 90
-            : 110
+              : 30
+            : 35
           : captionHeight == 70
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
-            : 55
+            : 85
           : captionHeight == 80
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
             : 55
-          : captionHeight == 90
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 35
-              : 90
-            : 50
           : 50,
       ],
 
@@ -1817,20 +1729,20 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? "-2%"
-                  : "-10%"
-                : "0%"
+                  : "-2%"
+                : "-8%"
               : captionHeight == 20
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "2%"
-                  : "2%"
-                : "4%"
+                  ? "5%"
+                  : "5%"
+                : "0%"
               : captionHeight == 30
               ? Platform.OS === "ios"
                 ? Notch
                   ? 40
-                  : "-10%"
-                : "0%"
+                  : "5%"
+                : "-6%"
               : captionHeight == 40
               ? Platform.OS === "ios"
                 ? Notch
@@ -1842,31 +1754,25 @@ export default function OtherProfile(props) {
                 ? Notch
                   ? "5%"
                   : "5%"
-                : "0%"
+                : "-8%"
               : captionHeight == 60
               ? Platform.OS === "ios"
                 ? Notch
                   ? "3.5%"
-                  : "-12%"
-                : "-16%"
+                  : "5%"
+                : "4%"
               : captionHeight == 70
               ? Platform.OS === "ios"
                 ? Notch
                   ? "5%"
                   : "5%"
-                : "0%"
+                : "-9%"
               : captionHeight == 80
               ? Platform.OS === "ios"
                 ? Notch
                   ? "0%"
                   : "0%"
                 : "2.5%"
-              : captionHeight == 90
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? "5%"
-                  : "-10%"
-                : "0%"
               : "5%",
           zIndex: 1,
           position: "absolute",
@@ -2276,81 +2182,74 @@ export default function OtherProfile(props) {
 
   const renderAlert = () => {
     return (
-      <>
-        <ModalLogin
-          modalLogin={modalLogin}
-          setModalLogin={() => setModalLogin(false)}
-          props={props}
-        />
-        <ModalRN
-          useNativeDriver={true}
-          visible={soon}
-          onRequestClose={() => setSoon(false)}
-          transparent={true}
-          animationType="fade"
+      <ModalRN
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          // onPress={() => setModalLogin(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
         >
-          <Pressable
-            // onPress={() => setModalLogin(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          ></Pressable>
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
+              // backgroundColor: "white",
+              // width: Dimensions.get("screen").width - 100,
+              padding: 20,
+              paddingHorizontal: 20,
               alignItems: "center",
-              borderRadius: 3,
-              marginTop: Dimensions.get("screen").height / 3,
+              justifyContent: "center",
+              borderRadius: 10,
             }}
           >
-            <View
+            <Image
+              source={Bg_soon}
               style={{
-                // backgroundColor: "white",
-                // width: Dimensions.get("screen").width - 100,
-                padding: 20,
-                paddingHorizontal: 20,
-                alignItems: "center",
-                justifyContent: "center",
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
                 borderRadius: 10,
+                position: "absolute",
               }}
-            >
-              <Image
-                source={Bg_soon}
-                style={{
-                  height: Dimensions.get("screen").width - 180,
-                  width: Dimensions.get("screen").width - 110,
-                  borderRadius: 10,
-                  position: "absolute",
-                }}
-              />
-              <Text type="bold" size="h5">
-                {t("comingSoon")}!
-              </Text>
-              <Text type="regular" size="label" style={{ marginTop: 5 }}>
-                {t("soonUpdate")}.
-              </Text>
-              <Button
-                text={"OK"}
-                style={{
-                  marginTop: 20,
-                  width: Dimensions.get("screen").width - 300,
-                }}
-                type="box"
-                onPress={() => setSoon(false)}
-              ></Button>
-            </View>
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width - 300,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
           </View>
-        </ModalRN>
-      </>
+        </View>
+      </ModalRN>
     );
   };
 
@@ -2375,7 +2274,7 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? 35
-                  : 40
+                  : 35
                 : 55
               : captionHeight == 20
               ? Platform.OS === "ios"
@@ -2510,7 +2409,7 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? 35
-                  : 40
+                  : 35
                 : 55
               : captionHeight == 20
               ? Platform.OS === "ios"
@@ -2657,6 +2556,7 @@ export default function OtherProfile(props) {
         dataImage={dataImage}
         setClose={() => setModal(!modal)}
       /> */}
+
       <ImageSlide
         // index={indexs}
         // name="Funtravia Images"
