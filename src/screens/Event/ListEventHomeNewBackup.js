@@ -27,7 +27,6 @@ import {
   StatusBar as StaBar,
   Text,
   ModalLogin,
-  Truncate,
 } from "../../component";
 import {
   Arrowbackios,
@@ -72,7 +71,7 @@ import { Header } from "native-base";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 40;
+const TabBarHeight = 60;
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 const SafeStatusBar = Platform.select({
@@ -84,40 +83,39 @@ const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
-  const { t, i18n } = useTranslation();
-  let [tambahan, setTambahan] = useState(0);
+  let [heightjudul, setheightjudul] = useState(150);
   let [tambahanJudul, setTambahanJudul] = useState(0);
   let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
   let [modalLogin, setModalLogin] = useState(false);
 
   const HeaderHeight = Platform.select({
-    ios: Notch
-      ? i18n.language === "id"
-        ? normalize(380) + tambahan - 48
-        : normalize(360) + tambahan - 48
-      : i18n.language === "id"
-      ? normalize(362) + tambahan - 20
-      : normalize(342) + tambahan - 20,
-    // android:
-    // deviceId == "LYA-L29"
-    //   ? normalize(330) + tambahan - StatusBar.currentHeight
-    //   : normalize(342) + tambahan - StatusBar.currentHeight,
-    android:
-      i18n.language === "id"
-        ? deviceId == "LYA-L29"
-          ? normalize(372) + tambahan - StatusBar.currentHeight
-          : normalize(385) + tambahan - StatusBar.currentHeight
-        : deviceId == "LYA-L29"
-        ? normalize(370) + tambahan - StatusBar.currentHeight
-        : normalize(380) + tambahan - StatusBar.currentHeight,
+    ios: Notch ? 340 - StatusBar.currentHeight : 300 - StatusBar.currentHeight,
+    android: 340 - StatusBar.currentHeight,
   });
+  // Platform.OS == "ios"
+  //   ? Notch
+  //     ? deviceId === "iPhone 12 Pro"
+  //       ? Dimensions.get("screen").height * 0.275 +
+  //         (heightjudul - 90) +
+  //         tambahanDeskripsi
+  //       : Dimensions.get("screen").height * 0.29 +
+  //         (heightjudul - 90) +
+  //         tambahanDeskripsi
+  //     : Dimensions.get("screen").height * 0.29 + (heightjudul - 90) + tambahanDeskripsi
+  //   : deviceId == "LYA-L29"
+  //   ? Dimensions.get("screen").height * 0.26 + (heightjudul - 90) + tambahanDeskripsi
+  //   : Dimensions.get("screen").height * 0.28 + (heightjudul - 90) + tambahanDeskripsi;
 
+  const HeaderHeightCustom = Platform.select({
+    ios: Notch ? 420 - 48 : 360 - 48,
+    android: 340 - StatusBar.currentHeight,
+  });
   let [heightview, setheight] = useState(0);
   const tambahanValidation = () => {
     let valid = (tambahanDeskripsi + tambahanJudul) % 3 === 0 ? true : false;
     return valid;
   };
-
+  const { t, i18n } = useTranslation();
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: t("allevent") },
@@ -200,6 +198,60 @@ export default function ListEventHome(props) {
       },
     })
   ).current;
+
+  // const HeaderComponent = {
+  //   headerShown: false,
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: (
+  //     <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+  //       {t("event")}
+  //     </Text>
+  //   ),
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 18,
+  //     color: "white",
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={20} width={20}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+  //   headerRight: () => (
+  //     <TouchableOpacity
+  //       style={styles.searchWhite}
+  //       // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+  //       onPress={() => props.navigation.navigate("searchListEventHome")}
+  //     >
+  //       <SearchWhite width="20" height="20" />
+  //     </TouchableOpacity>
+  //   ),
+  // };
 
   useEffect(() => {
     // props.navigation.setOptions(HeaderComponent);
@@ -601,161 +653,227 @@ export default function ListEventHome(props) {
     });
     return (
       <Animated.View
-        pointerEvents={"box-none"}
+        // pointerEvents={"none"}
         {...headerPanResponder.panHandlers}
+        // style={{
+        //   position: "absolute",
+        //   transform: [{ translateY: y }],
+        //   // height: Platform.OS == "ios" ? 270 : 222,
+        //   height: HeaderHeight,
+        //   width: "100%",
+        //   alignItems: "center",
+        //   justifyContent: "flex-start",
+        //   backgroundColor: "white",
+        //   zIndex: Platform.OS == "ios" ? 1 : 0,
+        // }}
+        style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
-          height: HeaderHeight,
+          top: deviceId === "iPhone 12 Pro" ? SafeStatusBar - 5 : SafeStatusBar,
+          height:
+            HeaderHeight +
+            (tambahanJudul % 3 === 0
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 10
+                  : 0
+                : 0
+              : Platform.OS == "ios"
+              ? Notch
+                ? 10
+                : 0
+              : 0),
           width: "100%",
           alignItems: "center",
-
-          justifyContent: "center",
+          justifyContent: "flex-start",
           position: "absolute",
           backgroundColor: "#209fae",
         }}
       >
-        <Animated.View
+        <View
           style={{
-            opacity: imageOpacity,
-            flex: 1,
+            justifyContent: "flex-start",
+            alignItems: "center",
             width: width,
+            height: HeaderHeight - 138,
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
             <Animated.Image
               source={{ uri: Banner.banner_asset[0].filepath }}
+              // source={Eventcover}
               style={{
-                flex: 1,
-
+                // height:
+                //   Platform.OS == "ios"
+                //     ? Notch
+                //       ? Dimensions.get("screen").height * 0.26
+                //       : Dimensions.get("screen").height * 0.26
+                //     : Dimensions.get("screen").height * 0.24,
+                // height: 0.1,
+                height: "100%",
                 width: "100%",
+                resizeMode: "cover",
+                // marginBottom: 0,
                 opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
               }}
             />
           ) : (
             <Animated.Image
               source={Eventcover}
               style={{
-                flex: 1,
-
+                // height: Dimensions.get("screen").height * 0.2,
+                height: "100%",
                 width: "100%",
+                resizeMode: "cover",
+                position: "absolute",
                 opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
               }}
             />
           )}
-          <View
-            pointerEvents="box-none"
-            style={{
-              // flex: 1,
-              marginTop: 0,
+        </View>
 
-              paddingTop: Platform.OS == "ios" ? 25 : 20,
-              paddingHorizontal: 15,
-              paddingBottom: 0,
-              zIndex: -10,
-              backgroundColor: "#fff",
+        <Animated.View
+          // onLayout={(events) => {
+          //   var { x, y, width, height } = events.nativeEvent.layout;
+          //   setheightjudul(height);
+          // }}
+          // style={{
+          //   paddingHorizontal: 20,
+          //   paddingTop: 35,
+          //   backgroundColor: "white",
+          //   // borderWidth: 2,
+          //   // height: Platform.OS == "ios" ? 120 : 125
+          // }}
+          style={{
+            flex: 1,
+            // marginTop: 0,
+            paddingTop:
+              Platform.OS == "ios"
+                ? Notch
+                  ? deviceId === "iPhone 12 Pro"
+                    ? 30
+                    : 30
+                  : 30
+                : 30,
+            paddingHorizontal: 15,
+            // paddingLeft: 15,
+            // paddingRight: 15,
+            // zIndex: 1,
+            backgroundColor: "#fff",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+            width: "100%",
+          }}
+        >
+          <Text
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = +line;
+              if (+lines % 3 == 0) {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanJudul(lines * 3)
+                    : setTambahanJudul(lines * -6)
+                  : setTambahanJudul(lines * 1);
+                // setTambahanJudul(lines * 12);
+              } else {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanJudul(lines * -10)
+                    : setTambahanJudul(lines * -20)
+                  : setTambahanJudul(lines * 1);
+              }
+            }}
+            size="title"
+            type="bold"
+            style={{
+              textAlign: "left",
+              paddingBottom: 5,
+              flexShrink: 0,
+              // borderWidth: 2,
+            }}
+            // wordWra
+          >
+            {// Banner && Banner.title ? Banner.title : t("EventTitle")
+            t("EventTitle")}
+          </Text>
+          <Text
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = line - 1;
+              // setTambahanDeskripsi(lines * 32);
+              if (+lines % 3 == 0) {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanDeskripsi(lines * 15)
+                    : setTambahanDeskripsi(lines * 17)
+                  : setTambahanDeskripsi(lines * 11);
+                // setTambahanDeskripsi(lines * 12);
+              } else {
+                Platform.OS == "ios"
+                  ? Notch
+                    ? setTambahanDeskripsi(lines * 16)
+                    : setTambahanDeskripsi(lines - 20)
+                  : setTambahanDeskripsi(lines);
+              }
+            }}
+            size="label"
+            type="regular"
+            style={{
+              textAlign: "left",
+              // paddingHorizontal:
+              // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
             }}
           >
-            <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = +line;
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 3)
-                      : setTambahan(lines * -6)
-                    : setTambahan(lines * 1);
-                  // setTambahanJudul(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * -10)
-                      : setTambahan(lines * -20)
-                    : setTambahan(lines * 1);
-                }
-              }}
-              size="title"
-              type="bold"
-              style={{
-                textAlign: "left",
-                paddingBottom: 5,
-                flexShrink: 0,
-                // borderWidth: 2,
-              }}
-              // wordWra
-            >
-              {t("EventTitle")}
-            </Text>
-            <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = line - 1;
-                // setTambahanDeskripsi(lines * 32);
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 15)
-                      : setTambahan(lines * 17)
-                    : setTambahan(lines * 11);
-                  // setTambahanDeskripsi(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 16)
-                      : setTambahan(lines - 20)
-                    : setTambahan(lines);
-                }
-              }}
-              size="label"
-              type="regular"
-              style={{
-                textAlign: "left",
-                // paddingHorizontal:
-                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
-              }}
-            >
-              {t("EventDescription")}
-            </Text>
-          </View>
+            {// Banner && Banner.description
+            //   ? Banner.description
+            //   : t("EventDescription")
+            t("EventDescription")}
+          </Text>
         </Animated.View>
-
         {/* filter negara */}
         <Animated.View
           style={{
-            flexDirection: "row",
-
             position: "absolute",
-            // top: normalize(190),
-            top: Platform.select({
-              ios: Notch ? normalize(185) : normalize(200),
-              android: normalize(205),
-            }),
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: normalize(44),
+            flexDirection: "row",
+            // top: HeaderHeightCustom - 160,
+            top: HeaderHeight - 160,
+            // top:
+            //   HeaderHeightCustom -
+            //   (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
+            // top:
+            //   Platform.OS == "ios"
+            //     ? Notch
+            //       ? deviceId === "iPhone 12 Pro"
+            //         ? Dimensions.get("screen").height - 645
+            //         : Dimensions.get("screen").height - 685
+            //       : Dimensions.get("screen").height - 515
+            //     : Dimensions.get("screen").height - 602,
+
+            // zIndex: 11,
             opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
           <TouchableOpacity
             onPress={() => setModelSetNegara(true)}
             style={{
-              height: normalize(45),
-              borderTopLeftRadius: 50,
-              borderBottomLeftRadius: 50,
-              borderWidth: 1,
-              borderColor: "#d8d8d8",
-              paddingVertical: 10,
-              paddingHorizontal: 0,
-              justifyContent: "center",
-              alignContent: "center",
+              backgroundColor: "#209fae",
+              borderWidth: 2,
+              borderRightWidth: 0,
+              // paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderBottomLeftRadius: 20,
+              borderTopStartRadius: 20,
+              borderColor: "#d1d1d1",
               alignItems: "center",
-
-              backgroundColor: "#209FAE",
+              alignContent: "center",
               flexDirection: "row",
-              width: "35%",
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width * 0.33,
+              marginRight: -1,
             }}
           >
             <Text
@@ -775,19 +893,18 @@ export default function ListEventHome(props) {
               setModaldate(true);
             }}
             style={{
-              height: normalize(45),
-              borderTopRightRadius: 50,
-              borderBottomRightRadius: 50,
-              borderWidth: 1,
-              borderColor: "#d8d8d8",
+              backgroundColor: "#209fae",
+              borderWidth: 2,
               paddingVertical: 10,
-              paddingHorizontal: 0,
-              justifyContent: "center",
-              alignContent: "center",
+              paddingHorizontal: 20,
+              borderBottomRightRadius: 20,
+              borderTopEndRadius: 20,
+              borderColor: "#d1d1d1",
               alignItems: "center",
-              backgroundColor: "#209FAE",
+              alignContent: "center",
               flexDirection: "row",
-              width: "35%",
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width * 0.33,
             }}
           >
             <Text
@@ -821,19 +938,9 @@ export default function ListEventHome(props) {
   }, []);
 
   const rederTab1Item = ({ item, index, loading }, position) => {
-    const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, 55],
-      extrapolateRight: "clamp",
-    });
     if (item.id != 0) {
       return (
-        <Animated.View
-          style={{
-            transform: [{ translateY: y }],
-            paddingTop: 15,
-          }}
-        >
+        <>
           <View
             key={index.toString()}
             style={{
@@ -1062,7 +1169,7 @@ export default function ListEventHome(props) {
               </View>
             </View>
           </View>
-        </Animated.View>
+        </>
       );
     } else {
       return (
@@ -1140,10 +1247,23 @@ export default function ListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight,
-          minHeight: height - SafeStatusBar + HeaderHeight,
-          paddingHorizontal: 15,
-          backgroundColor: "#F6F6F6",
+          paddingTop:
+            HeaderHeight +
+            TabBarHeight +
+            // (Platform.OS == "ios" ? (Notch ? 55 : 35) : 38),
+            (tambahanJudul % 3 === 0
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? 55
+                  : 35
+                : 40
+              : Platform.OS == "ios"
+              ? Notch
+                ? 25
+                : 15
+              : -5),
+          paddingHorizontal: 10,
+          minHeight: height - SafeStatusBar + HeaderHeight + heightview,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1153,99 +1273,73 @@ export default function ListEventHome(props) {
       />
     );
   };
-  let scrollRef = useRef();
+
   const renderTabBar = (props) => {
+    // const y = scrollY.interpolate({
+    //   inputRange: [heightview - 10, HeaderHeight],
+    //   outputRange: [HeaderHeight, heightview - 40],
+    //   extrapolateRight: "clamp",
+    // });
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 55],
+      // outputRange: [HeaderHeight - 6, 0],
+      outputRange:
+        Platform.OS == "ios"
+          ? Notch
+            ? [HeaderHeight, tambahanJudul % 3 === 0 ? 5 : 35]
+            : [HeaderHeight, tambahanJudul % 3 === 0 ? 17 : 37]
+          : [HeaderHeight, tambahanJudul % 3 === 0 ? 13 : 45],
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
+        // style={{
+        //   zIndex: Platform.OS == "ios" ? 1 : 1,
+        //   transform: [{ translateY: y }],
+        //   width: "100%",
+        //   borderBottomWidth: 2,
+        //   borderBottomColor: "#d1d1d1",
+        //   // marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
+        //   marginBottom: Platform.OS == "ios" ? -35 : -35,
+        //   // paddingTop: 3,
+        // }}
         style={{
           top: 0,
           zIndex: 1,
-
           position: "absolute",
           transform: [{ translateY: y }],
           width: "100%",
+          borderBottomWidth: 2,
+          borderBottomColor: "#d1d1d1",
+          marginTop: tambahanDeskripsi + tambahanJudul,
         }}
       >
-        <FlatList
-          key={"listtabbar"}
-          ref={scrollRef}
-          data={props.navigationState.routes}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{
-            backgroundColor: "white",
-            marginTop: -5,
-            // borderBottomWidth: 1,
-            // borderColor: "#d1d1d1",
+        <TabBar
+          {...props}
+          onTabPress={({ route, preventDefault }) => {
+            if (isListGliding.current) {
+              preventDefault();
+            }
           }}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              onPress={() => {
-                _tabIndex.current = index;
-                setIndex(index);
-                scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
-                  index: index,
-                  animated: true,
-                });
-              }}
+          style={{
+            elevation: 0,
+            shadowOpacity: 0,
+            backgroundColor: "#fff",
+            height: TabBarHeight - 10,
+          }}
+          renderLabel={({ route, focused }) => (
+            <Text
+              style={[
+                focused ? styles.labelActive : styles.label,
+                {
+                  opacity: focused ? 1 : 0.8,
+                },
+              ]}
             >
-              <View
-                style={{
-                  // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
-                  alignContent: "center",
-                  paddingHorizontal: 15,
-                  width:
-                    props.navigationState.routes.length <= 2
-                      ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length > 2
-                      ? Dimensions.get("screen").width * 0.333
-                      : null,
-                  height: TabBarHeight,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={[
-                    index == tabIndex ? styles.labelActive : styles.label,
-                    {
-                      opacity: index == tabIndex ? 1 : 0.7,
-                      // height: "100%",
-                      borderBottomWidth: 0,
-                      borderBottomColor:
-                        index == tabIndex &&
-                        props.navigationState.routes.length > 1
-                          ? "#FFFFFF"
-                          : "#209fae",
-                      // height: 35,
-                      // paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
-                      textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 5 : 0,
-                    },
-                  ]}
-                  size="h3"
-                  type={index == tabIndex ? "bold" : "regular"}
-                >
-                  <Truncate
-                    length="15"
-                    text={item && item.title ? item.title : "-"}
-                  />
-                </Text>
-              </View>
-            </TouchableOpacity>
+              {route.title}
+            </Text>
           )}
+          indicatorStyle={{ backgroundColor: "#209fae" }}
         />
       </Animated.View>
     );
@@ -2305,6 +2399,11 @@ export default function ListEventHome(props) {
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
     outputRange: [1, 0.5, 0],
+    extrapolate: "clamp",
+  });
+  const imageOpacityTab = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [1, 0, 0],
     extrapolate: "clamp",
   });
 

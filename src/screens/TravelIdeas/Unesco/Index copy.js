@@ -10,8 +10,6 @@ import {
   StyleSheet,
   View,
   Pressable,
-  FlatList,
-  TouchableOpacity,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { unesco } from "../../../assets/png";
@@ -22,12 +20,7 @@ import {
   PinHijau,
   Arrowbackios,
 } from "../../../assets/svg";
-import {
-  Button,
-  Text,
-  StatusBar as StaBar,
-  Truncate,
-} from "../../../component";
+import { Button, Text, StatusBar as StaBar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
 import ListDestinationByUnesco from "../../../graphQL/Query/TravelIdeas/ListDestinationByUnesco";
@@ -40,7 +33,7 @@ const Notch = DeviceInfo.hasNotch();
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 40;
+const TabBarHeight = 50;
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
@@ -48,7 +41,6 @@ const SafeStatusBar = Platform.select({
 
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
-const deviceId = DeviceInfo.getModel();
 
 export default function Unesco({ navigation, route }) {
   let [tambahan, setTambahan] = useState(0);
@@ -57,18 +49,15 @@ export default function Unesco({ navigation, route }) {
   let [modalcountry, setModelCountry] = useState(false);
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(347) + tambahan - 48
-      : normalize(342) + tambahan - 20,
-    android:
-      deviceId == "LYA-L29"
-        ? normalize(330) + tambahan - StatusBar.currentHeight
-        : normalize(342) + tambahan - StatusBar.currentHeight,
+      ? normalize(420) + tambahan - 48
+      : normalize(360) + tambahan - 20,
+    android: normalize(380) + tambahan - StatusBar.currentHeight,
   });
 
   let HEADER_MAX_HEIGHT = Platform.select({
     ios: Notch
-      ? normalize(347) + tambahan - 48
-      : normalize(342) + tambahan - 20,
+      ? normalize(420) + tambahan - 48
+      : normalize(360) + tambahan - 20,
     android: normalize(380) + tambahan - StatusBar.currentHeight,
   });
 
@@ -450,6 +439,7 @@ export default function Unesco({ navigation, route }) {
     return (
       <Animated.View
         pointerEvents={"box-none"}
+        {...headerPanResponder.panHandlers}
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
@@ -462,19 +452,20 @@ export default function Unesco({ navigation, route }) {
           backgroundColor: "#209fae",
         }}
       >
-        <Animated.View
+        <View
           style={{
-            opacity: imageOpacity,
-            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
             width: width,
+            height: normalize(250),
           }}
         >
           {Banner && Banner.banner_asset.length > 0 ? (
             <Animated.Image
               style={{
-                flex: 1,
-                // height: 180,
                 width: "100%",
+                height: "100%",
+                resizeMode: "cover",
                 opacity: imageOpacity,
                 // transform: [{ translateY: imageTranslate }],
               }}
@@ -483,103 +474,56 @@ export default function Unesco({ navigation, route }) {
           ) : (
             <Animated.Image
               style={{
-                flex: 1,
                 width: "100%",
+                height: "100%",
+                resizeMode: "cover",
                 opacity: imageOpacity,
+                // transform: [{ translateY: imageTranslate }],
               }}
               source={unesco}
             />
           )}
-          <Animated.View
-            pointerEvents="box-none"
+        </View>
+        <Animated.View
+          pointerEvents="box-none"
+          style={{
+            flex: 1,
+            marginTop: 0,
+            paddingTop: Platform.OS == "ios" ? 35 : 30,
+            paddingHorizontal: 20,
+            zIndex: -10,
+            backgroundColor: "#fff",
+            opacity: imageOpacity,
+            width: width,
+            // transform: [{ translateY: imageTranslate }],
+          }}
+        >
+          <Text size="title" type="bold" style={{ textAlign: "left" }}>
+            {t("UnescoTitle")}
+          </Text>
+          <Text
+            size="label"
             style={{
-              // flex: 1,
-              marginTop: 0,
-
-              paddingTop: Platform.OS == "ios" ? 25 : 20,
-              paddingHorizontal: 15,
-              paddingBottom: 0,
-              opacity: imageOpacity,
-              zIndex: -10,
-              backgroundColor: "#fff",
-
-              // width: width,
-              // transform: [{ translateY: imageTranslate }],
+              textAlign: "left",
+              lineHeight: normalize(22),
+              paddingBottom: 10,
+            }}
+            type="regular"
+            onTextLayout={(x) => {
+              let line = x.nativeEvent.lines.length;
+              let lines = line - (Platform.OS == "ios" ? 2.7 : 2);
+              setTambahan(lines * normalize(15));
             }}
           >
-            <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = +line;
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 3)
-                      : setTambahan(lines * -6)
-                    : setTambahan(lines * 1);
-                  // setTambahanJudul(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * -10)
-                      : setTambahan(lines * -20)
-                    : setTambahan(lines * 1);
-                }
-              }}
-              size="title"
-              type="bold"
-              style={{
-                textAlign: "left",
-                paddingBottom: 5,
-                flexShrink: 0,
-                // borderWidth: 2,
-              }}
-              // wordWra
-            >
-              {t("UnescoTitle")}
-            </Text>
-            <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = line - 1;
-                // setTambahanDeskripsi(lines * 32);
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 15)
-                      : setTambahan(lines * 17)
-                    : setTambahan(lines * 11);
-                  // setTambahanDeskripsi(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 16)
-                      : setTambahan(lines - 20)
-                    : setTambahan(lines);
-                }
-              }}
-              size="label"
-              type="regular"
-              style={{
-                textAlign: "left",
-                // paddingHorizontal:
-                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
-              }}
-            >
-              {t("UnescoDescription")} {selectedCountry?.name}.
-            </Text>
-          </Animated.View>
+            {t("UnescoDescription")} {selectedCountry?.name}.
+          </Text>
         </Animated.View>
 
         {/* FILTER COUNTRY */}
         <Animated.View
           style={{
             position: "absolute",
-            // top: normalize(190),
-            top: Platform.select({
-              ios: Notch ? normalize(190) : normalize(220),
-              android: normalize(186),
-            }),
+            top: normalize(230),
             alignItems: "center",
             width: "100%",
             height: normalize(44),
@@ -637,93 +581,82 @@ export default function Unesco({ navigation, route }) {
   };
 
   const renderCulture = ({ item, index }) => {
-    const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, 55],
-      extrapolateRight: "clamp",
-    });
     return (
-      <Animated.View
+      <Pressable
+        key={index.toString()}
+        onPress={() =>
+          navigation.navigate("DestinationUnescoDetail", {
+            id: item.id,
+            name: item.name,
+            token: token,
+          })
+        }
         style={{
-          transform: [{ translateY: y }],
+          flexDirection: "row",
+          marginHorizontal: 15,
+          marginVertical: 5,
+          flex: 1,
+          backgroundColor: "#FFF",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 3,
+          },
+          shadowOpacity: 0.27,
+          shadowRadius: 4.65,
+          elevation: 6,
+          borderRadius: 5,
+          // borderWidth: 1,
         }}
       >
-        <Pressable
-          key={index.toString()}
-          onPress={() =>
-            navigation.navigate("DestinationUnescoDetail", {
-              id: item.id,
-              name: item.name,
-              token: token,
-            })
-          }
+        <View
           style={{
-            flexDirection: "row",
-            marginHorizontal: 15,
-            marginVertical: 5,
-            flex: 1,
-            backgroundColor: "#FFF",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 3,
-            },
-            shadowOpacity: 0.27,
-            shadowRadius: 4.65,
-            elevation: 6,
-            borderRadius: 5,
-            // borderWidth: 1,
+            width: 140,
+            height: 110,
           }}
         >
-          <View
+          <Image
+            source={{ uri: item.images.image }}
             style={{
               width: 140,
               height: 110,
+              borderTopLeftRadius: 5,
+              borderBottomLeftRadius: 5,
             }}
-          >
-            <Image
-              source={{ uri: item.images.image }}
-              style={{
-                width: 140,
-                height: 110,
-                borderTopLeftRadius: 5,
-                borderBottomLeftRadius: 5,
-              }}
-              resizeMode="cover"
-            />
+            resizeMode="cover"
+          />
+        </View>
+        <View
+          style={{
+            marginHorizontal: 10,
+            marginTop: 5,
+            width: "60%",
+            justifyContent: "space-between",
+            flex: 1,
+            marginBottom: 8,
+          }}
+        >
+          <View>
+            <Text type="bold" size="label" numberOfLines={1}>
+              {item.name}
+            </Text>
+            <Text
+              numberOfLines={2}
+              style={{ lineHeight: 26 }}
+              size="label"
+              type="regular"
+            >
+              (1999)
+            </Text>
           </View>
-          <View
-            style={{
-              marginHorizontal: 10,
-              marginTop: 5,
-              width: "60%",
-              justifyContent: "space-between",
-              flex: 1,
-              marginBottom: 8,
-            }}
-          >
-            <View>
-              <Text type="bold" size="label" numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text
-                numberOfLines={2}
-                style={{ lineHeight: 26 }}
-                size="label"
-                type="regular"
-              >
-                (1999)
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <PinHijau height={18} width={18} style={{ marginRight: 5 }} />
-              <Text numberOfLines={1} size="description" type="regular">
-                {item.cities.name}, {item.province.name}
-              </Text>
-            </View>
+          <View style={{ flexDirection: "row" }}>
+            <PinHijau height={18} width={18} style={{ marginRight: 5 }} />
+            <Text numberOfLines={1} size="description" type="regular">
+              {item.cities.name}, {item.province.name}
+            </Text>
           </View>
-        </Pressable>
-      </Animated.View>
+        </View>
+      </Pressable>
     );
   };
 
@@ -869,9 +802,10 @@ export default function Unesco({ navigation, route }) {
     }
   };
 
-  let scrollRef = useRef();
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
+      // inputRange: [0, HEADER_SCROLL_DISTANCE],
+      // outputRange: [0, -HEADER_SCROLL_DISTANCE],
       inputRange: [0, HeaderHeight],
       outputRange: [HeaderHeight, 55],
       extrapolateRight: "clamp",
@@ -886,113 +820,21 @@ export default function Unesco({ navigation, route }) {
           width: "100%",
         }}
       >
-        <FlatList
-          key={"listtabbar"}
-          ref={scrollRef}
-          data={props.navigationState.routes}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{
-            backgroundColor: "white",
-            // borderBottomWidth: 1,
-            // borderColor: "#d1d1d1",
+        <TabBar
+          {...props}
+          onTabPress={({ route, preventDefault }) => {
+            if (isListGliding.current) {
+              preventDefault();
+            }
           }}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              onPress={() => {
-                _tabIndex.current = index;
-                setIndex(index);
-                scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
-                  index: index,
-                  animated: true,
-                });
-              }}
-            >
-              <View
-                style={{
-                  // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
-                  alignContent: "center",
-                  paddingHorizontal: 15,
-                  width:
-                    props.navigationState.routes.length <= 2
-                      ? Dimensions.get("screen").width * 0.5
-                      : props.navigationState.routes.length > 2
-                      ? Dimensions.get("screen").width * 0.333
-                      : null,
-                  height: TabBarHeight,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={[
-                    index == tabIndex ? styles.labelActive : styles.label,
-                    {
-                      opacity: index == tabIndex ? 1 : 0.7,
-                      // height: "100%",
-                      borderBottomWidth: 0,
-                      borderBottomColor:
-                        index == tabIndex &&
-                        props.navigationState.routes.length > 1
-                          ? "#FFFFFF"
-                          : "#209fae",
-                      // height: 35,
-                      // paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
-                      textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 5 : 0,
-                    },
-                  ]}
-                  size="h3"
-                  type={index == tabIndex ? "bold" : "regular"}
-                >
-                  <Truncate
-                    length="15"
-                    text={item && item.key ? item.key : "-"}
-                  />
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
+          style={styles.tab}
+          renderLabel={renderLabel}
+          indicatorStyle={styles.indicator}
         />
       </Animated.View>
-
-      //   <Animated.View
-      //     style={{
-      //       top: 0,
-      //       zIndex: 1,
-      //       position: "absolute",
-      //       transform: [{ translateY: y }],
-      //       width: "100%",
-      //     }}
-      //   >
-      //     <TabBar
-      //       {...props}
-      //       onTabPress={({ route, preventDefault }) => {
-      //         if (isListGliding.current) {
-      //           preventDefault();
-      //         }
-      //       }}
-      //       style={{
-      //         elevation: 0,
-      //         shadowOpacity: 0,
-      //         backgroundColor: "white",
-      //         height: TabBarHeight,
-      //         borderBottomWidth: 2,
-      //         borderBottomColor: "#daf0f2",
-      //       }}
-      //       renderLabel={renderLabel}
-      //       indicatorStyle={{ backgroundColor: "#209fae" }}
-      //     />
-      //   </Animated.View>
     );
   };
+
   const renderTabView = () => {
     return (
       <TabView
@@ -1220,13 +1062,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Bold" },
   labelActive: {
     fontSize: 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
-
-    justifyContent: "center",
   },
   tab: {
     elevation: 1,
