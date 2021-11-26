@@ -2510,7 +2510,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Bold" },
+  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
   labelActive: {
     fontSize: 16,
     color: "#209FAE",

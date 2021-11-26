@@ -38,7 +38,6 @@ import get from "lodash.get";
 import { RNToasty } from "react-native-toasty";
 
 export default function ProfileSettings(props) {
-  console.log("props setting", props);
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   let [modalhapus, setModalhapus] = useState(false);
@@ -57,6 +56,7 @@ export default function ProfileSettings(props) {
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
+
       borderBottomWidth: 0,
     },
     headerLeftContainerStyle: {
@@ -364,105 +364,12 @@ export default function ProfileSettings(props) {
       },
     ]);
 
-    // <Modal
-    //   useNativeDriver={true}
-    //   visible={modalhapus}
-    //   onRequestClose={() => setModalhapus(false)}
-    //   transparent={true}
-    //   animationType="fade"
-    // >
-    //   <Pressable
-    //     onPress={() => setModalhapus(false)}
-    //     style={{
-    //       width: Dimensions.get("screen").width,
-    //       height: Dimensions.get("screen").height,
-    //       justifyContent: "center",
-    //       opacity: 0.7,
-    //       backgroundColor: "#000",
-    //       position: "absolute",
-    //     }}
-    //   />
-    //   <View
-    //     style={{
-    //       width: Dimensions.get("screen").width - 140,
-    //       marginHorizontal: 70,
-    //       backgroundColor: "#FFF",
-    //       zIndex: 15,
-    //       flexDirection: "row",
-    //       justifyContent: "space-around",
-    //       alignItems: "center",
-    //       alignContent: "center",
-    //       borderRadius: 5,
-    //       marginTop: Dimensions.get("screen").height / 3,
-    //     }}
-    //   >
-    //     <View
-    //       style={{
-    //         backgroundColor: "white",
-    //         width: Dimensions.get("screen").width - 140,
-    //         justifyContent: "center",
-    //         borderRadius: 5,
-    //       }}
-    //     >
-    //       <View
-    //         style={{
-    //           alignItems: "center",
-    //           borderBottomColor: "#d1d1d1",
-    //           borderBottomWidth: 1,
-    //           borderTopRightRadius: 5,
-    //           borderTopLeftRadius: 5,
-    //           backgroundColor: "#f6f6f6",
-    //         }}
-    //       >
-    //         <Text style={{ marginVertical: 15 }} size="title" type="bold">
-    //           {t("areyousure")}
-    //         </Text>
-    //       </View>
-    //       <Text
-    //         style={{
-    //           alignSelf: "center",
-    //           textAlign: "center",
-    //           marginTop: 20,
-    //           marginHorizontal: 10,
-    //         }}
-    //         size="label"
-    //         type="regular"
-    //       >
-    //         {t("alertHapusPost")}
-    //       </Text>
-    //       <View style={{ marginTop: 20, marginHorizontal: 10 }}>
-    //         <Button
-    //           onPress={() => {
-    //             _deletepost(selectedOption);
-    //           }}
-    //           color="secondary"
-    //           text={t("delete")}
-    //         ></Button>
-    //         <Button
-    //           onPress={() => {
-    //             setModalhapus(false);
-    //             setModalmenu(true);
-    //           }}
-    //           style={{ marginTop: 5, marginBottom: 8 }}
-    //           variant="transparent"
-    //           text={t("cancel")}
-    //         ></Button>
-    //       </View>
-    //     </View>
-    //   </View>
-    // </Modal>;
-
     return true;
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
-
-    // BackHandler.addEventListener("hardwareBackPress", backAction);
-
-    // return () =>
-    // BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
 
   const [
@@ -518,12 +425,10 @@ export default function ProfileSettings(props) {
       height: 500,
       cropping: true,
       cropperCircleOverlay: true,
-      // includeBase64: true,
     }).then((image) => {
-      // setdataImage(image.data);
       dataImage.current = image;
       dataImagepatch.current = image.path;
-      // BackHandler.addEventListener("hardwareBackPress", backAction);
+
       props.navigation.setOptions({
         headerLeft: () => (
           <Button
@@ -533,12 +438,7 @@ export default function ProfileSettings(props) {
             variant="transparent"
             onPress={() => {
               backAction();
-              // setmodalCamera(true);
-              // setModalhapus(true);
             }}
-            // style={{
-            //   backgroundColor: "rgba(0,0,0,0.3)",
-            // }}
           >
             {Platform.OS == "ios" ? (
               <Arrowbackios height={15} width={15}></Arrowbackios>
