@@ -138,6 +138,7 @@ const childrenWidth = width - 40;
 const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
+  let { t, i18n } = useTranslation();
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
@@ -147,7 +148,6 @@ export default function ItineraryDetail(props) {
    * stats
    */
 
-  const { t, i18n } = useTranslation();
   let [Cover, setCover] = useState(null);
 
   const [tabIndex, setIndex] = useState(
@@ -1187,7 +1187,8 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.route.params.onbackhandler == "list"
+    props.route.params.onbackhandler == "list" ||
+    props.route.params.onbackhandler == "chooseDay"
       ? props.navigation.navigate("TripBottomPlaning")
       : props.navigation.goBack();
     // props.navigation.goBack();

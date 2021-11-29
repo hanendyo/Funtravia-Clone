@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   ImageBackground,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  BackHandler,
 } from "react-native";
 import { back_arrow_white, default_image } from "../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -26,6 +27,27 @@ import { StackActions } from "@react-navigation/native";
 export default function ItineraryChooseday(props) {
   console.log("props", props);
   const { t, i18n } = useTranslation();
+
+  const handlerBack = () => {
+    props.navigation.push("ItineraryStack", {
+      screen: "itindetail",
+      params: {
+        itintitle: "",
+        country: props.route.params.Iditinerary,
+        token: props.route.params.token,
+        status: "favorite",
+        onbackhandler: "chooseDay",
+        index: 0,
+      },
+    });
+  };
+
+  //function hardwareBack
+  const hardwareBack = useCallback(() => {
+    handlerBack();
+
+    return true;
+  }, []);
   const HeaderComponent = {
     headerShown: true,
     title: "Choose day",
@@ -53,7 +75,7 @@ export default function ItineraryChooseday(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => handlerBack()}
         style={{
           height: 55,
         }}
@@ -66,6 +88,17 @@ export default function ItineraryChooseday(props) {
       </Button>
     ),
   };
+
+  // with hardwareBackPress
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
 
   let [Iditinerary, setId] = useState(props.route.params.Iditinerary);
   let [Kiriman, setIdDes] = useState(props.route.params.Kiriman);
