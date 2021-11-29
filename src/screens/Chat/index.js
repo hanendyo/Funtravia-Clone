@@ -42,6 +42,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 
 //TRY SOCKET
 import io from "socket.io-client";
+import Delete from "../../component/src/AlertModal/Delete";
 //TRY SOCKET
 // import DeviceInfo from "react-native-device-info";
 // const Notch = DeviceInfo.hasNotch();
@@ -196,21 +197,18 @@ export default function Message({ navigation, route }) {
 
   const [messages, setMessages] = useState("");
   const [modalError, setModalError] = useState(false);
+  const [modalDeleteChat, setModalDeleteChat] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [roomID, setRoomID] = useState("");
+  const [ID, setID] = useState("");
 
   const LongPressFunc = (item, room_id) => {
-    Alert.alert(
-      "Confirm",
-      t("AlertDelMessage") +
-        `${item.first_name} ${item.last_name ? item.last_name : ""}`,
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Canceled"),
-          style: "cancel",
-        },
-        { text: "OK", onPress: () => DeleteChat(item.id, room_id) },
-      ]
-    );
+    setFirstName(item.first_name);
+    setLastName(item.last_name);
+    setRoomID(room_id);
+    setID(item.id);
+    setModalDeleteChat(true);
   };
 
   const DeleteChat = async (id, room_id) => {
@@ -457,6 +455,16 @@ export default function Message({ navigation, route }) {
         modals={modalError}
         setModals={(e) => setModalError(e)}
         message={messages}
+      />
+      <Delete
+        modals={modalDeleteChat}
+        setModals={() => setModalDeleteChat()}
+        messageHeader={t("deleteChat")}
+        message={`${t("deleteChatWith")} ${firstName} ${lastName}`}
+        onDelete={() => {
+          DeleteChat(ID, roomID);
+          setModalDeleteChat(false);
+        }}
       />
       {searchAktif ? (
         <View
