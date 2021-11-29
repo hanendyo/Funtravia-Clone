@@ -863,6 +863,7 @@ export default function ItineraryDetail(props) {
   };
 
   const openModaldate = async (index, starts, durati) => {
+    // console.log("open", index, starts, durati);
     var duration = durati.split(":");
     var starttime = starts.split(":");
 
@@ -5071,15 +5072,16 @@ export default function ItineraryDetail(props) {
                       idItin: itineraryId,
                       idDay: datadayaktif.id,
                       itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.dateitin,
+                      dateitin: props.route.params.datadayaktif.date,
                       datadayaktif: datadayaktif,
+                      dataList: dataList,
                     });
                   } else if (jam === 23 && menit === 0) {
                     props.navigation.push("CustomItinerary", {
                       idItin: itineraryId,
                       idDay: datadayaktif.id,
                       itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.dateitin,
+                      dateitin: props.route.params.datadayaktif.date,
                       datadayaktif: datadayaktif,
                     });
                   } else {
@@ -5699,10 +5701,8 @@ export default function ItineraryDetail(props) {
             style={{
               width: Dimensions.get("screen").width - 80,
               backgroundColor: "white",
-              marginBottom: 70,
-              paddingVertical: 30,
+              paddingVertical: Platform.OS === "ios" ? 10 : 30,
               paddingHorizontal: 20,
-              // paddingBottom: 30,
               alignContent: "center",
               alignItems: "center",
               borderRadius: 5,
@@ -5715,7 +5715,7 @@ export default function ItineraryDetail(props) {
 
             <View
               style={{
-                marginTop: 20,
+                marginTop: 10,
                 backgroundColor: "#f3f3f3",
                 padding: 15,
                 borderRadius: 5,
@@ -6506,12 +6506,14 @@ export default function ItineraryDetail(props) {
                 // height: 100,
                 width: Dimensions.get("screen").width - 100,
                 padding: 20,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
               }}
             >
               <Errors height={100} width={100} />
               <Text
                 type="bold"
-                size="title"
+                size="label"
                 style={{
                   marginTop: 20,
                 }}
@@ -6523,7 +6525,122 @@ export default function ItineraryDetail(props) {
                 size="label"
                 style={{
                   textAlign: "center",
-                  width: "60%",
+                  width: "100%",
+                }}
+              >
+                {t("dayEmptyTrip")}
+              </Text>
+              <View
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#f3f3f3",
+                  padding: 15,
+                  borderRadius: 5,
+                }}
+              >
+                <Text size="label" style={{ textAlign: "center" }}>
+                  {t("activateThisTrip")}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setmodalerrors(false);
+                }}
+                style={{
+                  paddingTop: 20,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  {t("understand")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modalss>
+
+        {/* modal alert trip belum aktif */}
+        <Modalss
+          onBackdropPress={() => {
+            setmodalerrors(false);
+          }}
+          onRequestClose={() => setmodalTrip(false)}
+          onDismiss={() => setmodalTrip(false)}
+          visible={modalTrip}
+          transparent={true}
+        >
+          <Pressable
+            onPress={() => {
+              setmodalTrip(false);
+            }}
+            style={{
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+              // opacity: 0.7,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "#F6F6F6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: 13,
+                  marginBottom: 15,
+                }}
+              >
+                Oops
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                alignContent: "center",
+                // height: 100,
+                width: Dimensions.get("screen").width - 100,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+                paddingVertical: 20,
+                paddingHorizontal: 15,
+              }}
+            >
+              <Errors height={80} width={80} />
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                {t("TripnotStarted")}
+              </Text>
+              <Text
+                // textAlign={"center"}
+                size="label"
+                style={{
+                  textAlign: "center",
+                  width: "100%",
                 }}
               >
                 {t("dayEmptyTrip")}

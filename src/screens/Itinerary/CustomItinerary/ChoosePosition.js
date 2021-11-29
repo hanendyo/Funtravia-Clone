@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
 
 export default function ChoosePosition(props) {
+  console.log("props choose position", props.route.params);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
@@ -111,7 +112,7 @@ export default function ChoosePosition(props) {
     );
   };
 
-  console.log(datatimeline);
+  console.log("data timeline", datatimeline);
 
   const bukaModal = (text = null, index) => {
     // console.log(text);
@@ -202,10 +203,10 @@ export default function ChoosePosition(props) {
                 justifyContent: "flex-start",
               }}
             >
-              <View style={{ height: "100%", width: "30%", paddingTop: 10 }}>
+              <View style={{ height: "100%", width: "25%", paddingTop: 10 }}>
                 <TouchableOpacity
                   style={{
-                    alignItems: "flex-start",
+                    alignItems: "center",
                     paddingRight: 10,
                     justifyContent: "flex-start",
                   }}
@@ -361,10 +362,10 @@ export default function ChoosePosition(props) {
               justifyContent: "flex-start",
             }}
           >
-            <View style={{ height: "100%", width: "30%", paddingTop: 10 }}>
+            <View style={{ height: "100%", width: "25%", paddingTop: 10 }}>
               <TouchableOpacity
                 style={{
-                  alignItems: "flex-start",
+                  alignItems: "center",
                   paddingRight: 10,
                   justifyContent: "flex-start",
                 }}
@@ -385,10 +386,12 @@ export default function ChoosePosition(props) {
                       borderRadius: 5,
                     }}
                   />
-                ) : item.icon ? (
-                  <FunIcon icon={item.icon} height={50} width={50} />
                 ) : (
-                  <FunIcon icon={"i-tour"} height={50} width={50} />
+                  <FunIcon
+                    icon={item.icon === "gb-tour" ? item.icon : "i-tour"}
+                    height={50}
+                    width={50}
+                  />
                 )}
               </TouchableOpacity>
             </View>

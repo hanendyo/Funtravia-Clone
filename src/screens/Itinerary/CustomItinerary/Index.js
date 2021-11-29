@@ -30,6 +30,7 @@ import { useTranslation } from "react-i18next";
 export default function CustomItinerary(props) {
   const { t, i18n } = useTranslation();
   let [soon, setSoon] = useState(false);
+  console.log("props custom acticity", props.route.params);
 
   const HeaderComponent = {
     headerShown: true,
@@ -680,7 +681,7 @@ export default function CustomItinerary(props) {
                             itintitle: itintitle,
                             dateitin: dateitin,
                             datadayaktif: datadayaktif,
-                            dataParent: props.route?.params?.dataParent,
+                            dataList: props.route?.params?.dataList,
                           })
                         }
                         style={{
@@ -787,7 +788,7 @@ export default function CustomItinerary(props) {
                             itintitle: itintitle,
                             dateitin: dateitin,
                             datadayaktif: datadayaktif,
-                            dataParent: props.route?.params?.dataParent,
+                            dataList: props.route?.params?.dataList,
                           })
                         }
                         style={{
