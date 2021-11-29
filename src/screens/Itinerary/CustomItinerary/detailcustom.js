@@ -124,7 +124,6 @@ export default function detailCustomItinerary(props) {
     ),
   };
   let [dataParent, setDataParent] = useState({});
-  console.log("dataParent", dataParent);
   let [dataChild, setDataChild] = useState([]);
   let [modaldate, setModaldate] = useState(false);
 
@@ -159,7 +158,6 @@ export default function detailCustomItinerary(props) {
 
   const OpenModaldate = (starts, duration) => {
     setModaldate(true);
-    console.log("open modal 1", starts);
 
     let startTime = starts
       // .split(" ")[1]
@@ -1581,10 +1579,7 @@ export default function detailCustomItinerary(props) {
                     >
                       <TouchableOpacity
                         onPress={() =>
-                          OpenModaldate(
-                            dataParent.detail_flight.departure,
-                            dataParent.duration
-                          )
+                          OpenModaldate(dataParent.time, dataParent.duration)
                         }
                       >
                         {dataParent.time ? (
@@ -1598,10 +1593,7 @@ export default function detailCustomItinerary(props) {
 
                       <TouchableOpacity
                         onPress={() =>
-                          OpenModaldate(
-                            dataParent.detail_flight.departure,
-                            dataParent.duration
-                          )
+                          OpenModaldate(dataParent.time, dataParent.duration)
                         }
                       >
                         {dataParent.duration ? (
