@@ -689,7 +689,7 @@
   "setstartdate": "Please set a start date first",
   "somefieldempty": "Some field cannot be empty",
   "registerfailed": "Register failed",
-  "understand": "Understand",
+  "understand": "Ok, I Understand",
   "chooseyourdestination": "Choose your destination. Choose the best place for your vacation",
   "worldtourism": "World Tourism",
   "europe": "Europe",
@@ -825,8 +825,8 @@
   "inputNotes": "Input Notes",
   "findDestination": "Find Destination",
   "yourTripIsNotComplete": "Your Trip is not complete",
-  "activateThisTrip": "To activate this trip you must complete the activity on an empty day or you can delete the empty day.",
-  "dayEmptyTrip": "There are still days that haven't been filled with your holiday activities.",
+  "activateThisTrip": "To complete this trip, you have to add activity in empty day, either you can delete that empty day",
+  "dayEmptyTrip": "Please add activity to empty day",
   "FailedSetGender": "Failed to set gender",
   "FailedSetDateofBirth": "Failed to set date of birth",
   "FailedLikeItinerary": "Failed to like itinerary",
@@ -841,5 +841,7 @@
   "failRemoveTagAlbum": "Failed to remove album tag",
   "successcopylink": "Success Copy Link To Clipboard",
   "setTimeForActivity": "Set time for activity",
-  "descMaxUpload": "Maximum file size is 20 MB"
+  "descMaxUpload": "Maximum file size is 20 MB",
+  "deleteChat": "Delete Chat",
+  "deleteChatWith": "Delete chat with"
 }

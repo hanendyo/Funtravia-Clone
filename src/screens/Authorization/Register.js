@@ -161,7 +161,7 @@ export default function Register({ navigation }) {
         ...aler,
         show: true,
         judul: t("registerfailed"),
-        detail: "" + error ? "alreadyexist" : "",
+        detail: "" + error ? t("alreadyexist") : "",
       });
     }
   };

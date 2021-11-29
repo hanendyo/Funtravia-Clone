@@ -825,9 +825,9 @@
   "fromItinerary": "dari rencana perjalanan",
   "inputNotes": "Masukan Catatan",
   "findDestination": "Cari Destinasi",
-  "yourTripIsNotComplete": "Perjalanan Anda belum selesai",
+  "yourTripIsNotComplete": "Perjalanan Anda belum lengkap",
   "activateThisTrip": "Untuk mengaktifkan trip ini kamu harus melengkapi aktivitas di hari yang masih kosong atau kamu bisa hapus hari yang kosong tersebut.",
-  "dayEmptyTrip": "Masih ada hari yang belum terisi aktivitas liburanmu.",
+  "dayEmptyTrip": "Silahkan tambahkan aktivitas ke hari yang kosong",
   "FailedSetGender": "Gagal mengatur jenis kelamin",
   "FailedSetDateofBirth": "Gagal mengatur tanggal lahir",
   "FailedLikeItinerary": "Gagal menyukai itinerary",
@@ -839,5 +839,7 @@
   "failRemoveTagAlbum": "Gagal melepaskan tag album",
   "successcopylink": "Sukses Salin Tautan Ke Papan Klip",
   "setTimeForActivity": "Atur waktu untuk aktivitas",
-  "descMaxUpload": "Maksimal ukuran file adalah 20 MB"
+  "descMaxUpload": "Maksimal ukuran file adalah 20 MB",
+  "deleteChat": "Hapus Obrolan",
+  "deleteChatWith": "Hapus Obrolan dengan"
 }

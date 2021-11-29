@@ -49,10 +49,15 @@ import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import moment from "moment";
+import DeviceInfo from "react-native-device-info";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
+  const Notch = DeviceInfo.hasNotch();
+  const height = Dimensions.get("screen").height;
+  const width = Dimensions.get("screen").width;
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -118,9 +123,7 @@ export default function detailCustomItinerary(props) {
       </View>
     ),
   };
-
   let [dataParent, setDataParent] = useState({});
-  console.log("dataParent", dataParent);
   let [dataChild, setDataChild] = useState([]);
   let [modaldate, setModaldate] = useState(false);
 
@@ -157,7 +160,7 @@ export default function detailCustomItinerary(props) {
     setModaldate(true);
 
     let startTime = starts
-      .split(" ")[1]
+      // .split(" ")[1]
       .split(":")
       .map((x) => +x);
     let durationTime = duration.split(":").map((x) => +x);
@@ -178,6 +181,25 @@ export default function detailCustomItinerary(props) {
     );
     sethourTo(jam.length === 1 ? "0" + jam : jam);
     setminuteTo(menit.length === 1 ? "0" + menit : menit);
+  };
+
+  const caridurasi = (startt, end) => {
+    var endtmine = end ? end.split(":") : "00:00:00".split(":");
+    var starttime = startt ? startt.split(":") : "00:00:00".split(":");
+
+    var jam = parseFloat(endtmine[0]) - parseFloat(starttime[0]);
+
+    var menit = parseFloat(endtmine[1]) - parseFloat(starttime[1]);
+    if (menit > 59) {
+      menit = menit - 60;
+    }
+
+    return (
+      (jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam) +
+      ":" +
+      (menit < 10 ? "0" + menit : menit) +
+      ":00"
+    );
   };
 
   const hitungDuration = ({ startt, dur }) => {
@@ -1557,10 +1579,7 @@ export default function detailCustomItinerary(props) {
                     >
                       <TouchableOpacity
                         onPress={() =>
-                          OpenModaldate(
-                            dataParent.detail_flight.departure,
-                            dataParent.duration
-                          )
+                          OpenModaldate(dataParent.time, dataParent.duration)
                         }
                       >
                         {dataParent.time ? (
@@ -1574,10 +1593,7 @@ export default function detailCustomItinerary(props) {
 
                       <TouchableOpacity
                         onPress={() =>
-                          OpenModaldate(
-                            dataParent.detail_flight.departure,
-                            dataParent.duration
-                          )
+                          OpenModaldate(dataParent.time, dataParent.duration)
                         }
                       >
                         {dataParent.duration ? (
