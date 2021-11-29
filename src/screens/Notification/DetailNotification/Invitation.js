@@ -1595,7 +1595,7 @@ export default function Invitation({ navigation, token }) {
         flex: 1,
         justifyContent: "space-between",
         marginTop: normalize(45),
-        borderWidth: 1,
+        // borderWidth: 1,
       }}
     >
       <Loading show={loadings} />

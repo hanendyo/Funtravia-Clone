@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -31,12 +31,8 @@ import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
 import { TextInput } from "react-native-gesture-handler";
 import City from "../../graphQL/Query/Itinerary/City";
 import { RNToasty } from "react-native-toasty";
-import DeviceInfo from "react-native-device-info";
-const Notch = DeviceInfo.hasNotch();
-const deviceId = DeviceInfo.getModel();
 
 export default function SettingCity(props) {
-  console.log("props", props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -87,8 +83,8 @@ export default function SettingCity(props) {
     setTimeout(() => {
       if (slider.current) {
         slider.current.scrollToIndex({
+          index: props.route.params.index,
           animated: true,
-          index: props.route.params.index ? props.route.params.index : 0,
         });
       }
     }, 2000);
@@ -252,24 +248,12 @@ export default function SettingCity(props) {
           keyboardShouldPersistTaps={"handled"}
           ref={slider}
           getItemLayout={(data, index) => ({
-            // length:  46,
-            // offset: 46 * index,
-
-            length: Platform.select({
-              ios: Notch ? 48.5 : 47,
-              android: deviceId == "LYA-L29" ? 45.5 : 47.6,
-            }),
-
-            offset: Platform.select({
-              ios: Notch ? 48.5 * index : 47 * index,
-              android: deviceId == "LYA-L29" ? 45.5 * index : 47.6 * index,
-            }),
-
+            length: 46,
+            offset: 46 * index,
+            // length: Platform.OS == "ios" ? rippleHeight : 46,
+            // offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
             index,
           })}
-          contentContainerStyle={{
-            paddingBottom: 50,
-          }}
           data={data}
           renderItem={({ item, index }) => (
             <Pressable
