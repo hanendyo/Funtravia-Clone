@@ -51,112 +51,112 @@ export default function Review(
             ? Platform.OS === "ios"
               ? Notch
                 ? 0
-                : -30
-              : 15
+                : -10
+              : -10
             : capHeight == 20
             ? Platform.OS === "ios"
               ? Notch
-                ? 20
+                ? 50
                 : 20
-              : 30
+              : 55
             : capHeight == 30
             ? Platform.OS === "ios"
               ? Notch
                 ? 0
-                : -25
-              : 15
+                : 5
+              : 25
             : capHeight == 40
             ? Platform.OS === "ios"
               ? Notch
-                ? 20
+                ? 65
                 : 20
-              : 25
+              : 60
             : capHeight == 50
             ? Platform.OS === "ios"
               ? Notch
                 ? 0
                 : 0
-              : 10
+              : 25
             : capHeight == 60
             ? Platform.OS === "ios"
               ? Notch
-                ? 25
-                : -35
-              : -45
+                ? 75
+                : 25
+              : 45
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
                 ? 0
                 : 0
-              : 10
+              : 45
             : capHeight == 80
             ? Platform.OS === "ios"
               ? Notch
-                ? 10
+                ? 95
                 : 10
-              : 20
+              : 95
             : capHeight == 90
             ? Platform.OS === "ios"
               ? Notch
-                ? 30
-                : -20
-              : 15
+                ? 115
+                : 45
+              : 105
             : 50,
         marginBottom:
           capHeight == 10
             ? Platform.OS === "ios"
               ? Notch
                 ? 15
-                : 45
-              : 0
+                : 25
+              : 30
             : capHeight == 20
             ? Platform.OS === "ios"
               ? Notch
-                ? 0
+                ? -35
                 : 15
-              : -10
+              : -35
             : capHeight == 30
             ? Platform.OS === "ios"
               ? Notch
                 ? 15
-                : 40
-              : 10
+                : 10
+              : -10
             : capHeight == 40
             ? Platform.OS === "ios"
               ? Notch
-                ? 0
+                ? -45
                 : 0
-              : -5
+              : -40
             : capHeight == 50
             ? Platform.OS === "ios"
               ? Notch
                 ? 15
                 : 15
-              : 10
+              : -10
             : capHeight == 60
             ? Platform.OS === "ios"
               ? Notch
-                ? -5
-                : 50
-              : 65
+                ? -60
+                : -10
+              : -35
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
                 ? 5
                 : 5
-              : 10
+              : -30
             : capHeight == 80
             ? Platform.OS === "ios"
               ? Notch
-                ? 10
+                ? -75
                 : 10
-              : 0
+              : -80
             : capHeight == 90
             ? Platform.OS === "ios"
               ? Notch
-                ? -10
-                : 35
-              : 5
+                ? -95
+                : -30
+              : -75
             : 30,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,

@@ -97,7 +97,7 @@ export default function OtherProfile(props) {
     android: StatusBar.currentHeight,
   });
   const [captionHeight, setCaptionHeight] = useState(0);
-  const HeaderHeight = 310 - SafeStatusBar + 55;
+  const HeaderHeight = 310 - SafeStatusBar + 55 + captionHeight;
 
   const { t } = useTranslation();
   let [soon, setSoon] = useState(false);
@@ -907,57 +907,57 @@ export default function OtherProfile(props) {
           (captionHeight == 10
             ? Platform.OS === "ios"
               ? Notch
-                ? 45
-                : 65
-              : 75
+                ? 55
+                : 95
+              : 57
             : captionHeight == 20
             ? Platform.OS === "ios"
               ? Notch
-                ? 5
+                ? 50
                 : 55
-              : 15
+              : 55
             : captionHeight == 30
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
-                : 55
-              : 35
+                : 85
+              : 58
             : captionHeight == 40
             ? Platform.OS === "ios"
               ? Notch
-                ? -5
+                ? 50
                 : 55
-              : 10
+              : 42
             : captionHeight == 50
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
                 : 55
-              : 35
+              : 120
             : captionHeight == 60
             ? Platform.OS === "ios"
               ? Notch
-                ? -25
-                : 35
-              : 5
+                ? 35
+                : 95
+              : 120
             : captionHeight == 70
             ? Platform.OS === "ios"
               ? Notch
                 ? 55
                 : 55
-              : 20
+              : 65
             : captionHeight == 80
             ? Platform.OS === "ios"
               ? Notch
-                ? -35
+                ? 45
                 : 55
-              : -30
+              : 55
             : captionHeight == 90
             ? Platform.OS === "ios"
               ? Notch
-                ? -75
-                : 5
-              : -40
+                ? 45
+                : 85
+              : 57
             : HeaderHeight),
       ],
       extrapolateRight: "clamp",
@@ -982,57 +982,57 @@ export default function OtherProfile(props) {
             captionHeight == 10
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight
-                  : HeaderHeight - 20
-                : HeaderHeight - 20
+                  ? HeaderHeight - 10
+                  : HeaderHeight - 50
+                : HeaderHeight
               : captionHeight == 20
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight + 40
+                  ? HeaderHeight
                   : HeaderHeight
-                : HeaderHeight + 40
+                : HeaderHeight
               : captionHeight == 30
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight
-                  : HeaderHeight - 10
-                : HeaderHeight + 20
+                  : HeaderHeight - 40
+                : HeaderHeight
               : captionHeight == 40
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight + 50
+                  ? HeaderHeight
                   : HeaderHeight
-                : HeaderHeight + 50
+                : HeaderHeight + 15
               : captionHeight == 50
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight + 40
                   : HeaderHeight
-                : HeaderHeight + 20
+                : HeaderHeight - 40
               : captionHeight == 60
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight + 70
-                  : HeaderHeight + 10
-                : HeaderHeight + 50
+                  ? HeaderHeight + 10
+                  : HeaderHeight - 50
+                : HeaderHeight - 65
               : captionHeight == 70
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight + 20
                   : HeaderHeight
-                : HeaderHeight + 40
+                : HeaderHeight - 10
               : captionHeight == 80
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight + 80
+                  ? HeaderHeight
                   : HeaderHeight
-                : HeaderHeight + 90
+                : HeaderHeight + 10
               : captionHeight == 90
               ? Platform.OS === "ios"
                 ? Notch
-                  ? HeaderHeight + 120
-                  : HeaderHeight + 40
-                : HeaderHeight + 100
+                  ? HeaderHeight + 10
+                  : HeaderHeight - 30
+                : HeaderHeight
               : HeaderHeight,
           width: "100%",
           alignItems: "center",
@@ -1055,7 +1055,7 @@ export default function OtherProfile(props) {
                 : captionHeight == 20
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "92%"
+                    ? "90%"
                     : "85%"
                   : "90%"
                 : captionHeight == 30
@@ -1075,25 +1075,25 @@ export default function OtherProfile(props) {
                   ? Notch
                     ? "85%"
                     : "85%"
-                  : "85%"
+                  : "95%"
                 : captionHeight == 60
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "90%"
                     : "90%"
-                  : "85%"
+                  : "87%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "85%"
                     : "85%"
-                  : "85%"
+                  : "90%"
                 : captionHeight == 80
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "88%"
                     : "85%"
-                  : "90%"
+                  : "85%"
                 : captionHeight == 90
                 ? Platform.OS === "ios"
                   ? Notch
@@ -1109,15 +1109,15 @@ export default function OtherProfile(props) {
               captionHeight == 10
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "10%"
+                    ? "15%"
                     : "6%"
                   : "5%"
                 : captionHeight == 20
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "3%"
+                    ? "5%"
                     : "5%"
-                  : "2%"
+                  : "10%"
                 : captionHeight == 30
                 ? Platform.OS === "ios"
                   ? Notch
@@ -1127,7 +1127,7 @@ export default function OtherProfile(props) {
                 : captionHeight == 40
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "5%"
+                    ? "8%"
                     : "10%"
                   : "8%"
                 : captionHeight == 50
@@ -1139,9 +1139,9 @@ export default function OtherProfile(props) {
                 : captionHeight == 60
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "5%"
+                    ? "8%"
                     : "5%"
-                  : "5%"
+                  : "8%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
                   ? Notch
@@ -1153,11 +1153,11 @@ export default function OtherProfile(props) {
                   ? Notch
                     ? "5%"
                     : "5%"
-                  : "0%"
+                  : "5%"
                 : captionHeight == 90
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "2%"
+                    ? "7%"
                     : "5%"
                   : "5%"
                 : "5%",
@@ -1183,7 +1183,7 @@ export default function OtherProfile(props) {
                 : captionHeight == 40
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "13%"
+                    ? "15%"
                     : "10%"
                   : "13%"
                 : captionHeight == 50
@@ -1191,19 +1191,19 @@ export default function OtherProfile(props) {
                   ? Notch
                     ? "40%"
                     : "40%"
-                  : "15%"
+                  : "25%"
                 : captionHeight == 60
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "12%"
                     : "15%"
-                  : "17%"
+                  : "18%"
                 : captionHeight == 70
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "40%"
                     : "40%"
-                  : "15%"
+                  : "20%"
                 : captionHeight == 80
                 ? Platform.OS === "ios"
                   ? Notch
@@ -1213,7 +1213,7 @@ export default function OtherProfile(props) {
                 : captionHeight == 90
                 ? Platform.OS === "ios"
                   ? Notch
-                    ? "11%"
+                    ? "17%"
                     : "15%"
                   : "16%"
                 : "15%",
@@ -1672,56 +1672,56 @@ export default function OtherProfile(props) {
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 60
-                      : 45
-                    : 45
+                      : 25
+                    : 65
                   : captionHeight == 20
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 110
-                      : 110
-                    : 110
+                      ? 75
+                      : 70
+                    : 85
                   : captionHeight == 30
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 40
-                      : 65
-                    : 80
+                      : 25
+                    : 65
                   : captionHeight == 40
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 120
+                      ? 80
                       : 80
-                    : 120
+                    : 80
                   : captionHeight == 50
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 40
                       : 40
-                    : 85
+                    : 65
                   : captionHeight == 60
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 135
-                      : 80
-                    : 100
+                      ? 80
+                      : 15
+                    : 5
                   : captionHeight == 70
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 40
                       : 40
-                    : 105
+                    : 65
                   : captionHeight == 80
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 150
+                      ? 65
                       : 65
-                    : 150
+                    : 80
                   : captionHeight == 90
                   ? Platform.OS === "ios"
                     ? Notch
-                      ? 170
-                      : 100
-                    : 170
+                      ? 85
+                      : 25
+                    : 70
                   : 50)
               : HeaderHeight + TabBarHeight,
           minHeight: height - SafeStatusBar + HeaderHeight,
@@ -1752,56 +1752,56 @@ export default function OtherProfile(props) {
           ? Platform.OS === "ios"
             ? Notch
               ? 50
-              : 60
-            : 70
+              : 80
+            : 55
           : captionHeight == 20
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 0
-              : 0
-            : 10
-          : captionHeight == 30
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
-            : 30
+            : 40
+          : captionHeight == 30
+          ? Platform.OS === "ios"
+            ? Notch
+              ? 40
+              : 80
+            : 55
           : captionHeight == 40
           ? Platform.OS === "ios"
             ? Notch
-              ? -15
+              ? 35
               : 40
-            : 10
+            : 40
           : captionHeight == 50
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
-            : 30
+            : 80
           : captionHeight == 60
           ? Platform.OS === "ios"
             ? Notch
-              ? -25
-              : 20
-            : 15
+              ? 30
+              : 90
+            : 110
           : captionHeight == 70
           ? Platform.OS === "ios"
             ? Notch
               ? 40
               : 40
-            : 20
+            : 55
           : captionHeight == 80
           ? Platform.OS === "ios"
             ? Notch
-              ? -40
+              ? 40
               : 40
-            : -25
+            : 55
           : captionHeight == 90
           ? Platform.OS === "ios"
             ? Notch
-              ? -65
-              : 0
-            : -40
+              ? 35
+              : 90
+            : 50
           : 50,
       ],
 
@@ -1817,56 +1817,56 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? "-2%"
-                  : "-5%"
-                : "-5%"
+                  : "-10%"
+                : "0%"
               : captionHeight == 20
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "10%"
+                  ? "2%"
                   : "2%"
-                : "10%"
+                : "4%"
               : captionHeight == 30
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "10"
-                  : "0%"
-                : "5%"
+                  ? 40
+                  : "-10%"
+                : "0%"
               : captionHeight == 40
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "13%"
+                  ? "3%"
                   : "5%"
-                : "12%"
+                : "3%"
               : captionHeight == 50
               ? Platform.OS === "ios"
                 ? Notch
                   ? "5%"
                   : "5%"
-                : "5%"
+                : "0%"
               : captionHeight == 60
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "16%"
-                  : "5%"
-                : "10%"
+                  ? "3.5%"
+                  : "-12%"
+                : "-16%"
               : captionHeight == 70
               ? Platform.OS === "ios"
                 ? Notch
                   ? "5%"
                   : "5%"
-                : "10%"
+                : "0%"
               : captionHeight == 80
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "20%"
+                  ? "0%"
                   : "0%"
-                : "20%"
+                : "2.5%"
               : captionHeight == 90
               ? Platform.OS === "ios"
                 ? Notch
-                  ? "25%"
-                  : "10%"
-                : "25%"
+                  ? "5%"
+                  : "-10%"
+                : "0%"
               : "5%",
           zIndex: 1,
           position: "absolute",
@@ -2419,12 +2419,6 @@ export default function OtherProfile(props) {
                   ? 35
                   : 35
                 : 55
-              : captionHeight == 90
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? 35
-                  : 35
-                : 55
               : 55,
 
           width: Dimensions.get("screen").width,
@@ -2560,12 +2554,6 @@ export default function OtherProfile(props) {
                   ? 35
                   : 35
                 : 55
-              : captionHeight == 90
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? 35
-                  : 35
-                : 55
               : 55,
           width: Dimensions.get("screen").width,
         }}
@@ -2603,8 +2591,8 @@ export default function OtherProfile(props) {
               : DefaultProfileSquare
           }
           style={{
-            width: width / 10,
-            height: width / 10,
+            width: width / 9,
+            height: width / 9,
             borderRadius: width / 18,
             borderWidth: 2,
             borderColor: "#FFF",

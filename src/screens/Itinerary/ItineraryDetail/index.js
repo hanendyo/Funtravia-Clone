@@ -7067,7 +7067,7 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
 
-                {Anggota === "true" && status !== "finish" ? (
+                {Anggota === "true" || status == "finish" ? (
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,
