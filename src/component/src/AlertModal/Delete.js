@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-// import Modal from "react-native-modal";
-
-import { Input, Item, Label, View } from "native-base";
-import { Pressable, Dimensions, Image, Modal } from "react-native";
+import React from "react";
+import { View } from "native-base";
+import { Pressable, Dimensions, Modal } from "react-native";
 import { Button, Text } from "../../index";
 import { useTranslation } from "react-i18next";
 
@@ -16,7 +14,7 @@ export default function Delete({
   const { t } = useTranslation();
   return (
     <>
-      {modals ? (
+      {modals && (
         <Modal
           animationType="fade"
           visible={modals}
@@ -101,7 +99,7 @@ export default function Delete({
             </View>
           </View>
         </Modal>
-      ) : null}
+      )}
     </>
   );
 }

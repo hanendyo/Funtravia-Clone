@@ -466,6 +466,7 @@ export default function ItineraryDetail(props) {
   if (datatimeline && datatimeline.day_timeline.length) {
     dataList = datatimeline.day_timeline;
   }
+  console.log("dataList: ", dataList);
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -2793,26 +2794,52 @@ export default function ItineraryDetail(props) {
 
                   <Text type="bold">
                     {rupiah(
-                      Distance({
-                        lat1: dataList[index].latitude,
-                        lon1: dataList[index].longitude,
-                        lat2: dataList[index + 1].latitude,
-                        lon2: dataList[index + 1].longitude,
-                        unit: "km",
-                      })
+                      dataList[index + 1].detail_flight
+                        ? Distance({
+                            lat1: dataList[index].latitude,
+                            lon1: dataList[index].longitude,
+                            lat2:
+                              dataList[index + 1].detail_flight
+                                .latitude_departure,
+                            lon2:
+                              dataList[index + 1].detail_flight
+                                .longitude_departure,
+                          })
+                        : Distance({
+                            lat1: dataList[index].latitude,
+                            lon1: dataList[index].longitude,
+                            lat2: dataList[index + 1].latitude,
+                            lon2: dataList[index + 1].longitude,
+                            unit: "km",
+                          })
                     )}
                   </Text>
                   <Text> km </Text>
                   <Text>- </Text>
                   <Text type="bold">
-                    <HitungWaktu
-                      lat1={dataList[index].latitude}
-                      lon1={dataList[index].longitude}
-                      lat2={dataList[index + 1].latitude}
-                      lon2={dataList[index + 1].longitude}
-                      unit={"km"}
-                      kecepatan={50}
-                    />
+                    {dataList[index + 1].detail_flight ? (
+                      <HitungWaktu
+                        lat1={dataList[index].latitude}
+                        lon1={dataList[index].longitude}
+                        lat2={
+                          dataList[index + 1].detail_flight.latitude_departure
+                        }
+                        lon2={
+                          dataList[index + 1].detail_flight.longitude_departure
+                        }
+                        unit={"km"}
+                        kecepatan={50}
+                      />
+                    ) : (
+                      <HitungWaktu
+                        lat1={dataList[index].latitude}
+                        lon1={dataList[index].longitude}
+                        lat2={dataList[index + 1].latitude}
+                        lon2={dataList[index + 1].longitude}
+                        unit={"km"}
+                        kecepatan={50}
+                      />
+                    )}
                   </Text>
                 </View>
               </ScrollView>
@@ -2838,6 +2865,7 @@ export default function ItineraryDetail(props) {
                 flexWrap: "wrap",
                 width: "102%",
                 paddingBottom: 10,
+                marginTop: 40,
               }}
             >
               <TouchableOpacity
@@ -2856,7 +2884,7 @@ export default function ItineraryDetail(props) {
                 style={{
                   alignContent: "center",
                   justifyContent: "center",
-                  backgroundColor: "#f6f6f6",
+                  backgroundColor: "#d0d0d0",
                   alignItems: "center",
                   width: tab2ItemSize,
                   height: tab2ItemSize,
