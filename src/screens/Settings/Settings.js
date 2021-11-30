@@ -9,7 +9,8 @@ import SettingCurrency from "./SettingCurrency";
 import CountryList from "../../graphQL/Query/Countries/CountryList";
 import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
 import GetSetting from "../../graphQL/Query/Settings/GetSetting";
-import { useLazyQuery } from "@apollo/react-hooks";
+import GetSettingUser from "../../graphQL/Query/Settings/GetSettingUser";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
@@ -60,25 +61,12 @@ export default function Settings(props) {
     },
   };
 
-  const [
-    GetDataSetting,
-    { data: datas, loading: loadings, error: errors },
-  ] = useLazyQuery(GetSetting, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await GetCountryList();
     await GetCurrencyList();
-
+    await getSettingUser();
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -107,6 +95,35 @@ export default function Settings(props) {
     i18n.changeLanguage(value);
     await AsyncStorage.setItem("setting_language", value);
   };
+
+  const [
+    getSettingUser,
+    { data: datas, loading: loadings, error: errors },
+  ] = useLazyQuery(GetSettingUser, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      console.log(
+        "🚀 ~ file: Settings.js ~ line 112 ~ Settings ~ datas",
+        datas
+      );
+      // if (datas.setting_data.user) {
+      setSetting(datas.setting_data_user);
+      AsyncStorage.setItem("setting", JSON.stringify(datas.setting_data_user));
+      // }
+    },
+  });
+  // useEffect(async () => {
+  //   if (datas && datas.setting_data && datas.setting_data.user) {
+  //     setSetting(JSON.parse(datas.setting_data));
+  //     await AsyncStorage.setItem("setting", datas.setting_data);
+  //   }
+  // }, [datas]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

@@ -302,6 +302,7 @@ import FileGray from "./files/fileGray.svg";
 import UploadFailed from "./files/uploadFailed.svg";
 import ReuploadFeed from "./files/reloadFeed.svg";
 import XFailedFeed from "./files/XFailedUpload.svg";
+import PasswordUpdateEmail from "./files/passwordUpdateEmail.svg";
 
 export {
   PhotoGray,
@@ -608,4 +609,5 @@ export {
   UploadFailed,
   ReuploadFeed,
   XFailedFeed,
+  PasswordUpdateEmail,
 };

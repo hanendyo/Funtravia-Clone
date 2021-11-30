@@ -843,5 +843,9 @@
   "setTimeForActivity": "Set time for activity",
   "descMaxUpload": "Maximum file size is 20 MB",
   "deleteChat": "Delete Chat",
-  "deleteChatWith": "Delete chat with"
+  "deleteChatWith": "Delete chat with",
+  "inputPasswordAddEmail" :"Please input password before you add email.",
+  "inputPasswordChangeEmail" :"Please input password before you change email.",
+  "inputPassword" :"Input Password"
+
 }

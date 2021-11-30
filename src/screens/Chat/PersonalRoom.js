@@ -387,7 +387,7 @@ export default function Room({ navigation, route }) {
           is_send: true,
         };
         // if (socket.connected) {
-        await await socket.current.emit("message", chatData);
+        await socket.current.emit("message", chatData);
         // } else {
         //   sendOffline(chatData);
         // }
@@ -525,7 +525,11 @@ export default function Room({ navigation, route }) {
     if (recent) {
       let findInd = recent.findIndex((x) => x.id === data.id);
       if (findInd >= 0) {
-        recent[findInd] = data;
+        recent = recent.filter(function(obj) {
+          return obj.id !== data.id;
+        });
+        // recent[findInd] = data;
+        recent.splice(findInd, 0, data);
       } else {
         recent.unshift(data);
       }
