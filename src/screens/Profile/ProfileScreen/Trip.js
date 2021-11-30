@@ -178,13 +178,123 @@ export default function Trip(
     <View
       style={{
         height: normalize(175),
-        marginTop: Platform.OS === "ios" ? (Notch ? 25 : -35) : 30,
-        marginBottom: Platform.OS === "ios" ? (Notch ? 0 : 50) : -10,
+        marginTop:
+          capHeight == 10
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : -10
+              : -10
+            : capHeight == 20
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 50
+                : 20
+              : 55
+            : capHeight == 30
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 5
+              : 25
+            : capHeight == 40
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 65
+                : 20
+              : 60
+            : capHeight == 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : 25
+            : capHeight == 60
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 75
+                : 25
+              : 95
+            : capHeight == 70
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 0
+                : 0
+              : 45
+            : capHeight == 80
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 95
+                : 10
+              : 95
+            : capHeight == 90
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 115
+                : 45
+              : 105
+            : 50,
+        marginBottom:
+          capHeight == 10
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 25
+              : 30
+            : capHeight == 20
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -35
+                : 15
+              : -35
+            : capHeight == 30
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 10
+              : -10
+            : capHeight == 40
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -45
+                : 0
+              : -40
+            : capHeight == 50
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 15
+                : 15
+              : -10
+            : capHeight == 60
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -60
+                : -10
+              : -80
+            : capHeight == 70
+            ? Platform.OS === "ios"
+              ? Notch
+                ? 5
+                : 5
+              : -30
+            : capHeight == 80
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -75
+                : 10
+              : -80
+            : capHeight == 90
+            ? Platform.OS === "ios"
+              ? Notch
+                ? -95
+                : -30
+              : -75
+            : 30,
         borderRadius: 5,
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: arrayShadow.shadowOpacity,
-        shadowRadius: arrayShadow.shadowRadius,
-        elevation: arrayShadow.elevation,
+        // shadowOpacity: arrayShadow.shadowOpacity,
+        // shadowRadius: arrayShadow.shadowRadius,
+        // elevation: arrayShadow.elevation,
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         overflow: "hidden",
@@ -211,16 +321,16 @@ export default function Trip(
           borderTopLeftRadius: 5,
           borderTopRightRadius: 5,
           flexDirection: "row",
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
+          // shadowOpacity: arrayShadow.shadowOpacity,
+          // shadowRadius: arrayShadow.shadowRadius,
+          // elevation: arrayShadow.elevation,
         }}
       >
         <ImageBackground
           source={item && item.cover ? { uri: item.cover } : default_image}
           style={{
             height: "100%",
-            width: "35%",
+            width: Dimensions.get("screen").width * 0.3,
             borderTopLeftRadius: 5,
           }}
           imageStyle={{
@@ -444,6 +554,7 @@ export default function Trip(
           borderBottomLeftRadius: 5,
           borderBottomRightRadius: 5,
           justifyContent: "space-between",
+          shadowOpacity: 0,
         }}
       >
         <Pressable

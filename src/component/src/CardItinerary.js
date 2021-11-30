@@ -233,7 +233,7 @@ export default function CardItinerary({
                     }
                     style={{
                       height: "100%",
-                      width: Dimensions.get("screen").width * 0.35,
+                      width: Dimensions.get("screen").width * 0.3,
                       borderTopLeftRadius: 5,
                     }}
                   />
