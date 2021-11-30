@@ -440,8 +440,8 @@
   "AddComment": "Tambahkan Komentar",
   "AddEmail": "Tambahkan Email",
   "ChangeEmail": "Ganti Email",
-  "CheckChangeEmail": "Periksa perubahan Email",
-  "CheckChangePhone": "Periksa perubahan Telepon",
+  "CheckChangeEmail": "Kirim saya notifikasi diskon dan promo eksklusif Funtrivia",
+  "CheckChangePhone": "Kirimi saya notifikasi diskon dan promo eksklusif Funtrivia",
   "ChangePhoneNumber": "Ganti Nomor Telepon",
   "CountryCode": "Kode Negara",
   "PopularArticle": "Artikel Populer",
@@ -841,5 +841,8 @@
   "setTimeForActivity": "Atur waktu untuk aktivitas",
   "descMaxUpload": "Maksimal ukuran file adalah 20 MB",
   "deleteChat": "Hapus Obrolan",
-  "deleteChatWith": "Hapus Obrolan dengan"
+  "deleteChatWith": "Hapus Obrolan dengan",
+  "inputPasswordAddEmail" :"Silahkan masukan password sebelum tambah email.",
+  "inputPasswordChangeEmail" :"Silahkan masukan password sebelum mengubah email.",
+  "inputPassword" :"Masukan Password"
 }

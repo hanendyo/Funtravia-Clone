@@ -6,9 +6,10 @@ import {
   Pressable,
   ActivityIndicator,
   ImageBackground,
+  Modal,
 } from "react-native";
 import { Text, FunImage, FunImageAutoSize, FunVideo } from "../../component";
-import { Star, AddHijau, Reupload } from "../../assets/svg";
+import { Star, AddHijau, Reupload, Xwhite } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -17,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 import normalize from "react-native-normalize";
 import ImageView from "react-native-image-viewing";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -100,14 +102,16 @@ export default function ChatTypelayout({
     }
   };
 
+  let count = 0;
   useEffect(() => {
     if (item.is_send == false && item.type !== "att_image") {
       socket.current.emit("message", item);
     }
-    // if (item.is_send == false && item.type == "att_image") {
-    //   setloading(true);
-    //   _uploadimage(item.text, item.id);
-    // }
+    if (item.is_send == false && item.type == "att_image" && count == 0) {
+      count = 1;
+      setloading(true);
+      _uploadimage(item.text, item.id);
+    }
   }, [connected, socket_connect]);
   // sticker layout
   if (item.type == "sticker") {
@@ -1037,6 +1041,7 @@ export default function ChatTypelayout({
                 width: moderateScale(200, 2),
                 height: moderateScale(170, 2),
                 // maxHeight: 400,
+                borderRadius: 10,
                 borderTopRightRadius: item.user_id == user_id ? 0 : 10,
                 borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
                 alignSelf: "center",
@@ -1048,6 +1053,7 @@ export default function ChatTypelayout({
                 alignContent: "center",
               }}
               imageStyle={{
+                borderRadius: 10,
                 borderTopRightRadius: item.user_id == user_id ? 0 : 10,
                 borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               }}
@@ -1065,13 +1071,42 @@ export default function ChatTypelayout({
         dataImage={dataImage}
         setClose={() => setModalss(!modalss)}
       /> */}
-        <ImageView
+        {/* <ImageView
           images={[{ uri: item.text }]}
           imageIndex={0}
           visible={modalss}
           onRequestClose={() => setModalss(false)}
           doubleTapToZoomEnabled={true}
-        />
+        
+        /> */}
+        <Modal
+          visible={modalss}
+          transparent={true}
+          onRequestClose={() => {
+            setModalss(false);
+          }}
+        >
+          <ImageViewer
+            imageUrls={[{ url: item.text }]}
+            useNativeDriver={true}
+            onSwipeDown={() => {
+              setModalss(false);
+            }}
+            enableSwipeDown={true}
+            renderHeader={() => (
+              <Pressable
+                onPress={() => {
+                  setModalss(false);
+                }}
+              >
+                {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
+                <Text size="h5" styles={{ color: "white" }}>
+                  {" X "}
+                </Text>
+              </Pressable>
+            )}
+          />
+        </Modal>
       </>
     );
   }

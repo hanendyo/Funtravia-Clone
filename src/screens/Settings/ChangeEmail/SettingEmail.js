@@ -1,19 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
-import { Text, Button } from "../../../component";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  EyeActive,
+  EyeNonactive,
+  PasswordUpdateEmail,
+} from "../../../assets/svg";
+import { Text, Button, Peringatan } from "../../../component";
 import { useTranslation } from "react-i18next";
-import { View, Dimensions, CheckBox } from "react-native";
+import { View, Dimensions, Pressable, BackHandler } from "react-native";
+import CheckBox from "@react-native-community/checkbox";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import addEmail from "../../../graphQL/Mutation/Setting/addEmail";
+import { useMutation } from "@apollo/client";
+import { RNToasty } from "react-native-toasty";
 
 export default function SettingEmail(props) {
   let [token, setToken] = useState("");
   const { t, i18n } = useTranslation();
+  const [inputPassword, setInputPassword] = useState(false);
+  const myStateRef = React.useRef(inputPassword);
+  const [ishide, setIshide] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginFailed, setLoginFailed] = useState(false);
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
+
   let [setSetting] = useState();
   const HeaderComponent = {
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>
-        {t("ChangeEmail")}
+        {t("AddEmail")}
       </Text>
     ),
     headerMode: "screen",
@@ -27,7 +45,7 @@ export default function SettingEmail(props) {
         type="circle"
         size="small"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => onBackPress()}
       >
         {Platform.OS == "ios" ? (
           <Arrowbackios height={15} width={15}></Arrowbackios>
@@ -44,6 +62,63 @@ export default function SettingEmail(props) {
       return null;
     },
   };
+  const onBackPress = useCallback(() => {
+    if (myStateRef.current == true) {
+      setInputPassword(false);
+      myStateRef.current = false;
+    } else {
+      props.navigation.goBack();
+    }
+    return true;
+  }, []);
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    };
+  }, [onBackPress]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    });
+  }, [onBackPress]);
+
+  const [itemValid, setItemValid] = useState({
+    email: false,
+    password: false,
+  });
+
+  const validation = (name, value) => {
+    let emailRegex = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!value || value === "") {
+      return false;
+    } else if (name === "email") {
+      return value.match(emailRegex) ? true : false;
+    } else {
+      return true;
+    }
+  };
+
+  const _handleOnChange = (value, name) => {
+    const validate = validation(name, value);
+    switch (name) {
+      case "email":
+        setEmail(value.toLowerCase());
+        setItemValid({ ...itemValid, email: validate });
+        break;
+      case "password":
+        setPassword(value);
+        setItemValid({ ...itemValid, password: validate });
+        break;
+      default:
+        break;
+    }
+  };
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -59,6 +134,199 @@ export default function SettingEmail(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const [
+    mutationAddEmail,
+    { loading: loadingEmail, data: dataEmail, error: errorMutationEmail },
+  ] = useMutation(addEmail, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const _handleSubmit = async () => {
+    if (email == "") {
+      return showAlert({
+        ...aler,
+        show: true,
+        judul: t("canNotEmpty"),
+      });
+    }
+    if (token || token !== "") {
+      try {
+        let response = await mutationAddEmail({
+          variables: {
+            new_email: email,
+            password: password,
+          },
+        });
+
+        if (response.data) {
+          if (response.data.addemail.code !== 200) {
+            RNToasty.Show({
+              title: t("failedChangeEmail"),
+              position: "bottom",
+            });
+
+            throw new Error(response.data.addemail.message);
+          } else {
+            await props.navigation.navigate("SettingEmailVerify", {
+              emailNew: email,
+              // emailOld: oldEmail,
+            });
+          }
+        }
+      } catch (error) {
+        showAlert({
+          ...aler,
+          show: true,
+          judul: error,
+          // detail: "lorem ipsum lorem ipsum lorem ipsum",
+        });
+      }
+    } else {
+      showAlert({
+        ...aler,
+        show: true,
+        judul: "failed",
+        // detail: "lorem ipsum lorem ipsum lorem ipsum",
+      });
+    }
+  };
+
+  if (inputPassword) {
+    return (
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            // width: Dimensions.get("screen").width * 0.9,
+            marginHorizontal: 20,
+            marginTop: 100,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <PasswordUpdateEmail width={170} height={170} />
+          <Text size="label" type="bold">
+            {t("inputPassword")}
+          </Text>
+          <Text
+            size="description"
+            type="regular"
+            style={{
+              textAlign: "center",
+              width: "50%",
+            }}
+          >
+            {t("inputPasswordAddEmail")}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-end",
+            marginHorizontal: 20,
+          }}
+        >
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 65,
+              marginTop: 20,
+            }}
+          >
+            <Item floatingLabel>
+              <Label
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                }}
+              >
+                {"Password"}
+              </Label>
+
+              <Input
+                style={{
+                  fontFamily: "Lato-Regular",
+                  fontSize: 14,
+                  borderBottomWidth: 0,
+                }}
+                // value={data.first_name ? data.first_name : ""}
+                secureTextEntry={ishide}
+                onChangeText={(text) => _handleOnChange(text, "password")}
+                keyboardType="default"
+              />
+            </Item>
+          </View>
+          {ishide ? (
+            <Pressable
+              onPress={() => setIshide(false)}
+              style={{
+                borderBottomWidth: 0.7,
+                borderBottomColor: "#D1D1D1",
+              }}
+            >
+              <EyeActive width={25} height={25} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => setIshide(true)}
+              style={{
+                borderBottomWidth: 0.7,
+                borderBottomColor: "#D1D1D1",
+              }}
+            >
+              <EyeNonactive width={25} height={25} />
+            </Pressable>
+          )}
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 20,
+          }}
+        >
+          {loginFailed === true && email.length === 0 ? (
+            <Text
+              type="regular"
+              size="small"
+              style={{
+                color: "#D75995",
+                marginRight: 5,
+              }}
+            >
+              {t("passwordRequired")}
+            </Text>
+          ) : null}
+        </View>
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 40,
+            flexDirection: "row",
+          }}
+        >
+          <Button
+            type="box"
+            size="medium"
+            color="secondary"
+            text={t("submit")}
+            onPress={() => _handleSubmit()}
+            style={{ width: "100%" }}
+          />
+        </View>
+        <Peringatan
+          aler={aler}
+          setClose={() =>
+            showAlert({ ...aler, show: false, judul: "", detail: "" })
+          }
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -90,19 +358,49 @@ export default function SettingEmail(props) {
           </Label>
           <Input
             style={{ fontFamily: "Lato-Regular", fontSize: 14 }}
-            // value={data.first_name ? data.first_name : ""}
-            // onChangeText={(text) => _handleOnChange(text, "first_name")}
-            keyboardType="default"
+            value={email}
+            onChangeText={(text) => _handleOnChange(text, "email")}
+            keyboardType="email-address"
           />
         </Item>
       </View>
       <View
         style={{
+          flexDirection: "row",
+          marginHorizontal: 20,
+        }}
+      >
+        {loginFailed === true && email.length === 0 ? (
+          <Text
+            type="regular"
+            size="small"
+            style={{
+              color: "#D75995",
+              marginRight: 5,
+            }}
+          >
+            {t("emailRequired")}
+          </Text>
+        ) : null}
+        {itemValid.email === false ? (
+          <Text
+            type="regular"
+            size="small"
+            style={{
+              color: "#D75995",
+            }}
+          >
+            {t("sampleEmail")}
+          </Text>
+        ) : null}
+      </View>
+      <View
+        style={{
           width: "100%",
-          paddingHorizontal: 30,
+          paddingHorizontal: 20,
           marginTop: 20,
           flexDirection: "row",
-          justifyContent: "center",
+          // justifyContent: "center",
           alignItems: "center",
         }}
       >
@@ -124,6 +422,10 @@ export default function SettingEmail(props) {
             }),
           }}
         />
+        {/* <CheckBox
+        // value={true}
+        // onValueChange={setSelection}
+        /> */}
         <Text type="regular" size="description" style={{ marginLeft: 10 }}>
           {t("CheckChangeEmail")}
         </Text>
@@ -140,7 +442,12 @@ export default function SettingEmail(props) {
           size="medium"
           color="secondary"
           text={t("save")}
-          onPres={() => null}
+          onPress={() => {
+            if (itemValid.email === true) {
+              setInputPassword(true);
+              myStateRef.current = true;
+            }
+          }}
           style={{ width: "100%" }}
         />
       </View>

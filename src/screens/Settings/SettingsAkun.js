@@ -1090,8 +1090,8 @@ export default function SettingsAkun(props) {
               }}
             >
               <Text size="description" type="light" style={{}}>
-                {setting && setting.user && setting.user.gender
-                  ? setting.user.gender === "M"
+                {setting && setting.user && setting.user?.gender
+                  ? setting.user?.gender === "M"
                     ? t("Male")
                     : t("Female")
                   : t("notSet")}
