@@ -34,6 +34,7 @@ import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
 
 export default function SearchListEventHome(props) {
+  console.log("props", props);
   const { t, i18n } = useTranslation();
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
