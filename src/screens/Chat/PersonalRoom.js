@@ -528,7 +528,6 @@ export default function Room({ navigation, route }) {
         recent = recent.filter(function(obj) {
           return obj.id !== data.id;
         });
-        // recent[findInd] = data;
         recent.splice(findInd, 0, data);
       } else {
         recent.unshift(data);

@@ -103,10 +103,10 @@ let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
 let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-export default function CityDetail(props) {
-  const [modalLogin, setModalLogin] = useState(false);
+export default function ProvinceDetail(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
+  const [modalLogin, setModalLogin] = useState(false);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
@@ -213,11 +213,11 @@ export default function CityDetail(props) {
   useEffect(() => {
     refreshData();
 
-    const Journaldata = props.navigation.addListener("focus", () => {
-      getJournalCity();
-    });
-    return Journaldata;
-  }, [props.navigation]);
+    // const Journaldata = props.navigation.addListener("focus", () => {
+    //   getJournalCity();
+    // });
+    // return Journaldata;
+  }, [props.navigation, token]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -252,7 +252,7 @@ export default function CityDetail(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     await setToken(tkn);
     await getPackageDetail();
-    await getJournalCity();
+    // await getJournalCity();
     await getItineraryCity();
     setTimeout(() => {
       setLoadings(false);
@@ -354,6 +354,11 @@ export default function CityDetail(props) {
   if (dataItinerary && dataItinerary.itinerary_populer_by_province) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
+
+  useEffect(() => {
+    console.log("panggil");
+    getJournalCity();
+  }, [token]);
 
   const headerPanResponder = useRef(
     PanResponder.create({

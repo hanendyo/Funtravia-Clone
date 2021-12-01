@@ -1188,8 +1188,8 @@ export default function SettingsAkun(props) {
       </View>
       <View
         style={{
-          flexDirection: "row",
-          marginTop: 15,
+          flexDirection: "column",
+          marginVertical: 15,
           paddingHorizontal: 15,
           marginHorizontal: 15,
           // paddingVertical: 13,
@@ -1205,7 +1205,12 @@ export default function SettingsAkun(props) {
           borderRadius: 10,
         }}
       >
-        <View style={{ marginVertical: 15, width: "100%" }}>
+        <View
+          style={{
+            marginTop: 15,
+            width: "100%",
+          }}
+        >
           <Text
             size="label"
             type="bold"
@@ -1316,45 +1321,49 @@ export default function SettingsAkun(props) {
             /> */}
           </View>
         ) : null}
-      </View>
-      <Pressable
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginVertical: 15,
-          paddingHorizontal: 15,
-          marginHorizontal: 15,
-          backgroundColor: "#FFFFFF",
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 5,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 6.27,
-          elevation: 2,
-          borderRadius: 5,
-        }}
-        onPress={() => _handlehasPassword()}
-      >
-        <Text
-          size="label"
-          type="regular"
+
+        <Pressable
           style={{
-            marginBottom: 15,
-            marginTop: 13,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginVertical: 10,
+            borderTopColor: "#D1D1D1",
+            borderTopWidth: 0.5,
+            // paddingHorizontal: 15,
+            // marginHorizontal: 15,
+            // backgroundColor: "#FFFFFF",
+            // shadowColor: "#000",
+            // shadowOffset: {
+            //   width: 0,
+            //   height: 5,
+            // },
+            // shadowOpacity: 0.1,
+            // shadowRadius: 6.27,
+            // elevation: 2,
+            // borderRadius: 5,
           }}
+          onPress={() => _handlehasPassword()}
         >
-          {t("password")}
-        </Text>
-        <Nextpremier
-          width={15}
-          height={15}
-          style={{
-            marginVertical: 15,
-          }}
-        />
-      </Pressable>
+          <Text
+            size="label"
+            type="regular"
+            style={{
+              marginBottom: 15,
+              marginTop: 13,
+            }}
+          >
+            {t("password")}
+          </Text>
+          <Nextpremier
+            width={15}
+            height={15}
+            style={{
+              marginVertical: 15,
+            }}
+          />
+        </Pressable>
+      </View>
+
       <View
         style={{
           flexDirection: "row",
