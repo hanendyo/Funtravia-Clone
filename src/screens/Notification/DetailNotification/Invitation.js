@@ -827,6 +827,8 @@ export default function Invitation({ navigation, token }) {
           <View
             style={{
               flexDirection: "row",
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#D1D1D1",
               width: Dimensions.get("screen").width,
               paddingHorizontal: normalize(20),
               paddingVertical: normalize(20),
@@ -1416,15 +1418,15 @@ export default function Invitation({ navigation, token }) {
           onPress={() => handle_areaklik_follow(item)}
           style={{
             backgroundColor: item?.isread == false ? "#EDF5F5" : "white",
-
-            borderBottomWidth: 0.5,
-            borderBottomColor: "#D1D1D1",
+            // borderBottomWidth: 0.5,
+            // borderBottomColor: "#D1D1D1",
           }}
         >
           <View
             style={{
               flexDirection: "row",
-
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#D1D1D1",
               width: Dimensions.get("screen").width,
               paddingVertical: normalize(20),
               paddingHorizontal: normalize(20),
@@ -1496,6 +1498,8 @@ export default function Invitation({ navigation, token }) {
                   flexDirection: "row",
                   justifyContent: "flex-start",
                   alignItems: "center",
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: "#ffffff",
                   flexWrap: "wrap",
                 }}
               >
@@ -1544,6 +1548,7 @@ export default function Invitation({ navigation, token }) {
                     }
                     style={{
                       paddingVertical: 5,
+
                       // borderWidth: 1,
                     }}
                   >

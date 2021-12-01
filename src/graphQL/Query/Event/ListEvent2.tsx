@@ -5,10 +5,13 @@ const ListEventGQL = gql`
     $type: [ID]
     $countries: [ID]
     $cities: [ID]
+    $province:[ID]
     $price_start: Int
     $price_end: Int
     $date_from: String
     $date_until: String
+    $orderby: String
+    $years: String
   ) {
     event_list_v2(
       key: {
@@ -16,10 +19,13 @@ const ListEventGQL = gql`
         type: $type
         countries: $countries
         cities: $cities
+        province : $province
         price_start: $price_start
         price_end: $price_end
         date_from: $date_from
         date_until: $date_until
+        orderby: $orderby
+        years: $years
       }
     ) {
       id

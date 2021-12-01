@@ -93,11 +93,11 @@ export default function ListEventHome(props) {
   const HeaderHeight = Platform.select({
     ios: Notch
       ? i18n.language === "id"
-        ? normalize(380) + tambahan - 48
-        : normalize(360) + tambahan - 48
+        ? normalize(380) + tambahanJudul + tambahan - 48
+        : normalize(360) + tambahanJudul + tambahan - 48
       : i18n.language === "id"
-      ? normalize(362) + tambahan - 20
-      : normalize(342) + tambahan - 20,
+      ? normalize(362) + tambahanJudul + tambahan - 20
+      : normalize(342) + tambahanJudul + tambahan - 20,
     // android:
     // deviceId == "LYA-L29"
     //   ? normalize(330) + tambahan - StatusBar.currentHeight
@@ -105,11 +105,11 @@ export default function ListEventHome(props) {
     android:
       i18n.language === "id"
         ? deviceId == "LYA-L29"
-          ? normalize(372) + tambahan - StatusBar.currentHeight
-          : normalize(385) + tambahan - StatusBar.currentHeight
+          ? normalize(372) + tambahanJudul + tambahan - StatusBar.currentHeight
+          : normalize(385) + tambahanJudul + tambahan - StatusBar.currentHeight
         : deviceId == "LYA-L29"
-        ? normalize(370) + tambahan - StatusBar.currentHeight
-        : normalize(380) + tambahan - StatusBar.currentHeight,
+        ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(380) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -663,16 +663,16 @@ export default function ListEventHome(props) {
                 if (+lines % 3 == 0) {
                   Platform.OS == "ios"
                     ? Notch
-                      ? setTambahan(lines * 3)
-                      : setTambahan(lines * -6)
-                    : setTambahan(lines * 1);
+                      ? setTambahanJudul(lines * 3)
+                      : setTambahanJudul(lines * -6)
+                    : setTambahanJudul(lines * 1);
                   // setTambahanJudul(lines * 12);
                 } else {
                   Platform.OS == "ios"
                     ? Notch
-                      ? setTambahan(lines * -10)
-                      : setTambahan(lines * -20)
-                    : setTambahan(lines * 1);
+                      ? setTambahanJudul(lines * -10)
+                      : setTambahanJudul(lines * -20)
+                    : setTambahanJudul(lines * 1);
                 }
               }}
               size="title"
@@ -2037,10 +2037,12 @@ export default function ListEventHome(props) {
           : props.route.params
           ? [props.route.params.idcountries]
           : null,
+      province: null,
       price_start: null,
       price_end: null,
-      date_from: search.date_from,
-      date_until: search.date_until,
+      date_from: null,
+      date_until: null,
+      years: "2021",
     },
     context: {
       headers: {
@@ -2073,10 +2075,12 @@ export default function ListEventHome(props) {
           : props.route.params
           ? [props.route.params.idcountries]
           : null,
+      province: null,
       price_start: null,
       price_end: null,
       date_from: search.date_from,
       date_until: search.date_until,
+      years: null,
     },
     context: {
       headers: {
@@ -2085,6 +2089,7 @@ export default function ListEventHome(props) {
       },
     },
     onCompleted: () => {
+      console.log("public", dataPublic.event_list_public);
       setdataEventPublic(dataPublic.event_list_public);
     },
   });
