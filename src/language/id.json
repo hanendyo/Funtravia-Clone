@@ -38,7 +38,7 @@
   "verify": "Verifikasi",
   "inputWarningName": "*Masukkan nama depan",
   "inputWarningPhone": "*Masukkan nomor telepon yang valid ",
-  "inputWarningEmail": "*Masukkan alamat email (*****@email.com)",
+  "inputWarningEmail": "*Masukkan alamat email (contoh@mail.com)",
   "inputWarningPassword": "*Gunakan kata sandi dengan panjang min 8 huruf",
   "inputWarningRepeatPassword": "*Gunakan kata sandi yang sama",
   "resetPassword": "Setel ulang kata sandi",
@@ -790,7 +790,7 @@
   "destinationFromGoogle": "Destinasi dari Google",
   "bookingRef": "Referensi Pemesanan",
   "addActivityToItinerary": "Tambah aktivitas di perjalanan yang lain",
-  "sampleEmail": "contoh: *****@email.com",
+  "sampleEmail": "contoh: contoh@mail.com",
   "emailRequired": "*Email diperlukan",
   "passwordRequired": "*Kata sandi diperlukan",
   "passwordConfirmationRequired": "*Konfirmasi kata sandi diperlukan",
@@ -841,8 +841,10 @@
   "setTimeForActivity": "Atur waktu untuk aktivitas",
   "descMaxUpload": "Maksimal ukuran file adalah 20 MB",
   "deleteChat": "Hapus Obrolan",
-  "deleteChatWith": "Hapus Obrolan dengan",
-  "inputPasswordAddEmail" :"Silahkan masukan password sebelum tambah email.",
-  "inputPasswordChangeEmail" :"Silahkan masukan password sebelum mengubah email.",
-  "inputPassword" :"Masukan Password"
+  "inputPasswordAddEmail": "Silahkan masukan password sebelum tambah email.",
+  "inputPasswordChangeEmail": "Silahkan masukan password sebelum mengubah email.",
+  "inputPassword": "Masukan Password",
+  "deleteChatWith": "Apakah anda ingin menghapus obrolan dengan",
+  "deleteAlbum": "Hapus album",
+  "deleteAlbumWith": "Apakah anda ingin menghapus album"
 }
