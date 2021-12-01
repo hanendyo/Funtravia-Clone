@@ -432,7 +432,10 @@ export default function Room({ navigation, route }) {
     if (recent) {
       let findInd = recent.findIndex((x) => x.id === data.id);
       if (findInd >= 0) {
-        recent[findInd] = data;
+        recent = recent.filter(function(obj) {
+          return obj.id !== data.id;
+        });
+        recent.splice(findInd, 0, data);
       } else {
         recent.unshift(data);
       }

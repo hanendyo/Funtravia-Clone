@@ -87,10 +87,14 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
-          // alignItems: "center",
+          alignItems: "center",
         }}
       >
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_city.name}
         </Text>
@@ -108,7 +112,11 @@ export default function ChatList({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_province.name}
         </Text>
@@ -125,7 +133,11 @@ export default function ChatList({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_province.name}
         </Text>
@@ -143,7 +155,11 @@ export default function ChatList({ data, style, room }) {
         }}
       >
         {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_movie.name}
         </Text>
@@ -157,11 +173,15 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
-          // alignItems: "center",
+          alignItems: "center",
         }}
       >
         {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_event.name}
         </Text>
@@ -175,11 +195,15 @@ export default function ChatList({ data, style, room }) {
         style={{
           flexDirection: "row",
           alignContent: "center",
-          // alignItems: "center",
+          alignItems: "center",
         }}
       >
         {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu width={11} height={11} style={{ margin: 5 }} />
+        <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
           {data_travel_goal.name}
         </Text>
