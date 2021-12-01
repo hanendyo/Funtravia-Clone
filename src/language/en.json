@@ -34,7 +34,7 @@
   "submit": "Submit",
   "inputWarningName": "*Enter your first name",
   "inputWarningPhone": "*Please enter a valid phone number ",
-  "inputWarningEmail": "*Please enter a valid email address, ex: example@email.com",
+  "inputWarningEmail": "*Please enter a valid email address, ex: example@mail.com",
   "doYouHave": "Do You Have This Phone?",
   "weWillSend": "We will send the verification code to",
   "sendMe": "Send Me a Code",
@@ -789,7 +789,7 @@
   "destinationFromGoogle": "Destination From Google",
   "bookingRef": "Booking Ref",
   "addActivityToItinerary": "Add Activity to Other Itinerary",
-  "sampleEmail": "ex: *****@email.com",
+  "sampleEmail": "ex: example@mail.com",
   "emailRequired": "*Email required",
   "passwordRequired": "*Password required",
   "passwordConfirmationRequired": "*Password confirmation required",
@@ -843,9 +843,10 @@
   "setTimeForActivity": "Set time for activity",
   "descMaxUpload": "Maximum file size is 20 MB",
   "deleteChat": "Delete Chat",
-  "deleteChatWith": "Delete chat with",
   "inputPasswordAddEmail" :"Please input password before you add email.",
   "inputPasswordChangeEmail" :"Please input password before you change email.",
-  "inputPassword" :"Input Password"
-
+  "inputPassword" :"Input Password",
+  "deleteChatWith": "Do you want to delete chat with",
+  "deleteAlbum": "Delete album",
+  "deleteAlbumWith": "Do you want to delete album"
 }

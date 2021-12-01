@@ -269,7 +269,7 @@ export default function Login({ navigation, route }) {
                 {`${t("hello")},`}
               </Text>
             </View>
-            <View style={{ alignItems: "flex-start" }}>
+            <View style={{ alignItems: "flex-start", marginBottom: 5 }}>
               <FloatingInput
                 value={email}
                 onChangeText={onChange("email")}
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     alignSelf: "flex-start",
-    marginVertical: 10,
+    marginVertical: 5,
   },
   beforeSpecialText: {
     fontSize: 14,
