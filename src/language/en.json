@@ -848,5 +848,6 @@
   "inputPassword" :"Input Password",
   "deleteChatWith": "Do you want to delete chat with",
   "deleteAlbum": "Delete album",
-  "deleteAlbumWith": "Do you want to delete album"
+  "deleteAlbumWith": "Do you want to delete album",
+  "year": "Year"
 }

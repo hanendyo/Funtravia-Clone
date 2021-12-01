@@ -36,6 +36,7 @@ import DeviceInfo from "react-native-device-info";
 export default function SearchListEventHome(props) {
   console.log("props", props);
   const { t, i18n } = useTranslation();
+  let [oldYear, setOldYear] = useState(props.route.params.year);
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
@@ -54,6 +55,8 @@ export default function SearchListEventHome(props) {
   const [isValidPrice, setIsValidPrice] = useState(true);
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
+
+  let [currentYear, setCurrentYear] = useState(props.route.params.year);
 
   useEffect(() => {
     dateUseEffect();
@@ -92,7 +95,8 @@ export default function SearchListEventHome(props) {
   });
 
   const [filterCheck, setFilterCheck] = useState({
-    category: true,
+    year: true,
+    category: false,
     date: false,
     price: false,
     location: false,
@@ -249,6 +253,89 @@ export default function SearchListEventHome(props) {
     }
   };
 
+  const _handleYear = (item) => {
+    setOldYear(item);
+  };
+  //! Filter tahun
+  const yearFilter = () => {
+    let thisyear = new Date().getFullYear();
+    let threeyear = 3;
+    const currentArray = [];
+    for (let index = 0; index < threeyear; index++) {
+      let currentyear = thisyear + index;
+      currentArray.push(currentyear);
+    }
+
+    console.log("current", currentArray);
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+          padding: 15,
+        }}
+      >
+        <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+          }}
+        >
+          {currentArray.map((item, index) => (
+            <Pressable
+              onPress={() => {
+                _handleYear(item);
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+
+                  alignItems: "center",
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              >
+                <View
+                  style={{
+                    height: 20,
+                    width: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderWidth: 1,
+                    marginRight: 10,
+                    borderRadius: 20,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 10,
+                      width: 10,
+                      borderRadius: 10,
+                      backgroundColor: oldYear == item ? "#209FAE" : "#fff",
+                    }}
+                  ></View>
+                </View>
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginLeft: 0,
+                    marginRight: -10,
+                    color: "#464646",
+                    marginTop: Platform.OS == "ios" ? -5 : -2,
+                  }}
+                >
+                  {item}
+                </Text>
+              </View>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
   //! Filter Category
 
   const categoryFilter = () => {
@@ -789,6 +876,7 @@ export default function SearchListEventHome(props) {
     await setdataFilterCategori(tempes);
     await setdataFilterCategoris(tempes);
     await setSearch({
+      year: null,
       type: null,
       tag: null,
       keyword: null,
@@ -806,6 +894,7 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
+    await setOldYear("");
     await setPriceValue({ min: 0, max: 0 });
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
     // await setshow(false);
@@ -861,6 +950,7 @@ export default function SearchListEventHome(props) {
         data["price_end"] = 0;
       }
 
+      data["year"] = oldYear;
       await setSearch(data);
       await setShow(false);
       GetDataEventsAll();
@@ -918,6 +1008,7 @@ export default function SearchListEventHome(props) {
   };
 
   let [search, setSearch] = useState({
+    year: oldYear,
     type: null,
     tag: null,
     keyword: null,
@@ -950,19 +1041,21 @@ export default function SearchListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params
+          : props.route.params.idcity
           ? [props.route.params.idcity]
           : null,
       countries:
         search.country && search.country.length > 0
           ? search.country
-          : props.route.params
+          : props.route.params.idcountries
           ? [props.route.params.idcountries]
           : null,
-      price_start: search.price_start,
-      price_end: search.price_end,
-      date_from: search.date_from,
-      date_until: search.date_until,
+      province: null,
+      price_start: search.price_start ? search.price_start : null,
+      price_end: search.price_end ? search.price_end : null,
+      date_from: search.date_from ? search.date_from : null,
+      date_until: search.date_from ? search.date_until : null,
+      years: search.year ? search.year : null,
     },
     context: {
       headers: {
@@ -971,9 +1064,12 @@ export default function SearchListEventHome(props) {
       },
     },
     onCompleted: () => {
+      console.log("datas", dataAll);
       setDataEventAll(dataAll?.event_list_v2);
     },
   });
+
+  console.log("error", errorAll);
 
   const [
     GetDataEventsPublic,
@@ -986,19 +1082,21 @@ export default function SearchListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params
+          : props.route.params.idcity
           ? [props.route.params.idcity]
           : null,
       countries:
         search.country && search.country.length > 0
           ? search.country
-          : props.route.params
+          : props.route.params.idcountries
           ? [props.route.params.idcountries]
           : null,
-      price_start: search.price_start,
-      price_end: search.price_end,
-      date_from: search.date_from,
-      date_until: search.date_until,
+      province: null,
+      price_start: search.price_start ? search.price_start : null,
+      price_end: search.price_end ? search.price_end : null,
+      date_from: search.date_from ? search.date_from : null,
+      date_until: search.date_until ? search.date_until : null,
+      years: search.year ? search.year : null,
     },
     context: {
       headers: {
@@ -1095,7 +1193,7 @@ export default function SearchListEventHome(props) {
     let type = search["type"];
     let date = search["date_until"];
     let price = search["price_end"];
-
+    let year = search["year"];
     search["type"]?.length > 0
       ? search["type"].map((x) => {
           array.push(x);
@@ -1109,6 +1207,8 @@ export default function SearchListEventHome(props) {
     (search["price_start"] == null && search["price_end"] != null)
       ? array.push(price)
       : null;
+
+    search["year"] ? array.push(year) : null;
 
     return array?.length;
   };
@@ -1246,6 +1346,7 @@ export default function SearchListEventHome(props) {
 
       {/* END TAB VIEW */}
 
+      {/* MODAL FILTER  */}
       <Modal
         onBackdropPress={() => {
           setShow(false);
@@ -1334,6 +1435,41 @@ export default function SearchListEventHome(props) {
                 }}
               >
                 {/* map */}
+                {/* year */}
+                <View
+                  style={{
+                    borderLeftColor: filterCheck.year ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: 5,
+                    marginLeft: 5,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: filterCheck.year ? "#fff" : "#f6f6f6",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      color: "#464646",
+                    }}
+                    onPress={() => {
+                      setFilterCheck((prev) => {
+                        return {
+                          ...prev,
+                          year: true,
+                          category: false,
+                          date: false,
+                          price: false,
+                          location: false,
+                          region: false,
+                        };
+                      });
+                    }}
+                  >
+                    {t("year")}
+                  </Text>
+                </View>
                 {/* category */}
                 <View
                   style={{
@@ -1358,6 +1494,7 @@ export default function SearchListEventHome(props) {
                       setFilterCheck((prev) => {
                         return {
                           ...prev,
+                          year: false,
                           category: true,
                           date: false,
                           price: false,
@@ -1393,6 +1530,7 @@ export default function SearchListEventHome(props) {
                       setFilterCheck((prev) => {
                         return {
                           ...prev,
+                          year: false,
                           category: false,
                           date: true,
                           price: false,
@@ -1428,6 +1566,7 @@ export default function SearchListEventHome(props) {
                       setFilterCheck((prev) => {
                         return {
                           ...prev,
+                          year: false,
                           category: false,
                           date: false,
                           price: true,
@@ -1443,6 +1582,7 @@ export default function SearchListEventHome(props) {
               </View>
             </View>
             {/* badan B */}
+            {filterCheck.year ? yearFilter() : null}
             {filterCheck.category ? categoryFilter() : null}
             {filterCheck.date ? dateFilter() : null}
             {filterCheck.price ? PriceFilter() : null}

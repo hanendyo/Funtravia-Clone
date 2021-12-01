@@ -69,6 +69,7 @@ import { RNToasty } from "react-native-toasty";
 import { color } from "react-native-reanimated";
 import normalize from "react-native-normalize";
 import { Header } from "native-base";
+import Ripple from "react-native-material-ripple";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -90,18 +91,19 @@ export default function ListEventHome(props) {
   let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
   let [modalLogin, setModalLogin] = useState(false);
 
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [openFlatlist, setOpenFlatlist] = useState(false);
+  const [arrayYear, setArrayYear] = useState([]);
+
   const HeaderHeight = Platform.select({
     ios: Notch
       ? i18n.language === "id"
         ? normalize(380) + tambahanJudul + tambahan - 48
-        : normalize(360) + tambahanJudul + tambahan - 48
+        : normalize(384) + tambahanJudul + tambahan - 48
       : i18n.language === "id"
-      ? normalize(362) + tambahanJudul + tambahan - 20
-      : normalize(342) + tambahanJudul + tambahan - 20,
-    // android:
-    // deviceId == "LYA-L29"
-    //   ? normalize(330) + tambahan - StatusBar.currentHeight
-    //   : normalize(342) + tambahan - StatusBar.currentHeight,
+      ? normalize(380) + tambahanJudul + tambahan - 20
+      : normalize(384) + tambahanJudul + tambahan - 20,
+
     android:
       i18n.language === "id"
         ? deviceId == "LYA-L29"
@@ -236,6 +238,7 @@ export default function ListEventHome(props) {
     // props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
+      listYear();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -413,6 +416,17 @@ export default function ListEventHome(props) {
     });
   };
 
+  const listYear = () => {
+    let thisyear = new Date().getFullYear();
+    let threeyear = 3;
+    let currentArray = [];
+    for (let index = 0; index < threeyear; index++) {
+      let currentyear = thisyear + index;
+      currentArray.push(currentyear);
+    }
+    setArrayYear(currentArray);
+  };
+
   const renderNavDefault = () => {
     return (
       <Animated.View
@@ -464,19 +478,20 @@ export default function ListEventHome(props) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => props.navigation.navigate("searchListEventHome")}
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
           style={{
             height: 50,
             // marginLeft: 8,
           }}
         >
-          {/* <TouchableOpacity
-            style={styles.searchWhite}
-            // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-            onPress={() => props.navigation.navigate("searchListEventHome")}
-          >
-            <SearchWhite width="20" height="20" />
-          </TouchableOpacity> */}
           <Animated.View
             style={{
               height: 35,
@@ -563,7 +578,15 @@ export default function ListEventHome(props) {
           size="medium"
           type="circle"
           variant="transparent"
-          onPress={() => props.navigation.navigate("searchListEventHome")}
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
           style={{
             height: 50,
             // marginLeft: 8,
@@ -770,9 +793,9 @@ export default function ListEventHome(props) {
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
           </TouchableOpacity>
-          <TouchableOpacity
+          <Ripple
             onPress={() => {
-              setModaldate(true);
+              !openFlatlist ? setOpenFlatlist(true) : setOpenFlatlist(false);
             }}
             style={{
               height: normalize(45),
@@ -798,10 +821,58 @@ export default function ListEventHome(props) {
                 color: "#fff",
               }}
             >
-              {month}
+              {currentYear}
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </TouchableOpacity>
+          </Ripple>
+          <FlatList
+            style={{
+              position: "absolute",
+              right: 59.5,
+              top: 32,
+              borderLeftWidth: 2,
+              borderRightWidth: 1,
+              borderLeftColor: "#d8d8d8",
+              borderRightColor: "#d8d8d8",
+              paddingHorizontal: 10,
+              borderBottomRightRadius: 20,
+              paddingVertical: openFlatlist ? 10 : 0,
+              backgroundColor: "#209FAE",
+              width: "35%",
+            }}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => `${index}`}
+            data={openFlatlist ? arrayYear : 0}
+            renderItem={({ item, i }) => (
+              <Pressable
+                onPress={() => {
+                  setCurrentYear(item);
+                  setOpenFlatlist(!openFlatlist);
+                }}
+              >
+                <View
+                  style={{
+                    paddingVertical: 5,
+                    justifyContent: "center",
+                    paddingRight: 5,
+
+                    alignSelf: "center",
+                  }}
+                >
+                  <Text
+                    size="label"
+                    numberOfLines={1}
+                    style={{
+                      marginRight: 10,
+                      color: "#fff",
+                    }}
+                  >
+                    {item}
+                  </Text>
+                </View>
+              </Pressable>
+            )}
+          />
         </Animated.View>
       </Animated.View>
     );
@@ -831,17 +902,18 @@ export default function ListEventHome(props) {
         <Animated.View
           style={{
             transform: [{ translateY: y }],
-            paddingTop: 15,
+            paddingTop: 10,
           }}
         >
           <View
             key={index.toString()}
             style={{
               justifyContent: "center",
-              width: (Dimensions.get("screen").width - 40) / 2,
+              width: (Dimensions.get("screen").width - 50) / 2,
               // height: Dimensions.get("screen").width * 0.7,
               height: normalize(250),
               margin: 5,
+
               marginBottom: -5,
               flexDirection: "column",
               backgroundColor: "white",
@@ -2042,7 +2114,7 @@ export default function ListEventHome(props) {
       price_end: null,
       date_from: null,
       date_until: null,
-      years: "2021",
+      years: currentYear,
     },
     context: {
       headers: {
@@ -2078,9 +2150,9 @@ export default function ListEventHome(props) {
       province: null,
       price_start: null,
       price_end: null,
-      date_from: search.date_from,
-      date_until: search.date_until,
-      years: null,
+      date_from: null,
+      date_until: null,
+      years: currentYear,
     },
     context: {
       headers: {
