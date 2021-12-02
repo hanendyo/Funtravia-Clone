@@ -145,6 +145,13 @@ const ListNotifikasi_ = gql`
           status_follower
         }
       }
+      created_by {
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
       tgl_buat
       created_at
       updated_at
@@ -812,7 +819,7 @@ export default function Invitation({ navigation, token }) {
   }
   const RenderTrans = ({ item }) => {
     //  notif for invite itinerary_buddy
-    if (item.notification_type == "itinerary_buddy" && item.itinerary_buddy) {
+    if (item.notification_type == "itinerary_buddy") {
       return (
         <Pressable
           onPress={() => handle_areaklik_buddy(item)}
@@ -844,11 +851,11 @@ export default function Invitation({ navigation, token }) {
                 }),
               }}
               onPress={() => {
-                item?.itinerary_buddy?.userinvite?.id !== setting?.user?.id
+                item?.created_by?.id !== setting?.user?.id
                   ? navigation.push("ProfileStack", {
                       screen: "otherprofile",
                       params: {
-                        idUser: item?.itinerary_buddy?.userinvite?.id,
+                        idUser: item?.created_by?.id,
                       },
                     })
                   : null;
@@ -863,10 +870,9 @@ export default function Invitation({ navigation, token }) {
                   resizeMode: "cover",
                 }}
                 source={
-                  item.itinerary_buddy.userinvite &&
-                  item.itinerary_buddy.userinvite.picture
+                  item.created_by && item.created_by.picture
                     ? {
-                        uri: item.itinerary_buddy.userinvite?.picture,
+                        uri: item.created_by?.picture,
                       }
                     : default_image
                 }
@@ -893,8 +899,7 @@ export default function Invitation({ navigation, token }) {
                     marginBottom: 2,
                   }}
                 >
-                  {t("hi")} {item.itinerary_buddy.myuser?.first_name},{" "}
-                  {t("hiJoinTrip")}
+                  {t("hi")} {setting.user?.first_name}, {t("hiJoinTrip")}
                 </Text>
               </View>
               <View
@@ -914,8 +919,7 @@ export default function Invitation({ navigation, token }) {
                     marginRight: 5,
                   }}
                 >
-                  {item.itinerary_buddy.userinvite?.first_name}{" "}
-                  {t("inviteToTrip")}
+                  {item.created_by?.first_name} {t("inviteToTrip")}
                 </Text>
                 <Text
                   size="description"
@@ -932,7 +936,8 @@ export default function Invitation({ navigation, token }) {
                 </Text>
               </View>
 
-              {item.itinerary_buddy.isconfrim == false &&
+              {item.itinerary_buddy &&
+              item.itinerary_buddy.isconfrim == false &&
               item.itinerary_buddy.accepted_at == null &&
               item.itinerary_buddy.rejected_at == null ? (
                 <View
@@ -971,7 +976,8 @@ export default function Invitation({ navigation, token }) {
                     text={t("reject")}
                   />
                 </View>
-              ) : item.itinerary_buddy.isconfrim == true &&
+              ) : item.itinerary_buddy &&
+                item.itinerary_buddy.isconfrim == true &&
                 item.itinerary_buddy.accepted_at != null &&
                 item.itinerary_buddy.rejected_at == null ? (
                 <View style={{ flexDirection: "row", marginTop: 10 }}>
