@@ -171,6 +171,7 @@ export default function Post(props) {
         const result = await Video.compress(tempData.uri, {
           compressionMethod: "auto",
         });
+
         const statResult = await stat(result);
         tempData.height = height;
         tempData.width = width;

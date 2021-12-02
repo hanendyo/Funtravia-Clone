@@ -112,7 +112,7 @@ export default function CreatePost(props) {
     longitude: "",
   });
 
-  console.log("chosenFile", chosenFile);
+  // console.log("chosenFile", chosenFile);
 
   const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
     context: {

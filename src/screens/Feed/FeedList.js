@@ -168,6 +168,11 @@ export default function FeedList({ props, token }) {
     },
   });
 
+  // console.log(errorMutationPost);
+  console.log(
+    "🚀 ~ file: FeedList.js ~ line 172 ~ FeedList ~ errorMutationPost",
+    errorMutationPost
+  );
   let [tempDataLoading, setTempDataLoading] = useState(false);
   let [timeMiliSecond, setTimeMiliSecond] = useState(0);
   const [count, setCount] = useState(0);
@@ -225,7 +230,7 @@ export default function FeedList({ props, token }) {
         },
       });
 
-      console.log("response", response);
+      // console.log("response", response);
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
@@ -1702,7 +1707,7 @@ export default function FeedList({ props, token }) {
                   strokeCap={"square"}
                   style={{ marginVertical: 10 }}
                 /> */}
-                <View style={{ marginLeft: 15, borderWidth: 1 }}>
+                <View style={{ marginLeft: 15 }}>
                   <Text type={"bold"} size={"label"}>
                     Uploading
                   </Text>
