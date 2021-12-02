@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Dimensions,
@@ -10,18 +10,22 @@ import { Kosong } from "../../../assets/svg";
 import { Text, Button, CardItinerary } from "../../../component";
 import { useTranslation } from "react-i18next";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
+import { useLazyQuery } from "@apollo/client";
+import ItineraryCount from "../../../graphQL/Query/Itinerary/ItineraryCount";
 
 export default function ActivePlan({
   props,
   token,
   rData,
-  GetCount,
-  GetData,
+  // GetCount,
+  // // GetData,
   GetDataActive,
   GetDataFinish,
-  loadingdata,
+  // loadingdata,
   setData,
   setting,
+  autoRefetch,
 }) {
   const { t } = useTranslation();
   const { width, height } = Dimensions.get("screen");
@@ -34,6 +38,46 @@ export default function ActivePlan({
 
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const [planCount, setPlancount] = useState({
+    count_active: 0,
+    count_draf: 0,
+    count_finish: 0,
+  });
+
+  const [
+    GetCount,
+    { data: dataCount, loading: loadingCount, error: errorCount },
+  ] = useLazyQuery(ItineraryCount, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setPlancount(dataCount.count_myitinerary);
+    },
+  });
+
+  const [
+    GetData,
+    { data, loading: loadingdata, error: errordata, refetch },
+  ] = useLazyQuery(ListItinerary, {
+    fetchPolicy: "network-only",
+    pollInterval: 500,
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setData(data?.itinerary_list_draf);
+      setAutoRefetch(refetch);
+    },
+  });
+
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
     GetCount();
@@ -44,6 +88,16 @@ export default function ActivePlan({
       setRefreshing(false);
     });
   }, []);
+
+  useEffect(() => {
+    const willFocusSubscription = props.navigation.addListener("focus", () => {
+      _Refresh();
+    });
+
+    return willFocusSubscription;
+  }, [props.navigation]);
+
+  console.log(`PLAN: `, data);
 
   if (loadingdata && rData.length < 1) {
     return (
@@ -256,7 +310,11 @@ export default function ActivePlan({
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_Refresh}
+              tintColor={"#209fae"}
+            />
           }
         >
           <View
@@ -319,14 +377,25 @@ export default function ActivePlan({
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-      <CardItinerary
-        data={rData}
-        props={props}
-        token={token}
-        setting={setting}
-        setData={(e) => setData(e)}
-      />
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_Refresh}
+            tintColor={"#209fae"}
+          />
+        }
+        style={{ flex: 1, backgroundColor: "#FFF" }}
+      >
+        <CardItinerary
+          data={rData}
+          props={props}
+          token={token}
+          setting={setting}
+          setData={(e) => setData(e)}
+        />
+      </ScrollView>
       <View
         style={{
           zIndex: 999,
@@ -337,7 +406,7 @@ export default function ActivePlan({
           width: Dimensions.get("window").width,
           backgroundColor: "white",
           borderTopWidth: 1,
-          borderColor: "#F0F0F0",
+          borderColor: "#F0F0F1",
           shadowColor: "#F0F0F0",
           shadowOffset: { width: 2, height: 2 },
           shadowOpacity: 1,
@@ -359,6 +428,6 @@ export default function ActivePlan({
           text={t("CreateNewPlan")}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

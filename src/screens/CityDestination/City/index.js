@@ -234,7 +234,7 @@ export default function CityDetail(props) {
       getItineraryCity;
     });
     return Journalitinerarydata;
-  }, [props.navigation]);
+  }, [props.navigation, token]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {

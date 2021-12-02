@@ -847,5 +847,7 @@
   "deleteChatWith": "Apakah anda ingin menghapus obrolan dengan",
   "deleteAlbum": "Hapus album",
   "deleteAlbumWith": "Apakah anda ingin menghapus album",
-  "year" : "Tahun"
+  "year" : "Tahun",
+  "successCreatePassword": "Sukses membuat password",
+  "failedUpdatedPassword": "Gagal memperbarui password"
 }

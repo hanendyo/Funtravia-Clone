@@ -120,6 +120,7 @@ export default function ProvinceDetail(props) {
   let scrollRef = useRef();
   const [sharemodal, SetShareModal] = useState(false);
   let [full, setFull] = useState(false);
+  let [setting, setSetting] = useState("");
   /**
    * ref
    */
@@ -213,10 +214,11 @@ export default function ProvinceDetail(props) {
   useEffect(() => {
     refreshData();
 
-    // const Journaldata = props.navigation.addListener("focus", () => {
-    //   getJournalCity();
-    // });
-    // return Journaldata;
+    const Journaldata = props.navigation.addListener("focus", () => {
+      getJournalCity();
+      getItineraryCity;
+    });
+    return Journaldata;
   }, [props.navigation, token]);
 
   useEffect(() => {
@@ -250,9 +252,11 @@ export default function ProvinceDetail(props) {
 
   const refreshData = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
     await setToken(tkn);
     await getPackageDetail();
-    // await getJournalCity();
+    await getJournalCity();
     await getItineraryCity();
     setTimeout(() => {
       setLoadings(false);
@@ -333,6 +337,8 @@ export default function ProvinceDetail(props) {
       setList_journal(dataJournal.journal_by_province);
     },
   });
+
+  console.log(`JOURNAL PROV: `, list_journal);
 
   const [
     getItineraryCity,
@@ -610,6 +616,7 @@ export default function ProvinceDetail(props) {
           throw new Error("Error Input");
         }
         if (response.data) {
+          getItineraryCity();
           if (
             response.data.setItineraryFavorit.code === 200 ||
             response.data.setItineraryFavorit.code === "200"
@@ -622,6 +629,7 @@ export default function ProvinceDetail(props) {
           // Alert.alert('Succes');
         }
       } catch (error) {
+        getItineraryCity();
         list_populer[index].liked = false;
         list_populer[index].response_count =
           list_populer[index].response_count + 1;
@@ -651,6 +659,7 @@ export default function ProvinceDetail(props) {
         }
 
         if (response.data) {
+          getItineraryCity();
           if (
             response.data.unsetItineraryFavorit.code === 200 ||
             response.data.unsetItineraryFavorit.code === "200"
@@ -661,6 +670,7 @@ export default function ProvinceDetail(props) {
           }
         }
       } catch (error) {
+        getItineraryCity();
         list_populer[index].liked = true;
         list_populer[index].response_count =
           list_populer[index].response_count - 1;

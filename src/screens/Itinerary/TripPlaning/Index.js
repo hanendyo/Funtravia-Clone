@@ -73,6 +73,7 @@ export default function TripPlaning(props) {
   let [rData, setData] = useState([]);
   let [AData, setDataActive] = useState([]);
   let [FData, setDataFinish] = useState([]);
+  let [autoRefetch, setAutoRefetch] = useState([]);
 
   const loadAsync = async () => {
     setloading(true);
@@ -116,7 +117,7 @@ export default function TripPlaning(props) {
 
   const [
     GetData,
-    { data, loading: loadingdata, error: errordata },
+    { data, loading: loadingdata, error: errordata, refetch },
   ] = useLazyQuery(ListItinerary, {
     fetchPolicy: "network-only",
     pollInterval: 500,
@@ -128,6 +129,7 @@ export default function TripPlaning(props) {
     },
     onCompleted: () => {
       setData(data?.itinerary_list_draf);
+      setAutoRefetch(refetch);
     },
   });
 
@@ -173,6 +175,9 @@ export default function TripPlaning(props) {
     // });
     // return unsubscribe;
   }, [props.navigation]);
+
+  console.log(`ON GOING: `, dataActive);
+  console.log(`FINISH: `, dataFinish);
 
   function MyTabBar({ state, descriptors, navigation, position, count }) {
     return (
@@ -448,6 +453,7 @@ export default function TripPlaning(props) {
             GetDataFinish={(e) => GetDataFinish(e)}
             loadingdata={loadingdata}
             setting={setting}
+            autoRefetch={() => autoRefetch()}
           />
         )}
         options={{ tabBarLabel: t("planList") }}

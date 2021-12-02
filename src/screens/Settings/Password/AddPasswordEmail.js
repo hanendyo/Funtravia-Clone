@@ -236,7 +236,12 @@ export default function AddPasswordEmail(props) {
             {t("WordChangeEmail")}
           </Text>
         </View>
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 30,
+          }}
+        >
           <Item
             floatingLabel
             style={{
@@ -247,7 +252,7 @@ export default function AddPasswordEmail(props) {
               style={{
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
-                marginTop: 10,
+                marginTop: 5,
               }}
             >
               <Text size="description">{t("EnterPassword")}</Text>
@@ -299,7 +304,13 @@ export default function AddPasswordEmail(props) {
             </Text>
           </Label>
         ) : null}
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+
+            marginTop: 10,
+          }}
+        >
           <Item
             floatingLabel
             style={{
@@ -308,7 +319,7 @@ export default function AddPasswordEmail(props) {
           >
             <Label
               style={{
-                marginTop: 10,
+                marginTop: 5,
               }}
             >
               <Text size="description">{t("ConfirmPasswords")}</Text>
@@ -397,7 +408,7 @@ export default function AddPasswordEmail(props) {
               type="regular"
               style={{ color: "#FFF", marginRight: 10 }}
             >
-              Successfully created a password
+              {t("successCreatePassword")}
             </Text>
           </Pressable>
         </View>
@@ -435,7 +446,7 @@ export default function AddPasswordEmail(props) {
               </Text>
             ) : (
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
-                Failed updated password
+                {t("failedUpdatedPassword")}
               </Text>
             )}
           </Pressable>

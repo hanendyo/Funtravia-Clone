@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Dimensions,
@@ -44,6 +44,14 @@ export default function ActivePlan({
       setRefreshing(false);
     });
   }, []);
+
+  // useEffect(() => {
+  //   const willFocusSubscription = props.navigation.addListener("focus", () => {
+  //     _Refresh();
+  //   });
+
+  //   return willFocusSubscription;
+  // }, []);
 
   if (loadingdataActive && AData.length < 1) {
     return (
@@ -254,13 +262,23 @@ export default function ActivePlan({
   if (AData?.length > 0) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <CardItinerary
-          data={AData}
-          props={props}
-          token={token}
-          setting={setting}
-          setData={(e) => setData(e)}
-        />
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_Refresh}
+              tintColor={"#209fae"}
+            />
+          }
+        >
+          <CardItinerary
+            data={AData}
+            props={props}
+            token={token}
+            setting={setting}
+            setData={(e) => setData(e)}
+          />
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -269,7 +287,11 @@ export default function ActivePlan({
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_Refresh}
+            tintColor={"#209fae"}
+          />
         }
       >
         <View

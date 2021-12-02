@@ -849,5 +849,7 @@
   "deleteChatWith": "Do you want to delete chat with",
   "deleteAlbum": "Delete album",
   "deleteAlbumWith": "Do you want to delete album",
-  "year": "Year"
+  "year": "Year",
+  "successCreatePassword": "Successfully created a password",
+  "failedUpdatedPassword": "Failed updated password"
 }
