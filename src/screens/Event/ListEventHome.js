@@ -44,6 +44,7 @@ import {
   SearchWhite,
   Xhitam,
   Xblue,
+  CheckWhite,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -70,6 +71,7 @@ import { color } from "react-native-reanimated";
 import normalize from "react-native-normalize";
 import { Header } from "native-base";
 import Ripple from "react-native-material-ripple";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -509,6 +511,12 @@ export default function ListEventHome(props) {
     );
   };
 
+  const FlatlistSet = (item) => {
+    setCurrentYear(item);
+    setOpenFlatlist(!openFlatlist);
+    loadAsync();
+  };
+
   const renderNavInterpolated = () => {
     return (
       <Animated.View
@@ -828,8 +836,8 @@ export default function ListEventHome(props) {
           <FlatList
             style={{
               position: "absolute",
-              right: 59.5,
-              top: 32,
+              right: Platform.OS == "ios" ? 59.5 : 58,
+              top: Platform.OS == "ios" ? 32 : 29,
               borderLeftWidth: 2,
               borderRightWidth: 1,
               borderLeftColor: "#d8d8d8",
@@ -839,24 +847,30 @@ export default function ListEventHome(props) {
               paddingVertical: openFlatlist ? 10 : 0,
               backgroundColor: "#209FAE",
               width: "35%",
+              zIndex: 1,
             }}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => `${index}`}
             data={openFlatlist ? arrayYear : 0}
             renderItem={({ item, i }) => (
-              <Pressable
+              <TouchableHighlight
+                underlayColor={"#209FAE"}
+                key={item + "as"}
                 onPress={() => {
-                  setCurrentYear(item);
-                  setOpenFlatlist(!openFlatlist);
+                  FlatlistSet(item);
+                }}
+                style={{
+                  paddingVertical: 5,
+                  justifyContent: "center",
+                  paddingRight: 5,
+                  paddingLeft: currentYear == item ? 10 : 0,
+
+                  alignSelf: "center",
                 }}
               >
                 <View
                   style={{
-                    paddingVertical: 5,
-                    justifyContent: "center",
-                    paddingRight: 5,
-
-                    alignSelf: "center",
+                    flexDirection: "row",
                   }}
                 >
                   <Text
@@ -865,12 +879,16 @@ export default function ListEventHome(props) {
                     style={{
                       marginRight: 10,
                       color: "#fff",
+                      // flex: 1,
                     }}
                   >
                     {item}
                   </Text>
+                  {currentYear == item ? (
+                    <CheckWhite width={15} height={15} />
+                  ) : null}
                 </View>
-              </Pressable>
+              </TouchableHighlight>
             )}
           />
         </Animated.View>
@@ -2161,7 +2179,6 @@ export default function ListEventHome(props) {
       },
     },
     onCompleted: () => {
-      console.log("public", dataPublic.event_list_public);
       setdataEventPublic(dataPublic.event_list_public);
     },
   });
