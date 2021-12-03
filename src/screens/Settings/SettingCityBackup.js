@@ -76,6 +76,7 @@ export default function SettingCity(props) {
   let [data, setData] = useState([]);
   let [city, setCity] = useState("");
   let [storage, setStorage] = useState(props.route.params.setting);
+  console.log("props", props.route.params.setting);
   let slider = useRef();
   let [rippleHeight, setRippleHeight] = useState(0);
 

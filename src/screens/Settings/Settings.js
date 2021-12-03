@@ -95,6 +95,7 @@ export default function Settings(props) {
     i18n.changeLanguage(value);
     await AsyncStorage.setItem("setting_language", value);
   };
+  console.log("Data", datacurrency);
 
   const [
     getSettingUser,

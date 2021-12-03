@@ -18,7 +18,7 @@ import {
   Xhitam,
 } from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, Text, Peringatan, CardEvents } from "../../component";
+import { Button, Text, Peringatan, CardEvents, Capital } from "../../component";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import EventsPublic from "../../graphQL/Query/Event/ListEventPublic";
 import EventsAll from "../../graphQL/Query/Event/ListEvent2";
@@ -36,7 +36,9 @@ import DeviceInfo from "react-native-device-info";
 export default function SearchListEventHome(props) {
   console.log("props", props);
   const { t, i18n } = useTranslation();
-  let [oldYear, setOldYear] = useState(props.route.params.year);
+  let [oldYear, setOldYear] = useState(
+    props.route.params.year ? props.route.params.year : null
+  );
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
@@ -47,6 +49,13 @@ export default function SearchListEventHome(props) {
   let [show, setShow] = useState(false);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [datacountry, setdatacountry] = useState([]);
+  let [datacountrys, setdatacountrys] = useState([]);
+  let [selectedCountry, setSelectedCountry] = useState(
+    props.route.params.idcountries ? props.route.params.idcountries : null
+  );
+  let [selectedCity, setSelectedCity] = useState(
+    props.route.params.idcity ? props.route.params.idcity : null
+  );
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [timeModalStartDate, setTimeModalStartDate] = useState("");
@@ -55,8 +64,6 @@ export default function SearchListEventHome(props) {
   const [isValidPrice, setIsValidPrice] = useState(true);
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
-
-  let [currentYear, setCurrentYear] = useState(props.route.params.year);
 
   useEffect(() => {
     dateUseEffect();
@@ -96,6 +103,7 @@ export default function SearchListEventHome(props) {
 
   const [filterCheck, setFilterCheck] = useState({
     year: true,
+    country: false,
     category: false,
     date: false,
     price: false,
@@ -139,9 +147,26 @@ export default function SearchListEventHome(props) {
         setdataFilterCategori(dataFillter.event_filter.type);
         setdataFilterCategoris(dataFillter.event_filter.type);
         setdatacountry(dataFillter.event_filter.country);
+        setdatacountrys(dataFillter.event_filter.country);
       },
     }
   );
+
+  const _handleCheckCountry = async (id, index, item) => {
+    let xc = [];
+    for (var datx of datacountry) {
+      let item = { ...datx };
+      if (item.id === id) {
+        item["checked"] = true;
+      } else {
+        item["checked"] = false;
+      }
+      await xc.push(item);
+    }
+
+    await setdatacountrys(xc);
+    await setSelectedCountry(id);
+  };
 
   const _handleCheck = async (id, index, item) => {
     let tempe = [...dataFilterCategori];
@@ -266,7 +291,6 @@ export default function SearchListEventHome(props) {
       currentArray.push(currentyear);
     }
 
-    console.log("current", currentArray);
     return (
       <View
         style={{
@@ -331,6 +355,99 @@ export default function SearchListEventHome(props) {
                 </Text>
               </View>
             </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
+  let [keywordCountry, setKeywordCountry] = useState("");
+  const searchCountry = (text) => {
+    setKeywordCountry(text);
+    let searching = new RegExp(text, "i");
+    let countries = datacountry.filter((item) => searching.test(item.name));
+    setdatacountrys(countries);
+  };
+  //!Filter country
+  const countryFilter = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+          padding: 15,
+        }}
+      >
+        <View
+          style={{
+            height: 35,
+            backgroundColor: "#f6f6f6",
+            borderRadius: 2,
+
+            alignItems: "center",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+            borderWidth: 1,
+            borderColor: "#e8e8e8",
+          }}
+        >
+          <Search width={15} height={15} style={{ marginRight: 5 }} />
+          <TextInput
+            underlineColorAndroid="transparent"
+            placeholder={t("search")}
+            style={{
+              width: "85%",
+              marginLeft: 5,
+              padding: 0,
+            }}
+            returnKeyType="search"
+            placeholderTextColor="#464646"
+            onChangeText={(x) => searchCountry(x)}
+            onSubmitEditing={(x) => searchCountry(x)}
+          />
+        </View>
+        <ScrollView
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+          }}
+        >
+          {datacountrys.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => _handleCheckCountry(item["id"], index, item)}
+              style={{
+                flexDirection: "row",
+                backgroundColor:
+                  item.checked === true
+                    ? "#daf0f2"
+                    : selectedCountry == item.id
+                    ? "#daf0f2"
+                    : "#fff",
+                // borderColor: "#464646",
+                width: "100%",
+                marginRight: 3,
+                // marginBottom: 20,
+                justifyContent: "flex-start",
+                alignContent: "center",
+                alignItems: "center",
+                // borderWidth: 1,
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+              }}
+            >
+              <Text
+                size="label"
+                type={item.checked === true ? "bold" : "regular"}
+                style={{
+                  marginLeft: 0,
+                  color: "#464646",
+                  // borderWidth: 5,
+                }}
+              >
+                {Capital({ text: item?.name })}
+              </Text>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
@@ -862,6 +979,18 @@ export default function SearchListEventHome(props) {
   };
 
   //! End Filter PRICE
+  let [search, setSearch] = useState({
+    year: oldYear ? oldYear : null,
+    type: null,
+    tag: null,
+    keyword: null,
+    countries: selectedCountry ? selectedCountry : null,
+    date_from: null,
+    date_until: null,
+    price_start: null,
+    price_end: null,
+    city: selectedCity ? selectedCity : null,
+  });
 
   //! FUNCTION CLEAR FILTER
 
@@ -875,17 +1004,7 @@ export default function SearchListEventHome(props) {
     }
     await setdataFilterCategori(tempes);
     await setdataFilterCategoris(tempes);
-    await setSearch({
-      year: null,
-      type: null,
-      tag: null,
-      keyword: null,
-      countries: null,
-      date_from: null,
-      date_until: null,
-      price_start: null,
-      price_end: null,
-    });
+
     await setDateData({
       start_date: "",
       end_date: "",
@@ -894,7 +1013,7 @@ export default function SearchListEventHome(props) {
       render_start_date: "",
       render_end_date: "",
     });
-    await setOldYear("");
+    await setOldYear(null);
     await setPriceValue({ min: 0, max: 0 });
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
     // await setshow(false);
@@ -922,7 +1041,32 @@ export default function SearchListEventHome(props) {
     ) {
       await setIsValidPrice(true);
     }
+    let tempCountry = [...datacountrys];
+    let temp = [];
+    for (var x of tempCountry) {
+      let data = { ...x };
+      data["checked"] = false;
+      await temp.push(data);
+    }
+    await setdatacountrys(temp);
+    await setdatacountry(temp);
+    await setSelectedCountry(null);
+    await setSelectedCity(null);
+    await setSearch({
+      year: null,
+      type: null,
+      tag: null,
+      keyword: null,
+      countries: null,
+      date_from: null,
+      date_until: null,
+      price_start: null,
+      price_end: null,
+      city: null,
+    });
+    // UpdateFilter();
   };
+  console.log("search", search);
 
   //! End FUNCTION CLEAR FILTER
 
@@ -951,6 +1095,7 @@ export default function SearchListEventHome(props) {
       }
 
       data["year"] = oldYear;
+      data["countries"] = selectedCountry;
       await setSearch(data);
       await setShow(false);
       GetDataEventsAll();
@@ -1007,19 +1152,6 @@ export default function SearchListEventHome(props) {
     ),
   };
 
-  let [search, setSearch] = useState({
-    year: oldYear,
-    type: null,
-    tag: null,
-    keyword: null,
-    countries: null,
-    date_from: null,
-    date_until: null,
-    price_start: null,
-    price_end: null,
-    city: null,
-  });
-
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
@@ -1038,18 +1170,8 @@ export default function SearchListEventHome(props) {
     variables: {
       keyword: search.keyword,
       type: search.type,
-      cities:
-        search.city && search.city.length > 0
-          ? search.city
-          : props.route.params.idcity
-          ? [props.route.params.idcity]
-          : null,
-      countries:
-        search.country && search.country.length > 0
-          ? search.country
-          : props.route.params.idcountries
-          ? [props.route.params.idcountries]
-          : null,
+      cities: search.city ? search.city : null,
+      countries: search.countries ? search.countries : null,
       province: null,
       price_start: search.price_start ? search.price_start : null,
       price_end: search.price_end ? search.price_end : null,
@@ -1064,12 +1186,9 @@ export default function SearchListEventHome(props) {
       },
     },
     onCompleted: () => {
-      console.log("datas", dataAll);
       setDataEventAll(dataAll?.event_list_v2);
     },
   });
-
-  console.log("error", errorAll);
 
   const [
     GetDataEventsPublic,
@@ -1079,18 +1198,8 @@ export default function SearchListEventHome(props) {
     variables: {
       keyword: search.keyword,
       type: search.type,
-      cities:
-        search.city && search.city.length > 0
-          ? search.city
-          : props.route.params.idcity
-          ? [props.route.params.idcity]
-          : null,
-      countries:
-        search.country && search.country.length > 0
-          ? search.country
-          : props.route.params.idcountries
-          ? [props.route.params.idcountries]
-          : null,
+      cities: search.city ? search.city : null,
+      countries: search.countries ? search.countries : null,
       province: null,
       price_start: search.price_start ? search.price_start : null,
       price_end: search.price_end ? search.price_end : null,
@@ -1194,6 +1303,7 @@ export default function SearchListEventHome(props) {
     let date = search["date_until"];
     let price = search["price_end"];
     let year = search["year"];
+    let countries = search["countries"];
     search["type"]?.length > 0
       ? search["type"].map((x) => {
           array.push(x);
@@ -1209,6 +1319,8 @@ export default function SearchListEventHome(props) {
       : null;
 
     search["year"] ? array.push(year) : null;
+
+    search["countries"] ? array.push(countries) : null;
 
     return array?.length;
   };
@@ -1458,6 +1570,7 @@ export default function SearchListEventHome(props) {
                         return {
                           ...prev,
                           year: true,
+                          country: false,
                           category: false,
                           date: false,
                           price: false,
@@ -1468,6 +1581,44 @@ export default function SearchListEventHome(props) {
                     }}
                   >
                     {t("year")}
+                  </Text>
+                </View>
+                {/* Negara */}
+                <View
+                  style={{
+                    borderLeftColor: filterCheck.country
+                      ? "#209fae"
+                      : "#f6f6f6",
+                    borderLeftWidth: 5,
+                    marginLeft: 5,
+                    justifyContent: "center",
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    backgroundColor: filterCheck.country ? "#fff" : "#f6f6f6",
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="title"
+                    style={{
+                      color: "#464646",
+                    }}
+                    onPress={() => {
+                      setFilterCheck((prev) => {
+                        return {
+                          ...prev,
+                          year: false,
+                          country: true,
+                          category: false,
+                          date: false,
+                          price: false,
+                          location: false,
+                          region: false,
+                        };
+                      });
+                    }}
+                  >
+                    {t("country")}
                   </Text>
                 </View>
                 {/* category */}
@@ -1495,6 +1646,7 @@ export default function SearchListEventHome(props) {
                         return {
                           ...prev,
                           year: false,
+                          country: false,
                           category: true,
                           date: false,
                           price: false,
@@ -1531,6 +1683,7 @@ export default function SearchListEventHome(props) {
                         return {
                           ...prev,
                           year: false,
+                          country: false,
                           category: false,
                           date: true,
                           price: false,
@@ -1567,6 +1720,7 @@ export default function SearchListEventHome(props) {
                         return {
                           ...prev,
                           year: false,
+                          country: false,
                           category: false,
                           date: false,
                           price: true,
@@ -1583,6 +1737,7 @@ export default function SearchListEventHome(props) {
             </View>
             {/* badan B */}
             {filterCheck.year ? yearFilter() : null}
+            {filterCheck.country ? countryFilter() : null}
             {filterCheck.category ? categoryFilter() : null}
             {filterCheck.date ? dateFilter() : null}
             {filterCheck.price ? PriceFilter() : null}

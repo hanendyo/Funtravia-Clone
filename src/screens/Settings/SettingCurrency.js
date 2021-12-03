@@ -47,6 +47,7 @@ export default function SettingCurrency({
 }) {
   const { t } = useTranslation();
   let [datacurrency, setdataCurrency] = useState(data);
+  let [storage, setStorage] = useState(selected);
   let slider = useRef();
   const pushselected = () => {
     if (selected?.currency) {
@@ -73,7 +74,7 @@ export default function SettingCurrency({
     },
   });
 
-  const hasil = async (detail, selected) => {
+  const hasil = async (detail) => {
     if (token || token !== "") {
       try {
         let response = await MutationsetCurrency({
@@ -92,8 +93,9 @@ export default function SettingCurrency({
             response.data.update_currency_settings.code === 200 ||
             response.data.update_currency_settings.code === "200"
           ) {
-            selected.currency = detail;
-            await AsyncStorage.setItem("setting", JSON.stringify(selected));
+            storage.currency = detail;
+            console.log("selected", storage.currency);
+            await AsyncStorage.setItem("setting", JSON.stringify(storage));
             var tempData = [...datacurrency];
             for (var i in tempData) {
               ({ ...i, selected: false });
@@ -103,13 +105,14 @@ export default function SettingCurrency({
               ({ ...tempData[index], selected: true });
             }
             setdataCurrency(tempData);
-            masukan(selected);
+            masukan(storage);
             // setModelSetCurrency(false);
           } else {
             throw new Error(response.data.update_currency_settings.message);
           }
         }
       } catch (error) {
+        console.log(error);
         RNToasty.Show({
           title: "Failed To Select Country",
           position: "bottom",
