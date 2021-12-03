@@ -75,6 +75,10 @@ export default function TripPlaning(props) {
   let [FData, setDataFinish] = useState([]);
   let [autoRefetch, setAutoRefetch] = useState([]);
 
+  console.log("rData", rData);
+  console.log("AData", AData);
+  console.log("Fdata", FData);
+
   const loadAsync = async () => {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");

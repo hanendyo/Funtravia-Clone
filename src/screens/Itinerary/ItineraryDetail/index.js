@@ -22,7 +22,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { TabView, TabBar } from "react-native-tab-view";
-import { default_image, Bg_soon } from "../../../assets/png";
+import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
 import {
   Settings,
   Arrowbackwhite,
@@ -143,7 +143,6 @@ export default function ItineraryDetail(props) {
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
   );
-
   /**
    * stats
    */
@@ -170,6 +169,7 @@ export default function ItineraryDetail(props) {
   let [idDay, setidDay] = useState(null);
   let [dataAkhir, setDataAkhir] = useState();
   let [indexnya, setIndexnya] = useState(0);
+  const [textLayoutLength, settextLayoutLength] = useState(false);
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif ? props.route.params.datadayaktif : {}
   );
@@ -864,7 +864,6 @@ export default function ItineraryDetail(props) {
   };
 
   const openModaldate = async (index, starts, durati) => {
-    // console.log("open", index, starts, durati);
     var duration = durati.split(":");
     var starttime = starts.split(":");
 
@@ -1795,7 +1794,7 @@ export default function ItineraryDetail(props) {
               ? { uri: rD.cover }
               : dataList?.length && dataList[0]?.images !== null
               ? { uri: dataList[0].images }
-              : default_image
+              : ItineraryKosong
           }
           style={{
             opacity: imageOpacity,
@@ -1816,33 +1815,33 @@ export default function ItineraryDetail(props) {
             opacity: textOpacity,
           }}
         >
-          <Animated.View>
+          <View style={{ width: "65%" }}>
             {/* title header */}
             <Animated.View
               style={{
                 flexDirection: "row",
+                // backgroundColor: "red",
               }}
             >
               <Animated.Text
                 onTextLayout={(x) => {
-                  let line = x.nativeEvent.lines.length;
-                  let lines = line - 1;
-                  let hasil = lines * 20 + HeaderHeight;
-
-                  setHeaderHeight(hasil);
-                  setTambahan(lines * 20 + 55);
+                  // setHeaderHeight(
+                  //   (x.nativeEvent.lines.length - 1) * 20 + HeaderHeight
+                  // );
+                  setTambahan((x.nativeEvent.lines.length - 1) * 20 + 55);
+                  if (x.nativeEvent.lines.length > 1) {
+                    settextLayoutLength(true);
+                  }
                 }}
                 allowFontScaling={false}
                 style={{
                   opacity: textOpacity,
                   fontSize: 18,
                   fontFamily: "Lato-Black",
-
-                  justifyContent: "center",
                   color: "#464646",
                   textAlign: "left",
                 }}
-                // numberOfLines={1}
+                // numberOfLines={2}
               >
                 {datadetail && datadetail.itinerary_detail
                   ? datadetail.itinerary_detail.name
@@ -1862,15 +1861,17 @@ export default function ItineraryDetail(props) {
                 style={{
                   width: 5,
                   height: 5,
-                  alignSelf: "center",
+                  alignSelf: "flex-start",
                   backgroundColor: "#000",
                   borderRadius: 10,
-                  marginLeft: 10,
+                  marginLeft:
+                    Platform.OS === "ios" ? 10 : textLayoutLength ? -30 : 10,
+                  marginTop: 10,
                 }}
               />
               <View
                 style={{
-                  alignSelf: "center",
+                  alignSelf: "flex-start",
                   marginLeft: 10,
                 }}
               >
@@ -1882,7 +1883,6 @@ export default function ItineraryDetail(props) {
                           params: {
                             isprivate: datadetail.itinerary_detail.isprivate,
                             id: datadetail.itinerary_detail.id,
-
                             token: token,
                           },
                         })
@@ -1890,7 +1890,18 @@ export default function ItineraryDetail(props) {
                   }
                 >
                   {datadetail.itinerary_detail.isprivate == false ? (
-                    <World width={15} height={15} />
+                    <View
+                      style={{
+                        height: 25,
+                        width: 25,
+                        borderRadius: 30,
+                        backgroundColor: "#daf0f2",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <World width={15} height={15} />
+                    </View>
                   ) : (
                     <View
                       style={{
@@ -1940,7 +1951,7 @@ export default function ItineraryDetail(props) {
                   : null}
               </Animated.Text>
             </Animated.View>
-          </Animated.View>
+          </View>
           {/* button share */}
           <Animated.View>
             {datadetail &&
@@ -1961,10 +1972,10 @@ export default function ItineraryDetail(props) {
                   width: 80,
                   alignContent: "center",
                   alignItems: "center",
-                  // paddingHorizontal: 20,
+                  marginRight: 5,
                 }}
               >
-                <Sharegreen height={20} width={20} />
+                <Sharegreen height={16} width={16} />
                 <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
                   {t("share")}
                 </Text>
@@ -4899,7 +4910,6 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               flexDirection: "row",
-              // backgroundColor: "red",
             }}
           >
             <Button
@@ -4945,9 +4955,14 @@ export default function ItineraryDetail(props) {
                 }}
                 numberOfLines={1}
               >
-                {datadetail && datadetail.itinerary_detail
-                  ? datadetail.itinerary_detail.name
-                  : null}
+                <Truncate
+                  text={
+                    datadetail && datadetail.itinerary_detail
+                      ? datadetail.itinerary_detail.name
+                      : null
+                  }
+                  length={25}
+                />
               </Animated.Text>
               <Animated.View
                 style={{
@@ -7095,7 +7110,7 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
 
-                {Anggota === "true" || status == "finish" ? (
+                {Anggota === "true" && status !== "finish" ? (
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,

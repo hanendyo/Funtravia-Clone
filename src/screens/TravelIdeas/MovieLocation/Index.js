@@ -520,7 +520,12 @@ export default function MovieLocation({ navigation, route }) {
                     }}
                   />
                   <View style={{ flex: 1, padding: 10 }}>
-                    <Text size="title" type="bold" style={{ lineHeight: 20 }}>
+                    <Text
+                      size="title"
+                      type="bold"
+                      numberOfLines={2}
+                      style={{ lineHeight: 20 }}
+                    >
                       {t("titleInspirasiMovie1")} '{item?.title}'
                       {t("titleInspirasiMovie2")}
                     </Text>

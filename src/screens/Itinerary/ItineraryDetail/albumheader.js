@@ -167,7 +167,7 @@ export default function Albumheader({
               id: response?.data?.create_itinerary_album?.id,
             });
             await setModalcreate(false);
-            await setname("");
+            // await setname("");
             await startRefreshAction();
             // console.log(response);
           }
@@ -347,7 +347,9 @@ export default function Albumheader({
               marginVertical: 10,
             }}
           >
-            <Text type="bold">{dataalbumaktif?.title}</Text>
+            <Text type="bold">
+              {dataalbumaktif?.title ? dataalbumaktif?.title : name}
+            </Text>
             <TouchableOpacity onPress={() => setmodalOptions(true)}>
               <OptionsVertBlack width={15} height={15} />
             </TouchableOpacity>

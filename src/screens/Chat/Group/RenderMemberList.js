@@ -44,8 +44,6 @@ export default function RenderMemberList({
   indexActive,
   setModalremoveadmin,
 }) {
-  console.log("mydata", mydata);
-  console.log("dataDetail", dataDetail);
   const { t } = useTranslation();
 
   const swipeoutBtnrmadmin = (item) => {

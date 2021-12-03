@@ -655,7 +655,7 @@ export default function SendToChat({ navigation, route }) {
     <SafeAreaView
       style={{
         flex: 1,
-        padding: 15,
+        margin: 15,
       }}
     >
       {/* <Loading show={loading} /> */}

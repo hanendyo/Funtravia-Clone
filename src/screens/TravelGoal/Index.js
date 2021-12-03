@@ -39,7 +39,7 @@ export default function TravelGoal(props) {
     headerTintColor: "white",
     headerTitle: (
       <Text
-        type="light"
+        type="bold"
         size="header"
         style={{ color: "#fff" }}
         allowFontScaling={false}

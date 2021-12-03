@@ -324,6 +324,7 @@ export default function Trip(props) {
   // const [search, setsearch] = useState([]);
   const [searchcity, setsearchcity] = useState([]);
   const [searchtravel, setsearchtravel] = useState([]);
+  const [titleFocused, setTitleFocused] = useState(false);
 
   const delselect = async (id, name) => {
     setLoadingApp(true);
@@ -1125,10 +1126,24 @@ export default function Trip(props) {
                     fontSize: 16,
                   }}
                   keyboardType="default"
+                  maxLength={50}
                   onFocus={() => setIsFocusedTitle(true)}
                   onBlur={() => setIsFocusedTitle(false)}
                 />
               </Item>
+              {isFocusedTitle && title.length === 50 && (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    position: "absolute",
+                    bottom: 200,
+                  }}
+                >
+                  {t("max50Char")}
+                </Text>
+              )}
               {/* date start */}
               <Modal
                 onRequestClose={() => setModal(false)}

@@ -1058,7 +1058,8 @@ export default function Room({ navigation, route }) {
                   Platform.OS == "ios"
                     ? {
                         maxHeight: 100,
-                        marginVertical: 10,
+                        marginTop: 5,
+                        marginBottom: 10,
                         marginLeft: 10,
                         width: width - 180,
                         fontFamily: "Lato-Regular",
@@ -1196,7 +1197,8 @@ export default function Room({ navigation, route }) {
                 Platform.OS == "ios"
                   ? {
                       maxHeight: 100,
-                      marginVertical: 10,
+                      marginTop: 5,
+                      marginBottom: 10,
                       marginLeft: 10,
                       width: width - 180,
                       fontFamily: "Lato-Regular",
