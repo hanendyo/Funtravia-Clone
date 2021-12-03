@@ -25,12 +25,13 @@ import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 // import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
-import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
+import CountriesMutation from "../../graphQL/Mutation/Setting/setCountry";
 import { TextInput } from "react-native-gesture-handler";
 import Country from "../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
 
 export default function SettingCity(props) {
+  let [token, setToken] = useState(props.route.params.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -132,7 +133,7 @@ export default function SettingCity(props) {
   const [
     mutationCity,
     { data: dataCity, loading: loadingCity, error: errorCity },
-  ] = useMutation(CityMutation, {
+  ] = useMutation(CountriesMutation, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -146,15 +147,21 @@ export default function SettingCity(props) {
       try {
         let response = await mutationCity({
           variables: {
-            id: detail.id,
+            countries_id: detail.id,
           },
         });
 
         if (response.data) {
-          if (response.data.update_city_settings.code === 200) {
-            storage.countries = detail;
-            await props.route.params.setSetting(storage);
-            await AsyncStorage.setItem("setting", JSON.stringify(storage));
+          if (
+            response.data.update_country_settings.code === 200 ||
+            response.data.update_country_settings.code === "200"
+          ) {
+            let newstorage = { ...storage };
+            newstorage["countries"] = detail;
+
+            await setStorage(newstorage);
+            await props.route.params.setSetting(newstorage);
+            await AsyncStorage.setItem("setting", JSON.stringify(newstorage));
             var tempData = [...data];
             for (var i of tempData) {
               ({ ...i, selected: false });
@@ -164,7 +171,6 @@ export default function SettingCity(props) {
               ({ ...tempData[index], selected: true });
             }
             setData(tempData);
-            // props.navigation.goBack();
           } else {
             throw new Error(response.data.update_city_settings.message);
           }
@@ -278,33 +284,28 @@ export default function SettingCity(props) {
                 style={{
                   marginRight: 15,
                   flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
                   elevation: 1,
                 }}
               >
                 <View
                   style={{
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 2.65,
-                    width: 25,
-
-                    elevation: 7,
+                    borderWidth: 1,
+                    borderColor: "#d1d1d1",
+                    backgroundColor: "black",
+                    alignSelf: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    // width: 35,
+                    // height: 25,
+                    // paddingTop: 0,
                   }}
                 >
-                  <FunIcon
-                    icon={item.flag}
-                    width={25}
-                    height={20}
-                    style={{
-                      borderWidth: 1,
-                    }}
-                  />
+                  <FunIcon icon={item.flag} width={37} height={25} />
                 </View>
-
                 <Text
                   size="description"
                   type="regular"
