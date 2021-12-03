@@ -367,7 +367,7 @@ export default function GroupDetail(props) {
 
   const _uploadCover = async (image) => {
     try {
-      var formData = new FormData();
+      let formData = new FormData();
       formData.append("group_id", props.route.params.room_id);
       formData.append("picture", {
         name: "cover.jpg",
@@ -375,9 +375,9 @@ export default function GroupDetail(props) {
         uri:
           Platform.OS === "android"
             ? image.path
-            : photo.path.replace("file://", ""),
+            : image.path.replace("file://", ""),
       });
-      // console.log(formData);
+      console.log("formData", formData);
       let response = await fetch(`${RESTFULL_API}room/group/change_cover`, {
         method: "POST",
         headers: {
@@ -388,7 +388,7 @@ export default function GroupDetail(props) {
         body: formData,
       });
       let responseJson = await response.json();
-      // console.log(responseJson);
+      console.log(responseJson);
       if (responseJson.status == true) {
         getUserAndToken();
         RNToasty.Show({
@@ -404,7 +404,7 @@ export default function GroupDetail(props) {
       // setloading(false);
       RNToasty.Show({
         duration: 1,
-        title: "error : someting wrong!",
+        title: "error : something wrong!",
         position: "bottom",
       });
       console.log(error);
@@ -1826,8 +1826,9 @@ export default function GroupDetail(props) {
             >
               <MenuItem
                 onPress={() => {
-                  _menu.hide();
-                  setmodalCover(true);
+                  _menu.hide(() => {
+                    setmodalCover(true);
+                  });
                 }}
               >
                 {t("changeCoverGroup")}
@@ -1835,8 +1836,7 @@ export default function GroupDetail(props) {
               <MenuDivider />
               <MenuItem
                 onPress={() => {
-                  setModalleft(true);
-                  _menu.hide();
+                  _menu.hide(() => setModalleft(true));
                 }}
               >
                 {t("leftGroup")}
@@ -1932,8 +1932,9 @@ export default function GroupDetail(props) {
             >
               <MenuItem
                 onPress={() => {
-                  _menu.hide();
-                  setmodalCover(true);
+                  _menu.hide(() => {
+                    setmodalCover(true);
+                  });
                 }}
               >
                 {t("changeCoverGroup")}
@@ -1941,8 +1942,7 @@ export default function GroupDetail(props) {
               <MenuDivider />
               <MenuItem
                 onPress={() => {
-                  setModalleft(true);
-                  _menu.hide();
+                  _menu.hide(() => setModalleft(true));
                 }}
               >
                 {t("leftGroup")}

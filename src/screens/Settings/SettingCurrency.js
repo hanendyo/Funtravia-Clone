@@ -82,12 +82,6 @@ export default function SettingCurrency({
             currency_id: detail.id,
           },
         });
-        // if (loadingLike) {
-        // 	Alert.alert('Loading!!');
-        // }
-        // if (errorLike) {
-        // 	throw new Error('Error Input');
-        // }
         if (response.data) {
           if (
             response.data.update_currency_settings.code === 200 ||

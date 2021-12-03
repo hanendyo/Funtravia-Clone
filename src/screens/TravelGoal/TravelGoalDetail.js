@@ -323,7 +323,9 @@ export default function TravelGoalDetail(props) {
                       id: datadetail?.id,
                       cover: datadetail?.cover,
                       name: datadetail?.title,
-                      description: datadetail?.firsttxt,
+                      description: datadetail?.firsttxt.length
+                        ? datadetail?.firsttxt
+                        : datadetail?.description,
                     },
                     title: t("travelgoals"),
                     tag_type: "tag_travel_goal",
@@ -469,6 +471,7 @@ export default function TravelGoalDetail(props) {
               size="readable"
               type="regular"
               style={{
+                lineHeight: 22,
                 textAlign: "left",
                 marginBottom: 5,
               }}
@@ -558,14 +561,12 @@ export default function TravelGoalDetail(props) {
                     </Text>
                   ) : null}
                   <Text
-                    size="title"
+                    size="readable"
                     type="regular"
                     style={{
                       lineHeight: 22,
                       textAlign: "left",
-                      color: "#464646",
-                      // marginBottom: 15,
-                      paddingHorizontal: 5,
+                      marginBottom: 5,
                     }}
                   >
                     {i.text ? i.text : ""}
@@ -762,7 +763,7 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: normalize(50),
+          height: Platform.OS === "ios" ? normalize(40) : normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -771,11 +772,12 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 10,
+          top: SafeStatusBar + 13,
         }}
       >
         <Text
           size="title"
+          type="bold"
           style={{
             color: "#fff",
           }}
@@ -803,7 +805,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: 8,
+            marginTop: Platform.OS === "ios" ? 8 : 15,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 40,
@@ -838,7 +840,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: 8,
+            marginTop: Platform.OS === "ios" ? 8 : 15,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

@@ -333,9 +333,10 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                   style={{
                     // width: width - 160,
                     paddingHorizontal: 15,
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     alignItems: "flex-start",
                     width: "80%",
+                    // backgroundColor: "red",
                     // paddingLeft: 10,
                   }}
                 >
@@ -347,13 +348,8 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                         paddingVertical: 3,
                         marginLeft: -3,
                         borderRadius: 15,
-                        // maxWidth: 100,
-                        // alignItems: "center",
-                        // alignContent: "center",
-                        // justifyContent: "center",
                       }}
                     >
-                      {/* <View style={{}}> */}
                       <Text
                         size="small"
                         style={{
@@ -361,9 +357,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                         }}
                       >
                         {t("tripGroup")}
-                        {/* Trip Group */}
                       </Text>
-                      {/* </View> */}
                     </View>
                   ) : null}
 
@@ -371,7 +365,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                     size="label"
                     type="bold"
                     numberOfLines={1}
-                    style={{ paddingVertical: 5 }}
+                    style={{ paddingVertical: item.itinerary ? 5 : 2 }}
                   >
                     {item.title}
                   </Text>
@@ -393,11 +387,8 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                   style={{
                     width: "20%",
                     alignItems: "flex-end",
-                    // marginTop: 5,
-                    // paddingRight: 10,
                     justifyContent: "center",
                     marginBottom: 10,
-                    // borderWidth: 1,
                   }}
                 >
                   <Text size="small">

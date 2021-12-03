@@ -9,6 +9,7 @@ import {
   Platform,
   TouchableOpacity,
   BackHandler,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -37,7 +38,7 @@ export default function Register({ navigation }) {
   const HeaderComponent = {
     headerShown: true,
     title: "",
-    headerTransparent: false,
+    headerTransparent: true,
     headerTintColor: "white",
     headerTitle: "",
     headerMode: "screen",
@@ -258,6 +259,7 @@ export default function Register({ navigation }) {
         backgroundColor: "#fff",
       }}
     >
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <Peringatan
         aler={aler}
         setClose={() =>

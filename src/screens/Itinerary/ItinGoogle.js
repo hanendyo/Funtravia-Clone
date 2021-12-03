@@ -124,6 +124,7 @@ export default function ItinGoogle(props) {
         // marginTop: 100,
         height: Dimensions.get("screen").height,
         width: Dimensions.get("screen").width,
+        backgroundColor: "#FFF",
       }}
     >
       <ScrollView
@@ -131,6 +132,7 @@ export default function ItinGoogle(props) {
           width: Dimensions.get("screen").width,
           alignItems: "center",
           alignContent: "center",
+          backgroundColor: "#FFF",
         }}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
@@ -169,16 +171,18 @@ export default function ItinGoogle(props) {
           onPress={() => setModal(true)}
           // color={"tertiary"}
           text=""
-          size="large"
+          size="medium"
           type="circle"
           style={{
             marginTop: 10,
+            paddingLeft: 15,
             width: Dimensions.get("screen").width - 20,
             borderWidth: 1,
             borderRadius: 5,
             flexDirection: "row",
-            backgroundColor: "#FFF",
+            backgroundColor: "#F6F6F6",
             borderColor: "#d3d3d3",
+            justifyContent: "flex-start",
           }}
         >
           <Search width={15} height={15} />
@@ -244,7 +248,11 @@ export default function ItinGoogle(props) {
                     {detailMap.name}
                   </Text>
                   <View style={{ flexDirection: "row" }}>
-                    <PinHijau height={15} width={15} style={{ marginTop: 5 }} />
+                    <PinHijau
+                      height={15}
+                      width={15}
+                      style={{ alignSelf: "center" }}
+                    />
                     <Text
                       style={{
                         width: Dimensions.get("screen").width * 0.5,
@@ -276,7 +284,11 @@ export default function ItinGoogle(props) {
               </View>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <PinMerah height={15} width={15} style={{ marginTop: 5 }} />
+              <PinMerah
+                height={15}
+                width={15}
+                style={{ alignSelf: "center" }}
+              />
 
               <Text
                 style={{
