@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -27,6 +27,7 @@ export default function ActivePlan({
   GetDataFinish,
   setData,
   setting,
+  refetchFinish,
 }) {
   const { height, width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
@@ -49,6 +50,14 @@ export default function ActivePlan({
       setRefreshing(false);
     });
   }, []);
+
+  // useEffect(() => {
+  //   const willFocusSubscription = props.navigation.addListener("focus", () => {
+  //     _Refresh();
+  //   });
+
+  //   return willFocusSubscription;
+  // }, [props.navigation]);
 
   if (loading && FData.length < 1) {
     return (
@@ -259,13 +268,23 @@ export default function ActivePlan({
   if (FData.length > 0) {
     return (
       <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <CardItinerary
-          data={FData}
-          props={props}
-          token={token}
-          setting={setting}
-          setData={(e) => setData(e)}
-        />
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_Refresh}
+              tintColor={"#209fae"}
+            />
+          }
+        >
+          <CardItinerary
+            data={FData}
+            props={props}
+            token={token}
+            setting={setting}
+            setData={(e) => setData(e)}
+          />
+        </ScrollView>
       </View>
     );
   }
@@ -274,7 +293,11 @@ export default function ActivePlan({
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={_Refresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_Refresh}
+            tintColor={"#209fae"}
+          />
         }
       >
         <View
