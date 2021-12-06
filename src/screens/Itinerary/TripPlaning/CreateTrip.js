@@ -216,9 +216,7 @@ export default function Trip(props) {
       keyword: citys,
       countries_id: idCountry,
     },
-    onCompleted: (e) => {
-      console.log("searh", e);
-    },
+    onCompleted: (e) => {},
   });
 
   const [
@@ -593,7 +591,7 @@ export default function Trip(props) {
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modalcountry}
-                avoidKeyboard={false}
+                // avoidKeyboard={true}
                 style={{
                   marginBottom: -10,
                   justifyContent: "flex-end",
@@ -601,20 +599,18 @@ export default function Trip(props) {
                   alignContent: "center",
                 }}
               >
-                <View
+                <KeyboardAvoidingView
+                  // behavior={Platform.OS === "ios" ? "padding" : "position"}
                   style={{
+                    flex: 1,
                     flexDirection: "column",
-                    height:
-                      Platform.OS == "ios"
-                        ? Notch
-                          ? Dimensions.get("screen").height * 0.8
-                          : Dimensions.get("screen").height * 0.8
-                        : Dimensions.get("screen").height * 0.8,
+                    bottom: Platform.OS == "ios" ? (Notch ? -80 : -80) : -50,
                     width: Dimensions.get("screen").width,
                     borderTopRightRadius: 15,
                     borderTopLeftRadius: 15,
                     backgroundColor: "white",
                   }}
+                  // enabled
                 >
                   <View
                     style={{
@@ -624,6 +620,7 @@ export default function Trip(props) {
                       paddingHorizontal: 20,
                       paddingTop: 20,
                       paddingBottom: 15,
+                      // height: 100
                     }}
                   >
                     <View
@@ -827,7 +824,7 @@ export default function Trip(props) {
                       />
                     ) : null}
                   </View>
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
 
               {/* render city */}
@@ -910,20 +907,18 @@ export default function Trip(props) {
                   alignContent: "center",
                 }}
               >
-                <View
+                <KeyboardAvoidingView
+                  // behavior={Platform.OS === "ios" ? "padding" : "position"}
                   style={{
+                    flex: 1,
                     flexDirection: "column",
-                    height:
-                      Platform.OS == "ios"
-                        ? Notch
-                          ? Dimensions.get("screen").height * 0.8
-                          : Dimensions.get("screen").height * 0.8
-                        : Dimensions.get("screen").height * 0.8,
+                    bottom: Platform.OS == "ios" ? (Notch ? -80 : -80) : -50,
                     width: Dimensions.get("screen").width,
                     borderTopRightRadius: 15,
                     borderTopLeftRadius: 15,
                     backgroundColor: "white",
                   }}
+                  // enabled
                 >
                   <View
                     style={{
@@ -1098,7 +1093,7 @@ export default function Trip(props) {
                       keyExtractor={(item) => item.id}
                     />
                   ) : null}
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
 
               <Item

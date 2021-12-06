@@ -214,7 +214,7 @@ export default function Trip(
               ? Notch
                 ? 75
                 : 25
-              : 95
+              : 45
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
@@ -231,7 +231,7 @@ export default function Trip(
             ? Platform.OS === "ios"
               ? Notch
                 ? 115
-                : 45
+                : 25
               : 105
             : 50,
         marginBottom:
@@ -270,7 +270,7 @@ export default function Trip(
               ? Notch
                 ? -60
                 : -10
-              : -80
+              : -35
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
@@ -287,7 +287,7 @@ export default function Trip(
             ? Platform.OS === "ios"
               ? Notch
                 ? -95
-                : -30
+                : -10
               : -75
             : 30,
         borderRadius: 5,
@@ -415,57 +415,77 @@ export default function Trip(
 
         <View
           style={{
-            width: "65%",
-            height: "100%",
+            // width: "65%",
+            // height: "100%",
+            // paddingHorizontal: 10,
+            // backgroundColor: "#FFFFFF",
+            // paddingVertical: 10,
+            // overflow: "hidden",
+            // justifyContent: "space-between",
+            // borderBottomWidth: 1,
+            // borderBottomColor: "#d1d1d1",
+            flex: 1,
             paddingHorizontal: 10,
-            backgroundColor: "#FFFFFF",
             paddingVertical: 10,
+            backgroundColor: "#FFFFFF",
             overflow: "hidden",
+            borderTopRightRadius: 3,
             justifyContent: "space-between",
             borderBottomWidth: 1,
             borderBottomColor: "#d1d1d1",
           }}
         >
-          <View>
+          <View style={{ justifyContent: "flex-start" }}>
             <View
               style={{
                 flexDirection: "row",
+                justifyContent: "space-between",
                 alignItems: "center",
-                maxWidth: Dimensions.get("screen").width / 3.5,
+                // marginTop: 10,
               }}
             >
               <View
                 style={{
-                  backgroundColor: "#DAF0F2",
-                  borderRadius: 3,
-                  borderColor: "#209FAE",
-                  paddingHorizontal: 4,
-                  paddingVertical: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  maxWidth: Dimensions.get("screen").width / 3.5,
                 }}
               >
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{ color: "#209FAE" }}
-                  numberOfLines={1}
+                <View
+                  style={{
+                    backgroundColor: "#DAF0F2",
+                    borderRadius: 3,
+                    borderColor: "#209FAE",
+                    paddingHorizontal: 4,
+                    paddingVertical: 1,
+                  }}
                 >
-                  {item?.categori?.name ? item?.categori?.name : "No Category"}
-                </Text>
+                  <Text
+                    type="bold"
+                    size="description"
+                    style={{ color: "#209FAE" }}
+                    numberOfLines={1}
+                  >
+                    {item?.categori?.name
+                      ? item?.categori?.name
+                      : "No Category"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    borderRadius: 5,
+                    marginHorizontal: 10,
+                    backgroundColor: "#000",
+                  }}
+                />
+                {item?.isprivate ? (
+                  <Padlock height={20} width={20} />
+                ) : (
+                  <Newglobe height={20} width={20} />
+                )}
               </View>
-              <View
-                style={{
-                  height: 5,
-                  width: 5,
-                  borderRadius: 5,
-                  marginHorizontal: 10,
-                  backgroundColor: "#000",
-                }}
-              />
-              {item?.isprivate ? (
-                <Padlock height={20} width={20} />
-              ) : (
-                <Newglobe height={20} width={20} />
-              )}
               {item?.status == "F" &&
               !item?.isprivate &&
               item?.user_created?.id !== setting?.user_id ? (

@@ -18,17 +18,18 @@ export default function ActivePlan({
   props,
   token,
   rData,
-  // GetCount,
-  // // GetData,
+  GetCount,
+  GetData,
   GetDataActive,
   GetDataFinish,
-  // loadingdata,
+  loadingdata,
   setData,
   setting,
   autoRefetch,
 }) {
   const { t } = useTranslation();
   const { width, height } = Dimensions.get("screen");
+  // let [rData, setData] = useState([]);
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -44,39 +45,35 @@ export default function ActivePlan({
     count_finish: 0,
   });
 
-  const [
-    GetCount,
-    { data: dataCount, loading: loadingCount, error: errorCount },
-  ] = useLazyQuery(ItineraryCount, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    onCompleted: () => {
-      setPlancount(dataCount.count_myitinerary);
-    },
-  });
+  // const [
+  //   GetCount,
+  //   { data: dataCount, loading: loadingCount, error: errorCount },
+  // ] = useLazyQuery(ItineraryCount, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  //   onCompleted: () => {
+  //     setPlancount(dataCount.count_myitinerary);
+  //   },
+  // });
 
-  const [
-    GetData,
-    { data, loading: loadingdata, error: errordata, refetch },
-  ] = useLazyQuery(ListItinerary, {
-    fetchPolicy: "network-only",
-    pollInterval: 500,
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    onCompleted: () => {
-      setData(data?.itinerary_list_draf);
-      setAutoRefetch(refetch);
-    },
-  });
+  // const [
+  //   GetData,
+  //   { data, loading: loadingdata, error: errordata },
+  // ] = useLazyQuery(ListItinerary, {
+  //   fetchPolicy: "network-only",
+  //   // pollInterval: 500,
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   },
+  // });
 
   const _Refresh = React.useCallback(() => {
     setRefreshing(true);
@@ -84,9 +81,9 @@ export default function ActivePlan({
     GetData();
     GetDataActive();
     GetDataFinish();
-    wait(2000).then(() => {
-      setRefreshing(false);
-    });
+    // wait(2000).then(() => {
+    //   setRefreshing(false);
+    // });
   }, []);
 
   useEffect(() => {
@@ -96,8 +93,6 @@ export default function ActivePlan({
 
     return willFocusSubscription;
   }, [props.navigation]);
-
-  console.log(`PLAN: `, data);
 
   if (loadingdata && rData.length < 1) {
     return (
