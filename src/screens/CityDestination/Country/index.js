@@ -611,6 +611,7 @@ export default function Country(props) {
     return (
       <Animated.View
         style={{
+          marginBottom: 70,
           transform: [{ translateY: y }],
         }}
       >

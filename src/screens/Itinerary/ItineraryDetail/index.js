@@ -466,7 +466,6 @@ export default function ItineraryDetail(props) {
   if (datatimeline && datatimeline.day_timeline.length) {
     dataList = datatimeline.day_timeline;
   }
-  console.log("dataList: ", dataList);
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -1825,9 +1824,11 @@ export default function ItineraryDetail(props) {
             >
               <Animated.Text
                 onTextLayout={(x) => {
-                  // setHeaderHeight(
-                  //   (x.nativeEvent.lines.length - 1) * 20 + HeaderHeight
-                  // );
+                  let lineFixed = (x.nativeEvent.lines.length - 1) * 10;
+
+                  if (x.nativeEvent.lines.length > 1 && HeaderHeight < 320) {
+                    setHeaderHeight(lineFixed + HeaderHeight);
+                  }
                   setTambahan((x.nativeEvent.lines.length - 1) * 20 + 55);
                   if (x.nativeEvent.lines.length > 1) {
                     settextLayoutLength(true);
@@ -1841,7 +1842,6 @@ export default function ItineraryDetail(props) {
                   color: "#464646",
                   textAlign: "left",
                 }}
-                // numberOfLines={2}
               >
                 {datadetail && datadetail.itinerary_detail
                   ? datadetail.itinerary_detail.name
