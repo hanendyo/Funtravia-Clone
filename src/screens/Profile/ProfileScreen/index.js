@@ -956,7 +956,7 @@ export default function OtherProfile(props) {
             ? Platform.OS === "ios"
               ? Notch
                 ? -75
-                : 5
+                : 30
               : -40
             : HeaderHeight),
       ],
@@ -1031,7 +1031,7 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? HeaderHeight + 120
-                  : HeaderHeight + 40
+                  : HeaderHeight + 20
                 : HeaderHeight + 100
               : HeaderHeight,
           width: "100%",
@@ -1098,7 +1098,7 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "90%"
-                    : "87%"
+                    : "88%"
                   : "87%"
                 : "85%",
             backgroundColor: "#fff",
@@ -1214,7 +1214,7 @@ export default function OtherProfile(props) {
                 ? Platform.OS === "ios"
                   ? Notch
                     ? "11%"
-                    : "15%"
+                    : "12%"
                   : "16%"
                 : "15%",
           }}
@@ -1720,7 +1720,7 @@ export default function OtherProfile(props) {
                   ? Platform.OS === "ios"
                     ? Notch
                       ? 170
-                      : 100
+                      : 85
                     : 170
                   : 50)
               : HeaderHeight + TabBarHeight,
@@ -1865,7 +1865,7 @@ export default function OtherProfile(props) {
               ? Platform.OS === "ios"
                 ? Notch
                   ? "25%"
-                  : "10%"
+                  : "5%"
                 : "25%"
               : "5%",
           zIndex: 1,

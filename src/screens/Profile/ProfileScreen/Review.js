@@ -99,7 +99,7 @@ export default function Review(
             ? Platform.OS === "ios"
               ? Notch
                 ? 115
-                : 45
+                : 25
               : 105
             : 50,
         marginBottom:
@@ -155,7 +155,7 @@ export default function Review(
             ? Platform.OS === "ios"
               ? Notch
                 ? -95
-                : -30
+                : -10
               : -75
             : 30,
         borderTopLeftRadius: 10,

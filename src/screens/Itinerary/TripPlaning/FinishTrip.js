@@ -46,9 +46,9 @@ export default function ActivePlan({
     GetData();
     GetDataActive();
     GetDataFinish();
-    wait(2000).then(() => {
-      setRefreshing(false);
-    });
+    // wait(2000).then(() => {
+    //   setRefreshing(false);
+    // });
   }, []);
 
   // useEffect(() => {
