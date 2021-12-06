@@ -13,7 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { gql } from "apollo-boost";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
@@ -114,12 +114,13 @@ const ListNotifikasi_ = gql`
 `;
 
 export default function Notification(props) {
-  console.log(`PROPS NOTIF: `, props);
-  console.log(`STORAGE: `, AsyncStorage);
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
   let HeaderHeight = Dimensions.get("screen").height * 0.15;
   let [heightview, setheight] = useState(0);
+  let [datanotif, SetDataNotif] = useState([]);
+
+  let [readall, setreadall] = useState(true);
 
   const [canScroll, setCanScroll] = useState(true);
   const _tabIndex = useRef(0);
@@ -128,10 +129,9 @@ export default function Notification(props) {
     { key: "tab1", title: t("notification") },
     { key: "tab2", title: t("information") },
   ]);
+  const [index, setIndex] = useState(0);
   const isListGliding = useRef(false);
   const TabBarHeight = 45;
-  const [dataNotification, setDataNotification] = useState([]);
-  const [dataInformation, setDataInformation] = useState([]);
   const headerScrollY = useRef(new Animated.Value(0)).current;
   const listRefArr = useRef([]);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -144,39 +144,6 @@ export default function Notification(props) {
   const PullToRefreshDist = 150;
   const Notch = DeviceInfo.hasNotch();
   const listOffset = useRef({});
-  let [y, sety] = useState(0);
-  let [gerakan, setgerakan] = useState(new Animated.Value(0));
-
-  const syncScrollOffset = () => {
-    const curRouteKey = routes[_tabIndex.current].key;
-
-    listRefArr.current.forEach((item) => {
-      if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
-          if (item.value) {
-            item.value.scrollToOffset({
-              offset: scrollY._value,
-              animated: false,
-            });
-            listOffset.current[item.key] = scrollY._value;
-          }
-        } else if (scrollY._value >= HeaderHeight) {
-          if (
-            listOffset.current[item.key] < HeaderHeight ||
-            listOffset.current[item.key] == null
-          ) {
-            if (item.value) {
-              item.value.scrollToOffset({
-                offset: HeaderHeight,
-                animated: false,
-              });
-              listOffset.current[item.key] = HeaderHeight;
-            }
-          }
-        }
-      }
-    });
-  };
 
   const refresh = async () => {
     refreshStatusRef.current = true;
@@ -188,95 +155,6 @@ export default function Notification(props) {
     }).then((value) => {
       refreshStatusRef.current = false;
     });
-  };
-
-  const startRefreshAction = () => {
-    if (Platform.OS === "ios") {
-      listRefArr.current.forEach((listRef) => {
-        listRef.value.scrollToOffset({
-          offset: -50,
-          animated: true,
-        });
-      });
-      refresh().finally(() => {
-        syncScrollOffset();
-        if (scrollY._value < 0) {
-          listRefArr.current.forEach((listRef) => {
-            listRef.value.scrollToOffset({
-              offset: 0,
-              animated: true,
-            });
-          });
-        }
-      });
-    } else if (Platform.OS === "android") {
-      Animated.timing(headerMoveScrollY, {
-        toValue: -150,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      refresh().finally(() => {
-        Animated.timing(headerMoveScrollY, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-      });
-    }
-  };
-
-  const onMomentumScrollBegin = (e) => {
-    isListGliding.current = true;
-  };
-
-  const onMomentumScrollEnd = () => {
-    isListGliding.current = false;
-    syncScrollOffset();
-  };
-
-  const listPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-        return false;
-      },
-      onShouldBlockNativeResponder: () => true,
-      onPanResponderGrant: (evt, gestureState) => {
-        headerScrollY.stopAnimation();
-      },
-    })
-  ).current;
-
-  const onScrollEndDrag = (e) => {
-    const positionX = e.nativeEvent.contentOffset.x;
-    const positionY = e.nativeEvent.contentOffset.y;
-    if (positionY < y) {
-      sety(positionY);
-      Animated.timing(gerakan, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    } else if (positionY > y) {
-      sety(positionY);
-      Animated.timing(gerakan, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-
-    syncScrollOffset();
-
-    const offsetY = e.nativeEvent.contentOffset.y;
-    if (Platform.OS === "ios") {
-      if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
-        startRefreshAction();
-      }
-    }
   };
 
   const HeaderComponent = {
@@ -324,21 +202,27 @@ export default function Notification(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    await GetListNotif();
+    setToken(tkn);
+    // GetListInvitation();
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
     // GetListNotif();
-  }, [datanotif]);
+  }, [token]);
 
-  const [
-    GetListNotif,
-    { data: datanotif, loading: loadingnotif, error: errornotif },
-  ] = useLazyQuery(ListNotifikasi_, {
-    fetchPolicy: "network-only",
+  const {
+    data: datasnotif,
+    loading: loadingnotif,
+    error: errornotif,
+  } = useQuery(ListNotifikasi_, {
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    notifyOnNetworkStatusChange: true,
+    pollInterval: 5000,
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -346,256 +230,75 @@ export default function Notification(props) {
       },
     },
     onCompleted: () => {
-      setDataNotification(datanotif.list_notification);
+      SetDataNotif(datasnotif.list_notification);
+      let status = 0;
+      for (var x of datasnotif.list_notification) {
+        if (x.isread === false) {
+          status = 1;
+        }
+      }
+      if (status === 1) {
+        setreadall(true);
+      } else {
+        setreadall(false);
+      }
     },
   });
 
-  // const [index, setIndex] = useState(0);
-
-  // const GetNotif = () => {
-  //   setIndex(0);
-  //   return <Invitation navigation={props.navigation} token={token} />;
-  // };
-  // const GetInformation = () => {
-  //   setIndex(1);
-  //   return null;
-  // };
-
-  const renderNotif = () => {
-    return <Invitation navigation={props.navigation} token={token} />;
-  };
-
-  const renderInfo = () => {
-    return null;
-  };
-
-  const renderTabBar = (props) => {
-    return (
-      <Animated.View
-        style={{
-          top: 5,
-          zIndex: 1,
-
-          position: "absolute",
-          width: "100%",
-          borderBottomWidth: 2,
-          borderBottomColor: "#d1d1d1",
-        }}
-      >
-        <TabBar
-          {...props}
-          onTabPress={({ route, preventDefault }) => {
-            if (isListGliding.current) {
-              preventDefault();
-            }
-          }}
-          style={{
-            elevation: 0,
-
-            shadowOpacity: 0,
-            backgroundColor: "#fff",
-            height: TabBarHeight,
-
-            // borderWidth: 1,
-            // paddingTop: 0,
-            marginTop: Platform.OS === "ios" ? -5 : -10,
-          }}
-          renderLabel={({ route, focused }) => (
-            <Text
-              size="label"
-              type="bold"
-              style={[
-                focused ? styles.labelActive : styles.label,
-                {
-                  opacity: focused ? 1 : 0.8,
-                },
-              ]}
-            >
-              {route.title}
-            </Text>
-          )}
-          indicatorStyle={{ backgroundColor: "#209fae" }}
+  const renderScene = ({ route }) => {
+    if (route.key == "tab1") {
+      return (
+        <Invitation
+          navigation={props.navigation}
+          token={token}
+          readall={readall}
+          setreadall={(e) => setreadall(e)}
+          datanotif={datanotif}
+          SetDataNotif={(e) => SetDataNotif(e)}
+          // GetListInvitation={() => GetListInvitation()}
         />
-      </Animated.View>
+      );
+    } else if (route.key == "tab2") {
+      return <Invitation navigation={props.navigation} token={token} />;
+    }
+  };
+
+  const renderLabel = ({ route, focused }) => {
+    return (
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 0.7 },
+        ]}
+      >
+        {route.title}
+      </Text>
     );
   };
-
-  const renderScene = SceneMap({
-    tab1: renderNotif,
-    tab2: renderInfo,
-  });
-
-  // const renderScene = ({ route }) => {
-  //   const focused = route.key === routes[tabIndex].key;
-  //   let numCols;
-  //   let data;
-  //   let renderItem;
-  //   switch (route.key) {
-  //     case "tab1":
-  //       numCols = 2;
-  //       data = dataNotification;
-  //       renderItem = (e) => {
-  //         // GetNotif();
-  //         return <Invitation navigation={props.navigation} token={token} />;
-  //       };
-  //       break;
-  //     case "tab2":
-  //       numCols = 2;
-  //       // data = dataEvent;
-  //       data = dataInformation;
-  //       renderItem = (e) => {
-  //         // rederTab1Item(e, "information")
-  //         null;
-  //       };
-  //       break;
-  //     default:
-  //       return null;
-  //   }
-  //   return (
-  //     <Animated.FlatList
-  //       scrollToOverflowEnabled={true}
-  //       // scrollEnabled={canScroll}
-  //       {...listPanResponder.panHandlers}
-  //       numColumns={numCols}
-  //       ref={(ref) => {
-  //         if (ref) {
-  //           const found = listRefArr.current.find((e) => e.key === route.key);
-  //           if (!found) {
-  //             listRefArr.current.push({
-  //               key: route.key,
-  //               value: ref,
-  //             });
-  //           }
-  //         }
-  //       }}
-  //       scrollEventThrottle={16}
-  //       onScroll={
-  //         focused
-  //           ? Animated.event(
-  //               [
-  //                 {
-  //                   nativeEvent: {
-  //                     contentOffset: { y: scrollY },
-  //                   },
-  //                 },
-  //               ],
-  //               { useNativeDriver: true }
-  //             )
-  //           : null
-  //       }
-  //       onMomentumScrollBegin={(e) => onMomentumScrollBegin(e)}
-  //       onScrollEndDrag={(e) => onScrollEndDrag(e)}
-  //       onMomentumScrollEnd={onMomentumScrollEnd}
-  //       ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-  //       ListHeaderComponent={() => <View style={{ height: 10 }} />}
-  //       contentContainerStyle={{
-  //         paddingTop: Platform.OS === "ios" ? 90 : 85,
-  //         paddingHorizontal: 10,
-  //         minHeight: height - SafeStatusBar + HeaderHeight + heightview,
-  //       }}
-  //       showsHorizontalScrollIndicator={false}
-  //       data={data}
-  //       renderItem={renderItem}
-  //       showsVerticalScrollIndicator={false}
-  //       keyExtractor={(item, index) => index.toString()}
-  //     />
-  //   );
-  // };
-
   return (
     <View style={{ flex: 1 }}>
       <TabView
-        onSwipeStart={() => setCanScroll(false)}
-        onSwipeEnd={() => setCanScroll(true)}
-        onIndexChange={(id) => {
-          _tabIndex.current = id;
-          setTabIndex(id);
-        }}
-        navigationState={{ index: tabIndex, routes }}
+        lazy={true}
+        navigationState={{ index, routes }}
         renderScene={renderScene}
-        renderTabBar={renderTabBar}
-        initialLayout={{
-          height: 0,
-          width: width,
+        onIndexChange={setIndex}
+        renderTabBar={(props) => {
+          return (
+            <TabBar
+              {...props}
+              style={{
+                backgroundColor: "white",
+                // borderTopLeftRadius: searchAktif ? 0 : 15,
+                // borderTopRightRadius: searchAktif ? 0 : 15,
+              }}
+              renderLabel={renderLabel}
+              indicatorStyle={styles.indicator}
+            />
+          );
         }}
       />
     </View>
   );
-
-  // return (
-  //   <SafeAreaView style={{ flex: 1 }}>
-  //     <Tabs
-  //       tabBarUnderlineStyle={{ backgroundColor: "#209FAE", height: 2 }}
-  //       tab
-  //       tabContainerStyle={{ borderWidth: 0 }}
-  //       locked={false}
-  //       style={{ borderColor: "#d1d1d1" }}
-  //       renderTabBar={() => (
-  //         <ScrollableTab style={{ backgroundColor: "#fff" }} />
-  //       )}
-  //     >
-  //       <Tab
-  //         heading={
-  //           <TabHeading
-  //             style={{
-  //               width: Dimensions.get("screen").width / 2,
-  //               backgroundColor: "#fff",
-  //             }}
-  //           >
-  //             <Text
-  //               size="title"
-  //               type={index == 0 ? "bold" : "regular"}
-  //               style={{ color: index == 0 ? "#209fae" : "#464646" }}
-  //             >
-  //               {t("notification")}
-  //             </Text>
-  //           </TabHeading>
-  //         }
-  //         tabStyle={{
-  //           backgroundColor: "#fff",
-  //           width: Dimensions.get("screen").width / 2,
-  //         }}
-  //         activeTabStyle={{
-  //           backgroundColor: "#fff",
-  //           width: Dimensions.get("screen").width / 2,
-  //         }}
-  //       >
-  //         <GetNotif />
-  //       </Tab>
-  //       <Tab
-  //         heading={
-  //           <TabHeading
-  //             style={{
-  //               width: Dimensions.get("screen").width / 2,
-  //               backgroundColor: "#fff",
-  //               marginBottom: 5,
-  //             }}
-  //           >
-  //             <Text
-  //               size="title"
-  //               type={index == 1 ? "bold" : "regular"}
-  //               style={{ color: index == 1 ? "#209fae" : "#464646" }}
-  //             >
-  //               {t("information")}
-  //             </Text>
-  //           </TabHeading>
-  //         }
-  //         tabStyle={{
-  //           backgroundColor: "white",
-  //           width: Dimensions.get("screen").width / 2,
-  //         }}
-  //         activeTabStyle={{
-  //           backgroundColor: "white",
-  //           width: Dimensions.get("screen").width / 2,
-  //         }}
-  //       >
-  //         {/* <GetEvent /> */}
-  //         <GetInformation />
-  //         {/* <Text size="title">Information</Text> */}
-  //       </Tab>
-  //     </Tabs>
-  //   </SafeAreaView>
-  // );
 }
 
 const styles = StyleSheet.create({
@@ -605,7 +308,6 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 100,
-
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
@@ -613,26 +315,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: 16,
-    color: "#000000",
-    fontFamily: "Lato-Regular",
-    width: Dimensions.get("screen").width * 0.5,
-    textAlign: "center",
-    alignSelf: "center",
+    fontSize: 14,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
-    width: Dimensions.get("screen").width * 0.5,
-    textAlign: "center",
-    alignSelf: "center",
   },
   tab: {
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: 45,
+    height: 50,
   },
-  indicator: { backgroundColor: "#209FAE", height: 2 },
+  indicator: { backgroundColor: "#209FAE", height: 3 },
 });

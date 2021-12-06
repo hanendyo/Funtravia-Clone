@@ -9,7 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, Button, Loading, FunImage } from "../../../component";
+import { Text, Button, Loading, FunImage, FunVideo } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { gql } from "apollo-boost";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -178,15 +178,22 @@ const DataInformasi = [
   },
 ];
 
-export default function Invitation({ navigation, token }) {
+export default function Invitation({
+  navigation,
+  token,
+  readall,
+  setreadall,
+  datanotif,
+  SetDataNotif,
+}) {
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
-  let [datanotif, SetDataNotif] = useState([]);
+  // let [datanotif, SetDataNotif] = useState([]);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
   let [loadings, setLoadings] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  let [readall, setreadall] = useState(true);
+  // let [readall, setreadall] = useState(true);
 
   const CarDetail = (data, dataIten) => {
     navigation.navigate("CarDetail", {
@@ -508,8 +515,12 @@ export default function Invitation({ navigation, token }) {
     GetListInvitation,
     { data: datasnotif, loading: loadingnotif, error: errornotif },
   ] = useLazyQuery(ListNotifikasi_, {
-    fetchPolicy: "network-only",
-    pollInterval: 1000,
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    notifyOnNetworkStatusChange: true,
+
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -518,6 +529,7 @@ export default function Invitation({ navigation, token }) {
     },
     onCompleted: () => {
       SetDataNotif(datasnotif.list_notification);
+
       let status = 0;
       for (var x of datasnotif.list_notification) {
         if (x.isread === false) {
@@ -541,8 +553,8 @@ export default function Invitation({ navigation, token }) {
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
     wait(1000).then(() => {
-      GetListInvitation();
       setRefreshing(false);
+      GetListInvitation();
     });
   }, []);
 
@@ -551,15 +563,12 @@ export default function Invitation({ navigation, token }) {
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
-    await GetListInvitation();
+    // await GetListInvitation();
   };
 
   useEffect(() => {
-    // GetListInvitation();
     loadAsync();
-    const unsubscribe = navigation.addListener("focus", () => {
-      GetListInvitation();
-    });
+    const unsubscribe = navigation.addListener("focus", () => {});
     return unsubscribe;
   }, [navigation]);
 
@@ -596,227 +605,6 @@ export default function Invitation({ navigation, token }) {
     }
   };
 
-  if (loadingnotif && datanotif.length < 1) {
-    return (
-      // <SkeletonPlaceholder
-      //   speed={1000}
-      //   // backgroundColor="#FFFFFF"
-      //   // highlightColor="#D1D1D1"
-      // >
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      //   <SkeletonPlaceholder.Item
-      //     flexDirection="row"
-      //     justifyContent="space-between"
-      //     alignItems="flex-start"
-      //     marginTop={20}
-      //     marginHorizontal={15}
-      //   >
-      //     <SkeletonPlaceholder.Item flexDirection="row">
-      //       <SkeletonPlaceholder.Item
-      //         width={40}
-      //         height={40}
-      //         borderRadius={20}
-      //       />
-      //       <SkeletonPlaceholder.Item marginLeft={20}>
-      //         <SkeletonPlaceholder.Item
-      //           width={80}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={120}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //         <SkeletonPlaceholder.Item
-      //           marginTop={6}
-      //           width={60}
-      //           height={10}
-      //           borderRadius={4}
-      //         />
-      //       </SkeletonPlaceholder.Item>
-      //     </SkeletonPlaceholder.Item>
-      //     <SkeletonPlaceholder.Item width={30} height={15} borderRadius={4} />
-      //   </SkeletonPlaceholder.Item>
-      // </SkeletonPlaceholder>
-      null
-    );
-  }
   const RenderTrans = ({ item }) => {
     //  notif for invite itinerary_buddy
     if (item.notification_type == "itinerary_buddy") {
@@ -1172,35 +960,26 @@ export default function Invitation({ navigation, token }) {
                 {item.comment_feed &&
                 item.comment_feed.post_asset &&
                 item.comment_feed.post_asset.type == "video" ? (
-                  <View
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 5,
-                    }}
-                  >
-                    <FunImage
+                  <View>
+                    <FunVideo
+                      hideShutterView={true}
+                      poster={item.comment_feed?.post_asset?.filepath.replace(
+                        "output.m3u8",
+                        "thumbnail.png"
+                      )}
+                      posterResizeMode={"cover"}
                       source={{
-                        uri: item.comment_feed.post_asset.filepath.replace(
-                          "output.m3u8",
-                          "thumbnail.png"
-                        ),
+                        uri: item.comment_feed?.post_asset?.filepath,
                       }}
+                      repeat={false}
                       style={{
                         width: 45,
                         height: 45,
                         borderRadius: 5,
                       }}
-                    />
-                    <Play
-                      width={20}
-                      height={20}
-                      style={{
-                        position: "absolute",
-                        top: 15,
-                        left: 15,
-                        alignSelf: "center",
-                      }}
+                      resizeMode={"cover"}
+                      muted={true}
+                      paused={true}
                     />
                   </View>
                 ) : (
@@ -1395,14 +1174,37 @@ export default function Invitation({ navigation, token }) {
                 width: "20%",
               }}
             >
-              <View
+              {/* <View
                 styles={{
                   width: 50,
                   height: 50,
-                  borderWidth: 1,
+                  borderWidth: 2,
+                  borderColor: "#F6F6F6",
                   backgroundColor: "#F6F6F6",
                 }}
-              >
+              > */}
+              {item.like_feed?.post_asset?.type == "video" ? (
+                <FunVideo
+                  hideShutterView={true}
+                  poster={item.like_feed?.post_asset?.filepath.replace(
+                    "output.m3u8",
+                    "thumbnail.png"
+                  )}
+                  posterResizeMode={"cover"}
+                  source={{
+                    uri: item.like_feed?.post_asset?.filepath,
+                  }}
+                  repeat={false}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 5,
+                  }}
+                  resizeMode={"cover"}
+                  muted={true}
+                  paused={true}
+                />
+              ) : (
                 <FunImage
                   source={{
                     uri: item.like_feed?.post_asset?.filepath,
@@ -1413,7 +1215,8 @@ export default function Invitation({ navigation, token }) {
                     borderRadius: 5,
                   }}
                 />
-              </View>
+              )}
+              {/* </View> */}
             </View>
           </View>
         </Pressable>
@@ -1605,7 +1408,7 @@ export default function Invitation({ navigation, token }) {
       style={{
         flex: 1,
         justifyContent: "space-between",
-        marginTop: normalize(45),
+        // marginTop: normalize(45),
         // borderWidth: 1,
       }}
     >

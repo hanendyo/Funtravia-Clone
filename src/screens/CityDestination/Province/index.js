@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
@@ -319,11 +319,17 @@ export default function ProvinceDetail(props) {
   };
 
   let [list_journal, setList_journal] = useState({});
-  const [
-    getJournalCity,
-    { loading: loadingjournal, data: dataJournal, error: errorjournal },
-  ] = useLazyQuery(JournalProvince, {
-    fetchPolicy: "network-only",
+  const {
+    loading: loadingjournal,
+    data: dataJournal,
+    error: errorjournal,
+  } = useQuery(JournalProvince, {
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    notifyOnNetworkStatusChange: true,
+    pollInterval: 5000,
     variables: {
       id: props.route.params.data.id,
     },
@@ -335,6 +341,34 @@ export default function ProvinceDetail(props) {
     },
     onCompleted: () => {
       setList_journal(dataJournal.journal_by_province);
+    },
+  });
+
+  const [
+    getJournalCity,
+    {
+      loading: loadingjournal_lazy,
+      data: dataJournal_lazy,
+      error: errorjournal_lazy,
+    },
+  ] = useLazyQuery(JournalProvince, {
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    notifyOnNetworkStatusChange: true,
+    // pollInterval: 5000,
+    variables: {
+      id: props.route.params.data.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    onCompleted: () => {
+      setList_journal(dataJournal_lazy.journal_by_province);
     },
   });
 
@@ -361,10 +395,10 @@ export default function ProvinceDetail(props) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
 
-  useEffect(() => {
-    console.log("panggil");
-    getJournalCity();
-  }, [token]);
+  // useEffect(() => {
+  //   console.log("panggil");
+  //   getJournalCity();
+  // }, [token]);
 
   const headerPanResponder = useRef(
     PanResponder.create({
