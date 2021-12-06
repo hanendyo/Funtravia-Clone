@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Platform,
   Modal as ModalRN,
+  ScrollView,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -137,9 +138,7 @@ export default function ItineraryCategory(props) {
       limit: 10,
       offset: 0,
     },
-    onCompleted: () => {
-      setlist_populer(dataPopuler?.itinerary_list_populer?.datas);
-    },
+
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -147,6 +146,9 @@ export default function ItineraryCategory(props) {
       },
     },
     notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setlist_populer(dataPopuler?.itinerary_list_populer?.datas);
+    },
   });
 
   console.log("dataPopuler", dataPopuler?.itinerary_list_populer?.datas);
@@ -250,7 +252,7 @@ export default function ItineraryCategory(props) {
       loadAsync();
     });
     return unsubscribe;
-  }, [props.navigation, order]);
+  }, [props.navigation]);
 
   let _menu = null;
 
@@ -326,13 +328,19 @@ export default function ItineraryCategory(props) {
               </MenuItem>
             </Menu>
           </View>
-          <CardItinerary
-            data={list_populer}
-            props={props}
-            token={token}
-            setting={setting}
-            setData={(e) => setlist_populer(e)}
-          />
+          <View
+            style={{
+              paddingBottom: 150,
+            }}
+          >
+            <CardItinerary
+              data={list_populer}
+              props={props}
+              token={token}
+              setting={setting}
+              setData={(e) => setlist_populer(e)}
+            />
+          </View>
         </>
       ) : (
         <View

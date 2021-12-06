@@ -1638,10 +1638,11 @@ export default function ProvinceDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    idcity: render?.id,
-                    idcountries: render?.countries.id,
+                    idcity: null,
+                    idcountries: null,
                     countryName: render.countries.name,
                     eventList: render.event,
+                    idprovince: render.id,
                     // idcountries:
                   });
                 }}
@@ -1674,10 +1675,11 @@ export default function ProvinceDetail(props) {
               <Ripple
                 onPress={() => {
                   props.navigation.navigate("searchListEventHome", {
-                    idcity: render?.id,
-                    idcountries: render?.countries.id,
+                    idcity: null,
+                    idcountries: null,
                     countryName: render.countries.name,
                     eventList: render.event,
+                    idprovince: render.id,
                     // idcountries:
                   });
                 }}

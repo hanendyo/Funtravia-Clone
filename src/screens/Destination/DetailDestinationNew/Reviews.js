@@ -94,6 +94,8 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
     <Animated.View
       style={{
         transform: [{ translateY: y }],
+
+        paddingBottom: 60,
       }}
     >
       <ModalLogin
