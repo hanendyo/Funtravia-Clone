@@ -95,7 +95,6 @@ export default function Settings(props) {
     i18n.changeLanguage(value);
     await AsyncStorage.setItem("setting_language", value);
   };
-  console.log("Data", datacurrency);
 
   const [
     getSettingUser,
@@ -115,16 +114,11 @@ export default function Settings(props) {
       );
       // if (datas.setting_data.user) {
       setSetting(datas.setting_data_user);
+
       AsyncStorage.setItem("setting", JSON.stringify(datas.setting_data_user));
       // }
     },
   });
-  // useEffect(async () => {
-  //   if (datas && datas.setting_data && datas.setting_data.user) {
-  //     setSetting(JSON.parse(datas.setting_data));
-  //     await AsyncStorage.setItem("setting", datas.setting_data);
-  //   }
-  // }, [datas]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -303,7 +297,19 @@ export default function Settings(props) {
         </Ripple>
         <Ripple
           rippleCentered={true}
-          onPress={() => setModelSetCurrency(true)}
+          onPress={() =>
+            props.navigation.navigate("AccountStack", {
+              screen: "SettingCurrency",
+              params: {
+                props: props,
+                setting: setting,
+                token: token,
+                setSetting: (e) => setSetting(e),
+                index: index,
+                data: datacurrency.currency_list,
+              },
+            })
+          }
           style={{
             paddingHorizontal: 15,
             // paddingVertical: 13,
@@ -716,17 +722,8 @@ export default function Settings(props) {
           </View>
         </Ripple>
       </View>
-      {/* {data && data.country_list ? (
-        <SettingNegara
-          modals={modsettingnegara}
-          setModelSetNegara={(e) => setModelSetNegara(e)}
-          masukan={(e) => setSetting(e)}
-          data={data.country_list}
-          selected={setting}
-          token={token}
-        />
-      ) : null} */}
-      {datacurrency && datacurrency.currency_list.length ? (
+
+      {/* {datacurrency && datacurrency.currency_list.length ? (
         <SettingCurrency
           modals={modsettingcurrency}
           setModelSetCurrency={(e) => setModelSetCurrency(e)}
@@ -735,7 +732,7 @@ export default function Settings(props) {
           selected={setting}
           token={token}
         />
-      ) : null}
+      ) : null} */}
     </ScrollView>
   );
 }
