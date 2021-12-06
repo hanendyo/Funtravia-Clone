@@ -956,7 +956,7 @@ export default function OtherProfile(props) {
             ? Platform.OS === "ios"
               ? Notch
                 ? -75
-                : 30
+                : 21
               : -40
             : HeaderHeight),
       ],
@@ -1800,7 +1800,7 @@ export default function OtherProfile(props) {
           ? Platform.OS === "ios"
             ? Notch
               ? -65
-              : 0
+              : 20
             : -40
           : 50,
       ],
