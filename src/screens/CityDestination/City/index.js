@@ -733,6 +733,7 @@ export default function CityDetail(props) {
       <Animated.View
         style={{
           marginTop: 5,
+          marginBottom: 70,
           transform: [{ translateY: y }],
         }}
       >
@@ -2462,6 +2463,7 @@ export default function CityDetail(props) {
                     marginLeft: 25,
                     justifyContent: "center",
                     alignItems: "center",
+                    width: "70%",
                   }}
                 >
                   <Labeltag height={12} width={12} />
@@ -2469,9 +2471,18 @@ export default function CityDetail(props) {
                     <Text
                       size="label"
                       type="regular"
+                      numberOfLines={1}
                       style={{ marginLeft: 10 }}
                     >
-                      <Truncate
+                      {t("cityof") +
+                        " " +
+                        Capital({
+                          text:
+                            dataCity && dataCity.CitiesInformation
+                              ? dataCity.CitiesInformation.province.name
+                              : "-",
+                        })}
+                      {/* <Truncate
                         text={
                           t("cityof") +
                           " " +
@@ -2485,16 +2496,23 @@ export default function CityDetail(props) {
                           })
                         }
                         length={30}
-                      />
+                      /> */}
                     </Text>
                   ) : (
                     <Text
                       size="label"
                       type="regular"
+                      numberOfLines={1}
                       style={{ marginLeft: 10 }}
                     >
                       {t("cityof")}{" "}
-                      <Truncate
+                      {Capital({
+                        text:
+                          dataCity && dataCity.CitiesInformation
+                            ? dataCity.CitiesInformation.province.name
+                            : "-",
+                      })}
+                      {/* <Truncate
                         text={
                           Capital({
                             text:
@@ -2506,7 +2524,7 @@ export default function CityDetail(props) {
                           " "
                         }
                         length={30}
-                      />{" "}
+                      />{" "} */}
                     </Text>
                   )}
                 </View>
@@ -2531,7 +2549,7 @@ export default function CityDetail(props) {
         style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 255,
+          top: SafeStatusBar + 240,
           right: 20,
           alignItems: "center",
           justifyContent: "center",
