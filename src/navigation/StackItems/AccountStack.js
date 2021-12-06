@@ -22,6 +22,7 @@ import {
   SettingCity,
   SettingCountry,
 } from "../../screens/Settings";
+import SettingCurrency from "../../screens/Settings/SettingCurrency";
 import Wishlist from "../../screens/Wishlist/Index";
 
 const AccountStack = createStackNavigator();
@@ -200,6 +201,18 @@ export default function AccountStackNavigation() {
       <AccountStack.Screen
         name="SettingCountry"
         component={SettingCountry}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+          gestureDirection: "horizontal",
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+
+      <AccountStack.Screen
+        name="SettingCurrency"
+        component={SettingCurrency}
         options={{
           headerTransparent: false,
           headerTintColor: "white",

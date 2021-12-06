@@ -241,7 +241,9 @@ export default function DestinationUnescoReview(props) {
           //   );
           // }, 2000);
           setloading(false);
-
+          setDataImage([]);
+          setText("");
+          setDefaultRate(0);
           await props.navigation.push("DestinationUnescoDetail", {
             id: data.id,
             name: data.name,

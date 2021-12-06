@@ -836,8 +836,9 @@ export default function ListEventHome(props) {
           <FlatList
             style={{
               position: "absolute",
-              right: Platform.OS == "ios" ? 59.5 : 58,
-              top: Platform.OS == "ios" ? 32 : 29,
+              right:
+                Platform.OS == "ios" ? 59.5 : deviceId == "LYA-L29" ? 55 : 58,
+              top: Platform.OS == "ios" ? 32 : deviceId == "LYA-L29" ? 26 : 29,
               borderLeftWidth: 2,
               borderRightWidth: 1,
               borderLeftColor: "#d8d8d8",

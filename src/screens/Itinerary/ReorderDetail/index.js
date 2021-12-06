@@ -16,6 +16,7 @@ import {
   FunIcon,
   Text,
   StatusBar,
+  Truncate,
 } from "../../../component";
 import {
   Mobil,
@@ -748,8 +749,12 @@ export default function ReoderDetail({ navigation, route }) {
         <View style={{ marginBottom: 5 }}>
           <View style={{ alignItems: "center" }}>
             <Text type="bold" size="title" style={{ color: "#FFF" }}>
-              {headData.name}
+              <Truncate
+                length="25"
+                text={headData?.name ? headData.name : ""}
+              />
             </Text>
+
             <Text
               type="regular"
               size="label"

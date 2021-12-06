@@ -34,7 +34,6 @@ import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
 
 export default function SearchListEventHome(props) {
-  console.log("props", props);
   const { t, i18n } = useTranslation();
   let [oldYear, setOldYear] = useState(
     props.route.params.year ? props.route.params.year : null
@@ -55,6 +54,10 @@ export default function SearchListEventHome(props) {
   );
   let [selectedCity, setSelectedCity] = useState(
     props.route.params.idcity ? props.route.params.idcity : null
+  );
+
+  let [selectedProvince, setSelectedProvince] = useState(
+    props.route.params.idprovince ? props.route.params.idprovince : null
   );
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   const [categoryName, setCategoryName] = useState("");
@@ -990,6 +993,7 @@ export default function SearchListEventHome(props) {
     price_start: null,
     price_end: null,
     city: selectedCity ? selectedCity : null,
+    province: selectedProvince ? selectedProvince : null,
   });
 
   //! FUNCTION CLEAR FILTER
@@ -1052,6 +1056,7 @@ export default function SearchListEventHome(props) {
     await setdatacountry(temp);
     await setSelectedCountry(null);
     await setSelectedCity(null);
+    await setSelectedProvince(null);
     await setSearch({
       year: null,
       type: null,
@@ -1063,10 +1068,10 @@ export default function SearchListEventHome(props) {
       price_start: null,
       price_end: null,
       city: null,
+      province: null,
     });
     // UpdateFilter();
   };
-  console.log("search", search);
 
   //! End FUNCTION CLEAR FILTER
 
@@ -1172,7 +1177,7 @@ export default function SearchListEventHome(props) {
       type: search.type,
       cities: search.city ? search.city : null,
       countries: search.countries ? search.countries : null,
-      province: null,
+      province: search.province ? search.province : null,
       price_start: search.price_start ? search.price_start : null,
       price_end: search.price_end ? search.price_end : null,
       date_from: search.date_from ? search.date_from : null,
@@ -1200,7 +1205,7 @@ export default function SearchListEventHome(props) {
       type: search.type,
       cities: search.city ? search.city : null,
       countries: search.countries ? search.countries : null,
-      province: null,
+      province: search.province ? search.province : null,
       price_start: search.price_start ? search.price_start : null,
       price_end: search.price_end ? search.price_end : null,
       date_from: search.date_from ? search.date_from : null,
@@ -1304,6 +1309,7 @@ export default function SearchListEventHome(props) {
     let price = search["price_end"];
     let year = search["year"];
     let countries = search["countries"];
+    let province = search["province"];
     search["type"]?.length > 0
       ? search["type"].map((x) => {
           array.push(x);
@@ -1321,6 +1327,7 @@ export default function SearchListEventHome(props) {
     search["year"] ? array.push(year) : null;
 
     search["countries"] ? array.push(countries) : null;
+    search["province"] ? array.push(province) : null;
 
     return array?.length;
   };

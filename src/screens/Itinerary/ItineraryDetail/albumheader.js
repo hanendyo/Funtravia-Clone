@@ -59,7 +59,10 @@ export default function Albumheader({
   const LongPressAlbum = (item) => {
     setitemName(item.title);
     setalbumId(item.id);
-    setmodalDeleteAlbum(true);
+
+    if (Anggota === "true") {
+      setmodalDeleteAlbum(true);
+    }
   };
 
   const [
@@ -350,9 +353,11 @@ export default function Albumheader({
             <Text type="bold">
               {dataalbumaktif?.title ? dataalbumaktif?.title : name}
             </Text>
-            <TouchableOpacity onPress={() => setmodalOptions(true)}>
-              <OptionsVertBlack width={15} height={15} />
-            </TouchableOpacity>
+            {Anggota === "true" && (
+              <TouchableOpacity onPress={() => setmodalOptions(true)}>
+                <OptionsVertBlack width={15} height={15} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}
