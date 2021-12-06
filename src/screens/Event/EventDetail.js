@@ -701,7 +701,7 @@ export default function EventDetail(props) {
               style={{
                 height: 35,
                 width: 35,
-                top: Platform.OS == "ios" ? SafeStatusBar : SafeStatusBar + 5,
+                top: Platform.OS == "ios" ? SafeStatusBar : SafeStatusBar + 0,
                 borderRadius: 30,
                 justifyContent: "center",
                 alignItems: "center",
@@ -720,7 +720,7 @@ export default function EventDetail(props) {
               marginLeft: 10,
               fontSize: 18,
               top:
-                Platform.OS == "ios" ? SafeStatusBar + 15 : SafeStatusBar + 17,
+                Platform.OS == "ios" ? SafeStatusBar + 15 : SafeStatusBar + 10,
               fontFamily: "Lato-Bold",
             }}
           >
@@ -910,6 +910,7 @@ export default function EventDetail(props) {
           flex: 2,
           flexDirection: "row",
           height: 130,
+          // borderWidth: 1,
           position: "absolute",
           top: 0,
           justifyContent: "space-between",
