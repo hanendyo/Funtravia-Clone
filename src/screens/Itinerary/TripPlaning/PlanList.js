@@ -296,6 +296,43 @@ export default function ActivePlan({
             </View>
           </View>
         </View>
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            height: 60,
+            width: width,
+            backgroundColor: "white",
+            // marginVertical: 15,
+            borderTopWidth: 1,
+            borderColor: "#F0F0F0",
+            shadowColor: "#F0F0F0",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            elevation: 3,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            color="secondary"
+            onPress={() => {
+              props.navigation.push("ItineraryStack", { screen: "Trip" });
+            }}
+            // onPress={() => {
+            //   props.route.params.token !== null
+            //     ? props.navigation.push("ItineraryStack", { screen: "Trip" })
+            //     : setModalLogin(true);
+            // }}
+            style={{
+              width: width - 40,
+              height: 40,
+            }}
+            text={t("CreateNewPlan")}
+          />
+        </View>
       </SkeletonPlaceholder>
     );
   }

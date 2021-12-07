@@ -12,7 +12,7 @@ import {
 import { ItineraryKosong } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
 import { Kosong } from "../../../assets/svg";
-import { Text, CardItinerary } from "../../../component";
+import { Text, CardItinerary, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
@@ -261,6 +261,38 @@ export default function ActivePlan({
             </View>
           </View>
         </View>
+        <View
+          style={{
+            zIndex: 999,
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            height: 60,
+            width: Dimensions.get("window").width,
+            backgroundColor: "white",
+            borderTopWidth: 1,
+            borderColor: "#F0F0F1",
+            shadowColor: "#F0F0F0",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            elevation: 3,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            color="secondary"
+            onPress={() => {
+              props.navigation.push("ItineraryStack", { screen: "Trip" });
+            }}
+            style={{
+              width: width - 40,
+              height: 40,
+            }}
+            text={t("CreateNewPlan")}
+          />
+        </View>
       </SkeletonPlaceholder>
     );
   }
@@ -285,6 +317,38 @@ export default function ActivePlan({
             setData={(e) => setData(e)}
           />
         </ScrollView>
+        <View
+          style={{
+            zIndex: 999,
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            height: 60,
+            width: Dimensions.get("window").width,
+            backgroundColor: "white",
+            borderTopWidth: 1,
+            borderColor: "#F0F0F1",
+            shadowColor: "#F0F0F0",
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+            elevation: 3,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            color="secondary"
+            onPress={() => {
+              props.navigation.push("ItineraryStack", { screen: "Trip" });
+            }}
+            style={{
+              width: width - 40,
+              height: 40,
+            }}
+            text={t("CreateNewPlan")}
+          />
+        </View>
       </View>
     );
   }
@@ -318,6 +382,38 @@ export default function ActivePlan({
           <Kosong height={width * 0.6} width={width} />
         </View>
       </ScrollView>
+      <View
+        style={{
+          zIndex: 999,
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          height: 60,
+          width: Dimensions.get("window").width,
+          backgroundColor: "white",
+          borderTopWidth: 1,
+          borderColor: "#F0F0F1",
+          shadowColor: "#F0F0F0",
+          shadowOffset: { width: 2, height: 2 },
+          shadowOpacity: 1,
+          shadowRadius: 2,
+          elevation: 3,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          color="secondary"
+          onPress={() => {
+            props.navigation.push("ItineraryStack", { screen: "Trip" });
+          }}
+          style={{
+            width: width - 40,
+            height: 40,
+          }}
+          text={t("CreateNewPlan")}
+        />
+      </View>
     </SafeAreaView>
   );
 }

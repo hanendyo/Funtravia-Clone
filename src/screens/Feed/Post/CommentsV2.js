@@ -73,7 +73,6 @@ import ViewMoreText from "react-native-view-more-text";
 import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 
 export default function Comments(props) {
-  console.log("props comment", props);
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState(null);
@@ -1997,7 +1996,7 @@ export default function Comments(props) {
                   size="label"
                   type="regular"
                   numberOfLines={1}
-                  style={{ color: "#464646" }}
+                  style={{ color: "#d1d1d1" }}
                 >
                   {`${t("commentAs")} ${setting?.user?.first_name} ${
                     setting?.user?.last_name ? setting?.user?.last_name : ""
@@ -2013,7 +2012,7 @@ export default function Comments(props) {
                 width: Dimensions.get("screen").width - 150,
                 // textAlignVertical: "top",
                 fontSize: normalize(16),
-                marginLeft: 20,
+                marginLeft: Platform.OS == "ios" ? 20 : 15,
                 fontFamily: "Lato-Regular",
                 maxHeight: 100,
                 marginBottom: Platform.OS == "ios" ? 5 : 0,

@@ -770,8 +770,9 @@ export default function Trip(props) {
                               style={{
                                 marginRight: 15,
                                 flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: "center",
                                 elevation: 1,
-                                alignSelf: "center",
                               }}
                             >
                               <View
