@@ -39,6 +39,9 @@ import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import DeviceInfo from "react-native-device-info";
+
+const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
   let [filtershow, setfiltershow] = useState([]);
@@ -957,7 +960,12 @@ export default function ItineraryDestination(props) {
                         flexWrap: "wrap",
                         marginTop: Platform.OS === "ios" ? 3 : 5,
                         flex: 1,
-                        lineHeight: Platform.OS === "ios" ? 20 : 17,
+                        lineHeight:
+                          Platform.OS === "ios"
+                            ? 20
+                            : deviceId == "CPH2127"
+                            ? 20
+                            : 17,
                       }}
                     >
                       {item.name}

@@ -27,6 +27,9 @@ import Liked from "../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../graphQL/Mutation/Destination/UnLiked";
 import { useMutation } from "@apollo/client";
 import { StackActions } from "@react-navigation/native";
+import DeviceInfo from "react-native-device-info";
+
+const deviceId = DeviceInfo.getModel();
 
 export default function CardDestination({ data, props, setData, token }) {
   const { t } = useTranslation();
@@ -318,6 +321,7 @@ export default function CardDestination({ data, props, setData, token }) {
                     style={{
                       flexDirection: "row",
                       paddingHorizontal: 3,
+
                       marginBottom: 3,
                     }}
                   >
@@ -335,7 +339,13 @@ export default function CardDestination({ data, props, setData, token }) {
                         flexWrap: "wrap",
                         marginTop: Platform.OS === "ios" ? 3 : 5,
                         flex: 1,
-                        lineHeight: Platform.OS === "ios" ? 20 : 17,
+
+                        lineHeight:
+                          Platform.OS === "ios"
+                            ? 20
+                            : deviceId == "CPH2127"
+                            ? 20
+                            : 17,
                       }}
                     >
                       {item.name}
