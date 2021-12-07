@@ -168,14 +168,12 @@ export default function TripPlaning(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    // loadAsync();
 
     const unsubscribe1 = props.navigation.addListener("focus", () => {
       loadAsync();
     });
     return () => {
       unsubscribe1;
-      // loadAsync();
     };
   }, [props.navigation]);
 

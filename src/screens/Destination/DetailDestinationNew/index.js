@@ -1022,7 +1022,7 @@ const Index = (props) => {
                     style={{ marginRight: 5 }}
                   />
                   <Text size="description" type="regular">
-                    Movie Location
+                    {t(MovieLocation)}
                   </Text>
                 </View>
               ) : null}
@@ -2645,7 +2645,7 @@ const Index = (props) => {
                   normalize(layoutUnesco)
                 : normalize(layoutImage) +
                   normalize(layoutHeader) +
-                  normalize(layoutHeader) / normalize(3) +
+                  normalize(layoutHeader) / normalize(2.2) +
                   normalize(layoutUnesco)
               : deviceId == "LYA-L29"
               ? normalize(layoutImage) +
@@ -2655,7 +2655,7 @@ const Index = (props) => {
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
-                normalize(35),
+                normalize(25),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
@@ -2670,6 +2670,7 @@ const Index = (props) => {
                 height: layoutsAddress,
                 justifyContent: "center",
                 alignItems: "center",
+                alignSelf: "center",
               }}
               onPress={() => {
                 Linking.openURL(

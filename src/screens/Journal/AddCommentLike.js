@@ -228,29 +228,27 @@ export default function AddCommentLike({
   return (
     <KeyboardAvoidingView
       style={{
-        paddingTop: 10,
-        paddingBottom: 10,
         paddingHorizontal: 20,
-        width: Dimensions.get("window").width,
-        justifyContent: "center",
         flexDirection: "row",
+        borderWidth: 1,
+        borderColor: "#f0f0f0",
+        paddingVertical: 10,
+        width: Dimensions.get("window").width,
         backgroundColor: "white",
-        borderWidth: 2,
-        borderColor: "#F0F0F0",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
         elevation: arrayShadow.elevation,
+        justifyContent: "center",
         alignItems: "center",
+        alignSelf: "center",
         marginBottom: keyboardStatus
           ? Platform.OS == "ios"
             ? Notch
-              ? deviceId == "iPhone 12 Pro"
-                ? 30
-                : -40
-              : -45
-            : null
-          : null,
+              ? 5
+              : 5
+            : 0
+          : 0,
       }}
     >
       <ModalLogin
@@ -287,7 +285,7 @@ export default function AddCommentLike({
               size="label"
               type="regular"
               numberOfLines={1}
-              style={{ color: "#464646" }}
+              style={{ color: "#d1d1d1" }}
             >
               {`${t("commentAs")} ${setting?.user?.first_name} ${
                 setting?.user?.last_name ? setting?.user?.last_name : ""
@@ -299,7 +297,7 @@ export default function AddCommentLike({
           autoCorrect={keyboardStatus}
           style={{
             // flex: 1,
-            marginLeft: 10,
+            marginLeft: Platform.OS == "ios" ? 10 : 5,
             width: "80%",
             fontSize: normalize(16),
             lineHeight: 16,
@@ -324,13 +322,13 @@ export default function AddCommentLike({
             marginLeft: keyboardStatus
               ? Platform.OS == "ios"
                 ? Notch
-                  ? 10
-                  : 10
-                : null
+                  ? -5
+                  : -5
+                : -5
               : Platform.OS == "ios"
               ? Notch
                 ? -10
-                : 0
+                : -10
               : -10,
           }}
           onPress={() => comment(dataList.id, text)}
