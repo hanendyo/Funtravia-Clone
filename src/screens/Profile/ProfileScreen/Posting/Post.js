@@ -55,6 +55,7 @@ export default function Posts({ item, index, navigation, user }) {
               resizeMode="cover"
               muted={true}
               paused={true}
+              grid
             />
           ) : (
             <FunImage
