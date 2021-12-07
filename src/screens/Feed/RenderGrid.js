@@ -75,6 +75,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -122,6 +123,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[2].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[2].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -177,6 +179,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[0].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[0].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -224,6 +227,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -272,6 +276,7 @@ export default function RenderGrid({ item, grid, props }) {
         >
           {item[2].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               poster={item[2].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -283,7 +288,7 @@ export default function RenderGrid({ item, grid, props }) {
               repeat={true}
               style={{
                 height: (width + width) / 3 - 15,
-                width: (width + width) / 3 - 20,
+                width: (width + width) / 3 - 21,
                 borderRadius: 5,
                 margin: 2,
               }}
@@ -298,7 +303,7 @@ export default function RenderGrid({ item, grid, props }) {
               }}
               style={{
                 height: (width + width) / 3 - 15,
-                width: (width + width) / 3 - 20,
+                width: (width + width) / 3 - 21,
                 borderRadius: 5,
                 margin: 2,
                 alignSelf: "center",
@@ -325,6 +330,7 @@ export default function RenderGrid({ item, grid, props }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -335,8 +341,8 @@ export default function RenderGrid({ item, grid, props }) {
               }}
               repeat={true}
               style={{
-                height: width / 3 - 10,
-                width: width / 3 - 10,
+                height: width / 3 - 15,
+                width: width / 3 - 15,
                 borderRadius: 5,
                 margin: 2,
               }}
@@ -350,8 +356,8 @@ export default function RenderGrid({ item, grid, props }) {
                 uri: item[0].assets[0].filepath,
               }}
               style={{
-                height: width / 3 - 10,
-                width: width / 3 - 10,
+                height: width / 3 - 15,
+                width: width / 3 - 15,
                 borderRadius: 5,
                 margin: 2,
                 alignSelf: "center",
@@ -372,6 +378,7 @@ export default function RenderGrid({ item, grid, props }) {
         >
           {item[1].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -382,8 +389,8 @@ export default function RenderGrid({ item, grid, props }) {
               }}
               repeat={true}
               style={{
-                height: width / 3 - 10,
-                width: width / 3 - 10,
+                height: width / 3 - 15,
+                width: width / 3 - 15,
                 borderRadius: 5,
                 margin: 2,
               }}
@@ -419,6 +426,7 @@ export default function RenderGrid({ item, grid, props }) {
         >
           {item[2].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               poster={item[2].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -473,6 +481,7 @@ export default function RenderGrid({ item, grid, props }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -522,6 +531,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -594,6 +604,7 @@ export default function RenderGrid({ item, grid, props }) {
               resizeMode="cover"
               muted={true}
               paused={true}
+              grid={grid}
             />
           ) : (
             <FunImage
@@ -625,6 +636,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -675,6 +687,7 @@ export default function RenderGrid({ item, grid, props }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid={grid}
                 poster={item[2].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"

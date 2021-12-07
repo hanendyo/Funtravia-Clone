@@ -6,6 +6,7 @@ const { width, height } = Dimensions.get("screen");
 import { FunVideo, FunImage } from "../../../../component";
 
 export default function Posts({ item, index, navigation, user }) {
+  console.log("item", item);
   let { width, height } = Dimensions.get("screen");
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
@@ -30,7 +31,7 @@ export default function Posts({ item, index, navigation, user }) {
             })
           }
         >
-          {item[0].assets[0].type === "video" ? (
+          {item[0]?.assets[0]?.type === "video" ? (
             <FunVideo
               innerRef={(ref) => {
                 videoView = ref;
@@ -88,6 +89,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -137,6 +139,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[2].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[2].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -200,6 +203,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[0].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[0].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -249,6 +253,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -299,6 +304,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[2].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[2].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -360,6 +366,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -409,6 +416,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[1].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -458,6 +466,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[2].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[2].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -520,6 +529,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -571,6 +581,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -633,6 +644,7 @@ export default function Posts({ item, index, navigation, user }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid
               poster={item[0].assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
@@ -684,6 +696,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[1].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
@@ -736,6 +749,7 @@ export default function Posts({ item, index, navigation, user }) {
           >
             {item[1].assets[0].type === "video" ? (
               <FunVideo
+                grid
                 poster={item[2].assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
