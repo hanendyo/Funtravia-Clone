@@ -20,19 +20,20 @@ import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
 import Crop from "../../screens/Feed/Post/Crop";
 import SendPost from "../../screens/Feed/Post/SendPost";
-import FeedList from "../../screens/Feed";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
   return (
     <FeedStack.Navigator
-      screenOptions={{
-        gestureEnabled: true,
-        gestureDirection: "horizontal",
-        // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        // ...TransitionPresets.FadeFromBottomAndroid,
-        ...TransitionPresets.SlideFromRightIOS,
-      }}
+      screenOptions={
+        {
+          // gestureEnabled: true,
+          // gestureDirection: "horizontal",
+          // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          // ...TransitionPresets.FadeFromBottomAndroid,
+          // ...TransitionPresets.SlideFromRightIOS,
+        }
+      }
     >
       {/* <FeedStack.Screen name="FeedList" component={FeedList} /> */}
       <FeedStack.Screen

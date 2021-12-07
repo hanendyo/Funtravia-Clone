@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { View, Dimensions, Pressable } from "react-native";
 import { FunImage, FunVideo } from "../../component";
-import Video from "react-native-video";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderGrid({ item, props }) {
@@ -9,11 +8,7 @@ export default function RenderGrid({ item, props }) {
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
@@ -167,11 +162,7 @@ export default function RenderGrid({ item, props }) {
   }
   if (item.length == 4 && item[3].grid == 2) {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <View style={{}}>
           <Pressable
             onPress={() =>
@@ -320,11 +311,7 @@ export default function RenderGrid({ item, props }) {
   }
   if (item.length == 4 && item[3].grid == 3) {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
@@ -472,11 +459,7 @@ export default function RenderGrid({ item, props }) {
   if (item.length < 3) {
     const grid = 1;
     return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
@@ -579,11 +562,7 @@ export default function RenderGrid({ item, props }) {
   }
   if (item.length === 3) {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
