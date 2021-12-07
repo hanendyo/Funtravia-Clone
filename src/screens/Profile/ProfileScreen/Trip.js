@@ -214,7 +214,7 @@ export default function Trip(
               ? Notch
                 ? 75
                 : 25
-              : 45
+              : 95
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
@@ -270,7 +270,7 @@ export default function Trip(
               ? Notch
                 ? -60
                 : -10
-              : -35
+              : -75
             : capHeight == 70
             ? Platform.OS === "ios"
               ? Notch
