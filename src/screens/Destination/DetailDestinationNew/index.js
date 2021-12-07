@@ -2655,7 +2655,7 @@ const Index = (props) => {
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
-                normalize(25),
+                normalize(22.5),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
