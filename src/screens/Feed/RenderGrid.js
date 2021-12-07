@@ -3,8 +3,8 @@ import { View, Dimensions, Pressable } from "react-native";
 import { FunImage, FunVideo } from "../../component";
 
 const { width, height } = Dimensions.get("screen");
-export default function RenderGrid({ item, props }) {
-  console.log("item render", item.length);
+export default function RenderGrid({ item, grid, props }) {
+  console.log("item", item);
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
     return (
@@ -21,6 +21,7 @@ export default function RenderGrid({ item, props }) {
         >
           {item[0].assets[0].type === "video" ? (
             <FunVideo
+              grid={grid}
               innerRef={(ref) => {
                 videoView = ref;
               }}

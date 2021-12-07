@@ -223,7 +223,7 @@ export default function Feed(props) {
         <FlatList
           data={feed_search_bylocation_paging}
           renderItem={({ item, index }) => (
-            <RenderGrid item={item} index={index} props={props} />
+            <RenderGrid item={item} index={index} props={props} grid />
           )}
           style={{
             marginHorizontal: 10,

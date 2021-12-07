@@ -9,8 +9,9 @@ import * as RNFS from "react-native-fs";
 import sh from "shorthash";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Video from "react-native-video";
+import { Play } from "../../assets/svg";
 
-export default function FunVideo({ style, poster, ...otherProps }) {
+export default function FunVideo({ style, poster, grid, ...otherProps }) {
   let [loading, setLoading] = useState(false);
   let [temp, setTemp] = useState([]);
   let uri = poster;
@@ -47,5 +48,31 @@ export default function FunVideo({ style, poster, ...otherProps }) {
     );
   }
 
-  return <Video {...otherProps} style={style} poster={path} />;
+  return (
+    <>
+      <Video {...otherProps} style={style} poster={path} />
+      {grid && (
+        <>
+          <View
+            style={{
+              position: "absolute",
+              backgroundColor: "#141414",
+              opacity: 0.6,
+              ...style,
+            }}
+          />
+          <Play
+            width={30}
+            height={30}
+            style={{
+              position: "absolute",
+              alignSelf: "flex-end",
+              top: 10,
+              right: 10,
+            }}
+          />
+        </>
+      )}
+    </>
+  );
 }

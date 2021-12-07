@@ -706,7 +706,7 @@ export default function Feed(props) {
           <FlatList
             data={feed_post_populer_paging}
             renderItem={({ item, index }) => (
-              <RenderGrid item={item} index={index} props={props} />
+              <RenderGrid item={item} index={index} props={props} grid />
             )}
             style={{
               marginHorizontal: 10,

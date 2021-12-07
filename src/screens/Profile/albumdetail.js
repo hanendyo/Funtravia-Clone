@@ -189,14 +189,15 @@ export default function albumdetail(props) {
         style={{
           width: "100%",
           flexDirection: "row",
-          justifyContent: "flex-start",
+          justifyContent: "center",
+          alignItems: "center",
           paddingHorizontal: 2.5,
         }}
       >
         <View
           style={{
-            width: ((width - 12) / 3) * 2,
-            height: ((width - 12) / 3) * 2,
+            width: ((width - 45) / 3) * 2,
+            height: ((width - 45) / 3) * 2,
             margin: 2.5,
           }}
         >
@@ -211,8 +212,8 @@ export default function albumdetail(props) {
         <View>
           <View
             style={{
-              width: (width - 20) / 3,
-              height: (width - 20) / 3,
+              width: (width - 50) / 3,
+              height: (width - 50) / 3,
               margin: 2.5,
             }}
           >
@@ -227,8 +228,8 @@ export default function albumdetail(props) {
           <View
             onPress={() => setdataimage(dataalbums, item[2].id)}
             style={{
-              width: (width - 20) / 3,
-              height: (width - 20) / 3,
+              width: (width - 50) / 3,
+              height: (width - 50) / 3,
               margin: 2.5,
             }}
           >
@@ -246,15 +247,16 @@ export default function albumdetail(props) {
         style={{
           width: "100%",
           flexDirection: "row",
-          justifyContent: "flex-start",
+          justifyContent: "center",
+          alignItems: "center",
           paddingHorizontal: 2.5,
         }}
       >
         <View>
           <View
             style={{
-              width: (width - 20) / 3,
-              height: (width - 20) / 3,
+              width: (width - 50) / 3,
+              height: (width - 50) / 3,
               margin: 2.5,
             }}
           >
@@ -269,8 +271,8 @@ export default function albumdetail(props) {
           <View
             onPress={() => setdataimage(dataalbums, item[2].id)}
             style={{
-              width: (width - 20) / 3,
-              height: (width - 20) / 3,
+              width: (width - 50) / 3,
+              height: (width - 50) / 3,
               margin: 2.5,
             }}
           >
@@ -285,8 +287,8 @@ export default function albumdetail(props) {
         </View>
         <View
           style={{
-            width: ((width - 12) / 3) * 2,
-            height: ((width - 12) / 3) * 2,
+            width: ((width - 45) / 3) * 2,
+            height: ((width - 45) / 3) * 2,
             margin: 2.5,
           }}
         >
@@ -299,11 +301,17 @@ export default function albumdetail(props) {
           />
         </View>
       </View>
-      <View style={{ flexDirection: "row" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <View
           style={{
-            width: (width - 20) / 3,
-            height: (width - 20) / 3,
+            width: (width - 50) / 3,
+            height: (width - 50) / 3,
             margin: 2.5,
           }}
         >
@@ -318,8 +326,8 @@ export default function albumdetail(props) {
         <View
           onPress={() => setdataimage(dataalbums, item[2].id)}
           style={{
-            width: (width - 20) / 3,
-            height: (width - 20) / 3,
+            width: (width - 50) / 3,
+            height: (width - 50) / 3,
             margin: 2.5,
           }}
         >
@@ -334,8 +342,8 @@ export default function albumdetail(props) {
         <View
           onPress={() => setdataimage(dataalbums, item[2].id)}
           style={{
-            width: (width - 20) / 3,
-            height: (width - 20) / 3,
+            width: (width - 50) / 3,
+            height: (width - 50) / 3,
             margin: 2.5,
           }}
         >
@@ -410,7 +418,7 @@ export default function albumdetail(props) {
           }
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 5 }}
+          contentContainerStyle={{ padding: 15 }}
           nestedScrollEnabled
           data={spreadData(dataalbums)}
           renderItem={({ item, index }) => {
@@ -430,8 +438,8 @@ export default function albumdetail(props) {
                     <Pressable
                       onPress={() => setdataimage(dataalbums, item[0].id)}
                       style={{
-                        width: ((width - 12) / 3) * 2,
-                        height: ((width - 12) / 3) * 2,
+                        width: ((width - 45) / 3) * 2,
+                        height: ((width - 45) / 3) * 2,
                         margin: 2.5,
                       }}
                     >
@@ -500,8 +508,8 @@ export default function albumdetail(props) {
                       <Pressable
                         onPress={() => setdataimage(dataalbums, item[1].id)}
                         style={{
-                          width: (width - 20) / 3,
-                          height: (width - 20) / 3,
+                          width: (width - 50) / 3,
+                          height: (width - 50) / 3,
                           margin: 2.5,
                         }}
                       >
@@ -569,8 +577,8 @@ export default function albumdetail(props) {
                       <Pressable
                         onPress={() => setdataimage(dataalbums, item[2].id)}
                         style={{
-                          width: (width - 20) / 3,
-                          height: (width - 20) / 3,
+                          width: (width - 50) / 3,
+                          height: (width - 50) / 3,
                           margin: 2.5,
                         }}
                       >
@@ -653,8 +661,8 @@ export default function albumdetail(props) {
                       <Pressable
                         onPress={() => setdataimage(dataalbums, item[0].id)}
                         style={{
-                          width: (width - 20) / 3,
-                          height: (width - 20) / 3,
+                          width: (width - 50) / 3,
+                          height: (width - 50) / 3,
                           margin: 2.5,
                         }}
                       >
@@ -722,8 +730,8 @@ export default function albumdetail(props) {
                       <Pressable
                         onPress={() => setdataimage(dataalbums, item[1].id)}
                         style={{
-                          width: (width - 20) / 3,
-                          height: (width - 20) / 3,
+                          width: (width - 50) / 3,
+                          height: (width - 50) / 3,
                           margin: 2.5,
                         }}
                       >
@@ -792,8 +800,8 @@ export default function albumdetail(props) {
                     <Pressable
                       onPress={() => setdataimage(dataalbums, item[2].id)}
                       style={{
-                        width: ((width - 12) / 3) * 2,
-                        height: ((width - 12) / 3) * 2,
+                        width: ((width - 45) / 3) * 2,
+                        height: ((width - 45) / 3) * 2,
                         margin: 2.5,
                       }}
                     >
@@ -877,8 +885,8 @@ export default function albumdetail(props) {
                           <Pressable
                             onPress={() => setdataimage(dataalbums, data.id)}
                             style={{
-                              width: (width - 20) / 3,
-                              height: (width - 20) / 3,
+                              width: (width - 50) / 3,
+                              height: (width - 50) / 3,
                               margin: 2.5,
                             }}
                           >
@@ -966,8 +974,8 @@ export default function albumdetail(props) {
                       <Pressable
                         onPress={() => setdataimage(dataalbums, data.id)}
                         style={{
-                          width: (width - 20) / 3,
-                          height: (width - 20) / 3,
+                          width: (width - 50) / 3,
+                          height: (width - 50) / 3,
                           margin: 2.5,
                         }}
                         key={index}
@@ -1047,14 +1055,15 @@ export default function albumdetail(props) {
             style={{
               width: "100%",
               flexDirection: "row",
-              justifyContent: "flex-start",
+              justifyContent: "center",
+              alignItems: "center",
               paddingHorizontal: 2.5,
             }}
           >
             <View
               style={{
-                width: ((width - 12) / 3) * 2,
-                height: ((width - 12) / 3) * 2,
+                width: ((width - 45) / 3) * 2,
+                height: ((width - 45) / 3) * 2,
                 margin: 2.5,
               }}
             >
@@ -1069,8 +1078,8 @@ export default function albumdetail(props) {
             <View>
               <View
                 style={{
-                  width: (width - 20) / 3,
-                  height: (width - 20) / 3,
+                  width: (width - 50) / 3,
+                  height: (width - 50) / 3,
                   margin: 2.5,
                 }}
               >
@@ -1085,8 +1094,8 @@ export default function albumdetail(props) {
               <View
                 onPress={() => setdataimage(dataalbums, item[2].id)}
                 style={{
-                  width: (width - 20) / 3,
-                  height: (width - 20) / 3,
+                  width: (width - 50) / 3,
+                  height: (width - 50) / 3,
                   margin: 2.5,
                 }}
               >
@@ -1104,15 +1113,16 @@ export default function albumdetail(props) {
             style={{
               width: "100%",
               flexDirection: "row",
-              justifyContent: "flex-start",
+              justifyContent: "center",
+              alignItems: "center",
               paddingHorizontal: 2.5,
             }}
           >
             <View>
               <View
                 style={{
-                  width: (width - 20) / 3,
-                  height: (width - 20) / 3,
+                  width: (width - 50) / 3,
+                  height: (width - 50) / 3,
                   margin: 2.5,
                 }}
               >
@@ -1127,8 +1137,8 @@ export default function albumdetail(props) {
               <View
                 onPress={() => setdataimage(dataalbums, item[2].id)}
                 style={{
-                  width: (width - 20) / 3,
-                  height: (width - 20) / 3,
+                  width: (width - 50) / 3,
+                  height: (width - 50) / 3,
                   margin: 2.5,
                 }}
               >
@@ -1143,8 +1153,8 @@ export default function albumdetail(props) {
             </View>
             <View
               style={{
-                width: ((width - 12) / 3) * 2,
-                height: ((width - 12) / 3) * 2,
+                width: ((width - 45) / 3) * 2,
+                height: ((width - 45) / 3) * 2,
                 margin: 2.5,
               }}
             >
@@ -1157,11 +1167,17 @@ export default function albumdetail(props) {
               />
             </View>
           </View>
-          <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <View
               style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
+                width: (width - 50) / 3,
+                height: (width - 50) / 3,
                 margin: 2.5,
               }}
             >
@@ -1176,8 +1192,8 @@ export default function albumdetail(props) {
             <View
               onPress={() => setdataimage(dataalbums, item[2].id)}
               style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
+                width: (width - 50) / 3,
+                height: (width - 50) / 3,
                 margin: 2.5,
               }}
             >
@@ -1192,8 +1208,8 @@ export default function albumdetail(props) {
             <View
               onPress={() => setdataimage(dataalbums, item[2].id)}
               style={{
-                width: (width - 20) / 3,
-                height: (width - 20) / 3,
+                width: (width - 50) / 3,
+                height: (width - 50) / 3,
                 margin: 2.5,
               }}
             >

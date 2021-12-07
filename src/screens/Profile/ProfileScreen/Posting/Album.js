@@ -69,6 +69,7 @@ export default function Album({ item, props, token }) {
                   height: "80%",
                   backgroundColor: "#fff",
                 }}
+                grid
               />
               <View
                 style={{
