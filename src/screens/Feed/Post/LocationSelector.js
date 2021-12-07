@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Pressable,
+  ScrollView,
 } from "react-native";
 import {
   Arrowbackios,
@@ -22,9 +23,11 @@ import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
 
 export default function LocationSelector({
+  props,
   modals,
   setModellocation,
   masukan,
+  datanearby,
 }) {
   const { t, i18n } = useTranslation();
   let [text, setText] = useState("");
@@ -36,8 +39,18 @@ export default function LocationSelector({
       longitude: detail.geometry.location.lng,
     });
   };
+  const hasilNearby = (detail) => {
+    setModellocation(false);
+    masukan({
+      address: detail.name,
+      latitude: detail.latitude,
+      longitude: detail.longitude,
+    });
+  };
 
   let GooglePlacesRef = useRef();
+
+  let [hieghts, setHeights] = useState(30);
 
   return (
     <Modal
@@ -63,7 +76,7 @@ export default function LocationSelector({
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
+          // height: Dimensions.get("screen").height,
         }}
         // behavior={Platform.OS === 'ios' ? 'position' : null}
         // keyboardVerticalOffset={30}
@@ -78,7 +91,7 @@ export default function LocationSelector({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 30 : -21,
+            marginTop: Platform.OS === "ios" ? 30 : -10,
           }}
         >
           <TouchableOpacity
@@ -102,6 +115,10 @@ export default function LocationSelector({
           </Text>
         </View>
         <View
+          onLayout={(e) => {
+            let layout = e.nativeEvent.layout;
+            setHeights(layout.height);
+          }}
           style={{
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
@@ -122,7 +139,6 @@ export default function LocationSelector({
               hasil(details);
             }}
             autoFocus={true}
-            // listViewDisplayed="auto"
             onFail={(error) => alert(error)}
             placeholder={t("findLocation")}
             renderLeftButton={() => {
@@ -137,35 +153,41 @@ export default function LocationSelector({
                 </View>
               );
             }}
-            // renderRightButton={() => {
-            //   return text ? (
-            //     <Pressable
-            //       style={{
-            //         justifyContent: "center",
-            //         alignItems: "center",
-            //         width: 50,
-            //         marginRight: -10,
-            //       }}
-            //       onPress={() => {
-            //         setText("");
-            //         GooglePlacesRef.current.setAddressText("");
-            //       }}
-            //     >
-            //       <Xblue width={20} height={20} />
-            //     </Pressable>
-            //   ) : null;
-            // }}
+            renderRightButton={() => {
+              return Platform.OS == "android" ? (
+                text ? (
+                  <Pressable
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: 50,
+                      marginRight: -10,
+                    }}
+                    onPress={() => {
+                      setText("");
+                      GooglePlacesRef.current.setAddressText("");
+                    }}
+                  >
+                    <Xblue width={20} height={20} />
+                  </Pressable>
+                ) : null
+              ) : null;
+            }}
             textInputProps={{
               onChangeText: (text) => {
                 setText(text);
               },
               value: text,
             }}
-            GooglePlacesSearchQuery={{ rankby: "distance" }}
+            GooglePlacesSearchQuery={{
+              rankby: "distance",
+            }}
+            predefinedPlacesAlwaysVisible={true}
             setAddressText={text}
             ref={GooglePlacesRef}
             enablePoweredByContainer={false}
             renderRow={(data) => {
+              data = data ? data : datanearby;
               var x = data?.description.split(",");
               return (
                 <View
@@ -173,7 +195,6 @@ export default function LocationSelector({
                     flexDirection: "row",
                     alignContent: "flex-start",
                     alignItems: "flex-start",
-                    borderWidth: 0,
                   }}
                 >
                   <View
@@ -221,6 +242,67 @@ export default function LocationSelector({
             }}
           />
         </View>
+        {datanearby && datanearby.length > 0 && !text ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{
+              marginTop: -hieghts + 60,
+              marginHorizontal: 15,
+            }}
+          >
+            {datanearby.map((item, index) => {
+              return index < 10 ? (
+                <Pressable
+                  onPress={() => hasilNearby(item)}
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignContent: "flex-start",
+                    alignItems: "flex-start",
+                    borderBottomWidth: 0.5,
+                    borderBottomColor: "#d1d1d1",
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 20,
+                      paddingTop: 3,
+                      marginLeft: 10,
+                      marginTop: 10,
+                    }}
+                  >
+                    <Pointmapblack />
+                  </View>
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width - 60,
+                      paddingRight: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Lato-Bold",
+                        fontSize: 14,
+                        marginTop: 10,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        fontSize: 12,
+                        marginBottom: 10,
+                      }}
+                    >
+                      {item.address}
+                    </Text>
+                  </View>
+                </Pressable>
+              ) : null;
+            })}
+          </ScrollView>
+        ) : null}
       </KeyboardAvoidingView>
     </Modal>
   );

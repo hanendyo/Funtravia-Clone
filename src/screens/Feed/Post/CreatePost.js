@@ -86,6 +86,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  console.log("🚀 ~ file: CreatePost.js ~ line 89 ~ CreatePost ~ props", props);
   const isFocused = useIsFocused();
   const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
@@ -232,7 +233,8 @@ export default function CreatePost(props) {
           assets.push(data);
         } else {
           const data = new ReactNativeFile({
-            uri: item?.node?.image?.uri,
+            // uri: item?.node?.image?.uri,
+            uri: item?.node?.image?.path,
             type: item?.node?.type,
             name: "image.jpeg",
           });
@@ -808,6 +810,11 @@ export default function CreatePost(props) {
               >
                 <Ripple
                   onPress={() => setModellocation(true)}
+                  // onPress={() =>
+                  //   props.navigation.navigate("FeedStack", {
+                  //     screen: "LocationSelector",
+                  //   })
+                  // }
                   style={{
                     flexDirection: "row",
                     borderRadius: 5,
@@ -909,6 +916,8 @@ export default function CreatePost(props) {
           modals={modellocation}
           setModellocation={(e) => setModellocation(e)}
           masukan={(e) => _setLocation(e)}
+          datanearby={datanearby}
+          props={props}
         />
         {/* <CreateAlbum
           modalAlbum={modalAlbum}

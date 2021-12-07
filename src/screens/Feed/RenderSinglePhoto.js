@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -38,6 +38,11 @@ export default function RenderSinglePhoto({
   const L = (2.2 / 3) * Dimensions.get("screen").width - 40;
   const P = (5 / 4) * Dimensions.get("screen").width - 40;
   const S = Dimensions.get("screen").width - 40;
+
+  useEffect(() => {
+    onLoadStart();
+    onLoad();
+  });
 
   let opacity = useRef(0);
   const onLoadStart = () => {

@@ -7,9 +7,11 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { Text, FunImageBackground, FunImage, FunVideo } from "../../component";
 import { AllPostWhite, AlbumFeed, Mute, Unmute } from "../../assets/svg";
+import { default_image } from "../../assets/png";
 const { width, height } = Dimensions.get("screen");
 import { useTranslation } from "react-i18next";
 
@@ -322,10 +324,10 @@ export default function RenderAlbum({
                 paused={play === data.id && isFocused ? true : true}
               />
             ) : (
-              <FunImage
+              <Image
                 resizeMode="cover"
                 size="f"
-                source={{ uri: item.filepath }}
+                source={item.filepath ? { uri: item.filepath } : default_image}
                 style={{
                   width: 70,
                   height: 70,

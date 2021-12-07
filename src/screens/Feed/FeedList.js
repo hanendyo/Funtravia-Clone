@@ -97,7 +97,8 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  // console.log("props feedlist", props);
+  console.log("props feedlist", props);
+
   const { t, i18n } = useTranslation();
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
@@ -180,8 +181,6 @@ export default function FeedList({ props, token }) {
     props?.route?.params?.assets?.length === undefined
       ? 10
       : props?.route?.params?.assets?.length;
-  console.log("count", count);
-  console.log("countleft", countLeft);
   const timePercentage = count / countLeft;
 
   useEffect(() => {
@@ -194,7 +193,7 @@ export default function FeedList({ props, token }) {
       );
     if (props.route.params) {
       if (props.route.params.isPost === true) {
-        SubmitData(props?.route?.params?.allTime);
+        SubmitData();
         props.route.params.isPost = false;
       }
     }
@@ -206,7 +205,7 @@ export default function FeedList({ props, token }) {
     timeMiliSecond,
   ]);
 
-  const SubmitData = async (time) => {
+  const SubmitData = async () => {
     setLoaded(true);
     setCount(0);
     setTempDataLoading(true);
@@ -229,8 +228,10 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
-
-      // console.log("response", response);
+      console.log(
+        "🚀 ~ file: FeedList.js ~ line 232 ~ SubmitData ~ response",
+        response
+      );
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
@@ -240,7 +241,7 @@ export default function FeedList({ props, token }) {
             setTimeout(() => {
               setLoaded(false);
               refetch();
-            }, 2000);
+            }, 1000);
           }, props.route.params.allTime);
           setTimeout(() => {
             if (ref) {
@@ -1771,7 +1772,7 @@ export default function FeedList({ props, token }) {
                         size="description"
                         type="regular"
                       >
-                        {`1/8 Files`}
+                        {`1/${props?.route?.params?.assets?.length} Files`}
                       </Text>
                     </View>
                   </View>
@@ -1783,7 +1784,7 @@ export default function FeedList({ props, token }) {
                     }}
                   >
                     <Pressable
-                      onPress={() => SubmitData(timeMiliSecond)}
+                      onPress={() => SubmitData()}
                       style={{
                         marginRight: 10,
                         height: "100%",

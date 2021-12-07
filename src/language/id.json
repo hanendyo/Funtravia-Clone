@@ -850,5 +850,7 @@
   "year": "Tahun",
   "successCreatePassword": "Sukses membuat password",
   "failedUpdatedPassword": "Gagal memperbarui password",
-  "max50Char": "Maks. 50 karakter"
+  "max50Char": "Maks. 50 karakter",
+  "deleteFileCrop": "Ingin menghapus",
+  "minFotoUpload": "Oops minimal upload 1 foto/video"
 }

@@ -8,23 +8,35 @@ import {
   Pressable,
   Platform,
   ActivityIndicator,
+  Modal,
 } from "react-native";
-import { Arrowbackios, Arrowbackwhite, Check } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  Check,
+  Delete,
+  CropIcon,
+} from "../../../assets/svg";
 import { Text, Button, FunVideo } from "../../../component";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { useTranslation } from "react-i18next";
 import { Video } from "react-native-compressor";
 import { stat } from "react-native-fs";
+import { TouchableHighlight } from "react-native-gesture-handler";
+import { Image as ImageCompress } from "react-native-compressor";
+import { RNToasty } from "react-native-toasty";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
+  console.log("🚀 ~ file: Crop.js ~ line 33 ~ Crop ~ indexAktif", indexAktif);
   const [croped, setCroped] = useState(0);
   const { t } = useTranslation();
   let [loadVid, setLoadVid] = useState(false);
+  let [modalDelete, setModalDelete] = useState(false);
 
   console.log("data", data);
 
@@ -70,7 +82,7 @@ export default function Crop(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => Next(data, indexAktif)}
+        onPress={() => Next(data)}
         style={{
           height: 55,
           marginRight: 10,
@@ -100,7 +112,75 @@ export default function Crop(props) {
   const P = (5 / 4) * Dimensions.get("screen").width - 30;
   const S = Dimensions.get("screen").width - 30;
 
-  const Next = async (datas, index) => {
+  const Next = async (data) => {
+    let tempData = [...data];
+    for (var i in tempData) {
+      if (tempData[i].node.type.substr(0, 5) == "video") {
+        const result = await Video.compress(tempData[i].node.image.uri, {
+          compressionMethod: "auto",
+        });
+        const statResult = await stat(result);
+        const tempDatas = { ...tempData[i].node.image };
+        tempDatas.path = statResult.path;
+        tempDatas.size = statResult.size;
+        tempData[i].node.image = tempDatas;
+        setData(tempData);
+      } else {
+        const result = await ImageCompress.compress(
+          tempData[i].node.image.uri,
+          {
+            compressionMethod: "auto",
+          }
+        );
+        const statResult = await stat(result);
+        const tempDatas = { ...tempData[i].node.image };
+        tempDatas.path = statResult.path;
+        tempDatas.size = statResult.size;
+        tempData[i].node.image = tempDatas;
+        setData(tempData);
+      }
+    }
+
+    console.log("data dalam next", data);
+
+    props.navigation.dispatch(
+      StackActions.replace("FeedStack", {
+        screen: "CreatePostScreen",
+        params: {
+          location: props.route.params.location,
+          type: "multi",
+          file: data,
+          token: token,
+          id_album: props.route.params.id_album,
+          id_itin: props.route.params.id_itin,
+          title_album: props.route.params.title_album,
+          album: props.route.params.album,
+          ratio: {
+            width: ratio == "L" ? 3 : 4,
+            height: ratio == "L" ? 2.2 : 5,
+            label: ratio,
+          },
+        },
+      })
+    );
+  };
+
+  const deleteFile = (index) => {
+    const tempData = [...data];
+    setIndexAktive(tempData.length - 2 != -1 ? tempData.length - 2 : 0);
+    if (tempData && tempData.length > 1) {
+      setModalDelete(false);
+      tempData.splice(index, 1);
+      setData(tempData);
+    } else {
+      RNToasty.Show({
+        title: t("minFotoUpload"),
+        position: "bottom",
+      });
+    }
+  };
+
+  const Cropped = (index) => {
     let height;
     let width;
     if (ratio == "L") {
@@ -113,104 +193,149 @@ export default function Crop(props) {
       width = 1080;
       height = 1080;
     }
-
-    if (!datas[index].node.image.cropRect) {
-      if (datas[index].node.type.substr(0, 5) == "video") {
-        setLoadVid(true);
+    ImagePicker.openCropper({
+      path: data[index].node.image.uri,
+      width: width,
+      height: height,
+    })
+      .then((image) => {
+        console.log("🚀 ~ file: Crop.js ~ line 250 ~ .then ~ image", image);
+        let tempp = { ...image };
         let tempData = [...data];
-        const result = await Video.compress(datas[index].node.image.uri, {
-          compressionMethod: "auto",
-        });
-        const statResult = await stat(result);
-        const tempDatas = { ...datas[index].node.image };
-        tempDatas.path = statResult.path;
-        tempDatas.size = statResult.size;
-        tempData[index].node.image = tempDatas;
-        setNewRatio(ratio);
-        setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
-        setCroped((e) => e + 1);
-        if (indexAktif + 1 == datas.length) {
-          props.navigation.dispatch(
-            StackActions.replace("FeedStack", {
-              screen: "CreatePostScreen",
-              params: {
-                location: props.route.params.location,
-                type: "multi",
-                file: data,
-                token: token,
-                id_album: props.route.params.id_album,
-                id_itin: props.route.params.id_itin,
-                title_album: props.route.params.title_album,
-                album: props.route.params.album,
-                ratio: {
-                  width: ratio == "L" ? 3 : 4,
-                  height: ratio == "L" ? 2.2 : 5,
-                  label: ratio,
-                },
-              },
-            })
-          );
-        }
-        setLoadVid(false);
-      } else {
-        console.log("cropped fto");
-
-        ImagePicker.openCropper({
-          path: data[index].node.image.uri,
-          // path: data[index].node.image.path,
-          width: width,
-          height: height,
-        })
-          .then((image) => {
-            let tempp = { ...image };
-            tempp.filename = datas[index].node.image.filename;
-            tempp.uri = tempp.path;
-            datas[index].node.image = tempp;
-            setNewRatio(ratio);
-            setCroped((e) => e + 1);
-            if (indexAktif + 1 < datas.length) {
-              setIndexAktive(datas.length - 1 > index ? indexAktif + 1 : 0);
-            }
-            setData(datas);
-          })
-          .catch((error) => console.log(error));
-      }
-    } else {
-      console.log("cropped else");
-
-      props.navigation.dispatch(
-        StackActions.replace("FeedStack", {
-          screen: "CreatePostScreen",
-          params: {
-            location: props.route.params.location,
-            type: "multi",
-            file: data,
-            token: token,
-            id_album: props.route.params.id_album,
-            id_itin: props.route.params.id_itin,
-            title_album: props.route.params.title_album,
-            album: props.route.params.album,
-            ratio: {
-              width: ratio == "L" ? 3 : 4,
-              height: ratio == "L" ? 2.2 : 5,
-              label: ratio,
-            },
-          },
-        })
-      );
-    }
+        tempp.filename = tempData[index].node.image.filename;
+        tempp.uri = tempp.path;
+        tempData[index].node.image = tempp;
+        setData(tempData);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Modal
+        useNativeDriver={true}
+        visible={modalDelete}
+        onRequestClose={() => false}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalDelete(false)}
+          style={{
+            width: Dimensions.get("screen").width + 25,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            left: -21,
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width / 5,
+            alignSelf: "center",
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 3,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 140,
+              justifyContent: "center",
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {`${t("delete")} ${data[indexAktif]?.node?.type?.substr(0, 5)}`}
+              </Text>
+            </View>
+            <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 20,
+                marginHorizontal: 15,
+              }}
+              size="label"
+              type="regular"
+              numberOfLines={2}
+            >
+              {`${t("deleteFileCrop")} ${data[indexAktif]?.node?.type?.substr(
+                0,
+                5
+              )} ?`}
+            </Text>
+            <View style={{ marginTop: 20, marginHorizontal: 15 }}>
+              <Button
+                onPress={() => {
+                  deleteFile(indexAktif);
+                }}
+                color="secondary"
+                text={t("delete")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalDelete(false);
+                }}
+                style={{ marginVertical: 7 }}
+                variant="transparent"
+                text={t("discard")}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View
         style={{
           width: Dimensions.get("screen").width,
           paddingHorizontal: 15,
-          marginTop: 10,
-          // height: Dimensions.get("screen").width,
+          backgroundColor: "#fff",
+          paddingTop: 15,
+          height: Dimensions.get("screen").height,
         }}
       >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            marginBottom: 20,
+          }}
+        >
+          {data[indexAktif]?.node?.type?.substr(0, 5) == "video" ? null : (
+            <TouchableHighlight
+              underlayColor={"#f1f1f1"}
+              // onPress={() => console.log("crop")}
+              onPress={() => Cropped(indexAktif)}
+              style={{ marginRight: 10 }}
+            >
+              <CropIcon height={20} width={20} />
+            </TouchableHighlight>
+          )}
+          <TouchableHighlight
+            underlayColor={"#f1f1f1"}
+            onPress={() => setModalDelete(true)}
+          >
+            <Delete height={20} width={20} />
+          </TouchableHighlight>
+        </View>
         {data &&
         data[indexAktif] &&
         data[indexAktif]?.node?.type?.substr(0, 5) == "video" ? (
@@ -218,8 +343,11 @@ export default function Crop(props) {
             <FunVideo
               style={{
                 width: Dimensions.get("window").width - 30,
-                height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+                // height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+                height: ratio == "L" ? L : ratio == "P" ? P : S,
                 borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "#f1f1f1",
               }}
               resizeMode="cover"
               source={{ uri: data[indexAktif].node.image.uri }}
@@ -246,7 +374,8 @@ export default function Crop(props) {
           <Image
             style={{
               width: Dimensions.get("window").width - 30,
-              height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+              // height: newRatio == "L" ? L : newRatio == "P" ? P : S,
+              height: ratio == "L" ? L : ratio == "P" ? P : S,
               borderRadius: 10,
             }}
             // source={{ uri: data[indexAktif].node.image.path }}
@@ -265,12 +394,13 @@ export default function Crop(props) {
           data={data}
           renderItem={({ item, index }) => (
             <Pressable
-              // onPress={() => setIndexAktive(index)}
+              key={index}
+              onPress={() => setIndexAktive(index)}
               style={{
                 marginRight: data.length == index + 1 ? 0 : 5,
               }}
             >
-              {croped > index ? (
+              {/* {croped > index ? (
                 <View
                   style={{
                     position: "absolute",
@@ -281,7 +411,7 @@ export default function Crop(props) {
                 >
                   <Check width={30} height={30} />
                 </View>
-              ) : null}
+              ) : null} */}
               {item.type === "video" ? (
                 <FunVideo
                   // poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
@@ -295,6 +425,8 @@ export default function Crop(props) {
                     height: 70,
                     borderRadius: 10,
                     opacity: index == indexAktif ? 1 : 0.5,
+                    borderWidth: index == indexAktif ? 1 : 0,
+                    borderColor: index == indexAktif ? "#209fae" : null,
                   }}
                   resizeMode="cover"
                 />
@@ -308,6 +440,8 @@ export default function Crop(props) {
                     height: 70,
                     borderRadius: 10,
                     opacity: index == indexAktif ? 1 : 0.5,
+                    borderWidth: index == indexAktif ? 2 : 0,
+                    borderColor: index == indexAktif ? "#209fae" : null,
                   }}
                 />
               )}
