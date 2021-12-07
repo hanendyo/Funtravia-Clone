@@ -306,7 +306,9 @@ export default function Settings(props) {
                 token: token,
                 setSetting: (e) => setSetting(e),
                 index: index,
-                data: datacurrency.currency_list,
+                data: datacurrency?.currency_list
+                  ? datacurrency?.currency_list
+                  : [],
               },
             })
           }

@@ -110,10 +110,14 @@ export default function ListEventHome(props) {
       i18n.language === "id"
         ? deviceId == "LYA-L29"
           ? normalize(372) + tambahanJudul + tambahan - StatusBar.currentHeight
+          : deviceId == "CPH2127"
+          ? normalize(400) + tambahanJudul + tambahan - StatusBar.currentHeight
           : normalize(385) + tambahanJudul + tambahan - StatusBar.currentHeight
         : deviceId == "LYA-L29"
         ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(380) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        : deviceId == "CPH2127"
+        ? normalize(387) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -837,8 +841,23 @@ export default function ListEventHome(props) {
             style={{
               position: "absolute",
               right:
-                Platform.OS == "ios" ? 59.5 : deviceId == "LYA-L29" ? 55 : 58,
-              top: Platform.OS == "ios" ? 32 : deviceId == "LYA-L29" ? 26 : 29,
+                Platform.OS == "ios"
+                  ? Notch
+                    ? 63
+                    : 59.5
+                  : deviceId == "LYA-L29"
+                  ? 55
+                  : deviceId == "CPH2127"
+                  ? 65
+                  : 58,
+              top:
+                Platform.OS == "ios"
+                  ? 32
+                  : deviceId == "LYA-L29"
+                  ? 26
+                  : deviceId == "CPH2127"
+                  ? 33
+                  : 29,
               borderLeftWidth: 2,
               borderRightWidth: 1,
               borderLeftColor: "#d8d8d8",

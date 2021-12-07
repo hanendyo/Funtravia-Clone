@@ -28,8 +28,8 @@ import DeviceInfo from "react-native-device-info";
 
 export default function SettingCurrency(props) {
   const { t } = useTranslation();
-  let [datacurrency, setdataCurrency] = useState(props.route.params.data);
-  let [storage, setStorage] = useState(props.route.params.setting);
+  let [datacurrency, setdataCurrency] = useState(props?.route?.params?.data);
+  let [storage, setStorage] = useState(props?.route?.params?.setting);
   let slider = useRef();
 
   const HeaderComponent = {

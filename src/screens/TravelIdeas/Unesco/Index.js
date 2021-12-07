@@ -51,25 +51,27 @@ const PullToRefreshDist = 150;
 const deviceId = DeviceInfo.getModel();
 
 export default function Unesco({ navigation, route }) {
+  let [tambahantitle, setTambahanTitle] = useState(0);
   let [tambahan, setTambahan] = useState(0);
   let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(347) + tambahan - 48
-      : normalize(342) + tambahan - 20,
+      ? normalize(347) + tambahantitle + tambahan - 48
+      : normalize(342) + tambahantitle + tambahan - 20,
     android:
       deviceId == "LYA-L29"
-        ? normalize(330) + tambahan - StatusBar.currentHeight
-        : normalize(342) + tambahan - StatusBar.currentHeight,
+        ? normalize(330) + tambahantitle + tambahan - StatusBar.currentHeight
+        : normalize(342) + tambahantitle + tambahan - StatusBar.currentHeight,
   });
 
   let HEADER_MAX_HEIGHT = Platform.select({
     ios: Notch
-      ? normalize(347) + tambahan - 48
-      : normalize(342) + tambahan - 20,
-    android: normalize(380) + tambahan - StatusBar.currentHeight,
+      ? normalize(347) + tambahantitle + tambahan - 48
+      : normalize(342) + tambahantitle + tambahan - 20,
+    android:
+      normalize(380) + tambahantitle + tambahan - StatusBar.currentHeight,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({
@@ -514,16 +516,16 @@ export default function Unesco({ navigation, route }) {
                 if (+lines % 3 == 0) {
                   Platform.OS == "ios"
                     ? Notch
-                      ? setTambahan(lines * 3)
-                      : setTambahan(lines * -6)
-                    : setTambahan(lines * 1);
+                      ? setTambahanTitle(lines * 3)
+                      : setTambahanTitle(lines * -6)
+                    : setTambahanTitle(lines * 1);
                   // setTambahanJudul(lines * 12);
                 } else {
                   Platform.OS == "ios"
                     ? Notch
-                      ? setTambahan(lines * -10)
-                      : setTambahan(lines * -20)
-                    : setTambahan(lines * 1);
+                      ? setTambahanTitle(lines * -10)
+                      : setTambahanTitle(lines * -20)
+                    : setTambahanTitle(lines * 1);
                 }
               }}
               size="title"
