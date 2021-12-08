@@ -1022,7 +1022,7 @@ const Index = (props) => {
                     style={{ marginRight: 5 }}
                   />
                   <Text size="description" type="regular">
-                    {t(MovieLocation)}
+                    {t(`MovieLocation`)}
                   </Text>
                 </View>
               ) : null}
@@ -2631,22 +2631,50 @@ const Index = (props) => {
       </Animated.View>
 
       {/* End Button Like and Share*/}
-
+      {
+        (console.log(`LAYIMG: `, layoutImage),
+        console.log(`LAYHEAD: `, layoutHeader),
+        console.log(`LAYUNES: `, layoutUnesco))
+      }
       {/* View SUb*/}
       <Animated.View
         style={{
           position: "absolute",
           marginTop:
-            Platform.OS == "ios"
+            layoutUnesco === 0
+              ? Platform.OS == "ios"
+                ? Notch
+                  ? normalize(layoutImage) +
+                    normalize(layoutHeader) +
+                    // normalize(layoutHeader) / normalize(3.5) +
+                    normalize(layoutUnesco) +
+                    normalize(23)
+                  : normalize(layoutImage) +
+                    normalize(layoutHeader) +
+                    // normalize(layoutHeader) / normalize(2.2) +
+                    normalize(layoutUnesco) +
+                    normalize(30)
+                : deviceId == "LYA-L29"
+                ? normalize(layoutImage) +
+                  normalize(layoutHeader) +
+                  normalize(layoutUnesco) +
+                  normalize(57)
+                : normalize(layoutImage) +
+                  normalize(layoutHeader) +
+                  normalize(layoutUnesco) +
+                  normalize(27)
+              : Platform.OS == "ios"
               ? Notch
                 ? normalize(layoutImage) +
                   normalize(layoutHeader) +
-                  normalize(layoutHeader) / normalize(2.5) +
-                  normalize(layoutUnesco)
+                  // normalize(layoutHeader) / normalize(3.5) +
+                  normalize(layoutUnesco) +
+                  normalize(10)
                 : normalize(layoutImage) +
                   normalize(layoutHeader) +
-                  normalize(layoutHeader) / normalize(2.2) +
-                  normalize(layoutUnesco)
+                  // normalize(layoutHeader) / normalize(2.2) +
+                  normalize(layoutUnesco) +
+                  normalize(20)
               : deviceId == "LYA-L29"
               ? normalize(layoutImage) +
                 normalize(layoutHeader) +
@@ -2655,7 +2683,7 @@ const Index = (props) => {
               : normalize(layoutImage) +
                 normalize(layoutHeader) +
                 normalize(layoutUnesco) +
-                normalize(22.5),
+                normalize(15),
           transform: [{ translateY: yButtonLikeShare }],
           zIndex: 100,
           opacity: hides.current,
