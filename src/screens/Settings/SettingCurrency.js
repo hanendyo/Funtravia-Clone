@@ -100,7 +100,7 @@ export default function SettingCurrency(props) {
   });
 
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
+    props.navigation?.setOptions(HeaderComponent);
     pushselected();
   }, []);
 

@@ -198,22 +198,24 @@ export default function CardEvents({ data, props, setData, token }) {
                   justifyContent: "space-between",
                 }}
               >
-                <View style={{ flex: 1, paddingRight: 10 }}>
+                <View
+                  style={{
+                    height: 21,
+                    minWidth: 60,
+                    borderRadius: 11,
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(226, 236, 248, 0.85)",
+                    paddingHorizontal: 10,
+                  }}
+                >
                   <Text
+                    size="small"
                     style={{
-                      backgroundColor: "#daf0f2",
-                      paddingBottom: 5,
-                      paddingTop: 3,
-                      paddingHorizontal: 10,
-                      alignSelf: "flex-start",
-                      borderRadius: 20,
-                      overflow: "hidden",
+                      textAlign: "center",
                     }}
-                    size="description"
-                    type="regular"
-                    numberOfLines={1}
                   >
-                    {item?.category?.name}
+                    {item.category.name}
                   </Text>
                 </View>
                 <View
@@ -221,7 +223,7 @@ export default function CardEvents({ data, props, setData, token }) {
                     height: 25,
                     width: 25,
                     borderRadius: 15,
-                    backgroundColor: "#fff",
+                    backgroundColor: "rgba(226, 236, 248, 0.85)",
                   }}
                 >
                   {item.liked === false ? (
