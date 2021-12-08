@@ -839,9 +839,9 @@ export default function FeedList({ props, token }) {
 
   const dataLoadingFeed = [
     {
-      percentage: 100,
+      percentage: 99,
       color: "#209fae",
-      max: 100,
+      max: 99,
     },
   ];
 

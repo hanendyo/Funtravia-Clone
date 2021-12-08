@@ -119,7 +119,8 @@ export default function Crop(props) {
         const result = await Video.compress(tempData[i].node.image.uri, {
           compressionMethod: "auto",
         });
-        const statResult = await stat(result);
+        // const statResult = await stat(result);
+        const statResult = await stat(tempData[i].node.image.uri);
         const tempDatas = { ...tempData[i].node.image };
         tempDatas.path = statResult.path;
         tempDatas.size = statResult.size;
