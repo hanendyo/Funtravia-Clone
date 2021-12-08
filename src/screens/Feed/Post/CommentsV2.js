@@ -2033,6 +2033,7 @@ export default function Comments(props) {
                 height: 50,
                 alignItems: "center",
                 justifyContent: "center",
+                marginLeft: Platform.OS == "ios" ? 20 : 15,
               }}
             >
               <Text

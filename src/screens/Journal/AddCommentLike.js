@@ -327,9 +327,9 @@ export default function AddCommentLike({
                 : -5
               : Platform.OS == "ios"
               ? Notch
-                ? -10
-                : -10
-              : -10,
+                ? -15
+                : -15
+              : -15,
           }}
           onPress={() => comment(dataList.id, text)}
         >
