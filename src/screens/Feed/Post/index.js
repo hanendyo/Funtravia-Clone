@@ -172,7 +172,8 @@ export default function Post(props) {
           compressionMethod: "auto",
         });
 
-        const statResult = await stat(result);
+        // const statResult = await stat(result);
+        const statResult = await stat(tempData.uri);
         tempData.height = height;
         tempData.width = width;
         tempData.size = statResult.size;
