@@ -50,6 +50,7 @@ import DeviceInfo from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
+  console.log("props", props);
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
@@ -117,11 +118,18 @@ export default function ItineraryDestination(props) {
         ? [props.route.params.idtype]
         : [],
     keyword: null,
+    grouptype:
+      props.route.params && props.route.params?.groupid
+        ? [props.route.params?.groupid]
+        : [],
     countries:
       props.route.params && props.route.params.idcountries
         ? [props.route.params.idcountries]
         : [],
-    provinces: [],
+    provinces:
+      props.route.params && props.route.params.idprovince
+        ? [props.route.params.idprovince]
+        : [],
     cities:
       props.route.params && props.route.params.idcity
         ? [props.route.params.idcity]
@@ -238,6 +246,8 @@ export default function ItineraryDestination(props) {
       // await UpdateFilter();
     },
   });
+
+  console.log("search", search);
 
   const [GetListDestination, { data, loading, error }] = useLazyQuery(
     Listdestination,
@@ -443,6 +453,7 @@ export default function ItineraryDestination(props) {
 
   const _handleCheckCity = async (id, index, item) => {
     let tempe = [...dataFilterCity];
+
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
@@ -483,8 +494,8 @@ export default function ItineraryDestination(props) {
 
     for (var ci of dataFilterCity) {
       if (ci.checked === true && ci.type == "City") {
-        cityss.push(c.id);
-        filterz.push(c);
+        cityss.push(ci.id);
+        filterz.push(ci);
       }
     }
 
@@ -495,8 +506,8 @@ export default function ItineraryDestination(props) {
 
     for (var pr of dataFilterCity) {
       if (pr.checked === true && pr.type == "Province") {
-        cityss.push(c.id);
-        filterz.push(c);
+        province.push(pr.id);
+        filterz.push(pr);
       }
     }
 
@@ -507,7 +518,7 @@ export default function ItineraryDestination(props) {
 
     // filterd = await filterd.concat(province);
 
-    data["grouptype"] = await Categori;
+    data["type"] = await Categori;
     data["facilities"] = await fasilitas;
     data["countries"] = await Countryss;
     data["cities"] = await cityss;
@@ -518,9 +529,8 @@ export default function ItineraryDestination(props) {
     await cekData();
     await setSearch(data);
     await setshow(false);
+    await GetListDestination();
   };
-
-  console.log("search", search);
 
   const ClearAllFilter = () => {
     setSearch({
@@ -1286,7 +1296,9 @@ export default function ItineraryDestination(props) {
                           }),
                         }}
                         onValueChange={() =>
-                          _handleCheckCity(item["id"], index, item)
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheck(item["id"], index, item)
                         }
                         value={item["checked"]}
                       />
