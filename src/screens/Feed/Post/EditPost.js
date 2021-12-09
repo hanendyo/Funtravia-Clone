@@ -363,10 +363,11 @@ export default function EditPost(props) {
           backgroundColor: "white",
           marginHorizontal: 10,
           marginTop: 10,
+          paddingTop: -80,
 
           borderTopStartRadius: 15,
           borderTopEndRadius: 15,
-          minHeight: Dimensions.get("window").height,
+          height: Dimensions.get("window").height,
         }}
       >
         <Loading show={loadingok} />
@@ -414,9 +415,8 @@ export default function EditPost(props) {
                     // marginTop: 7,
                   }}
                 >
-                  {dataPost && dataPost.user
-                    ? dataPost.user.first_name + " " + dataPost.user.last_name
-                    : null}
+                  {dataPost && dataPost.user ? dataPost.user.first_name : null}{" "}
+                  {dataPost.user.last_name ? dataPost.user.last_name : null}
                 </Text>
                 <View
                   style={{
@@ -508,11 +508,12 @@ export default function EditPost(props) {
             <View
               style={{
                 flexDirection: "row",
-                marginTop: 10,
+                marginTop: 40,
                 backgroundColor: "#ffffff",
                 borderBottomColor: "#209FAE",
+                // borderWidth: 1,
                 borderBottomWidth: 1,
-                marginHorizontal: 10,
+                marginHorizontal: 15,
                 // height: Dimensions.get('screen').height / 3,
               }}
             >
@@ -521,7 +522,7 @@ export default function EditPost(props) {
                 placeholder={"Write a caption.."}
                 maxLength={255}
                 style={{
-                  height: 75,
+                  paddingVertical: 10,
                   width: (Dimensions.get("screen").width * 80) / 100,
                   // borderBottomColor: '#f0f0f0f0',
                   // borderBottomWidth: 1,

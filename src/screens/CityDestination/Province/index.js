@@ -868,8 +868,8 @@ export default function ProvinceDetail(props) {
                           key={"keydestination" + index}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
-                              idtype: item.id_type,
-                              idcity: render.id,
+                              groupid: item.id,
+                              idprovince: render.id,
                               token: token,
                             });
                           }}
