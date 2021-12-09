@@ -152,7 +152,7 @@ export default function ItineraryCategory(props) {
   });
 
   console.log("dataPopuler", dataPopuler?.itinerary_list_populer?.datas);
-
+  console.log("order", order);
   const [refreshing, setRefreshing] = useState(false);
 
   const Refresh = useCallback(() => {
