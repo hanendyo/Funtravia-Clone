@@ -700,7 +700,7 @@ export default function Comments(props) {
                   props?.route?.params?.countKoment(tempDataPost.id);
                 }
               } catch (err) {
-                console.log("err", err);
+                alert(err);
               }
             } else {
               throw new Error(response.data.comment_post.message);

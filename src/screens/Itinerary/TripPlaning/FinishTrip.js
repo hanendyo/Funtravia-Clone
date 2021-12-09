@@ -25,7 +25,7 @@ export default function ActivePlan({
   GetData,
   GetDataActive,
   GetDataFinish,
-  setData,
+  setDataFinish,
   setting,
   refetchFinish,
 }) {
@@ -314,7 +314,7 @@ export default function ActivePlan({
             props={props}
             token={token}
             setting={setting}
-            setData={(e) => setData(e)}
+            setData={(e) => setDataFinish(e)}
           />
         </ScrollView>
         <View

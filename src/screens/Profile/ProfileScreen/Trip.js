@@ -34,6 +34,7 @@ import Ripple from "react-native-material-ripple";
 import { dateFormats } from "../../../component/src/dateformatter";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
+import { RNToasty } from "react-native-toasty";
 
 const Notch = DeviceInfo.hasNotch();
 const arrayShadow = {
@@ -44,14 +45,18 @@ const arrayShadow = {
 };
 
 export default function Trip(
-  { item, props, token, position },
+  { position, token, props, item, index },
   capHeight,
   setting,
   data,
   modalLogin,
   setModalLogin,
   soon,
-  setSoon
+  setSoon,
+  dataTrip,
+  setdataTrip,
+  mutationliked,
+  mutationUnliked
 ) {
   const getDN = (start, end) => {
     var x = start;
@@ -118,7 +123,7 @@ export default function Trip(
             const tempDataDetail = { ...tempData[index] };
             tempDataDetail.liked = true;
             tempData.splice(index, 1, tempDataDetail);
-            setData(tempData);
+            setdataTrip(tempData);
           } else {
             RNToasty.Show({
               title: "FailedLikeItinerary",
@@ -155,7 +160,7 @@ export default function Trip(
             const tempDataDetail = { ...tempData[index] };
             tempDataDetail.liked = false;
             tempData.splice(index, 1, tempDataDetail);
-            setData(tempData);
+            setdataTrip(tempData);
           } else {
             RNToasty.Show({
               title: "somethingwrong",

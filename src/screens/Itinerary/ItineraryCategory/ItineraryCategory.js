@@ -11,6 +11,8 @@ import {
   Platform,
   Modal as ModalRN,
   ScrollView,
+  SafeAreaView,
+  RefreshControl,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -155,10 +157,10 @@ export default function ItineraryCategory(props) {
   console.log("order", order);
   const [refreshing, setRefreshing] = useState(false);
 
-  const Refresh = useCallback(() => {
+  const _Refresh = useCallback(() => {
     setRefreshing(true);
     refetch();
-    wait(1000).then(() => {
+    wait(2000).then(() => {
       setRefreshing(false);
     });
   }, []);
@@ -221,30 +223,6 @@ export default function ItineraryCategory(props) {
     shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
     elevation: Platform.OS == "ios" ? 3 : 1.5,
   };
-
-  const [
-    mutationliked,
-    { loading: loadingLike, data: dataLike, error: errorLike },
-  ] = useMutation(ItineraryLiked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
-
-  const [
-    mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  ] = useMutation(ItineraryUnliked, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -404,333 +382,348 @@ export default function ItineraryCategory(props) {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "white",
-        }}
-      >
-        <View
-          style={{
-            marginTop: 10,
-            flexDirection: "row",
-            backgroundColor: "white",
-            justifyContent: "center",
-          }}
-        >
-          <FlatList
-            data={dataCategory?.category_journal}
-            horizontal={true}
-            initialScrollIndex={props.route.params.index}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-            ListHeaderComponent={
-              loadingCategory ? (
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: "white",
-                    width: Dimensions.get("screen").height * 0.23,
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator animating={true} color="#209FAE" />
-                </View>
-              ) : null
-            }
-            renderItem={({ item, index }) => {
-              return dataType === item.id ? (
-                <Ripple
-                  id={item.name}
-                  onLayout={(event) => {
-                    const layout = event.nativeEvent;
-                    setY(layout);
-                  }}
-                  style={{
-                    overflow: "hidden",
-                    height: "95%",
-                    marginRight: 5,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 5,
-                    marginTop: 1,
-                    marginLeft: 1,
-                    backgroundColor: "#209FAE",
-                    borderColor: "#209FAE",
-                    paddingHorizontal: 5,
-                    marginVertical: 4,
-                    borderWidth: 1,
-                    flexDirection: "row",
-                  }}
-                  onPress={() => unSelect(item.id)}
-                >
-                  <View style={{ width: 30, height: 30, marginRight: 5 }}>
-                    <FunIcon
-                      icon={item.icon}
-                      height={30}
-                      width={30}
-                      fill={"white"}
-                      // style={{ marginRight: 5 }}
-                    />
-                  </View>
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={{
-                      textAlign: "center",
-                      color: "white",
-                    }}
-                  >
-                    {item?.name}
-                  </Text>
-                </Ripple>
-              ) : (
-                <Ripple
-                  style={{
-                    overflow: "hidden",
-                    height: "95%",
-                    marginRight: 5,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 5,
-                    marginTop: 1,
-                    marginLeft: 1,
-                    backgroundColor: "white",
-                    borderColor: "#209FAE",
-                    paddingHorizontal: 5,
-                    marginVertical: 4,
-                    borderWidth: 1,
-                    flexDirection: "row",
-                  }}
-                  onPress={() => select(item.id)}
-                >
-                  <View style={{ width: 30, height: 30, marginRight: 5 }}>
-                    <FunIcon
-                      icon={item.icon}
-                      height={30}
-                      width={30}
-                      // style={{ marginRight: 5 }}
-                    />
-                  </View>
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={{
-                      textAlign: "center",
-                      color: "#209FAE",
-                    }}
-                  >
-                    {item?.name}
-                  </Text>
-                </Ripple>
-              );
-            }}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_Refresh}
+            tintColor={"#209fae"}
           />
-        </View>
-        <View
-          style={{
-            marginTop: 5,
-            width: Dimensions.get("screen").width,
-            flexDirection: "row",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: arrayShadow.shadowOpacity,
-            shadowRadius: arrayShadow.shadowRadius,
-            elevation: arrayShadow.elevation,
-            backgroundColor: "white",
-            justifyContent: "space-around",
-          }}
-        >
-          <Ripple
-            onPress={() => setActives("Itinerary")}
-            style={{
-              width: Dimensions.get("screen").width * 0.333,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Itinerary" ? 2 : 1,
-              borderBottomColor: actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
-              paddingTop: 10,
-              paddingBottom: 15,
-              flexDirection: "row",
-            }}
-          >
-            {actives == "Itinerary" ? (
-              <ItineraryIcon
-                style={{
-                  marginRight: 5,
-                }}
-                height={20}
-                width={20}
-              />
-            ) : (
-              <ItineraryIconGray
-                style={{
-                  marginRight: 5,
-                }}
-                height={20}
-                width={20}
-              />
-            )}
-            <Text
-              size="label"
-              type={actives == "Itinerary" ? "bold" : "light"}
-              style={{
-                color: actives == "Itinerary" ? "#209FAE" : "#464646",
-                paddingBottom: 3,
-              }}
-            >
-              Itinerary
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => setActives("Album")}
-            style={{
-              width: Dimensions.get("screen").width * 0.333,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Album" ? 2 : 1,
-              borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
-              paddingTop: 10,
-              paddingBottom: 15,
-              flexDirection: "row",
-            }}
-          >
-            {actives == "Album" ? (
-              <TravelAlbum
-                style={{
-                  marginRight: 5,
-                }}
-                height={20}
-                width={20}
-              />
-            ) : (
-              <AlbumIconGray
-                style={{
-                  marginRight: 5,
-                }}
-                height={20}
-                width={20}
-              />
-            )}
-            <Text
-              size="label"
-              type={actives == "Album" ? "bold" : "regular"}
-              style={{
-                color: actives == "Album" ? "#209FAE" : "#464646",
-              }}
-            >
-              Album
-            </Text>
-          </Ripple>
-          <Ripple
-            onPress={() => setSoon(true)}
-            style={{
-              width: Dimensions.get("screen").width * 0.333,
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottomWidth: actives == "Stories" ? 2 : 1,
-              borderBottomColor: actives == "Stories" ? "#249FAE" : "#EEEEEE",
-              paddingTop: 10,
-              paddingBottom: 15,
-              flexDirection: "row",
-            }}
-          >
-            <TravelStoriesdis
-              style={{ marginRight: 5 }}
-              height={20}
-              width={20}
-            />
-            <Text
-              size="label"
-              // type={actives == "Stories" ? "bold" : "reguler"}
-              // style={{
-              //   color: actives == "Stories" ? "#209FAE" : "#464646",
-              // }}
-              type={"regular"}
-              style={{
-                color: "#c7c7c7",
-              }}
-            >
-              Story
-            </Text>
-          </Ripple>
-        </View>
-      </View>
-      <RenderUtama aktif={actives} />
-      <ModalRN
-        useNativeDriver={true}
-        visible={soon}
-        onRequestClose={() => setSoon(false)}
-        transparent={true}
-        animationType="fade"
+        }
+        style={{ flex: 1, marginBottom: 20 }}
       >
-        <Pressable
-          // onPress={() => setModalLogin(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
         <View
           style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 3,
-            marginTop: Dimensions.get("screen").height / 3,
+            flex: 1,
           }}
         >
           <View
             style={{
-              // backgroundColor: "white",
-              // width: Dimensions.get("screen").width - 100,
-              padding: 20,
-              paddingHorizontal: 20,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 10,
+              backgroundColor: "white",
             }}
           >
-            <Image
-              source={Bg_soon}
+            <View
               style={{
-                height: Dimensions.get("screen").width - 180,
-                width: Dimensions.get("screen").width - 110,
-                borderRadius: 10,
+                marginTop: 10,
+                flexDirection: "row",
+                backgroundColor: "white",
+                justifyContent: "center",
+              }}
+            >
+              <FlatList
+                data={dataCategory?.category_journal}
+                horizontal={true}
+                initialScrollIndex={props.route.params.index}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: 15 }}
+                ListHeaderComponent={
+                  loadingCategory ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: "white",
+                        width: Dimensions.get("screen").height * 0.23,
+                        alignItems: "center",
+                      }}
+                    >
+                      <ActivityIndicator animating={true} color="#209FAE" />
+                    </View>
+                  ) : null
+                }
+                renderItem={({ item, index }) => {
+                  return dataType === item.id ? (
+                    <Ripple
+                      id={item.name}
+                      onLayout={(event) => {
+                        const layout = event.nativeEvent;
+                        setY(layout);
+                      }}
+                      style={{
+                        overflow: "hidden",
+                        height: "95%",
+                        marginRight: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 5,
+                        marginTop: 1,
+                        marginLeft: 1,
+                        backgroundColor: "#209FAE",
+                        borderColor: "#209FAE",
+                        paddingHorizontal: 5,
+                        marginVertical: 4,
+                        borderWidth: 1,
+                        flexDirection: "row",
+                      }}
+                      onPress={() => unSelect(item.id)}
+                    >
+                      <View style={{ width: 30, height: 30, marginRight: 5 }}>
+                        <FunIcon
+                          icon={item.icon}
+                          height={30}
+                          width={30}
+                          fill={"white"}
+                          // style={{ marginRight: 5 }}
+                        />
+                      </View>
+                      <Text
+                        size="label"
+                        type="bold"
+                        style={{
+                          textAlign: "center",
+                          color: "white",
+                        }}
+                      >
+                        {item?.name}
+                      </Text>
+                    </Ripple>
+                  ) : (
+                    <Ripple
+                      style={{
+                        overflow: "hidden",
+                        height: "95%",
+                        marginRight: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 5,
+                        marginTop: 1,
+                        marginLeft: 1,
+                        backgroundColor: "white",
+                        borderColor: "#209FAE",
+                        paddingHorizontal: 5,
+                        marginVertical: 4,
+                        borderWidth: 1,
+                        flexDirection: "row",
+                      }}
+                      onPress={() => select(item.id)}
+                    >
+                      <View style={{ width: 30, height: 30, marginRight: 5 }}>
+                        <FunIcon
+                          icon={item.icon}
+                          height={30}
+                          width={30}
+                          // style={{ marginRight: 5 }}
+                        />
+                      </View>
+                      <Text
+                        size="label"
+                        type="bold"
+                        style={{
+                          textAlign: "center",
+                          color: "#209FAE",
+                        }}
+                      >
+                        {item?.name}
+                      </Text>
+                    </Ripple>
+                  );
+                }}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+            <View
+              style={{
+                marginTop: 5,
+                width: Dimensions.get("screen").width,
+                flexDirection: "row",
+                shadowColor: "gray",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: arrayShadow.shadowOpacity,
+                shadowRadius: arrayShadow.shadowRadius,
+                elevation: arrayShadow.elevation,
+                backgroundColor: "white",
+                justifyContent: "space-around",
+              }}
+            >
+              <Ripple
+                onPress={() => setActives("Itinerary")}
+                style={{
+                  width: Dimensions.get("screen").width * 0.333,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomWidth: actives == "Itinerary" ? 2 : 1,
+                  borderBottomColor:
+                    actives == "Itinerary" ? "#249FAE" : "#EEEEEE",
+                  paddingTop: 10,
+                  paddingBottom: 15,
+                  flexDirection: "row",
+                }}
+              >
+                {actives == "Itinerary" ? (
+                  <ItineraryIcon
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : (
+                  <ItineraryIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                )}
+                <Text
+                  size="label"
+                  type={actives == "Itinerary" ? "bold" : "light"}
+                  style={{
+                    color: actives == "Itinerary" ? "#209FAE" : "#464646",
+                    paddingBottom: 3,
+                  }}
+                >
+                  Itinerary
+                </Text>
+              </Ripple>
+              <Ripple
+                onPress={() => setActives("Album")}
+                style={{
+                  width: Dimensions.get("screen").width * 0.333,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomWidth: actives == "Album" ? 2 : 1,
+                  borderBottomColor: actives == "Album" ? "#249FAE" : "#EEEEEE",
+                  paddingTop: 10,
+                  paddingBottom: 15,
+                  flexDirection: "row",
+                }}
+              >
+                {actives == "Album" ? (
+                  <TravelAlbum
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : (
+                  <AlbumIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                )}
+                <Text
+                  size="label"
+                  type={actives == "Album" ? "bold" : "regular"}
+                  style={{
+                    color: actives == "Album" ? "#209FAE" : "#464646",
+                  }}
+                >
+                  Album
+                </Text>
+              </Ripple>
+              <Ripple
+                onPress={() => setSoon(true)}
+                style={{
+                  width: Dimensions.get("screen").width * 0.333,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomWidth: actives == "Stories" ? 2 : 1,
+                  borderBottomColor:
+                    actives == "Stories" ? "#249FAE" : "#EEEEEE",
+                  paddingTop: 10,
+                  paddingBottom: 15,
+                  flexDirection: "row",
+                }}
+              >
+                <TravelStoriesdis
+                  style={{ marginRight: 5 }}
+                  height={20}
+                  width={20}
+                />
+                <Text
+                  size="label"
+                  // type={actives == "Stories" ? "bold" : "reguler"}
+                  // style={{
+                  //   color: actives == "Stories" ? "#209FAE" : "#464646",
+                  // }}
+                  type={"regular"}
+                  style={{
+                    color: "#c7c7c7",
+                  }}
+                >
+                  Story
+                </Text>
+              </Ripple>
+            </View>
+          </View>
+          <RenderUtama aktif={actives} />
+          <ModalRN
+            useNativeDriver={true}
+            visible={soon}
+            onRequestClose={() => setSoon(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              // onPress={() => setModalLogin(false)}
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
                 position: "absolute",
               }}
-            />
-            <Text type="bold" size="h5">
-              {t("comingSoon")}!
-            </Text>
-            <Text type="regular" size="label" style={{ marginTop: 5 }}>
-              {t("soonUpdate")}.
-            </Text>
-            <Button
-              text={"OK"}
+            ></Pressable>
+            <View
               style={{
-                marginTop: 20,
-                width: Dimensions.get("screen").width / 5,
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                borderRadius: 3,
+                marginTop: Dimensions.get("screen").height / 3,
               }}
-              type="box"
-              onPress={() => setSoon(false)}
-            ></Button>
-          </View>
+            >
+              <View
+                style={{
+                  // backgroundColor: "white",
+                  // width: Dimensions.get("screen").width - 100,
+                  padding: 20,
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10,
+                }}
+              >
+                <Image
+                  source={Bg_soon}
+                  style={{
+                    height: Dimensions.get("screen").width - 180,
+                    width: Dimensions.get("screen").width - 110,
+                    borderRadius: 10,
+                    position: "absolute",
+                  }}
+                />
+                <Text type="bold" size="h5">
+                  {t("comingSoon")}!
+                </Text>
+                <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                  {t("soonUpdate")}.
+                </Text>
+                <Button
+                  text={"OK"}
+                  style={{
+                    marginTop: 20,
+                    width: Dimensions.get("screen").width / 5,
+                  }}
+                  type="box"
+                  onPress={() => setSoon(false)}
+                ></Button>
+              </View>
+            </View>
+          </ModalRN>
         </View>
-      </ModalRN>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
