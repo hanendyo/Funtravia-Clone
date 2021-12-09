@@ -58,7 +58,7 @@ export default function Unesco({ navigation, route }) {
   let [modalcountry, setModelCountry] = useState(false);
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(347) + tambahantitle + tambahan - 48
+      ? normalize(355) + tambahantitle + tambahan - 48
       : normalize(342) + tambahantitle + tambahan - 20,
     android:
       deviceId == "LYA-L29"

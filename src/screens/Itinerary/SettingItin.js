@@ -21,6 +21,7 @@ import { useLazyQuery } from "@apollo/react-hooks";
 
 export default function SettingItin(props) {
   const { t, i18n } = useTranslation();
+  let [index, setIndex] = useState(0);
   const HeaderComponent = {
     headerShown: true,
     title: "Setting",
@@ -75,7 +76,7 @@ export default function SettingItin(props) {
   const [setting, setSetting] = useState("");
 
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
+    props.navigation?.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
     });
@@ -221,7 +222,23 @@ export default function SettingItin(props) {
 							</CustomText> */}
           </View>
           <View>
-            <TouchableOpacity onPress={() => setModalSetCurrency(true)}>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate("AccountStack", {
+                  screen: "SettingCurrency",
+                  params: {
+                    props: props,
+                    setting: setting,
+                    token: token,
+                    setSetting: (e) => setSetting(e),
+                    index: 0,
+                    data: datacurrency?.currency_list
+                      ? datacurrency?.currency_list
+                      : [],
+                  },
+                })
+              }
+            >
               <Text
                 size="description"
                 type="reguler"
@@ -236,7 +253,7 @@ export default function SettingItin(props) {
         </ListItem>
       </List>
 
-      {datacurrency && datacurrency.currency_list.length ? (
+      {/* {datacurrency && datacurrency.currency_list.length ? (
         <SettingCurrency
           modals={modalSetCurrency}
           setModelSetCurrency={(e) => setModalSetCurrency(e)}
@@ -245,7 +262,7 @@ export default function SettingItin(props) {
           selected={setting}
           token={token}
         />
-      ) : null}
+      ) : null} */}
     </ScrollView>
   );
 }

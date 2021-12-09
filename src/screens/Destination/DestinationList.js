@@ -9,7 +9,13 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import { Capital, CustomImage, FunIcon, FunImage } from "../../component";
+import {
+  Capital,
+  CardDestination,
+  CustomImage,
+  FunIcon,
+  FunImage,
+} from "../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
   LikeEmpty,
@@ -101,7 +107,7 @@ export default function ItineraryDestination(props) {
   let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
-  let [dataDestination, setdataDestination] = useState([]);
+  let [dataDes, setdataDes] = useState([]);
 
   let [aktif, setaktif] = useState("categories");
 
@@ -265,7 +271,7 @@ export default function ItineraryDestination(props) {
         },
       },
       onCompleted: () => {
-        setdataDestination(data.destinationList_v2);
+        setdataDes(data.destinationList_v2);
       },
     }
   );
@@ -449,61 +455,59 @@ export default function ItineraryDestination(props) {
     let data = { ...search };
     let filterz = [];
     let filterd = [];
+    let Categori = [];
+    let fasilitas = [];
+    let Countryss = [];
+    let cityss = [];
+    let province = [];
 
-    let Categori = dataFilterCategori.filter((cat) => cat.checked === true);
-    filterz = await filterz.concat(Categori);
+    for (var x of dataFilterCategori) {
+      if (x.checked === true) {
+        Categori.push(x.id);
+        filterz.push(x);
+      }
+    }
+    for (var y of dataFilterFacility) {
+      if (y.checked === true) {
+        fasilitas.push(y.id);
+        filterz.push(y);
+      }
+    }
 
-    // for (var x of dataFilterCategori) {
+    for (var c of dataFilterCity) {
+      if (c.checked === true && c.type == "Country") {
+        Countryss.push(c.id);
+        filterz.push(c);
+      }
+    }
 
-    //   if (x.checked === true) {
-    //     Categori.push(x.id);
-    //     filterz.push(x);
-    //   }
-    // }
+    for (var ci of dataFilterCity) {
+      if (ci.checked === true && ci.type == "City") {
+        cityss.push(c.id);
+        filterz.push(c);
+      }
+    }
 
-    let fasilitas = dataFilterFacility.filter((fas) => fas.checked === true);
-    filterz = await filterz.concat(fasilitas);
+    // filterd = await filterd.concat(Countryss);
+    // let cityss = dataFilterCity.filter(
+    //   (fasc) => fasc.type === "City" && fasc.checked === true
+    // );
 
-    // [];
-    // for (var y of dataFilterFacility) {
-    //   if (y.checked === true) {
-    //     fasilitas.push(y.id);
-    //     filterz.push(y);
-    //   }
-    // }
+    for (var pr of dataFilterCity) {
+      if (pr.checked === true && pr.type == "Province") {
+        cityss.push(c.id);
+        filterz.push(c);
+      }
+    }
 
-    let Countryss = dataFilterCity.filter(
-      (fas) => fas.type === "Country" && fas.checked === true
-    );
+    // filterd = await filterd.concat(cityss);
+    // let province = dataFilterCity.filter(
+    //   (fasd) => fasd.type === "Province" && fasd.checked === true
+    // );
 
-    filterd = await filterd.concat(Countryss);
-    let cityss = dataFilterCity.filter(
-      (fasc) => fasc.type === "City" && fasc.checked === true
-    );
+    // filterd = await filterd.concat(province);
 
-    filterd = await filterd.concat(cityss);
-    let province = dataFilterCity.filter(
-      (fasd) => fasd.type === "Province" && fasd.checked === true
-    );
-
-    filterd = await filterd.concat(province);
-
-    // for (var u of dataFilterCity) {
-    //   if (u.checked === true) {
-    //     if (u.type === "Province") {
-    //       province.push(u.id);
-    //       filterz.push(u);
-    //     } else if (u.type === "City") {
-    //       cityss.push(u.id);
-    //       filterz.push(u);
-    //     } else if (u.type === "Country") {
-    //       Countryss.push(u.id);
-    //       filterz.push(u);
-    //     }
-    //   }
-    // }
-
-    data["type"] = await Categori;
+    data["grouptype"] = await Categori;
     data["facilities"] = await fasilitas;
     data["countries"] = await Countryss;
     data["cities"] = await cityss;
@@ -516,24 +520,19 @@ export default function ItineraryDestination(props) {
     await setshow(false);
   };
 
+  console.log("search", search);
+
   const ClearAllFilter = () => {
     setSearch({
-      type:
-        props.route.params && props.route.params.idtype
-          ? [props.route.params.idtype]
-          : [],
+      type: [],
       keyword: null,
-      countries:
-        props.route.params && props.route.params.idcountries
-          ? [props.route.params.idcountries]
-          : [],
+      countries: [],
       provinces: [],
-      cities:
-        props.route.params && props.route.params.idcity
-          ? [props.route.params.idcity]
-          : [],
+      cities: [],
       goodfor: [],
       facilities: [],
+      type: [],
+      grouptype: [],
     });
     setdataFilterCategori(datafilter?.destination_filter.type);
     setdataFilterCategoris(datafilter?.destination_filter.type);
@@ -814,321 +813,12 @@ export default function ItineraryDestination(props) {
       </View>
       {/* modal filter */}
 
-      {dataDestination.length > 0 ? (
-        <FlatList
-          data={dataDestination}
-          contentContainerStyle={{
-            paddingTop: 15,
-            paddingHorizontal: 15,
-            width: Dimensions.get("screen").width,
-          }}
-          horizontal={false}
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => {
-                props?.route?.params && props?.route?.params?.iditinerary
-                  ? props.navigation.push("DestinationUnescoDetail", {
-                      id: item.id,
-                      name: item.name,
-                      token: token,
-                      iditinerary: props.route.params.iditinerary,
-                      datadayaktif: props.route.params.datadayaktif,
-                    })
-                  : props.navigation.push("DestinationUnescoDetail", {
-                      id: item.id,
-                      name: item.name,
-                      token: token,
-                    });
-              }}
-              key={"lst" + index}
-              style={{
-                borderWidth: 1,
-                borderColor: "#d1d1d1",
-                borderRadius: 10,
-                height: normalize(175),
-                marginBottom: 10,
-                width: "100%",
-                flexDirection: "row",
-                backgroundColor: "#FFF",
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                {/* Image */}
-                <FunImage
-                  source={{ uri: item.images.image }}
-                  style={{
-                    width: normalize(140),
-                    height: "100%",
-                    borderBottomLeftRadius: 10,
-                    borderTopLeftRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    left: 10,
-                    width: "87%",
-                    zIndex: 2,
-                    borderColor: "#209fae",
-                  }}
-                >
-                  {item.liked === true ? (
-                    <Pressable
-                      onPress={() => _unliked(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: normalize(30),
-                        width: normalize(30),
-                        borderRadius: normalize(30),
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Love height={15} width={15} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      onPress={() => _liked(item.id)}
-                      style={{
-                        backgroundColor: "#F3F3F3",
-                        height: normalize(30),
-                        width: normalize(30),
-                        borderRadius: normalize(30),
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <LikeEmpty height={15} width={15} />
-                    </Pressable>
-                  )}
-                  {item?.rating != 0 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "#F3F3F3",
-                        borderRadius: 3,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingHorizontal: 5,
-                        height: normalize(25),
-                      }}
-                    >
-                      <Star height={normalize(15)} width={normalize(15)} />
-                      <Text size="description" type="bold">
-                        {item.rating.substr(0, 3)}
-                      </Text>
-                    </View>
-                  ) : null}
-                </View>
-              </View>
-
-              {/* Keterangan */}
-              {/* rating */}
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 8,
-                  paddingVertical: 7,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View style={{ borderWidth: 0 }}>
-                  {/* Title */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 3,
-                      marginBottom: 3,
-                    }}
-                  >
-                    <BlockDestination
-                      height={16}
-                      width={16}
-                      style={{ marginTop: 5 }}
-                    />
-                    <Text
-                      size="title"
-                      type="bold"
-                      numberOfLines={2}
-                      style={{
-                        marginLeft: 5,
-                        flexWrap: "wrap",
-                        marginTop: Platform.OS === "ios" ? 3 : 5,
-                        flex: 1,
-                        lineHeight:
-                          Platform.OS === "ios"
-                            ? 20
-                            : deviceId == "CPH2127"
-                            ? 20
-                            : 17,
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                  </View>
-
-                  {/* Maps */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: 5,
-                    }}
-                  >
-                    <PinHijau height={15} width={15} />
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{ marginLeft: 5 }}
-                      numberOfLines={1}
-                    >
-                      {item.cities.name}
-                    </Text>
-                  </View>
-                </View>
-                {/* Great for */}
-
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    marginTop: 5,
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "flex-end",
-                      // borderWidth: 1,
-                      paddingHorizontal: 7,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                      }}
-                    >
-                      {item?.movie_location?.length > 0 ? (
-                        <MovieIcon
-                          height={normalize(33)}
-                          width={normalize(33)}
-                        />
-                      ) : null}
-                      {item?.name_type.toLowerCase().substr(0, 6) ==
-                      "unesco" ? (
-                        <UnescoIcon
-                          height={normalize(33)}
-                          width={normalize(33)}
-                          style={{ marginRight: 8 }}
-                        />
-                      ) : null}
-                    </View>
-                    <View
-                      style={{
-                        marginBottom: item.greatfor.length > 0 ? 0 : 7,
-                      }}
-                    >
-                      {item.greatfor.length > 0 ? (
-                        <Text
-                          size="description"
-                          type="bold"
-                          style={{ marginTop: 0 }}
-                        >
-                          {t("GreatFor") + " :"}
-                        </Text>
-                      ) : null}
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          marginLeft: -5,
-                        }}
-                      >
-                        {item.greatfor.length > 0
-                          ? item.greatfor.map((item, index) => {
-                              return index < 3 ? (
-                                <FunIcon
-                                  key={"grat" + index}
-                                  icon={item.icon}
-                                  fill="#464646"
-                                  height={37}
-                                  width={37}
-                                />
-                              ) : null;
-                            })
-                          : null}
-                      </View>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      justifyContent: "flex-end",
-                      width: 65,
-                      paddingBottom: 5,
-                    }}
-                  >
-                    <Pressable
-                      onPress={() => {
-                        if (token && token !== "" && token !== null) {
-                          props.route.params && props.route.params.iditinerary
-                            ? props.navigation.dispatch(
-                                StackActions.replace("ItineraryStack", {
-                                  screen: "ItineraryChooseday",
-                                  params: {
-                                    Iditinerary: props.route.params.iditinerary,
-                                    Kiriman: item.id,
-                                    token: token,
-                                    Position: "destination",
-                                    datadayaktif:
-                                      props.route.params.datadayaktif,
-                                  },
-                                })
-                              )
-                            : props.navigation.push("ItineraryStack", {
-                                screen: "ItineraryPlaning",
-                                params: {
-                                  idkiriman: item.id,
-                                  Position: "destination",
-                                },
-                              });
-                        } else {
-                          props.navigation.navigate("AuthStack", {
-                            screen: "LoginScreen",
-                          });
-                          RNToasty.Show({
-                            title: t("pleaselogin"),
-                            position: "bottom",
-                          });
-                        }
-                      }}
-                      style={{
-                        width: "100%",
-                        height: 30,
-                        borderRadius: 3,
-                        backgroundColor: "#209fae",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      // style={{ marginTop: 15 }}
-                    >
-                      <Text
-                        size="description"
-                        type="bold"
-                        style={{ color: "#fff" }}
-                      >
-                        {"add"}
-                      </Text>
-                    </Pressable>
-                  </View>
-                </View>
-              </View>
-            </Pressable>
-          )}
-          showsHorizontalScrollIndicator={false}
+      {dataDes.length > 0 ? (
+        <CardDestination
+          data={dataDes}
+          props={props}
+          setData={(e) => setdataDes(e)}
+          token={token}
         />
       ) : null}
 

@@ -370,18 +370,20 @@ export default function CountrySrc({
                     >
                       <View
                         style={{
-                          height: 30,
-                          width: 42,
-                          // borderWidth: 1,
+                          borderWidth: 1,
+                          borderColor: "#d1d1d1",
+                          backgroundColor: "black",
+                          alignSelf: "center",
+                          alignContent: "center",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden",
+                          // width: 35,
+                          // height: 25,
+                          // paddingTop: 0,
                         }}
                       >
-                        <FunIcon
-                          icon={item.flag}
-                          height={30}
-                          width={42}
-                          style={{}}
-                          variant="f"
-                        />
+                        <FunIcon icon={item.flag} width={37} height={25} />
                       </View>
                     </View>
                     <Text size="description">{item.name}</Text>

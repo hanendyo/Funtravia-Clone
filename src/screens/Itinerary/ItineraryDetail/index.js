@@ -69,6 +69,7 @@ import {
   Lock,
   Complete,
   ChatItinerary,
+  Home,
 } from "../../../assets/svg";
 import {
   Button,
@@ -7063,8 +7064,295 @@ export default function ItineraryDetail(props) {
             </View>
           </View>
         </Modal>
+        {/* modal titik tiga header */}
+        <Modalss
+          animationType="slide"
+          onBackdropPress={() => {
+            setshowside(false);
+          }}
+          onRequestClose={() => setshowside(false)}
+          onDismiss={() => setshowside(false)}
+          visible={showside}
+          style={{
+            justifyContent: "flex-end",
+            margin: 0,
+          }}
+          transparent={true}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              marginTop: "auto",
+              height: Dimensions.get("screen").height * 0.45,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "white",
+              borderTopLeftRadius: 15,
+              borderTopRightRadius: 15,
+            }}
+          >
+            {/* title */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: Dimensions.get("screen").width - 15,
 
-        <Sidebar
+                paddingHorizontal: 30,
+                paddingVertical: 20,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  color: "#464646",
+                }}
+              >
+                Option
+              </Text>
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  backgroundColor: "with",
+                  height: 35,
+                  width: 32,
+                  top: 0,
+                  right: 0,
+                  justifyContent: "flex-end",
+                  alignContent: "flex-end",
+                  alignItems: "flex-start",
+                }}
+                onPress={() => setshowside(false)}
+              >
+                <Xhitam height={15} width={15} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 40,
+                height: 1,
+                borderWidth: 0.5,
+                borderColor: "#d1d1d1",
+                marginHorizontal: 20,
+              }}
+            />
+            {/* title */}
+            {/* isi */}
+            <View
+              style={{
+                paddingHorizontal: 30,
+                paddingTop: 10,
+                // paddingVertical: 20,
+                width: "100%",
+                // justifyContent: "flex-start",
+              }}
+            >
+              <View
+                style={{
+                  height: "70%",
+                }}
+              >
+                {Anggota === "true" && statusUsers == true ? (
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 5,
+                      alignItems: "center",
+                      marginVertical: 5,
+                    }}
+                    onPress={() => {
+                      props.navigation.push("SettingItin", {
+                        token: token,
+                        iditin: itineraryId,
+                        isPrivate:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail.itinerary_detail.isprivate
+                            : false,
+                      }),
+                        setshowside(false);
+                    }}
+                  >
+                    <Settings height={20} width={20} />
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("setting")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                {Anggota === "true" && status !== "finish" ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 5,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setshowside(false), setmodalcover(true);
+                    }}
+                  >
+                    <Create height={20} width={20} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("EditCover")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 5,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setshowside(false);
+                    props.navigation.navigate("detailItinerary", {
+                      data: datadetail,
+                    });
+                  }}
+                >
+                  <Help height={25} width={25} style={{ marginLeft: -5 }} />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("Tripdetail")}
+                  </Text>
+                </TouchableOpacity>
+
+                {Anggota === "true" ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 5,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setModalLeaveTrip(true), setshowside(false);
+                    }}
+                  >
+                    <LeaveTrips height={20} width={20} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("leave")} {t("trip")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                {Anggota === "true" && statusUsers == true ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 5,
+                      marginBottom: 10,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setModalDeleteTrip(true), setshowside(false);
+                    }}
+                  >
+                    <Delete height={20} width={20} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                        color: "#D75995",
+                      }}
+                    >
+                      {t("delete")} {t("trip")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+              <View style={{}}>
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width - 60,
+                    height: 1,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    borderWidth: 0.5,
+                    borderColor: "#d1d1d1",
+                    // paddingHorizontal: 20,
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 5,
+                    marginBottom: 10,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    props.navigation.push("BottomStack"), setshowside(false);
+                  }}
+                >
+                  <Home height={20} width={20} />
+
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 10,
+                    }}
+                  >
+                    {t("backToHome")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modalss>
+        {showside ? (
+          <Pressable
+            onPress={() => setshowside(false)}
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              zIndex: 99999999,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+        ) : null}
+        {/* <Sidebar
           props={props}
           show={showside}
           Data={() => {
@@ -7222,7 +7510,7 @@ export default function ItineraryDetail(props) {
             );
           }}
           setClose={(e) => setshowside(false)}
-        />
+        /> */}
       </View>
     );
   }
