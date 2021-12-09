@@ -172,9 +172,7 @@ export default function TripPlaning(props) {
     const unsubscribe1 = props.navigation.addListener("focus", () => {
       loadAsync();
     });
-    return () => {
-      unsubscribe1;
-    };
+    return unsubscribe1;
   }, [props.navigation]);
 
   function MyTabBar({ state, descriptors, navigation, position, count }) {
@@ -461,7 +459,7 @@ export default function TripPlaning(props) {
           name="Save"
           component={(e) => (
             <ActivePlan
-              setData={(e) => setDataActive(e)}
+              setDataActive={(e) => setDataActive(e)}
               props={props}
               token={token}
               AData={AData}

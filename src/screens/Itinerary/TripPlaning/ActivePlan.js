@@ -20,7 +20,7 @@ export default function ActivePlan({
   GetDataActive,
   GetDataFinish,
   loadingdataActive,
-  setData,
+  setDataActive,
   setting,
 }) {
   const { height, width } = Dimensions.get("screen");
@@ -313,7 +313,7 @@ export default function ActivePlan({
             props={props}
             token={token}
             setting={setting}
-            setData={(e) => setData(e)}
+            setData={(e) => setDataActive(e)}
           />
         </ScrollView>
         <View

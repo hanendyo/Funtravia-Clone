@@ -372,8 +372,6 @@ export default function ProvinceDetail(props) {
     },
   });
 
-  console.log(`JOURNAL PROV: `, list_journal);
-
   const [
     getItineraryCity,
     { loading: loadingitinerary, data: dataItinerary, error: errorItinerary },

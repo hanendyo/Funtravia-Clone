@@ -173,6 +173,7 @@ export default function OtherProfile(props) {
     await setSetting(JSON.parse(settingData));
 
     await LoadUserProfile();
+    await _refresh();
   };
 
   const [
@@ -278,7 +279,12 @@ export default function OtherProfile(props) {
 
   const [
     LoadTrip,
-    { data: datatrip, loading: loadingtrip, error: errortrip },
+    {
+      data: datatrip,
+      loading: loadingtrip,
+      error: errortrip,
+      refetch: _refresh,
+    },
   ] = useLazyQuery(Itinerary, {
     fetchPolicy: "network-only",
     variables: {
@@ -747,6 +753,7 @@ export default function OtherProfile(props) {
     return () => {
       scrollY.removeAllListeners();
       headerScrollY.removeAllListeners();
+      unsubscribe;
     };
   }, [routes, tabIndex, props.navigation]);
 
@@ -1533,8 +1540,6 @@ export default function OtherProfile(props) {
     );
   };
 
-  console.log(`CAPTIONHE: `, captionHeight);
-
   const renderLabel = ({ route, focused }) => {
     return (
       <View
@@ -1620,7 +1625,11 @@ export default function OtherProfile(props) {
             modalLogin,
             setModalLogin,
             soon,
-            setSoon
+            setSoon,
+            dataTrip,
+            setdataTrip,
+            mutationliked,
+            mutationUnliked
           );
         paddingHorizontal = 15;
         break;
