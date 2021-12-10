@@ -814,7 +814,6 @@ export default function ItineraryDetail(props) {
             day_id: idDay,
           },
         });
-
         if (errordeleteday) {
           throw new Error("Error Input");
         }
@@ -822,18 +821,25 @@ export default function ItineraryDetail(props) {
           if (response.data.delete_day.code !== 200) {
             throw new Error(response.data.delete_day.message);
           }
-          await setdatadayaktif(datadetail.itinerary_detail.day[indexnya - 1]);
-          await setidDay(datadetail.itinerary_detail.day[indexnya - 1].id);
-          if (indexnya !== 0) {
-            await setIndexnya(indexnya - 1);
-          }
-          await setModalmenuday(false);
-          await _Refresh();
+
+          setdatadayaktif(
+            indexnya !== 0
+              ? datadetail.itinerary_detail.day[indexnya - 1]
+              : datadetail.itinerary_detail.day[indexnya]
+          );
+          setidDay(
+            indexnya !== 0
+              ? datadetail.itinerary_detail.day[indexnya - 1].id
+              : datadetail.itinerary_detail.day[indexnya].id
+          );
+
+          setIndexnya(indexnya !== 0 ? indexnya - 1 : indexnya);
+          setModalmenuday(false);
+          _Refresh();
         }
       } catch (error) {
         await setModalmenuday(false);
-
-        Alert.alert("error disini " + error);
+        Alert.alert("Error: " + error);
       }
     } else {
       await setModalmenuday(false);
