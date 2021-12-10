@@ -42,24 +42,14 @@ export default function FloatingInput({
   return (
     <View style={containerStyle}>
       <Animated.Text style={labelStyle}>{label}</Animated.Text>
-      {customInput ? (
-        <TextInput
-          style={textStyle}
-          {...otherProps}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          blurOnSubmit
-          selection={{ start: 0, end: 0 }}
-        />
-      ) : (
-        <TextInput
-          style={textStyle}
-          {...otherProps}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          blurOnSubmit
-        />
-      )}
+      <TextInput
+        style={textStyle}
+        {...otherProps}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        blurOnSubmit
+        selection={customInput ? { start: 0, end: 0 } : null}
+      />
     </View>
   );
 }

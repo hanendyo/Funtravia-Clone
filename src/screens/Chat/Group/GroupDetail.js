@@ -13,6 +13,7 @@ import {
   TextInput,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { ReactNativeFile } from "apollo-upload-client";
@@ -60,8 +61,9 @@ const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: StatusBar.currentHeight,
 });
+let { width, height } = Dimensions.get("screen");
+
 export default function GroupDetail(props) {
-  let { width } = Dimensions.get("screen");
   const { t } = useTranslation();
   const [room, setRoom] = useState(props.route.params.room_id);
   const [from, setfrom] = useState(props.route.params.from);
@@ -91,7 +93,7 @@ export default function GroupDetail(props) {
   });
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 4],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -102,8 +104,8 @@ export default function GroupDetail(props) {
     extrapolate: "clamp",
   });
   const titleOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 1, 1],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
+    outputRange: [0, 1],
     extrapolate: "clamp",
   });
 
@@ -114,129 +116,11 @@ export default function GroupDetail(props) {
   });
 
   const backHeaderOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
 
-  // const headerOptions = {
-  //   headerShown: true,
-  //   headerTransparent: true,
-  //   headerTitle: "",
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //   },
-  //   headerTitleStyle: {
-  //     fontFamily: "Lato-Bold",
-  //     fontSize: 18,
-  //     color: "white",
-  //     marginLeft: -10,
-  //   },
-  //   headerLeft: () => (
-  //     <Animated.View
-  //       style={{
-  //         flex: 1,
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         height: 50,
-  //         width: 50,
-  //         marginLeft: 10,
-  //         marginTop: 24,
-  //         transform: [{ translateY: titleTranslateY }],
-  //       }}
-  //     >
-  //       <Animated.View
-  //         style={{
-  //           backgroundColor: "rgba(0, 0, 0, 0.6)",
-  //           opacity: backHeaderOpacity,
-  //           position: "absolute",
-  //           height: 40,
-  //           width: 40,
-  //           borderRadius: 20,
-  //           justifyContent: "center",
-  //           alignItems: "center",
-  //         }}
-  //       >
-  //         <Button
-  //           text={""}
-  //           size="medium"
-  //           type="circle"
-  //           variant="transparent"
-  //           onPress={() => props.navigation.goBack()}
-  //           style={{
-  //             height: 55,
-  //           }}
-  //         >
-  //           {Platform.OS == "ios" ? (
-  //             <Arrowbackios height={15} width={15}></Arrowbackios>
-  //           ) : (
-  //             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //           )}
-  //         </Button>
-  //       </Animated.View>
-  //     </Animated.View>
-  //   ),
-  //   headerRight: () => {
-  //     let _menu = null;
-  //     return (
-  //       <Animated.View
-  //         style={{
-  //           flex: 1,
-  //           flexDirection: "row",
-  //           alignItems: "center",
-  //           justifyContent: "flex-end",
-  //           height: 50,
-  //           width: 40,
-  //           marginRight: 15,
-  //           marginTop: 24,
-  //           opacity: backHeaderOpacity,
-  //         }}
-  //       >
-  //         <Menu
-  //           ref={(ref) => (_menu = ref)}
-  //           button={
-  //             <Pressable
-  //               style={{
-  //                 paddingHorizontal: 13,
-  //                 paddingVertical: 13,
-  //                 backgroundColor: "rgba(0, 0, 0, 0.6)",
-  //                 borderRadius: 20,
-  //               }}
-  //               onPress={() => _menu.show()}
-  //             >
-  //               <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
-  //             </Pressable>
-  //           }
-  //           style={{
-  //             width: 200,
-  //           }}
-  //         >
-  //           <MenuItem
-  //             onPress={() => {
-  //               _menu.hide();
-  //               setmodalCover(true);
-  //             }}
-  //           >
-  //             {t("changeCoverGroup")}
-  //           </MenuItem>
-  //           <MenuDivider />
-  //           <MenuItem
-  //             onPress={() => {
-  //               setModalleft(true);
-  //               _menu.hide();
-  //             }}
-  //           >
-  //             {t("leftGroup")}
-  //           </MenuItem>
-  //         </Menu>
-  //       </Animated.View>
-  //     );
-  //   },
-  // };
-  let toast = useRef();
   let [mydata, setMydata] = useState();
 
   const getDetailGroup = async (access_token, data_setting) => {
@@ -259,7 +143,6 @@ export default function GroupDetail(props) {
       var inde = dataResponse.grup.buddy.findIndex(
         (k) => k["user_id"] === data_setting.user.id
       );
-      // console.log(inde);
       await setMydata(dataResponse.grup.buddy[inde]);
       await setLoading(false);
     } else {
@@ -271,7 +154,7 @@ export default function GroupDetail(props) {
       }
     }
   };
-  // console.log(dataDetail);
+
   let [setting, setSetting] = useState();
 
   const getUserAndToken = async () => {
@@ -340,29 +223,37 @@ export default function GroupDetail(props) {
   };
 
   const _changecoverGalery = async () => {
-    ImagePicker.openPicker({
-      width: 500,
-      height: 500,
-      cropping: true,
-      cropperCircleOverlay: true,
-      includeBase64: false,
-      compressImageMaxWidth: 500,
-      compressImageMaxHeight: 500,
-    })
-      .then((image) => {
-        setmodalCover(false);
-        if (from == "itinerary") {
-          _uploadCoverItinerary(image);
-        } else {
-          _uploadCover(image);
-        }
+    try {
+      ImagePicker.openPicker({
+        width: 500,
+        height: 500,
+        cropping: true,
+        cropperCircleOverlay: true,
+        includeBase64: false,
+        compressImageMaxWidth: 500,
+        compressImageMaxHeight: 500,
       })
-      .catch((e) => {
-        RNToasty.Normal({
-          title: "Cancelled",
-          position: "bottom",
+        .then((image) => {
+          setmodalCover(false);
+          if (from == "itinerary") {
+            _uploadCoverItinerary(image);
+          } else {
+            _uploadCover(image);
+          }
+        })
+        .catch((e) => {
+          RNToasty.Normal({
+            title: "Cancelled",
+            position: "bottom",
+          });
         });
+    } catch (error) {
+      setmodalCover(false);
+      RNToasty.Normal({
+        title: { error },
+        position: "bottom",
       });
+    }
   };
 
   const _uploadCover = async (image) => {
@@ -387,8 +278,10 @@ export default function GroupDetail(props) {
         },
         body: formData,
       });
+      console.log("response", response);
       let responseJson = await response.json();
       console.log(responseJson);
+
       if (responseJson.status == true) {
         getUserAndToken();
         RNToasty.Show({
@@ -603,7 +496,6 @@ export default function GroupDetail(props) {
         position: "bottom",
       });
       // setloading(false);
-      console.log(error);
     }
   };
 
@@ -650,7 +542,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -681,7 +572,6 @@ export default function GroupDetail(props) {
       if (errorAdmin) {
         throw new Error("Error Deleted");
       }
-      // console.log(response);
       if (response.data) {
         if (response.data.make_admin.code !== 200) {
           throw new Error(response.data.make_admin.message);
@@ -699,7 +589,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -745,7 +634,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -772,7 +660,6 @@ export default function GroupDetail(props) {
       if (errorLeft) {
         throw new Error("Error Deleted");
       }
-      // console.log(response);
       if (response.data) {
         if (response.data.left_itinerary_buddy.code !== 200) {
           throw new Error(response.data.left_itinerary_buddy.message);
@@ -798,7 +685,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -816,8 +702,6 @@ export default function GroupDetail(props) {
   });
 
   const _uploadCoverItinerary = async (data) => {
-    // setloading(true);
-
     if (data) {
       let files = new ReactNativeFile({
         uri: data.path,
@@ -835,7 +719,6 @@ export default function GroupDetail(props) {
         if (errorupload) {
           throw new Error("Error Input");
         }
-        console.log(response);
         if (response.data) {
           if (response.data.upload_cover_itinerary_v2.code !== 200) {
             throw new Error(response.data.upload_cover_itinerary_v2.message);
@@ -854,7 +737,6 @@ export default function GroupDetail(props) {
           title: "error : someting wrong!",
           position: "bottom",
         });
-        console.log(error);
       }
     }
   };
@@ -1088,8 +970,8 @@ export default function GroupDetail(props) {
           <Pressable
             onPress={() => setModalkick(false)}
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               justifyContent: "center",
               opacity: 0.7,
               backgroundColor: "#000",
@@ -1098,11 +980,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1188,8 +1070,8 @@ export default function GroupDetail(props) {
           <Pressable
             onPress={() => setModalmakeadmin(false)}
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               justifyContent: "center",
               opacity: 0.7,
               backgroundColor: "#000",
@@ -1198,11 +1080,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1288,8 +1170,8 @@ export default function GroupDetail(props) {
           <Pressable
             onPress={() => setModalremoveadmin(false)}
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               justifyContent: "center",
               opacity: 0.7,
               backgroundColor: "#000",
@@ -1298,11 +1180,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1388,8 +1270,8 @@ export default function GroupDetail(props) {
           <Pressable
             onPress={() => setModalrename(false)}
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               justifyContent: "center",
               opacity: 0.7,
               backgroundColor: "#000",
@@ -1398,11 +1280,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1511,8 +1393,8 @@ export default function GroupDetail(props) {
         >
           <Pressable
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               alignSelf: "center",
               backgroundColor: "#000",
               opacity: 0.7,
@@ -1522,11 +1404,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1606,8 +1488,8 @@ export default function GroupDetail(props) {
           <Pressable
             onPress={() => setModalleft(false)}
             style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
+              width: width,
+              height: height,
               justifyContent: "center",
               opacity: 0.7,
               backgroundColor: "#000",
@@ -1616,11 +1498,11 @@ export default function GroupDetail(props) {
           />
           <View
             style={{
-              width: Dimensions.get("screen").width - 100,
+              width: width - 100,
               marginHorizontal: 50,
               backgroundColor: "#FFF",
               borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 3,
+              marginTop: height / 3,
             }}
           >
             <View
@@ -1713,24 +1595,55 @@ export default function GroupDetail(props) {
           top: SafeStatusBar,
         }}
       >
-        <Animated.Image
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            width: null,
-            height: HEADER_MAX_HEIGHT,
-            resizeMode: "cover",
-            opacity: headerOpacity,
-            transform: [{ translateY: headerTranslateY }],
-          }}
-          source={
-            dataDetail && dataDetail.link_picture
-              ? { uri: dataDetail?.link_picture }
-              : default_image
-          }
-        />
+        {loading ? (
+          <>
+            <Animated.Image
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                width: null,
+                height: HEADER_MAX_HEIGHT,
+                resizeMode: "cover",
+                opacity: headerOpacity,
+                // transform: [{ translateY: headerTranslateY }],
+              }}
+              source={default_image}
+            />
+            <ActivityIndicator
+              animating={true}
+              size="large"
+              color="#d1d1d1"
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+              }}
+            />
+          </>
+        ) : (
+          <Animated.Image
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              width: null,
+              height: HEADER_MAX_HEIGHT,
+              resizeMode: "cover",
+              opacity: headerOpacity,
+              // transform: [{ translateY: headerTranslateY }],
+            }}
+            source={
+              dataDetail && dataDetail.link_picture
+                ? { uri: dataDetail?.link_picture }
+                : default_image
+            }
+          />
+        )}
       </Animated.View>
 
       {/* Title Header */}
@@ -1800,7 +1713,7 @@ export default function GroupDetail(props) {
                 style={{
                   width: 30,
                   height: 30,
-                  marginRight: 30,
+                  marginRight: 28,
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -1814,6 +1727,7 @@ export default function GroupDetail(props) {
                 <Pressable
                   style={{
                     marginTop: 7,
+                    marginRight: 2,
                   }}
                   onPress={() => _menu.show()}
                 >
@@ -1851,8 +1765,7 @@ export default function GroupDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          // height: 100,
-          width: Dimensions.get("screen").width,
+          width: width,
           position: "absolute",
           zIndex: 999,
           top: SafeStatusBar,

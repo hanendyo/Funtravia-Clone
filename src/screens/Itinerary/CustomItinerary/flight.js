@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -26,8 +26,10 @@ import {
   New,
   Plane,
   Xhitam,
-  Pointmapgray,
+  Pointmapblack,
   Arrowbackios,
+  Magnifying,
+  Xblue,
 } from "../../../assets/svg";
 import {
   FloatingInput,
@@ -46,6 +48,8 @@ import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
 import UpdateCustomFlight from "../../../graphQL/Mutation/Itinerary/UpdateCustomFlight";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { request, check, PERMISSIONS } from "react-native-permissions";
+import Geolocation from "react-native-geolocation-service";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -53,7 +57,6 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
-  console.log("props", props.route.params);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -65,6 +68,7 @@ export default function detailCustomItinerary(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
+      height: 108,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -81,6 +85,7 @@ export default function detailCustomItinerary(props) {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          // backgroundColor: "red",
         }}
       >
         <Button
@@ -119,10 +124,12 @@ export default function detailCustomItinerary(props) {
       </View>
     ),
   };
+  let GooglePlacesRef = useRef();
   const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [token, setToken] = useState("");
+  const [text, setText] = useState("");
 
   //params data
   const dayId = [props.route.params.dayId];
@@ -208,12 +215,18 @@ export default function detailCustomItinerary(props) {
   );
 
   const inputFromGoogle = (input) => {
-    modalFrom
-      ? (setLatDep(input.geometry.location.lat),
-        setLongDep(input.geometry.location.lng))
-      : (setLat(input.geometry.location.lat),
-        setLong(input.geometry.location.lng),
-        setAddress(input.formatted_address));
+    text.length !== 0
+      ? modalFrom
+        ? (setLatDep(input.geometry.location.lat),
+          setLongDep(input.geometry.location.lng))
+        : (setLat(input.geometry.location.lat),
+          setLong(input.geometry.location.lng),
+          setAddress(input.formatted_address))
+      : modalFrom
+      ? (setLatDep(input.latitude), setLongDep(input.longitude))
+      : (setLat(input.latitude),
+        setLong(input.longitude),
+        setAddress(input.address));
   };
   //-- End of Google API
 
@@ -264,9 +277,10 @@ export default function detailCustomItinerary(props) {
     {
       context: {
         headers: {
-          "Content-Type": (file = []
-            ? `application/json`
-            : `multipart/form-data`),
+          "Content-Type":
+            attachment.length === 0
+              ? `application/json`
+              : `multipart/form-data`,
           Authorization: `Bearer ${token}`,
         },
       },
@@ -279,9 +293,8 @@ export default function detailCustomItinerary(props) {
   ] = useMutation(UpdateCustomFlight, {
     context: {
       headers: {
-        "Content-Type": (file = []
-          ? `application/json`
-          : `multipart/form-data`),
+        "Content-Type":
+          attachment.length === 0 ? `application/json` : `multipart/form-data`,
         Authorization: `Bearer ${token}`,
       },
     },
@@ -322,34 +335,6 @@ export default function detailCustomItinerary(props) {
   }, [props.navigation]);
 
   const mutationUpdateFlight = async () => {
-    console.log("update", {
-      id: props.route.params.activityId,
-      day_id: dayId,
-      title: flightNumber,
-      icon: icon,
-      qty: qty,
-      address: address,
-      latitude: lat,
-      longitude: long,
-      latitude_departure: latDep,
-      longitude_departure: longDep,
-      latitude_arrival: lat,
-      longitude_arrival: long,
-      note: note,
-      time: time,
-      duration: duration,
-      status: status,
-      order: order,
-      total_price: totalPrice,
-      departure: timeDeparture,
-      arrival: timeArrival,
-      from: from,
-      destination: to,
-      guest_name: guestName,
-      booking_ref: bookingRef,
-      carrier: carrier,
-      file: attachment,
-    });
     try {
       let response = await mutationUpdate({
         variables: {
@@ -381,13 +366,11 @@ export default function detailCustomItinerary(props) {
           file: attachment,
         },
       });
-      console.log("response", response);
       if (loading) {
         setLoadingApp(true);
       }
 
       if (errorSaved) {
-        console.log(errorSaved);
         throw new Error("Error Input");
       }
 
@@ -408,33 +391,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const mutationInput = async () => {
-    console.log("variables:", {
-      day_id: dayId,
-      title: flightNumber,
-      icon: icon,
-      qty: qty,
-      address: address,
-      latitude: lat,
-      longitude: long,
-      latitude_departure: latDep,
-      longitude_departure: longDep,
-      latitude_arrival: lat,
-      longitude_arrival: long,
-      note: note,
-      time: time,
-      duration: duration,
-      status: status,
-      order: order,
-      total_price: totalPrice,
-      departure: timeDeparture,
-      arrival: timeArrival,
-      from: from,
-      destination: to,
-      guest_name: guestName,
-      booking_ref: bookingRef,
-      carrier: carrier,
-      file: attachment,
-    });
     try {
       let response = await mutation({
         variables: {
@@ -465,13 +421,11 @@ export default function detailCustomItinerary(props) {
           file: attachment,
         },
       });
-      console.log(response);
       if (loading) {
         setLoadingApp(true);
       }
 
       if (errorSaved) {
-        console.log(errorSaved);
         throw new Error("Error Input");
       }
 
@@ -484,7 +438,7 @@ export default function detailCustomItinerary(props) {
       }
       setLoadingApp(false);
     } catch (error) {
-      // Alert.alert("" + error);
+      Alert.alert("" + error);
       console.error("error catch :", error);
       setLoadingApp(false);
       setButtonDisabled(false);
@@ -562,7 +516,91 @@ export default function detailCustomItinerary(props) {
       }
     }
   };
-  //-- End of Attachment
+
+  const [dataNearby, setDataNearby] = useState([]);
+
+  const GetLocation = async () => {
+    try {
+      let granted = false;
+      if (Platform.OS == "ios") {
+        let sLocation = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        if (sLocation === "denied") {
+          granted = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        } else {
+          granted = true;
+        }
+      } else {
+        let sLocation = await check(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        if (sLocation === "denied") {
+          granted = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        } else {
+          granted = true;
+        }
+      }
+      if (granted) {
+        await Geolocation.getCurrentPosition(
+          (position) => _nearbyLocation(position),
+          (err) => console.log(err),
+          {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 10000,
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const _nearbyLocation = async (position) => {
+    let latitude = position?.coords?.latitude
+      ? position?.coords?.latitude
+      : null;
+    let longitude = position?.coords?.longitude
+      ? position?.coords?.longitude
+      : null;
+
+    try {
+      let response = await fetch(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+          latitude +
+          "," +
+          longitude +
+          "&radius=5000&key=AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      let responseJson = await response.json();
+      if (responseJson.results && responseJson.results.length > 0) {
+        let nearby = [];
+        for (var i of responseJson.results) {
+          if (!i.icon.includes("lodging")) {
+            let data = {
+              place_id: i.place_id,
+              name: i.name,
+              latitude: i.geometry?.location.lat,
+              longitude: i.geometry?.location.lng,
+              address: i.vicinity,
+              icon: i.icon,
+            };
+            nearby.push(data);
+          }
+        }
+        setDataNearby(nearby);
+        setLoadingApp(false);
+      } else {
+        setLoadingApp(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -710,7 +748,10 @@ export default function detailCustomItinerary(props) {
                 ) : null
               ) : null}
               <TouchableOpacity
-                onPress={() => setModalFrom(true)}
+                onPress={() => {
+                  setModalFrom(true);
+                  GetLocation();
+                }}
                 style={styles.TouchOpacityDate}
               />
             </View>
@@ -786,7 +827,6 @@ export default function detailCustomItinerary(props) {
             ? attachmentCustom.map((data, index) => {
                 return (
                   <View style={styles.attachment}>
-                    <Text style={{ width: 30 }}>{index + 1}. </Text>
                     <FunDocument
                       filename={data.file_name}
                       filepath={data.filepath}
@@ -795,15 +835,12 @@ export default function detailCustomItinerary(props) {
                       progressBar
                       icon
                     />
-                    {/* <Text style={{ flex: 1, paddingBottom: 5 }}>
-                    {data.file_name}
-                  </Text> */}
                     <TouchableOpacity
-                      // onPress={() => {
-                      //   let temp = [...attachment];
-                      //   temp.splice(index, 1);
-                      //   setAttachment(temp);
-                      // }}
+                      onPress={() => {
+                        let temp = [...attachmentCustom];
+                        temp.splice(index, 1);
+                        setAttachmentCustom(temp);
+                      }}
                       style={styles.attachmentTimes}
                     >
                       <Xhitam width={10} height={10} />
@@ -815,15 +852,7 @@ export default function detailCustomItinerary(props) {
 
           {attachment.map((data, index) => {
             return (
-              <View style={styles.attachment}>
-                <Text style={{ width: 30 }}>
-                  {(props.route.params.attachment
-                    ? props.route.params.attachment.length
-                    : null) +
-                    index +
-                    1}
-                  .{" "}
-                </Text>
+              <View style={styles.attachment} key={index}>
                 <FunDocument
                   filename={data.name}
                   filepath={data.uri}
@@ -919,11 +948,15 @@ export default function detailCustomItinerary(props) {
                 setModalFrom(false), setModalTo(false);
               }}
             >
-              <Arrowbackwhite width={20} height={20} />
+              {Platform.OS === "ios" ? (
+                <Arrowbackios height={15} width={15} />
+              ) : (
+                <Arrowbackwhite height={20} width={20} />
+              )}
             </TouchableOpacity>
             <Text
               style={{
-                top: 15,
+                top: Platform.OS === "ios" ? 12 : 15,
                 left: 55,
                 fontFamily: "Lato-Regular",
                 fontSize: 16,
@@ -954,7 +987,7 @@ export default function detailCustomItinerary(props) {
                 language: "id", // language of the results
               }}
               fetchDetails={true}
-              onPress={(data, details = null, search = null) => {
+              onPress={(data, details = null) => {
                 if (modalFrom) {
                   setFrom(data.structured_formatting.secondary_text);
                   inputFromGoogle(details);
@@ -968,20 +1001,51 @@ export default function detailCustomItinerary(props) {
                 }
               }}
               autoFocus={true}
+              textInputProps={{
+                onChangeText: (text) => setText(text),
+                value: text,
+              }}
               listViewDisplayed="auto"
               onFail={(error) => console.log(error)}
               placeholder={"Search for location"}
               currentLocationLabel="Nearby location"
+              ref={GooglePlacesRef}
+              setAddressText={text}
               renderLeftButton={() => {
                 return (
                   <View style={{ justifyContent: "center" }}>
-                    <Pointmapgray />
+                    <Magnifying />
                   </View>
                 );
               }}
-              GooglePlacesSearchQuery={{ rankby: "distance" }}
+              renderRightButton={() => {
+                return (
+                  Platform.OS === "android" &&
+                  (text.length ? (
+                    <Pressable
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: 50,
+                        marginRight: -10,
+                      }}
+                      onPress={() => {
+                        setText("");
+                        GooglePlacesRef.current.setAddressText("");
+                      }}
+                    >
+                      <Xblue width={20} height={20} />
+                    </Pressable>
+                  ) : null)
+                );
+              }}
+              GooglePlacesSearchQuery={{
+                rankby: "distance",
+                type: ["airport", "light_rail_station", "bus_station"],
+              }}
               enablePoweredByContainer={false}
               renderRow={(data) => {
+                // data = data ? data : dataNearby;
                 if (data.description) {
                   var x = data.description.split(",");
                 }
@@ -999,7 +1063,7 @@ export default function detailCustomItinerary(props) {
                         paddingTop: 3,
                       }}
                     >
-                      <Pointmapgray />
+                      <Pointmapblack />
                     </View>
                     <View
                       style={{ width: Dimensions.get("screen").width - 60 }}
@@ -1011,7 +1075,6 @@ export default function detailCustomItinerary(props) {
                           color: "black",
                         }}
                       >
-                        {/* {x[0]} */}
                         {x ? x[0] : data.name}
                       </Text>
                       <Text
@@ -1064,6 +1127,81 @@ export default function detailCustomItinerary(props) {
                 },
               }}
             />
+            {dataNearby.length && !text.length ? (
+              <View
+                style={{
+                  position: "absolute",
+                  top: 60,
+                  right: 0,
+                  left: 0,
+                  marginHorizontal: 20,
+                }}
+              >
+                {dataNearby.map((item, index) => {
+                  return index < 10 ? (
+                    <Pressable
+                      onPress={() => {
+                        if (modalFrom) {
+                          setFrom(item.address);
+                          inputFromGoogle(item);
+                          setModalFrom(false);
+                        }
+
+                        if (modalTo) {
+                          setTo(item.address);
+                          inputFromGoogle(item);
+                          setModalTo(false);
+                        }
+                      }}
+                      key={index}
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "flex-start",
+                        alignItems: "flex-start",
+                        borderBottomWidth: 0.5,
+                        borderBottomColor: "#d1d1d1",
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 20,
+                          paddingTop: 4,
+                          marginLeft: 12,
+                          marginTop: 10,
+                        }}
+                      >
+                        <Pointmapblack />
+                      </View>
+                      <View
+                        style={{
+                          width: Dimensions.get("screen").width - 60,
+                          paddingRight: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Lato-Bold",
+                            fontSize: 12,
+                            marginTop: 10,
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "Lato-Regular",
+                            fontSize: 12,
+                            marginBottom: 5,
+                          }}
+                        >
+                          {item.address}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ) : null;
+                })}
+              </View>
+            ) : null}
           </View>
         </KeyboardAvoidingView>
       </Modal>
