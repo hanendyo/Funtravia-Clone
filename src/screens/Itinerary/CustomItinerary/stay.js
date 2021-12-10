@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -13,21 +13,20 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Platform,
+  Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
-  ArrowRight,
   CalendarIcon,
-  Delete,
-  More,
   New,
-  Plane,
-  Pointmapgray,
+  Pointmapblack,
   Stay,
   Xhitam,
+  Magnifying,
+  Xblue,
 } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -53,6 +52,8 @@ import AddCustomAccomodation from "../../../graphQL/Mutation/Itinerary/AddCustom
 import UpdateCustomStay from "../../../graphQL/Mutation/Itinerary/UpdateCustomStay";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
+import { request, check, PERMISSIONS } from "react-native-permissions";
+import Geolocation from "react-native-geolocation-service";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
@@ -66,6 +67,7 @@ export default function detailCustomItinerary(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
+      height: 108,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -124,6 +126,7 @@ export default function detailCustomItinerary(props) {
   let [dataParent, setDataParent] = useState({});
   let [dataChild, setDataChild] = useState([]);
   let [token, setToken] = useState("");
+  const GooglePlacesRef = useRef();
 
   //params data
   const dayId = props.route.params.dayId;
@@ -192,7 +195,7 @@ export default function detailCustomItinerary(props) {
   // state
   let [dataState, setdataState] = useState({
     id: props.route.params?.activityId ? props.route.params.activityId : "", //edit custom stay
-    day_id: props.route.params?.dayId ? props.route.params.dayId : "", //wajib
+    day_id: props.route.params?.dayId ? props.route.params.dayId : dayId, //wajib
     title: props.route.params?.detail_accomodation
       ? props.route.params.detail_accomodation.hotel_name
       : "", // == hotel_name
@@ -237,12 +240,6 @@ export default function detailCustomItinerary(props) {
     checkin: true, //wajib
     checkout: true, //wajib,
     file: true, //wajib
-  });
-
-  const [secondState, setSecondState] = useState({
-    hotel_name: "",
-    checkin: "",
-    checkout: "",
   });
 
   let startDate = props.route.params.startDate.split(" ").join("T");
@@ -474,13 +471,13 @@ export default function detailCustomItinerary(props) {
       setdataState((prevCin) => {
         return {
           ...prevCin,
-          ["checkin"]: formattedDate,
+          checkin: formattedDate,
         };
       });
 
       // setCheckInCheck(formatForScreen);
       setRenderDate((prev) => {
-        return { ...prev, ["renderCheckIn"]: formatForScreen };
+        return { ...prev, renderCheckIn: formatForScreen };
       });
     }
 
@@ -488,13 +485,13 @@ export default function detailCustomItinerary(props) {
       setdataState((prevCout) => {
         return {
           ...prevCout,
-          ["checkout"]: formattedDate,
+          checkout: formattedDate,
         };
       });
 
       // setCheckoutCheck(formatForScreen);
       setRenderDate((prev) => {
-        return { ...prev, ["renderCheckOut"]: formatForScreen };
+        return { ...prev, renderCheckOut: formatForScreen };
       });
     }
   };
@@ -505,9 +502,9 @@ export default function detailCustomItinerary(props) {
   ] = useMutation(UpdateCustomStay, {
     context: {
       headers: {
-        "Content-Type": (file = []
+        "Content-Type": !dataState.file.length
           ? `application/json`
-          : `multipart/form-data`),
+          : `multipart/form-data`,
         Authorization: `Bearer ${token}`,
       },
     },
@@ -518,71 +515,41 @@ export default function detailCustomItinerary(props) {
     {
       context: {
         headers: {
-          "Content-Type": (file = []
+          "Content-Type": !dataState.file.length
             ? `application/json`
-            : `multipart/form-data`),
+            : `multipart/form-data`,
           Authorization: `Bearer ${token}`,
         },
       },
     }
   );
 
-  useEffect(() => {
-    //! Hanendyo's work
-  }, [dataState]);
-
   const simpanketimeline = (inputan) => {
     modalValidation();
   };
 
-  const updateDataAPI = async () => {
-    try {
-      let response = await mutationUpdate({
-        variables: {
-          id: dataState.id,
-          day_id: dataState.day_id,
-          title: dataState.title, // == hotel_name
-          icon: dataState.icon, //gb_tour
-          qty: dataState.qty, // ==
-          address: dataState.address, // ==wajib
-          latitude: dataState.latitude, //wajib
-          longitude: dataState.longitude, //wajib
-          note: dataState.note, // ==ga wajib
-          time: dataState.time, //hardcode
-          duration: dataState.duration, //hardcode
-          status: dataState.status, // ==
-          order: dataState.order, // ==0
-          total_price: dataState.total_price, //
-          hotel_name: dataState.hotel_name, //wajib
-          guest_name: dataState.guest_name, //wajib
-          booking_ref: dataState.booking_ref, //wajib
-          checkin: dataState.checkin, // ==wajib
-          checkout: dataState.checkout, //wajib
-          file: dataState.file, //wajib
-        },
-      });
-      console.log("response", response);
-      if (error) {
-        throw new Error("Error input");
-      }
-      if (response.data) {
-        if (response.data.update_custom_accomodation.code !== 200) {
-          throw new Error(response.data.update_custom_accomodation.message);
-        } else {
-          props.navigation.navigate("itindetail");
-        }
-      }
-    } catch (error) {
-      setAlertPopUp({
-        ...alertPopUp,
-        show: true,
-        judul: "Submit Data Error",
-        detail: error,
-      });
-    }
-  };
-
   const submitDataAPI = async () => {
+    console.log("variables", {
+      day_id: dataState.day_id,
+      title: dataState.title, // == hotel_name
+      icon: dataState.icon, //gb_tour
+      qty: dataState.qty, // ==
+      address: dataState.address, // ==wajib
+      latitude: dataState.latitude, //wajib
+      longitude: dataState.longitude, //wajib
+      note: dataState.note, // ==ga wajib
+      time: dataState.time, //hardcode
+      duration: dataState.duration, //hardcode
+      status: dataState.status, // ==
+      order: dataState.order, // ==0
+      total_price: dataState.total_price, //
+      hotel_name: dataState.hotel_name, //wajib
+      guest_name: dataState.guest_name, //wajib
+      booking_ref: dataState.booking_ref, //wajib
+      checkin: dataState.checkin, // ==wajib
+      checkout: dataState.checkout, //wajib
+      file: dataState.file, //wajib
+    });
     try {
       let response = await mutation({
         variables: {
@@ -608,7 +575,8 @@ export default function detailCustomItinerary(props) {
         },
       });
       if (error) {
-        throw new Error("Error input");
+        console.log(error);
+        // throw new Error("Error input");
       }
       if (response.data) {
         if (response.data.add_custom_accomodation.code !== 200) {
@@ -618,6 +586,7 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
+      console.log("error", error);
       setAlertPopUp({
         ...alertPopUp,
         show: true,
@@ -626,6 +595,100 @@ export default function detailCustomItinerary(props) {
       });
     }
   };
+
+  const [dataNearby, setDataNearby] = useState([]);
+  const [loadingApp, setLoadingApp] = useState(false);
+  const [text, setText] = useState("");
+
+  const GetLocation = async () => {
+    try {
+      let granted = false;
+      if (Platform.OS == "ios") {
+        let sLocation = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        if (sLocation === "denied") {
+          granted = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+        } else {
+          granted = true;
+        }
+      } else {
+        let sLocation = await check(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        if (sLocation === "denied") {
+          granted = await request(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION);
+        } else {
+          granted = true;
+        }
+      }
+      if (granted) {
+        await Geolocation.getCurrentPosition(
+          (position) => _nearbyLocation(position),
+          (err) => console.log(err),
+          {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 10000,
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const _nearbyLocation = async (position) => {
+    let latitude = position?.coords?.latitude
+      ? position?.coords?.latitude
+      : null;
+    let longitude = position?.coords?.longitude
+      ? position?.coords?.longitude
+      : null;
+
+    try {
+      let response = await fetch(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+          latitude +
+          "," +
+          longitude +
+          "&radius=50000&key=AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      let responseJson = await response.json();
+      if (responseJson.results && responseJson.results.length > 0) {
+        let nearby = [];
+        let HOTEL_ICON_API =
+          "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png";
+
+        for (var i of responseJson.results) {
+          if (i.icon.includes("lodging")) {
+            let data = {
+              place_id: i.place_id,
+              name: i.name,
+              latitude: i.geometry?.location.lat,
+              longitude: i.geometry?.location.lng,
+              address: i.vicinity,
+              icon: i.icon,
+            };
+            nearby.push(data);
+          }
+        }
+        setDataNearby(nearby);
+        setLoadingApp(false);
+      } else {
+        setLoadingApp(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    console.log("nearbyData", dataNearby);
+  }, [dataNearby]);
+
   return (
     <SafeAreaView
       style={{
@@ -731,7 +794,10 @@ export default function detailCustomItinerary(props) {
             </View>
 
             <TouchableOpacity
-              onPress={() => setModalHotelName(true)}
+              onPress={() => {
+                setModalHotelName(true);
+                GetLocation();
+              }}
               style={{
                 position: "absolute",
                 top: 0,
@@ -758,6 +824,7 @@ export default function detailCustomItinerary(props) {
             )}
             <TextInput
               placeholder={t("address")}
+              editable={false}
               autoCorrect={false}
               style={{
                 paddingTop: Platform.OS === "ios" ? 20 : 15,
@@ -767,9 +834,31 @@ export default function detailCustomItinerary(props) {
                 borderBottomWidth: 1,
                 borderBottomColor: "#d3d3d3",
                 fontSize: 14,
+                color: "#464646",
               }}
               value={dataState.address}
               onChangeText={onChangeValidation("address")}
+              selection={{ start: 0, end: 0 }}
+            />
+            <TouchableOpacity
+              style={{
+                alignContent: "center",
+                top: 0,
+                left: 0,
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+              }}
+              onPress={() =>
+                !dataState.hotel_name
+                  ? setAlertPopUp({
+                      ...alertPopUp,
+                      show: true,
+                      judul: t("PleaseFillYourHotelName"),
+                      detail: "",
+                    })
+                  : null
+              }
             />
             {dataState.address == "" ? (
               itemValid.address === false ? (
@@ -868,9 +957,7 @@ export default function detailCustomItinerary(props) {
                 }}
                 value={renderDate.renderCheckIn}
               />
-              {/* {
-                dateValidation()
-              }, */}
+
               {dataState.checkin == "" ? (
                 itemValid.checkin === false ? (
                   <Text
@@ -1061,10 +1148,10 @@ export default function detailCustomItinerary(props) {
                 }}
                 value={dataState.note}
                 onChangeText={(e) => {
-                  setdataState({ ...dataState, ["note"]: e });
+                  setdataState({ ...dataState, note: e });
                 }}
                 onSubmitEditing={(e) => {
-                  setdataState({ ...dataState, ["note"]: e });
+                  setdataState({ ...dataState, note: e });
                 }}
               />
             </View>
@@ -1148,7 +1235,7 @@ export default function detailCustomItinerary(props) {
                       setdataState((prevFile) => {
                         return {
                           ...prevFile,
-                          ["file"]: temp,
+                          file: temp,
                         };
                       });
                     }}
@@ -1298,79 +1385,11 @@ export default function detailCustomItinerary(props) {
                   setdataState((prevName) => {
                     return {
                       ...prevName,
-                      ["hotel_name"]: data.structured_formatting.main_text,
-                    };
-                  });
-                  setSecondState({
-                    ...secondState,
-                    ["hotel_name"]: data.structured_formatting.main_text,
-                  });
-                  setdataState((prevAddress) => {
-                    return {
-                      ...prevAddress,
-                      ["address"]: data.structured_formatting.secondary_text,
-                    };
-                  });
-                  setdataState((prevLat) => {
-                    return {
-                      ...prevLat,
-                      ["latitude"]: details.geometry.location.lat,
-                    };
-                  });
-                  setdataState((prevLng) => {
-                    return {
-                      ...prevLng,
-                      ["longitude"]: details.geometry.location.lng,
-                    };
-                  });
-
-                  // setState DAY_ID
-                  setdataState((prevDayId) => {
-                    return {
-                      ...prevDayId,
-                      ["day_id"]: dayId,
-                    };
-                  });
-                  // setState Title
-                  setdataState((prevTitle) => {
-                    return {
-                      ...prevTitle,
-                      ["title"]: data.structured_formatting.main_text,
-                    };
-                  });
-                  // setState ICON
-                  setdataState((prevIcon) => {
-                    return {
-                      ...prevIcon,
-                      ["icon"]: `gb_tour`,
-                    };
-                  });
-                  // setState time
-                  setdataState((prevTime) => {
-                    return {
-                      ...prevTime,
-                      ["time"]: "00:00:00",
-                    };
-                  });
-                  // setState duration
-                  setdataState((prevDur) => {
-                    return {
-                      ...prevDur,
-                      ["duration"]: `01:00:00`,
-                    };
-                  });
-                  // setState Order
-                  setdataState((prevOrder) => {
-                    return {
-                      ...prevOrder,
-                      ["order"]: [0],
-                    };
-                  });
-
-                  setdataState((prevStatus) => {
-                    return {
-                      ...prevStatus,
-                      ["status"]: false,
+                      title: data.structured_formatting.main_text,
+                      hotel_name: data.structured_formatting.main_text,
+                      address: data.structured_formatting.secondary_text,
+                      latitude: details.geometry.location.lat,
+                      longitude: details.geometry.location.lng,
                     };
                   });
                 }
@@ -1381,6 +1400,11 @@ export default function detailCustomItinerary(props) {
                 language: "en",
                 fields: "formatted_address, name, geometry",
               }}
+              ref={GooglePlacesRef}
+              textInputProps={{
+                onChangeText: (text) => setText(text),
+                value: text,
+              }}
               autoFocus={true}
               listViewDisplayed="auto"
               currentLocation={true}
@@ -1389,11 +1413,32 @@ export default function detailCustomItinerary(props) {
               renderLeftButton={() => {
                 return (
                   <View style={{ justifyContent: "center" }}>
-                    <Pointmapgray />
+                    <Magnifying />
                   </View>
                 );
               }}
-              // GooglePlacesSearchQuery={{ rankby: "distance" }}
+              renderRightButton={() => {
+                return (
+                  Platform.OS === "android" &&
+                  (text.length ? (
+                    <Pressable
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: 50,
+                        marginRight: -10,
+                      }}
+                      onPress={() => {
+                        setText("");
+                        GooglePlacesRef.current.setAddressText("");
+                      }}
+                    >
+                      <Xblue width={20} height={20} />
+                    </Pressable>
+                  ) : null)
+                );
+              }}
+              GooglePlacesSearchQuery={{ rankby: "distance" }}
               enablePoweredByContainer={false}
               renderRow={(data) => {
                 if (data.description) {
@@ -1413,7 +1458,7 @@ export default function detailCustomItinerary(props) {
                         paddingTop: 3,
                       }}
                     >
-                      <Pointmapgray />
+                      <Pointmapblack />
                     </View>
                     <View
                       style={{ width: Dimensions.get("screen").width - 60 }}
@@ -1467,6 +1512,84 @@ export default function detailCustomItinerary(props) {
                 },
               }}
             />
+            {dataNearby && dataNearby.length && !text.length ? (
+              <View
+                showsVerticalScrollIndicator={false}
+                style={{
+                  position: "absolute",
+                  top: 60,
+                  right: 0,
+                  left: 0,
+                  marginHorizontal: 20,
+                }}
+              >
+                {dataNearby.map((item, index) => {
+                  return index < 10 ? (
+                    <Pressable
+                      onPress={() => {
+                        if (modalHotelName && !text.length) {
+                          setdataState((prevName) => {
+                            return {
+                              ...prevName,
+                              title: item.address,
+                              hotel_name: item.name,
+                              address: item.address,
+                              latitude: item.latitude,
+                              longitude: item.longitude,
+                            };
+                          });
+                        }
+                        setModalHotelName(false);
+                      }}
+                      key={index}
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "flex-start",
+                        alignItems: "flex-start",
+                        borderBottomWidth: 0.5,
+                        borderBottomColor: "#d1d1d1",
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 20,
+                          paddingTop: 4,
+                          marginLeft: 12,
+                          marginTop: 10,
+                        }}
+                      >
+                        <Pointmapblack />
+                      </View>
+                      <View
+                        style={{
+                          width: Dimensions.get("screen").width - 60,
+                          paddingRight: 10,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Lato-Bold",
+                            fontSize: 12,
+                            marginTop: 10,
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: "Lato-Regular",
+                            fontSize: 12,
+                            marginBottom: 5,
+                          }}
+                        >
+                          {item.address}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ) : null;
+                })}
+              </View>
+            ) : null}
           </View>
         </KeyboardAvoidingView>
       </Modal>
