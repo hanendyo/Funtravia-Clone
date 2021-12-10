@@ -149,12 +149,12 @@ export default function ItineraryCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler?.itinerary_list_populer?.datas);
+      setlist_populer(dataPopuler.itinerary_list_populer.datas);
     },
   });
 
   console.log("dataPopuler", dataPopuler?.itinerary_list_populer?.datas);
-  console.log("order", order);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const _Refresh = useCallback(() => {
@@ -164,6 +164,7 @@ export default function ItineraryCategory(props) {
       setRefreshing(false);
     });
   }, []);
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -227,6 +228,7 @@ export default function ItineraryCategory(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
+      _Refresh();
       loadAsync();
     });
     return unsubscribe;
