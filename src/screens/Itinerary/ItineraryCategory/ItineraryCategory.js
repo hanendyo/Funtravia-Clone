@@ -149,11 +149,9 @@ export default function ItineraryCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler.itinerary_list_populer.datas);
+      setlist_populer(dataPopuler?.itinerary_list_populer.datas);
     },
   });
-
-  console.log("dataPopuler", dataPopuler?.itinerary_list_populer?.datas);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -193,7 +191,7 @@ export default function ItineraryCategory(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataPopuler.itinerary_list_populer.page_info.hasNextPage) {
+    if (dataPopuler?.itinerary_list_populer.page_info.hasNextPage) {
       return fetchMore({
         variables: {
           keyword: search.keyword,
@@ -203,7 +201,7 @@ export default function ItineraryCategory(props) {
           rating: null,
           orderby: null,
           limit: 10,
-          offset: dataPopuler.itinerary_list_populer.page_info.offset,
+          offset: dataPopuler?.itinerary_list_populer.page_info.offset,
         },
         updateQuery: onUpdate,
       });

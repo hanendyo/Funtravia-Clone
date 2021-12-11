@@ -1818,17 +1818,21 @@ export default function ItineraryDetail(props) {
             paddingVertical: 15,
             backgroundColor: "#fff",
             opacity: textOpacity,
+            alignItems: "center",
           }}
         >
-          <View style={{ width: "65%" }}>
-            {/* title header */}
-            <Animated.View
-              style={{
-                flexDirection: "row",
-                // backgroundColor: "red",
-              }}
-            >
-              <Animated.Text
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text
+                size="header"
+                type="black"
+                numberOfLines={2}
                 onTextLayout={(x) => {
                   let lineFixed = (x.nativeEvent.lines.length - 1) * 10;
 
@@ -1840,154 +1844,129 @@ export default function ItineraryDetail(props) {
                     settextLayoutLength(true);
                   }
                 }}
-                allowFontScaling={false}
-                style={{
-                  opacity: textOpacity,
-                  fontSize: 18,
-                  fontFamily: "Lato-Black",
-                  color: "#464646",
-                  textAlign: "left",
-                }}
               >
-                {datadetail && datadetail.itinerary_detail
-                  ? datadetail.itinerary_detail.name
-                  : null}
-              </Animated.Text>
-              {/* <View
-                style={{
-                  height: 5,
-                  width: 5,
-                  borderRadius: 5,
-                  backgroundColor: "#000000",
-                  marginHorizontal: 10,
-                  alignSelf: "center",
-                }}
-              /> */}
+                {datadetail?.itinerary_detail?.name}
+              </Text>
               <View
-                style={{
-                  width: 5,
-                  height: 5,
-                  alignSelf: "flex-start",
-                  backgroundColor: "#000",
-                  borderRadius: 10,
-                  marginLeft:
-                    Platform.OS === "ios" ? 10 : textLayoutLength ? -30 : 10,
-                  marginTop: 10,
-                }}
-              />
-              <View
-                style={{
-                  alignSelf: "flex-start",
-                  marginLeft: 10,
-                }}
-              >
-                <Ripple
-                  onPress={() =>
-                    statususer
-                      ? props.navigation.push("ItineraryStack", {
-                          screen: "editprivacy",
-                          params: {
-                            isprivate: datadetail.itinerary_detail.isprivate,
-                            id: datadetail.itinerary_detail.id,
-                            token: token,
-                          },
-                        })
-                      : null
-                  }
-                >
-                  {datadetail.itinerary_detail.isprivate == false ? (
-                    <View
-                      style={{
-                        height: 25,
-                        width: 25,
-                        borderRadius: 30,
-                        backgroundColor: "#daf0f2",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <World width={15} height={15} />
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        height: 25,
-                        width: 25,
-                        borderRadius: 30,
-                        backgroundColor: "#daf0f2",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Lock width={15} height={15} />
-                    </View>
-                  )}
-                </Ripple>
-              </View>
-            </Animated.View>
-            <Animated.View
-              style={{
-                opacity: textOpacity,
-                flexDirection: "row",
-                top: 2,
-              }}
-            >
-              {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
-                <Errorr width={15} height={15} style={{ marginRight: 5 }} />
-              ) : null}
-              <Animated.Text
-                size="small"
-                type="bold"
-                style={{
-                  color:
-                    cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180
-                      ? "#D75995"
-                      : "#6c6c6c",
-                  opacity: textOpacity,
-                  fontFamily: "Lato-Bold",
-                  fontSize: 12,
-                  // top: 5,
-                }}
-              >
-                {/* {t("dates")} :{" "} */}
-                {datadetail && datadetail.itinerary_detail
-                  ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                    "  -  " +
-                    dateFormatr(datadetail.itinerary_detail.end_date)
-                  : null}
-              </Animated.Text>
-            </Animated.View>
-          </View>
-          {/* button share */}
-          <Animated.View>
-            {datadetail &&
-            datadetail.itinerary_detail &&
-            datadetail.itinerary_detail.isprivate === false ? (
-              <Button
-                onPress={() =>
-                  shareAction({
-                    from: "itinerary",
-                    target: itineraryId,
-                  })
-                }
-                type="circle"
-                variant="bordered"
-                size="small"
                 style={{
                   flexDirection: "row",
-                  width: 80,
-                  alignContent: "center",
-                  alignItems: "center",
-                  marginRight: 5,
                 }}
               >
-                <Sharegreen height={16} width={16} />
-                <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
-                  {t("share")}
+                {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
+                  <Errorr width={15} height={15} style={{ marginRight: 5 }} />
+                ) : null}
+                <Text
+                  size="small"
+                  type="bold"
+                  style={{
+                    color:
+                      cekTanggal(datadetail?.itinerary_detail?.start_date) <=
+                      180
+                        ? "#D75995"
+                        : "#6c6c6c",
+                  }}
+                >
+                  {/* {t("dates")} :{" "} */}
+                  {datadetail && datadetail.itinerary_detail
+                    ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                      "  -  " +
+                      dateFormatr(datadetail.itinerary_detail.end_date)
+                    : null}
                 </Text>
-              </Button>
-            ) : null}
-          </Animated.View>
+              </View>
+            </View>
+            <View
+              style={{
+                width: 60,
+                alignItems: "center",
+                justifyContent: "flex-end",
+                flexDirection: "row",
+              }}
+            >
+              <View
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: 5,
+                  backgroundColor: "#000",
+                  marginRight: 6,
+                }}
+              ></View>
+              <Ripple
+                style={{
+                  marginRight:
+                    datadetail.itinerary_detail.isprivate === false ? 10 : 6,
+                }}
+                onPress={() =>
+                  statususer
+                    ? props.navigation.push("ItineraryStack", {
+                        screen: "editprivacy",
+                        params: {
+                          isprivate: datadetail.itinerary_detail.isprivate,
+                          id: datadetail.itinerary_detail.id,
+                          token: token,
+                        },
+                      })
+                    : null
+                }
+              >
+                {datadetail.itinerary_detail.isprivate == false ? (
+                  <View
+                    style={{
+                      height: 25,
+                      width: 25,
+                      borderRadius: 30,
+                      backgroundColor: "#daf0f2",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <World width={15} height={15} />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      height: 25,
+                      width: 25,
+                      borderRadius: 30,
+                      backgroundColor: "#daf0f2",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Lock width={15} height={15} />
+                  </View>
+                )}
+              </Ripple>
+            </View>
+          </View>
+          {datadetail &&
+          datadetail.itinerary_detail &&
+          datadetail.itinerary_detail.isprivate === false ? (
+            <Button
+              onPress={() =>
+                shareAction({
+                  from: "itinerary",
+                  target: itineraryId,
+                })
+              }
+              type="circle"
+              variant="bordered"
+              size="small"
+              style={{
+                flexDirection: "row",
+                width: 80,
+                alignContent: "center",
+                alignItems: "center",
+                marginRight: 5,
+              }}
+            >
+              <Sharegreen height={16} width={16} />
+              <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
+                {t("share")}
+              </Text>
+            </Button>
+          ) : null}
         </Animated.View>
         <Animated.View
           style={{

@@ -2226,7 +2226,7 @@ export default function ListEventHome(props) {
     },
     // fetchPolicy: "network-only",
     onCompleted: () => {
-      SetDataBanner(dataBanner.get_banner);
+      SetDataBanner(dataBanner?.get_banner);
     },
   });
 
@@ -2283,12 +2283,6 @@ export default function ListEventHome(props) {
             event_id: id,
           },
         });
-        if (loadingLike) {
-          Alert.alert(t("somethingwrong"));
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (
@@ -2339,12 +2333,6 @@ export default function ListEventHome(props) {
             type: "event",
           },
         });
-        if (loadingUnLike) {
-          Alert.alert(t("somethingwrong"));
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (
