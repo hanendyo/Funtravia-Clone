@@ -2230,17 +2230,15 @@ const Index = (props) => {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            // borderBottomWidth: 1,
-            // borderColor: "#d1d1d1",
+            borderBottomWidth: 1,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
-            <TouchableOpacity
+            <Ripple
+              key={"tabx" + index}
               onPress={() => {
-                _tabIndex.current = index;
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });
@@ -2248,12 +2246,9 @@ const Index = (props) => {
             >
               <View
                 style={{
-                  // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#ffffff",
                   alignContent: "center",
-                  paddingHorizontal: 15,
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -2263,70 +2258,32 @@ const Index = (props) => {
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
-                      // height: "100%",
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
+
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      // height: 35,
-                      // paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 5 : 0,
                     },
                   ]}
-                  size="h3"
-                  type={index == tabIndex ? "bold" : "regular"}
                 >
-                  <Truncate
-                    length="15"
-                    text={item && item.key ? item.key : "-"}
-                  />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
-            </TouchableOpacity>
+            </Ripple>
           )}
         />
       </Animated.View>
-
-      //   <Animated.View
-      //     style={{
-      //       top: 0,
-      //       zIndex: 1,
-      //       position: "absolute",
-      //       transform: [{ translateY: y }],
-      //       width: "100%",
-      //     }}
-      //   >
-      //     <TabBar
-      //       {...props}
-      //       onTabPress={({ route, preventDefault }) => {
-      //         if (isListGliding.current) {
-      //           preventDefault();
-      //         }
-      //       }}
-      //       style={{
-      //         elevation: 0,
-      //         shadowOpacity: 0,
-      //         backgroundColor: "white",
-      //         height: TabBarHeight,
-      //         borderBottomWidth: 2,
-      //         borderBottomColor: "#daf0f2",
-      //       }}
-      //       renderLabel={renderLabel}
-      //       indicatorStyle={{ backgroundColor: "#209fae" }}
-      //     />
-      //   </Animated.View>
     );
   };
 
@@ -3316,8 +3273,16 @@ const styles = StyleSheet.create({
   // },
   //   label: { fontSize: 14, color: "#222" },
   indicator: { backgroundColor: "#209FAE" },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
 });
 
 export default Index;

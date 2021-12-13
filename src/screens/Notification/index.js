@@ -268,7 +268,7 @@ export default function Notification(props) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
+          { opacity: focused ? 1 : 1, height: "100%", marginBottom: 2 },
         ]}
       >
         {route.title}
@@ -288,6 +288,9 @@ export default function Notification(props) {
               {...props}
               style={{
                 backgroundColor: "white",
+                height: 42,
+                justifyContent: "center",
+                // alignItems: "center",
                 // borderTopLeftRadius: searchAktif ? 0 : 15,
                 // borderTopRightRadius: searchAktif ? 0 : 15,
               }}
@@ -315,12 +318,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
     fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
@@ -328,7 +331,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: 50,
+    height: 40,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });
