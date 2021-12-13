@@ -26,14 +26,22 @@ export default function OnBoardScreen(props) {
     {
       image: OnBoard_1,
       title: "Create and share\nyour travel plan\nwith ease.",
-      description: null,
+      description: t("description1"),
     },
-    { image: OnBoard_2, title: "Travel with\nfriends.", description: null },
-    { image: OnBoard_3, title: "Travel goal\ndigger.", description: null },
+    {
+      image: OnBoard_2,
+      title: "Travel with\nfriends.",
+      description: t("description2"),
+    },
+    {
+      image: OnBoard_3,
+      title: "Travel goal\ndigger.",
+      description: t("description3"),
+    },
     {
       image: SlideSatu,
       title: "TRAVEL\nNEVER BEEN\nTHIS EASY.",
-      description: null,
+      description: t("description4"),
     },
   ];
 
@@ -84,8 +92,8 @@ export default function OnBoardScreen(props) {
                 size="small"
                 style={{
                   flexDirection: "row",
-                  backgroundColor: "#D1D1D1",
-                  opacity: 0.45,
+                  backgroundColor: "#fff",
+                  // opacity: 0.45,
                   borderRadius: 30,
                 }}
                 onPress={() => {
@@ -105,7 +113,7 @@ export default function OnBoardScreen(props) {
                   size="description"
                   type="bold"
                   style={{
-                    color: "white",
+                    color: "#000",
                     // marginRight: 10,
                     justifyContent: "center",
                     marginBottom: 1,
@@ -131,7 +139,6 @@ export default function OnBoardScreen(props) {
                 {item.title}
               </Text>
             </View>
-
             <View
               style={{
                 paddingHorizontal: 15,
@@ -144,7 +151,8 @@ export default function OnBoardScreen(props) {
                 type="regular"
                 style={{ color: "#FFFF", lineHeight: 20 }}
               >
-                {t("description")}
+                {item.description}
+                {/* {t("description")} */}
               </Text>
             </View>
           </View>
