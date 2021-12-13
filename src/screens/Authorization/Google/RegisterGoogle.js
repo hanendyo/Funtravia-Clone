@@ -146,7 +146,9 @@ export default function RegisterGoogle({ navigation }) {
   useEffect(() => {
     navigation.setOptions(NavigationComponent);
     navigation.addListener("focus", () => {
-      signInWithGoogle();
+      setTimeout(() => {
+        signInWithGoogle();
+      }, 1000);
     });
   }, [navigation]);
 

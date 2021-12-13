@@ -1818,7 +1818,7 @@ export default function ItineraryDetail(props) {
             paddingVertical: 15,
             backgroundColor: "#fff",
             opacity: textOpacity,
-            alignItems: "center",
+            // alignItems: "center",
           }}
         >
           <View
@@ -1883,7 +1883,7 @@ export default function ItineraryDetail(props) {
                 flexDirection: "row",
               }}
             >
-              <View
+              {/* <View
                 style={{
                   width: 5,
                   height: 5,
@@ -1891,7 +1891,7 @@ export default function ItineraryDetail(props) {
                   backgroundColor: "#000",
                   marginRight: 6,
                 }}
-              ></View>
+              ></View> */}
               <Ripple
                 style={{
                   marginRight:
@@ -1961,7 +1961,7 @@ export default function ItineraryDetail(props) {
                 marginRight: 5,
               }}
             >
-              <Sharegreen height={16} width={16} />
+              <Sharegreen height={14} width={14} />
               <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
                 {t("share")}
               </Text>
