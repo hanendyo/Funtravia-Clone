@@ -28,19 +28,13 @@ import { Text } from "../../component";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = createStackNavigator();
 function HomeStack(props) {
-  console.log("propsnav", props);
   return (
     <Home.Navigator initialRouteName={"HomeScreen"}>
       <Home.Screen
-        initialParams={{
-          token: props.route.params.token,
-          shareid: null,
-          nameLayout: props.route.name,
-        }}
+        initialParams={{ token: props.route.params.token, shareid: null }}
         name="HomeScreen"
         component={HomeScreen}
         options={{
@@ -135,12 +129,8 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
-  console.log("propsbefore", props);
-  let tkn = AsyncStorage.getItem("access_token");
+  console.log("props bottom", props);
   const { t, i18n } = useTranslation();
-  // const [tokens, setTokens] = useState(props.route.params.token);
-
-  console.log("tokens", tkn);
 
   return (
     <MainNavigator.Navigator
@@ -194,13 +184,13 @@ export default function BottomNavigationItems(props) {
       />
       <MainNavigator.Screen
         name="TripBottomPlaning"
-        component={props.route.params.token ? TripPlaningscreen : HomeStack}
+        component={TripPlaningscreen}
         initialParams={{ token: props.route.params.token }}
         options={{
-          tabBarVisible: props.route.params.token ? false : true,
+          tabBarVisible: false,
           tabBarLabel: t("trip"),
           tabBarIcon: ({ focused }) =>
-            focused && props.route.params.token ? (
+            focused ? (
               <Itinerary width="25" height="25" />
             ) : (
               <View
@@ -221,8 +211,7 @@ export default function BottomNavigationItems(props) {
       />
       <MainNavigator.Screen
         name="ChatBottomScreen"
-        component={props.route.params.token ? Chatstackscreen : HomeStack}
-        initialParams={{ token: props.route.params.token }}
+        component={Chatstackscreen}
         options={{
           tabBarLabel: t("Message"),
           tabBarIcon: ({ focused }) =>
@@ -235,8 +224,7 @@ export default function BottomNavigationItems(props) {
       />
       <MainNavigator.Screen
         name="AccountBottomScreen"
-        component={props.route.params.token ? MyAccountStackScreen : HomeStack}
-        initialParams={{ token: props.route.params.token }}
+        component={MyAccountStackScreen}
         options={{
           tabBarLabel: t("account"),
           tabBarIcon: ({ focused }) =>
