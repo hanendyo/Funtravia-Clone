@@ -2,21 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
-  Alert,
   ScrollView,
   TouchableOpacity,
-  FlatList,
-  Linking,
   SafeAreaView,
   TextInput,
-  Image,
   KeyboardAvoidingView,
   StyleSheet,
   Platform,
   Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -28,10 +24,6 @@ import {
   Magnifying,
   Xblue,
 } from "../../../assets/svg";
-import { default_image } from "../../../assets/png";
-import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
-import DeleteAttachcustom from "../../../graphQL/Mutation/Itinerary/DeleteAttachcustom";
-import Swipeout from "react-native-swipeout";
 import {
   Button,
   Text,
@@ -123,8 +115,6 @@ export default function detailCustomItinerary(props) {
   };
   console.log("props hotel", props.route.params);
   const Notch = DeviceInfo.hasNotch();
-  let [dataParent, setDataParent] = useState({});
-  let [dataChild, setDataChild] = useState([]);
   let [token, setToken] = useState("");
   const GooglePlacesRef = useRef();
 
@@ -158,6 +148,7 @@ export default function detailCustomItinerary(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       getToken();
+      addAttachmentCustom();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -228,8 +219,23 @@ export default function detailCustomItinerary(props) {
     fileCustom: props.route.params?.attachment
       ? props.route.params.attachment
       : [], //wajib
+    fileCustomEdit: [],
     file: [],
   });
+
+  const addAttachmentCustom = () => {
+    let temp = [];
+    for (let file of dataState.fileCustom) {
+      let files = new ReactNativeFile({
+        uri: file.filepath,
+        name: file.file_name,
+        type: file.extention,
+      });
+      temp.push(files);
+    }
+    let tempData = [...dataState.fileCustomEdit, ...temp];
+    setdataState((prevState) => ({ ...prevState, fileCustomEdit: tempData }));
+  };
 
   const [itemValid, setItemValid] = useState({
     booking_ref: true, //wajib
@@ -413,7 +419,7 @@ export default function detailCustomItinerary(props) {
           booking_ref: dataState.booking_ref, //wajib
           checkin: dataState.checkin, // ==wajib
           checkout: dataState.checkout, //wajib
-          file: dataState.file, //wajib
+          file: [...dataState.fileCustomEdit, ...dataState.file], //wajib
         },
       });
       console.log("resp", response);
@@ -1097,7 +1103,7 @@ export default function detailCustomItinerary(props) {
               value={dataState.booking_ref}
               onChangeText={onChangeValidation("booking_ref")}
             />
-            {itemValid.booking_ref === false ? (
+            {/* {itemValid.booking_ref === false ? (
               <Text
                 type="regular"
                 size="small"
@@ -1109,7 +1115,7 @@ export default function detailCustomItinerary(props) {
               >
                 {"*" + t("inputAlertBookingRef")}
               </Text>
-            ) : null}
+            ) : null} */}
           </View>
         </View>
         <View
@@ -1185,16 +1191,23 @@ export default function detailCustomItinerary(props) {
             {dataState.fileCustom.map((data, index) => {
               return (
                 <View style={styles.attachment}>
-                  <Text style={{ width: 30 }}>{index + 1}.</Text>
                   <FunDocument
                     filename={data.file_name}
                     filepath={data.filepath}
                     format={data.extention}
                     style={{ flex: 1, flexDirection: "row" }}
                     progressBar
+                    icon
                   />
                   <TouchableOpacity
-                    onPress={() => {}}
+                    onPress={() => {
+                      let temp = [...dataState.fileCustom];
+                      temp.splice(index, 1);
+                      setdataState((prevFile) => ({
+                        ...prevFile,
+                        fileCustom: temp,
+                      }));
+                    }}
                     style={styles.attachmentTimes}
                   >
                     <Xhitam width={10} height={10} />
@@ -1214,19 +1227,12 @@ export default function detailCustomItinerary(props) {
                     borderBottomColor: "#d1d1d1",
                   }}
                 >
-                  <Text style={{ width: 30 }}>
-                    {(props.route.params.attachment
-                      ? props.route.params.attachment.length
-                      : null) +
-                      index +
-                      1}
-                    .{" "}
-                  </Text>
                   <FunDocument
                     filename={data.name}
                     filepath={data.uri}
                     style={{ flex: 1, flexDirection: "row" }}
                     progressBar
+                    icon
                   />
                   <TouchableOpacity
                     onPress={() => {

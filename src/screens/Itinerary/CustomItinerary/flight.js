@@ -174,7 +174,10 @@ export default function detailCustomItinerary(props) {
   const [attachmentCustom, setAttachmentCustom] = useState(
     props.route.params.attachment ? props.route.params.attachment : null
   );
+  const [attachmentCustomFile, setAttachmentCustomFile] = useState([]);
   const [attachment, setAttachment] = useState([]);
+
+  // };
 
   //constant data
   const order = ["0"];
@@ -326,10 +329,28 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  const addAttachmentCustom = () => {
+    if (attachmentCustom) {
+      let temp = [];
+
+      for (let file of attachmentCustom) {
+        let files = new ReactNativeFile({
+          uri: file.filepath,
+          name: file.file_name,
+          type: file.extention,
+        });
+        temp.push(files);
+      }
+      let tempData = [...attachmentCustomFile, ...temp];
+      setAttachmentCustomFile(tempData);
+    }
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       getToken();
+      addAttachmentCustom();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -363,7 +384,7 @@ export default function detailCustomItinerary(props) {
           guest_name: guestName,
           booking_ref: bookingRef,
           carrier: carrier,
-          file: attachment,
+          file: [...attachmentCustomFile, ...attachment],
         },
       });
       if (loading) {
@@ -498,7 +519,7 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      console.log("res", res);
+      // console.log("res", res);
       let files = new ReactNativeFile({
         uri: res.uri,
         type: res.type,
@@ -624,13 +645,12 @@ export default function detailCustomItinerary(props) {
                 value={flightNumber}
                 onChangeText={setFlightNumber}
               />
-              {flightNumber.length === 0 ? (
-                itemValid.flightNumber === false ? (
+              {flightNumber.length === 0 &&
+                (!itemValid.flightNumber ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertFlight")}
                   </Text>
-                ) : null
-              ) : null}
+                ) : null)}
             </View>
           </View>
 
@@ -656,13 +676,12 @@ export default function detailCustomItinerary(props) {
                 }}
                 style={styles.TextDateInput}
               />
-              {timeDepCheck.length === 0 ? (
-                itemValid.timeDepCheck === false ? (
+              {timeDepCheck.length === 0 &&
+                (!itemValid.timeDepCheck ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertDateTime")}
                   </Text>
-                ) : null
-              ) : null}
+                ) : null)}
               <TouchableOpacity
                 onPress={() => setDateTimeModalDeparture(true)}
                 style={styles.TouchOpacityDate}
@@ -703,13 +722,12 @@ export default function detailCustomItinerary(props) {
                 }}
                 style={styles.TextDateInput}
               />
-              {timeArrCheck.length === 0 ? (
-                itemValid.timeArrCheck === false ? (
+              {timeArrCheck.length === 0 &&
+                (!itemValid.timeArrCheck ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertDateTime")}
                   </Text>
-                ) : null
-              ) : null}
+                ) : null)}
               <TouchableOpacity
                 onPress={() => setDateTimeModalArrival(true)}
                 style={styles.TouchOpacityDate}
@@ -740,13 +758,12 @@ export default function detailCustomItinerary(props) {
                 style={styles.textInputOneLine}
                 customInput
               />
-              {from.length === 0 ? (
-                itemValid.from === false ? (
+              {from.length === 0 &&
+                (!itemValid.from ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertLocation")}
                   </Text>
-                ) : null
-              ) : null}
+                ) : null)}
               <TouchableOpacity
                 onPress={() => {
                   setModalFrom(true);
@@ -770,13 +787,12 @@ export default function detailCustomItinerary(props) {
                 style={styles.textInputOneLineTo}
                 customInput
               />
-              {to.length === 0 ? (
-                itemValid.to === false ? (
+              {to.length === 0 &&
+                (!itemValid.to ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertLocation")}
                   </Text>
-                ) : null
-              ) : null}
+                ) : null)}
               <TouchableOpacity
                 onPress={() => setModalTo(true)}
                 style={styles.TouchOpacityDate}

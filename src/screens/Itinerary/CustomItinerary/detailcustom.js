@@ -107,6 +107,7 @@ export default function detailCustomItinerary(props) {
         <View
           style={{
             marginLeft: 10,
+            marginBottom: 5,
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
