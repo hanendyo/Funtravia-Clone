@@ -190,7 +190,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -207,7 +207,7 @@ const Index = (props) => {
 
       setRoutes(tab);
 
-      setDataDestination(data.destinationById);
+      setDataDestination(data?.destinationById);
     },
   });
 
@@ -226,11 +226,11 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
-      setAnotherDes(dataDesAnother.destination_another_place);
+      setAnotherDes(dataDesAnother?.destination_another_place);
     },
   });
 
@@ -498,7 +498,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -510,7 +510,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -1334,7 +1334,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -1350,7 +1350,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });

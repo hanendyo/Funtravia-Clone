@@ -390,7 +390,10 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        // Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: props.route.params.token
+          ? `Bearer ${props.route.params.token}`
+          : false,
       },
     },
     options: {

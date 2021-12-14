@@ -195,16 +195,18 @@ export default function CardItinerary({
             >
               <Pressable
                 onPress={() =>
-                  props.navigation.navigate("ItineraryStack", {
-                    screen: "itindetail",
-                    params: {
-                      itintitle: item.name,
-                      country: item.id,
-                      token: token,
-                      status: "favorite",
-                      index: 0,
-                    },
-                  })
+                  token
+                    ? props.navigation.navigate("ItineraryStack", {
+                        screen: "itindetail",
+                        params: {
+                          itintitle: item.name,
+                          country: item.id,
+                          token: token,
+                          status: "favorite",
+                          index: 0,
+                        },
+                      })
+                    : setModalLogin(true)
                 }
                 style={{
                   backgroundColor: "#FFFFFF",
@@ -215,17 +217,19 @@ export default function CardItinerary({
                 }}
               >
                 <Pressable
-                  onPress={() =>
-                    props.navigation.navigate("ItineraryStack", {
-                      screen: "itindetail",
-                      params: {
-                        itintitle: item.name,
-                        country: item.id,
-                        token: token,
-                        status: "favorite",
-                      },
-                    })
-                  }
+                  onPress={() => {
+                    token
+                      ? props.navigation.navigate("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: item.name,
+                            country: item.id,
+                            token: token,
+                            status: "favorite",
+                          },
+                        })
+                      : setModalLogin(true);
+                  }}
                 >
                   <Image
                     source={

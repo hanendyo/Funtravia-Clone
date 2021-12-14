@@ -256,7 +256,7 @@ export default function Message({ navigation, route }) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
+          { opacity: focused ? 1 : 1, height: "100%", marginBottom: 2 },
         ]}
       >
         {route.title}
@@ -537,8 +537,8 @@ export default function Message({ navigation, route }) {
                 {...props}
                 style={{
                   backgroundColor: "white",
-                  // borderTopLeftRadius: searchAktif ? 0 : 15,
-                  // borderTopRightRadius: searchAktif ? 0 : 15,
+                  height: 42,
+                  justifyContent: "center",
                 }}
                 renderLabel={renderLabel}
                 indicatorStyle={styles.indicator}
@@ -566,12 +566,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
     fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

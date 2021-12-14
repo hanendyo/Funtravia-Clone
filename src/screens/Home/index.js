@@ -116,10 +116,11 @@ export default function Home(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
-      setModalLogin(true);
-      // props.navigation.navigate("HomeScreen");
-    } else {
+    // if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
+    //   setModalLogin(true);
+    //   // props.navigation.navigate("HomeScreen");
+    // } else {
+    if (tkn) {
       await setToken(tkn);
       await NotifCount();
       await LoadUserProfile();

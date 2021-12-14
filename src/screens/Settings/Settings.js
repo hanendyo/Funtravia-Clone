@@ -79,10 +79,10 @@ export default function Settings(props) {
       },
     },
     onCompleted: () => {
-      const tempData = [...data.country_list];
-      let index = tempData.findIndex((k) => k["id"] === setting.countries.id);
+      const tempData = [...data?.country_list];
+      let index = tempData.findIndex((k) => k["id"] === setting?.countries.id);
       setIndex(index);
-      setCountry(data.country_list);
+      setCountry(data?.country_list);
     },
   });
 
@@ -90,6 +90,7 @@ export default function Settings(props) {
     GetCurrencyList,
     { data: datacurrency, loading: loadingcurrency, error: errorcurrency },
   ] = useLazyQuery(CurrencyList);
+
   const languageToggle = async (value) => {
     setLanguage(value);
     i18n.changeLanguage(value);
@@ -113,9 +114,9 @@ export default function Settings(props) {
         datas
       );
       // if (datas.setting_data.user) {
-      setSetting(datas.setting_data_user);
+      setSetting(datas?.setting_data_user);
 
-      AsyncStorage.setItem("setting", JSON.stringify(datas.setting_data_user));
+      AsyncStorage.setItem("setting", JSON.stringify(datas?.setting_data_user));
       // }
     },
   });
@@ -196,7 +197,7 @@ export default function Settings(props) {
                 variant="normal"
                 onPress={() => {
                   languageToggle("en"),
-                    props.navigation.setOptions({
+                    props?.navigation.setOptions({
                       headerTitle: t("setting"),
                     });
                 }}
@@ -220,7 +221,7 @@ export default function Settings(props) {
                 variant="normal"
                 onPress={() => {
                   languageToggle("id"),
-                    props.navigation.setOptions({
+                    props?.navigation.setOptions({
                       headerTitle: t("setting"),
                     });
                 }}
