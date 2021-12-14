@@ -152,7 +152,7 @@ export default function ItinerarySearchCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler.itinerary_list_populer.datas);
+      setlist_populer(dataPopuler?.itinerary_list_populer.datas);
     },
   });
 

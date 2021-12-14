@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Platform,
+  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -18,6 +19,7 @@ import {
   NavigateAction,
   FunImage,
   ModalLogin,
+  Button,
 } from "../../component";
 import { DefaultProfileSquare } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
@@ -29,12 +31,18 @@ import DiscoverCard from "./DiscoverCard";
 import FunFeed from "./FunFeed";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
 import User_Post from "../../graphQL/Query/Profile/post";
-import { NotificationBlue, ArrowRightHome, SearchHome } from "../../assets/svg";
+import {
+  NotificationBlue,
+  ArrowRightHome,
+  SearchHome,
+  Xgray,
+} from "../../assets/svg";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("props", props);
   const { t } = useTranslation();
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
@@ -108,10 +116,15 @@ export default function Home(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    await NotifCount();
-    await LoadUserProfile();
-    await LoadPost();
+    if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
+      setModalLogin(true);
+      // props.navigation.navigate("HomeScreen");
+    } else {
+      await setToken(tkn);
+      await NotifCount();
+      await LoadUserProfile();
+      await LoadPost();
+    }
   };
 
   const searchPage = () => {
@@ -247,6 +260,159 @@ export default function Home(props) {
             {t("viewAll")}
           </Text>
         ) : null}
+
+        {/* modal login */}
+        <Modal
+          useNativeDriver={true}
+          visible={modalLogin}
+          onRequestClose={() => true}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            // onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.4,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 120,
+              marginHorizontal: 60,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              marginTop: Dimensions.get("screen").height / 4,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 120,
+                borderRadius: 5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 5,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 15,
+                  }}
+                  size="title"
+                  type="bold"
+                >
+                  {t("LoginFirst")}
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    props.navigation.navigate("HomeScreen");
+                    setModalLogin(false);
+                  }}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  marginHorizontal: 30,
+                  marginBottom: 15,
+                  marginTop: 12,
+                }}
+              >
+                <Text style={{ marginBottom: 5 }} size="title" type="bold">
+                  {t("nextLogin")}
+                </Text>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 18 }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("textLogin")}
+                </Text>
+              </View>
+              <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
+                <Button
+                  style={{ marginBottom: 5 }}
+                  onPress={() => {
+                    setModalLogin(false);
+                    props.navigation.push("AuthStack", {
+                      screen: "LoginScreen",
+                    });
+                  }}
+                  type="icon"
+                  text={t("signin")}
+                ></Button>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    marginVertical: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                  <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                    {t("or")}
+                  </Text>
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ color: "#209FAE" }}
+                    onPress={() => {
+                      setModalLogin(false);
+                      props.navigation.push("AuthStack", {
+                        screen: "RegisterScreen",
+                      });
+                    }}
+                  >
+                    {t("createAkunLogin")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -288,11 +454,7 @@ export default function Home(props) {
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
-      <ModalLogin
-        modalLogin={modalLogin}
-        setModalLogin={() => setModalLogin(false)}
-        props={props}
-      />
+
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         stickyHeaderIndices={[0]}
@@ -404,7 +566,7 @@ export default function Home(props) {
                   shadowOpacity: 0.2,
                 }}
               />
-              {datanotif && datanotif.count_notif.count > 0 ? (
+              {datanotif && datanotif?.count_notif?.count > 0 ? (
                 <View
                   style={{
                     position: "absolute",
@@ -419,7 +581,7 @@ export default function Home(props) {
                     // alignSelf: "center",
                   }}
                 >
-                  {datanotif.count_notif.count > 100 ? (
+                  {datanotif?.count_notif?.count > 100 ? (
                     <Text
                       type="bold"
                       style={{
@@ -441,7 +603,7 @@ export default function Home(props) {
                         paddingHorizontal: 2,
                       }}
                     >
-                      {datanotif.count_notif.count}
+                      {datanotif?.count_notif?.count}
                     </Text>
                   )}
                 </View>

@@ -149,12 +149,10 @@ export default function ItineraryCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler?.itinerary_list_populer?.datas);
+      setlist_populer(dataPopuler?.itinerary_list_populer.datas);
     },
   });
 
-  console.log("dataPopuler", dataPopuler?.itinerary_list_populer?.datas);
-  console.log("order", order);
   const [refreshing, setRefreshing] = useState(false);
 
   const _Refresh = useCallback(() => {
@@ -164,6 +162,7 @@ export default function ItineraryCategory(props) {
       setRefreshing(false);
     });
   }, []);
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -192,7 +191,7 @@ export default function ItineraryCategory(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataPopuler.itinerary_list_populer.page_info.hasNextPage) {
+    if (dataPopuler?.itinerary_list_populer.page_info.hasNextPage) {
       return fetchMore({
         variables: {
           keyword: search.keyword,
@@ -202,7 +201,7 @@ export default function ItineraryCategory(props) {
           rating: null,
           orderby: null,
           limit: 10,
-          offset: dataPopuler.itinerary_list_populer.page_info.offset,
+          offset: dataPopuler?.itinerary_list_populer.page_info.offset,
         },
         updateQuery: onUpdate,
       });
@@ -227,6 +226,7 @@ export default function ItineraryCategory(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
+      _Refresh();
       loadAsync();
     });
     return unsubscribe;

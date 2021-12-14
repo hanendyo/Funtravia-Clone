@@ -80,7 +80,7 @@ export default function RenderAlbum({
         <>
           <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
             <FunVideo
-              onBuffer={() => onBuffer()}
+              onBuffer={(e) => onBuffer(e)}
               onLoadStart={() => onLoadStart()}
               onLoad={() => onLoad()}
               poster={data?.assets[0]?.filepath.replace(

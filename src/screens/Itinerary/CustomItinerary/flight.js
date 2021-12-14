@@ -57,7 +57,6 @@ import Geolocation from "react-native-geolocation-service";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
-  // console.log("props", props.route.params);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -357,7 +356,6 @@ export default function detailCustomItinerary(props) {
   }, [props.navigation]);
 
   const mutationUpdateFlight = async () => {
-    console.log("update", { file: [...attachmentCustomFile, ...attachment] });
     try {
       let response = await mutationUpdate({
         variables: {

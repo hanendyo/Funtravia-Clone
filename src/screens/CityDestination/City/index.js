@@ -85,7 +85,7 @@ import normalize from "react-native-normalize";
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 
-const TabBarHeight = 40;
+const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
@@ -293,7 +293,7 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
-      setListCity(dataCity.CitiesInformation);
+      setListCity(dataCity?.CitiesInformation);
       let tab = [{ key: "general", title: "General" }];
 
       dataCity.CitiesInformation.article_header.map((item, index) => {
@@ -307,8 +307,8 @@ export default function CityDetail(props) {
       setRoutes(tab);
       let loop = 0;
       let eventavailable = [];
-      if (dataCity.CitiesInformation?.event) {
-        dataCity.CitiesInformation?.event.map((item, index) => {
+      if (dataCity?.CitiesInformation?.event) {
+        dataCity?.CitiesInformation?.event.map((item, index) => {
           if (item.month == datenow) {
             eventavailable = item;
           }
@@ -714,8 +714,8 @@ export default function CityDetail(props) {
   const RenderGeneral = ({}) => {
     let render = [];
     render =
-      dataCity && dataCity.CitiesInformation
-        ? dataCity.CitiesInformation
+      dataCity && dataCity?.CitiesInformation
+        ? dataCity?.CitiesInformation
         : null;
 
     let renderjournal = [];
@@ -2389,8 +2389,8 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataCity && dataCity.CitiesInformation.cover
-              ? { uri: dataCity.CitiesInformation.cover }
+            dataCity && dataCity?.CitiesInformation.cover
+              ? { uri: dataCity?.CitiesInformation.cover }
               : default_image
           }
         />
@@ -2422,11 +2422,11 @@ export default function CityDetail(props) {
               }}
             >
               <Text size="header" type="black">
-                {dataCity && dataCity.CitiesInformation ? (
+                {dataCity && dataCity?.CitiesInformation ? (
                   <Truncate
                     text={Capital({
                       text: dataCity?.CitiesInformation?.name
-                        ? dataCity.CitiesInformation.name
+                        ? dataCity?.CitiesInformation.name
                         : "",
                     })}
                     length={20}
@@ -2452,8 +2452,8 @@ export default function CityDetail(props) {
                 >
                   <PinHijau height={14} width={14} />
                   <Text size="label" type="regular" style={{ marginLeft: 5 }}>
-                    {dataCity && dataCity.CitiesInformation
-                      ? dataCity.CitiesInformation.countries.name
+                    {dataCity && dataCity?.CitiesInformation
+                      ? dataCity?.CitiesInformation?.countries?.name
                       : "-"}
                   </Text>
                 </View>
@@ -2478,8 +2478,8 @@ export default function CityDetail(props) {
                         " " +
                         Capital({
                           text:
-                            dataCity && dataCity.CitiesInformation
-                              ? dataCity.CitiesInformation.province.name
+                            dataCity && dataCity?.CitiesInformation
+                              ? dataCity?.CitiesInformation.province.name
                               : "-",
                         })}
                       {/* <Truncate
@@ -2508,8 +2508,8 @@ export default function CityDetail(props) {
                       {t("cityof")}{" "}
                       {Capital({
                         text:
-                          dataCity && dataCity.CitiesInformation
-                            ? dataCity.CitiesInformation.province.name
+                          dataCity && dataCity?.CitiesInformation
+                            ? dataCity?.CitiesInformation?.province.name
                             : "-",
                       })}
                       {/* <Truncate
@@ -2682,7 +2682,7 @@ export default function CityDetail(props) {
           style={{
             backgroundColor: "white",
             // borderBottomWidth: 1,
-            borderColor: "#d1d1d1",
+            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -2700,6 +2700,7 @@ export default function CityDetail(props) {
                   borderBottomWidth: index == tabIndex ? 2 : 1,
                   borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
+
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -2716,9 +2717,10 @@ export default function CityDetail(props) {
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
-
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -3489,10 +3491,10 @@ export default function CityDetail(props) {
                       screen: "SendToChat",
                       params: {
                         dataSend: {
-                          id: dataCity.CitiesInformation?.id,
-                          cover: dataCity.CitiesInformation?.cover,
-                          name: dataCity.CitiesInformation?.name,
-                          description: dataCity.CitiesInformation?.description,
+                          id: dataCity?.CitiesInformation?.id,
+                          cover: dataCity?.CitiesInformation?.cover,
+                          name: dataCity?.CitiesInformation?.name,
+                          description: dataCity?.CitiesInformation?.description,
                         },
                         title: "City",
                         tag_type: "tag_city",
@@ -3515,7 +3517,7 @@ export default function CityDetail(props) {
               onPress={() => {
                 shareAction({
                   from: "city",
-                  target: dataCity.CitiesInformation.id,
+                  target: dataCity?.CitiesInformation.id,
                 });
                 SetShareModal(false);
               }}
@@ -3533,7 +3535,7 @@ export default function CityDetail(props) {
               onPress={() => {
                 CopyLink({
                   from: "city",
-                  target: dataCity.CitiesInformation.id,
+                  target: dataCity?.CitiesInformation.id,
                 });
                 SetShareModal(false);
               }}
@@ -3571,12 +3573,12 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   label: {
-    fontSize: 16,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
-    fontFamily: "Lato-Regular",
+    fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 16,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

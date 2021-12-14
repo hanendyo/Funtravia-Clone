@@ -129,7 +129,7 @@ export default function RenderSinglePhoto({
       >
         <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>
           <FunVideo
-            onBuffer={() => onBuffer()}
+            onBuffer={(e) => onBuffer(e)}
             onLoadStart={() => onLoadStart()}
             onLoad={() => onLoad()}
             hideShutterView={true}

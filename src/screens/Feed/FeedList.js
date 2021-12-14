@@ -400,7 +400,7 @@ export default function FeedList({ props, token }) {
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setDataFeed(dataPost.post_cursor_based.edges);
+      setDataFeed(dataPost?.post_cursor_based?.edges);
     },
   });
 
@@ -444,12 +444,12 @@ export default function FeedList({ props, token }) {
   };
   const handleOnEndReached = () => {
     if (status == 0) {
-      if (dataPost.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
+      if (dataPost?.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
         return fetchMore({
           updateQuery: onUpdate,
           variables: {
             first: 5,
-            after: dataPost.post_cursor_based.pageInfo.endCursor,
+            after: dataPost?.post_cursor_based.pageInfo?.endCursor,
           },
         });
       }
