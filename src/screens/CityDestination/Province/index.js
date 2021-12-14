@@ -282,10 +282,10 @@ export default function ProvinceDetail(props) {
       },
     },
     onCompleted: () => {
-      setlisProvince(dataProvince.province_detail_v2);
+      setlisProvince(dataProvince?.province_detail_v2);
       let tab = [{ key: "general", title: "General" }];
 
-      dataProvince.province_detail_v2.article_header.map((item, index) => {
+      dataProvince?.province_detail_v2.article_header.map((item, index) => {
         tab.push({
           key: item.title,
           title: item.title,
@@ -3034,11 +3034,12 @@ export default function ProvinceDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            // borderBottomWidth: 0.8,
-            // borderColor: "#d1d1d1",
+            borderBottomWidth: 1,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
+              key={"tabx" + index}
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
@@ -3049,8 +3050,8 @@ export default function ProvinceDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#ffffff",
                   alignContent: "center",
                   width:
                     props.navigationState.routes.length <= 2
@@ -3068,8 +3069,9 @@ export default function ProvinceDetail(props) {
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
+
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -4046,8 +4048,16 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
   tab: {
     elevation: 0,
     shadowOpacity: 0,

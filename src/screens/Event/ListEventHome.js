@@ -686,7 +686,8 @@ export default function ListEventHome(props) {
 
               paddingTop: Platform.OS == "ios" ? 25 : 20,
               paddingHorizontal: 15,
-              paddingBottom: 0,
+              paddingBottom: Platform.OS == "ios" ? 3 : 1,
+
               zIndex: -10,
               backgroundColor: "#fff",
             }}
@@ -1275,7 +1276,6 @@ export default function ListEventHome(props) {
         style={{
           top: 0,
           zIndex: 1,
-
           position: "absolute",
           transform: [{ translateY: y }],
           width: "100%",
@@ -1290,8 +1290,8 @@ export default function ListEventHome(props) {
           style={{
             backgroundColor: "white",
             marginTop: -5,
-            // borderBottomWidth: 1,
-            // borderColor: "#d1d1d1",
+            borderBottomWidth: 1,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
@@ -1309,9 +1309,9 @@ export default function ListEventHome(props) {
               <View
                 style={{
                   // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
+                  // borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
@@ -1329,7 +1329,7 @@ export default function ListEventHome(props) {
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
+                      opacity: index == tabIndex ? 1 : 1,
                       // height: "100%",
                       borderBottomWidth: 0,
                       borderBottomColor:
@@ -1342,7 +1342,7 @@ export default function ListEventHome(props) {
                       // paddingLeft:
                       //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 5 : 0,
+                      marginBottom: index == tabIndex ? 0 : 0,
                     },
                   ]}
                   size="h3"
@@ -2612,9 +2612,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
   labelActive: {
-    fontSize: 16,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

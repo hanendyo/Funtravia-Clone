@@ -247,102 +247,124 @@ export default function AllDestination(props) {
               flex: 1,
             }}
           >
-            <View
-              style={{
-                backgroundColor: "#FFF",
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                flexDirection: "row",
-              }}
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate("CountryStack", {
+                  screen: "Country",
+                  params: {
+                    data: item,
+                    exParam: true,
+                  },
+                })
+              }
             >
-              <TouchableOpacity
-                onPress={() =>
-                  props.navigation.navigate("CountryStack", {
-                    screen: "Country",
-                    params: {
-                      data: item,
-                      exParam: true,
-                    },
-                  })
-                }
+              <View
+                style={{
+                  backgroundColor: "#FFF",
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10,
+                  flexDirection: "row",
+                }}
               >
-                <FunImage
-                  source={
-                    item.image.image ? { uri: item.image.image } : default_image
+                <TouchableOpacity
+                  onPress={() =>
+                    props.navigation.navigate("CountryStack", {
+                      screen: "Country",
+                      params: {
+                        data: item,
+                        exParam: true,
+                      },
+                    })
                   }
-                  style={{
-                    width: (Dimensions.get("window").width - 270) / 2,
-                    height: (Dimensions.get("window").width - 270) / 2,
-                    borderRadius: 5,
-                    marginHorizontal: 10,
-                    marginVertical: 10,
-                  }}
-                  imageStyle={[
-                    styles.Image,
-                    {
+                >
+                  <FunImage
+                    source={
+                      item.image.image
+                        ? { uri: item.image.image }
+                        : default_image
+                    }
+                    style={{
                       width: (Dimensions.get("window").width - 270) / 2,
                       height: (Dimensions.get("window").width - 270) / 2,
                       borderRadius: 5,
                       marginHorizontal: 10,
                       marginVertical: 10,
-                    },
-                  ]}
-                />
-              </TouchableOpacity>
-              <View
-                style={{
-                  width: "70%",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginLeft: 10,
-                }}
-              >
+                    }}
+                    imageStyle={[
+                      styles.Image,
+                      {
+                        width: (Dimensions.get("window").width - 270) / 2,
+                        height: (Dimensions.get("window").width - 270) / 2,
+                        borderRadius: 5,
+                        marginHorizontal: 10,
+                        marginVertical: 10,
+                      },
+                    ]}
+                  />
+                </TouchableOpacity>
                 <View
                   style={{
-                    justifyContent: "center",
+                    width: "70%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginLeft: 10,
                   }}
                 >
-                  <Text
-                    size={"title"}
-                    type={"bold"}
+                  <View
                     style={{
-                      fontSize: 20,
-                      color: "#209FAE",
+                      justifyContent: "center",
                     }}
                   >
-                    {item.name}
-                  </Text>
-                  <Text
-                    size={"label"}
-                    type={"regular"}
-                    style={{ marginTop: 5 }}
-                  >
-                    {sumdestination + " " + t("destination")}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    justifyContent: "center",
-                  }}
-                >
-                  {showcity !== item.name ? (
-                    <Pressable onPress={() => setShowCity(item.name)}>
-                      <Bottom height={25} width={25} style={{ marginTop: 5 }} />
-                    </Pressable>
-                  ) : (
-                    <Pressable
-                      onPress={() =>
-                        setShowCity(item.name == showcity ? null : item.name)
-                      }
+                    <Text
+                      size={"title"}
+                      type={"bold"}
+                      style={{
+                        fontSize: 20,
+                        color: "#209FAE",
+                      }}
                     >
-                      <Above height={25} width={25} style={{ marginTop: 5 }} />
-                    </Pressable>
-                  )}
+                      {item.name}
+                    </Text>
+                    <Text
+                      size={"label"}
+                      type={"regular"}
+                      style={{ marginTop: 5 }}
+                    >
+                      {sumdestination + " " + t("destination")}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                    }}
+                  >
+                    {showcity !== item.name ? (
+                      <Pressable onPress={() => setShowCity(item.name)}>
+                        <Bottom
+                          height={25}
+                          width={25}
+                          style={{ marginTop: 5 }}
+                        />
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        onPress={() =>
+                          setShowCity(item.name == showcity ? null : item.name)
+                        }
+                      >
+                        <Above
+                          height={25}
+                          width={25}
+                          style={{ marginTop: 5 }}
+                        />
+                      </Pressable>
+                    )}
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         ) : null}
         <View

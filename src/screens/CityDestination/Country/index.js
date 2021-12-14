@@ -2262,14 +2262,15 @@ export default function Country(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
+            borderBottomWidth: 1,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
+              key={"tabx" + index}
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });
@@ -2277,8 +2278,8 @@ export default function Country(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#ffffff",
                   alignContent: "center",
                   width:
                     props.navigationState.routes.length <= 2
@@ -2296,7 +2297,7 @@ export default function Country(props) {
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
 
                       borderBottomColor:
@@ -2308,7 +2309,7 @@ export default function Country(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item?.key ? item?.key : "-"} length={15} />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
             </Ripple>
@@ -3178,8 +3179,17 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     overflow: "hidden",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+
   tab: {
     elevation: 0,
     shadowOpacity: 0,

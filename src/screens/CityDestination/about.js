@@ -31,7 +31,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 45;
+const TabBarHeight = 40;
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: 44,
@@ -506,7 +506,8 @@ export default function about(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "#DAF0F2",
-            // borderBottomWidth: 0.5,
+            borderBottomWidth: 1,
+            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -522,8 +523,8 @@ export default function about(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: index == tabIndex ? 2 : 1,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 2,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#DAF0F2",
                   alignContent: "center",
                   paddingHorizontal: 15,
                   width:
@@ -797,6 +798,14 @@ export default function about(props) {
 }
 const styles = StyleSheet.create({
   indicator: { backgroundColor: "#209FAE", height: 0 },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
-  labelActive: { fontSize: 16, color: "#209FAE", fontFamily: "Lato-Bold" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
 });
