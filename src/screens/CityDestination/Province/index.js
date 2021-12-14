@@ -76,7 +76,7 @@ import DeviceInfo from "react-native-device-info";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 40;
+const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const HeaderHeight = 300;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
@@ -278,7 +278,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -336,7 +336,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -364,7 +364,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -383,7 +383,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -492,7 +492,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -504,7 +504,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -520,7 +520,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -536,7 +536,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -735,7 +735,7 @@ export default function ProvinceDetail(props) {
       // Deskripsi
       <Animated.View
         style={{
-          marginTop: 5,
+          // marginTop: 5,
           marginBottom: 60,
           transform: [{ translateY: y }],
         }}
@@ -2484,7 +2484,8 @@ export default function ProvinceDetail(props) {
     return (
       <Animated.View
         style={{
-          paddingVertical: 5,
+          paddingTop: 5,
+          paddingBottom: 60,
           transform: [{ translateY: y }],
         }}
       >
@@ -3034,8 +3035,8 @@ export default function ProvinceDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 1,
-            borderColor: "#d1d1d1",
+            // borderBottomWidth: 1,
+            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -3050,9 +3051,10 @@ export default function ProvinceDetail(props) {
             >
               <View
                 style={{
-                  borderBottomWidth: index == tabIndex ? 2 : 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#ffffff",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
+
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -3071,7 +3073,8 @@ export default function ProvinceDetail(props) {
                     {
                       opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
-
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1

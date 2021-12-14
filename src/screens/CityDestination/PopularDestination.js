@@ -247,7 +247,7 @@ export default function AllDestination(props) {
               flex: 1,
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() =>
                 props.navigation.navigate("CountryStack", {
                   screen: "Country",
@@ -257,15 +257,58 @@ export default function AllDestination(props) {
                   },
                 })
               }
+            > */}
+            <View
+              style={{
+                backgroundColor: "#FFF",
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
+                flexDirection: "row",
+              }}
             >
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.navigate("CountryStack", {
+                    screen: "Country",
+                    params: {
+                      data: item,
+                      exParam: true,
+                    },
+                  })
+                }
+              >
+                <FunImage
+                  source={
+                    item.image.image ? { uri: item.image.image } : default_image
+                  }
+                  style={{
+                    width: (Dimensions.get("window").width - 270) / 2,
+                    height: (Dimensions.get("window").width - 270) / 2,
+                    borderRadius: 5,
+                    marginHorizontal: 10,
+                    marginVertical: 10,
+                  }}
+                  imageStyle={[
+                    styles.Image,
+                    {
+                      width: (Dimensions.get("window").width - 270) / 2,
+                      height: (Dimensions.get("window").width - 270) / 2,
+                      borderRadius: 5,
+                      marginHorizontal: 10,
+                      marginVertical: 10,
+                    },
+                  ]}
+                />
+              </TouchableOpacity>
+
               <View
                 style={{
-                  backgroundColor: "#FFF",
-                  borderTopLeftRadius: 10,
-                  borderTopRightRadius: 10,
-                  borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
+                  width: "70%",
                   flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginLeft: 10,
                 }}
               >
                 <TouchableOpacity
@@ -278,38 +321,8 @@ export default function AllDestination(props) {
                       },
                     })
                   }
-                >
-                  <FunImage
-                    source={
-                      item.image.image
-                        ? { uri: item.image.image }
-                        : default_image
-                    }
-                    style={{
-                      width: (Dimensions.get("window").width - 270) / 2,
-                      height: (Dimensions.get("window").width - 270) / 2,
-                      borderRadius: 5,
-                      marginHorizontal: 10,
-                      marginVertical: 10,
-                    }}
-                    imageStyle={[
-                      styles.Image,
-                      {
-                        width: (Dimensions.get("window").width - 270) / 2,
-                        height: (Dimensions.get("window").width - 270) / 2,
-                        borderRadius: 5,
-                        marginHorizontal: 10,
-                        marginVertical: 10,
-                      },
-                    ]}
-                  />
-                </TouchableOpacity>
-                <View
                   style={{
-                    width: "70%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginLeft: 10,
+                    justifyContent: "center",
                   }}
                 >
                   <View
@@ -335,36 +348,29 @@ export default function AllDestination(props) {
                       {sumdestination + " " + t("destination")}
                     </Text>
                   </View>
-                  <View
-                    style={{
-                      justifyContent: "center",
-                    }}
-                  >
-                    {showcity !== item.name ? (
-                      <Pressable onPress={() => setShowCity(item.name)}>
-                        <Bottom
-                          height={25}
-                          width={25}
-                          style={{ marginTop: 5 }}
-                        />
-                      </Pressable>
-                    ) : (
-                      <Pressable
-                        onPress={() =>
-                          setShowCity(item.name == showcity ? null : item.name)
-                        }
-                      >
-                        <Above
-                          height={25}
-                          width={25}
-                          style={{ marginTop: 5 }}
-                        />
-                      </Pressable>
-                    )}
-                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    justifyContent: "center",
+                  }}
+                >
+                  {showcity !== item.name ? (
+                    <Pressable onPress={() => setShowCity(item.name)}>
+                      <Bottom height={25} width={25} style={{ marginTop: 5 }} />
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      onPress={() =>
+                        setShowCity(item.name == showcity ? null : item.name)
+                      }
+                    >
+                      <Above height={25} width={25} style={{ marginTop: 5 }} />
+                    </Pressable>
+                  )}
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
+            {/* </TouchableOpacity> */}
           </View>
         ) : null}
         <View

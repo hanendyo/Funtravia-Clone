@@ -167,7 +167,8 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -237,7 +238,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -249,7 +250,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -1050,7 +1051,7 @@ export default function ItineraryPopuler(props) {
 
                 <Text
                   size="label"
-                  type={actives == "Itinerary" ? "bold" : "regular"}
+                  type={actives == "Itinerary" ? "bold" : "bold"}
                   style={{
                     color: actives == "Itinerary" ? "#209FAE" : "#464646",
                   }}
@@ -1091,7 +1092,7 @@ export default function ItineraryPopuler(props) {
                 )}
                 <Text
                   size="label"
-                  type={actives == "Album" ? "bold" : "regular"}
+                  type={actives == "Album" ? "bold" : "bold"}
                   style={{
                     color: actives == "Album" ? "#209FAE" : "#464646",
                   }}

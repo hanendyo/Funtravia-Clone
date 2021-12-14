@@ -277,11 +277,11 @@ export default function ItineraryDestination(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : false,
         },
       },
       onCompleted: () => {
-        setdataDes(data.destinationList_v2);
+        setdataDes(data?.destinationList_v2);
       },
     }
   );
@@ -293,7 +293,7 @@ export default function ItineraryDestination(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -305,7 +305,7 @@ export default function ItineraryDestination(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });

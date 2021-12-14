@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  StyleSheet,
 } from "react-native";
 import {
   Xblue,
@@ -1187,7 +1188,7 @@ export default function SearchListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -1215,7 +1216,7 @@ export default function SearchListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -1251,27 +1252,14 @@ export default function SearchListEventHome(props) {
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <View
-        style={{
-          width: Dimensions.get("screen").width / 2,
-          height: 40,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: -10,
-          marginBottom: -10,
-        }}
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 1, height: "100%", marginBottom: 2 },
+        ]}
       >
-        <Text
-          style={{
-            opacity: focused ? 1 : 0.7,
-            color: focused ? "#209fae" : "#464646",
-          }}
-          size="label"
-          type={focused ? "bold" : "regular"}
-        >
-          {route.title}
-        </Text>
-      </View>
+        {route.title}
+      </Text>
     );
   };
 
@@ -1452,6 +1440,11 @@ export default function SearchListEventHome(props) {
               {...props}
               style={{
                 backgroundColor: "white",
+                height: 42,
+                justifyContent: "center",
+                // alignItems: "center",
+                // borderTopLeftRadius: searchAktif ? 0 : 15,
+                // borderTopRightRadius: searchAktif ? 0 : 15,
               }}
               renderLabel={renderLabel}
               indicatorStyle={{
@@ -1802,3 +1795,16 @@ export default function SearchListEventHome(props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+});

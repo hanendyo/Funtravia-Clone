@@ -392,7 +392,7 @@ export default function SendToChat({ navigation, route }) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7, marginBottom: 7 },
+          { opacity: focused ? 1 : 1, height: "100%", marginBottom: 2 },
         ]}
       >
         {route.title}
@@ -742,6 +742,10 @@ export default function SendToChat({ navigation, route }) {
                 {...props}
                 style={{
                   backgroundColor: "white",
+                  height: 42,
+                  // borderWidth: 1,
+                  marginTop: -5,
+                  justifyContent: "center",
                 }}
                 renderLabel={renderLabel}
                 indicatorStyle={{ backgroundColor: "#209FAE", height: 2 }}
@@ -767,12 +771,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: normalize(16),
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
     fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: normalize(16),
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },

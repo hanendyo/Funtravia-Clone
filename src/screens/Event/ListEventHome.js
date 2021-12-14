@@ -2130,6 +2130,8 @@ export default function ListEventHome(props) {
     city: null,
   });
 
+  console.log("token", token);
+
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
     fetchPolicy: "network-only",
     variables: {
@@ -2157,7 +2159,7 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -2195,7 +2197,7 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {

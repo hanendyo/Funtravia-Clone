@@ -543,7 +543,7 @@ export default function about(props) {
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
 
                       borderBottomColor:

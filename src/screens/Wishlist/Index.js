@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Platform,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { Xblue, Arrowbackios, Arrowbackwhite, Search } from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -126,26 +127,14 @@ export default function Wishlist(props) {
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <View
-        style={{
-          width: Dimensions.get("screen").width / 2,
-          height: 40,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: -10,
-        }}
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 1, height: "100%", marginBottom: 2 },
+        ]}
       >
-        <Text
-          style={{
-            opacity: focused ? 1 : 0.7,
-            color: focused ? "#209fae" : "#464646",
-          }}
-          size="title"
-          type={focused ? "bold" : "regular"}
-        >
-          {route.title}
-        </Text>
-      </View>
+        {route.title}
+      </Text>
     );
   };
 
@@ -237,6 +226,8 @@ export default function Wishlist(props) {
               {...props}
               style={{
                 backgroundColor: "white",
+                height: 42,
+                justifyContent: "center",
               }}
               renderLabel={renderLabel}
               indicatorStyle={{ backgroundColor: "#209FAE", height: 2 }}
@@ -248,3 +239,15 @@ export default function Wishlist(props) {
     </SafeAreaView>
   );
 }
+const styles = StyleSheet.create({
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+});

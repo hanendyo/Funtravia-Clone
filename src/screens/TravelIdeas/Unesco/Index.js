@@ -36,6 +36,7 @@ import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSr
 import DeviceInfo from "react-native-device-info";
 import BannerApps from "../../../graphQL/Query/Home/BannerApps";
 import normalize from "react-native-normalize";
+import Ripple from "react-native-material-ripple";
 const Notch = DeviceInfo.hasNotch();
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -160,7 +161,7 @@ export default function Unesco({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : false,
         },
       },
     }
@@ -650,6 +651,20 @@ export default function Unesco({ navigation, route }) {
           transform: [{ translateY: y }],
         }}
       >
+        <View
+          style={{
+            marginBottom: 5,
+            marginTop: 15,
+            marginHorizontal: 20,
+          }}
+        >
+          <Text size="title" type="bold">
+            {listdestinasi_unesco?.length > 1 &&
+            listdestinasi_unesco?.length != 0
+              ? `${listdestinasi_unesco?.length} sites`
+              : `${listdestinasi_unesco?.length} site`}
+          </Text>
+        </View>
         <Pressable
           key={index.toString()}
           onPress={() =>
@@ -837,21 +852,7 @@ export default function Unesco({ navigation, route }) {
               </View>
             ) : null
           }
-          ListHeaderComponent={
-            <View
-              style={{
-                marginBottom: 5,
-                marginTop: 15,
-                marginHorizontal: 20,
-              }}
-            >
-              <Text size="title" type="bold">
-                {dataR.length > 1 && dataR.length != 0
-                  ? `${dataR.length} sites`
-                  : `${dataR.length} site`}
-              </Text>
-            </View>
-          }
+          ListHeaderComponent={() => <View style={{ height: 0 }} />}
         />
       );
     } else {
@@ -872,6 +873,7 @@ export default function Unesco({ navigation, route }) {
   };
 
   let scrollRef = useRef();
+
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -900,13 +902,11 @@ export default function Unesco({ navigation, route }) {
             // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
-            <TouchableOpacity
+            <Ripple
+              key={"tabx" + index}
               onPress={() => {
-                _tabIndex.current = index;
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });
@@ -914,12 +914,10 @@ export default function Unesco({ navigation, route }) {
             >
               <View
                 style={{
-                  // borderWidth: 1,
                   borderBottomWidth: index == tabIndex ? 2 : 1,
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
                   borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
-                  paddingHorizontal: 15,
+
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -929,72 +927,36 @@ export default function Unesco({ navigation, route }) {
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
                   style={[
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
-                      opacity: index == tabIndex ? 1 : 0.7,
-                      // height: "100%",
+                      opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      // height: 35,
-                      // paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 5 : 0,
                     },
                   ]}
-                  size="h3"
-                  type={index == tabIndex ? "bold" : "regular"}
                 >
-                  <Truncate
-                    length="15"
-                    text={item && item.key ? item.key : "-"}
-                  />
+                  <Truncate text={item?.key ? item.key : ""} length={15} />
                 </Text>
               </View>
-            </TouchableOpacity>
+            </Ripple>
           )}
         />
       </Animated.View>
-
-      //   <Animated.View
-      //     style={{
-      //       top: 0,
-      //       zIndex: 1,
-      //       position: "absolute",
-      //       transform: [{ translateY: y }],
-      //       width: "100%",
-      //     }}
-      //   >
-      //     <TabBar
-      //       {...props}
-      //       onTabPress={({ route, preventDefault }) => {
-      //         if (isListGliding.current) {
-      //           preventDefault();
-      //         }
-      //       }}
-      //       style={{
-      //         elevation: 0,
-      //         shadowOpacity: 0,
-      //         backgroundColor: "white",
-      //         height: TabBarHeight,
-      //         borderBottomWidth: 2,
-      //         borderBottomColor: "#daf0f2",
-      //       }}
-      //       renderLabel={renderLabel}
-      //       indicatorStyle={{ backgroundColor: "#209fae" }}
-      //     />
-      //   </Animated.View>
     );
   };
+
   const renderTabView = () => {
     return (
       <TabView
@@ -1222,13 +1184,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "#FFF",
   },
-  label: { fontSize: 16, color: "#464646", fontFamily: "Lato-Regular" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
   labelActive: {
-    fontSize: 16,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
-
-    justifyContent: "center",
   },
   tab: {
     elevation: 1,

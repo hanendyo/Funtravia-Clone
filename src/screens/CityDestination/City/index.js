@@ -289,7 +289,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -342,7 +342,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -362,7 +362,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     onCompleted: () => {
@@ -732,7 +732,7 @@ export default function CityDetail(props) {
       // Deskripsi
       <Animated.View
         style={{
-          marginTop: 5,
+          // marginTop: 5,
           marginBottom: 70,
           transform: [{ translateY: y }],
         }}
@@ -2083,7 +2083,9 @@ export default function CityDetail(props) {
     return (
       <Animated.View
         style={{
-          paddingVertical: 5,
+          paddingTop: 5,
+          paddingBottom: 60,
+          // borderWidth: 1,
           transform: [{ translateY: y }],
         }}
       >
