@@ -1,26 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
-  SafeAreaView,
-  BackHandler,
   View,
   Dimensions,
   Animated,
-  PanResponder,
   Platform,
   StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
 import { gql } from "apollo-boost";
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import { Tab, Tabs, ScrollableTab, TabHeading } from "native-base";
-import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
 
 const ListNotifikasi_ = gql`
@@ -116,8 +111,6 @@ const ListNotifikasi_ = gql`
 export default function Notification(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState("");
-  let HeaderHeight = Dimensions.get("screen").height * 0.15;
-  let [heightview, setheight] = useState(0);
   let [datanotif, SetDataNotif] = useState([]);
 
   let [readall, setreadall] = useState(true);
@@ -230,9 +223,9 @@ export default function Notification(props) {
       },
     },
     onCompleted: () => {
-      SetDataNotif(datasnotif.list_notification);
+      SetDataNotif(datasnotif?.list_notification);
       let status = 0;
-      for (var x of datasnotif.list_notification) {
+      for (var x of datasnotif?.list_notification) {
         if (x.isread === false) {
           status = 1;
         }

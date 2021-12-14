@@ -566,7 +566,7 @@ export default function Home(props) {
                   shadowOpacity: 0.2,
                 }}
               />
-              {datanotif && datanotif.count_notif.count > 0 ? (
+              {datanotif && datanotif?.count_notif?.count > 0 ? (
                 <View
                   style={{
                     position: "absolute",
@@ -581,7 +581,7 @@ export default function Home(props) {
                     // alignSelf: "center",
                   }}
                 >
-                  {datanotif.count_notif.count > 100 ? (
+                  {datanotif?.count_notif?.count > 100 ? (
                     <Text
                       type="bold"
                       style={{
@@ -603,7 +603,7 @@ export default function Home(props) {
                         paddingHorizontal: 2,
                       }}
                     >
-                      {datanotif.count_notif.count}
+                      {datanotif?.count_notif?.count}
                     </Text>
                   )}
                 </View>
