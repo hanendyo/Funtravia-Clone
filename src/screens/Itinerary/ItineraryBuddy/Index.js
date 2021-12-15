@@ -103,7 +103,9 @@ export default function ItineraryBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: props.route.params.token
+          ? `Bearer ${props.route.params.token}`
+          : null,
       },
     },
     variables: {
@@ -119,7 +121,7 @@ export default function ItineraryBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -131,7 +133,7 @@ export default function ItineraryBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -143,7 +145,7 @@ export default function ItineraryBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

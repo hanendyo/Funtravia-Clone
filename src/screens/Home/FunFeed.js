@@ -41,7 +41,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => setDatas(dataPost?.feed_post_populer),
@@ -85,7 +85,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -97,7 +97,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

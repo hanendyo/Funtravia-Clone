@@ -161,7 +161,7 @@ export default function Unesco({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : false,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     }

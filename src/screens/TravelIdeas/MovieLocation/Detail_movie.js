@@ -82,7 +82,7 @@ export default function Detail_movie(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : false,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
       onCompleted: () => {
@@ -103,7 +103,7 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -132,7 +132,7 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -144,7 +144,7 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

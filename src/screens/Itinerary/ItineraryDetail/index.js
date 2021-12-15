@@ -295,7 +295,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     pollInterval: 500,
@@ -312,7 +312,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     variables: { itinerary_id: itineraryId },
@@ -335,7 +335,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -375,7 +375,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -454,7 +454,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     variables: { id: idDay },
@@ -588,7 +588,7 @@ export default function ItineraryDetail(props) {
       headers: {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -665,7 +665,7 @@ export default function ItineraryDetail(props) {
         "Content-Type": "multipart/form-data",
 
         // "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -801,7 +801,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -1056,7 +1056,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -1117,7 +1117,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -1208,7 +1208,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -1267,7 +1267,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -1279,7 +1279,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

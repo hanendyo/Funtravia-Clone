@@ -163,7 +163,7 @@ export default function DetailJournal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

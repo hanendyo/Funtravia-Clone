@@ -107,7 +107,7 @@ export default function Comments(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
       onCompleted: () => {
@@ -131,7 +131,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -143,7 +143,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -155,7 +155,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -167,7 +167,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -446,7 +446,7 @@ export default function Comments(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
       onCompleted: async (data) => {

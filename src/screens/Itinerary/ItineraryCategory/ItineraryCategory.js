@@ -164,7 +164,7 @@ export default function ItineraryCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,

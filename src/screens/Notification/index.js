@@ -102,6 +102,13 @@ const ListNotifikasi_ = gql`
         }
       }
       tgl_buat
+      created_by {
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
       created_at
       updated_at
     }
@@ -219,7 +226,7 @@ export default function Notification(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {

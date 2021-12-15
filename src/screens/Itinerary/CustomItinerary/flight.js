@@ -284,7 +284,7 @@ export default function detailCustomItinerary(props) {
             attachment.length === 0
               ? `application/json`
               : `multipart/form-data`,
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     }
@@ -298,7 +298,7 @@ export default function detailCustomItinerary(props) {
       headers: {
         "Content-Type":
           attachment.length === 0 ? `application/json` : `multipart/form-data`,
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

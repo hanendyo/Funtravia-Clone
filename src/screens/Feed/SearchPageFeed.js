@@ -112,7 +112,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -138,7 +138,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,

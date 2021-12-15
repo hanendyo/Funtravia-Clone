@@ -580,7 +580,7 @@ export default function ChoosePosition(props) {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
 
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -594,7 +594,7 @@ export default function ChoosePosition(props) {
         "Content-Type": "application/json",
         // "Content-Type": "multipart/form-data",
 
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -606,7 +606,7 @@ export default function ChoosePosition(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

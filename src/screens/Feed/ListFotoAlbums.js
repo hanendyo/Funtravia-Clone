@@ -112,7 +112,7 @@ export default function ListFotoAlbums(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     variables: { album_id: props.route.params.id_album },
@@ -125,7 +125,7 @@ export default function ListFotoAlbums(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

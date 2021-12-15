@@ -162,7 +162,7 @@ export default function DestinationUnescoReview(props) {
       headers: {
         "Content-Type": "multipart/form-data",
         // "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -174,7 +174,7 @@ export default function DestinationUnescoReview(props) {
       headers: {
         // "Content-Type": "multipart/form-data",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
