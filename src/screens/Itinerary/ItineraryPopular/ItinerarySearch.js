@@ -974,6 +974,7 @@ export default function ItinerarySearchCategory(props) {
               <SearchWhite height={15} width={15} />
             </View>
             <TextInput
+              autoCorrect={false}
               fontSize={16}
               value={textSearch}
               placeholder={t("search")}
@@ -981,7 +982,7 @@ export default function ItinerarySearchCategory(props) {
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{
                 width: "75%",
-                marginLeft: 5,
+                marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}
             />

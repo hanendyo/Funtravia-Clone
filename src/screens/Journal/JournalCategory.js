@@ -294,7 +294,7 @@ export default function JournalCategory(props) {
               onChangeText={(x) => setSearch(x)}
               style={{
                 width: "75%",
-                marginLeft: 5,
+                marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}
             />
