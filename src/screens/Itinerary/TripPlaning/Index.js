@@ -89,7 +89,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -106,7 +106,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -122,7 +122,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -139,7 +139,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {

@@ -186,6 +186,7 @@ export default function Invitation({
   datanotif,
   SetDataNotif,
 }) {
+  console.log("🚀 ~ file: Invitation.js ~ line 189 ~ datanotif", datanotif);
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
   // let [datanotif, SetDataNotif] = useState([]);
@@ -209,7 +210,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -249,7 +250,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -307,7 +308,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -319,7 +320,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -331,7 +332,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -524,7 +525,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {

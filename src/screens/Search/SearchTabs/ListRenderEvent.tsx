@@ -45,7 +45,7 @@ export default function ListRenderEvent({ props, datanya }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token?`Bearer ${token}`:null,
       },
     },
   });
@@ -58,7 +58,7 @@ export default function ListRenderEvent({ props, datanya }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token?`Bearer ${token}`:null,
       },
     },
   });

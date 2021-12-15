@@ -145,7 +145,7 @@ export default function Message({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
         "Content-Type": "application/json",
       },
     });
@@ -165,7 +165,7 @@ export default function Message({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
         "Content-Type": "application/json",
       },
     });
@@ -218,7 +218,7 @@ export default function Message({ navigation, route }) {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
           "Content-Type": "application/json",
         },
       }

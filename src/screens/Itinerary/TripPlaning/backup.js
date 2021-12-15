@@ -97,7 +97,7 @@ export default function TripPlaning(props) {
   //   context: {
   //     headers: {
   //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
+  //       Authorization: token?`Bearer ${token}`:null,
   //     },
   //   },
   //   variables: { status: "D" },
@@ -113,7 +113,7 @@ export default function TripPlaning(props) {
   //   context: {
   //     headers: {
   //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
+  //       Authorization: token?`Bearer ${token}`:null,
   //     },
   //   },
   //   variables: { status: "A" },
@@ -129,7 +129,7 @@ export default function TripPlaning(props) {
   //   context: {
   //     headers: {
   //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${token}`,
+  //       Authorization: token?`Bearer ${token}`:null,
   //     },
   //   },
   //   variables: { status: "F" },

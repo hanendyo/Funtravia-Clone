@@ -52,7 +52,7 @@ export default function SendCountry({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -135,7 +135,7 @@ export default function SendCountry({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
         "Content-Type": "application/json",
       },
     });
@@ -213,7 +213,7 @@ export default function SendCountry({ navigation, route }) {
         await fetch(`${CHATSERVER}/api/personal/send`, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token ? `Bearer ${token}` : null,
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: `room=${
@@ -288,7 +288,7 @@ export default function SendCountry({ navigation, route }) {
       await fetch(`${CHATSERVER}/api/group/send`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `user_id=${user.id}&type=tag_country&chat=group&room=${

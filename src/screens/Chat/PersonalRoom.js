@@ -650,18 +650,22 @@ export default function Room({ navigation, route }) {
   const submitSticker = async (x) => {
     // if (button) {
     if (x && x.replace(/\s/g, "").length) {
+      let uuid = Uuid();
+      let dateTime = new Date();
       await setButton(false);
       let chatData = {
+        id: uuid,
         room: room,
         chat: "personal",
         type: "sticker",
         text: x,
         user_id: user.id,
+        time: dateTime,
       };
       await fetch(`${CHATSERVER}/api/personal/send`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `room=${room}&type=sticker&chat=personal&text=${x}&user_id=${user.id}`,
@@ -670,7 +674,7 @@ export default function Room({ navigation, route }) {
       await setChat("");
       await setTimeout(function() {
         if (flatListRef !== null && flatListRef.current) {
-          flatListRef.current.scrollToEnd({ animated: true });
+          flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
         }
       }, 250);
       await setButton(true);

@@ -48,7 +48,9 @@ export default function Render({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${route.params.token}`,
+          Authorization: route.params.token
+            ? `Bearer ${route.params.token}`
+            : null,
         },
       },
     });
@@ -391,7 +393,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     });
@@ -408,7 +410,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     }
@@ -425,7 +427,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -439,7 +441,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     }
@@ -452,7 +454,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -464,7 +466,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

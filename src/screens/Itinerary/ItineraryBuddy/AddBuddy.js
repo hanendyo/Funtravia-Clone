@@ -94,7 +94,9 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: props.route.params.token
+          ? `Bearer ${props.route.params.token}`
+          : null,
       },
     },
   });
@@ -108,7 +110,9 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: props.route.params.token
+          ? `Bearer ${props.route.params.token}`
+          : null,
       },
     },
     variables: { id: props.route.params.iditin },
@@ -216,7 +220,9 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: props.route.params.token
+          ? `Bearer ${props.route.params.token}`
+          : null,
       },
     },
   });

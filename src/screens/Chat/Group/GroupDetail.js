@@ -131,7 +131,7 @@ export default function GroupDetail(props) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${access_token}`,
+          Authorization: access_token ? `Bearer ${access_token}` : null,
           "Content-Type": "application/json",
         },
       }
@@ -506,7 +506,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -552,7 +552,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -599,7 +599,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -644,7 +644,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -696,7 +696,7 @@ export default function GroupDetail(props) {
       headers: {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });

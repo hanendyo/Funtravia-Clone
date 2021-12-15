@@ -167,7 +167,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -238,7 +238,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -250,7 +250,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -291,7 +291,9 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props?.route?.params?.token}`,
+        Authorization: props?.route?.params?.token
+          ? `Bearer ${props?.route?.params?.token}`
+          : null,
       },
     },
     onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),

@@ -103,7 +103,7 @@ export default function AllDestination(props) {
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
       onCompleted: () => {
         setDataResult(data);

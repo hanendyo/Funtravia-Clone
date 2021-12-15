@@ -147,7 +147,7 @@ export default function ItinerarySearchCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -217,7 +217,7 @@ export default function ItinerarySearchCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -229,7 +229,7 @@ export default function ItinerarySearchCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -390,7 +390,9 @@ export default function ItinerarySearchCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props?.route?.params?.token}`,
+        Authorization: props?.route?.params?.token
+          ? `Bearer ${props?.route?.params?.token}`
+          : null,
       },
     },
     onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),

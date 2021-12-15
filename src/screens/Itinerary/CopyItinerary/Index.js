@@ -172,7 +172,9 @@ export default function CopyItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${props.route?.params?.token}`,
+        Authorization: props.route?.params?.token
+          ? `Bearer ${props.route?.params?.token}`
+          : null,
       },
     },
   });

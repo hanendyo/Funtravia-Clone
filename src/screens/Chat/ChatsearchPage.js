@@ -141,7 +141,7 @@ export default function ChatsearchPage({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
         "Content-Type": "application/json",
       },
     });
@@ -162,7 +162,7 @@ export default function ChatsearchPage({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
         "Content-Type": "application/json",
       },
     });
@@ -218,7 +218,7 @@ export default function ChatsearchPage({ navigation, route }) {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
           "Content-Type": "application/json",
         },
       }

@@ -511,7 +511,7 @@ export default function detailCustomItinerary(props) {
         "Content-Type": !dataState.file.length
           ? `application/json`
           : `multipart/form-data`,
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -524,7 +524,7 @@ export default function detailCustomItinerary(props) {
           "Content-Type": !dataState.file.length
             ? `application/json`
             : `multipart/form-data`,
-          Authorization: `Bearer ${token}`,
+          Authorization: token ? `Bearer ${token}` : null,
         },
       },
     }

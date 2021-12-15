@@ -245,7 +245,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -274,7 +274,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     onCompleted: () => {
@@ -308,7 +308,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -334,7 +334,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -365,7 +365,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -377,7 +377,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
   });
@@ -499,7 +499,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : null,
       },
     },
     notifyOnNetworkStatusChange: true,
