@@ -1396,7 +1396,7 @@ export default function SearchListEventHome(props) {
             placeholder={t("search")}
             style={{
               width: "85%",
-              marginLeft: 7,
+              marginLeft: 5,
               padding: 0,
             }}
             placeholderTextColor="#464646"
@@ -1410,7 +1410,7 @@ export default function SearchListEventHome(props) {
             onChangeText={(x) => setSearch({ ...search, ["keyword"]: x })}
             onSubmitEditing={(x) => setSearch({ ...search, ["keyword"]: x })}
           />
-          {search["keyword"] !== null ? (
+          {(search["keyword"] !== null) & (search["keyword"] !== "") ? (
             <TouchableOpacity
               onPress={() => {
                 setSearch({ ...search, ["keyword"]: null });
@@ -1421,6 +1421,7 @@ export default function SearchListEventHome(props) {
                 height="20"
                 style={{
                   alignSelf: "center",
+                  marginLeft: 5,
                 }}
               />
             </TouchableOpacity>

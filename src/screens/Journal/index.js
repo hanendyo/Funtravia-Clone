@@ -112,7 +112,7 @@ export default function Journal(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
-  console.log("🚀 ~ file: index.js ~ line 115 ~ Journal ~ data", data);
+
   const {
     data: dataList,
     loading: loadingList,
@@ -710,8 +710,6 @@ export default function Journal(props) {
                   category: item.id,
                   index: index,
                 });
-                console.log("item", item);
-                console.log("index", index);
                 setIndexCategory(index);
                 setIdCategory(item?.id);
               }}
