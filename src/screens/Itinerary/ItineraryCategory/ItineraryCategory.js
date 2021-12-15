@@ -36,7 +36,7 @@ import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
 export default function ItineraryCategory(props) {
   const { t } = useTranslation();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props?.route?.params?.token);
   let [setting, setSetting] = useState();
   let [dataType, setDataType] = useState(props.route.params.typeCategory);
   let [actives, setActives] = useState("Itinerary");
@@ -44,6 +44,9 @@ export default function ItineraryCategory(props) {
   let idcity = [];
   let [soon, setSoon] = useState(false);
   let [list_populer, setlist_populer] = useState([]);
+  let [select, setSelect] = useState(true);
+  let [idDataCategory, setidDataCategory] = useState(null);
+  let [textSearch, setTextSearch] = useState("");
 
   if (props.route.params.idcity) {
     idcity = props.route.params.idcity;
@@ -57,12 +60,21 @@ export default function ItineraryCategory(props) {
     rating: null,
   });
 
-  const unSelect = (id) => {
-    setDataType("");
+  const pilih = (id) => {
+    if (idDataCategory == id) {
+      setSelect(!select);
+    } else {
+      setSelect(true);
+      setidDataCategory(id);
+    }
   };
-  const select = (id) => {
-    setDataType(id);
-  };
+
+  // const unSelect = (id) => {
+  //   setDataType("");
+  // };
+  // const select = (id) => {
+  //   setDataType(id);
+  // };
 
   const HeaderComponent = {
     headerShown: true,
@@ -131,12 +143,20 @@ export default function ItineraryCategory(props) {
     networkStatus,
   } = useQuery(Populer, {
     variables: {
+      // keyword: search.keyword,
+      // type: dataType,
+      // countries: null,
+      // cities: idcity,
+      // rating: null,
+      // orderby: order,
+      // limit: 10,
+      // offset: 0,
       keyword: search.keyword,
-      type: dataType,
+      type: select ? idDataCategory : null,
       countries: null,
-      cities: idcity,
+      cities: null,
       rating: null,
-      orderby: order,
+      orderby: null,
       limit: 10,
       offset: 0,
     },
@@ -144,12 +164,12 @@ export default function ItineraryCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler?.itinerary_list_populer.datas);
+      setlist_populer(dataPopuler.itinerary_list_populer.datas);
     },
   });
 
@@ -158,7 +178,7 @@ export default function ItineraryCategory(props) {
   const _Refresh = useCallback(() => {
     setRefreshing(true);
     refetch();
-    wait(2000).then(() => {
+    wait(1000).then(() => {
       setRefreshing(false);
     });
   }, []);
@@ -234,92 +254,154 @@ export default function ItineraryCategory(props) {
 
   let _menu = null;
 
+  // const RenderUtama = ({ aktif }) => {
+  //   if (loadingPopuler) {
+  //     <View style={{ flex: 1, backgroundColor: "#FFF" }}>
+  //       <ActivityIndicator animating={true} color="#209FAE" />
+  //     </View>;
+  //   }
+  //   if (aktif === "Itinerary") {
+  //     return list_populer && list_populer.length > 0 ? (
+  //       <>
+  //         <View
+  //           style={{
+  //             flexDirection: "row",
+  //             justifyContent: "space-between",
+  //             alignItems: "center",
+  //             paddingHorizontal: 15,
+  //             paddingVertical: 5,
+  //             backgroundColor: "#fff",
+  //           }}
+  //         >
+  //           <View
+  //             style={{
+  //               flexDirection: "row",
+  //               justifyContent: "center",
+  //             }}
+  //           >
+  //             <Text size="label" type="regular">
+  //               {`${t("showResult")} : ${list_populer?.length}`}
+  //             </Text>
+  //           </View>
+  //           <Menu
+  //             ref={(ref) => (_menu = ref)}
+  //             button={
+  //               <Pressable
+  //                 style={{
+  //                   paddingHorizontal: 20,
+  //                   paddingVertical: 10,
+  //                   backgroundColor: "#f6f6f6",
+  //                 }}
+  //                 onPress={() => _menu.show()}
+  //               >
+  //                 <Text height={20} width={20}>
+  //                   {order === "new" ? "New Post" : "Populer"}
+  //                 </Text>
+  //               </Pressable>
+  //             }
+  //             style={{
+  //               width: 200,
+  //             }}
+  //           >
+  //             <MenuItem
+  //               onPress={() => {
+  //                 setOrder("new");
+  //                 _menu.hide();
+  //               }}
+  //             >
+  //               <Text type="regular" size="label">
+  //                 {t("newPost")}
+  //               </Text>
+  //             </MenuItem>
+  //             <MenuDivider />
+  //             <MenuItem
+  //               onPress={() => {
+  //                 setOrder("populer");
+  //                 _menu.hide();
+  //               }}
+  //             >
+  //               <Text size="label" type="regular">
+  //                 Populer
+  //               </Text>
+  //             </MenuItem>
+  //           </Menu>
+  //         </View>
+  //         <View
+  //           style={{
+  //             paddingBottom: 150,
+  //           }}
+  //         >
+  //           <CardItinerary
+  //             data={list_populer}
+  //             props={props}
+  //             token={token}
+  //             setting={setting}
+  //             setData={(e) => setlist_populer(e)}
+  //           />
+  //         </View>
+  //       </>
+  //     ) : (
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           width: Dimensions.get("screen").width,
+  //           height: Dimensions.get("screen").height,
+  //           height: "100%",
+  //           marginTop: 20,
+  //         }}
+  //       >
+  //         <Text size="label" type="bold" style={{ textAlign: "center" }}>
+  //           {t("noItinerary")}
+  //         </Text>
+  //       </View>
+  //     );
+  //   } else if (aktif == "Album") {
+  //     return (
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           width: Dimensions.get("screen").width,
+  //           height: Dimensions.get("screen").height,
+  //           height: "100%",
+  //           marginTop: 20,
+  //         }}
+  //       >
+  //         <Text size="label" type="bold" style={{ textAlign: "center" }}>
+  //           Tidak ada Travel Album
+  //         </Text>
+  //       </View>
+  //     );
+  //   } else if (aktif == "Stories") {
+  //     return (
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           width: Dimensions.get("screen").width,
+  //           height: Dimensions.get("screen").height,
+  //           height: "100%",
+  //           marginTop: 20,
+  //         }}
+  //       >
+  //         <Text size="label" type="bold" style={{ textAlign: "center" }}>
+  //           Tidak ada Travel Stories
+  //         </Text>
+  //       </View>
+  //     );
+  //   } else {
+  //     return <View></View>;
+  //   }
+  // };
+
   const RenderUtama = ({ aktif }) => {
-    if (loadingPopuler) {
-      <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <ActivityIndicator animating={true} color="#209FAE" />
-      </View>;
-    }
-    if (aktif === "Itinerary") {
+    if (aktif == "Itinerary") {
       return list_populer && list_populer.length > 0 ? (
-        <>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              backgroundColor: "#fff",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <Text size="label" type="regular">
-                {`${t("showResult")} : ${list_populer?.length}`}
-              </Text>
-            </View>
-            <Menu
-              ref={(ref) => (_menu = ref)}
-              button={
-                <Pressable
-                  style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    backgroundColor: "#f6f6f6",
-                  }}
-                  onPress={() => _menu.show()}
-                >
-                  <Text height={20} width={20}>
-                    {order === "new" ? "New Post" : "Populer"}
-                  </Text>
-                </Pressable>
-              }
-              style={{
-                width: 200,
-              }}
-            >
-              <MenuItem
-                onPress={() => {
-                  setOrder("new");
-                  _menu.hide();
-                }}
-              >
-                <Text type="regular" size="label">
-                  {t("newPost")}
-                </Text>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem
-                onPress={() => {
-                  setOrder("populer");
-                  _menu.hide();
-                }}
-              >
-                <Text size="label" type="regular">
-                  Populer
-                </Text>
-              </MenuItem>
-            </Menu>
-          </View>
-          <View
-            style={{
-              paddingBottom: 150,
-            }}
-          >
-            <CardItinerary
-              data={list_populer}
-              props={props}
-              token={token}
-              setting={setting}
-              setData={(e) => setlist_populer(e)}
-            />
-          </View>
-        </>
+        <CardItinerary
+          data={list_populer}
+          props={props}
+          token={token}
+          setting={setting}
+          setData={(e) => setlist_populer(e)}
+        />
       ) : (
         <View
           style={{
@@ -336,7 +418,154 @@ export default function ItineraryCategory(props) {
         </View>
       );
     } else if (aktif == "Album") {
-      return (
+      return dataAlbums && dataAlbums.length > 0 ? (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            paddingHorizontal: 15,
+            justifyContent: "space-between",
+            marginTop: 15,
+            backgroundColor: "#f6f6f6",
+          }}
+        >
+          {dataAlbums.map((item, index) => {
+            return (
+              <Pressable
+                focusable={true}
+                keyboardShouldPersistTaps={"handled"}
+                key={index}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  props.navigation.push("ProfileStack", {
+                    screen: "albumdetail",
+                    params: {
+                      id: item.id,
+                      type: item.type,
+                      token: token,
+                      judul: item.title,
+                    },
+                  });
+                }}
+                style={{
+                  height: 250,
+                  width: "49%",
+                  marginBottom: 10,
+                  borderRadius: 5,
+                  // borderWidth: 1,
+                  backgroundColor: "#fff",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                }}
+              >
+                <View style={{ width: "100%", height: "58%" }}>
+                  <Image
+                    style={{
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                    source={item?.cover ? { uri: item?.cover } : default_image}
+                  />
+                  <View
+                    style={{
+                      position: "absolute",
+                      borderRadius: 2,
+                      bottom: 10,
+                      left: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        backgroundColor: "#000",
+                        opacity: 0.6,
+                        position: "absolute",
+                        borderRadius: 2,
+                      }}
+                    />
+                    <Text
+                      size="small"
+                      type="regular"
+                      style={{
+                        color: "#fff",
+                        marginHorizontal: 10,
+                        marginTop: 3,
+                        marginBottom: 5,
+                      }}
+                    >
+                      {item.count_foto}{" "}
+                      {item.count_foto > 1 ? t("photos") : t("photo")}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    flex: 1,
+                    paddingHorizontal: 15,
+                    // borderWidth: 1,
+                    justifyContent: "space-between",
+                    paddingTop: 10,
+                    paddingBottom: 13,
+                  }}
+                >
+                  <Text size={"label"} type="bold" numberOfLines={2}>
+                    {item.title}
+                  </Text>
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.push("ProfileStack", {
+                        screen: "otherprofile",
+                        params: {
+                          idUser: item.id,
+                          token: token,
+                        },
+                      })
+                    }
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      style={{
+                        width: 35,
+                        height: 35,
+                        borderRadius: 17,
+                        marginRight: 10,
+                      }}
+                      source={
+                        item && item?.user
+                          ? { uri: item?.user?.picture }
+                          : default_image
+                      }
+                    />
+                    <Text
+                      size="label"
+                      type="regular"
+                      numberOfLines={1}
+                      style={{ flex: 1 }}
+                    >
+                      {`${item.user.first_name} ${
+                        item.user.last_name ? item.user.last_name : ""
+                      }`}
+                    </Text>
+                  </Pressable>
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : (
         <View
           style={{
             flex: 1,
@@ -352,7 +581,151 @@ export default function ItineraryCategory(props) {
         </View>
       );
     } else if (aktif == "Stories") {
-      return (
+      return journal_list && journal_list.length > 0 ? (
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("window").width,
+            paddingHorizontal: 15,
+            alignContent: "center",
+            marginTop: 10,
+          }}
+        >
+          <FlatList
+            data={journal_list}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <View>
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "#FFF",
+                    borderRadius: 5,
+                    padding: 10,
+                  }}
+                  onPress={() =>
+                    props.navigation.push("JournalStackNavigation", {
+                      screen: "DetailJournal",
+                      params: {
+                        dataPopuler: item,
+                      },
+                    })
+                  }
+                >
+                  <Image
+                    source={
+                      item.firstimg ? { uri: item.firstimg } : default_image
+                    }
+                    style={{
+                      width: "21%",
+                      height: 110,
+                      borderRadius: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      width: "79%",
+                      marginVertical: 5,
+                      paddingLeft: 10,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{ color: "#209FAE" }}
+                        size={"small"}
+                        type={"bold"}
+                      >
+                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                      </Text>
+                      <Text
+                        size={"label"}
+                        type={"bold"}
+                        style={{
+                          color: "#3E3E3E",
+                          marginTop: 5,
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                        {/* <Truncate
+                    text={item.title ? item.title : ""}
+                    length={35}
+                  /> */}
+                      </Text>
+                      <Text
+                        size={"description"}
+                        type={"regular"}
+                        style={{
+                          textAlign: "left",
+                          marginTop: 5,
+                          lineHeight: 18,
+                        }}
+                        numberOfLines={2}
+                      >
+                        {item.firsttxt}
+                        {/* <Truncate
+                    text={item.firsttxt ? item.firsttxt : ""}
+                    length={110}
+                  /> */}
+                      </Text>
+                    </View>
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text size={"small"} type={"regular"}>
+                          {dateFormatMonthYears(item.date)}
+                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty width={10} height={10} />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size={"small"}
+                            type={"regular"}
+                          >
+                            {item.article_response_count > 0
+                              ? item.article_response_count +
+                                " " +
+                                t("likeMany")
+                              : item.article_response_count + " " + t("like")}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </Pressable>
+                <View
+                  style={{
+                    margin: 5,
+                    borderBottomColor: "#f6f6f6",
+                    borderBottomWidth: 0.9,
+                  }}
+                />
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => RefreshJournal()}
+              />
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReachedJournal}
+          />
+        </View>
+      ) : (
         <View
           style={{
             flex: 1,
@@ -376,10 +749,7 @@ export default function ItineraryCategory(props) {
 
   let [y, setY] = useState(0);
 
-  const scroll_to = () => {
-    // console.log("slider :", scrollById(slider.props.id));
-    // console.log("scroll :", slider.current.props.id.scrollTo({ width: y }));
-  };
+  const scroll_to = () => {};
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -489,13 +859,17 @@ export default function ItineraryCategory(props) {
                         marginTop: 1,
                         marginLeft: 1,
                         backgroundColor: "white",
-                        borderColor: "#209FAE",
                         paddingHorizontal: 5,
                         marginVertical: 4,
-                        borderWidth: 1,
                         flexDirection: "row",
+                        borderWidth: 1,
+                        borderColor: "#209FAE",
+                        backgroundColor:
+                          item.id == idDataCategory && select
+                            ? "#DAF0F2"
+                            : "#fff",
                       }}
-                      onPress={() => select(item.id)}
+                      onPress={() => pilih(item.id)}
                     >
                       <View style={{ width: 30, height: 30, marginRight: 5 }}>
                         <FunIcon

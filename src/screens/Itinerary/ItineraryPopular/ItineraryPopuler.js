@@ -167,7 +167,6 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-
         Authorization: token ? `Bearer ${token}` : false,
       },
     },
@@ -182,6 +181,7 @@ export default function ItineraryPopuler(props) {
   const Refresh = useCallback(() => {
     setRefreshing(true);
     refetch();
+    refetchAlbum();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -268,10 +268,11 @@ export default function ItineraryPopuler(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      refetch();
+      Refresh();
       loadAsync();
       // QueryFotoAlbum();
-      refetchAlbum();
+      // refetch();
+      // refetchAlbum();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -846,6 +847,7 @@ export default function ItineraryPopuler(props) {
                 dataPopuler: dataPopuler,
                 typeOrder: "new",
                 typeCategory: [],
+                token: token,
               })
             }
           >
@@ -887,6 +889,7 @@ export default function ItineraryPopuler(props) {
                 dataPopuler: dataPopuler,
                 typeOrder: "populer",
                 typeCategory: [],
+                token: token,
               })
             }
           >

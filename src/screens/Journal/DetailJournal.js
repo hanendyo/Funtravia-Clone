@@ -163,7 +163,7 @@ export default function DetailJournal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token ? `Bearer ${token}` : false,
       },
     },
   });
@@ -287,8 +287,6 @@ export default function DetailJournal(props) {
       slider.current.scrollTo({ y: y });
     });
   };
-
-  console.log("data journal:", data?.journal_byid?.created_at);
 
   const duration = (datetime) => {
     datetime = datetime.replace(" ", "T");
@@ -777,7 +775,6 @@ export default function DetailJournal(props) {
           {data.journal_byid && data.journal_byid.article ? (
             <>
               {data.journal_byid.article.map((item, index) => {
-                console.log("item", item);
                 if (item.type === "image") {
                   return (
                     <View key={index}>

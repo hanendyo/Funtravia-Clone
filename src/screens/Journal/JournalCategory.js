@@ -33,6 +33,21 @@ export default function JournalCategory(props) {
   let [category, setCategory] = useState(props.route.params.category);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
+  let [indekScrollto, setIndeksScrollto] = useState(0);
+  const ref = React.useRef(null);
+
+  const Scroll_to = async (index) => {
+    index = index ? index : indekScrollto;
+    setTimeout(() => {
+      if (ref && ref?.current) {
+        ref?.current?.scrollToIndex({
+          animation: false,
+          index: index,
+        });
+      }
+    }, 100);
+  };
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -103,8 +118,6 @@ export default function JournalCategory(props) {
     },
     notifyOnNetworkStatusChange: true,
   });
-
-  console.log("datalist category", dataList);
 
   let list = [];
   if (dataList && "datas" in dataList.journal_list) {
@@ -189,6 +202,17 @@ export default function JournalCategory(props) {
         "Content-Type": "application/json",
       },
     },
+    onCompleted: async () => {
+      const tempData = [...dataCategory?.category_journal];
+      await setIndeksScrollto(indeks);
+      const indeks = tempData.findIndex(
+        (k) => k["id"] == props.route.params.category
+      );
+      if (indeks != -1) {
+        await setIndeksScrollto(indeks);
+        await Scroll_to(indeks);
+      }
+    },
   });
 
   const JournalDetail = (data) => {
@@ -202,6 +226,7 @@ export default function JournalCategory(props) {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // fetchCategory();
       fetchDataPopuler();
+      fetchCategory();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -267,7 +292,11 @@ export default function JournalCategory(props) {
               placeholder={t("search")}
               value={search}
               onChangeText={(x) => setSearch(x)}
-              style={{ marginHorizontal: 10, marginLeft: 10, padding: 0 }}
+              style={{
+                width: "75%",
+                marginLeft: 5,
+                padding: 0,
+              }}
             />
             {search.length !== 0 ? (
               <TouchableOpacity
@@ -303,8 +332,12 @@ export default function JournalCategory(props) {
         </View>
         {dataCategory ? (
           <FlatList
+            ref={ref}
             data={dataCategory?.category_journal}
-            initialScrollIndex={props.route.params.index}
+            scrollToIndex={indekScrollto}
+            onScrollToIndexFailed={(e) => {
+              scrollToIndexFailed(e);
+            }}
             contentContainerStyle={{
               flexDirection: "row",
               paddingRight: 15,

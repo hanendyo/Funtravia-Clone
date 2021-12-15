@@ -237,7 +237,6 @@ export default function ItinerarySearchCategory(props) {
   const _liked = async (id, index, item) => {
     let items = { ...item };
     let list_populers = [...list_populer];
-    // console.log(list_populers[index]);
     if (token && token !== "" && token !== null) {
       items.liked = true;
       await list_populers.splice(index, 1, items);
@@ -366,7 +365,6 @@ export default function ItinerarySearchCategory(props) {
   };
 
   let [dataAlbums, setDataAlbums] = useState(null);
-  console.log("dataAlbums search", dataAlbums);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -979,9 +977,13 @@ export default function ItinerarySearchCategory(props) {
               placeholder={t("search")}
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
-              style={{ marginHorizontal: 10, marginLeft: 10, padding: 0 }}
+              style={{
+                width: "75%",
+                marginLeft: 5,
+                padding: 0,
+              }}
             />
-            {textSearch.length !== 0 ? (
+            {textSearch !== null && textSearch !== "" ? (
               <TouchableOpacity
                 onPress={() => {
                   setTextSearch("");
