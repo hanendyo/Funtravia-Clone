@@ -156,7 +156,7 @@ export default function ItineraryCategory(props) {
       countries: null,
       cities: null,
       rating: null,
-      orderby: null,
+      orderby: order,
       limit: 10,
       offset: 0,
     },
