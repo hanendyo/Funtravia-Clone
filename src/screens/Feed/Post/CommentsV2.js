@@ -683,9 +683,6 @@ export default function Comments(props) {
             },
           });
 
-          if (errorcmnt) {
-            throw new Error("Error Input");
-          }
           if (response.data) {
             if (response.data.comment_post.code === 200) {
               const tempData = [...dataComment];
@@ -700,10 +697,10 @@ export default function Comments(props) {
                   props?.route?.params?.countKoment(tempDataPost.id);
                 }
               } catch (err) {
-                alert(err);
+                console.warn(error);
               }
             } else {
-              throw new Error(response.data.comment_post.message);
+              console.warn(response.data.comment_post.message);
             }
           }
         } catch (error) {

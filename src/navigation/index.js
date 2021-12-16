@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthStack from "./StackItems/AuthStackNavigation";
@@ -37,6 +37,7 @@ import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
 import SendDestination from "../screens/Destination/DetailDestinationNew/SendDestination";
 import SearchListEventHome from "../screens/Event/SearchListEventHome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({

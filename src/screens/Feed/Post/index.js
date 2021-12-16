@@ -150,7 +150,6 @@ export default function Post(props) {
         });
       });
   };
-
   const nextFunction = async (type, multi) => {
     if (multi.length <= 1) {
       if (type.substr(0, 5) === "video") {
@@ -167,25 +166,40 @@ export default function Post(props) {
           height = 1080;
         }
         let tempData = { ...recent.node.image };
-        await setLoadVid(true);
-        const result = await Video.compress(tempData.uri, {
-          compressionMethod: "auto",
-        });
-
+        // await setLoadVid(true);
+        // const result = await Video.compress(tempData.uri, {
+        //   compressionMethod: "auto",
+        // });
         // const statResult = await stat(result);
-        const statResult = await stat(tempData.uri);
-        tempData.height = height;
-        tempData.width = width;
-        tempData.size = statResult.size;
-        tempData.path = statResult.path;
-        props.navigation.navigate("CreatePostScreen", {
-          location: recent.node.location,
-          type: recent.node.type.substr(0, 5),
-          file: tempData,
-          token: token,
-          ratio: ratio,
-        });
-        setLoadVid(false);
+        const statResult = await stat(tempData?.uri);
+        if (statResult.size <= 50000000) {
+          tempData.height = height;
+          tempData.width = width;
+          tempData.size = statResult.size;
+          tempData.uri =
+            statResult.originalFilepath.substring(0, 1) != "/"
+              ? `file:///${statResult.originalFilepath}`
+              : `file://${statResult.originalFilepath}`;
+          // tempData.uri =
+          //   result.substring(0, 8) != "file:///"
+          //     ? result.replace("file://", "file:///")
+          //     : result;
+          props.navigation.navigate("CreatePostScreen", {
+            location: recent.node.location,
+            type: recent.node.type.substr(0, 5),
+            file: tempData,
+            token: token,
+            ratio: ratio,
+          });
+          // setLoadVid(false);
+        } else {
+          showAlert({
+            ...aler,
+            show: true,
+            judul: t("fileTolarge"),
+            detail: t("descMaxUpload"),
+          });
+        }
       } else if (type.substr(0, 5) === "image") {
         let height;
         let width;
@@ -255,35 +269,6 @@ export default function Post(props) {
           album: props.route.params.album,
         },
       });
-
-      // for (var i = 0; i < checklistVideo.length; i++) {
-      //   checklistVideo[i].node.image.path = checklistVideo[i].node.image.uri;
-      // }
-      // for (var i = 0; i < checklistVideo.length; i++) {
-      //   RNFetchBlob.fs
-      //     .stat(checklistVideo[i].node.image.uri)
-      //     .then((stats) => {
-      //       for (var i = 0; i < checklistVideo.length; i++) {
-      //         checklistVideo[i].node.image.fileSize = stats.size;
-      //       }RNFetchBlob
-      //       // setSize(stats.size);
-      //     })
-      //     .catch((error) => {
-      //       console.log(error);
-      //     });
-      // }
-
-      // props.navigation.navigate("CreatePostScreen", {
-      //   location: recent.node.location,
-      //   type: "multi",
-      //   file: checklistVideo,
-      //   ratio: ratio,
-      //   token: token,
-      //   id_album: props.route.params.id_album,
-      //   id_itin: props.route.params.id_itin,
-      //   title_album: props.route.params.title_album,
-      //   album: props.route.params.album,
-      // });
     }
   };
 
@@ -878,138 +863,6 @@ export default function Post(props) {
         }}
         ref={slider}
         data={imageRoll && imageRoll.length ? imageRoll : null}
-        // ListHeaderComponent={() => {
-        //   return !Preview ? (
-        //     <View
-        //       style={{
-        //         marginBottom: 5,
-        //         alignItems: "center",
-        //       }}
-        //     >
-        //       {recent?.node?.type.substr(0, 5) === "video" ? (
-        //         <FunVideo
-        //           source={{
-        //             uri:
-        //               Platform.OS === "ios"
-        //                 ? `assets-library://asset/asset.${recent.node.image.filename.substring(
-        //                     recent.node.image.filename.length - 3
-        //                   )}?id=${recent.node.image.uri.substring(
-        //                     5,
-        //                     41
-        //                   )}&ext=${recent.node.image.filename.substring(
-        //                     recent.node.image.filename.length - 3
-        //                   )}`
-        //                 : recent.node?.image?.uri,
-        //           }}
-        //           ref={(slider) => {
-        //             videoView = slider;
-        //           }}
-        //           onProgress={(e) => durationTime(e)}
-        //           paused={
-        //             props.route.name == "Post" && isFocused ? false : true
-        //           }
-        //           // paused={mute ? true : false}
-        //           repeat={time ? true : false}
-        //           // onBuffer={videoView?.current?.onBuffer}
-        //           onError={videoView?.current?.videoError}
-        //           style={{
-        //             // width: width,
-        //             // height: width,
-        //             width: ratio.label == "P" ? width * (4 / 5) : width,
-        //             height: ratio.label == "L" ? width * (2 / 3) : width,
-        //           }}
-        //           muted={mute ? true : false}
-        //           resizeMode="cover"
-        //         ></FunVideo>
-        //       ) : (
-        //         <View
-        //           style={{
-        //             height: width,
-        //             width: width,
-        //             alignItems: "center",
-        //             justifyContent: "center",
-        //           }}
-        //         >
-        //           <Image
-        //             // resizeMode="contain"
-        //             source={{ uri: recent.node?.image?.uri }}
-        //             style={{
-        //               width: ratio.label == "P" ? width * (4 / 5) : width,
-        //               height: ratio.label == "L" ? width * (2 / 3) : width,
-        //               // width: ratio.label == "P" ? width * (4 / 5) : width,
-        //               // height: ratio.label == "L" ? width * (2 / 3) : width,
-        //               // width: width,
-        //               // height: width,
-        //               // resizeMode: ratio.width == 1 ? "cover" : "contain",
-        //               // resizeMode: "contain",
-        //             }}
-        //           />
-        //           {/* <ImageCropper
-        //             style={{
-        //               width: width,
-        //               height: width,
-        //               borderWidth: 5,
-        //             }}
-        //             imageUri={recent.node?.image?.uri}
-        //             setCropperParams={() => setCropperParams}
-        //             resizeMode="contain"
-        //           /> */}
-        //         </View>
-        //       )}
-        //       {checklistVideo.length < 2 ? (
-        //         <Pressable
-        //           onPress={() =>
-        //             setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-        //           }
-        //           style={{
-        //             idth: width,
-        //             // height: width,
-        //             backgroundColor: "#B2B2B2",
-        //             position: "absolute",
-        //             bottom: 0,
-        //             borderRadius: 20,
-        //             margin: 15,
-        //             width: 40,
-        //             height: 40,
-        //             left: 0,
-        //             alignItems: "center",
-        //             justifyContent: "center",
-        //           }}
-        //         >
-        //           {ratio.index == 0 ? (
-        //             <SizeOri height={23} width={23} />
-        //           ) : (
-        //             <SizeStrace height={23} width={23} />
-        //           )}
-        //         </Pressable>
-        //       ) : null}
-        //       {recent?.node?.type.substr(0, 5) === "video" ? (
-        //         <Pressable
-        //           onPress={() => setMute(!mute)}
-        //           style={{
-        //             position: "absolute",
-        //             width: 40,
-        //             height: 40,
-        //             borderRadius: 20,
-        //             // backgroundColor: "#464646",
-        //             bottom: 10,
-        //             right: 10,
-        //             alignItems: "center",
-        //             justifyContent: "center",
-        //           }}
-        //         >
-        //           {mute ? (
-        //             <Mute width="15" height="15" />
-        //           ) : (
-        //             <Unmute width="15" height="15" />
-        //           )}
-        //         </Pressable>
-        //       ) : null}
-        //     </View>
-        //   ) : (
-        //     <View />
-        //   );
-        // }}
         renderItem={({ item, index }) =>
           item.mediaType !== "camera" ? (
             <TouchableOpacity

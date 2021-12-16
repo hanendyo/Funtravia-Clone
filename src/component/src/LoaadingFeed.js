@@ -13,7 +13,7 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export default function LoadingFeed({
-  percentage = 75,
+  percentage = 100,
   radius = 40,
   strokeWidth = 10,
   duration,
@@ -27,7 +27,6 @@ export default function LoadingFeed({
   const inputRef = React.useRef();
   const circumference = 2 * Math.PI * radius;
   const halfCircle = radius + strokeWidth + 10;
-  console.log("duration", duration);
 
   const animation = (toValue) => {
     return Animated.timing(animated, {
@@ -35,7 +34,7 @@ export default function LoadingFeed({
       toValue,
       duration,
       useNativeDriver: true,
-      easing: Easing.out(Easing.ease),
+      // easing: Easing.out(Easing.ease),
     }).start(() => {
       // animation(toValue === 0 ? percentage : 0);
       animation(toValue === 100 ? percentage : 0);

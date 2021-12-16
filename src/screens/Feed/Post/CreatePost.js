@@ -92,6 +92,7 @@ export default function CreatePost(props) {
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
   const [Img, setImg] = useState("");
+  console.log("🚀 ~ file: CreatePost.js ~ line 95 ~ CreatePost ~ Img", Img);
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
   let [setting, setSetting] = useState();
@@ -201,8 +202,8 @@ export default function CreatePost(props) {
     let assets = [];
     if (props?.route.params.type === "video") {
       const data = new ReactNativeFile({
-        // uri: chosenFile.uri,
-        uri: chosenFile.path,
+        uri: chosenFile.uri,
+        // uri: chosenFile.path,
         type: `video/${chosenFile.filename.substring(
           chosenFile.filename.length - 3
         )}`,
@@ -398,9 +399,6 @@ export default function CreatePost(props) {
   const P = (5 / 4) * Dimensions.get("screen").width;
   const S = Dimensions.get("screen").width;
   const [indexAktif, setIndexAktive] = useState(0);
-
-  const usries =
-    "file://data/user/0/com.funtravia.apps/cache/f2307502-01d6-4d4d-ade2-d1c0c617806e.mp4";
 
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {

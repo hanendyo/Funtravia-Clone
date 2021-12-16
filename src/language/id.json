@@ -839,7 +839,7 @@
   "failRemoveTagAlbum": "Gagal melepaskan tag album",
   "successcopylink": "Sukses Salin Tautan Ke Papan Klip",
   "setTimeForActivity": "Atur waktu untuk aktivitas",
-  "descMaxUpload": "Maksimal ukuran file adalah 20 MB",
+  "descMaxUpload": "Maksimal ukuran file adalah 50 MB",
   "deleteChat": "Hapus Obrolan",
   "inputPasswordAddEmail": "Silahkan masukan password sebelum tambah email.",
   "inputPasswordChangeEmail": "Silahkan masukan password sebelum mengubah email.",
@@ -856,5 +856,6 @@
   "description1": "Jika Anda termasuk orang yang sering melakukan perjalanan baik untuk bisnis ataupun liburan pribadi, menyusun rencana perjalanan sangatlah penting supaya tertata dengan rapi terjadwal.",
   "description2": "Buatlah moment-moment berharga yang tak pernah terlupakan bersama temanmu,yang nanti menjadi sejarah.",
   "description3": "Wujudkan perjalanan impianmu disini dengan berbagai destinasi yang menarik.",
-  "description4": "Menikmati perjalanan tak pernah semudah ini. Kini, hadir aplikasi Funtravia yg semakin memanjakan travelingmu. hanya dalam genggamanmu! Download on App Store & Google PlayMobile phone"
+  "description4": "Menikmati perjalanan tak pernah semudah ini. Kini, hadir aplikasi Funtravia yg semakin memanjakan travelingmu. hanya dalam genggamanmu! Download on App Store & Google PlayMobile phone",
+  "fileTolarge": "File terlalu besar"
 }

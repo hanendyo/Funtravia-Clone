@@ -51,6 +51,7 @@ import { RNToasty } from "react-native-toasty";
 import * as Progress from "react-native-progress";
 import moment from "moment";
 import LoadingFeed from "../../component/src/LoaadingFeed";
+import { useSelector } from "react-redux";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -97,9 +98,12 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("props feedlist", props);
-
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
+  console.log(
+    "🚀 ~ file: FeedList.js ~ line 103 ~ FeedList ~ tokenApps",
+    tokenApps
+  );
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
@@ -124,7 +128,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -136,7 +140,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -148,7 +152,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -164,7 +168,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -235,12 +239,12 @@ export default function FeedList({ props, token }) {
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
+          refetch();
           setTimeout(() => {
             setTempDataLoading(false);
             setUploadSuccess(true);
             setTimeout(() => {
               setLoaded(false);
-              refetch();
             }, 1000);
           }, props.route.params.allTime);
           setTimeout(() => {
@@ -390,9 +394,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
     options: {
@@ -673,7 +675,7 @@ export default function FeedList({ props, token }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
       onCompleted: () => {
@@ -689,7 +691,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -737,7 +739,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -802,7 +804,7 @@ export default function FeedList({ props, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -841,9 +843,9 @@ export default function FeedList({ props, token }) {
 
   const dataLoadingFeed = [
     {
-      percentage: 99,
+      percentage: 100,
       color: "#209fae",
-      max: 99,
+      max: 100,
     },
   ];
 

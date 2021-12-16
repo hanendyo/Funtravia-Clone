@@ -17,7 +17,7 @@ import {
   Delete,
   CropIcon,
 } from "../../../assets/svg";
-import { Text, Button, FunVideo } from "../../../component";
+import { Text, Button, FunVideo, Peringatan } from "../../../component";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { useTranslation } from "react-i18next";
@@ -26,19 +26,20 @@ import { stat } from "react-native-fs";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Image as ImageCompress } from "react-native-compressor";
 import { RNToasty } from "react-native-toasty";
+import { VESDK } from "react-native-videoeditorsdk";
+import { useSelector } from "react-redux";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
-  console.log("🚀 ~ file: Crop.js ~ line 33 ~ Crop ~ indexAktif", indexAktif);
-  const [croped, setCroped] = useState(0);
+  const tokenApps = useSelector((data) => data.token);
+
   const { t } = useTranslation();
   let [loadVid, setLoadVid] = useState(false);
   let [modalDelete, setModalDelete] = useState(false);
-
-  console.log("data", data);
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 
   const HeaderComponent = {
     headerShown: true,
@@ -121,11 +122,21 @@ export default function Crop(props) {
         });
         // const statResult = await stat(result);
         const statResult = await stat(tempData[i].node.image.uri);
-        const tempDatas = { ...tempData[i].node.image };
-        tempDatas.path = statResult.path;
-        tempDatas.size = statResult.size;
-        tempData[i].node.image = tempDatas;
-        setData(tempData);
+
+        if (statResult.size <= 50000000) {
+          const tempDatas = { ...tempData[i].node.image };
+          tempDatas.path = statResult.path;
+          tempDatas.size = statResult.size;
+          tempData[i].node.image = tempDatas;
+          setData(tempData);
+        } else {
+          showAlert({
+            ...aler,
+            show: true,
+            judul: t("fileTolarge"),
+            detail: t("descMaxUpload"),
+          });
+        }
       } else {
         const result = await ImageCompress.compress(
           tempData[i].node.image.uri,
@@ -141,9 +152,6 @@ export default function Crop(props) {
         setData(tempData);
       }
     }
-
-    console.log("data dalam next", data);
-
     props.navigation.dispatch(
       StackActions.replace("FeedStack", {
         screen: "CreatePostScreen",
@@ -151,7 +159,7 @@ export default function Crop(props) {
           location: props.route.params.location,
           type: "multi",
           file: data,
-          token: token,
+          token: tokenApps,
           id_album: props.route.params.id_album,
           id_itin: props.route.params.id_itin,
           title_album: props.route.params.title_album,
@@ -200,7 +208,6 @@ export default function Crop(props) {
       height: height,
     })
       .then((image) => {
-        console.log("🚀 ~ file: Crop.js ~ line 250 ~ .then ~ image", image);
         let tempp = { ...image };
         let tempData = [...data];
         tempp.filename = tempData[index].node.image.filename;
@@ -210,6 +217,20 @@ export default function Crop(props) {
       })
       .catch((error) => console.log(error));
   };
+
+  // const CroppedVideo = async (indexAktif) => {
+  //   VESDK.openEditor(data[indexAktif].node.image.uri).then(
+  //     (result) => {
+  //       let tempData = [...data];
+  //       if (result.video) {
+  //         tempData[indexAktif].node.image.uri = result.video;
+  //       }
+  //       setData(tempData);
+  //     },
+  //     (error) => {
+  //     }
+  //   );
+  // };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -304,6 +325,10 @@ export default function Crop(props) {
           </View>
         </View>
       </Modal>
+      <Peringatan
+        aler={aler}
+        setClose={() => showAlert({ ...aler, show: false })}
+      />
       <View
         style={{
           width: Dimensions.get("screen").width,
@@ -352,6 +377,7 @@ export default function Crop(props) {
               }}
               resizeMode="cover"
               source={{ uri: data[indexAktif].node.image.uri }}
+              repeat={true}
             />
             {loadVid ? (
               <View
@@ -391,7 +417,7 @@ export default function Crop(props) {
             // paddingHorizontal: 10,
             marginVertical: 5,
           }}
-          keyExtractor={(item, index) => item.node.image.modificationDate}
+          keyExtractor={(item, index) => index.toString()}
           data={data}
           renderItem={({ item, index }) => (
             <Pressable

@@ -14,6 +14,7 @@ import { AllPostWhite, AlbumFeed, Mute, Unmute } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 const { width, height } = Dimensions.get("screen");
 import { useTranslation } from "react-i18next";
+import Video from "react-native-video";
 
 export default function RenderAlbum({
   data,
@@ -301,7 +302,7 @@ export default function RenderAlbum({
             }}
           >
             {item.type === "video" ? (
-              <FunVideo
+              <Video
                 poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
                 posterResizeMode={"cover"}
                 source={{

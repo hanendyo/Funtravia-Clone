@@ -32,7 +32,7 @@ import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 const Notch = DeviceInfo.hasNotch();
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const InvitationNotif = gql`
   query {
