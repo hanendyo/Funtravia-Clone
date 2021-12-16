@@ -1,6 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://artifactory.img.ly/artifactory/imgly" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+        classpath 'ly.img.android.sdk:plugin:9.1.0'
+    }
+}
+buildscript {
     ext {
         firebaseMessagingVersion = '21.1.0'
         buildToolsVersion = "29.0.2"
@@ -40,3 +51,8 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+ allprojects {
+     repositories {
+         maven { url 'https://artifactory.img.ly/artifactory/imgly' }
+     }
+ }

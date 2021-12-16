@@ -28,7 +28,7 @@ if (Platform.OS === "ios") {
 
 PushNotification.configure({
   onRegister: function(token) {
-    console.log("TOKEN:", token);
+    // console.log("TOKEN:", token);
   },
   onNotification: function(notification) {
     // console.log("NOTIFICATION:", notification);
@@ -102,7 +102,7 @@ function App() {
   };
 
   const initializeFunction = async () => {
-    token = await AsyncStorage.getItem("access_token");
+    let token = await AsyncStorage.getItem("access_token");
     setAppToken(token);
     let result = await fetch(END_POINT_INFO, {
       method: "GET",

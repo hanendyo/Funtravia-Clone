@@ -1815,7 +1815,8 @@ export default function ItineraryDetail(props) {
             flexDirection: "row",
             justifyContent: "space-between",
             paddingHorizontal: 15,
-            paddingVertical: 15,
+            paddingBottom: 5,
+            paddingTop: 10,
             backgroundColor: "#fff",
             opacity: textOpacity,
             // alignItems: "center",
@@ -1850,6 +1851,7 @@ export default function ItineraryDetail(props) {
               <View
                 style={{
                   flexDirection: "row",
+                  marginTop: 5,
                 }}
               >
                 {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
@@ -4884,7 +4886,6 @@ export default function ItineraryDetail(props) {
             opacity: textOpacitys,
             flexDirection: "row",
             justifyContent: "space-between",
-            // borderWidth: 1,
             // alignContent: "center",
             // alignItems: "center",
             marginHorizontal: 20,
@@ -4895,6 +4896,7 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               flexDirection: "row",
+              flex: 1,
             }}
           >
             <Button
@@ -4927,6 +4929,7 @@ export default function ItineraryDetail(props) {
             <Animated.View
               style={{
                 top: 10,
+                flex: 1,
               }}
             >
               <Animated.Text
@@ -4940,18 +4943,13 @@ export default function ItineraryDetail(props) {
                 }}
                 numberOfLines={1}
               >
-                <Truncate
-                  text={
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.name
-                      : null
-                  }
-                  length={25}
-                />
+                {datadetail?.itinerary_detail?.name}
               </Animated.Text>
               <Animated.View
                 style={{
                   flexDirection: "row",
+                  marginTop: Platform.OS == "ios" ? 0 : 8,
+                  paddingRight: 20,
                 }}
               >
                 {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
@@ -4967,6 +4965,7 @@ export default function ItineraryDetail(props) {
                     fontFamily: "Lato-Bold",
                     fontSize: normalize(14),
                   }}
+                  numberOfLines={1}
                 >
                   {/* {t("dates")} :{" "} */}
                   {datadetail && datadetail.itinerary_detail

@@ -80,7 +80,7 @@ export default function Settings(props) {
     },
     onCompleted: () => {
       const tempData = [...data?.country_list];
-      let index = tempData.findIndex((k) => k["id"] === setting?.countries.id);
+      let index = tempData.findIndex((k) => k["id"] === setting?.countries?.id);
       setIndex(index);
       setCountry(data?.country_list);
     },

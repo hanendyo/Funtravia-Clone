@@ -47,6 +47,7 @@ export default function Home(props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const counter = useSelector((data) => data.token);
+  console.log("🚀 ~ file: index.js ~ line 50 ~ Home ~ counter", counter);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
@@ -124,7 +125,7 @@ export default function Home(props) {
     //   // props.navigation.navigate("HomeScreen");
     // } else {
     if (tkn) {
-      dispatch(setTokenApps(tkn));
+      dispatch(setTokenApps(`Bearer ${tkn}`));
       await setToken(tkn);
       await NotifCount();
       await LoadUserProfile();
@@ -435,8 +436,6 @@ export default function Home(props) {
     outputRange: [0, 3],
     extrapolate: "clamp",
   });
-
-  console.log(token);
 
   const colorBG = scrollY.interpolate({
     inputRange: [0, height / 4],
