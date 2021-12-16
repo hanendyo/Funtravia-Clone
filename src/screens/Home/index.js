@@ -39,11 +39,14 @@ import {
 } from "../../assets/svg";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
-  console.log("props", props);
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const counter = useSelector((data) => data.token);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
@@ -121,6 +124,7 @@ export default function Home(props) {
     //   // props.navigation.navigate("HomeScreen");
     // } else {
     if (tkn) {
+      dispatch(setTokenApps(tkn));
       await setToken(tkn);
       await NotifCount();
       await LoadUserProfile();

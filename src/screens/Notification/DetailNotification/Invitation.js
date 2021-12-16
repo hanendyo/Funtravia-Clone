@@ -32,6 +32,7 @@ import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 const Notch = DeviceInfo.hasNotch();
+import { useDispatch, useSelector } from "react-redux";
 
 const InvitationNotif = gql`
   query {
@@ -186,9 +187,11 @@ export default function Invitation({
   datanotif,
   SetDataNotif,
 }) {
-  console.log("🚀 ~ file: Invitation.js ~ line 189 ~ datanotif", datanotif);
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
+  const counter = useSelector((data) => data.token);
+  console.log("🚀 ~ file: Invitation.js ~ line 195 ~ counter", counter);
+
   // let [datanotif, SetDataNotif] = useState([]);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
@@ -688,7 +691,7 @@ export default function Invitation({
                     marginBottom: 2,
                   }}
                 >
-                  {t("hi")} {setting.user?.first_name}, {t("hiJoinTrip")}
+                  {t("hi")} {setting?.user?.first_name}, {t("hiJoinTrip")}
                 </Text>
               </View>
               <View

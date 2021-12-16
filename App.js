@@ -17,6 +17,8 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import { createUploadLink } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 import { Text } from "./src/component";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import storeState from "./src/redux/store";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
@@ -58,7 +60,6 @@ function App() {
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState();
-
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
     if (enabled && enabled !== -1) {
@@ -198,12 +199,14 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <MainStackNavigator
-        authorizeStatus={authStat}
-        dNotify={dataNotifikasi}
-        isFirst={firstScreen}
-        token={appToken}
-      />
+      <Provider store={storeState}>
+        <MainStackNavigator
+          authorizeStatus={authStat}
+          dNotify={dataNotifikasi}
+          isFirst={firstScreen}
+          token={appToken}
+        />
+      </Provider>
     </ApolloProvider>
   );
 }
