@@ -106,6 +106,7 @@ export default function ItineraryChooseday(props) {
   let [dataSelected, setDataSelected] = useState([]);
   let [loading, setLoading] = useState(false);
   let [ArrayDay, setArrayDay] = useState([]);
+  console.log(token);
 
   const [
     GetListEvent,
@@ -115,7 +116,7 @@ export default function ItineraryChooseday(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     variables: { id: Iditinerary },
@@ -160,7 +161,7 @@ export default function ItineraryChooseday(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -172,7 +173,7 @@ export default function ItineraryChooseday(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -188,7 +189,7 @@ export default function ItineraryChooseday(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -200,7 +201,7 @@ export default function ItineraryChooseday(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

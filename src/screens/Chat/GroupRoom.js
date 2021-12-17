@@ -23,6 +23,7 @@ import {
   CameraChat,
   Xgray,
   Errorr,
+  Arrowbackios,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -79,7 +80,9 @@ export default function Room({ navigation, route }) {
           justifyContent: "center",
           alignContent: "center",
           alignItems: "center",
-          marginVertical: 10,
+          marginVertical: 15,
+          marginLeft: 10,
+          marginBottom: Platform.OS === "ios" ? 20 : 10,
           // borderWidth: 1,
         }}
       >
@@ -93,7 +96,11 @@ export default function Room({ navigation, route }) {
           }}
           onPress={() => navigation.goBack()}
         >
-          <Arrowbackwhite height={20} width={20} />
+          {Platform.OS === "ios" ? (
+            <Arrowbackios height={15} width={15} />
+          ) : (
+            <Arrowbackwhite height={20} width={20} />
+          )}
         </TouchableOpacity>
         <Pressable
           onPress={() => {
@@ -212,7 +219,8 @@ export default function Room({ navigation, route }) {
               alignContent: "center",
               alignItems: "center",
               marginVertical: 10,
-              // borderWidth: 1,
+              marginLeft: 10,
+              marginBottom: Platform.OS === "ios" ? 20 : 10,
             }}
           >
             <TouchableOpacity
@@ -225,7 +233,11 @@ export default function Room({ navigation, route }) {
               }}
               onPress={() => navigation.goBack()}
             >
-              <Arrowbackwhite height={20} width={20} />
+              {Platform.OS === "ios" ? (
+                <Arrowbackios height={15} width={15} />
+              ) : (
+                <Arrowbackwhite height={20} width={20} />
+              )}
             </TouchableOpacity>
             <Pressable
               onPress={() => {

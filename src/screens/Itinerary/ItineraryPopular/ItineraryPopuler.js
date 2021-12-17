@@ -43,11 +43,12 @@ import Albums from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
   const { t } = useTranslation();
-  let [token, setToken] = useState(props?.route?.params?.token);
+  const token = useSelector((data) => data.token);
   let [setting, setSetting] = useState();
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
@@ -167,7 +168,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -238,7 +239,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -250,15 +251,12 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     // await fetchCategory();
@@ -291,9 +289,7 @@ export default function ItineraryPopuler(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props?.route?.params?.token
-          ? `Bearer ${props?.route?.params?.token}`
-          : null,
+        Authorization: props?.route?.params?.token,
       },
     },
     onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),

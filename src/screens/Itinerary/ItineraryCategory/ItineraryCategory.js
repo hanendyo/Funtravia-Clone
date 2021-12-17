@@ -29,6 +29,7 @@ import Populer from "../../../graphQL/Query/Itinerary/ItineraryPopuler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Bg_soon } from "../../../assets/png";
 import Ripple from "react-native-material-ripple";
+import { useSelector } from "react-redux";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { RNToasty } from "react-native-toasty";
@@ -36,7 +37,7 @@ import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
 export default function ItineraryCategory(props) {
   const { t } = useTranslation();
-  let [token, setToken] = useState(props?.route?.params?.token);
+  const token = useSelector((data) => data.token);
   let [setting, setSetting] = useState();
   let [dataType, setDataType] = useState(props.route.params.typeCategory);
   let [actives, setActives] = useState("Itinerary");
@@ -164,7 +165,7 @@ export default function ItineraryCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -229,8 +230,6 @@ export default function ItineraryCategory(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     // await fetchCategory();

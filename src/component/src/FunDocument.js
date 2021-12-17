@@ -83,7 +83,7 @@ export default function FunDocument({
 
   return (
     <TouchableOpacity
-      style={style}
+      style={{ flex: 1, flexDirection: "row", ...style }}
       {...otherProps}
       onPress={() => handleAttachment(format === undefined ? filepath : path)}
     >

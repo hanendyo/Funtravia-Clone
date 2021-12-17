@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 
 export default function AddBuddy(props) {
+  console.log("props token", props.route.params.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -94,9 +95,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: props.route.params.token,
       },
     },
   });
@@ -110,9 +109,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: props.route.params.token,
       },
     },
     variables: { id: props.route.params.iditin },
@@ -220,9 +217,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: props.route.params.token,
       },
     },
   });

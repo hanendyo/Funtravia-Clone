@@ -27,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
 
 export default function ChoosePosition(props) {
-  console.log("props choose position", props.route.params);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
@@ -111,8 +110,6 @@ export default function ChoosePosition(props) {
       </Text>
     );
   };
-
-  console.log("data timeline", datatimeline);
 
   const bukaModal = (text = null, index) => {
     // console.log(text);
@@ -580,7 +577,7 @@ export default function ChoosePosition(props) {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
 
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -594,7 +591,7 @@ export default function ChoosePosition(props) {
         "Content-Type": "application/json",
         // "Content-Type": "multipart/form-data",
 
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -606,16 +603,13 @@ export default function ChoosePosition(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
 
   const saveToItinerary = async () => {
-    console.log(props?.route?.params?.file);
-
     setLoading(true);
-    // console.log(token);
     if (dataAkhir.length < 1) {
       setLoading(false);
 
@@ -652,7 +646,6 @@ export default function ChoosePosition(props) {
           if (errorSaved || errorSaved2) {
             throw new Error("Error Input");
           }
-          console.log(response);
           if (response.data) {
             if (response.data.add_custom_withattach.code !== 200) {
               setLoading(false);
@@ -739,7 +732,7 @@ export default function ChoosePosition(props) {
           if (errorSaved || errorSaved2) {
             throw new Error("Error Input");
           }
-          console.log(response);
+
           if (response.data) {
             if (response.data.add_custom.code !== 200) {
               setLoading(false);

@@ -32,6 +32,7 @@ import {
   Keyboard as IconKeyboard,
   Xgray,
   Errorr,
+  Arrowbackios,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -432,6 +433,7 @@ export default function Room({ navigation, route }) {
           alignItems: "center",
           marginVertical: 10,
           marginLeft: 10,
+          marginBottom: Platform.OS === "ios" ? 20 : 10,
         }}
       >
         <TouchableOpacity
@@ -444,7 +446,11 @@ export default function Room({ navigation, route }) {
           }}
           onPress={() => navigation.goBack()}
         >
-          <Arrowbackwhite height={20} width={20} />
+          {Platform.OS === "ios" ? (
+            <Arrowbackios width={15} height={15} />
+          ) : (
+            <Arrowbackwhite height={20} width={20} />
+          )}
         </TouchableOpacity>
         <Pressable
           onPress={() => {

@@ -53,6 +53,7 @@ import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
 import { StackActions } from "@react-navigation/routers";
 import { gql } from "apollo-boost";
 import Ripple from "react-native-material-ripple";
+import { useSelector } from "react-redux";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -126,7 +127,7 @@ export default function Trip(props) {
   let [privateToggle, setPrivateToggle] = useState(true);
   let [publicToggle, setPublicToggle] = useState(false);
   let [minimum, setMinimum] = useState("");
-  let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   let [dataCategories, setdataCategories] = useState([]);
   let [category_id, setcategory_id] = useState(null);
   let [countryData, setCountryData] = useState();
@@ -190,7 +191,7 @@ export default function Trip(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -231,21 +232,17 @@ export default function Trip(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    if (tkn !== null) {
-      setToken(tkn);
+    if (token) {
       query();
       querywith();
       getkategori();
       querycity();
-    } else {
-      setToken("");
     }
   };
   const [isFocusedTitle, setIsFocusedTitle] = useState(false);

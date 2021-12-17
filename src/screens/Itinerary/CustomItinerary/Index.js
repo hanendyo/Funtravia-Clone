@@ -26,11 +26,11 @@ import hapuscustomsaved from "../../../graphQL/Mutation/Itinerary/Deletecustomac
 import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function CustomItinerary(props) {
   const { t, i18n } = useTranslation();
   let [soon, setSoon] = useState(false);
-  console.log("props custom acticity", props.route.params);
 
   const HeaderComponent = {
     headerShown: true,
@@ -78,15 +78,16 @@ export default function CustomItinerary(props) {
   let itintitle = props.route.params.itintitle;
   let dateitin = props.route.params.dateitin;
   let datadayaktif = props.route.params.datadayaktif;
-  let [token, setToken] = useState("");
+  // let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   let [loading, setloading] = useState(false);
 
   const loadAsync = async () => {
     setloading(true);
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
+    // let tkn = await AsyncStorage.getItem("access_token");
+    // setToken(tkn);
 
-    if (tkn) {
+    if (token) {
       GetTimeline();
       GetListCustom();
       setloading(false);
@@ -101,12 +102,11 @@ export default function CustomItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     variables: { id: idDay },
     onCompleted: () => {
-      // console.log(datati);
       setcustome_timeline(datati.custome_timeline);
       settotal_hours(datati.custome_timeline.total_hours);
       spreadtimeline(datati.custome_timeline.timeline);
@@ -149,7 +149,7 @@ export default function CustomItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -161,7 +161,7 @@ export default function CustomItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

@@ -27,6 +27,7 @@ import { Marker } from "react-native-maps";
 import { Truncate } from "../../component";
 import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function ItinGoogle(props) {
   const { t, i18n } = useTranslation();
@@ -75,7 +76,7 @@ export default function ItinGoogle(props) {
     props.route.params.datadayaktif
   );
   let [dataDes, setDataDes] = useState(props.route.params.dataDes);
-  let [token, setToken] = useState(props.route.params.token);
+  const token = useSelector((data) => data.token);
   let [dataMap, setDataMap] = useState(null);
   let [detailMap, setDetailMap] = useState(null);
   let [modals, setModal] = useState(false);

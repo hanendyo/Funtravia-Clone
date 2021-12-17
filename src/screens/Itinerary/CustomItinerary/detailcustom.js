@@ -50,13 +50,14 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import moment from "moment";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
-  const height = Dimensions.get("screen").height;
-  const width = Dimensions.get("screen").width;
+  const { height, width } = Dimensions.get("screen");
+  const token = useSelector((data) => data.token);
 
   const HeaderComponent = {
     headerShown: true,
@@ -236,7 +237,7 @@ export default function detailCustomItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -249,6 +250,7 @@ export default function detailCustomItinerary(props) {
           value: JSON.stringify(datakiriman),
         },
       });
+
       if (loadingSave) {
         Alert.alert("Loading!!");
       }
@@ -267,6 +269,7 @@ export default function detailCustomItinerary(props) {
       }
     } catch (error) {
       Alert.alert("" + error);
+      console.log("err", error);
     }
   };
 
@@ -382,12 +385,12 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
+
       let files = new ReactNativeFile({
         uri: res.uri,
         type: res.type,
         name: res.name,
       });
-
       let tempe = [...dataUpload];
       tempe.push(files);
       // await setdataUpload(tempe);
@@ -1099,7 +1102,6 @@ export default function detailCustomItinerary(props) {
                                 filepath={data.filepath}
                                 format={data.extention}
                                 progressBar
-                                style={{ flex: 1, flexDirection: "row" }}
                               />
                               <TouchableOpacity
                                 onPress={() => {
@@ -1434,7 +1436,7 @@ export default function detailCustomItinerary(props) {
 
                 {dataParent?.detail_flight ? (
                   <View style={styles.FlightContainer}>
-                    <Text type="light">{t("Passanger Name")}</Text>
+                    <Text type="light">{t("PassengerName")}</Text>
                     <Text type="bold">
                       {dataParent?.detail_flight?.guest_name
                         ? dataParent?.detail_flight?.guest_name

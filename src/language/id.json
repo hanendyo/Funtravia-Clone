@@ -619,7 +619,7 @@
   "From": "Dari",
   "To": "Ke",
   "Guest Name": "Nama Tamu",
-  "Passenger Name": "Nama Penumpang",
+  "PassengerName": "Nama Penumpang",
   "guestNameOptional": "Nama Tamu (Opsional)",
   "passengerNameOptional": "Nama Penumpang (Optional)",
   "BookingRef": "Referensi Pemesanan",

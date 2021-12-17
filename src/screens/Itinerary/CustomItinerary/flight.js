@@ -50,6 +50,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
+import { useSelector } from "react-redux";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -128,7 +129,7 @@ export default function detailCustomItinerary(props) {
   const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [token, setToken] = useState("");
+  const [token] = useSelector((data) => data.token);
   const [text, setText] = useState("");
 
   //params data
@@ -284,7 +285,7 @@ export default function detailCustomItinerary(props) {
             attachment.length === 0
               ? `application/json`
               : `multipart/form-data`,
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
     }
@@ -298,7 +299,7 @@ export default function detailCustomItinerary(props) {
       headers: {
         "Content-Type":
           attachment.length === 0 ? `application/json` : `multipart/form-data`,
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -349,7 +350,6 @@ export default function detailCustomItinerary(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      getToken();
       addAttachmentCustom();
     });
     return unsubscribe;
@@ -357,6 +357,8 @@ export default function detailCustomItinerary(props) {
 
   const mutationUpdateFlight = async () => {
     try {
+      setLoadingApp(true);
+
       let response = await mutationUpdate({
         variables: {
           id: props.route.params.activityId,
@@ -387,7 +389,7 @@ export default function detailCustomItinerary(props) {
           file: [...attachmentCustomFile, ...attachment],
         },
       });
-      if (loading) {
+      if (loadingUpdate) {
         setLoadingApp(true);
       }
 
@@ -396,6 +398,7 @@ export default function detailCustomItinerary(props) {
       }
 
       if (response.data) {
+        setLoadingApp(false);
         if (response.data.update_custom_flight.code !== 200) {
           throw new Error(response.data.update_custom_flight.message);
         } else {
@@ -413,6 +416,7 @@ export default function detailCustomItinerary(props) {
 
   const mutationInput = async () => {
     try {
+      setLoadingApp(true);
       let response = await mutation({
         variables: {
           day_id: dayId,
@@ -451,6 +455,7 @@ export default function detailCustomItinerary(props) {
       }
 
       if (response.data) {
+        setLoadingApp(false);
         if (response.data.add_custom_flight.code !== 200) {
           throw new Error(response.data.add_custom_flight.message);
         } else {
@@ -466,18 +471,6 @@ export default function detailCustomItinerary(props) {
     }
   };
 
-  const getToken = async () => {
-    try {
-      let tkn = await AsyncStorage.getItem("access_token");
-      if (tkn) {
-        setToken(tkn);
-      } else {
-        setToken("");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   // console.log("token", token);
 
   const validateData = () => {
@@ -840,22 +833,21 @@ export default function detailCustomItinerary(props) {
             {t("Attachment")}
           </Text>
           {attachmentCustom
-            ? attachmentCustom.map((data, index) => {
+            ? attachmentCustomFile.map((data, index) => {
                 return (
                   <View style={styles.attachment}>
                     <FunDocument
-                      filename={data.file_name}
-                      filepath={data.filepath}
-                      format={data.extention}
-                      style={{ flex: 1, flexDirection: "row" }}
+                      filename={data.name}
+                      filepath={data.uri}
+                      format={data.type}
                       progressBar
                       icon
                     />
                     <TouchableOpacity
                       onPress={() => {
-                        let temp = [...attachmentCustom];
+                        let temp = [...attachmentCustomFile];
                         temp.splice(index, 1);
-                        setAttachmentCustom(temp);
+                        setAttachmentCustomFile(temp);
                       }}
                       style={styles.attachmentTimes}
                     >
@@ -872,7 +864,6 @@ export default function detailCustomItinerary(props) {
                 <FunDocument
                   filename={data.name}
                   filepath={data.uri}
-                  style={{ flex: 1, flexDirection: "row" }}
                   progressBar
                   icon
                 />
@@ -1251,6 +1242,7 @@ export default function detailCustomItinerary(props) {
           />
         </View>
       </KeyboardAvoidingView>
+      <Loading show={loadingApp} />
     </SafeAreaView>
   );
 }

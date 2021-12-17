@@ -16,7 +16,7 @@ import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
 import { Item, Label, Input, Textarea } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
-import { Truncate } from "../../../component";
+import { FunDocument, Truncate } from "../../../component";
 import {
   Arrowbackwhite,
   Xhitam,
@@ -105,95 +105,9 @@ export default function CreateCustom(props) {
     address: true,
     detail: true,
   });
-  const jam = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-  ];
-  const menit = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36,
-    37,
-    38,
-    39,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    50,
-    51,
-    52,
-    53,
-    54,
-    55,
-    56,
-    57,
-    58,
-    59,
-  ];
+  const jam = [...Array(24).keys()].map((x) => `${x}`);
+
+  const menit = [...Array(60).keys()].map((x) => `${x}`);
 
   let [file, setfile] = useState([]);
 
@@ -212,7 +126,6 @@ export default function CreateCustom(props) {
       let tempe = [...file];
 
       tempe.push(files);
-      console.log(tempe);
       await setfile(tempe);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -234,7 +147,7 @@ export default function CreateCustom(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -922,16 +835,25 @@ export default function CreateCustom(props) {
               {file.map((data, index) => {
                 return (
                   <View
+                    key={index}
                     style={{
                       flexDirection: "row",
                       alignContent: "flex-start",
                       alignItems: "flex-start",
+                      paddingVertical: 10,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      // backgroundColor: "red",
                     }}
                   >
-                    <Text style={{ width: 30 }}>{index + 1}. </Text>
-                    <Text style={{ flex: 1, paddingBottom: 5 }}>
-                      {data.name}
-                    </Text>
+                    <FunDocument
+                      filename={data.name}
+                      filepath={data.uri}
+                      format={data?.extention}
+                      progressBar
+                      icon
+                      style={{ flex: 1, flexDirection: "row" }}
+                    />
                     <TouchableOpacity
                       onPress={() => {
                         let tempes = [...file];
@@ -942,10 +864,12 @@ export default function CreateCustom(props) {
                         flexDirection: "row",
                         paddingRight: 10,
                         paddingLeft: 25,
+                        paddingVertical: 5,
                         height: "100%",
+                        alignItems: "center",
                       }}
                     >
-                      <Xhitam style={{}} width={10} height={10} />
+                      <Xhitam width={10} height={10} />
                     </TouchableOpacity>
                   </View>
                 );

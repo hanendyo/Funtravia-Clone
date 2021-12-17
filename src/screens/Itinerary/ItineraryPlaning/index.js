@@ -35,6 +35,7 @@ import {
 } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { StackActions } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -87,7 +88,7 @@ export default function listItinPlaning(props) {
     ),
   };
 
-  let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   let idkiriman = props.route.params.idkiriman;
   let [datas, setDatas] = useState();
 
@@ -99,7 +100,7 @@ export default function listItinPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -535,8 +536,6 @@ export default function listItinPlaning(props) {
   }, []);
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await _Refresh();
   };
 

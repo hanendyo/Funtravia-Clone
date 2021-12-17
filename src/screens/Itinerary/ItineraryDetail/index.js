@@ -121,6 +121,7 @@ import { ReactNativeFile } from "apollo-upload-client";
 import DocumentPicker from "react-native-document-picker";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -162,7 +163,7 @@ export default function ItineraryDetail(props) {
   let [dataList, setDataListItem] = useState([]);
   const [tab3Data] = useState([]);
   let itineraryId = props.route.params.country;
-  let token = props.route.params.token;
+  const token = useSelector((data) => data.token);
   let [statusKiriman, setStatusKiriman] = useState(
     props.route.params.status ? props.route.params.status : "kosong"
   );
@@ -295,7 +296,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     pollInterval: 500,
@@ -312,7 +313,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     variables: { itinerary_id: itineraryId },
@@ -335,7 +336,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -375,7 +376,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -454,7 +455,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     variables: { id: idDay },
@@ -588,7 +589,7 @@ export default function ItineraryDetail(props) {
       headers: {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -665,7 +666,7 @@ export default function ItineraryDetail(props) {
         "Content-Type": "multipart/form-data",
 
         // "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -801,7 +802,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -1056,7 +1057,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -1069,6 +1070,7 @@ export default function ItineraryDetail(props) {
           value: JSON.stringify(datakiriman),
         },
       });
+
       if (loadingSave) {
         Alert.alert("Loading!!");
       }
@@ -1117,7 +1119,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -1208,7 +1210,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -1267,7 +1269,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -1279,7 +1281,7 @@ export default function ItineraryDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

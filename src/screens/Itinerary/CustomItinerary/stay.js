@@ -33,6 +33,7 @@ import {
   Peringatan,
   FloatingInput,
   FunDocument,
+  Loading,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DocumentPicker from "react-native-document-picker";
@@ -46,6 +47,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
 import { request, check, PERMISSIONS } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
+import { useSelector } from "react-redux";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
@@ -115,7 +117,7 @@ export default function detailCustomItinerary(props) {
   };
   console.log("props hotel", props.route.params);
   const Notch = DeviceInfo.hasNotch();
-  let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   const GooglePlacesRef = useRef();
 
   //params data
@@ -134,20 +136,9 @@ export default function detailCustomItinerary(props) {
     detail: "",
   });
 
-  const getToken = async () => {
-    //! Hanendyo's work
-    let tkn = await AsyncStorage.getItem("access_token");
-    if (tkn !== null) {
-      setToken(tkn);
-    } else {
-      setToken("");
-    }
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
-      getToken();
       addAttachmentCustom();
     });
     return unsubscribe;
@@ -398,6 +389,7 @@ export default function detailCustomItinerary(props) {
 
   const submitDataEditAPI = async () => {
     try {
+      setLoadingApp(true);
       let response = await mutationUpdate({
         variables: {
           id: dataState.id,
@@ -422,11 +414,15 @@ export default function detailCustomItinerary(props) {
           file: [...dataState.fileCustomEdit, ...dataState.file], //wajib
         },
       });
-      console.log("resp", response);
+      if (loadingUpdate) {
+        setLoadingApp(true);
+      }
+
       if (error) {
         throw new Error("Error input");
       }
       if (response.data) {
+        setLoadingApp(false);
         if (response.data.update_custom_accomodation.code !== 200) {
           throw new Error(response.data.update_custom_accomodation.message);
         } else {
@@ -440,6 +436,7 @@ export default function detailCustomItinerary(props) {
         judul: "Submit Update Data Error",
         detail: error,
       });
+      setLoadingApp(false);
     }
   };
 
@@ -511,7 +508,7 @@ export default function detailCustomItinerary(props) {
         "Content-Type": !dataState.file.length
           ? `application/json`
           : `multipart/form-data`,
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -524,7 +521,7 @@ export default function detailCustomItinerary(props) {
           "Content-Type": !dataState.file.length
             ? `application/json`
             : `multipart/form-data`,
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
     }
@@ -535,28 +532,8 @@ export default function detailCustomItinerary(props) {
   };
 
   const submitDataAPI = async () => {
-    console.log("variables", {
-      day_id: dataState.day_id,
-      title: dataState.title, // == hotel_name
-      icon: dataState.icon, //gb_tour
-      qty: dataState.qty, // ==
-      address: dataState.address, // ==wajib
-      latitude: dataState.latitude, //wajib
-      longitude: dataState.longitude, //wajib
-      note: dataState.note, // ==ga wajib
-      time: dataState.time, //hardcode
-      duration: dataState.duration, //hardcode
-      status: dataState.status, // ==
-      order: dataState.order, // ==0
-      total_price: dataState.total_price, //
-      hotel_name: dataState.hotel_name, //wajib
-      guest_name: dataState.guest_name, //wajib
-      booking_ref: dataState.booking_ref, //wajib
-      checkin: dataState.checkin, // ==wajib
-      checkout: dataState.checkout, //wajib
-      file: dataState.file, //wajib
-    });
     try {
+      setLoadingApp(true);
       let response = await mutation({
         variables: {
           day_id: dataState.day_id,
@@ -580,11 +557,15 @@ export default function detailCustomItinerary(props) {
           file: dataState.file, //wajib
         },
       });
+      if (loading) {
+        setLoadingApp(true);
+      }
       if (error) {
         console.log(error);
         // throw new Error("Error input");
       }
       if (response.data) {
+        setLoadingApp(false);
         if (response.data.add_custom_accomodation.code !== 200) {
           throw new Error(response.data.add_custom_accomodation.message);
         } else {
@@ -599,6 +580,7 @@ export default function detailCustomItinerary(props) {
         judul: "Submit Data Error",
         detail: error,
       });
+      setLoadingApp(false);
     }
   };
 
@@ -1188,24 +1170,23 @@ export default function detailCustomItinerary(props) {
           </View>
 
           <View style={{ flex: 1, marginBottom: 10 }}>
-            {dataState.fileCustom.map((data, index) => {
+            {dataState.fileCustomEdit.map((data, index) => {
               return (
                 <View style={styles.attachment}>
                   <FunDocument
-                    filename={data.file_name}
-                    filepath={data.filepath}
-                    format={data.extention}
-                    style={{ flex: 1, flexDirection: "row" }}
+                    filename={data.name}
+                    filepath={data.uri}
+                    format={data.type}
                     progressBar
                     icon
                   />
                   <TouchableOpacity
                     onPress={() => {
-                      let temp = [...dataState.fileCustom];
+                      let temp = [...dataState.fileCustomEdit];
                       temp.splice(index, 1);
                       setdataState((prevFile) => ({
                         ...prevFile,
-                        fileCustom: temp,
+                        fileCustomEdit: temp,
                       }));
                     }}
                     style={styles.attachmentTimes}
@@ -1230,7 +1211,6 @@ export default function detailCustomItinerary(props) {
                   <FunDocument
                     filename={data.name}
                     filepath={data.uri}
-                    style={{ flex: 1, flexDirection: "row" }}
                     progressBar
                     icon
                   />
@@ -1627,6 +1607,7 @@ export default function detailCustomItinerary(props) {
           />
         </View>
       </KeyboardAvoidingView>
+      <Loading show={loadingApp} />
     </SafeAreaView>
   );
 }
