@@ -39,7 +39,9 @@ const SafeStatusBar = Platform.select({
 });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
+// let [token, setToken] = useState(route.params.token);
 export default function Render({ navigation, route }) {
+  let [token, setToken] = useState(route.params.token);
   const Hello = ({ route }) => {
     const { data, loading, error } = useQuery(Account, {
       variables: {
@@ -48,9 +50,7 @@ export default function Render({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: route.params.token
-            ? `Bearer ${route.params.token}`
-            : null,
+          Authorization: token,
         },
       },
     });
@@ -61,8 +61,8 @@ export default function Render({ navigation, route }) {
   return <Hello route={route} />;
 }
 export function MyProfile({ navigation, route }) {
+  let [token, setToken] = useState(route.params.token);
   console.log("route profil", route);
-  let [token, setToken] = useState(null);
   let [canScroll, setCanScroll] = useState(true);
   let [loadings, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -202,7 +202,7 @@ export function MyProfile({ navigation, route }) {
 
     AsyncStorage.getItem("access_token").then((value) => {
       if (value) {
-        setToken(value);
+        dispatch(setTokenApps(`Bearer ${value}`));
       }
     });
 
@@ -393,7 +393,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
     });
@@ -410,7 +410,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
     }
@@ -427,7 +427,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -441,7 +441,7 @@ export function MyProfile({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
     }
@@ -454,7 +454,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -466,7 +466,7 @@ export function MyProfile({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -479,7 +479,7 @@ export function MyProfile({ navigation, route }) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + tokens,
+            Authorization: token,
             "Content-Type": "application/json",
           },
           // body: formBodys,

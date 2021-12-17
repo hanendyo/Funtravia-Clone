@@ -19,8 +19,11 @@ import { useTranslation } from "react-i18next";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
 import { loading_intertwine } from "../../../assets/gif";
 import { RNToasty } from "react-native-toasty";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 export default function RegisterFacebook({ navigation }) {
+  let dispatch = useDispatch();
   const { t } = useTranslation();
   let [modalError, setModalError] = useState(false);
   let [message, setMessage] = useState("");
@@ -61,6 +64,9 @@ export default function RegisterFacebook({ navigation }) {
         await AsyncStorage.setItem(
           "access_token",
           response.data.register_facebook.access_token
+        );
+        dispatch(
+          setTokenApps(`Bearer ${response.data.register_facebook.access_token}`)
         );
         await AsyncStorage.setItem(
           "setting",

@@ -74,6 +74,8 @@ import ListFotoAlbumAll from "../../../graphQL/Query/Itinerary/ListAlbumAll";
 import Ripple from "react-native-material-ripple";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -89,6 +91,8 @@ const TabBarHeight = 48;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
+  let dispatch = useDispatch();
+  let tokenApps = useSelector((data) => data.token);
   let capHeight = useRef();
 
   const Notch = DeviceInfo.hasNotch();
@@ -167,7 +171,8 @@ export default function OtherProfile(props) {
       });
     }
 
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
 
     let settingData = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(settingData));
@@ -184,7 +189,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     variables: {
@@ -224,7 +229,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -236,7 +241,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -249,7 +254,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     variables: { user_id: props.route.params.idUser, keyword: "" },
@@ -269,7 +274,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -293,7 +298,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -312,7 +317,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -355,7 +360,7 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -367,13 +372,13 @@ export default function OtherProfile(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _unfollow = async (id) => {
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -403,7 +408,7 @@ export default function OtherProfile(props) {
   };
 
   const _follow = async (id) => {
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await FollowMutation({
           variables: {
@@ -755,7 +760,7 @@ export default function OtherProfile(props) {
       headerScrollY.removeAllListeners();
       unsubscribe;
     };
-  }, [routes, tabIndex, props.navigation]);
+  }, [routes, tabIndex, props.navigation, tokenApps]);
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[_tabIndex.current].key;
@@ -1405,7 +1410,7 @@ export default function OtherProfile(props) {
                   text={t("editprofile")}
                   onPress={() =>
                     props.navigation.push("profilesetting", {
-                      token: token,
+                      token: tokenApps,
                       data: data,
                     })
                   }
@@ -1576,7 +1581,12 @@ export default function OtherProfile(props) {
       );
     } else if (tabPost === 1) {
       return (
-        <Albums item={e.item} index={e.index} props={e.props} token={token} />
+        <Albums
+          item={e.item}
+          index={e.index}
+          props={e.props}
+          token={tokenApps}
+        />
       ); // return Albums(e);
     } else {
       return Tags(e);
@@ -1610,7 +1620,7 @@ export default function OtherProfile(props) {
       case "tab2":
         numCols = 1;
         data = dataReview;
-        renderItem = (e) => Review(e, onSelect, props, token, t, capHeight);
+        renderItem = (e) => Review(e, onSelect, props, tokenApps, t, capHeight);
         paddingHorizontal = 0;
         break;
       case "tab3":
@@ -1741,7 +1751,7 @@ export default function OtherProfile(props) {
         showsHorizontalScrollIndicator={false}
         data={data}
         renderItem={({ item, index }) =>
-          renderItem({ position, token, props, item, index })
+          renderItem({ position, tokenApps, props, item, index })
         }
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
@@ -2137,7 +2147,7 @@ export default function OtherProfile(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
       variables: {
@@ -2489,7 +2499,9 @@ export default function OtherProfile(props) {
             }}
           >
             <Ripple
-              onPress={() => _handlemessage(props.route.params.idUser, token)}
+              onPress={() =>
+                _handlemessage(props.route.params.idUser, tokenApps)
+              }
               text={""}
               size="medium"
               type="circle"
@@ -2649,7 +2661,9 @@ export default function OtherProfile(props) {
             }}
           >
             <Ripple
-              onPress={() => _handlemessage(props.route.params.idUser, token)}
+              onPress={() =>
+                _handlemessage(props.route.params.idUser, tokenApps)
+              }
               text={""}
               size="medium"
               type="circle"

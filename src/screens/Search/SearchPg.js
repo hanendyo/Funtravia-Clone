@@ -51,10 +51,14 @@ import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { setTokenApps } from "../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function SearchPg(props, { navigation, route }) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const [active_src, setActiveSrc] = useState("location");
+  let [list_rekomendasi_user, SetListrequser] = useState([]);
   const [searchtext, SetSearchtext] = useState(
     props.route.params.searchInput ? props.route.params.searchInput : ""
   );
@@ -109,7 +113,8 @@ export default function SearchPg(props, { navigation, route }) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
+    // setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
     let recent_src = await AsyncStorage.getItem("recent_src");
@@ -245,7 +250,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -274,7 +279,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -308,7 +313,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -334,7 +339,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -365,7 +370,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -377,7 +382,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -499,15 +504,15 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     notifyOnNetworkStatusChange: true,
-    onCompleted: (dataRekomendasi) => {
-      SetListrequser(dataRekomendasi.list_rekomendasi_user);
+    onCompleted: () => {
+      SetListrequser(dataRekomendasi?.list_rekomendasi_user);
     },
   });
-  let [list_rekomendasi_user, SetListrequser] = useState([]);
+
   const _unfollow_rekomendasi = async (id, index) => {
     if (token && token !== null && token !== "") {
       let temStatus = [...list_rekomendasi_user];
@@ -1662,6 +1667,9 @@ export default function SearchPg(props, { navigation, route }) {
                 onPress={() => {
                   props.navigation.navigate("CountryStack", {
                     screen: "AllDestination",
+                    params: {
+                      token: token,
+                    },
                   });
                   BackHandler.removeEventListener(
                     "hardwareBackPress",

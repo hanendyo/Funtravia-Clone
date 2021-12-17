@@ -84,7 +84,6 @@ export default function Home(props) {
       },
     }
   );
-
   const [
     LoadPost,
     { data: datapost, loading: loadingpost, error: errorpost },
@@ -869,6 +868,7 @@ export default function Home(props) {
                           tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowerPage",
+                                params: { token: tokenApps },
                               })
                             : setModalLogin(true);
                         }}
@@ -894,6 +894,7 @@ export default function Home(props) {
                           tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowingPage",
+                                params: { token: tokenApps },
                               })
                             : setModalLogin(true);
                         }}

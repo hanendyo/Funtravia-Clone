@@ -78,16 +78,6 @@ export default function MyAccount(props) {
     //   </TouchableOpacity>
     // ),
   };
-
-  const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: tokenApps,
-      },
-    },
-  });
-
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
@@ -97,6 +87,15 @@ export default function MyAccount(props) {
       await LoadUserProfile();
     }
   };
+
+  const [mutationlogout, { loading, data, error }] = useMutation(Logout, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: tokenApps,
+      },
+    },
+  });
 
   const [userData, setUserData] = useState(null);
 

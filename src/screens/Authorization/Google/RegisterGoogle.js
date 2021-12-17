@@ -21,8 +21,11 @@ import {
   statusCodes,
 } from "@react-native-community/google-signin";
 import { loading_intertwine } from "../../../assets/gif";
+import { setTokenApps } from "../../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function RegisterGoogle({ navigation }) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   let [modalError, setModalError] = useState(false);
   let [message, setMessage] = useState("");
@@ -82,6 +85,9 @@ export default function RegisterGoogle({ navigation }) {
         await AsyncStorage.setItem(
           "access_token",
           response.data.register_google.access_token
+        );
+        dispatch(
+          setTokenApps(`Bearer ${response.data.register_facebook.access_token}`)
         );
         await AsyncStorage.setItem(
           "setting",
