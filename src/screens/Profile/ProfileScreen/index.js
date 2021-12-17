@@ -1734,7 +1734,7 @@ export default function OtherProfile(props) {
                   : 50)
               : HeaderHeight + TabBarHeight,
           minHeight: height - SafeStatusBar + HeaderHeight,
-          paddingBottom: 10,
+          paddingBottom: Platform.OS === "ios" ? 80 : 20,
           // paddingHorizontal: 15,
           // margin: Platform.OS === "ios" ? 10 : 5,
         }}

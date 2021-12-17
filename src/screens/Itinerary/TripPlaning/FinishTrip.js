@@ -308,6 +308,7 @@ export default function ActivePlan({
               tintColor={"#209fae"}
             />
           }
+          style={{ flex: 1, marginBottom: 50 }}
         >
           <CardItinerary
             data={FData}
@@ -354,7 +355,7 @@ export default function ActivePlan({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "red" }}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -363,6 +364,7 @@ export default function ActivePlan({
             tintColor={"#209fae"}
           />
         }
+        style={{ flex: 1, marginBottom: 20, backgroundColor: "red" }}
       >
         <View
           style={{

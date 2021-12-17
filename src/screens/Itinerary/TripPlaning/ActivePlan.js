@@ -307,6 +307,7 @@ export default function ActivePlan({
               tintColor={"#209fae"}
             />
           }
+          style={{ flex: 1, marginBottom: 50 }}
         >
           <CardItinerary
             data={AData}

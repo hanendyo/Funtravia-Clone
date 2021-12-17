@@ -117,7 +117,7 @@ export default function ListEventHome(props) {
         ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
         : deviceId == "CPH2127"
         ? normalize(387) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        : normalize(378) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -447,7 +447,7 @@ export default function ListEventHome(props) {
           alignContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
-          height: 55,
+          height: 45,
           width: Dimensions.get("screen").width - 40,
         }}
       >
@@ -458,7 +458,7 @@ export default function ListEventHome(props) {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
           style={{
-            height: 50,
+            height: 60,
             // marginLeft: 8,
           }}
         >
@@ -470,6 +470,7 @@ export default function ListEventHome(props) {
               backgroundColor: "rgba(0,0,0,0.5)",
               justifyContent: "center",
               alignItems: "center",
+              // backgroundColor: "red",
             }}
           >
             {Platform.OS == "ios" ? (
@@ -494,7 +495,7 @@ export default function ListEventHome(props) {
             });
           }}
           style={{
-            height: 50,
+            height: 40,
             // marginLeft: 8,
           }}
         >
@@ -535,56 +536,60 @@ export default function ListEventHome(props) {
           alignContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
-          height: 55,
+          height: 45,
+          // backgroundColor: "red",
           width: Dimensions.get("screen").width - 40,
         }}
       >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
+        <View flexDirection="row">
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              height: 35,
-              width: 35,
+              height: 60,
+              // marginLeft: 8,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
 
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <View
-          style={{
-            // width: Dimensions.get("screen").width - 100,
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            padding: 10,
-          }}
-        >
-          <Text
-            size="title"
-            type="bold"
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <View
             style={{
-              color: "#FFFFFF",
+              // width: Dimensions.get("screen").width - 100,
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              padding: 10,
             }}
           >
-            {t("event")}
-          </Text>
+            <Text
+              size="title"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("event")}
+            </Text>
+          </View>
         </View>
+
         <Button
           text={""}
           size="medium"
@@ -600,7 +605,7 @@ export default function ListEventHome(props) {
             });
           }}
           style={{
-            height: 50,
+            height: 40,
             // marginLeft: 8,
           }}
         >

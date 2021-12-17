@@ -69,7 +69,7 @@ export default function CardItinerary({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });
@@ -81,7 +81,7 @@ export default function CardItinerary({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });

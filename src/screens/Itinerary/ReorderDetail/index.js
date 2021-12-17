@@ -56,9 +56,7 @@ export default function ReoderDetail({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: route.params.token
-          ? `Bearer ${route.params.token}`
-          : null,
+        Authorization: route.params.token,
       },
     },
   });

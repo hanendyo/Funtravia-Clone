@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/client";
 import Favorite from "../../../graphQL/Query/Itinerary/ItineraryFavorite";
+import { useSelector } from "react-redux";
 
 export default function ItineraryFavorite(props) {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ export default function ItineraryFavorite(props) {
       </Button>
     ),
   };
-  let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   let [setting, setSetting] = useState();
   let [textInput, setTextInput] = useState("");
   let [text, setText] = useState("");
@@ -76,9 +77,6 @@ export default function ItineraryFavorite(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     await fetchDataListFavorite();
@@ -98,7 +96,7 @@ export default function ItineraryFavorite(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
