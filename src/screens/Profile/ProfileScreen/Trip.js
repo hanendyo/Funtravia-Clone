@@ -45,7 +45,7 @@ const arrayShadow = {
 };
 
 export default function Trip(
-  { position, token, props, item, index },
+  { position, tokenApps, props, item, index },
   capHeight,
   setting,
   data,
@@ -105,7 +105,7 @@ export default function Trip(
   };
 
   const _liked = async (id, index) => {
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await mutationliked({
           variables: {
@@ -142,7 +142,7 @@ export default function Trip(
     }
   };
   const _unliked = async (id, index) => {
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -315,7 +315,7 @@ export default function Trip(
               itintitle: item.name,
               country: item.id,
               dateitin: getdate(item.start_date, item.end_date),
-              token: token,
+              token: tokenApps,
               status: "favorite",
             },
           })
@@ -359,7 +359,7 @@ export default function Trip(
                   itintitle: item.name,
                   country: item.id,
                   dateitin: getdate(item.start_date, item.end_date),
-                  token: token,
+                  token: tokenApps,
                   status: "favorite",
                 },
               })
@@ -585,13 +585,13 @@ export default function Trip(
         <Pressable
           disabled={item?.status == "D" ? true : false}
           onPress={() =>
-            token
+            tokenApps
               ? props.navigation.navigate("ItineraryStack", {
                   screen: "itindetail",
                   params: {
                     itintitle: item.name,
                     country: item.id,
-                    token: token,
+                    token: tokenApps,
                     status: "favorite",
                     index: 1,
                   },

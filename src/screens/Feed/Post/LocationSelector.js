@@ -91,7 +91,7 @@ export default function LocationSelector({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 40 : -10,
+            marginTop: Platform.OS === "ios" ? 70 : -10,
           }}
         >
           <TouchableOpacity

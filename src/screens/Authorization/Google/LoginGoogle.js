@@ -20,8 +20,11 @@ import {
   GoogleSignin,
   statusCodes,
 } from "@react-native-community/google-signin";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 export default function LoginGoogle({ navigation }) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   let [modalError, setModalError] = useState(false);
   let [message, setMessage] = useState("");
@@ -72,6 +75,9 @@ export default function LoginGoogle({ navigation }) {
         await AsyncStorage.setItem(
           "access_token",
           response.data.login_google.access_token
+        );
+        dispatch(
+          setTokenApps(`Bearer ${response.data.login_google.access_token}`)
         );
         await AsyncStorage.setItem(
           "user",

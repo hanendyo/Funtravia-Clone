@@ -299,7 +299,7 @@ export default function ActivePlan({
 
   if (FData.length > 0) {
     return (
-      <View style={{ flex: 1, backgroundColor: "#FFF" }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -350,7 +350,7 @@ export default function ActivePlan({
             text={t("CreateNewPlan")}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 

@@ -25,8 +25,11 @@ import OTP from "../../../graphQL/Mutation/Register/OtpRegPhone";
 import RESEND from "../../../graphQL/Mutation/Register/ResenOtpRegPhone";
 import { Text, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 export default function OtpRegPhone(props) {
+  let dispatch = useDispatch();
   const NavigationComponent = {
     title: "",
     headerShown: true,
@@ -71,7 +74,6 @@ export default function OtpRegPhone(props) {
   ) => {
     if (text.trim() !== "") {
       setState({ ...state, [name]: text });
-      // console.log('name: ' + name.value);
       ref && ref.current && ref.current.focus();
     } else {
       return;
@@ -116,10 +118,12 @@ export default function OtpRegPhone(props) {
       });
       if (response && response.data.verification.access_token) {
         try {
-          // console.log('access_token=', response.data.verification.access_token);
           await AsyncStorage.setItem(
             "access_token",
             response.data.verification.access_token
+          );
+          dispatch(
+            setTokenApps(`Bearer ${response.data.verification.access_token}`)
           );
           props.navigation.navigate("HomeScreen");
         } catch (error) {

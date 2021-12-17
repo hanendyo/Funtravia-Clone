@@ -38,10 +38,12 @@ import get from "lodash.get";
 import { RNToasty } from "react-native-toasty";
 
 export default function ProfileSettings(props) {
+  const tokenApps = props.route.params.token;
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   let [modalhapus, setModalhapus] = useState(false);
   let [modalCamera, setmodalCamera] = useState(false);
+
   const HeaderComponent = {
     title: "",
     headerShown: true,
@@ -119,13 +121,19 @@ export default function ProfileSettings(props) {
     ),
   };
 
+  const loadAsync = async () => {
+    let setting = await AsyncStorage.getItem("setting");
+    setting = JSON.parse(setting);
+    seting.current = setting;
+    await setdatas("test");
+  };
+
   const [dataerror, setdataerror] = useState({
     first_name: false,
     last_name: false,
     username: false,
     bio: false,
   });
-  const token = props.route.params.token;
   let [loading, setLoading] = useState(false);
   const [modals, setmodal] = useState(false);
   // let [dataImage, setdataImage] = useState(null);
@@ -139,13 +147,6 @@ export default function ProfileSettings(props) {
   let data = React.useRef({ ...props.route.params.data });
   let [datas, setdatas] = useState(null);
   let seting = React.useRef({});
-
-  const loadAsync = async () => {
-    let setting = await AsyncStorage.getItem("setting");
-    setting = JSON.parse(setting);
-    seting.current = setting;
-    await setdatas("test");
-  };
 
   // const win = Dimensions.get('window')
   // const ratio = Dimensions.get('window').width/220
@@ -379,7 +380,7 @@ export default function ProfileSettings(props) {
     context: {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -565,7 +566,7 @@ export default function ProfileSettings(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -577,7 +578,7 @@ export default function ProfileSettings(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -590,7 +591,7 @@ export default function ProfileSettings(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     variables: { type: "username", key: data.current.username },

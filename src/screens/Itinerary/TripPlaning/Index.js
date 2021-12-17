@@ -20,10 +20,14 @@ import ItineraryCount from "../../../graphQL/Query/Itinerary/ItineraryCount";
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import ListItineraryActive from "../../../graphQL/Query/Itinerary/listitineraryA";
 import ListItineraryFinish from "../../../graphQL/Query/Itinerary/listitineraryF";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function TripPlaning(props) {
+  let dispatch = useDispatch();
+  let tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
 
@@ -67,7 +71,7 @@ export default function TripPlaning(props) {
     ),
   };
 
-  let [token, setToken] = useState("");
+  // let [token, setToken] = useState("");
   let [setting, setSetting] = useState("");
   let [loading, setloading] = useState(false);
   let [rData, setData] = useState([]);
@@ -89,7 +93,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -106,7 +110,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -122,7 +126,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -139,7 +143,7 @@ export default function TripPlaning(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -153,7 +157,8 @@ export default function TripPlaning(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
-    setToken(tkn);
+    // setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     if (tkn === null) {
       setModalLogin(true);
       // props.navigation.navigate("HomeScreen");
@@ -419,7 +424,7 @@ export default function TripPlaning(props) {
     );
   }
 
-  if (token !== null && dataCount && dataCount.count_myitinerary) {
+  if (tokenApps !== null && dataCount && dataCount.count_myitinerary) {
     return (
       <Tab.Navigator
         backBehavior="none"
@@ -441,7 +446,7 @@ export default function TripPlaning(props) {
             <PlanList
               setData={(e) => setData(e)}
               props={props}
-              token={token}
+              token={tokenApps}
               rData={rData}
               GetCount={() => GetCount()}
               GetData={(e) => GetData(e)}
@@ -461,7 +466,7 @@ export default function TripPlaning(props) {
             <ActivePlan
               setDataActive={(e) => setDataActive(e)}
               props={props}
-              token={token}
+              token={tokenApps}
               AData={AData}
               GetCount={() => GetCount()}
               GetData={(e) => GetData(e)}
@@ -480,7 +485,7 @@ export default function TripPlaning(props) {
             (e) => (
               <FinishTrip
                 props={props}
-                token={token}
+                token={tokenApps}
                 FData={FData}
                 GetCount={() => GetCount()}
                 GetData={(e) => GetData(e)}

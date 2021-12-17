@@ -42,7 +42,7 @@ import normalize from "react-native-normalize";
 
 export default function AllDestination(props) {
   const { t } = useTranslation();
-
+  const token = props.route.params.token;
   const scrollY = useRef(new Animated.Value(1));
 
   const HeaderComponent = {
@@ -103,7 +103,7 @@ export default function AllDestination(props) {
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
       onCompleted: () => {
         setDataResult(data);

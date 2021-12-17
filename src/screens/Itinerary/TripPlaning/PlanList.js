@@ -81,18 +81,18 @@ export default function ActivePlan({
     GetData();
     GetDataActive();
     GetDataFinish();
-    // wait(2000).then(() => {
-    //   setRefreshing(false);
-    // });
+    wait(2000).then(() => {
+      setRefreshing(false);
+    });
   }, []);
 
-  useEffect(() => {
-    const willFocusSubscription = props.navigation.addListener("focus", () => {
-      _Refresh();
-    });
+  // useEffect(() => {
+  //   const willFocusSubscription = props.navigation.addListener("focus", () => {
+  //     _Refresh();
+  //   });
 
-    return willFocusSubscription;
-  }, [props.navigation]);
+  //   return willFocusSubscription;
+  // }, [props.navigation]);
 
   if (loadingdata && rData.length < 1) {
     return (

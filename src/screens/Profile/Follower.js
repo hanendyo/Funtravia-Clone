@@ -18,8 +18,12 @@ import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function Follower(props) {
+  let dispatch = useDispatch();
+  const token = props.route.params.token;
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
@@ -64,11 +68,19 @@ export default function Follower(props) {
     ),
   };
 
-  let [token, setToken] = useState("");
   let [loadin, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   let [data, setdata] = useState([]);
+
+  const loadAsync = async () => {
+    setLoading(true);
+    let tkn = await AsyncStorage.getItem("access_token");
+    // setToken(tkn);
+    dispatch(setTokenApps(tkn));
+    await LoadFollower();
+    await setLoading(false);
+  };
 
   const [LoadFollower, { data: dataFollow, loading, error }] = useLazyQuery(
     FollowerQuery,
@@ -77,7 +89,7 @@ export default function Follower(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
       onCompleted: () => {
@@ -86,13 +98,6 @@ export default function Follower(props) {
     }
   );
   // console.log(dataFollow);
-  const loadAsync = async () => {
-    setLoading(true);
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    await LoadFollower();
-    await setLoading(false);
-  };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -106,7 +111,7 @@ export default function Follower(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -118,7 +123,7 @@ export default function Follower(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
