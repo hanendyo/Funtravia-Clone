@@ -1,4 +1,6 @@
 import { createStore } from "redux";
-import { reducerAPPS } from "./reducer";
-const storeState = createStore(reducerAPPS);
+import { reducerApps } from "./reducer";
+
+const storeState = createStore(reducerApps);
+
 export default storeState;

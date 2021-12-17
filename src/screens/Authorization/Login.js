@@ -35,8 +35,12 @@ import {
 import { Keyboard, KeyboardEvent } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import normalize from "react-native-normalize";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function Login({ navigation, route }) {
+  let dispatch = useDispatch();
+  let tokenApps = useSelector((data) => data.token);
   const { t } = useTranslation();
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [email, setEmail] = useState("");
@@ -63,6 +67,7 @@ export default function Login({ navigation, route }) {
             "access_token",
             response.data.login.access_token
           );
+          dispatch(setTokenApps(`Bearer ${response.data.login.access_token}`));
           await AsyncStorage.setItem(
             "user",
             JSON.stringify(response.data.login.user)

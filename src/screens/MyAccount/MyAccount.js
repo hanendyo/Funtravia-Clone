@@ -30,8 +30,12 @@ import Account from "../../graphQL/Query/Home/Account";
 import Toast from "react-native-fast-toast";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function MyAccount(props) {
+  let dispatch = useDispatch();
+  let tokenApps = useSelector((data) => data.token);
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
@@ -79,7 +83,7 @@ export default function MyAccount(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -87,7 +91,7 @@ export default function MyAccount(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     setToken(tkn);
-    if (tkn === null) {
+    if (tokenApps === null) {
       setModalLogin(true);
     } else {
       await LoadUserProfile();
@@ -104,7 +108,7 @@ export default function MyAccount(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -314,7 +318,7 @@ export default function MyAccount(props) {
               onPress={() => {
                 props.navigation.push("ProfileStack", {
                   screen: "ProfileTab",
-                  params: { token: token },
+                  params: { token: tokenApps },
                 });
               }}
               style={{
@@ -363,7 +367,7 @@ export default function MyAccount(props) {
                 onPress={() => {
                   props.navigation.push("ProfileStack", {
                     screen: "ProfileTab",
-                    params: { token: token },
+                    params: { token: tokenApps },
                   });
                 }}
                 style={{
