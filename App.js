@@ -18,7 +18,7 @@ import { createUploadLink } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 import { Text } from "./src/component";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import storeState from "./src/redux/store";
+import { storeState } from "./src/redux";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();

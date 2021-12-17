@@ -46,14 +46,28 @@ const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const counter = useSelector((data) => data.token);
-  console.log("🚀 ~ file: index.js ~ line 50 ~ Home ~ counter", counter);
+  const tokenApps = useSelector((data) => data.token);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    // if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
+    //   setModalLogin(true);
+    //   // props.navigation.navigate("HomeScreen");
+    // } else {
+    if (tokenApps && tkn) {
+      dispatch(setTokenApps(`Bearer ${tkn}`));
+      // await setToken(tkn);
+      await NotifCount();
+      await LoadUserProfile();
+      await LoadPost();
+    }
+  };
 
   const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
     Account,
@@ -62,7 +76,7 @@ export default function Home(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
       onCompleted: () => {
@@ -79,7 +93,7 @@ export default function Home(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -95,7 +109,7 @@ export default function Home(props) {
   const goToProfile = (target) => {
     props.navigation.navigate("ProfileStack", {
       screen: "ProfileTab",
-      params: { token: token },
+      params: { token: tokenApps },
     });
   };
 
@@ -109,7 +123,7 @@ export default function Home(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -118,24 +132,9 @@ export default function Home(props) {
   //     });
   // }, []);
 
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    // if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
-    //   setModalLogin(true);
-    //   // props.navigation.navigate("HomeScreen");
-    // } else {
-    if (tkn) {
-      dispatch(setTokenApps(`Bearer ${tkn}`));
-      await setToken(tkn);
-      await NotifCount();
-      await LoadUserProfile();
-      await LoadPost();
-    }
-  };
-
   const searchPage = () => {
     props.navigation.navigate("SearchPg", {
-      token: token,
+      token: tokenApps,
     });
   };
 
@@ -545,7 +544,7 @@ export default function Home(props) {
 
             <Pressable
               onPress={() => {
-                token
+                tokenApps
                   ? props.navigation.navigate("Notification")
                   : setModalLogin(true);
               }}
@@ -666,7 +665,7 @@ export default function Home(props) {
                       justifyContent: "center",
                     }}
                   >
-                    {token !== null && token !== "" ? (
+                    {tokenApps ? (
                       <TouchableOpacity
                         onPress={goToProfile}
                         style={{
@@ -698,7 +697,7 @@ export default function Home(props) {
                       </TouchableOpacity>
                     ) : null}
                   </View>
-                  {token !== null && token !== "" ? (
+                  {tokenApps ? (
                     <View
                       style={{
                         // flexDirection: "row",
@@ -841,7 +840,7 @@ export default function Home(props) {
                       <TouchableOpacity
                         style={styles.statView}
                         onPress={() => {
-                          token
+                          tokenApps
                             ? props.navigation.navigate("BottomStack", {
                                 screen: "TripBottomPlaning",
                                 params: { screen: "TripPlaning" },
@@ -867,7 +866,7 @@ export default function Home(props) {
                       <TouchableOpacity
                         style={styles.statView}
                         onPress={() => {
-                          token
+                          tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowerPage",
                               })
@@ -892,7 +891,7 @@ export default function Home(props) {
                       <TouchableOpacity
                         style={styles.statView}
                         onPress={() => {
-                          token
+                          tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowingPage",
                               })
@@ -934,7 +933,7 @@ export default function Home(props) {
           label={t("homesubtitleDiscover")}
           seeAll={false}
         />
-        <DiscoverCard props={props} token={token} />
+        <DiscoverCard props={props} token={tokenApps} />
         <HomeTitle
           title={t("funFeed")}
           label={t("homesubtitleFunfeed")}
