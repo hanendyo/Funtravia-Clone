@@ -32,21 +32,16 @@ import ListAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import { default_image } from "../../../assets/png";
 import LinearGradient from "react-native-linear-gradient";
 import { TabBar, TabView } from "react-native-tab-view";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 
 export default function CreateAlbum(props) {
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const [newFeedAlbums, setNewFeedAlbums] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [newTextFeed, setNewTextFeed] = useState("");
   const [index, setIndex] = React.useState(0);
-  const [token, setToken] = useState(props?.route?.params?.token);
   let [loadings, setLoadings] = useState(false);
-
-  const loadAsync = async () => {
-    const tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -97,7 +92,6 @@ export default function CreateAlbum(props) {
   };
 
   useEffect(() => {
-    loadAsync();
     props.navigation.setOptions(HeaderComponent);
   }, []);
 
@@ -109,7 +103,7 @@ export default function CreateAlbum(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     variables: { status: ["A", "F"], keyword: searchText },
@@ -124,7 +118,7 @@ export default function CreateAlbum(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -140,7 +134,7 @@ export default function CreateAlbum(props) {
           screen: "ChooseAlbumItinerary",
           params: {
             idItinerary: id,
-            token: token,
+            token: tokenApps,
             file: props.route.params.file,
             type: props.route.params.type,
             location: props.route.params.location,
@@ -157,7 +151,7 @@ export default function CreateAlbum(props) {
             file: props.route.params.file,
             type: props.route.params.type,
             location: props.route.params.location,
-            token: token,
+            token: tokenApps,
             post_id: props.route.params.post_id,
             isAlbum: false,
             from: props.route.params.from,
@@ -175,7 +169,7 @@ export default function CreateAlbum(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -432,7 +426,7 @@ export default function CreateAlbum(props) {
                       ? props.navigation.navigate("FeedStack", {
                           screen: "CreatePostScreen",
                           params: {
-                            token: token,
+                            token: tokenApps,
                             id_album: item.id,
                             title_album: item.title,
                             album: "Feed",
@@ -444,7 +438,7 @@ export default function CreateAlbum(props) {
                       : props.navigation.navigate("FeedStack", {
                           screen: "ListFotoAlbums",
                           params: {
-                            token: token,
+                            token: tokenApps,
                             id_album: item.id,
                             title_album: item.title,
                             album: "Feed",

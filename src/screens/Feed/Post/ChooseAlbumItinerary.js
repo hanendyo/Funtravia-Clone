@@ -30,10 +30,12 @@ import AddNewAlbumItinerary from "../../../graphQL/Mutation/Itinerary/AddNewAlbu
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 const { width, height } = Dimensions.get("screen");
 import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 export default function ChooseAlbumItinerary(props) {
   const { t } = useTranslation();
   const [newItineraryAlbums, setNewItineraryAlbums] = useState(false);
+  const tokenApps = useSelector((data) => data.token);
   const [datas, setDatas] = useState();
   const [text, setText] = useState("");
   const [searchText, setSearchText] = useState("");
@@ -101,7 +103,7 @@ export default function ChooseAlbumItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -118,7 +120,7 @@ export default function ChooseAlbumItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -167,7 +169,7 @@ export default function ChooseAlbumItinerary(props) {
       ? props.navigation.navigate("FeedStack", {
           screen: "CreatePostScreen",
           params: {
-            token: token,
+            token: tokenApps,
             id_itin: props.route.params.idItinerary,
             id_album: id,
             title_album: title,
@@ -180,7 +182,7 @@ export default function ChooseAlbumItinerary(props) {
       : props.navigation.navigate("FeedStack", {
           screen: "ListFotoAlbums",
           params: {
-            token: token,
+            token: tokenApps,
             id_album: id,
             title_album: title,
             album: "Itinerary",

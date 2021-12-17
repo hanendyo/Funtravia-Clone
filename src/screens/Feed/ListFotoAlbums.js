@@ -15,12 +15,12 @@ import {
   NavigationActions,
   CommonActions,
 } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 export default function ListFotoAlbums(props) {
-  console.log("rpops", props);
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const [show, setShow] = useState(true);
-  const [token, setToken] = useState(props.route.params.token);
   const [setting, setSetting] = useState();
   const froms = props.route.params.from;
   const HeaderComponent = {
@@ -112,7 +112,7 @@ export default function ListFotoAlbums(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     variables: { album_id: props.route.params.id_album },
@@ -125,7 +125,7 @@ export default function ListFotoAlbums(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -156,7 +156,7 @@ export default function ListFotoAlbums(props) {
           setTimeout(() => {
             if (froms == "funFeed") {
               props.navigation.navigate("FeedScreen", {
-                token: token,
+                token: tokenApps,
                 updateDataPost: response.data.link_post_to_album.data,
               });
             } else if (froms == "feedProfil") {
@@ -191,7 +191,7 @@ export default function ListFotoAlbums(props) {
                       params: {
                         post_id: response.data.link_post_to_album.data.id,
                         data: response.data.link_post_to_album.data,
-                        token: token,
+                        token: tokenApps,
                       },
                     },
                   ],

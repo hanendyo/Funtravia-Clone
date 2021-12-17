@@ -4,9 +4,10 @@ import { default_image } from "../../../../assets/png";
 import { Play, PlayVideo } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
 import { FunVideo, FunImage } from "../../../../component";
+import { useSelector } from "react-redux";
 
 export default function Posts({ item, index, navigation, user }) {
-  console.log("item", item);
+  const tokenApps = useSelector((data) => data.token);
   let { width, height } = Dimensions.get("screen");
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
@@ -23,7 +24,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 // index: index,
                 datauser: user,
                 post_id: item[0].id,
@@ -80,7 +81,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
                 },
@@ -130,7 +131,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[2].id,
                 },
@@ -194,7 +195,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[0].id,
                 },
@@ -244,7 +245,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
                 },
@@ -295,7 +296,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[2].id,
               },
@@ -357,7 +358,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
               },
@@ -407,7 +408,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[1].id,
               },
@@ -457,7 +458,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[2].id,
               },
@@ -520,7 +521,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
               },
@@ -571,7 +572,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
                 },
@@ -635,7 +636,7 @@ export default function Posts({ item, index, navigation, user }) {
             navigation.navigate("ProfileStack", {
               screen: "myfeed",
               params: {
-                token: token,
+                token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
               },
@@ -686,7 +687,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
                 },
@@ -739,7 +740,7 @@ export default function Posts({ item, index, navigation, user }) {
               navigation.navigate("ProfileStack", {
                 screen: "myfeed",
                 params: {
-                  token: token,
+                  token: tokenApps,
                   datauser: user,
                   post_id: item[2].id,
                 },

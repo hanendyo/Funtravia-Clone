@@ -230,8 +230,8 @@ export default function RenderSinglePhoto({
                 top: 10,
                 borderRadius: 15,
                 opacity: 0.6,
-                height: 27,
-                // width: 50,
+                height: 30,
+                width: 45,
               }}
             ></Pressable>
             <AlbumFeed
