@@ -60,7 +60,7 @@ export default function Home(props) {
     //   setModalLogin(true);
     //   // props.navigation.navigate("HomeScreen");
     // } else {
-    if (tokenApps && tkn) {
+    if (tkn) {
       dispatch(setTokenApps(`Bearer ${tkn}`));
       // await setToken(tkn);
       await NotifCount();

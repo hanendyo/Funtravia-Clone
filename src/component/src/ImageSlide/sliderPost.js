@@ -17,7 +17,11 @@ import { back_arrow_white, next_putih, prev_putih } from "../../../assets/png";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Button, Text, FunImage, FunVideo } from "../../index";
 import { useTranslation } from "react-i18next";
-import { Arrowbackwhite, Arrowrightwhite } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  Arrowrightwhite,
+} from "../../../assets/svg";
 import { Play, Mute, Unmute } from "../../../assets/svg";
 export default function ImageSlide({
   index,
@@ -114,7 +118,11 @@ export default function ImageSlide({
               setSlider([]), setClose(), setIn(0);
             }}
           >
-            <Arrowbackwhite height={20} width={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
         </View>
         <View
@@ -211,7 +219,6 @@ export default function ImageSlide({
             // onChange={(index) => handel_select(index)}
             index={inde}
             renderImage={(data) => {
-              // console.log("data", data);
               return data?.type === "video" ? (
                 <>
                   <FunVideo
@@ -221,8 +228,8 @@ export default function ImageSlide({
                     source={{ uri: data?.source?.uri }}
                     muted={muted}
                     repeat={true}
+                    resizeMode="cover"
                     style={{
-                      resizeMode: "contain",
                       width: data?.style?.width,
                       height: data?.style?.height,
                     }}

@@ -49,6 +49,7 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import RemoveAlbums from "../../graphQL/Mutation/Album/RemoveAlbum";
+import { useSelector } from "react-redux";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -62,6 +63,7 @@ const deletepost = gql`
 `;
 export default function myfeed(props) {
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -128,7 +130,7 @@ export default function myfeed(props) {
           index: index,
         });
       }
-    }, 100);
+    }, 500);
   };
 
   const loadAsync = async () => {
@@ -157,7 +159,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -192,7 +194,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -215,7 +217,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -280,7 +282,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -292,7 +294,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -443,7 +445,7 @@ export default function myfeed(props) {
       screen: "CommentPost",
       params: {
         data: data,
-        token: token,
+        token: tokenApps,
         ref: ref,
         _liked: (e) => _liked(e),
         _unliked: (e) => _unliked(e),
@@ -540,7 +542,7 @@ export default function myfeed(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
       onCompleted: () => {
@@ -556,7 +558,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -609,7 +611,7 @@ export default function myfeed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -766,6 +768,10 @@ export default function myfeed(props) {
   }
 
   const scrollToIndexFailed = (error) => {
+    console.log(
+      "🚀 ~ file: Feed.js ~ line 771 ~ scrollToIndexFailed ~ error",
+      error
+    );
     const offset = error.averageItemLength * error.index;
     ref.current.scrollToOffset({ offset });
     setTimeout(
@@ -773,7 +779,7 @@ export default function myfeed(props) {
         ref?.current?.scrollToIndex({
           index: error.index,
         }),
-      100
+      500
     );
   };
 
@@ -785,7 +791,7 @@ export default function myfeed(props) {
             itintitle: data.album.itinerary.name,
             country: data.album.itinerary.id,
             dateitin: "",
-            token: token,
+            token: tokenApps,
             status: "",
             index: 1,
             datadayaktif: data.day,
@@ -886,7 +892,7 @@ export default function myfeed(props) {
                     : props.navigation.push("ProfileStack", {
                         screen: "ProfileTab",
                         params: {
-                          token: token,
+                          token: tokenApps,
                         },
                       });
                 }}
@@ -921,7 +927,7 @@ export default function myfeed(props) {
                       : props.navigation.push("ProfileStack", {
                           screen: "ProfileTab",
                           params: {
-                            token: token,
+                            token: tokenApps,
                           },
                         });
                   }}

@@ -674,6 +674,8 @@ export default function MyAccount(props) {
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
                   await AsyncStorage.setItem("setting", "");
+                  dispatch(setTokenApps(null));
+
                   // await LoadUserProfile();
                   props.navigation.navigate("AuthStack", {
                     screen: "SplashScreen",
