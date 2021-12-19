@@ -47,7 +47,6 @@ import {
   CheckWhite,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
 import ListEventPublic from "../../graphQL/Query/Event/ListEventPublic";
@@ -67,11 +66,10 @@ import CheckBox from "@react-native-community/checkbox";
 import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
-import { color } from "react-native-reanimated";
 import normalize from "react-native-normalize";
-import { Header } from "native-base";
 import Ripple from "react-native-material-ripple";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -88,11 +86,14 @@ const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   let [tambahan, setTambahan] = useState(0);
   let [tambahanJudul, setTambahanJudul] = useState(0);
   let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
   let [modalLogin, setModalLogin] = useState(false);
-
+  let [show, setshow] = useState(false);
+  let [modals, setModelSetNegara] = useState(false);
+  let [Modaldate, setModaldate] = useState(false);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [openFlatlist, setOpenFlatlist] = useState(false);
   const [arrayYear, setArrayYear] = useState([]);
@@ -2086,11 +2087,6 @@ export default function ListEventHome(props) {
     );
   };
 
-  let [token, setToken] = useState("");
-  let [show, setshow] = useState(false);
-  let [modals, setModelSetNegara] = useState(false);
-  let [Modaldate, setModaldate] = useState(false);
-
   const monthNames = [
     "January",
     "February",
@@ -2135,8 +2131,6 @@ export default function ListEventHome(props) {
     city: null,
   });
 
-  console.log("token", token);
-
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
     fetchPolicy: "network-only",
     variables: {
@@ -2164,11 +2158,13 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
-      setdataEvent(data.event_list_v2);
+      if (data && data.event_list_v2) {
+        setdataEvent(data?.event_list_v2);
+      }
     },
   });
 
@@ -2202,7 +2198,7 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -2250,7 +2246,7 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -2262,13 +2258,13 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id, item, position) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       let items = { ...item };
       items.liked = true;
 
@@ -2318,7 +2314,7 @@ export default function ListEventHome(props) {
   };
 
   const _unliked = async (id, item, position) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       let items = { ...item };
       items.liked = false;
 
@@ -2367,8 +2363,6 @@ export default function ListEventHome(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await refresh();
   };
 
@@ -2376,7 +2370,7 @@ export default function ListEventHome(props) {
     props.navigation.navigate("eventdetail", {
       event_id: data.id,
       name: data.name,
-      token: token,
+      token: tokenApps,
     });
   };
 
@@ -2563,6 +2557,44 @@ export default function ListEventHome(props) {
   return (
     <View style={styles.container}>
       <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+      {loadingPublic ? (
+        <View>
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : tabIndex == 1 && dataEventPublic.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
+      {loading ? (
+        <View>
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : tabIndex == 0 && dataEvent && dataEvent.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}

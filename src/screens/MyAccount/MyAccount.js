@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
-  ImageBackground,
   Dimensions,
-  Alert,
   Pressable,
   Image,
   Platform,
@@ -12,17 +10,10 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
-import { Akunsaya, default_image } from "../../assets/png";
+import { default_image } from "../../assets/png";
 import Ripple from "react-native-material-ripple";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
-import {
-  Next,
-  Help,
-  SettingsPutih,
-  Xgray,
-  Nextpremier,
-  Settings,
-} from "../../assets/svg";
+import { Next, Help, Xgray, Nextpremier, Settings } from "../../assets/svg";
 import Logout from "../../graphQL/Mutation/Login/Logout";
 import { useTranslation } from "react-i18next";
 import { Button, Text, Truncate } from "../../component";
@@ -40,7 +31,6 @@ export default function MyAccount(props) {
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
-  let [token, setToken] = useState("");
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -79,8 +69,6 @@ export default function MyAccount(props) {
     // ),
   };
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
     if (tokenApps === null) {
       setModalLogin(true);
     } else {

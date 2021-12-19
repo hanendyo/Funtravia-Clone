@@ -15,10 +15,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal as ModalRN,
-  TextInput,
-  ViewBase,
 } from "react-native";
-// import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   Arrowbackwhite,
   Star,
@@ -31,16 +28,13 @@ import {
   Clock,
   WebsiteHitam,
   Globe,
-  Xhitam,
   TeleponHitam,
   InstagramHitam,
   Xgray,
   Mapsborder,
-  BlockDestination,
   Arrowbackios,
 } from "../../../assets/svg";
-import { TabBar, TabView } from "react-native-tab-view";
-import Modal from "react-native-modal";
+import { TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
 import {
   Text,
@@ -58,7 +52,6 @@ import DestinationById from "../../../graphQL/Query/Destination/DestinationById"
 import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Generals from "./Generals";
 import Reviews from "./Reviews";
 import { StackActions } from "@react-navigation/native";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
@@ -72,20 +65,17 @@ import IndexSkeleton from "./IndexSkeleton";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide";
-import { default_image, search_button } from "../../../assets/png";
+import { default_image } from "../../../assets/png";
 import normalize from "react-native-normalize";
 const deviceId = DeviceInfo.getModel();
 
 let PullToRefreshDist = 150;
+import { useSelector } from "react-redux";
 
 const Index = (props) => {
   const { t, i18n } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
-
-  /**
-   * stats
-   */
-
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
   let Notch = DeviceInfo.hasNotch();
@@ -134,7 +124,6 @@ const Index = (props) => {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
   const [setting, setSetting] = useState("");
-  const [token, setToken] = useState(props.route.params.token);
   // let [dataDestination, setDataDestination] = useState(data);
   let [dataDestination, setDataDestination] = useState();
 
@@ -190,7 +179,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -226,7 +215,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -475,8 +464,6 @@ const Index = (props) => {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await fetchData();
     await fetchDataAnotherDes();
 
@@ -498,7 +485,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -510,13 +497,13 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       var tempData = { ...dataDestination };
       tempData.liked = true;
       setDataDestination(tempData);
@@ -557,7 +544,7 @@ const Index = (props) => {
   };
 
   const _unliked = async (id) => {
-    if (token) {
+    if (tokenApps) {
       var tempData = { ...dataDestination };
       tempData.liked = false;
       setDataDestination(tempData);
@@ -697,7 +684,7 @@ const Index = (props) => {
         )}
         <TouchableOpacity
           onPress={() =>
-            token
+            tokenApps
               ? // shareAction({
                 //   from: "destination",
                 //   target: dataDestination.id,
@@ -1274,7 +1261,7 @@ const Index = (props) => {
   };
 
   const addToPlan = (kiriman) => {
-    if (token) {
+    if (tokenApps) {
       if (kiriman) {
         props?.route?.params && props?.route?.params?.iditinerary
           ? props.navigation.dispatch(
@@ -1283,7 +1270,7 @@ const Index = (props) => {
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: kiriman.id,
-                  token: token,
+                  token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                 },
@@ -1304,7 +1291,7 @@ const Index = (props) => {
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: data?.destinationById.id,
-                  token: token,
+                  token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                 },
@@ -1334,7 +1321,7 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -1350,13 +1337,13 @@ const Index = (props) => {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _likedAnother = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       // var tempData = { ...dataAnother };
       // var index = tempData.another_place.findIndex((k) => k["id"] === id);
       // tempData.another_place[index].liked = true;
@@ -1408,7 +1395,7 @@ const Index = (props) => {
   };
 
   const _unlikedAnother = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       // var tempData = { ...dataAnother };
       // var index = tempData.another_place.findIndex((k) => k["id"] === id);
       // tempData.another_place[index].liked = false;
@@ -1749,7 +1736,7 @@ const Index = (props) => {
                         screen: "Detail_movie",
                         params: {
                           movie_id: item.id,
-                          token: token,
+                          token: tokenApps,
                         },
                       });
                     }}
@@ -1973,7 +1960,7 @@ const Index = (props) => {
             data={anotherDes}
             props={props}
             setData={(e) => setAnotherDes(e)}
-            token={token}
+            token={tokenApps}
           />
         </View>
       </Animated.View>
@@ -1986,7 +1973,7 @@ const Index = (props) => {
         id={item?.id}
         props={props}
         HeaderHeight={HeaderHeight}
-        token={token}
+        token={tokenApps}
       />
     );
   };
@@ -2377,10 +2364,6 @@ const Index = (props) => {
     return <IndexSkeleton />;
   }
 
-  if (loadings) {
-    return <IndexSkeleton />;
-  }
-
   return (
     <View style={styles.container}>
       <Satbar backgroundColor="#14646E" />
@@ -2570,7 +2553,7 @@ const Index = (props) => {
               //   from: "destination",
               //   target: dataDestination.id,
               // })
-              token ? SetShareModal(true) : setModalLogin(true)
+              tokenApps ? SetShareModal(true) : setModalLogin(true)
             }
             style={{
               backgroundColor: "#F6F6F6",
@@ -2588,11 +2571,7 @@ const Index = (props) => {
       </Animated.View>
 
       {/* End Button Like and Share*/}
-      {
-        (console.log(`LAYIMG: `, layoutImage),
-        console.log(`LAYHEAD: `, layoutHeader),
-        console.log(`LAYUNES: `, layoutUnesco))
-      }
+
       {/* View SUb*/}
       <Animated.View
         style={{
@@ -2745,7 +2724,7 @@ const Index = (props) => {
         routed={_tabIndex.current}
         props={props}
         data={data?.destinationById}
-        token={token}
+        token={tokenApps}
         addTo={addToPlan}
       />
 
@@ -3276,7 +3255,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
-    fontFamily: "Lato-Bold",
+    fontFamily: "Lato-Regular",
   },
   labelActive: {
     fontSize: Platform.OS == "ios" ? 18 : 16,

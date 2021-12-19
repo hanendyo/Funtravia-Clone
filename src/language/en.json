@@ -748,8 +748,8 @@
   "tag": "Tag",
   "places": "Places",
   "allPost": "All post",
-  "searchByTag": "Search by Tag",
-  "searchByLocation": "Search By Location",
+  "searchByTag": "Search by tag",
+  "searchByLocation": "Search by location",
   "leftItinerary": "Left Itinerary",
   "writeReview": "Write Review",
   "cropNewPost": "Adjust New Post",
@@ -859,5 +859,7 @@
   "description2": "Make precious moments that are never forgotten with your friends, who It will become history.",
   "description3": "Make your dream trip here with a variety of interesting destinations.",
   "description4": "Enjoying the journey has never been easier. Now, there is funtravia application. Which is increasingly spoiling your traveling. Just in your hands! Download on App Store & Google Play Mobile phone.",
-  "fileTolarge": "File is too big"
+  "fileTolarge": "File is too big",
+  "fileToWriteReview": "Failed to write a review",
+  "searchByAccount": "Search By Account"
 }

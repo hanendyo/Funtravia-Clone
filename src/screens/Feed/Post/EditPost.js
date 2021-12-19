@@ -10,25 +10,20 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Text,
   Loading,
   Truncate,
   StatusBar,
   FunImage,
-  Button,
+  ModalLogin,
 } from "../../../component";
-import { default_image } from "../../../assets/png";
 import { CheckWhite, Arrowbackwhite, Arrowbackios } from "../../../assets/svg";
 import { useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import AutoHeightImage from "react-native-auto-height-image";
 import Account from "../../../graphQL/Query/Home/Account";
 import LocationSelector from "./LocationSelector";
-// import { NavigationEvents } from "react-navigation";
-
-import { OptionsVertBlack } from "../../../assets/svg";
+import { useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
@@ -49,9 +44,11 @@ const PostEdit = gql`
 
 export default function EditPost(props) {
   const { t, i18n } = useTranslation();
+  const [modalLogin, setModalLogin] = useState(false);
+  const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
     title: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("newPost")}
       </Text>
     ),
@@ -136,7 +133,6 @@ export default function EditPost(props) {
   });
   let [loadingok, setLoading] = useState(false);
   const chosenPicture = props.route.params.file;
-  const [token, setToken] = useState(null);
   const [dataPost, setDatapost] = useState(props.route.params.datapost);
   let [statusText, setStatusText] = useState(dataPost?.caption);
   const isFocused = useIsFocused();
@@ -146,7 +142,7 @@ export default function EditPost(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -163,7 +159,7 @@ export default function EditPost(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -279,7 +275,7 @@ export default function EditPost(props) {
             })
           );
           // props.navigation.navigate("FeedStack", {
-          //   screen: "CommentsById",
+          //   screen: "CommentPost",
           //   params: {
           //     post_id: dataPost.id,
           //   },
@@ -302,8 +298,6 @@ export default function EditPost(props) {
   // };
 
   const loadAsync = async () => {
-    let access_token = await AsyncStorage.getItem("access_token");
-    setToken(access_token);
     LoadUserProfile();
   };
 
@@ -318,7 +312,11 @@ export default function EditPost(props) {
       style={{ flex: 1, backgroundColor: "#F6F6F6" }}
     >
       <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
-
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       <View style={{ backgroundColor: "#209FAE", height: 55 }}>
         <View
           style={{
@@ -482,6 +480,8 @@ export default function EditPost(props) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
+                  token={tokenApps}
+                  setModalLogin={(e) => setModalLogin(e)}
                 />
               ) : (
                 <RenderSinglePhoto
@@ -491,6 +491,8 @@ export default function EditPost(props) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
+                  token={tokenApps}
+                  setModalLogin={(e) => setModalLogin(e)}
                 />
               )}
             </View>

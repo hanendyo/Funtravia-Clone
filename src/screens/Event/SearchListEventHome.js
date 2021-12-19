@@ -33,19 +33,24 @@ import UnLiked from "../../graphQL/Mutation/unliked";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 
 export default function SearchListEventHome(props) {
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   let [oldYear, setOldYear] = useState(
     props.route.params.year ? props.route.params.year : null
   );
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
-  let [token, setToken] = useState("");
   let [setting, setSetting] = useState("");
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
+  console.log(
+    "🚀 ~ file: SearchListEventHome.js ~ line 50 ~ SearchListEventHome ~ index",
+    index
+  );
   let [show, setShow] = useState(false);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [datacountry, setdatacountry] = useState([]);
@@ -1159,8 +1164,6 @@ export default function SearchListEventHome(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
     await GetDataEventsAll();
     await GetDataEventsPublic();
 
@@ -1188,7 +1191,7 @@ export default function SearchListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -1216,7 +1219,7 @@ export default function SearchListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -1235,7 +1238,7 @@ export default function SearchListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -1275,7 +1278,7 @@ export default function SearchListEventHome(props) {
           data={dataEventAll}
           props={props}
           setData={(e) => setDataEventAll(e)}
-          token={token}
+          token={tokenApps}
         />
       );
     } else if (route.key == "eventspublic") {
@@ -1284,7 +1287,7 @@ export default function SearchListEventHome(props) {
           data={dataEventPublic}
           props={props}
           setData={(e) => setDataEventPublic(e)}
-          token={token}
+          token={tokenApps}
         />
       );
     }
@@ -1319,6 +1322,9 @@ export default function SearchListEventHome(props) {
 
     return array?.length;
   };
+
+  console.log("dataEventAll", dataEventAll.length);
+  console.log("dataEventPublic", dataEventPublic.length);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -1443,9 +1449,6 @@ export default function SearchListEventHome(props) {
                 backgroundColor: "white",
                 height: 42,
                 justifyContent: "center",
-                // alignItems: "center",
-                // borderTopLeftRadius: searchAktif ? 0 : 15,
-                // borderTopRightRadius: searchAktif ? 0 : 15,
               }}
               renderLabel={renderLabel}
               indicatorStyle={{
@@ -1458,6 +1461,37 @@ export default function SearchListEventHome(props) {
       />
 
       {/* END TAB VIEW */}
+
+      {index == 1 && dataEventAll.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: 110,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
+      {index == 1 && dataEventPublic.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: 110,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
 
       {/* MODAL FILTER  */}
       <Modal

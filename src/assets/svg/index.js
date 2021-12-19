@@ -304,6 +304,7 @@ import ReuploadFeed from "./files/reloadFeed.svg";
 import XFailedFeed from "./files/XFailedUpload.svg";
 import PasswordUpdateEmail from "./files/passwordUpdateEmail.svg";
 import CropIcon from "./files/cropIcon.svg";
+import Upload100 from "./files/Upload100.svg";
 
 export {
   PhotoGray,
@@ -612,4 +613,5 @@ export {
   XFailedFeed,
   PasswordUpdateEmail,
   CropIcon,
+  Upload100,
 };

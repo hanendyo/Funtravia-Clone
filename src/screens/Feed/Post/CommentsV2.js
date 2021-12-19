@@ -71,14 +71,15 @@ import normalize from "react-native-normalize";
 import Ripple from "react-native-material-ripple";
 import ViewMoreText from "react-native-view-more-text";
 import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
+import { useSelector } from "react-redux";
 
 export default function Comments(props) {
   const Notch = DeviceInfo.hasNotch();
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState(null);
   const [dataComment, setDataComment] = useState();
   const [setting, setSetting] = useState();
-  const [token, setToken] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [modalMenu, setModalMenu] = useState(false);
   const [modalMenuOther, setModalMenuOther] = useState(false);
@@ -99,14 +100,14 @@ export default function Comments(props) {
   const [play, setPlay] = useState();
 
   const goToItinerary = (data) => {
-    token
+    tokenApps
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
             itintitle: data.album.itinerary.name,
             country: data.album.itinerary.id,
             dateitin: "",
-            token: token,
+            token: tokenApps,
             status: "",
             index: 1,
             datadayaktif: data.day,
@@ -183,8 +184,6 @@ export default function Comments(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     if (!props.route.params.data) {
       await GetPost();
     }
@@ -242,7 +241,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: async () => {
@@ -263,7 +262,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -279,7 +278,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -288,9 +287,11 @@ export default function Comments(props) {
   });
 
   const scroll_to = () => {
-    setTimeout(() => {
-      slider.current.scrollToEnd();
-    }, 1000);
+    if (slider?.current) {
+      setTimeout(() => {
+        slider?.current?.scrollToEnd();
+      }, 1000);
+    }
   };
 
   const wait = (timeout) => {
@@ -389,7 +390,7 @@ export default function Comments(props) {
         >
           <Pressable
             onPress={() => {
-              token
+              tokenApps
                 ? dataComment?.user?.id !== setting?.user?.id
                   ? props.navigation.push("ProfileStack", {
                       screen: "otherprofile",
@@ -399,7 +400,7 @@ export default function Comments(props) {
                     })
                   : props.navigation.push("ProfileStack", {
                       screen: "ProfileTab",
-                      params: { token: token },
+                      params: { token: tokenApps },
                     })
                 : setModalLogin(true);
             }}
@@ -474,7 +475,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -483,7 +484,7 @@ export default function Comments(props) {
     setModalHapus(false);
     setModalMenu(false);
 
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await Mutationdeletepost({
           variables: {
@@ -537,7 +538,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -549,13 +550,13 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id) => {
-    if (!token) {
+    if (!tokenApps) {
       setModalLogin(true);
     } else {
       let tmpData = { ...dataPost };
@@ -592,7 +593,7 @@ export default function Comments(props) {
   };
 
   const _unliked = async (id) => {
-    if (!token) {
+    if (!tokenApps) {
       setModalLogin(true);
     } else {
       let tmpData = { ...dataPost };
@@ -646,13 +647,13 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const comment = async (id, text) => {
-    if (token) {
+    if (tokenApps) {
       if (text !== "") {
         let gen_uuid = create_UUID();
         let tempData = [...dataComment];
@@ -729,7 +730,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -741,7 +742,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -749,7 +750,7 @@ export default function Comments(props) {
   const _unfollow = async (id, status) => {
     setModalMenuOther(false);
 
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -790,7 +791,7 @@ export default function Comments(props) {
 
   const _follow = async (id, status) => {
     setModalMenuOther(false);
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await FollowMutation({
           variables: {
@@ -835,7 +836,7 @@ export default function Comments(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -1193,12 +1194,12 @@ export default function Comments(props) {
                 }}
                 onPress={() => {
                   setModalMenu(false),
-                    token
+                    tokenApps
                       ? props.navigation.push("FeedStack", {
                           screen: "CreateListAlbum",
                           params: {
                             user_id: setting?.user_id,
-                            token: props.route.params.token,
+                            token: tokenApps,
                             file: "",
                             type: "",
                             location: "",
@@ -1517,7 +1518,7 @@ export default function Comments(props) {
               >
                 <Pressable
                   onPress={() => {
-                    token
+                    tokenApps
                       ? dataPost?.user?.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
                             screen: "otherprofile",
@@ -1527,7 +1528,7 @@ export default function Comments(props) {
                           })
                         : props.navigation.push("ProfileStack", {
                             screen: "ProfileTab",
-                            params: { token: token },
+                            params: { token: tokenApps },
                           })
                       : setModalLogin(true);
                   }}
@@ -1571,7 +1572,7 @@ export default function Comments(props) {
                 </Pressable>
                 <TouchableOpacity
                   onPress={() => {
-                    token ? OptionOpen(dataPost) : setModalLogin(true);
+                    tokenApps ? OptionOpen(dataPost) : setModalLogin(true);
                   }}
                   style={{
                     position: "absolute",
@@ -1604,6 +1605,7 @@ export default function Comments(props) {
                       isFocused={isFocused}
                       isComment={true}
                       index
+                      token={tokenApps}
                       setModalLogin={(e) => setModalLogin(e)}
                     />
                   ) : (
@@ -1615,6 +1617,7 @@ export default function Comments(props) {
                       setMuted={(e) => setMuted(e)}
                       isFocused={isFocused}
                       isComment={true}
+                      token={tokenApps}
                       setModalLogin={(e) => setModalLogin(e)}
                     />
                   )
@@ -1730,7 +1733,7 @@ export default function Comments(props) {
                       //     post: dataPost,
                       //   },
                       // })
-                      token
+                      tokenApps
                         ? props.navigation.navigate("ChatStack", {
                             screen: "SendToChat",
                             params: {

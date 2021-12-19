@@ -7,12 +7,11 @@ import {
   Animated,
   Platform,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Button,
   CopyLink,
-  CustomImage,
   FunImage,
   shareAction,
   Text,
@@ -29,11 +28,7 @@ import {
   Xgray,
 } from "../../assets/svg";
 import { Image } from "react-native";
-import { ImageBackground } from "react-native";
-import { ScrollView } from "react-native";
-import { FlatList } from "react-native";
 import Ripple from "react-native-material-ripple";
-import LinearGradient from "react-native-linear-gradient";
 import Traveldetails from "../../graphQL/Query/TravelGoal/Traveldetail";
 import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
 import normalize from "react-native-normalize";
@@ -42,22 +37,19 @@ const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   // android: StatusBar.currentHeight,
-  android: normalize(28),
+  // android: normalize(28),
+  android: normalize(38),
 });
 const deviceId = DeviceInfo.getModel();
+import { useSelector } from "react-redux";
 
 export default function TravelGoalDetail(props) {
   const { t, i18n } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   let [datadetail, setdatadetail] = useState({});
   let [modalShare, setModalShare] = useState(false);
   let [datarelated, setdatarelated] = useState([]);
   let [modalLogin, setModalLogin] = useState(false);
-  let [token, setToken] = useState("");
-
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-  };
 
   // const HeaderComponent = {
   //   headerShown: true,
@@ -115,7 +107,6 @@ export default function TravelGoalDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: token?`Bearer ${token}`:null,
       },
     },
     onCompleted: () => {
@@ -134,7 +125,6 @@ export default function TravelGoalDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: token?`Bearer ${token}`:null,
       },
     },
     onCompleted: () => {
@@ -145,10 +135,6 @@ export default function TravelGoalDetail(props) {
   useEffect(() => {
     Traveldetail();
     Travelrelated();
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
-    return unsubscribe;
   }, []);
 
   const getdate = (date) => {
@@ -186,7 +172,7 @@ export default function TravelGoalDetail(props) {
   };
 
   const HEADER_MAX_HEIGHT = normalize(240);
-  const HEADER_MIN_HEIGHT = normalize(50);
+  const HEADER_MIN_HEIGHT = normalize(40);
   const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
   let [scrollY] = useState(new Animated.Value(0));
@@ -233,6 +219,13 @@ export default function TravelGoalDetail(props) {
   return (
     <View style={{ flex: 1, backgroundColor: "#FFF" }}>
       <Satbar backgroundColor="#14646E" />
+      <View
+        style={{
+          height: 10,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#14646e",
+        }}
+      ></View>
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -445,7 +438,7 @@ export default function TravelGoalDetail(props) {
                 alignItems: "center",
               }}
               onPress={() => {
-                token ? setModalShare(true) : setModalLogin(true);
+                tokenApps ? setModalShare(true) : setModalLogin(true);
               }}
             >
               <ShareBlack height={20} width={20} />
@@ -772,7 +765,7 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 13,
+          top: SafeStatusBar,
         }}
       >
         <Text
@@ -798,7 +791,7 @@ export default function TravelGoalDetail(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          top: SafeStatusBar - 15,
           opacity: backOpacity,
         }}
       >
@@ -829,12 +822,12 @@ export default function TravelGoalDetail(props) {
 
       <Animated.View
         style={{
-          // transform: [{ translateY: titleTranslateY }],
+          transform: [{ translateY: backOpacity }],
           height: 100,
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          top: SafeStatusBar - 15,
         }}
       >
         <Pressable

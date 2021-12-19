@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Button, Capital, CustomImage, Text, Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -29,9 +30,11 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { default_image } from "../../assets/png";
 import CheckBox from "@react-native-community/checkbox";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 export default function TravelGoalList(props) {
   const { t, i18n } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   const [heights, setHeights] = useState(0);
   const HeaderComponent = {
     headerShown: true,
@@ -140,7 +143,7 @@ export default function TravelGoalList(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -404,7 +407,23 @@ export default function TravelGoalList(props) {
         </View>
       </View>
 
-      {/* end filter search */}
+      {loadingList ? (
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <ActivityIndicator color="#209fae" size={"large"} />
+        </View>
+      ) : dataList.length == 0 ? (
+        <View
+          style={{
+            marginTop: 20,
+            alignItems: "center",
+            width: Dimensions.get("screen").width,
+          }}
+        >
+          <Text size="label" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
 
       <FlatList
         data={dataList}

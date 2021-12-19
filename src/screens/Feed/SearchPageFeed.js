@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
-  SafeAreaView,
   TextInput,
   Pressable,
   FlatList,
@@ -18,7 +17,6 @@ import { CustomImage, Text, Truncate, StatusBar } from "../../component";
 import { NetworkStatus } from "@apollo/client";
 import {
   Magnifying,
-  OptionsVertWhite,
   Arrowbackwhite,
   Pinloc,
   Arrowbackios,
@@ -31,9 +29,11 @@ import { API_KEY } from "../../config";
 import RenderGrid from "./RenderGrid";
 import DeviceInfo from "react-native-device-info";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function Feed(props) {
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
   const SafeStatusBar = Platform.select({
     ios: Notch ? 100 : -20,
@@ -43,7 +43,6 @@ export default function Feed(props) {
   const [active_src, setActiveSrc] = useState("account");
   const [searchtext, SetSearchtext] = useState("");
   let [setting, setSetting] = useState();
-  let [token, setToken] = useState("");
   const default_image =
     "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
   let [refreshing, setRefreshing] = useState(false);
@@ -51,7 +50,6 @@ export default function Feed(props) {
   let { width, height } = Dimensions.get("screen");
 
   const spreadData = (data) => {
-    console.log("data", data);
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
@@ -80,8 +78,6 @@ export default function Feed(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -112,7 +108,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -138,7 +134,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -509,7 +505,7 @@ export default function Feed(props) {
                             screen: "otherprofile",
                             params: {
                               idUser: item.id,
-                              token: token,
+                              token: tokenApps,
                             },
                           })
                         : props.navigation.push("ProfileStack", {
@@ -553,6 +549,17 @@ export default function Feed(props) {
                     </View>
                   </Pressable>
                 )}
+                ListHeaderComponent={
+                  !searchtext ? (
+                    <View style={{ marginTop: 20, alignItems: "center" }}>
+                      <Text>{t("searchByAccount")}</Text>
+                    </View>
+                  ) : user_search_feed && user_search_feed.length == 0 ? (
+                    <View style={{ marginTop: 20, alignItems: "center" }}>
+                      <Text>{t("noData")}</Text>
+                    </View>
+                  ) : null
+                }
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
               />
@@ -664,6 +671,17 @@ export default function Feed(props) {
                     </View>
                   </Pressable>
                 )}
+                ListHeaderComponent={
+                  !searchtext ? (
+                    <View style={{ marginTop: 20, alignItems: "center" }}>
+                      <Text>{t("searchByLocation")}</Text>
+                    </View>
+                  ) : datalocation && datalocation.length == 0 ? (
+                    <View style={{ marginTop: 20, alignItems: "center" }}>
+                      <Text>{t("noData")}</Text>
+                    </View>
+                  ) : null
+                }
                 keyExtractor={(item) => item.id}
                 showsVerticalScrollIndicator={false}
               />
@@ -717,6 +735,7 @@ export default function Feed(props) {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
+                searchByTag
                 onRefresh={() => _refresh()}
               />
             }

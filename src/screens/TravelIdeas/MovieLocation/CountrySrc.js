@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
   IdFlag,
@@ -72,7 +71,7 @@ export default function CountrySrc({
       keyword: continentsearch ? continentsearch : null,
     },
     onCompleted: () => {
-      setDatacontinent(datacontinent.continent_list);
+      setDatacontinent(datacontinent?.continent_list);
     },
   });
 
@@ -587,62 +586,63 @@ export default function CountrySrc({
                   paddingHorizontal: 15,
                 }}
               >
-                {continent_list.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => _handleCheck(item["id"], index, item)}
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      // borderColor: "#464646",
-
-                      width: "49%",
-                      marginRight: 3,
-                      marginBottom: 20,
-
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={1}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
+                {continent_list &&
+                  continent_list.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      onValueChange={() =>
-                        Platform.OS == "ios"
-                          ? null
-                          : _handleCheck(item["id"], index, item)
-                      }
-                      value={item["checked"]}
-                    />
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
 
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 0,
-                        color: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
 
-                        // borderWidth: 5,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {item["name"]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        onValueChange={() =>
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheck(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
               </ScrollView>
             </View>
           </View>

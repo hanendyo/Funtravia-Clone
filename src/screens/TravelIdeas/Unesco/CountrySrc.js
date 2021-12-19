@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
   IdFlag,
@@ -23,13 +22,11 @@ import {
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { Text, Button, FunIcon } from "../../../component";
-import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
 import ContinentList from "../../../graphQL/Query/Countries/ContinentList";
 import CheckBox from "@react-native-community/checkbox";
-import { TemporaryDirectoryPath } from "react-native-fs";
 
 export default function CountrySrc({
   selectedCountry,
@@ -59,8 +56,8 @@ export default function CountrySrc({
       keyword: "",
     },
     onCompleted: () => {
-      continent_list = setDatacontinent(datacontinent.continent_list);
-      setDatacontinentfilter(datacontinent.continent_list);
+      continent_list = setDatacontinent(datacontinent?.continent_list);
+      setDatacontinentfilter(datacontinent?.continent_list);
     },
   });
 
@@ -626,62 +623,63 @@ export default function CountrySrc({
                   paddingHorizontal: 15,
                 }}
               >
-                {continent_listfilter.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => _handleCheck(item["id"], index, item)}
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      // borderColor: "#464646",
-                      width: "49%",
-                      marginRight: 3,
-                      marginBottom: 20,
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={1}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
+                {continent_listfilter &&
+                  continent_listfilter.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      // onValueChange={() =>
-                      //   _handleCheck(item["id"], index, item)
-                      // }
-                      onValueChange={() =>
-                        Platform.OS == "ios"
-                          ? null
-                          : _handleCheck(item["id"], index, item)
-                      }
-                      value={item["checked"]}
-                    />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 0,
-                        color: "#464646",
-                        // borderWidth: 5,
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        // borderColor: "#464646",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {item["name"]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        // onValueChange={() =>
+                        //   _handleCheck(item["id"], index, item)
+                        // }
+                        onValueChange={() =>
+                          Platform.OS == "ios"
+                            ? null
+                            : _handleCheck(item["id"], index, item)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          color: "#464646",
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
               </ScrollView>
             </View>
           </View>

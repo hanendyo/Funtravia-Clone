@@ -21,19 +21,17 @@ import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 export default function Reviews({ props, id, HeaderHeight, token }) {
   const { t, i18n } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   const [setting, setSetting] = useState("");
-  // const [token, setToken] = useState("");
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
   };
@@ -50,7 +48,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -120,7 +118,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                     flexDirection: "row",
                   }}
                   onPress={() => {
-                    token
+                    tokenApps
                       ? item && item.user && item.user.id !== null
                         ? item?.user?.id !== setting?.user?.id
                           ? props.navigation.push("ProfileStack", {
@@ -132,7 +130,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                           : props.navigation.push("ProfileStack", {
                               screen: "ProfileTab",
                               params: {
-                                token: token,
+                                token: tokenApps,
                               },
                             })
                         : RNToasty.Show({

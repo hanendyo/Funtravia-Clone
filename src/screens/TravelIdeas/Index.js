@@ -6,21 +6,21 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "../../component";
 import { travel_idea_ilust } from "../../assets/png";
 import { Right, Unesco, Movie, Arrowbackios } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { Arrowbackwhite } from "../../assets/svg";
 import { Image } from "react-native";
+import { useSelector } from "react-redux";
 
 export default function TravelIdeas(props) {
   const { t } = useTranslation();
-
+  let tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
     headerShown: true,
     title: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("travelideas")}
       </Text>
     ),
@@ -59,14 +59,7 @@ export default function TravelIdeas(props) {
   const { width, height } = Dimensions.get("screen");
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
   }, []);
-
-  const [token, setToken] = useState();
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-  };
 
   return (
     <ScrollView
@@ -173,7 +166,7 @@ export default function TravelIdeas(props) {
             props.navigation.navigate("TravelIdeaStack", {
               screen: "Unesco",
               params: {
-                token: token,
+                token: tokenApps,
               },
             });
           }}
@@ -240,7 +233,7 @@ export default function TravelIdeas(props) {
             props.navigation.navigate("TravelIdeaStack", {
               screen: "MovieLocation",
               params: {
-                token: token,
+                token: tokenApps,
               },
             });
           }}
