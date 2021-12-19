@@ -22,16 +22,10 @@ import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
-  OptionsVertWhite,
-  PinWhite,
   LikeEmpty,
   Showmore,
   Showless,
   PinHijau,
-  Calendargrey,
-  User,
-  TravelAlbum,
-  TravelStories,
   LikeRed,
   Logofuntravianew,
   ShareBlack,
@@ -39,9 +33,6 @@ import {
   Xgray,
   Nextabu,
   Prevabu,
-  Globe,
-  Newglobe,
-  Padlock,
   Arrowbackios,
 } from "../../../assets/svg";
 import { TouchableHighlight } from "react-native-gesture-handler";
@@ -55,32 +46,25 @@ import {
   Text,
   FunIcon,
   FunImage,
-  FunImageBackground,
-  FunAnimatedImage,
-  RenderMaps,
   FunMaps,
   shareAction,
   CopyLink,
   CardItinerary,
 } from "../../../component";
-import { Input, Tab, Tabs } from "native-base";
+import { Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
 import CityItinerary from "../../../graphQL/Query/Cities/ItineraryCity";
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native-gesture-handler";
 import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
 import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
 import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
-import LinearGradient from "react-native-linear-gradient";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
-import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
-import { isNonEmptyArray } from "@apollo/client/utilities";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -102,9 +86,8 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  const tokenApps = useSelector((data) => data.token);
   let [setting, setSetting] = useState("");
-  let [search, setTextc] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
@@ -234,7 +217,7 @@ export default function CityDetail(props) {
       getItineraryCity;
     });
     return Journalitinerarydata;
-  }, [props.navigation, token]);
+  }, [props.navigation, tokenApps]);
 
   useEffect(() => {
     scrollY.addListener(({ value }) => {
@@ -266,10 +249,8 @@ export default function CityDetail(props) {
   }, [routes, tabIndex]);
 
   const refreshData = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
-    await setToken(tkn);
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
@@ -284,27 +265,27 @@ export default function CityDetail(props) {
   ] = useLazyQuery(CitiesInformation, {
     fetchPolicy: "network-only",
     variables: {
-      id: props.route.params.data.city_id,
+      id: props?.route?.params?.data?.city_id,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
-      setListCity(dataCity?.CitiesInformation);
+    onCompleted: async () => {
+      await setListCity(dataCity?.CitiesInformation);
       let tab = [{ key: "general", title: "General" }];
 
-      dataCity.CitiesInformation.article_header.map((item, index) => {
+      await dataCity?.CitiesInformation?.article_header.map((item, index) => {
         tab.push({
           key: item.title,
-          title: item.title,
+          title: item.titlloadingCitye,
           data: item.content,
         });
       });
 
-      setRoutes(tab);
+      await setRoutes(tab);
       let loop = 0;
       let eventavailable = [];
       if (dataCity?.CitiesInformation?.event) {
@@ -314,8 +295,8 @@ export default function CityDetail(props) {
           }
         });
       }
-      setdataevent(eventavailable);
-      getJournalCity();
+      await setdataevent(eventavailable);
+      await getJournalCity();
     },
   });
 
@@ -325,7 +306,7 @@ export default function CityDetail(props) {
         event_Id: item.id,
         data: item,
         name: item.name,
-        token: token,
+        token: tokenApps,
       });
     }
   };
@@ -342,7 +323,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -362,7 +343,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -464,7 +445,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -476,7 +457,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -492,7 +473,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -508,7 +489,7 @@ export default function CityDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -516,7 +497,7 @@ export default function CityDetail(props) {
   // liked journal
   const _likedjournal = async (id, index, item) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await mutationlikedJournal({
           variables: {
@@ -562,7 +543,7 @@ export default function CityDetail(props) {
   // unliked journal
   const _unlikedjournal = async (id, index) => {
     let fiindex = await list_journal.findIndex((k) => k["id"] === id);
-    if (token) {
+    if (tokenApps) {
       // list_journal[fiindex].liked = false;
       try {
         let response = await mutationUnlikedJournal({
@@ -604,7 +585,7 @@ export default function CityDetail(props) {
   };
 
   const _likeditinerary = async (id, index) => {
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await mutationliked({
           variables: {
@@ -647,7 +628,7 @@ export default function CityDetail(props) {
   };
 
   const _unlikeditinerary = async (id, index) => {
-    if (token) {
+    if (tokenApps) {
       getItineraryCity();
       try {
         let response = await mutationUnliked({
@@ -864,7 +845,7 @@ export default function CityDetail(props) {
                             props.navigation.push("DestinationList", {
                               idtype: item.id_type,
                               idcity: render?.id,
-                              token: token,
+                              token: tokenApps,
                             });
                           }}
                           style={{
@@ -2060,7 +2041,7 @@ export default function CityDetail(props) {
               <CardItinerary
                 data={list_populer}
                 props={props}
-                token={token}
+                token={tokenApps}
                 setting={setting}
                 setData={(e) => setList_populer(e)}
               />
@@ -2423,18 +2404,15 @@ export default function CityDetail(props) {
                 display: "flex",
               }}
             >
-              <Text size="header" type="black">
-                {dataCity && dataCity?.CitiesInformation ? (
-                  <Truncate
-                    text={Capital({
-                      text: dataCity?.CitiesInformation?.name
-                        ? dataCity?.CitiesInformation.name
-                        : "",
-                    })}
-                    length={20}
-                  ></Truncate>
-                ) : null}
-              </Text>
+              <View
+                style={{
+                  width: Dimensions.get("screen").width / 1.4,
+                }}
+              >
+                <Text size="header" type="black" numberOfLines={1}>
+                  {dataCity?.CitiesInformation?.name}
+                </Text>
+              </View>
 
               <View
                 style={{
@@ -2570,7 +2548,9 @@ export default function CityDetail(props) {
           }}
         >
           <Pressable
-            onPress={() => (token ? SetShareModal(true) : setModalLogin(true))}
+            onPress={() =>
+              tokenApps ? SetShareModal(true) : setModalLogin(true)
+            }
             style={{
               backgroundColor: "#F6F6F6",
               marginRight: 2,
@@ -2825,7 +2805,7 @@ export default function CityDetail(props) {
 
   let [loadings, setLoadings] = useState(true);
 
-  if (loadings) {
+  if (loadingCity) {
     return (
       <SkeletonPlaceholder>
         <View
@@ -3280,18 +3260,21 @@ export default function CityDetail(props) {
             }}
           ></Image>
 
-          <View>
+          <View
+            style={{
+              flex: 1,
+              marginRight: 10,
+            }}
+          >
             <Text
               size="readable"
               type="regular"
               style={{
                 color: "#FFFFFF",
               }}
+              numberOfLines={1}
             >
-              <Truncate
-                text={listCity?.name ? t("searchin") + listCity.name : ""}
-                length={25}
-              />
+              {listCity?.name ? t("searchin") + listCity.name : ""}
             </Text>
           </View>
         </TouchableOpacity>
@@ -3370,18 +3353,21 @@ export default function CityDetail(props) {
             }}
           ></Image>
 
-          <View>
+          <View
+            style={{
+              flex: 1,
+              marginRight: 10,
+            }}
+          >
             <Text
               size="readable"
               type="regular"
               style={{
                 color: "#FFFFFF",
               }}
+              numberOfLines={1}
             >
-              <Truncate
-                text={listCity?.name ? t("searchin") + listCity.name : ""}
-                length={25}
-              />
+              {listCity?.name ? t("searchin") + listCity.name : ""}
             </Text>
           </View>
         </TouchableOpacity>
@@ -3481,7 +3467,7 @@ export default function CityDetail(props) {
                 borderColor: "#d1d1d1",
               }}
               onPress={() => {
-                token
+                tokenApps
                   ? (SetShareModal(false),
                     // props.navigation.push("CountryStack", {
                     //   screen: "SendCity",

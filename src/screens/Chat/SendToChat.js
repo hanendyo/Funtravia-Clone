@@ -9,11 +9,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   FlatList,
+  TouchableHighlight,
 } from "react-native";
 import { Button, Text, FunImage } from "../../component";
 import { default_image, search_button } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Arrowbackwhite, SendMessage } from "../../assets/svg";
+import { Arrowbackwhite, SendMessage, Xblue } from "../../assets/svg";
 import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -56,7 +57,7 @@ export default function SendToChat({ navigation, route }) {
       },
     },
     onCompleted: () => {
-      SetDatBuddy(DataBuddy.search_travelwith);
+      SetDatBuddy(DataBuddy?.search_travelwith);
     },
   });
   const ChatOptions = {
@@ -422,7 +423,7 @@ export default function SendToChat({ navigation, route }) {
               <View style={{ paddingVertical: 20 }}>
                 <ActivityIndicator animating={true} color="#209FAE" />
               </View>
-            ) : data_buddy.length < 1 ? (
+            ) : data_buddy && data_buddy.length < 1 ? (
               <View
                 style={{
                   alignItems: "center",
@@ -681,8 +682,6 @@ export default function SendToChat({ navigation, route }) {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 15,
-
-              // borderWidth: 1,
               height: 50,
               zIndex: 5,
               flexDirection: "row",
@@ -721,13 +720,21 @@ export default function SendToChat({ navigation, route }) {
                 underlineColorAndroid="transparent"
                 placeholder={t("search")}
                 style={{
-                  width: "100%",
-                  marginLeft: 10,
+                  flex: 1,
+                  marginHorizontal: 10,
                   padding: 0,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}
               />
+              {search ? (
+                <TouchableHighlight
+                  underlayColor="#e8e8e8"
+                  onPress={() => setSearch("")}
+                >
+                  <Xblue width="20" height="20" />
+                </TouchableHighlight>
+              ) : null}
             </View>
           </View>
         </View>

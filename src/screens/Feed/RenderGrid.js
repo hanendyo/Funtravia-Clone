@@ -12,7 +12,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[0].id,
               },
@@ -66,7 +66,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[1].id,
                 },
@@ -114,7 +114,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[2].id,
                 },
@@ -170,7 +170,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[0].id,
                 },
@@ -218,7 +218,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[1].id,
                 },
@@ -267,7 +267,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[2].id,
               },
@@ -321,7 +321,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[0].id,
               },
@@ -369,7 +369,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[1].id,
               },
@@ -417,7 +417,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[2].id,
               },
@@ -472,7 +472,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[0].id,
               },
@@ -521,7 +521,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[1].id,
                 },
@@ -577,7 +577,7 @@ export default function RenderGrid({ item, grid, props }) {
         <Pressable
           onPress={() =>
             props.navigation.navigate("FeedStack", {
-              screen: "CommentsById",
+              screen: "CommentPost",
               params: {
                 post_id: item[0].id,
               },
@@ -626,7 +626,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[1].id,
                 },
@@ -677,7 +677,7 @@ export default function RenderGrid({ item, grid, props }) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[2].id,
                 },

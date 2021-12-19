@@ -15,23 +15,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { default_image } from "../../../assets/png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Select,
   Arrowbackwhite,
   Arrowbackios,
-  LikeRed,
-  Logofuntravianew,
   BlockDestination,
 } from "../../../assets/svg";
-import {
-  Button,
-  FunImage,
-  NavigateAction,
-  Text,
-  Truncate,
-  StatusBar as Satbar,
-} from "../../../component";
+import { Text, StatusBar as Satbar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import MovieLocationQuery from "../../../graphQL/Query/TravelIdeas/MovieLocation";
@@ -60,11 +50,12 @@ const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
   android: 305 - StatusBar.currentHeight,
 });
+import { useSelector } from "react-redux";
 
 export default function MovieLocation({ navigation, route }) {
-  let [token, setToken] = useState(route.params.token);
   let [destinationMovie, setDestinationMovie] = useState();
   const { t } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   let [modalcountry, setModelCountry] = useState(false);
   let [selectedCountry, SetselectedCountry] = useState({
     // id: "98b224d6-6df0-4ea7-94c3-dbeb607bea1f",
@@ -105,15 +96,12 @@ export default function MovieLocation({ navigation, route }) {
       continent_id: null,
       keyword: "",
     },
+    fetchPolicy: "network-only",
     onCompleted: () => {
       SetselectedCountry({
-        id: datacountry.list_country_src_movie[0].id,
-        name: datacountry.list_country_src_movie[0].name,
+        id: datacountry?.list_country_src_movie[0].id,
+        name: datacountry?.list_country_src_movie[0].name,
       });
-      if (selectedCountry) {
-        getMovie();
-        getMovie_First();
-      }
     },
   });
 
@@ -123,10 +111,11 @@ export default function MovieLocation({ navigation, route }) {
       variables: {
         countries_id: selectedCountry.id,
       },
+      fetchPolicy: "network-only",
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
     }
@@ -146,7 +135,7 @@ export default function MovieLocation({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () =>
@@ -169,10 +158,11 @@ export default function MovieLocation({ navigation, route }) {
     variables: {
       countries_id: selectedCountry.id,
     },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -191,20 +181,19 @@ export default function MovieLocation({ navigation, route }) {
     variables: {
       page_location: "Movie",
     },
-    // fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
     onCompleted: () => {
-      SetDataBanner(dataBanner.get_banner);
+      SetDataBanner(dataBanner?.get_banner);
     },
   });
 
   useEffect(() => {
-    loadAsync();
     GetDestinationMovieMovie();
+    if (selectedCountry) {
+      getMovie();
+      getMovie_First();
+    }
   }, [route]);
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-  };
 
   const HEADER_MAX_HEIGHT = normalize(200);
   const HEADER_MIN_HEIGHT = normalize(50);

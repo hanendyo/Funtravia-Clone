@@ -10,6 +10,7 @@ import { useMutation } from "@apollo/react-hooks";
 import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
 import { Arrowbackios } from "../../../assets/svg";
+import { useSelector } from "react-redux";
 
 export default function SettingNegara({
   modals,
@@ -20,6 +21,7 @@ export default function SettingNegara({
   token,
 }) {
   const { t } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   let [datacountry, setdataCountry] = useState(data);
   let slider = useRef();
   const pushselected = () => {
@@ -42,13 +44,13 @@ export default function SettingNegara({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const hasil = async (detail, selected) => {
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await MutationsetCountry({
           variables: {

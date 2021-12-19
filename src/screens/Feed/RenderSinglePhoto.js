@@ -25,6 +25,7 @@ export default function RenderSinglePhoto({
   token,
   setModalLogin,
 }) {
+  console.log("🚀 ~ file: RenderSinglePhoto.js ~ line 28 ~ token", token);
   let videoView = useRef(null);
   const dimensions = useWindowDimensions();
   const [heightScaled, setHeightScaled] = useState(width);
@@ -71,7 +72,6 @@ export default function RenderSinglePhoto({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderMove: (evt, gestureState) => {
         const activeTouches = evt.nativeEvent.changedTouches.length;
-        console.log("activeTouches", activeTouches);
         // if (activeTouches === 1) {
         //   pan.setValue({
         //     x: gestureState.dx,
@@ -80,7 +80,6 @@ export default function RenderSinglePhoto({
         // }
         if (activeTouches >= 2) {
           const touches = evt.nativeEvent.changedTouches;
-          console.log("touches", touches);
           const touchA = touches[0];
           const touchB = touches[1];
 
@@ -125,6 +124,7 @@ export default function RenderSinglePhoto({
           borderWidth: 1,
           borderColor: "#f6f6f6",
           borderRadius: 10,
+          overflow: "hidden",
         }}
       >
         <TouchableWithoutFeedback onPress={() => setMuted(!muted)}>

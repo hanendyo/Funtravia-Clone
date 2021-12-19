@@ -14,14 +14,14 @@ export default function RenderGrid({ item, props }) {
         }}
       >
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[0].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[0].id,
+              },
+            })
+          }
         >
           {item[0].type === "video" ? (
             <FunVideo
@@ -64,14 +64,14 @@ export default function RenderGrid({ item, props }) {
         </Pressable>
         <View style={{}}>
           <Pressable
-          // onPress={() =>
-          //   props.navigation.navigate("FeedStack", {
-          //     screen: "CommentsById",
-          //     params: {
-          //       post_id: item[1].id,
-          //     },
-          //   })
-          // }
+            onPress={() =>
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: item[1].id,
+                },
+              })
+            }
           >
             {item[1].type === "video" ? (
               <FunVideo
@@ -111,14 +111,14 @@ export default function RenderGrid({ item, props }) {
             )}
           </Pressable>
           <Pressable
-          // onPress={() =>
-          //   props.navigation.navigate("FeedStack", {
-          //     screen: "CommentsById",
-          //     params: {
-          //       post_id: item[2].id,
-          //     },
-          //   })
-          // }
+            onPress={() =>
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: item[2].id,
+                },
+              })
+            }
           >
             {item[2].type === "video" ? (
               <FunVideo
@@ -170,14 +170,14 @@ export default function RenderGrid({ item, props }) {
       >
         <View style={{}}>
           <Pressable
-          // onPress={() =>
-          //   props.navigation.navigate("FeedStack", {
-          //     screen: "CommentsById",
-          //     params: {
-          //       post_id: item[0].id,
-          //     },
-          //   })
-          // }
+            onPress={() =>
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: item[0].id,
+                },
+              })
+            }
           >
             {item[0].type === "video" ? (
               <FunVideo
@@ -217,14 +217,14 @@ export default function RenderGrid({ item, props }) {
             )}
           </Pressable>
           <Pressable
-          // onPress={() =>
-          //   props.navigation.navigate("FeedStack", {
-          //     screen: "CommentsById",
-          //     params: {
-          //       post_id: item[1].id,
-          //     },
-          //   })
-          // }
+            onPress={() =>
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: item[1].id,
+                },
+              })
+            }
           >
             {item[1].type === "video" ? (
               <FunVideo
@@ -265,14 +265,14 @@ export default function RenderGrid({ item, props }) {
           </Pressable>
         </View>
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[2].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[2].id,
+              },
+            })
+          }
         >
           {item[2].type === "video" ? (
             <FunVideo
@@ -319,14 +319,14 @@ export default function RenderGrid({ item, props }) {
         }}
       >
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[0].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[0].id,
+              },
+            })
+          }
         >
           {item[0].type === "video" ? (
             <FunVideo
@@ -363,14 +363,14 @@ export default function RenderGrid({ item, props }) {
           )}
         </Pressable>
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[1].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[1].id,
+              },
+            })
+          }
         >
           {item[1].type === "video" ? (
             <FunVideo
@@ -407,14 +407,14 @@ export default function RenderGrid({ item, props }) {
           )}
         </Pressable>
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[2].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[2].id,
+              },
+            })
+          }
         >
           {item[2].type === "video" ? (
             <FunVideo
@@ -462,14 +462,14 @@ export default function RenderGrid({ item, props }) {
         }}
       >
         <Pressable
-        // onPress={() =>
-        //   props.navigation.navigate("FeedStack", {
-        //     screen: "CommentsById",
-        //     params: {
-        //       post_id: item[0].id,
-        //     },
-        //   })
-        // }
+          onPress={() =>
+            props.navigation.navigate("FeedStack", {
+              screen: "CommentPost",
+              params: {
+                post_id: item[0].id,
+              },
+            })
+          }
         >
           {item[0].type === "video" ? (
             <FunVideo
@@ -507,15 +507,15 @@ export default function RenderGrid({ item, props }) {
         </Pressable>
         {item[1] ? (
           <Pressable
-          // onPress={() =>
-          //   props.navigation.navigate("FeedStack", {
-          //     screen: "CommentsById",
-          //     params: {
-          //       post_id: item[1].id,
-          //     },
-          //   })
-          // }
-          // style={{}}
+            onPress={() =>
+              props.navigation.navigate("FeedStack", {
+                screen: "CommentPost",
+                params: {
+                  post_id: item[1].id,
+                },
+              })
+            }
+            style={{}}
           >
             {item[1].type === "video" ? (
               <FunVideo

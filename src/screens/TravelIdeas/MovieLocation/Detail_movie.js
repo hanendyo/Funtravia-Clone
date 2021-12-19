@@ -4,39 +4,26 @@ import {
   Animated,
   Dimensions,
   Image,
-  ImageBackground,
   Platform,
   StatusBar,
   StyleSheet,
   View,
-  ScrollView,
   Pressable,
   Modal,
   TouchableOpacity,
 } from "react-native";
 import { useMutation, useLazyQuery } from "@apollo/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 import { default_image } from "../../../assets/png";
 import {
   ShareBlack,
-  Star,
-  PinHijau,
-  Love,
-  LikeEmpty,
   Arrowbackios,
   Arrowbackwhite,
-  BlockDestination,
-  MovieIcon,
-  UnescoIcon,
   Xgray,
 } from "../../../assets/svg";
 import {
-  Button,
-  FunIcon,
   Text,
-  FunImage,
   shareAction,
   CopyLink,
   StatusBar as Satbar,
@@ -48,9 +35,9 @@ import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLoca
 import ListDestinationByMovie from "../../../graphQL/Query/TravelIdeas/ListDestinationByMovie";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../../graphQL/Mutation/unliked";
-import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -64,7 +51,7 @@ const SafeStatusBar = Platform.select({
 
 export default function Detail_movie(props) {
   const { t } = useTranslation();
-  let [token, setToken] = useState(props.route.params.token);
+  let tokenApps = useSelector((data) => data.token);
   let movie_id = props?.route?.params?.movie_id;
   let [modalShare, setModalShare] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
@@ -82,7 +69,7 @@ export default function Detail_movie(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
       onCompleted: () => {
@@ -103,7 +90,7 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -112,8 +99,6 @@ export default function Detail_movie(props) {
   });
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await refetchmovie();
     await fetchDataAnotherDes();
   };
@@ -132,7 +117,7 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -144,13 +129,13 @@ export default function Detail_movie(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id, index) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       try {
         let response = await mutationliked({
           variables: {
@@ -190,7 +175,7 @@ export default function Detail_movie(props) {
   };
 
   const _unliked = async (id, index) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       try {
         let response = await mutationUnliked({
           variables: {
@@ -232,7 +217,7 @@ export default function Detail_movie(props) {
   });
 
   const addToPlan = (kiriman) => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       if (kiriman) {
         props?.route?.params && props?.route?.params?.iditinerary
           ? props.navigation.dispatch(
@@ -241,7 +226,7 @@ export default function Detail_movie(props) {
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: kiriman.id,
-                  token: token,
+                  token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                 },
@@ -262,7 +247,7 @@ export default function Detail_movie(props) {
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: data?.destinationById.id,
-                  token: token,
+                  token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                 },
@@ -346,6 +331,13 @@ export default function Detail_movie(props) {
 
   console.log("indeks", indeks);
 
+  if (loadingmovie)
+    return (
+      <View style={{ alignItems: "center", marginTop: 50 }}>
+        <ActivityIndicator color="#029fae" size="large" />
+      </View>
+    );
+
   return (
     <View
       style={{
@@ -405,7 +397,7 @@ export default function Detail_movie(props) {
                 borderRadius: 30,
               }}
               onPress={() => {
-                token ? setModalShare(true) : setModalLogin(true);
+                tokenApps ? setModalShare(true) : setModalLogin(true);
               }}
             >
               <ShareBlack height={20} width={20} />
@@ -509,7 +501,7 @@ export default function Detail_movie(props) {
             data={listdestinasi_bymovie}
             props={props}
             setData={(e) => setlistdestinasi_bymovie(e)}
-            token={token}
+            token={tokenApps}
           />
         ) : null}
       </Animated.ScrollView>
@@ -588,10 +580,6 @@ export default function Detail_movie(props) {
               }}
               onPress={() => {
                 setModalShare(false);
-                // props.navigation.navigate("TravelIdeaStack", {
-                //   screen: "SendMovie",
-                //   params: { movie: movie_byid },
-                // });
                 props.navigation.navigate("ChatStack", {
                   screen: "SendToChat",
                   params: {

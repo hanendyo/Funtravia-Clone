@@ -749,8 +749,8 @@
   "tag": "Tag",
   "places": "Lokasi",
   "allPost": "Semua Postingan",
-  "searchByTag": "Berdasarkan Tag",
-  "searchByLocation": "Berdasarkan Lokasi",
+  "searchByTag": "Pencarian berdasarkan tag",
+  "searchByLocation": "Pencarian berdasarkan lokasi",
   "leftItinerary": "Tinggalkan Itinerary",
   "writeReview": "Menulis Ulasan",
   "cropNewPost": "Sesuaikan Postingan Baru",
@@ -857,5 +857,7 @@
   "description2": "Buatlah moment-moment berharga yang tak pernah terlupakan bersama temanmu,yang nanti menjadi sejarah.",
   "description3": "Wujudkan perjalanan impianmu disini dengan berbagai destinasi yang menarik.",
   "description4": "Menikmati perjalanan tak pernah semudah ini. Kini, hadir aplikasi Funtravia yg semakin memanjakan travelingmu. hanya dalam genggamanmu! Download on App Store & Google PlayMobile phone",
-  "fileTolarge": "File terlalu besar"
+  "fileTolarge": "File terlalu besar",
+  "fileToWriteReview": "Gagal memberi ulasan",
+  "searchByAccount": "Pencarian Berdasarkan akun"
 }

@@ -10,8 +10,6 @@ import {
   ActivityIndicator,
   ImageBackground,
   Pressable,
-  BackHandler,
-  ScrollView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -21,17 +19,13 @@ import {
   SizeOri,
   SizeStrace,
   CameraBlue,
-  Check,
   Mute,
   Unmute,
-  // Modal,
 } from "../../../assets/svg";
-import { default_image } from "../../../assets/png";
 import {
   Text,
   Button,
   StatusBar,
-  FunImage,
   FunVideo,
   Peringatan,
 } from "../../../component";
@@ -42,15 +36,13 @@ import { request, check, PERMISSIONS } from "react-native-permissions";
 import ImagePicker from "react-native-image-crop-picker";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import ImageCropper from "react-native-simple-image-cropper";
 import { useIsFocused } from "@react-navigation/native";
-import RenderAlbum from "../RenderAlbumItinerary";
 const { width } = Dimensions.get("screen");
 import { stat } from "react-native-fs";
-import { Video } from "react-native-compressor";
+import { useSelector } from "react-redux";
 
 export default function Post(props) {
+  const tokenApps = useSelector((data) => data.token);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
@@ -69,15 +61,9 @@ export default function Post(props) {
   const [page_info, setPageInfo] = useState({});
   const [loadimg, setLoadimg] = useState(false);
   const [checklistVideo, setChecklistVideo] = useState([]);
-  const [token, setToken] = useState(null);
   const [mute, setMute] = useState(false);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [loadVid, setLoadVid] = useState(false);
-
-  const loadAsync = async () => {
-    let access_token = await AsyncStorage.getItem("access_token");
-    setToken(access_token);
-  };
 
   let slider = useRef(null);
   let videoView = useRef(null);
@@ -188,7 +174,7 @@ export default function Post(props) {
             location: recent.node.location,
             type: recent.node.type.substr(0, 5),
             file: tempData,
-            token: token,
+            token: tokenApps,
             ratio: ratio,
           });
           // setLoadVid(false);
@@ -223,7 +209,7 @@ export default function Post(props) {
               location: recent.node.location,
               type: recent.node.type.substr(0, 5),
               file: image,
-              token: token,
+              token: tokenApps,
               id_album: props.route.params.id_album,
               id_itin: props.route.params.id_itin,
               title_album: props.route.params.title_album,
@@ -261,7 +247,7 @@ export default function Post(props) {
           data: checklistVideo,
           ratio: ratio.label ? ratio.label : "S",
           location: recent.node.location,
-          token: token,
+          token: tokenApps,
           location: recent.node.location,
           id_album: props.route.params.id_album,
           id_itin: props.route.params.id_itin,
@@ -300,15 +286,6 @@ export default function Post(props) {
   //   props.navigation.goBack();
   //   return true;
   // };
-
-  useEffect(() => {
-    loadAsync();
-    // const backHandler = BackHandler.addEventListener(
-    //   "hardwareBackPress",
-    //   backAction
-    // );
-    // // return () => backHandler.remove();
-  }, []);
 
   const [selectedAlbum, setSelectedAlbum] = useState({
     title: "Folder",

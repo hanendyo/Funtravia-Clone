@@ -13,6 +13,7 @@ import {
   Platform,
   StatusBar,
   Modal as ModalRN,
+  ActivityIndicator,
 } from "react-native";
 import {
   CustomImage,
@@ -30,19 +31,10 @@ import Modal from "react-native-modal";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import Sidebar from "../../component/src/Sidebar";
-import {
-  IconMaps,
-  calendar_blue,
-  schedule_blue,
-  close,
-  warning,
-  banned,
-  default_image,
-} from "../../assets/png";
+import { close, warning, banned, default_image } from "../../assets/png";
 import {
   LikeRed,
   LikeEmpty,
-  OptionsVertWhite,
   Sharegreen,
   Arrowbackwhite,
   Mapsborder,
@@ -58,11 +50,12 @@ import DetailEvent from "../../graphQL/Query/Event/DetailEvent";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
-import AutoHeightImage from "react-native-auto-height-image";
+import { useSelector } from "react-redux";
 
 export default function EventDetail(props) {
   const [modalLogin, setModalLogin] = useState(false);
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   let [showside, setshowside] = useState(false);
   let [modalShare, setModalShare] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
@@ -177,7 +170,10 @@ export default function EventDetail(props) {
   };
 
   let [dataevent, setDataEvent] = useState({});
-  let token = props.route.params.token;
+  console.log(
+    "🚀 ~ file: EventDetail.js ~ line 173 ~ EventDetail ~ dataevent",
+    dataevent
+  );
   let event_id = props.route.params.event_id
     ? props.route.params.event_id
     : dataevent.id;
@@ -199,7 +195,7 @@ export default function EventDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -217,7 +213,7 @@ export default function EventDetail(props) {
   }, []);
 
   const addToPlan = () => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       props.route.params && props.route.params.iditinerary
         ? props.navigation.dispatch(
             StackActions.replace("ItineraryStack", {
@@ -225,7 +221,7 @@ export default function EventDetail(props) {
               params: {
                 Iditinerary: props.route.params.iditinerary,
                 Kiriman: event_id,
-                token: token,
+                token: tokenApps,
                 Position: "Event",
                 datadayaktif: props.route.params.datadayaktif,
               },
@@ -551,7 +547,7 @@ export default function EventDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -563,13 +559,13 @@ export default function EventDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       var tempData = { ...dataevent };
       tempData.liked = true;
       setDataEvent(tempData);
@@ -579,12 +575,6 @@ export default function EventDetail(props) {
             event_id: id,
           },
         });
-        if (loadingLike) {
-          Alert.alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (
@@ -595,14 +585,20 @@ export default function EventDetail(props) {
             tempData.liked = true;
             setDataEvent(tempData);
           } else {
-            throw new Error(response.data.setEvent_wishlist.message);
+            RNToasty.Show({
+              title: t("FailedLikeEvents"),
+              position: "bottom",
+            });
           }
         }
       } catch (error) {
+        RNToasty.Show({
+          title: t("FailedLikeEvents"),
+          position: "bottom",
+        });
         var tempData = { ...dataevent };
         tempData.liked = false;
         setDataEvent(tempData);
-        Alert.alert("" + error);
       }
     } else {
       setModalLogin(true);
@@ -610,7 +606,7 @@ export default function EventDetail(props) {
   };
 
   const _unliked = async (id) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       var tempData = { ...dataevent };
       tempData.liked = false;
       setDataEvent(tempData);
@@ -751,14 +747,9 @@ export default function EventDetail(props) {
 
   if (loading) {
     return (
-      <SkeletonPlaceholder speed={1000}>
-        <View
-          style={{
-            width: screenWidth,
-            height: screenWidth,
-          }}
-        />
-      </SkeletonPlaceholder>
+      <View style={{ alignItems: "center", marginTop: 50 }}>
+        <ActivityIndicator size="large" color="#209fae" />
+      </View>
     );
   }
 
@@ -1082,7 +1073,7 @@ export default function EventDetail(props) {
               >
                 <Button
                   onPress={() => {
-                    token ? setModalShare(true) : setModalLogin(true);
+                    tokenApps ? setModalShare(true) : setModalLogin(true);
                   }}
                   type="circle"
                   size="small"
@@ -1298,26 +1289,24 @@ export default function EventDetail(props) {
                 elevation: 3,
               }}
             >
-              {dataevent && dataevent.vendor ? (
+              {dataevent && dataevent?.vendor ? (
                 <View
                   style={{
                     flexDirection: "row",
                     paddingBottom: 5,
                   }}
                 >
-                  <CustomImage
-                    customStyle={{
-                      height: 45,
-
-                      marginRight: 10,
-                    }}
-                    customImageStyle={{ resizeMode: "contain" }}
+                  <Image
+                    resizeMode="cover"
+                    style={{ width: 70, height: 70, borderRadius: 4 }}
                     source={
-                      dataevent.vendor.cover
+                      dataevent
                         ? {
                             uri:
-                              "https://fa12.funtravia.com/" +
-                              dataevent.vendor.cover,
+                              dataevent?.vendor.cover.substr(0, 4) == "http"
+                                ? dataevent?.vendor.cover
+                                : "https://fa12.funtravia.com/" +
+                                  dataevent?.vendor.cover,
                           }
                         : default_image
                     }
@@ -1337,7 +1326,7 @@ export default function EventDetail(props) {
                         lineHeight: 20,
                       }}
                     >
-                      {dataevent.vendor.name}
+                      {dataevent?.vendor?.name}
                     </Text>
                   </View>
                 </View>

@@ -10,31 +10,24 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, StatusBar } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useQuery } from "@apollo/react-hooks";
 import Feedsearchbylocation from "../../graphQL/Query/Home/Feedsearchbylocation";
 import RenderGrid from "./RenderGrid";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function Feed(props) {
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const [searchtext, SetSearchtext] = useState("");
-  let [setting, setSetting] = useState();
   let latitude = props.route.params.latitude;
   let longitude = props.route.params.longitude;
   let keyword = props.route.params.keyword;
-  let [token, setToken] = useState("");
   let [refreshing, setRefreshing] = useState(false);
   let [aktifsearch, setAktifSearch] = useState(false);
   let { width, height } = Dimensions.get("screen");
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
   const _searchHandle = (text) => {
     SetSearchtext(text);
     _autocomplitLocation(text);
@@ -64,7 +57,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -90,19 +83,11 @@ export default function Feed(props) {
     return tmpData;
   };
   let feed_search_bylocation_paging = [];
-  if (
-    dataPost &&
-    dataPost &&
-    "datas" in dataPost.feed_search_bylocation_paging
-  ) {
+  if (dataPost && "datas" in dataPost?.feed_search_bylocation_paging) {
     feed_search_bylocation_paging = spreadData(
-      dataPost.feed_search_bylocation_paging.datas
+      dataPost?.feed_search_bylocation_paging?.datas
     );
   }
-
-  useEffect(() => {
-    loadAsync();
-  }, []);
 
   const _refresh = async () => {
     setRefreshing(true);
@@ -135,11 +120,11 @@ export default function Feed(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataPost.feed_search_bylocation_paging.page_info.hasNextPage) {
+    if (dataPost?.feed_search_bylocation_paging?.page_info?.hasNextPage) {
       return fetchMore({
         variables: {
           limit: 30,
-          offset: dataPost.feed_search_bylocation_paging.page_info.offset,
+          offset: dataPost?.feed_search_bylocation_paging?.page_info?.offset,
           keyword: keyword,
           orderby: "new",
         },

@@ -4,12 +4,7 @@ import {
   View,
   ScrollView,
   Image,
-  TextInput,
   Pressable,
-  BackHandler,
-  Alert,
-  Linking,
-  ActivityIndicator,
   ToastAndroid,
   Platform,
   Modal,
@@ -40,9 +35,12 @@ import UploadReviewWithoutImgs from "../../../graphQL/Mutation/Destination/Revie
 import { ReactNativeFile } from "apollo-upload-client";
 import { useMutation } from "@apollo/client";
 import ImageSlide from "../../../component/src/ImageSlide/index";
+import { StackActions } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 export default function DestinationUnescoReview(props) {
   const { t } = useTranslation();
+  let tokenApps = useSelector((data) => data.token);
   let [toggleCheckBox, setToggleCheckBox] = useState(false);
   let [dataImage, setDataImage] = useState([]);
   let [data] = useState(props.route.params.data);
@@ -101,8 +99,6 @@ export default function DestinationUnescoReview(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    // const unsubscribe = props.navigation.addListener("focus");
-    // return unsubscribe;
   }, [props.navigation]);
 
   const pickcamera = async () => {
@@ -161,20 +157,19 @@ export default function DestinationUnescoReview(props) {
     context: {
       headers: {
         "Content-Type": "multipart/form-data",
-        // "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
+
   const [
     mutationUpload,
     { loading: loadingup, data: dataup, error: errorup },
   ] = useMutation(UploadReviewWithoutImgs, {
     context: {
       headers: {
-        // "Content-Type": "multipart/form-data",
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -182,11 +177,7 @@ export default function DestinationUnescoReview(props) {
   const upload = async () => {
     setloading(true);
     if (defaultRate < 1) {
-      // if (Platform.OS === "android") {
-      //   ToastAndroid.show("rating harus di isi", ToastAndroid.LONG);
-      // }
       setloading(false);
-
       RNToasty.Show({
         title: t("rattingnoempty"),
         position: "bottom",
@@ -206,18 +197,31 @@ export default function DestinationUnescoReview(props) {
           if (response.data.create_review_without_img.code !== 200) {
             throw new Error(response.data.create_review_without_img.message);
           }
-
           setloading(false);
-
-          await props.navigation.push("DestinationUnescoDetail", {
-            id: data.id,
-            name: data.name,
-            token: props.route.params.token,
-            indexscroll: 1,
-          });
+          await props.navigation.dispatch(
+            StackActions.push("DestinationUnescoDetail", {
+              id: data.id,
+              name: data.name,
+              token: tokenApps,
+              indexscroll: 1,
+            })
+          );
+          // await props.navigation.push("DestinationUnescoDetail", {
+          //   id: data.id,
+          //   name: data.name,
+          //   token: tokenApps,
+          //   indexscroll: 1,
+          // });
         }
       } catch (err) {
-        Alert.alert("" + err);
+        console.log(
+          "🚀 ~ file: DestinationUnescoReview.js ~ line 223 ~ upload ~ err",
+          err
+        );
+        RNToasty.Show({
+          title: t("fileToWriteReview"),
+          position: "bottom",
+        });
       }
     } else {
       try {
@@ -239,22 +243,36 @@ export default function DestinationUnescoReview(props) {
           //       <ActivityIndicator />
           //     </View>
           //   );
-          // }, 2000);
+          // }, 2000);ion
           setloading(false);
           setDataImage([]);
           setText("");
           setDefaultRate(0);
-          await props.navigation.push("DestinationUnescoDetail", {
-            id: data.id,
-            name: data.name,
-            token: props.route.params.token,
-            indexscroll: 1,
-          });
+          await props.navigation.dispatch(
+            StackActions.push("DestinationUnescoDetail", {
+              id: data.id,
+              name: data.name,
+              token: tokenApps,
+              indexscroll: 1,
+            })
+          );
+          // await props.navigation.push("DestinationUnescoDetail", {
+          //   id: data.id,
+          //   name: data.name,
+          //   token: tokenApps,
+          //   indexscroll: 1,
+          // });
         }
       } catch (err) {
+        console.log(
+          "🚀 ~ file: DestinationUnescoReview.js ~ line 269 ~ upload ~ err",
+          err
+        );
         setloading(false);
-
-        Alert.alert("" + err);
+        RNToasty.Show({
+          title: t("fileToWriteReview"),
+          position: "bottom",
+        });
       }
     }
   };

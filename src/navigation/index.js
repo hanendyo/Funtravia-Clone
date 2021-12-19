@@ -22,7 +22,6 @@ import Africa from "../screens/Maps/src/continent/Africa";
 import listevent from "../screens/Event/ListEvent";
 import listeventhome from "../screens/Event/ListEventHome";
 import eventdetail from "../screens/Event/EventDetail";
-import SendEvent from "../screens/Event/SendEvent";
 import { SearchPage, SearchTab } from "../screens/Search";
 import SearchPg from "../screens/Search/SearchPg";
 import detailStack from "../screens/Destination/DetailDestination/Index";
@@ -30,12 +29,10 @@ import Notification from "../screens/Notification";
 import TravelGoal from "../screens/TravelGoal/Index";
 import TravelGoalDetail from "../screens/TravelGoal/TravelGoalDetail";
 import TravelGoalList from "../screens/TravelGoal/TravelGoalList";
-import SendTravelGoals from "../screens/TravelGoal/SendTravelGoals";
 import DestinationMaps from "../screens/Maps";
 // import DestinationStackNavigation from "./StackItems/DestinationStackNavigation";
 import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
-import SendDestination from "../screens/Destination/DetailDestinationNew/SendDestination";
 import SearchListEventHome from "../screens/Event/SearchListEventHome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -360,36 +357,6 @@ export default function MainStackNavigator({
           component={DestinationUnescoReview}
           options={{
             headerShown: false,
-            headerBackTitleVisible: false,
-            headerTintColor: "#FFF",
-          }}
-        />
-        <Tab.Screen
-          name="SendDestination"
-          component={SendDestination}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: "#209FAE" },
-            headerBackTitleVisible: false,
-            headerTintColor: "#FFF",
-          }}
-        />
-        <Tab.Screen
-          name="SendTravelGoals"
-          component={SendTravelGoals}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: "#209FAE" },
-            headerBackTitleVisible: false,
-            headerTintColor: "#FFF",
-          }}
-        />
-        <Tab.Screen
-          name="SendEvent"
-          component={SendEvent}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: "#209FAE" },
             headerBackTitleVisible: false,
             headerTintColor: "#FFF",
           }}

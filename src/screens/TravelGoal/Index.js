@@ -6,7 +6,6 @@ import {
   TextInput,
   SafeAreaView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Button,
   CustomImage,
@@ -98,7 +97,6 @@ export default function TravelGoal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: token?`Bearer ${token}`:null,
       },
     },
     onCompleted: () => {
@@ -119,7 +117,6 @@ export default function TravelGoal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: token?`Bearer ${token}`:null,
       },
     },
     onCompleted: () => {
@@ -140,7 +137,6 @@ export default function TravelGoal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: token?`Bearer ${token}`:null,
       },
     },
     onCompleted: () => {

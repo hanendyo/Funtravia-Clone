@@ -29,7 +29,6 @@ export default function RenderAlbum({
 }) {
   let videoView = useRef(null);
   const [indexAktif, setIndexAktive] = useState(0);
-  console.log("data", data);
   const { t } = useTranslation();
   const goToItinerary = (data) => {
     token
@@ -109,7 +108,7 @@ export default function RenderAlbum({
                     ? P
                     : S,
                 borderRadius: 15,
-                marginHorizontal: 10,
+                alignSelf: "center",
               }}
               resizeMode="cover"
               muted={muted}
@@ -118,6 +117,7 @@ export default function RenderAlbum({
               }
             />
           </TouchableWithoutFeedback>
+
           <View
             style={{
               // opacity: opacity,
@@ -160,16 +160,61 @@ export default function RenderAlbum({
               <Unmute width="15" height="15" />
             )}
           </Pressable>
+          {data.album ? (
+            <Pressable
+              // onPress={() =>
+              //   data.itinerary !== null ? goToItinerary(data) : null
+              // }
+              onPress={() => {
+                token
+                  ? props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: data?.album?.id,
+                        type: null,
+                        token: token,
+                        judul: data?.album?.title,
+                      },
+                    })
+                  : setModalLogin(true);
+              }}
+              style={({ pressed }) => [
+                {
+                  position: "absolute",
+                  top: 15,
+                  right: 20,
+                  backgroundColor: "#040404",
+                  opacity: pressed ? 1 : 0.8,
+                  //   paddingHorizontal: 15,
+                  borderRadius: 14,
+                  height: 28,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                },
+              ]}
+            >
+              <AlbumFeed
+                height={15}
+                width={15}
+                style={{
+                  marginHorizontal: 15,
+                  marginVertical: 5,
+                }}
+              />
+            </Pressable>
+          ) : null}
           <View
             style={{
               position: "absolute",
               top: 15,
-              right: 25,
+              // right: 25,
+              right: data.album ? 70 : 20,
               backgroundColor: "#040404",
               opacity: 0.8,
-              paddingHorizontal: 15,
               borderRadius: 14,
               height: 28,
+              width: 50,
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
@@ -178,11 +223,12 @@ export default function RenderAlbum({
             {/* <AllPostWhite width={13} height={13} /> */}
             <Text
               type="bold"
+              size="description"
               style={{
                 color: "white",
               }}
             >
-              {indexAktif + 1} {"/"} {data.assets.length}
+              {indexAktif + 1} {"/"} {data?.assets.length}
             </Text>
           </View>
         </>
@@ -211,9 +257,6 @@ export default function RenderAlbum({
         >
           {data.album ? (
             <Pressable
-              // onPress={() =>
-              //   data.itinerary !== null ? goToItinerary(data) : null
-              // }
               onPress={() => {
                 token
                   ? props.navigation.push("ProfileStack", {
@@ -236,7 +279,7 @@ export default function RenderAlbum({
                   opacity: pressed ? 1 : 0.8,
                   //   paddingHorizontal: 15,
                   borderRadius: 14,
-                  height: 27,
+                  height: 28,
                   justifyContent: "center",
                   alignItems: "center",
                   flexDirection: "row",
@@ -261,9 +304,9 @@ export default function RenderAlbum({
               right: data.album ? 60 : 20,
               backgroundColor: "#040404",
               opacity: 0.8,
-              paddingHorizontal: 10,
               borderRadius: 14,
               height: 28,
+              width: 50,
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
@@ -278,7 +321,7 @@ export default function RenderAlbum({
                 // marginLeft: 5,
               }}
             >
-              {indexAktif + 1} {"/"} {data.assets.length}
+              {indexAktif + 1} {"/"} {data?.assets.length}
             </Text>
           </View>
         </FunImageBackground>
@@ -306,7 +349,7 @@ export default function RenderAlbum({
                 poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item.filepath,
+                  uri: item?.filepath,
                 }}
                 innerRef={(ref) => {
                   videoView = ref;

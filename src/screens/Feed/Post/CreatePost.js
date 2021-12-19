@@ -7,12 +7,9 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
   Image,
-  SafeAreaView,
   Pressable,
   FlatList,
-  TouchableHighlight,
   TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,7 +30,6 @@ import LocationSelector from "./LocationSelector";
 import { StackActions } from "@react-navigation/routers";
 import {
   PinHijau,
-  Xgray,
   Arrowbackwhite,
   Xgrey,
   AlbumFeedBiru,
@@ -49,6 +45,7 @@ import CreateAlbum from "./CreateAlbum";
 import { RNToasty } from "react-native-toasty";
 import DashedLine from "react-native-dashed-line";
 import { useIsFocused } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 const PostMut = gql`
   mutation(
@@ -86,9 +83,8 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("🚀 ~ file: CreatePost.js ~ line 89 ~ CreatePost ~ props", props);
+  const tokenApps = useSelector((data) => data.token);
   const isFocused = useIsFocused();
-  const [token, setToken] = useState(props?.route.params.token);
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
   const [Img, setImg] = useState("");
@@ -120,7 +116,7 @@ export default function CreatePost(props) {
     context: {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -168,7 +164,7 @@ export default function CreatePost(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -293,10 +289,7 @@ export default function CreatePost(props) {
   };
 
   const loadAsync = async () => {
-    let access_token = await AsyncStorage.getItem("access_token");
-    setToken(access_token);
     LoadUserProfile();
-
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
   };
@@ -359,7 +352,6 @@ export default function CreatePost(props) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            // Authorization: 'Bearer ' + token,
             "Content-Type": "application/json",
           },
           // body: 'originLocationCode=SYD&destinationLocationCode=BKK',
@@ -716,7 +708,7 @@ export default function CreatePost(props) {
                           screen: "CreateListAlbum",
                           params: {
                             user_id: setting?.user_id,
-                            token: token,
+                            token: tokenApps,
                             file: props.route.params.file,
                             type: props.route.params.type,
                             location: props.route.params.location,

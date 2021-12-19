@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, StatusBar, FunImage } from "../../component";
 import { NetworkStatus } from "@apollo/client";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
@@ -18,22 +17,16 @@ import { useQuery } from "@apollo/react-hooks";
 import Feedsearchbytag from "../../graphQL/Query/Home/Feedsearchbytag";
 import RenderGrid from "./RenderGrid";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function Feed(props) {
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   const [searchtext, SetSearchtext] = useState("");
-  let [setting, setSetting] = useState();
   let keyword = props.route.params.keyword;
-  let [token, setToken] = useState("");
   let [refreshing, setRefreshing] = useState(false);
   let [aktifsearch, setAktifSearch] = useState(false);
   let { width, height } = Dimensions.get("screen");
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
   const _searchHandle = (text) => {
     SetSearchtext(text);
     _autocomplitLocation(text);
@@ -62,7 +55,7 @@ export default function Feed(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -95,15 +88,11 @@ export default function Feed(props) {
     return tmpData;
   };
   let feed_search_bytag_paging = [];
-  if (dataPost && dataPost && "datas" in dataPost.feed_search_bytag_paging) {
+  if (dataPost && dataPost && "datas" in dataPost?.feed_search_bytag_paging) {
     feed_search_bytag_paging = spreadData(
-      dataPost.feed_search_bytag_paging.datas
+      dataPost?.feed_search_bytag_paging?.datas
     );
   }
-
-  useEffect(() => {
-    loadAsync();
-  }, []);
 
   const refresh = networkStatus === NetworkStatus.refetch;
   const _refresh = async () => {
@@ -137,11 +126,11 @@ export default function Feed(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataPost.feed_search_bytag_paging.page_info.hasNextPage) {
+    if (dataPost?.feed_search_bytag_paging?.page_info?.hasNextPage) {
       return fetchMore({
         variables: {
           limit: 30,
-          offset: dataPost.feed_search_bytag_paging.page_info.offset,
+          offset: dataPost?.feed_search_bytag_paging?.page_info?.offset,
           keyword: keyword,
           orderby: "new",
         },
@@ -173,7 +162,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[2].id,
                 },
@@ -199,7 +188,7 @@ export default function Feed(props) {
             <Pressable
               onPress={() =>
                 props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                  screen: "CommentPost",
                   params: {
                     post_id: item[0].id,
                   },
@@ -224,7 +213,7 @@ export default function Feed(props) {
             <Pressable
               onPress={() =>
                 props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                  screen: "CommentPost",
                   params: {
                     post_id: item[1].id,
                   },
@@ -262,7 +251,7 @@ export default function Feed(props) {
             <Pressable
               onPress={() =>
                 props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                  screen: "CommentPost",
                   params: {
                     post_id: item[0].id,
                   },
@@ -287,7 +276,7 @@ export default function Feed(props) {
             <Pressable
               onPress={() =>
                 props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                  screen: "CommentPost",
                   params: {
                     post_id: item[1].id,
                   },
@@ -313,7 +302,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[2].id,
                 },
@@ -349,7 +338,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[0].id,
                 },
@@ -374,7 +363,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[1].id,
                 },
@@ -399,7 +388,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[2].id,
                 },
@@ -435,7 +424,7 @@ export default function Feed(props) {
           <Pressable
             onPress={() =>
               props.navigation.navigate("FeedStack", {
-                screen: "CommentsById",
+                screen: "CommentPost",
                 params: {
                   post_id: item[0].id,
                 },
@@ -461,7 +450,7 @@ export default function Feed(props) {
             <Pressable
               onPress={() =>
                 props.navigation.navigate("FeedStack", {
-                  screen: "CommentsById",
+                  screen: "CommentPost",
                   params: {
                     post_id: item[1].id,
                   },

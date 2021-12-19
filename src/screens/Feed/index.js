@@ -7,15 +7,15 @@ import {
   Pressable,
   Modal,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "../../component";
 import { PostButton, SearchWhite, Xgray } from "../../assets/svg";
 import FeedList from "./FeedList";
 import { useTranslation } from "react-i18next";
-import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 export default function Feed(props) {
   const { t } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
     headerShown: true,
@@ -51,62 +51,12 @@ export default function Feed(props) {
     ),
   };
 
-  // const GetFeedPost = gql`
-  // 	query($offset: Int) {
-  // 		feed_post(limit: 5, offset:$offset) {
-  // 			id
-  // 			caption
-  // 			longitude
-  // 			latitude
-  // 			location_name
-  // 			liked
-  // 			comment_count
-  // 			response_count
-  // 			created_at
-  // 			updated_at
-  // 			assets {
-  // 				id
-  // 				type
-  // 				filepath
-  // 			}
-  // 			user {
-  // 				id
-  // 				username
-  // 				first_name
-  // 				last_name
-  // 				picture
-  // 				ismyfeed
-  // 			}
-  // 		}
-  // 	}
-  // `;
-
-  const [token, setToken] = useState();
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    // if (tkn == null) {
-    //   props.navigation.navigate("AuthStack", {
-    //     screen: "LoginScreen",
-    //   });
-    //   RNToasty.Show({
-    //     title: t("pleaselogin"),
-    //     position: "bottom",
-    //   });
-    // }
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-
-    const unsubscribe = props.navigation.addListener("focus", (data) => {
-      loadAsync();
-    });
-    return unsubscribe;
   }, [props.navigation]);
 
   const createPost = () => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       props.navigation.navigate("FeedStack", {
         screen: "Post",
       });
@@ -115,7 +65,7 @@ export default function Feed(props) {
     }
   };
 
-  if (token !== "hshs") {
+  if (tokenApps !== "hshs") {
     return (
       <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
         <Modal
@@ -266,17 +216,17 @@ export default function Feed(props) {
             </View>
           </View>
         </Modal>
-        <FeedList props={props} token={token} />
+        <FeedList props={props} token={tokenApps} />
         <Pressable style={styles.fab} onPress={createPost}>
           <PostButton height={50} width={50} />
         </Pressable>
       </View>
     );
   }
-  if (token && token !== null && token !== "") {
+  if (tokenApps) {
     return (
       <View style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-        {token ? (
+        {tokenApps ? (
           <Pressable style={styles.fab} onPress={createPost}>
             <PostButton height={50} width={50} />
           </Pressable>

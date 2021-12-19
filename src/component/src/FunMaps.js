@@ -38,13 +38,10 @@ export default function FunMaps({
           fromUrl: url,
           toFile: path,
         }).promise.then((res) => {
-          console.log("res", res.statusCode);
           if (res.statusCode === "200") {
-            console.log("res", res.statusCode);
             setStatus(true);
             setTimeout(() => setLoading(false), 1000);
           } else {
-            console.log("res", res.statusCode);
             setStatus(false);
             setLoading(false);
             setError(true);
@@ -61,9 +58,7 @@ export default function FunMaps({
     return <ActivityIndicator />;
   }
 
-  console.log("status", status);
   if (status) {
-    console.log("fromcarche");
     return (
       <SvgCssUri
         uri={path}
@@ -73,7 +68,6 @@ export default function FunMaps({
       />
     );
   } else {
-    console.log("fromservice");
     return (
       <SvgCssUri
         uri={url}

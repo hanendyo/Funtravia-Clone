@@ -1,25 +1,16 @@
 import React from "react";
-import {
-  CardStyleInterpolators,
-  createStackNavigator,
-  TransitionPresets,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Postscreen from "../../screens/Feed/Post";
 import CreatePostScreen from "../../screens/Feed/Post/CreatePost";
-// import CommentPost from "../../screens/Feed/Post/Comments";
 import CommentPost from "../../screens/Feed/Post/CommentsV2";
 import EditPost from "../../screens/Feed/Post/EditPost";
-import SinglePost from "../../screens/Feed/Post/SinglePost";
-import CommentsById from "../../screens/Feed/Post/CommentsById";
 import SearchPageFeed from "../../screens/Feed/SearchPageFeed";
-// import SearchPageFeed from "../../screens/Feed/SearchPageFeedcopy";
 import SearchFeedByTag from "../../screens/Feed/SearchFeedByTag";
 import SearchFeedByLocation from "../../screens/Feed/SearchFeedByLocation";
 import CreateListAlbum from "../../screens/Feed/Post/CreateAlbum";
 import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
 import Crop from "../../screens/Feed/Post/Crop";
-import SendPost from "../../screens/Feed/Post/SendPost";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -66,29 +57,10 @@ export default function FeedStackNavigation() {
         }}
       />
       <FeedStack.Screen
-        name="SinglePost"
-        component={SinglePost}
-        options={{
-          headerShown: false,
-          headerTintColor: "white",
-          headerBackTitleVisible: false,
-        }}
-      />
-      <FeedStack.Screen
         name="CreatePostScreen"
         component={CreatePostScreen}
         options={{
           headerShown: false,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <FeedStack.Screen
-        name="CommentsById"
-        component={CommentsById}
-        options={{
-          headerTitle: "",
-          headerTransparent: false,
-          headerTintColor: "white",
           headerBackTitleVisible: false,
         }}
       />
@@ -159,16 +131,6 @@ export default function FeedStackNavigation() {
       <FeedStack.Screen
         name="Crop"
         component={Crop}
-        options={{
-          headerTitle: "",
-          // headerTransparent: true,
-          headerTintColor: "white",
-          headerBackTitleVisible: false,
-        }}
-      />
-      <FeedStack.Screen
-        name="SendPost"
-        component={SendPost}
         options={{
           headerTitle: "",
           // headerTransparent: true,

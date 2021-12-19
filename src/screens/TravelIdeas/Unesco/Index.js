@@ -11,7 +11,6 @@ import {
   View,
   Pressable,
   FlatList,
-  TouchableOpacity,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { unesco } from "../../../assets/png";
@@ -50,11 +49,12 @@ const SafeStatusBar = Platform.select({
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 const deviceId = DeviceInfo.getModel();
+import { useSelector } from "react-redux";
 
 export default function Unesco({ navigation, route }) {
   let [tambahantitle, setTambahanTitle] = useState(0);
+  let tokenApps = useSelector((data) => data.token);
   let [tambahan, setTambahan] = useState(0);
-  let [token, setToken] = useState(route.params.token);
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
   const HeaderHeight = Platform.select({
@@ -93,18 +93,19 @@ export default function Unesco({ navigation, route }) {
     error: errorcountry,
     refetch: refetchcountry,
   } = useQuery(CountryListSrcUnesco, {
+    fetchPolicy: "network-only",
     variables: {
       continent_id: null,
       keyword: "",
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       SetselectedCountry({
-        id: datacountry.list_country_src_unesco[0].id,
-        name: datacountry.list_country_src_unesco[0].name,
+        id: datacountry?.list_country_src_unesco[0].id,
+        name: datacountry?.list_country_src_unesco[0].name,
       });
-      if (selectedCountry) {
-        getUnesco();
-      }
+      // if (selectedCountry) {
+      //   getUnesco();
+      // }
     },
   });
 
@@ -152,7 +153,7 @@ export default function Unesco({ navigation, route }) {
     extrapolate: "clamp",
   });
 
-  const [getUnesco, { data, loading, error, refetch }] = useLazyQuery(
+  const [getUnesco, { data, loading, error }] = useLazyQuery(
     ListDestinationByUnesco,
     {
       variables: {
@@ -161,11 +162,15 @@ export default function Unesco({ navigation, route }) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
         },
       },
     }
   );
+
+  useEffect(() => {
+    getUnesco();
+  }, []);
 
   let listdestinasi_unesco = [];
   if (data && data.listdestinasi_unesco) {
@@ -186,7 +191,7 @@ export default function Unesco({ navigation, route }) {
     },
     // fetchPolicy: "network-only",
     onCompleted: () => {
-      SetDataBanner(dataBanner.get_banner);
+      SetDataBanner(dataBanner?.get_banner);
     },
   });
 
@@ -671,7 +676,7 @@ export default function Unesco({ navigation, route }) {
             navigation.navigate("DestinationUnescoDetail", {
               id: item.id,
               name: item.name,
-              token: token,
+              token: tokenApps,
             })
           }
           style={{
@@ -845,7 +850,7 @@ export default function Unesco({ navigation, route }) {
                 }}
               >
                 <ActivityIndicator
-                  animating={loadingPost}
+                  animating={loadingcountry}
                   size="large"
                   color="#209fae"
                 />
@@ -866,7 +871,13 @@ export default function Unesco({ navigation, route }) {
             minHeight: height - SafeStatusBar + HeaderHeight,
           }}
         >
-          <Kosong height={width} width={width} />
+          {loadingcountry && loading ? (
+            <View style={{ marginTop: 50, alignItems: "center" }}>
+              <ActivityIndicator color="#209fae" size="large" />
+            </View>
+          ) : (
+            <Kosong height={width} width={width} />
+          )}
         </View>
       );
     }

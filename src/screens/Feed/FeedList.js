@@ -26,6 +26,7 @@ import {
   UploadFailed,
   ReuploadFeed,
   XFailedFeed,
+  Upload100,
 } from "../../assets/svg";
 import { Bg_soon } from "../../assets/png";
 import { gql } from "apollo-boost";
@@ -48,7 +49,6 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import RemoveAlbum from "../../graphQL/Mutation/Album/RemoveAlbum";
 import Ripple from "react-native-material-ripple";
 import { RNToasty } from "react-native-toasty";
-import * as Progress from "react-native-progress";
 import moment from "moment";
 import LoadingFeed from "../../component/src/LoaadingFeed";
 import { useSelector } from "react-redux";
@@ -100,10 +100,6 @@ const PostMut = gql`
 export default function FeedList({ props, token }) {
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
-  console.log(
-    "🚀 ~ file: FeedList.js ~ line 103 ~ FeedList ~ tokenApps",
-    tokenApps
-  );
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
@@ -112,6 +108,7 @@ export default function FeedList({ props, token }) {
   const [soon, setSoon] = useState(false);
   const [uploadFailed, setUploadFailed] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [successAfterRefetch, setSuccessAfterRefetch] = useState(false);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -173,11 +170,6 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  // console.log(errorMutationPost);
-  console.log(
-    "🚀 ~ file: FeedList.js ~ line 172 ~ FeedList ~ errorMutationPost",
-    errorMutationPost
-  );
   let [tempDataLoading, setTempDataLoading] = useState(false);
   let [timeMiliSecond, setTimeMiliSecond] = useState(0);
   const [count, setCount] = useState(0);
@@ -241,7 +233,13 @@ export default function FeedList({ props, token }) {
         if (response.data.create_post.code === 200) {
           refetch();
           setTimeout(() => {
+            setSuccessAfterRefetch(true);
+            setUploadSuccess(true);
+          }, 3000);
+          await setSuccessAfterRefetch(false);
+          setTimeout(() => {
             setTempDataLoading(false);
+            setSuccessAfterRefetch(false);
             setUploadSuccess(true);
             setTimeout(() => {
               setLoaded(false);
@@ -276,7 +274,7 @@ export default function FeedList({ props, token }) {
 
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (tokenApps) {
           setactivelike(false);
           let tempData = [...dataFeed];
           let tempData_all = { ...tempData[index] };
@@ -327,7 +325,7 @@ export default function FeedList({ props, token }) {
     let tempData = [...dataFeed];
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (tokenApps) {
           setactivelike(false);
           let tempData = [...dataFeed];
           let tempData_all = { ...tempData[index] };
@@ -466,7 +464,7 @@ export default function FeedList({ props, token }) {
     setModalhapus(false);
     setModalmenu(false);
 
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       try {
         let response = await Mutationdeletepost({
           variables: {
@@ -526,9 +524,7 @@ export default function FeedList({ props, token }) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    let tkn = await AsyncStorage.getItem("access_token");
     setSetting(JSON.parse(setsetting));
-    // durationTime;
     await LoadFollowing();
   };
 
@@ -592,7 +588,7 @@ export default function FeedList({ props, token }) {
       screen: "CommentPost",
       params: {
         data: data,
-        token: token,
+        token: tokenApps,
         ref: ref,
         _liked: (e) => _liked(e),
         _unliked: (e) => _unliked(e),
@@ -638,14 +634,14 @@ export default function FeedList({ props, token }) {
   };
 
   const goToItinerary = (data) => {
-    token
+    tokenApps
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
             itintitle: data.album.itinerary.name,
             country: data.album.itinerary.id,
             dateitin: "",
-            token: token,
+            token: tokenApps,
             status: "",
             index: 1,
             datadayaktif: data.day,
@@ -699,7 +695,7 @@ export default function FeedList({ props, token }) {
   const _unfollow = async (id, status) => {
     setModalmenuother(false);
 
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -746,7 +742,7 @@ export default function FeedList({ props, token }) {
 
   const _follow = async (id, status) => {
     setModalmenuother(false);
-    if (token) {
+    if (tokenApps) {
       try {
         let response = await FollowMutation({
           variables: {
@@ -782,7 +778,7 @@ export default function FeedList({ props, token }) {
   let status = 0;
 
   if (dataFeed?.length > 11) {
-    if (!token || token == undefined) {
+    if (tokenApps) {
       status = 1;
     } else {
       status = 0;
@@ -845,7 +841,7 @@ export default function FeedList({ props, token }) {
     {
       percentage: 100,
       color: "#209fae",
-      max: 100,
+      max: 99,
     },
   ];
 
@@ -1341,12 +1337,12 @@ export default function FeedList({ props, token }) {
                   }}
                   onPress={() => {
                     setModalmenu(false),
-                      token
+                      tokenApps
                         ? props.navigation.push("FeedStack", {
                             screen: "CreateListAlbum",
                             params: {
                               user_id: setting?.user_id,
-                              token: props.route.params.token,
+                              token: tokenApps,
                               file: "",
                               type: "",
                               location: "",
@@ -1650,7 +1646,7 @@ export default function FeedList({ props, token }) {
       {loaded ? (
         <View
           style={{
-            backgroundColor: "#FFF",
+            backgroundColor: "#fff",
             width: Dimensions.get("screen").width - 20,
             marginHorizontal: 10,
             borderRadius: 5,
@@ -1662,6 +1658,45 @@ export default function FeedList({ props, token }) {
             height: 70,
           }}
         >
+          {successAfterRefetch ? (
+            <View
+              style={{
+                position: "absolute",
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: "#fff",
+                width: Dimensions.get("screen").width - 20,
+                borderRadius: 10,
+                zIndex: 10,
+                left: -5,
+              }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderColor: "#fff",
+                  marginLeft: 20,
+                  marginVertical: 10,
+                }}
+              >
+                <Upload100
+                  height="55"
+                  width="55"
+                  // style={{ marginVertical: 20 }}
+                />
+              </View>
+              <View style={{ marginLeft: 15 }}>
+                <Text type={"bold"} size={"label"}>
+                  Uploading
+                </Text>
+                <Text>{`${props?.route?.params?.assets?.length} / ${props?.route?.params?.assets?.length}`}</Text>
+              </View>
+            </View>
+          ) : null}
           {tempDataLoading ? (
             <>
               <View
@@ -1888,7 +1923,7 @@ export default function FeedList({ props, token }) {
             >
               <Pressable
                 onPress={() => {
-                  token
+                  tokenApps
                     ? item.node.user.id !== setting?.user?.id
                       ? props.navigation.push("ProfileStack", {
                           screen: "otherprofile",
@@ -1899,7 +1934,7 @@ export default function FeedList({ props, token }) {
                       : props.navigation.push("ProfileStack", {
                           screen: "ProfileTab",
                           params: {
-                            token: token,
+                            token: tokenApps,
                           },
                         })
                     : setModalLogin(true);
@@ -1921,7 +1956,7 @@ export default function FeedList({ props, token }) {
                     marginLeft: 15,
                   }}
                   onPress={() => {
-                    token
+                    tokenApps
                       ? item.node.user.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
                             screen: "otherprofile",
@@ -1932,7 +1967,7 @@ export default function FeedList({ props, token }) {
                         : props.navigation.push("ProfileStack", {
                             screen: "ProfileTab",
                             params: {
-                              token: token,
+                              token: tokenApps,
                             },
                           })
                       : setModalLogin(true);
@@ -1947,7 +1982,7 @@ export default function FeedList({ props, token }) {
                 >
                   <Text
                     onPress={() => {
-                      token
+                      tokenApps
                         ? item.node.user.id !== setting?.user?.id
                           ? props.navigation.push("ProfileStack", {
                               screen: "otherprofile",
@@ -1958,7 +1993,7 @@ export default function FeedList({ props, token }) {
                           : props.navigation.push("ProfileStack", {
                               screen: "ProfileTab",
                               params: {
-                                token: token,
+                                token: tokenApps,
                               },
                             })
                         : setModalLogin(true);
@@ -2017,7 +2052,7 @@ export default function FeedList({ props, token }) {
               </Pressable>
               <TouchableOpacity
                 onPress={() =>
-                  token
+                  tokenApps
                     ? OptionOpen(item.node, index, setting)
                     : setModalLogin(true)
                 }
@@ -2052,7 +2087,7 @@ export default function FeedList({ props, token }) {
                   muted={muted}
                   isFocused={isFocused}
                   setMuted={(e) => setMuted(e)}
-                  token={token}
+                  token={tokenApps}
                   setModalLogin={(e) => setModalLogin(e)}
                 />
               ) : (
@@ -2063,7 +2098,7 @@ export default function FeedList({ props, token }) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
-                  token={token}
+                  token={tokenApps}
                   setModalLogin={(e) => setModalLogin(e)}
                 />
               )}
@@ -2173,7 +2208,7 @@ export default function FeedList({ props, token }) {
 
                 <Button
                   onPress={() =>
-                    token
+                    tokenApps
                       ? // props.navigation.push("FeedStack", {
                         //   screen: "SendPost",
                         //   params: {
