@@ -347,7 +347,7 @@ export default function CardItinerary({
                           <Text
                             type="bold"
                             size="description"
-                            style={{ color: "#209FAE" }}
+                            style={{ color: "#209FAE", marginBottom: 3 }}
                             numberOfLines={1}
                           >
                             {item?.categori?.name

@@ -15,14 +15,12 @@ import {
   Arrowbackios,
   Arrowbackwhite,
   LikeEmpty,
-  Search,
   SearchWhite,
   Xblue,
 } from "../../assets/svg";
 import PopularJournal from "../../graphQL/Query/Journal/PopularJournal";
 import JournalList from "../../graphQL/Query/Journal/JournalList";
 import { useLazyQuery, useQuery } from "@apollo/react-hooks";
-import { Truncate } from "../../component";
 import { dateFormatMonthYears } from "../../component/src/dateformatter";
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
@@ -31,6 +29,7 @@ import { TextInput } from "react-native-gesture-handler";
 export default function JournalCategory(props) {
   const { t } = useTranslation();
   let [category, setCategory] = useState(props.route.params.category);
+  let [select, setSelect] = useState(true);
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
   let [indekScrollto, setIndeksScrollto] = useState(0);
@@ -120,8 +119,8 @@ export default function JournalCategory(props) {
   });
 
   let list = [];
-  if (dataList && "datas" in dataList.journal_list) {
-    list = dataList.journal_list.datas;
+  if (dataList && "datas" in dataList?.journal_list) {
+    list = dataList?.journal_list?.datas;
   }
 
   const [refreshing, setRefreshing] = useState(false);
@@ -231,6 +230,16 @@ export default function JournalCategory(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  const selectCategory = (id) => {
+    if (category == id) {
+      setSelect(!select);
+      setCategory(null);
+    } else {
+      setSelect(true);
+      setCategory(id);
+    }
+  };
+
   {
     /* ======================================= Render All ====================================================*/
   }
@@ -264,8 +273,6 @@ export default function JournalCategory(props) {
               flex: 1,
               borderBottomLeftRadius: 5,
               borderTopLeftRadius: 5,
-              // paddingHorizontal: 10,
-              marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
@@ -347,15 +354,15 @@ export default function JournalCategory(props) {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <Pressable onPress={() => setCategory(item.id)}>
+              <Pressable onPress={() => selectCategory(item.id)}>
                 <Text
                   style={{
                     padding: 10,
                     backgroundColor:
-                      category === item.id ? "#209FAE" : "#F6F6F6",
+                      category === item.id && select ? "#209FAE" : "#F6F6F6",
                     marginLeft: 15,
                     borderRadius: 5,
-                    color: category === item.id ? "white" : "black",
+                    color: category === item.id && select ? "white" : "black",
                   }}
                   size={"label"}
                   type={"bold"}

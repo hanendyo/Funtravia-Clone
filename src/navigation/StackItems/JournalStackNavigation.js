@@ -4,7 +4,6 @@ import Index from "../../screens/Journal/index";
 import DetailJournal from "../../screens/Journal/DetailJournal";
 import JournalCategory from "../../screens/Journal/JournalCategory";
 import JournalComment from "../../screens/Journal/JournalComment";
-import SendJournal from "../../screens/Journal/SendJournal";
 const JournalStack = createStackNavigator();
 export default function JournalStackNavigation() {
   return (
@@ -34,16 +33,6 @@ export default function JournalStackNavigation() {
       <JournalStack.Screen
         name="JournalComment"
         component={JournalComment}
-        options={{
-          headerTitle: "",
-          headerTransparent: false,
-          headerTintColor: "white",
-          headerBackTitleVisible: true,
-        }}
-      />
-      <JournalStack.Screen
-        name="SendJournal"
-        component={SendJournal}
         options={{
           headerTitle: "",
           headerTransparent: false,
