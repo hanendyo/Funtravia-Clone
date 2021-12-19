@@ -42,7 +42,7 @@ import { RNToasty } from "react-native-toasty";
 import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
-import {useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 
 export default function ItinerarySearchCategory(props) {
   let [actives, setActives] = useState("Itinerary");
@@ -142,9 +142,10 @@ export default function ItinerarySearchCategory(props) {
       cities: null,
       rating: null,
       orderby: null,
-      limit: 5,
+      limit: 50,
       offset: 0,
     },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -388,7 +389,7 @@ export default function ItinerarySearchCategory(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props?.route?.params?.token
+        Authorization: props?.route?.params?.token,
       },
     },
     onCompleted: () => setDataAlbums(dataAlbum?.albums_itinerary_home?.datas),
@@ -841,6 +842,7 @@ export default function ItinerarySearchCategory(props) {
   const pilih = (id) => {
     if (idDataCategory == id) {
       setSelect(!select);
+      setidDataCategory(null);
     } else {
       setSelect(true);
       setidDataCategory(id);
@@ -1170,7 +1172,7 @@ export default function ItinerarySearchCategory(props) {
                   )}
                   <Text
                     size="label"
-                    type={actives == "Itinerary" ? "bold" : "light"}
+                    type={actives == "Itinerary" ? "bold" : "regular"}
                     style={{
                       color: actives == "Itinerary" ? "#209FAE" : "#464646",
                       paddingBottom: 3,

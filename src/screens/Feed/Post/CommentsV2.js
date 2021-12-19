@@ -694,17 +694,21 @@ export default function Comments(props) {
               setDataComment(tempData);
               scroll_to();
               try {
-                if (props?.route?.params?.countKoment) {
+                if (props?.route?.params && props?.route?.params?.countKoment) {
                   props?.route?.params?.countKoment(tempDataPost.id);
                 }
               } catch (err) {
-                console.warn(error);
+                console.warn(err);
               }
             } else {
               console.warn(response.data.comment_post.message);
             }
           }
         } catch (error) {
+          console.log(
+            "🚀 ~ file: CommentsV2.js ~ line 708 ~ comment ~ error",
+            error
+          );
           tempData.splice(idx, 1);
           setDataComment(tempData);
           RNToasty.Show({

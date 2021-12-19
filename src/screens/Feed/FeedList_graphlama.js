@@ -473,7 +473,6 @@ export default function FeedList({ props, token }) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    let tkn = await AsyncStorage.getItem("access_token");
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
   };

@@ -29,7 +29,6 @@ export default function Fillter({ fillter, sendBack }) {
   };
 
   const _setSearch = async (x) => {
-    // console.log(x);
     let tempData = [];
     for (let i of dataFillter) {
       i.checked ? tempData.push(i.id) : null;
@@ -48,7 +47,6 @@ export default function Fillter({ fillter, sendBack }) {
   };
 
   const sendBackData = (data) => {
-    // console.log(data);
     let tempData = [];
     for (let i of data) {
       i.checked ? tempData.push(i.id) : null;
@@ -68,7 +66,6 @@ export default function Fillter({ fillter, sendBack }) {
   };
 
   const _renderFilter = ({ item, index }) => {
-    // console.log(item);
     if (item.checked == true) {
       return (
         <Button

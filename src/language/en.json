@@ -861,5 +861,6 @@
   "description4": "Enjoying the journey has never been easier. Now, there is funtravia application. Which is increasingly spoiling your traveling. Just in your hands! Download on App Store & Google Play Mobile phone.",
   "fileTolarge": "File is too big",
   "fileToWriteReview": "Failed to write a review",
-  "searchByAccount": "Search By Account"
+  "searchByAccount": "Search By Account",
+  "failedCommentJournal": "Failed comment this journal"
 }

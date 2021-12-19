@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Modal as ModalRN,
-  ImageBackground,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, FunIcon, Text, CardItinerary } from "../../../component";
@@ -52,7 +51,6 @@ export default function ItineraryPopuler(props) {
   let [setting, setSetting] = useState();
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
-  let [select, setSelect] = useState(true);
   let [dataAlbums, setDataAlbums] = useState(null);
   let [search, setSearch] = useState({
     keyword: "",
@@ -157,14 +155,16 @@ export default function ItineraryPopuler(props) {
   } = useQuery(Populer_, {
     variables: {
       keyword: search.keyword,
-      type: select ? idDataCategory : null,
+      // type: select ? idDataCategory : null,
+      type: idDataCategory,
       countries: null,
       cities: null,
       rating: null,
       orderby: null,
-      limit: 5,
+      limit: 50,
       offset: 0,
     },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -173,7 +173,7 @@ export default function ItineraryPopuler(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setlist_populer(dataPopuler.itinerary_list_populer.datas);
+      setlist_populer(dataPopuler?.itinerary_list_populer?.datas);
     },
   });
 
@@ -265,11 +265,11 @@ export default function ItineraryPopuler(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    // refetch();
     const unsubscribe = props.navigation.addListener("focus", () => {
       Refresh();
       loadAsync();
       // QueryFotoAlbum();
-      // refetch();
       // refetchAlbum();
     });
     return unsubscribe;
@@ -387,9 +387,13 @@ export default function ItineraryPopuler(props) {
             marginTop: 20,
           }}
         >
-          <Text size="label" type="bold" style={{ textAlign: "center" }}>
-            {t("noItinerary")}
-          </Text>
+          {loadingPopuler ? (
+            <ActivityIndicator color="#209fae" size="small" />
+          ) : (
+            <Text size="label" type="bold" style={{ textAlign: "center" }}>
+              {t("noItinerary")}
+            </Text>
+          )}
         </View>
       );
     } else if (aktif == "Album") {
@@ -735,6 +739,7 @@ export default function ItineraryPopuler(props) {
   const pilih = (id) => {
     if (idDataCategory == id) {
       setSelect(!select);
+      setidDataCategory(null);
     } else {
       setSelect(true);
       setidDataCategory(id);
@@ -1052,7 +1057,7 @@ export default function ItineraryPopuler(props) {
 
                 <Text
                   size="label"
-                  type={actives == "Itinerary" ? "bold" : "bold"}
+                  type={actives == "Itinerary" ? "bold" : "regular"}
                   style={{
                     color: actives == "Itinerary" ? "#209FAE" : "#464646",
                   }}
@@ -1093,7 +1098,7 @@ export default function ItineraryPopuler(props) {
                 )}
                 <Text
                   size="label"
-                  type={actives == "Album" ? "bold" : "bold"}
+                  type={actives == "Album" ? "bold" : "regular"}
                   style={{
                     color: actives == "Album" ? "#209FAE" : "#464646",
                   }}

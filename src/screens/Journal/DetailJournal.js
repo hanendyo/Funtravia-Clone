@@ -43,12 +43,13 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 export default function DetailJournal(props) {
   let [modalShare, setModalShare] = useState(false);
+  const tokenApps = useSelector((data) => data.token);
   let [modalLogin, setModalLogin] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
-  let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState();
   let slider = useRef();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -163,7 +164,7 @@ export default function DetailJournal(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -244,9 +245,6 @@ export default function DetailJournal(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     await fetchData();
@@ -623,7 +621,7 @@ export default function DetailJournal(props) {
             >
               <TouchableOpacity
                 onPress={() => {
-                  token
+                  tokenApps
                     ? data.journal_byid.userby
                       ? data.journal_byid.userby.id !== setting?.user?.id
                         ? props.navigation.push("ProfileStack", {
@@ -975,7 +973,7 @@ export default function DetailJournal(props) {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        token
+                        tokenApps
                           ? item && item.user && item.user.id !== null
                             ? item?.user?.id !== setting?.user?.id
                               ? props.navigation.push("ProfileStack", {
@@ -987,7 +985,7 @@ export default function DetailJournal(props) {
                               : props.navigation.push("ProfileStack", {
                                   screen: "ProfileTab",
                                   params: {
-                                    token: token,
+                                    token: tokenApps,
                                   },
                                 })
                             : RNToasty.Show({
@@ -1088,7 +1086,7 @@ export default function DetailJournal(props) {
                   >
                     <Pressable
                       onPress={() =>
-                        token
+                        tokenApps
                           ? props.navigation.navigate("JournalComment", {
                               dataJournalById: dataPopuler.id,
                             })
@@ -1147,7 +1145,7 @@ export default function DetailJournal(props) {
       {data && data.journal_byid ? (
         <AddCommentLike
           data={data.journal_byid}
-          token={token}
+          token={tokenApps}
           fetchData={(e) => fetchData(e)}
           listComments={() => afterComment()}
           setting={setting}

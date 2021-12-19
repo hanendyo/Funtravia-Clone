@@ -21,17 +21,17 @@ import AddComment from "./AddComment";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function JournalComment(props) {
   const [dataById] = useState(props.route.params.dataJournalById);
+  const tokenApps = useSelector((data) => data.token);
   const [setting, setSetting] = useState("");
-  const [token, setToken] = useState("");
   const { t } = useTranslation();
   let slider = useRef();
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
   const [keyboardOffset, setKeyboardOffset] = useState(0);
-  console.log("keyboardOffset", keyboardOffset);
   const onKeyboardShow = (event) =>
     setKeyboardOffset(event.endCoordinates.height);
   const onKeyboardHide = () => setKeyboardOffset(0);
@@ -97,14 +97,12 @@ export default function JournalComment(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     await fetchData();
@@ -122,10 +120,7 @@ export default function JournalComment(props) {
   };
 
   const scroll_to = () => {
-    wait(1000).then(() => {
-      // slider.current.scrollTo({ y: y });
-      scrollToEnd();
-    });
+    scroll.current.scrollToOffset({ animated: true, offset: 0 });
   };
 
   const afterComment = async () => {
@@ -257,6 +252,8 @@ export default function JournalComment(props) {
     );
   };
 
+  let scroll = useRef();
+
   return (
     <View
       style={{
@@ -271,6 +268,7 @@ export default function JournalComment(props) {
       }}
     >
       <FlatList
+        ref={scroll}
         data={listComment}
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
@@ -308,7 +306,7 @@ export default function JournalComment(props) {
                       : props.navigation.push("ProfileStack", {
                           screen: "ProfileTab",
                           params: {
-                            token: token,
+                            token: tokenApps,
                           },
                         })
                     : Alert.alert("User has been deleted");
@@ -406,10 +404,10 @@ export default function JournalComment(props) {
         onEndReachedThreshold={1}
         onEndReached={handleOnEndReached}
       />
-      {token !== null && token !== "null" ? (
+      {tokenApps ? (
         <AddComment
           data={data?.journal_byid}
-          token={token}
+          token={tokenApps}
           fetchData={(e) => fetchData(e)}
           listComments={() => afterComment()}
           setting={setting}

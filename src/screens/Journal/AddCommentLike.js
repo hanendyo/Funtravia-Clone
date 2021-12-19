@@ -40,7 +40,7 @@ export default function AddCommentLike({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -52,7 +52,7 @@ export default function AddCommentLike({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -64,7 +64,7 @@ export default function AddCommentLike({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -130,7 +130,6 @@ export default function AddCommentLike({
             id: id,
           },
         });
-        console.log("response like", response);
         if (response.data) {
           if (
             response.data.like_journal.code === 200 ||
@@ -147,13 +146,11 @@ export default function AddCommentLike({
         var tempData = { ...dataList };
         tempData.liked = false;
         setDataList(tempData);
-        Alert.alert("" + error);
       }
     } else {
       setModalLogin(true);
     }
   };
-  console.log(modalLogin);
 
   const _unliked = async (id) => {
     if (token) {
@@ -166,7 +163,6 @@ export default function AddCommentLike({
             id: id,
           },
         });
-        console.log("response unlike", response);
 
         if (response.data) {
           if (
