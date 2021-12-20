@@ -511,14 +511,6 @@ export default function ItineraryCategory(props) {
               backgroundColor: "#f6f6f6",
             }}
           >
-            {/* <FlatList
-            data={dataAlbums}
-            renderItem={({ item, index }) => (
-              <View>
-                <Text>{index}</Text>
-              </View>
-            )}
-          /> */}
             {dataAlbums &&
               dataAlbums.map((item, index) => {
                 return (
