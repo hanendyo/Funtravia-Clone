@@ -56,8 +56,11 @@ import {
 } from "@react-native-community/google-signin";
 import unConnectionGoogle from "../../graphQL/Mutation/Setting/disConnectionGoogle";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
+import { setTokenApps } from "../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function SettingsAkun(props) {
+  let dispatch = useDispatch();
   let { t, i18n } = useTranslation();
   let [modalEmail, setModalEmail] = useState(false);
   let [modalPhone, setModalPhone] = useState(false);
@@ -73,6 +76,7 @@ export default function SettingsAkun(props) {
   let [soon, setSoon] = useState(false);
   let [index, setIndex] = useState(0);
   let [dataCitySetting, setDataCitySetting] = useState();
+
   const closeBirth = () => {
     setModalBirth(false);
     setModalBirth1(true);
@@ -155,7 +159,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     // pollInterval: 5500,
@@ -177,7 +181,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
 
@@ -199,7 +203,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -214,7 +218,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -229,7 +233,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -244,7 +248,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -413,7 +417,8 @@ export default function SettingsAkun(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     await querycity();
     refetchHasPassword();
     refatchAccountConnect();
@@ -429,7 +434,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -441,7 +446,7 @@ export default function SettingsAkun(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -678,7 +683,7 @@ export default function SettingsAkun(props) {
                 //     });
                 // }}
               >
-                Change Email
+                {t("ChangeEmail")}
               </Text>
             </View>
           </View>
@@ -703,7 +708,7 @@ export default function SettingsAkun(props) {
                 size="label"
                 type="bold"
               >
-                Delete Phone Number
+                {t("deletePhoneNumber")}
               </Text>
               <Text
                 type="bold"
@@ -716,7 +721,7 @@ export default function SettingsAkun(props) {
                     props.navigation.navigate("SettingPhoneChange");
                 }}
               >
-                Change Phone Number
+                {t("ChangePhoneNumber")}
               </Text>
             </View>
           </View>

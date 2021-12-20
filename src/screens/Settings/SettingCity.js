@@ -36,7 +36,8 @@ const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 
 export default function SettingCity(props) {
-  console.log("props", props);
+  let token = props.route.params.token;
+  let [indekScrollto, setIndeksScrollto] = useState(0);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -80,32 +81,45 @@ export default function SettingCity(props) {
   let [data, setData] = useState([]);
   let [city, setCity] = useState("");
   let [storage, setStorage] = useState(props.route.params.setting);
-  let slider = useRef();
   let [rippleHeight, setRippleHeight] = useState(0);
 
-  useEffect(() => {
+  // let slider = useRef();
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (slider.current) {
+  //       slider.current.scrollToIndex({
+  //         animated: true,
+  //         index: props.route.params.index ? props.route.params.index : 0,
+  //       });
+  //     }
+  //   }, 2000);
+  // }, []);
+
+  // const pushselected = () => {
+  //   if (storage.cities !== null) {
+  //     var tempData = [...data];
+  //     for (var i of tempData) {
+  //       ({ ...i, selected: false });
+  //     }
+  //     let index = tempData.findIndex((k) => k["id"] == storage?.cities?.id);
+  //     if (index >= 0) {
+  //       ({ ...tempData[index], selected: true });
+  //     }
+  //     setData(tempData);
+  //   }
+  // };
+  const ref = React.useRef(null);
+
+  const Scroll_to = async (index) => {
+    index = index ? index : indekScrollto;
     setTimeout(() => {
-      if (slider.current) {
-        slider.current.scrollToIndex({
-          animated: true,
-          index: props.route.params.index ? props.route.params.index : 0,
+      if (ref && ref?.current) {
+        ref?.current?.scrollToIndex({
+          animation: false,
+          index: index,
         });
       }
-    }, 2000);
-  }, []);
-
-  const pushselected = () => {
-    if (storage.cities !== null) {
-      var tempData = [...data];
-      for (var i of tempData) {
-        ({ ...i, selected: false });
-      }
-      let index = tempData.findIndex((k) => k["id"] == storage?.cities?.id);
-      if (index >= 0) {
-        ({ ...tempData[index], selected: true });
-      }
-      setData(tempData);
-    }
+    }, 100);
   };
 
   const [
@@ -117,12 +131,23 @@ export default function SettingCity(props) {
       keyword: city,
       countries_id: storage?.countries?.id,
     },
-    onCompleted: () => setData(dataKota.cities_search),
+    onCompleted: async () => {
+      setData(dataKota.cities_search);
+      const tempData = [...dataKota.cities_search];
+      await setIndeksScrollto(indeks);
+      const indeks = tempData.findIndex((k) => {
+        k["id"] == props.route.params.index;
+      });
+      if (indeks != -1) {
+        await setIndeksScrollto(indeks);
+        await Scroll_to(indeks);
+      }
+    },
   });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    pushselected();
+    // pushselected();
     querycity();
   }, []);
 
@@ -133,7 +158,7 @@ export default function SettingCity(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -250,7 +275,6 @@ export default function SettingCity(props) {
         <FlatList
           focusable={true}
           keyboardShouldPersistTaps={"handled"}
-          ref={slider}
           getItemLayout={(data, index) => ({
             // length:  46,
             // offset: 46 * index,
@@ -270,7 +294,12 @@ export default function SettingCity(props) {
           contentContainerStyle={{
             paddingBottom: 50,
           }}
+          ref={ref}
           data={data}
+          scrollToIndex={indekScrollto}
+          onScrollToIndexFailed={(e) => {
+            scrollToIndexFailed(e);
+          }}
           renderItem={({ item, index }) => (
             <Pressable
               // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}

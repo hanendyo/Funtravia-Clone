@@ -860,5 +860,6 @@
   "fileTolarge": "File terlalu besar",
   "fileToWriteReview": "Gagal memberi ulasan",
   "searchByAccount": "Pencarian Berdasarkan akun",
-  "failedCommentJournal": "Gagal memberikan komentar di jurnal ini"
+  "failedCommentJournal": "Gagal memberikan komentar di jurnal ini",
+  "deletePhoneNumber": "Hapus nomor telefon"
 }

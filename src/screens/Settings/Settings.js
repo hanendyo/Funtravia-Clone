@@ -14,10 +14,13 @@ import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function Settings(props) {
+  const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
@@ -27,7 +30,7 @@ export default function Settings(props) {
 
   const HeaderComponent = {
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {" "}
         {t("setting")}
       </Text>
@@ -63,7 +66,8 @@ export default function Settings(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     await GetCountryList();
     await GetCurrencyList();
     await getSettingUser();
@@ -105,17 +109,12 @@ export default function Settings(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
-      console.log(
-        "🚀 ~ file: Settings.js ~ line 112 ~ Settings ~ datas",
-        datas
-      );
       // if (datas.setting_data.user) {
       setSetting(datas?.setting_data_user);
-
       AsyncStorage.setItem("setting", JSON.stringify(datas?.setting_data_user));
       // }
     },

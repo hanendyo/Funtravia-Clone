@@ -99,7 +99,7 @@ export default function MyAccount(props) {
       },
     },
     onCompleted: () => {
-      setUserData(datauser.user_profile);
+      setUserData(datauser?.user_profile);
     },
   });
 
@@ -391,7 +391,7 @@ export default function MyAccount(props) {
               onPress={() =>
                 props.navigation.navigate("AccountStack", {
                   screen: "settings",
-                  params: { userData: userData },
+                  params: { userData: userData, token: tokenApps },
                 })
               }
               style={{
@@ -478,11 +478,7 @@ export default function MyAccount(props) {
               style={{ marginTop: 12, marginBottom: 15 }}
             >
               <Truncate
-                text={
-                  userData && userData.user_profile && userData.email
-                    ? userData.email
-                    : t("notSet")
-                }
+                text={userData && userData.email ? userData.email : t("notSet")}
                 length={30}
               />
             </Text>
@@ -508,9 +504,7 @@ export default function MyAccount(props) {
               size="label"
               type="regular"
             >
-              {userData && userData.user_profile && userData.phone
-                ? userData.phone
-                : t("notSet")}
+              {userData && userData.phone ? userData.phone : t("notSet")}
             </Text>
           </View>
         </View>
