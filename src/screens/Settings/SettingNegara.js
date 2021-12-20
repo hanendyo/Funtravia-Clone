@@ -30,8 +30,9 @@ import { TextInput } from "react-native-gesture-handler";
 import Country from "../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
 
-export default function SettingCity(props) {
+export default function SettingNegara(props) {
   let [token, setToken] = useState(props.route.params.token);
+  let [indekScrollto, setIndeksScrollto] = useState(0);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -76,18 +77,32 @@ export default function SettingCity(props) {
   let [data, setData] = useState([]);
   let [country, setCountry] = useState("");
   let [storage, setStorage] = useState(props.route.params.setting);
-  let slider = useRef();
   let [rippleHeight, setRippleHeight] = useState(0);
-  useEffect(() => {
+
+  // let slider = useRef();
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (slider.current) {
+  //       slider.current.scrollToIndex({
+  //         index: props.route.params.index,
+  //         animated: true,
+  //       });
+  //     }
+  //   }, 1000);
+  // }, []);
+  const ref = React.useRef(null);
+
+  const Scroll_to = async (index) => {
+    index = index ? index : indekScrollto;
     setTimeout(() => {
-      if (slider.current) {
-        slider.current.scrollToIndex({
-          index: props.route.params.index,
-          animated: true,
+      if (ref && ref?.current) {
+        ref?.current?.scrollToIndex({
+          animation: false,
+          index: index,
         });
       }
-    }, 1000);
-  }, []);
+    }, 100);
+  };
 
   const clearFilter = () => {
     setCountry("");
@@ -121,12 +136,23 @@ export default function SettingCity(props) {
       keyword: country,
       continent_id: null,
     },
-    onCompleted: () => setData(dataNegara.list_country_src),
+    onCompleted: async () => {
+      setData(dataNegara.list_country_src);
+      const tempData = [...dataNegara?.list_country_src];
+      await setIndeksScrollto(indeks);
+      const indeks = tempData.findIndex((k) => {
+        k["id"] == props.route.params.index;
+      });
+      if (indeks != -1) {
+        await setIndeksScrollto(indeks);
+        await Scroll_to(indeks);
+      }
+    },
   });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    pushselected();
+    // pushselected();
     queryCountry();
   }, []);
 
@@ -137,7 +163,7 @@ export default function SettingCity(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -257,13 +283,17 @@ export default function SettingCity(props) {
         </View>
       ) : data ? (
         <FlatList
-          ref={slider}
+          ref={ref}
           getItemLayout={(data, index) => ({
             length: Platform.OS == "ios" ? rippleHeight : 46,
             offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
             index,
           })}
           data={data}
+          scrollToIndex={indekScrollto}
+          onScrollToIndexFailed={(e) => {
+            scrollToIndexFailed(e);
+          }}
           renderItem={({ item, index }) => (
             <Ripple
               onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
@@ -273,7 +303,7 @@ export default function SettingCity(props) {
                 paddingHorizontal: 20,
                 borderBottomWidth: 0.5,
                 borderBottomColor:
-                  storage.countries?.id == item.id ? "#209fae" : "#D1D1D1",
+                  storage?.countries?.id == item.id ? "#209fae" : "#D1D1D1",
                 flexDirection: "row",
                 alignContent: "center",
                 alignItems: "center",

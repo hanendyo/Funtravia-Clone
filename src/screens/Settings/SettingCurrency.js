@@ -27,6 +27,7 @@ import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
 import DeviceInfo from "react-native-device-info";
 
 export default function SettingCurrency(props) {
+  let token = props.route.params.token;
   const { t } = useTranslation();
   let [datacurrency, setdataCurrency] = useState(props?.route?.params?.data);
   let [storage, setStorage] = useState(props?.route?.params?.setting);
@@ -94,7 +95,7 @@ export default function SettingCurrency(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

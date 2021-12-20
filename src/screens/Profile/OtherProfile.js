@@ -62,7 +62,6 @@ export default function Render({ navigation, route }) {
 }
 export function MyProfile({ navigation, route }) {
   let [token, setToken] = useState(route.params.token);
-  console.log("route profil", route);
   let [canScroll, setCanScroll] = useState(true);
   let [loadings, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -686,7 +685,10 @@ export function MyProfile({ navigation, route }) {
                 }}
                 onPress={() =>
                   navigation.push("ProfileStack", {
-                    screen: "FollowerPage",
+                    screen: "otherFollower",
+                    params: {
+                      token: token,
+                    },
                   })
                 }
               >
@@ -704,7 +706,10 @@ export function MyProfile({ navigation, route }) {
                 }}
                 onPress={() =>
                   navigation.push("ProfileStack", {
-                    screen: "FollowerPage",
+                    screen: "otherFollowing",
+                    params: {
+                      token: token,
+                    },
                   })
                 }
               >

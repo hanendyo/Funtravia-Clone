@@ -18,8 +18,11 @@ import { Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function Following(props) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
@@ -66,7 +69,7 @@ export default function Following(props) {
     ),
   };
 
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let [loadin, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -81,7 +84,7 @@ export default function Following(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
       variables: {
@@ -96,7 +99,8 @@ export default function Following(props) {
   const loadAsync = async () => {
     setLoading(true);
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
+    // setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
     await LoadFollowing();
@@ -116,7 +120,7 @@ export default function Following(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -128,7 +132,7 @@ export default function Following(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

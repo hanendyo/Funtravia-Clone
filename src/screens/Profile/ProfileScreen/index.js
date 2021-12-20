@@ -92,9 +92,8 @@ const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
   let dispatch = useDispatch();
-  let tokenApps = useSelector((data) => data.token);
+  let tokenApps = props.route.params.token;
   let capHeight = useRef();
-
   const Notch = DeviceInfo.hasNotch();
   const SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
@@ -1343,10 +1342,12 @@ export default function OtherProfile(props) {
                 if (position === "profile") {
                   props.navigation.push("ProfileStack", {
                     screen: "FollowerPage",
+                    token: tokenApps,
                   });
                 } else {
                   props.navigation.push("otherFollower", {
                     idUser: props.route.params.idUser,
+                    token: tokenApps,
                   });
                 }
               }}
@@ -1374,10 +1375,12 @@ export default function OtherProfile(props) {
                 if (position === "profile") {
                   props.navigation.push("ProfileStack", {
                     screen: "FollowingPage",
+                    token: tokenApps,
                   });
                 } else {
                   props.navigation.push("otherFollowing", {
                     idUser: props.route.params.idUser,
+                    token: tokenApps,
                   });
                 }
               }}
