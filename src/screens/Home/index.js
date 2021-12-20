@@ -69,21 +69,21 @@ export default function Home(props) {
     }
   };
 
-  const [LoadUserProfile, { data: dataProfiles, loading }] = useLazyQuery(
-    Account,
-    {
-      fetchPolicy: "network-only",
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: tokenApps,
-        },
+  const [
+    LoadUserProfile,
+    { data: dataProfiles, loading: loadingProfiles },
+  ] = useLazyQuery(Account, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: tokenApps,
       },
-      onCompleted: () => {
-        setdata(dataProfiles?.user_profile);
-      },
-    }
-  );
+    },
+    onCompleted: () => {
+      setdata(dataProfiles?.user_profile);
+    },
+  });
   const [
     LoadPost,
     { data: datapost, loading: loadingpost, error: errorpost },
@@ -664,7 +664,9 @@ export default function Home(props) {
                       justifyContent: "center",
                     }}
                   >
-                    {tokenApps ? (
+                    {loadingProfiles ? (
+                      <ActivityIndicator size="large" color="#209fae" />
+                    ) : tokenApps ? (
                       <TouchableOpacity
                         onPress={goToProfile}
                         style={{
@@ -686,9 +688,9 @@ export default function Home(props) {
                             resizeMode: "cover",
                           }}
                           source={
-                            data && data.picture
+                            data && data?.picture
                               ? {
-                                  uri: data.picture,
+                                  uri: data?.picture,
                                 }
                               : DefaultProfileSquare
                           }
@@ -696,7 +698,7 @@ export default function Home(props) {
                       </TouchableOpacity>
                     ) : null}
                   </View>
-                  {tokenApps ? (
+                  {loadingProfiles ? null : tokenApps ? (
                     <View
                       style={{
                         // flexDirection: "row",

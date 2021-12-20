@@ -46,6 +46,7 @@ import { useSelector } from "react-redux";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
+  let [select, setSelect] = useState(true);
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   let [setting, setSetting] = useState();
