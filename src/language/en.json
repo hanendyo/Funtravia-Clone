@@ -863,5 +863,6 @@
   "fileToWriteReview": "Failed to write a review",
   "searchByAccount": "Search By Account",
   "failedCommentJournal": "Failed comment this journal",
-  "deletePhoneNumber": "Delete phone number"
+  "deletePhoneNumber": "Delete phone number",
+  "favoriteJournal": "Favorite journal"
 }

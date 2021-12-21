@@ -103,6 +103,8 @@ export default function MyAccount(props) {
     },
   });
 
+  console.log("users", userData);
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -594,7 +596,7 @@ export default function MyAccount(props) {
               type="regular"
               style={{ marginTop: 12, marginBottom: 15 }}
             >
-              {t("itenerariFavorit")}
+              {t("itinerary")}
             </Text>
             <View
               style={{
@@ -606,6 +608,42 @@ export default function MyAccount(props) {
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
                 {userData && userData.count_itinerary_favorit
                   ? userData.count_itinerary_favorit + " " + "Itinerary"
+                  : "0"}
+              </Text>
+              <Next width={15} height={15} />
+            </View>
+          </Ripple>
+          <Ripple
+            onPress={() => {
+              props.navigation.navigate("JournalStackNavigation", {
+                screen: "JournalFavorite",
+              });
+            }}
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              // paddingVertical: 10,
+              borderBottomWidth: 0.5,
+              borderBottomColor: "#d1d1d1",
+            }}
+          >
+            <Text
+              size="label"
+              type="regular"
+              style={{ marginTop: 12, marginBottom: 15 }}
+            >
+              {t("Journal")}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text type="bold" size="label" style={{ marginRight: 10 }}>
+                {userData && userData.count_journal_favorite
+                  ? userData.count_journal_favorite + " " + "Journal"
                   : "0"}
               </Text>
               <Next width={15} height={15} />
