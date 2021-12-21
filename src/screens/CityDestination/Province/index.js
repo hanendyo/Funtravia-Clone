@@ -73,6 +73,7 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -105,7 +106,8 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function ProvinceDetail(props) {
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  // let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
@@ -251,10 +253,8 @@ export default function ProvinceDetail(props) {
   }, [routes, tabIndex]);
 
   const refreshData = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
-    await setToken(tkn);
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
@@ -278,7 +278,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -336,7 +336,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -364,7 +364,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -383,7 +383,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -492,7 +492,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -504,7 +504,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -520,7 +520,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -536,7 +536,7 @@ export default function ProvinceDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

@@ -1,7 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-// import Animated, { Easing } from "react-native-reanimated";
 import {
   StyleSheet,
   View,
@@ -15,12 +14,10 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
-  Picker,
-  ImageBackground,
   Pressable,
   Modal as Modalss,
+  Picker,
 } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
 import {
@@ -84,7 +81,7 @@ import {
   FunVideo,
 } from "../../../component";
 import { rupiah } from "../../../component/src/Rupiah";
-import Sidebar from "../../../component/src/Sidebar";
+
 import {
   dateFormatHari,
   dateFormatMDY,
@@ -108,7 +105,6 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import Ripple from "react-native-material-ripple";
 import album from "../../../graphQL/Query/Itinerary/album";
 import { MenuProvider } from "react-native-popup-menu";
-import { SafeAreaView } from "react-native-safe-area-context";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Itinerary/Uploadalbum";
 import LeaveItinerary from "../../../graphQL/Mutation/Itinerary/LeaveItinerary";

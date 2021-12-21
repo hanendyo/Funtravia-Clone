@@ -129,7 +129,7 @@ export default function detailCustomItinerary(props) {
   const [loadingApp, setLoadingApp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [token] = useSelector((data) => data.token);
+  const token = useSelector((data) => data.token);
   const [text, setText] = useState("");
 
   //params data

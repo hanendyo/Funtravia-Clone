@@ -73,6 +73,7 @@ import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import categoryArticle from "../../../graphQL/Query/Countries/Articlecategory";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -93,7 +94,8 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function Country(props) {
   const [modalLogin, setModalLogin] = useState(false);
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  // let [token, setToken] = useState("");
+  const token = useSelector((data) => data.token);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
@@ -195,8 +197,6 @@ export default function Country(props) {
   }, [routes, tabIndex]);
 
   const refreshData = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await getJournal();
     await getPackageDetail();
     await getCountryfact();
@@ -213,7 +213,7 @@ export default function Country(props) {
       context: {
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: token,
         },
       },
       onCompleted: () => {
@@ -244,7 +244,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -270,7 +270,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -381,7 +381,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -393,7 +393,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : false,
+        Authorization: token,
       },
     },
   });
@@ -409,7 +409,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -425,7 +425,7 @@ export default function Country(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Platform, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import * as RNFS from "react-native-fs";
@@ -21,6 +21,13 @@ export default function FunDocument({
   children,
   ...otherProps
 }) {
+  useEffect(() => {
+    return () => {
+      if (progress === 100) {
+        setProgress(0);
+      }
+    };
+  });
   const { t } = useTranslation();
   let [loading, setLoading] = useState(false);
   let [progress, setProgress] = useState(0);

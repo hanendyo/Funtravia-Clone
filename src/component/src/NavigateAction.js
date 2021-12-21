@@ -3,11 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SHARE_LINK } from "../../config";
 
 export default async function NavigateAction(navigation, shareId) {
-  console.log("DATA FROM", shareId);
   let response = await fetch(`${SHARE_LINK}/getdata/${shareId}`);
   let token = await AsyncStorage.getItem("access_token");
+
   response = await response.json();
   let data = response.result;
+  console.log("data", data);
   switch (data.og_from) {
     case "journal":
       navigation.navigate("JournalStackNavigation", {
@@ -69,6 +70,59 @@ export default async function NavigateAction(navigation, shareId) {
         },
       });
       break;
+
+    case "country":
+      navigation.navigate("CountryStack", {
+        screen: "Country",
+        params: {
+          data: {
+            id: data.og_id,
+            // token: token,
+          },
+          exParam: true,
+        },
+      });
+      break;
+
+    case "province":
+      navigation.navigate("CountryStack", {
+        screen: "Province",
+        params: {
+          data: {
+            id: data.og_id,
+            // token: token,
+          },
+          exParam: true,
+        },
+      });
+      break;
+
+    case "travelgoal":
+      navigation.navigate("TravelGoalDetail", {
+        screen: "TravelGoalDetail",
+        article_id: data.og_id,
+      });
+      break;
+
+    case "event":
+      navigation.navigate("eventdetail", {
+        event_id: data.og_id,
+        name: data.og_title,
+        token: `Bearer ${token}`,
+      });
+      break;
+
+    case "movie":
+      navigation.navigate("TravelIdeaStack", {
+        screen: "Detail_movie",
+        params: {
+          movie_id: data.og_id,
+          name: data.og_name,
+          token: token,
+        },
+      });
+      break;
+
     default:
       break;
   }

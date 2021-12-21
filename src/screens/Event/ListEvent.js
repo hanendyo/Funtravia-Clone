@@ -32,7 +32,6 @@ import { useTranslation } from "react-i18next";
 const numColumns = 2;
 
 export default function ListEvent(props) {
-  console.log("props", props.route.params.idcity);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {

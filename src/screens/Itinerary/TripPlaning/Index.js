@@ -425,84 +425,78 @@ export default function TripPlaning(props) {
   }
 
   if (tokenApps !== null && dataCount && dataCount.count_myitinerary) {
+    const PlanComponent = () => (
+      <PlanList
+        setData={(e) => setData(e)}
+        props={props}
+        token={tokenApps}
+        rData={rData}
+        GetCount={() => GetCount()}
+        GetData={(e) => GetData(e)}
+        GetDataActive={(e) => GetDataActive(e)}
+        GetDataFinish={(e) => GetDataFinish(e)}
+        loadingdata={loadingdata}
+        setting={setting}
+        autoRefetch={() => autoRefetch()}
+      />
+    );
+    const ActiveComponent = () => (
+      <ActivePlan
+        setDataActive={(e) => setDataActive(e)}
+        props={props}
+        token={tokenApps}
+        AData={AData}
+        GetCount={() => GetCount()}
+        GetData={(e) => GetData(e)}
+        GetDataActive={(e) => GetDataActive(e)}
+        GetDataFinish={(e) => GetDataFinish(e)}
+        loadingdataActive={loadingdataActive}
+        setting={setting}
+      />
+    );
+    const FinishComponent = () => (
+      <FinishTrip
+        props={props}
+        token={tokenApps}
+        FData={FData}
+        GetCount={() => GetCount()}
+        GetData={(e) => GetData(e)}
+        GetDataActive={(e) => GetDataActive(e)}
+        GetDataFinish={(e) => GetDataFinish(e)}
+        loadingdataFinish={loadingdataFinish}
+        setDataFinish={(e) => setDataFinish(e)}
+        setting={setting}
+      />
+    );
     return (
       <Tab.Navigator
         backBehavior="none"
         initialRouteName="Edit"
-        // tabBarOptions={{
-        //   activeTintColor: "#209fae",
-        //   labelStyle: {
-        //     fontFamily: "Lato-Bold",
-        //   },
-        //   style: {
-        //     backgroundColor: "#fff",
-        //   },
-        // }}
         tabBar={(props) => <MyTabBar {...props} count={planCount} />}
       >
         <Tab.Screen
           name="Edit"
-          component={() => (
-            <PlanList
-              setData={(e) => setData(e)}
-              props={props}
-              token={tokenApps}
-              rData={rData}
-              GetCount={() => GetCount()}
-              GetData={(e) => GetData(e)}
-              GetDataActive={(e) => GetDataActive(e)}
-              GetDataFinish={(e) => GetDataFinish(e)}
-              loadingdata={loadingdata}
-              setting={setting}
-              autoRefetch={() => autoRefetch()}
-            />
-          )}
+          component={PlanComponent}
           options={{ tabBarLabel: t("planList") }}
         />
 
         <Tab.Screen
           name="Save"
-          component={(e) => (
-            <ActivePlan
-              setDataActive={(e) => setDataActive(e)}
-              props={props}
-              token={tokenApps}
-              AData={AData}
-              GetCount={() => GetCount()}
-              GetData={(e) => GetData(e)}
-              GetDataActive={(e) => GetDataActive(e)}
-              GetDataFinish={(e) => GetDataFinish(e)}
-              loadingdataActive={loadingdataActive}
-              setting={setting}
-            />
-          )}
+          component={ActiveComponent}
           options={{ tabBarLabel: t("activePlan") }}
         />
 
         <Tab.Screen
           name="Finish"
-          component={
-            (e) => (
-              <FinishTrip
-                props={props}
-                token={tokenApps}
-                FData={FData}
-                GetCount={() => GetCount()}
-                GetData={(e) => GetData(e)}
-                GetDataActive={(e) => GetDataActive(e)}
-                GetDataFinish={(e) => GetDataFinish(e)}
-                loadingdataFinish={loadingdataFinish}
-                setDataFinish={(e) => setDataFinish(e)}
-                setting={setting}
-              />
-            )
-            // FinishTrip(props, token, FData, GetDataFinish, loadingdataFinish)
-          }
+          component={FinishComponent}
           options={{ tabBarLabel: t("finishTrip") }}
         />
       </Tab.Navigator>
     );
   } else {
+    const EmptyComponent = () => {
+      return <View />;
+    };
     return (
       // <View
       //   style={{
@@ -531,19 +525,19 @@ export default function TripPlaning(props) {
       >
         <Tab.Screen
           name="Edit"
-          component={() => <View></View>}
+          component={EmptyComponent}
           // options={{ tabBarLabel: "Plan" }}
           options={{ tabBarLabel: t("planList") }}
         />
         <Tab.Screen
           name="Save"
-          component={() => <View></View>}
+          component={EmptyComponent}
           // options={{ tabBarLabel: "Ongoing" }}
           options={{ tabBarLabel: t("activePlan") }}
         />
         <Tab.Screen
           name="Finish"
-          component={() => <View></View>}
+          component={EmptyComponent}
           // options={{ tabBarLabel: "Finish" }}
           options={{ tabBarLabel: t("finishTrip") }}
         />
