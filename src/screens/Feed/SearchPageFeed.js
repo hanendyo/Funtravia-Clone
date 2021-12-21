@@ -552,7 +552,7 @@ export default function Feed(props) {
                 ListHeaderComponent={
                   !searchtext ? (
                     <View style={{ marginTop: 20, alignItems: "center" }}>
-                      <Text>{t("searchByAccount")}</Text>
+                      {/* <Text>{t("searchByAccount")}</Text> */}
                     </View>
                   ) : user_search_feed && user_search_feed.length == 0 ? (
                     <View style={{ marginTop: 20, alignItems: "center" }}>
@@ -674,7 +674,7 @@ export default function Feed(props) {
                 ListHeaderComponent={
                   !searchtext ? (
                     <View style={{ marginTop: 20, alignItems: "center" }}>
-                      <Text>{t("searchByLocation")}</Text>
+                      {/* <Text>{t("searchByLocation")}</Text> */}
                     </View>
                   ) : datalocation && datalocation.length == 0 ? (
                     <View style={{ marginTop: 20, alignItems: "center" }}>

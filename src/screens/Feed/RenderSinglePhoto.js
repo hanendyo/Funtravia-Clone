@@ -25,7 +25,6 @@ export default function RenderSinglePhoto({
   token,
   setModalLogin,
 }) {
-  console.log("🚀 ~ file: RenderSinglePhoto.js ~ line 28 ~ token", token);
   let videoView = useRef(null);
   const dimensions = useWindowDimensions();
   const [heightScaled, setHeightScaled] = useState(width);

@@ -305,6 +305,7 @@ import XFailedFeed from "./files/XFailedUpload.svg";
 import PasswordUpdateEmail from "./files/passwordUpdateEmail.svg";
 import CropIcon from "./files/cropIcon.svg";
 import Upload100 from "./files/Upload100.svg";
+import Backtotop from "./files/backtotop.svg";
 
 export {
   PhotoGray,
@@ -614,4 +615,5 @@ export {
   PasswordUpdateEmail,
   CropIcon,
   Upload100,
+  Backtotop,
 };

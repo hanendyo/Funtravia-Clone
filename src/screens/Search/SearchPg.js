@@ -39,7 +39,6 @@ import {
 } from "../../assets/svg";
 import { search_button, DefaultProfile } from "../../assets/png";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { dateFormatBetween } from "../../component/src/dateformatter";
 import SearchUserQueryNew from "../../graphQL/Query/Search/SearchPeopleNew";
 import RekomendasiPeople from "../../graphQL/Query/Search/RekomendasiPeople";
 import SearchDestinationQuery from "../../graphQL/Query/Search/SearchDestination";
@@ -51,11 +50,10 @@ import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
-import { setTokenApps } from "../../redux/action";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function SearchPg(props, { navigation, route }) {
-  let dispatch = useDispatch();
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [active_src, setActiveSrc] = useState("location");
   let [list_rekomendasi_user, SetListrequser] = useState([]);
@@ -72,7 +70,6 @@ export default function SearchPg(props, { navigation, route }) {
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
   );
   let [setting, setSetting] = useState();
-  let [token, setToken] = useState(props.route.params.token);
   let [recent, setRecent] = useState([]);
   let [aktifsearch, setAktifSearch] = useState(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
@@ -112,9 +109,6 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
     let recent_src = await AsyncStorage.getItem("recent_src");
@@ -250,12 +244,12 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: (dataSrcuser) => {
-      Setuser_search(dataSrcuser.user_searchv2);
+      Setuser_search(dataSrcuser?.user_searchv2);
     },
   });
 
@@ -279,7 +273,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -296,6 +290,10 @@ export default function SearchPg(props, { navigation, route }) {
   }, [props.navigation]);
 
   let [event_search, SetEventSearch] = useState([]);
+  console.log(
+    "🚀 ~ file: SearchPg.js ~ line 299 ~ SearchPg ~ event_search",
+    event_search
+  );
   const {
     loading: loadingEvent,
     data: dataEvent,
@@ -313,12 +311,12 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: (dataEvent) => {
-      SetEventSearch(dataEvent.event_search);
+      SetEventSearch(dataEvent?.event_search);
     },
   });
 
@@ -339,7 +337,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -370,7 +368,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -382,14 +380,14 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
 
   //BUAT FOLLOW UNFOLLOW FUNCTION
   const _unfollow = async (id, index) => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index] };
       _temStatus.status_following = false;
@@ -438,7 +436,7 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const _follow = async (id, index) => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index] };
       _temStatus.status_following = true;
@@ -504,7 +502,7 @@ export default function SearchPg(props, { navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     notifyOnNetworkStatusChange: true,
@@ -514,7 +512,7 @@ export default function SearchPg(props, { navigation, route }) {
   });
 
   const _unfollow_rekomendasi = async (id, index) => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       let temStatus = [...list_rekomendasi_user];
       let _temStatus = { ...temStatus[index] };
       _temStatus.status_following = false;
@@ -558,7 +556,7 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const _follow_rekomendasi = async (id, index) => {
-    if (token && token !== null && token !== "") {
+    if (tokenApps) {
       let temStatus = [...list_rekomendasi_user];
       let _temStatus = { ...temStatus[index] };
       _temStatus.status_following = true;
@@ -661,7 +659,7 @@ export default function SearchPg(props, { navigation, route }) {
           ) : null}
         </View>
         {aktifsearch == true ? (
-          token ? (
+          tokenApps ? (
             <>
               <View
                 style={{
@@ -844,7 +842,7 @@ export default function SearchPg(props, { navigation, route }) {
                                 screen: "otherprofile",
                                 params: {
                                   idUser: item.id,
-                                  token: token,
+                                  token: tokenApps,
                                 },
                               });
                             }
@@ -931,14 +929,8 @@ export default function SearchPg(props, { navigation, route }) {
                       searchtext !== "" && user_search.length <= 0 ? (
                         <View
                           style={{
-                            // position: 'absolute',
-                            // bottom:0,
-                            width: width,
-                            justifyContent: "center",
                             alignItems: "center",
                             marginTop: 30,
-                            marginLeft: -15,
-                            // borderWidth: 1,
                           }}
                         >
                           <Text size="label" type="regular">
@@ -1063,13 +1055,19 @@ export default function SearchPg(props, { navigation, route }) {
                       color="#209fae"
                     />
                   </View>
-                ) : (
+                ) : destinationSearch.length > 0 ? (
                   <CardDestination
                     data={destinationSearch}
                     props={props}
                     setData={(e) => SetdestinationSearch(e)}
-                    token={token}
+                    token={tokenApps}
                   />
+                ) : (
+                  <View style={{ marginTop: 30, alignItems: "center" }}>
+                    <Text type="regular" size="label">
+                      {t("noData")}
+                    </Text>
+                  </View>
                 )
               ) : null}
               {active_src === "event" ? (
@@ -1091,14 +1089,14 @@ export default function SearchPg(props, { navigation, route }) {
                       color="#209fae"
                     />
                   </View>
-                ) : (
+                ) : event_search.length > 0 ? (
                   <CardEvents
                     data={event_search}
                     props={props}
                     setData={(e) => SetEventSearch(e)}
-                    token={token}
+                    token={tokenApps}
                   />
-                )
+                ) : null
               ) : null}
             </>
           ) : (
@@ -1257,7 +1255,7 @@ export default function SearchPg(props, { navigation, route }) {
                                 screen: "otherprofile",
                                 params: {
                                   idUser: item.id,
-                                  token: token,
+                                  token: tokenApps,
                                 },
                               });
                             }
@@ -1344,14 +1342,8 @@ export default function SearchPg(props, { navigation, route }) {
                       searchtext !== "" && user_search.length <= 0 ? (
                         <View
                           style={{
-                            // position: 'absolute',
-                            // bottom:0,
-                            width: width,
-                            justifyContent: "center",
                             alignItems: "center",
                             marginTop: 30,
-                            marginLeft: -15,
-                            // borderWidth: 1,
                           }}
                         >
                           <Text size="label" type="regular">
@@ -1439,14 +1431,8 @@ export default function SearchPg(props, { navigation, route }) {
                       searchtext !== "" && search_location.length <= 0 ? (
                         <View
                           style={{
-                            // position: 'absolute',
-                            // bottom:0,
-                            width: width,
-                            justifyContent: "center",
                             alignItems: "center",
                             marginTop: 30,
-                            marginLeft: -15,
-                            // borderWidth: 1,
                           }}
                         >
                           <Text size="label" type="regular">
@@ -1477,12 +1463,14 @@ export default function SearchPg(props, { navigation, route }) {
                     />
                   </View>
                 ) : (
-                  <CardDestination
-                    data={destinationSearch}
-                    props={props}
-                    setData={(e) => SetdestinationSearch(e)}
-                    token={token}
-                  />
+                  dat(
+                    <CardDestination
+                      data={destinationSearch}
+                      props={props}
+                      setData={(e) => SetdestinationSearch(e)}
+                      token={tokenApps}
+                    />
+                  )
                 )
               ) : null}
               {active_src === "event" ? (
@@ -1502,13 +1490,26 @@ export default function SearchPg(props, { navigation, route }) {
                       color="#209fae"
                     />
                   </View>
-                ) : (
+                ) : event_search.length > 0 ? (
                   <CardEvents
                     data={event_search}
                     props={props}
                     setData={(e) => SetEventSearch(e)}
-                    token={token}
+                    token={tokenApps}
                   />
+                ) : (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      marginTop: 30,
+                      backgroundColor: "#209fae",
+                      width: Dimensions.get("screen").width,
+                    }}
+                  >
+                    <Text size="label" type="regular">
+                      {t("noData")}
+                    </Text>
+                  </View>
                 )
               ) : null}
             </>
@@ -1668,7 +1669,7 @@ export default function SearchPg(props, { navigation, route }) {
                   props.navigation.navigate("CountryStack", {
                     screen: "AllDestination",
                     params: {
-                      token: token,
+                      token: tokenApps,
                     },
                   });
                   BackHandler.removeEventListener(
@@ -1751,7 +1752,7 @@ export default function SearchPg(props, { navigation, route }) {
           <FriendList props={props} datanya={dataUser} token={token} /> */}
             {/* <RekomendasiUser token={token} /> */}
 
-            {token ? (
+            {tokenApps ? (
               <View>
                 <View
                   style={{
@@ -1804,7 +1805,7 @@ export default function SearchPg(props, { navigation, route }) {
                                   screen: "otherprofile",
                                   params: {
                                     idUser: item.id,
-                                    token: token,
+                                    token: tokenApps,
                                   },
                                 });
                               }

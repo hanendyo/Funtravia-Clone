@@ -16,14 +16,13 @@ import Events from "../../graphQL/Query/Wishlist/Event";
 import Destinasi from "../../graphQL/Query/Wishlist/Destination";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
-import { RNToasty } from "react-native-toasty";
-import UnLiked from "../../graphQL/Mutation/unliked";
+import { useSelector } from "react-redux";
 
 export default function Wishlist(props) {
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   let [dataEvent, setdataEvent] = useState([]);
   let [dataDes, setdataDes] = useState([]);
-  let [token, setToken] = useState("");
   let [setting, setSetting] = useState("");
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
@@ -69,9 +68,7 @@ export default function Wishlist(props) {
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
-    if (tkn) {
+    if (tokenApps) {
       getEvent();
       getDes();
     }
@@ -87,7 +84,7 @@ export default function Wishlist(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -106,7 +103,7 @@ export default function Wishlist(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -150,7 +147,7 @@ export default function Wishlist(props) {
           data={dataEvent}
           props={props}
           setData={(e) => setdataEvent(e)}
-          token={token}
+          token={tokenApps}
         />
       );
     } else if (route.key == "destination") {
@@ -159,7 +156,7 @@ export default function Wishlist(props) {
           data={dataDes}
           props={props}
           setData={(e) => setdataDes(e)}
-          token={token}
+          token={tokenApps}
         />
       );
     }
