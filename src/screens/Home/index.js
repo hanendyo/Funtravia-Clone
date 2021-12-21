@@ -942,7 +942,7 @@ export default function Home(props) {
           label={t("homesubtitleFunfeed")}
           seeAll={false}
         />
-        <FunFeed props={props} />
+        <FunFeed props={props} tokenApps={tokenApps} />
       </Animated.ScrollView>
     </View>
   );

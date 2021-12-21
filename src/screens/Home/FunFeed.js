@@ -23,9 +23,9 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Xgray } from "../../assets/svg";
 
 const { width, height } = Dimensions.get("screen");
-export default function SearchFeed({ props }) {
+export default function SearchFeed({ props, tokenApps }) {
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState(props.route.params.token);
+  let [token, setToken] = useState(tokenApps);
   let [users, setuser] = useState(null);
   let [datas, setDatas] = useState(null);
   let [modalLogin, setModalLogin] = useState(false);
@@ -41,7 +41,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => setDatas(dataPost?.feed_post_populer),
@@ -85,7 +85,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -97,7 +97,7 @@ export default function SearchFeed({ props }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
