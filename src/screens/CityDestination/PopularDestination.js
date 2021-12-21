@@ -38,11 +38,12 @@ import {
   FunImageBackground,
   FunImage,
 } from "../../component";
+import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
 
 export default function AllDestination(props) {
   const { t } = useTranslation();
-  const token = props.route.params.token;
+  const token = useSelector((data) => data.token);
   const scrollY = useRef(new Animated.Value(1));
 
   const HeaderComponent = {

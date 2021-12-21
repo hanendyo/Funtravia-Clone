@@ -5,6 +5,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from "react-native";
 import { Kosong } from "../../../assets/svg";
 import { Text, CardItinerary, Button } from "../../../component";
@@ -299,7 +300,7 @@ export default function ActivePlan({
   if (AData?.length > 0) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <ScrollView
+        <View
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -307,7 +308,7 @@ export default function ActivePlan({
               tintColor={"#209fae"}
             />
           }
-          style={{ flex: 1, marginBottom: 50 }}
+          style={{ flex: 1, paddingBottom: Platform.OS === "ios" ? 30 : 60 }}
         >
           <CardItinerary
             data={AData}
@@ -316,7 +317,7 @@ export default function ActivePlan({
             setting={setting}
             setData={(e) => setDataActive(e)}
           />
-        </ScrollView>
+        </View>
         <View
           style={{
             position: "absolute",

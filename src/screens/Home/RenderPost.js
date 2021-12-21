@@ -290,6 +290,7 @@ export default function RenderVideo({
             height: (width + 70) / 2,
             borderRadius: 5,
           }}
+          imageStyle={{ borderRadius: 5 }}
           source={{ uri: data.assets[0].filepath }}
         >
           <TouchableOpacity

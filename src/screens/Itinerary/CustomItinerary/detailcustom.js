@@ -284,7 +284,7 @@ export default function detailCustomItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -586,9 +586,7 @@ export default function detailCustomItinerary(props) {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
 
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: token,
       },
     },
   });
@@ -716,9 +714,7 @@ export default function detailCustomItinerary(props) {
         "Content-Type": "application/json",
         // "Content-Type": "multipart/form-data",
 
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: token,
       },
     },
   });
