@@ -18,10 +18,10 @@ import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
 import { useTranslation } from "react-i18next";
-
+import { useSelector } from "react-redux";
 export default function AddBuddy(props) {
   const { t, i18n } = useTranslation();
-
+  const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -89,9 +89,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -105,9 +103,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
     variables: { id: props.route.params.iditin },
@@ -208,9 +204,7 @@ export default function AddBuddy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
   });

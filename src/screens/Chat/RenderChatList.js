@@ -308,62 +308,88 @@ export default function ChatList({
                     borderColor: "#EEEEEE",
                   }}
                 />
-                <View
-                  style={{
-                    width: width - 180,
-                    paddingHorizontal: 10,
-                    alignContent: "center",
-                  }}
-                >
-                  <Text
-                    size="label"
-                    type="bold"
-                    style={
-                      {
-                        //  paddingVertical: 5
-                      }
-                    }
-                  >
-                    {item.sender_id === user.id
-                      ? `${item.receiver?.first_name} ${
-                          item.receiver?.last_name
-                            ? item.receiver?.last_name
-                            : ""
-                        }`
-                      : `${item.sender?.first_name} ${
-                          item.sender?.last_name ? item.sender?.last_name : ""
-                        }`}
-                  </Text>
-
-                  {item.recent ? (
-                    <RecentChat
-                      style={
-                        {
-                          // marginTop: -5,
-                        }
-                      }
-                      data={item.recent}
-                      room={item.id}
-                    />
-                  ) : null}
-                </View>
-                {item.recent ? (
+                <View style={{ flexDirection: "row" }}>
                   <View
                     style={{
-                      width: 100,
-                      alignItems: "flex-end",
-                      paddingRight: 20,
+                      width: width - 180,
+                      paddingHorizontal: 10,
+                      alignContent: "center",
                     }}
                   >
-                    <Text size="small">
-                      {timeChat(item)
-                        ? dateChat(item) == date()
-                          ? timeChat(item).substring(0, 5)
-                          : dateChat(item)
-                        : null}
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={
+                        {
+                          //  paddingVertical: 5
+                        }
+                      }
+                    >
+                      {item.sender_id === user.id
+                        ? `${item.receiver?.first_name} ${
+                            item.receiver?.last_name
+                              ? item.receiver?.last_name
+                              : ""
+                          }`
+                        : `${item.sender?.first_name} ${
+                            item.sender?.last_name ? item.sender?.last_name : ""
+                          }`}
                     </Text>
+
+                    {item.recent ? (
+                      <RecentChat
+                        style={
+                          {
+                            // marginTop: -5,
+                          }
+                        }
+                        data={item.recent}
+                        room={item.id}
+                      />
+                    ) : null}
                   </View>
-                ) : null}
+                  {item.recent ? (
+                    <View
+                      style={{
+                        width: 100,
+                        alignItems: "flex-end",
+                        paddingRight: 20,
+                      }}
+                    >
+                      <Text size="small">
+                        {timeChat(item)
+                          ? dateChat(item) == date()
+                            ? timeChat(item).substring(0, 5)
+                            : dateChat(item)
+                          : null}
+                      </Text>
+                      {item?.count_newmassage > 0 ? (
+                        <View
+                          style={{
+                            backgroundColor: "#209fae",
+                            borderRadius: 15,
+                            marginTop: 4,
+                          }}
+                        >
+                          <Text
+                            size="small"
+                            type="bold"
+                            style={{
+                              color: "white",
+                              marginHorizontal: 8,
+                              marginVertical: 5,
+                              lineHeight: 12,
+                            }}
+                          >
+                            {item.count_newmassage < 999
+                              ? item.count_newmassage
+                              : 999 + "+"}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </View>
+                  ) : null}
+                </View>
               </TouchableOpacity>
             ) : null}
           </View>

@@ -45,218 +45,6 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
 
     return dateChat;
   };
-  // if (dataGroupRes && dataGroupRes.length < 1) {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         borderBottomLeftRadius: 15,
-  //         borderBottomRightRadius: 15,
-  //         backgroundColor: "#FFFFFF",
-  //       }}
-  //     >
-  //       <Kosong width={width} height={width} />
-  //       <Button
-  //         onPress={() => {
-  //           navigation.navigate("ChatStack", {
-  //             screen: "NewGroup",
-  //           });
-  //         }}
-  //         type="circle"
-  //         size="medium"
-  //         style={{
-  //           position: "absolute",
-  //           bottom: 20,
-  //           right: 20,
-  //           elevation: 5,
-  //         }}
-  //       >
-  //         <NewGroup width="20" height="20" />
-  //       </Button>
-  //     </View>
-  //   );
-  // }
-
-  const RecentView = ({ data, style }) => {
-    if (data.type == "sticker") {
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            // borderWidth: 1,
-          }}
-        >
-          <Tagsticker width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={{ ...style, marginTop: -2 }}
-            size="description"
-            type="regular"
-          >
-            Sticker
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_destination") {
-      let data_des = JSON.parse(data.text);
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Tagdestination width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={style}
-            size="description"
-            type="regular"
-            numberOfLines={2}
-          >
-            {data_des.name}
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_post") {
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            // borderWidth: 1,
-          }}
-        >
-          <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={style}
-            size="description"
-            type="regular"
-            numberOfLines={2}
-          >
-            Post
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_city") {
-      let data_city = JSON.parse(data.text);
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={style}
-            size="description"
-            type="regular"
-            numberOfLines={2}
-          >
-            {data_city.name}
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_province") {
-      let data_province = JSON.parse(data.text);
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={style}
-            size="description"
-            type="regular"
-            numberOfLines={2}
-          >
-            {data_province.name}
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_country") {
-      let data_province = JSON.parse(data.text);
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text
-            style={style}
-            size="description"
-            type="regular"
-            numberOfLines={2}
-          >
-            {data_province.name}
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "tag_movie") {
-      let data_movie = JSON.parse(data.text);
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-          <PinAbu width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
-            {data_movie.name}
-          </Text>
-        </View>
-      );
-    }
-
-    if (data.type == "att_image") {
-      return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Tagimage width={11} height={11} style={{ marginRight: 4 }} />
-          <Text style={style} size="description" type="regular">
-            Image
-          </Text>
-        </View>
-      );
-    }
-
-    return (
-      <Text style={style} size="description" numberOfLines={2}>
-        {data.text}
-      </Text>
-    );
-  };
 
   return (
     <View
@@ -302,6 +90,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                 borderBottomWidth: 1,
                 justifyContent: "space-between",
                 borderBottomColor: "#EEEEEE",
+                // borderWidth: 1,
                 // alignContent: "center",
                 // width: width,
                 // alignItems: "center",
@@ -325,7 +114,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                     width: 50,
                     height: 50,
                     borderRadius: 25,
-                    borderWidth: 1,
+                    // borderWidth: 1,
                     borderColor: "#EEEEEE",
                   }}
                 />
@@ -387,8 +176,10 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                   style={{
                     width: "20%",
                     alignItems: "flex-end",
-                    justifyContent: "center",
-                    marginBottom: 10,
+                    // justifyContent: "center",
+                    // marginBottom: 10,
+                    // borderWidth: 1,
+                    // marginTop: 5,
                   }}
                 >
                   <Text size="small">
@@ -398,6 +189,30 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                         : dateChatGroup(item)
                       : null}
                   </Text>
+                  {item?.count_newmassage > 0 ? (
+                    <View
+                      style={{
+                        backgroundColor: "#209fae",
+                        borderRadius: 15,
+                        marginTop: 10,
+                      }}
+                    >
+                      <Text
+                        size="small"
+                        type="bold"
+                        style={{
+                          color: "white",
+                          marginHorizontal: 8,
+                          marginVertical: 5,
+                          lineHeight: 12,
+                        }}
+                      >
+                        {item.count_newmassage < 999
+                          ? item.count_newmassage
+                          : 999 + "+"}
+                      </Text>
+                    </View>
+                  ) : null}
                 </View>
               ) : null}
             </Pressable>
