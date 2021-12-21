@@ -56,6 +56,7 @@ import Updatecover from "../../../graphQL/Mutation/Itinerary/UpdatecoverV2";
 import normalize from "react-native-normalize";
 import Animated from "react-native-reanimated";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -64,6 +65,7 @@ const SafeStatusBar = Platform.select({
 let { width, height } = Dimensions.get("screen");
 
 export default function GroupDetail(props) {
+  const tokenApps = useSelector((data) => data.token);
   const { t } = useTranslation();
   const [room, setRoom] = useState(props.route.params.room_id);
   const [from, setfrom] = useState(props.route.params.from);
@@ -131,7 +133,7 @@ export default function GroupDetail(props) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: access_token ? `Bearer ${access_token}` : null,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
       }
@@ -158,12 +160,12 @@ export default function GroupDetail(props) {
   let [setting, setSetting] = useState();
 
   const getUserAndToken = async () => {
-    let token = await AsyncStorage.getItem("access_token");
+    // let token = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(setsetting));
     let data_setting = JSON.parse(setsetting);
-    if (token && data_setting) {
-      await getDetailGroup(token, data_setting);
+    if (data_setting) {
+      await getDetailGroup(tokenApps, data_setting);
     }
   };
   // useEffect(() => {
@@ -188,7 +190,7 @@ export default function GroupDetail(props) {
         itintitle: data.title,
         country: data.id,
         dateitin: "",
-        token: token,
+        token: tokenApps,
         status: "",
         index: 0,
         datadayaktif: null,
@@ -273,7 +275,7 @@ export default function GroupDetail(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "multipart/form-data",
         },
         body: formData,
@@ -317,7 +319,7 @@ export default function GroupDetail(props) {
           method: "POST",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: tokenApps,
             "Content-Type": "application/json",
           },
           body: data_kirim,
@@ -356,7 +358,7 @@ export default function GroupDetail(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
         body: data_kirim,
@@ -399,7 +401,7 @@ export default function GroupDetail(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
         body: data_kirim,
@@ -437,7 +439,7 @@ export default function GroupDetail(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
         body: data_kirim,
@@ -472,7 +474,7 @@ export default function GroupDetail(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
         body: data_kirim,
@@ -506,7 +508,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -552,7 +554,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -599,7 +601,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -644,7 +646,7 @@ export default function GroupDetail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -696,7 +698,7 @@ export default function GroupDetail(props) {
       headers: {
         // "Content-Type": "application/json",
         "Content-Type": "multipart/form-data",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -881,7 +883,7 @@ export default function GroupDetail(props) {
                             screen: "AddMember",
                             params: {
                               dataBuddy: dataDetail.buddy,
-                              token: token,
+                              token: tokenApps,
                               id_group: dataDetail.id,
                             },
                           })
@@ -889,7 +891,7 @@ export default function GroupDetail(props) {
                             screen: "AddBuddy",
                             params: {
                               dataBuddy: dataDetail.buddy,
-                              token: token,
+                              token: tokenApps,
                               iditin: dataDetail.id,
                             },
                           });
@@ -945,7 +947,7 @@ export default function GroupDetail(props) {
                   props={props}
                   dataDetail={dataDetail}
                   getUserAndToken={() => getUserAndToken()}
-                  token={token}
+                  token={tokenApps}
                   setModalkick={(e) => setModalkick(e)}
                   setModalmakeadmin={(e) => setModalmakeadmin(e)}
                   setSelected={(e) => setSelected(e)}

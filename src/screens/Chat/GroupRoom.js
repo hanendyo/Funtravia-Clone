@@ -39,8 +39,12 @@ import { default_image } from "../../assets/png";
 import { Keyboard } from "react-native-ui-lib";
 import ImagePicker from "react-native-image-crop-picker";
 import ChatTypelayout from "./ChatTypelayout";
+import { useSelector } from "react-redux";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from "react-native-push-notification";
 
 export default function Room({ navigation, route }) {
+  const tokenApps = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
   const { width, height } = Dimensions.get("screen");
   const [modal_camera, setmodalCamera] = useState(false);
@@ -202,7 +206,7 @@ export default function Room({ navigation, route }) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: access_token ? `Bearer ${access_token}` : null,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
       }
@@ -377,10 +381,12 @@ export default function Room({ navigation, route }) {
     socket.current = io(CHATSERVER, {
       withCredentials: true,
       extraHeaders: {
-        Authorization: token,
+        Authorization: tokenApps,
       },
     });
     socket.current.emit("join", room);
+    updateReadMassage();
+    clearPushNotification();
     socket.current.on("connect", () => {
       console.log("isConnect");
       setSocketConnect(true);
@@ -403,7 +409,13 @@ export default function Room({ navigation, route }) {
   const setConnection = () => {
     socket.emit("join", room);
   };
-
+  const clearPushNotification = () => {
+    if (Platform.OS === "ios") {
+      PushNotificationIOS.cancelAllLocalNotifications();
+    } else {
+      PushNotification.cancelAllLocalNotifications();
+    }
+  };
   const resetKeyboardView = () => {
     SetkeyboardOpenState(false);
     // SetcustomKeyboard({});
@@ -469,6 +481,18 @@ export default function Room({ navigation, route }) {
     return 0;
   }
 
+  const updateReadMassage = async () => {
+    let dateTime = new Date();
+    let chatData = {
+      room: room,
+      chat: "clear_new_massage_personal",
+      user_id: user.id,
+      time: dateTime,
+    };
+
+    await socket.current.emit("message", chatData);
+  };
+
   const initialHistory = async (access_token) => {
     let response = await fetch(
       `${CHATSERVER}/api/group/history?room_id=${room}&from=${from}`,
@@ -476,7 +500,7 @@ export default function Room({ navigation, route }) {
         method: "GET",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + access_token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
       }
@@ -683,7 +707,7 @@ export default function Room({ navigation, route }) {
           method: "POST",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: tokenApps,
             "Content-Type": "multipart/form-data",
           },
           body: formData,

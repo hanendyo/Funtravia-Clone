@@ -39,6 +39,7 @@ import ChatGroupList from "./RenderChatGroupList";
 import ChatList from "./RenderChatList";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { useSelector } from "react-redux";
 
 //TRY SOCKET
 import io from "socket.io-client";
@@ -55,7 +56,6 @@ export default function Message({ navigation, route }) {
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
   const [user, setUser] = useState({});
-  const [token, setToken] = useState(null);
   const [data, setData] = useState([]);
   const [dataRes, setDataRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
@@ -65,6 +65,8 @@ export default function Message({ navigation, route }) {
   const [searchtext, SetSearchtext] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   //TRY SOCKET
+  const tokenApps = useSelector((data) => data.token);
+
   const socket = io(CHATSERVER);
 
   // TRY SOCKET
@@ -128,6 +130,8 @@ export default function Message({ navigation, route }) {
       if (dataRes.length == 0 || dataRes.length == 0) {
         getUserAndToken();
       }
+      getRoomGroup();
+      getRoom();
     });
     navigation.setOptions(HeaderComponent);
     socket.on("new_chat_group", (data) => {
@@ -140,16 +144,19 @@ export default function Message({ navigation, route }) {
   }, []);
 
   const getRoom = async () => {
-    let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/personal/list`, {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
         "Content-Type": "application/json",
       },
     });
     let dataResponse = await response.json();
+    console.log(
+      "🚀 ~ file: index.js ~ line 156 ~ getRoom ~ dataResponse",
+      dataResponse
+    );
     for (let i of dataResponse) {
       socket.emit("join", i.id);
     }
@@ -159,17 +166,19 @@ export default function Message({ navigation, route }) {
   };
 
   const getRoomGroup = async () => {
-    // console.log("EXEC");
-    let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
         "Content-Type": "application/json",
       },
     });
     let dataResponse = await response.json();
+    console.log(
+      "🚀 ~ file: index.js ~ line 178 ~ getRoomGroup ~ dataResponse",
+      dataResponse
+    );
     for (let i of dataResponse) {
       socket.emit("join", i.group);
     }
@@ -182,14 +191,12 @@ export default function Message({ navigation, route }) {
     if (setting) {
       await setUser(setting.user);
     }
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
+    if (tokenApps) {
       await getRoom();
       await getRoomGroup();
     }
 
-    if (token === null) {
+    if (tokenApps === null) {
       setModalLogin(true);
       // navigation.navigate("HomeScreen");
     }
@@ -218,13 +225,13 @@ export default function Message({ navigation, route }) {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps ? `Bearer ${tokenApps}` : null,
           "Content-Type": "application/json",
         },
       }
     );
     await AsyncStorage.removeItem("history_" + room_id);
-    getRoom(token);
+    getRoom(tokenApps);
   };
 
   const _searchHandle = (text) => {

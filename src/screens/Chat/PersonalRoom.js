@@ -58,6 +58,8 @@ import AnimatedPlayer from "react-native-animated-webp";
 import ChatTypelayout from "./ChatTypelayout";
 import ImagePicker from "react-native-image-crop-picker";
 import { ASSETS_SERVER } from "../../config";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from "react-native-push-notification";
 
 // import "./CustomKeyboard/demoKeyboards";
 const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
@@ -189,6 +191,8 @@ export default function Room({ navigation, route }) {
       },
     });
     socket.current.emit("join", room);
+    updateReadMassage();
+    clearPushNotification();
     socket.current.on("connect", () => {
       console.log("isConnect");
       setSocketConnect(true);
@@ -208,6 +212,13 @@ export default function Room({ navigation, route }) {
     return () => socket.current.disconnect();
   }, [connected, token]);
 
+  const clearPushNotification = () => {
+    if (Platform.OS === "ios") {
+      PushNotificationIOS.cancelAllLocalNotifications();
+    } else {
+      PushNotification.cancelAllLocalNotifications();
+    }
+  };
   const onHeightChanged = (keyboardAccessoryViewHeight) => {
     if (Platform.OS == "ios") {
       // this.setState({ keyboardAccessoryViewHeight });
@@ -583,13 +594,13 @@ export default function Room({ navigation, route }) {
       } else if (!init_data) {
         filteredList = init_local;
       }
+
       if (filteredList && filteredList.length > 0) {
         await AsyncStorage.setItem(
           "history_" + room,
           JSON.stringify(filteredList)
         );
         let new_array = [];
-
         setMessage(filteredList);
         setBankMessage(new_array);
       }
@@ -651,6 +662,18 @@ export default function Room({ navigation, route }) {
         });
       }
     }
+  };
+
+  const updateReadMassage = async () => {
+    let dateTime = new Date();
+    let chatData = {
+      room: room,
+      chat: "clear_new_massage_personal",
+      user_id: user.id,
+      time: dateTime,
+    };
+
+    await socket.current.emit("message", chatData);
   };
 
   const submitSticker = async (x) => {
