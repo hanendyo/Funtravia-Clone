@@ -85,8 +85,13 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
+  console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+  console.log(
+    "🚀 ~ file: index.js ~ line 90 ~ CityDetail ~ tokenApps",
+    tokenApps
+  );
   let [setting, setSetting] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
@@ -299,6 +304,8 @@ export default function CityDetail(props) {
       await getJournalCity();
     },
   });
+
+  console.log("dataCity", dataCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -2372,8 +2379,8 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataCity && dataCity?.CitiesInformation.cover
-              ? { uri: dataCity?.CitiesInformation.cover }
+            dataCity && dataCity?.CitiesInformation?.cover
+              ? { uri: dataCity?.CitiesInformation?.cover }
               : default_image
           }
         />

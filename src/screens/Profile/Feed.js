@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -62,6 +62,7 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
+  console.log("🚀 ~ file: Feed.js ~ line 65 ~ myfeed ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
@@ -104,8 +105,8 @@ export default function myfeed(props) {
   };
 
   const isFocused = useIsFocused();
-  const ref = React.useRef(null);
-  let [token, setToken] = useState(props?.route?.params?.token);
+  console.log("🚀 ~ file: Feed.js ~ line 108 ~ myfeed ~ isFocused", isFocused);
+  const ref = useRef(null);
   let [datauser] = useState(props.route.params.datauser);
   let index = props.route.params.index;
   let [modalmenu, setModalmenu] = useState(false);
@@ -114,12 +115,29 @@ export default function myfeed(props) {
   let [users, setuser] = useState(null);
   let [selectedOption, SetOption] = useState({});
   let [play, setPlay] = useState(null);
+  console.log("🚀 ~ file: Feed.js ~ line 118 ~ myfeed ~ play", play);
   let [muted, setMuted] = useState(true);
   let { width, height } = Dimensions.get("screen");
   let [activelike, setactivelike] = useState(true);
   let [setting, setSetting] = useState();
-  let [datas, setDatas] = useState([]);
+  let [datas, setDatas] = useState(props.route.params.dataPostBefore);
   let [indekScrollto, setIndeksScrollto] = useState(0);
+  let [stillLoading, setStillLoading] = useState(true);
+  console.log(
+    "🚀 ~ file: Feed.js ~ line 126 ~ myfeed ~ stillLoading",
+    stillLoading
+  );
+
+  // useEffect(() => {
+  //   console.log("id sama", props.route.params.post_id == play);
+  //   let status = 0;
+  //   if (props.route.params.post_id == play && isFocused) {
+  //     status = 1;
+  //   }
+  //   if (status == 1) {
+  //     setStillLoading(true);
+  //   }
+  // }, [stillLoading, props.route.params.post_id]);
 
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
@@ -130,7 +148,7 @@ export default function myfeed(props) {
           index: index,
         });
       }
-    }, 500);
+    }, 200);
   };
 
   const loadAsync = async () => {
@@ -152,7 +170,7 @@ export default function myfeed(props) {
       errorPolicy: "ignore",
     },
     variables: {
-      user_id: datauser.id,
+      user_id: datauser?.id,
       limit: 15,
       offset: 0,
     },
@@ -164,19 +182,18 @@ export default function myfeed(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: async () => {
-      await setDatas(datapost?.user_post_paging?.datas);
-      const tempData = [...datapost?.user_post_paging?.datas];
-      const indeks = tempData.findIndex(
-        (k) => k["id"] == props.route.params.post_id
-      );
-      if (indeks != -1) {
-        await setIndeksScrollto(indeks);
-        await Scroll_to(indeks);
-      }
+      // await setDatas(datapost?.user_post_paging?.datas);
+      // const tempData = [...datapost?.user_post_paging?.datas];
+      // const indeks = tempData.findIndex(
+      //   (k) => k["id"] == props.route.params.post_id
+      // );
+      // if (indeks != -1) {
+      //   await setIndeksScrollto(indeks);
+      //   await Scroll_to(indeks);
+      // }
     },
   });
 
-  useScrollToTop(ref);
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
     if (viewableItems) {
       setPlay(viewableItems[0]?.key);
@@ -202,8 +219,6 @@ export default function myfeed(props) {
   const loadasync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
-    let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     await setuser(user.user);
@@ -226,7 +241,7 @@ export default function myfeed(props) {
     setModalhapus(false);
     setModalmenu(false);
 
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await Mutationdeletepost({
           variables: {
@@ -254,9 +269,11 @@ export default function myfeed(props) {
   };
 
   useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    loadasync();
     if (props.route.params) {
       if (props.route.params.updateDataPost) {
-        let tempdata = [...datapost?.user_post_paging?.datas];
+        let tempdata = [...datas];
         if (tempdata) {
           let indeks = tempdata.findIndex(
             (k) => k["id"] == props.route.params.updateDataPost.id
@@ -269,11 +286,30 @@ export default function myfeed(props) {
           Scroll_to(indeks);
         }
       }
+      if (props.route.params.isProfil) {
+        console.log("masuk props profil");
+        let tempdata = [...props.route.params.dataPostBefore];
+        console.log(
+          "🚀 ~ file: Feed.js ~ line 274 ~ useEffect ~ tempdata",
+          tempdata
+        );
+        if (tempdata) {
+          let indeks = tempdata.findIndex(
+            (k) => k["id"] == props.route.params.post_id
+          );
+          if (indeks) {
+            setIndeksScrollto(indeks);
+            Scroll_to(indeks);
+          }
+        }
+      }
     }
-    props.navigation.setOptions(HeaderComponent);
-    loadasync();
-    loadAsync();
-  }, [props.route.params.updateDataPost]);
+  }, [
+    props.route.params.updateDataPost,
+    props.route.params.isProfil,
+    props.route.params.post_id,
+    props.route.params.dataPostBefore,
+  ]);
 
   const [
     MutationLike,
@@ -304,7 +340,7 @@ export default function myfeed(props) {
     index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (tokenApps) {
           setactivelike(false);
           let tempData = [...datas];
           let tempDatas = { ...tempData[index] };
@@ -356,7 +392,7 @@ export default function myfeed(props) {
     index = tempData.findIndex((k) => k["id"] === id);
     if (index !== -1) {
       if (activelike) {
-        if (token && token !== "" && token !== null) {
+        if (tokenApps) {
           setactivelike(false);
           let tempData = [...datas];
           let tempDatas = { ...tempData[index] };
@@ -566,7 +602,7 @@ export default function myfeed(props) {
   const _unfollow = async (id, status) => {
     setModalmenuother(false);
 
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await UnfollowMutation({
           variables: {
@@ -618,7 +654,7 @@ export default function myfeed(props) {
 
   const _follow = async (id, status) => {
     setModalmenuother(false);
-    if (token || token !== "") {
+    if (tokenApps) {
       try {
         let response = await FollowMutation({
           variables: {
@@ -769,7 +805,7 @@ export default function myfeed(props) {
 
   const scrollToIndexFailed = (error) => {
     console.log(
-      "🚀 ~ file: Feed.js ~ line 771 ~ scrollToIndexFailed ~ error",
+      "🚀 ~ file: Feed.js ~ line 789 ~ scrollToIndexFailed ~ error",
       error
     );
     const offset = error.averageItemLength * error.index;
@@ -784,7 +820,7 @@ export default function myfeed(props) {
   };
 
   const goToItinerary = (data) => {
-    token
+    tokenApps
       ? props.navigation.push("ItineraryStack", {
           screen: "itindetail",
           params: {
@@ -836,6 +872,27 @@ export default function myfeed(props) {
         flex: 1,
       }}
     >
+      {/* {stillLoading ? (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#209fae",
+            height: 100,
+            width: 100,
+            zIndex: 1,
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#209fae",
+            height: 100,
+            width: 100,
+            zIndex: 1,
+          }}
+        />
+      )} */}
       <FlatList
         pinchGestureEnabled={false}
         ref={ref}
@@ -1010,7 +1067,7 @@ export default function myfeed(props) {
                   muted={muted}
                   isFocused={isFocused}
                   setMuted={(e) => setMuted(e)}
-                  token={token}
+                  token={tokenApps}
                   setModalLogin={(e) => setModalLogin(e)}
                 />
               ) : (
@@ -1021,7 +1078,7 @@ export default function myfeed(props) {
                   muted={muted}
                   setMuted={(e) => setMuted(e)}
                   isFocused={isFocused}
-                  token={token}
+                  token={tokenApps}
                 />
               )}
             </View>
@@ -1399,12 +1456,12 @@ export default function myfeed(props) {
                 }}
                 onPress={() => {
                   setModalmenu(false),
-                    token
+                    tokenApps
                       ? props.navigation.navigate("FeedStack", {
                           screen: "CreateListAlbum",
                           params: {
                             user_id: setting?.user_id,
-                            token: props.route.params.token,
+                            token: tokenApps,
                             file: "",
                             type: "",
                             location: "",

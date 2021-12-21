@@ -9,6 +9,7 @@ import {
   StatusBar as StatsBar,
   Modal,
   Platform,
+  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -24,6 +25,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Arrowbackios,
   Arrowbackwhite,
+  Backtotop,
   LikeEmpty,
   PanahBulat,
   Xgray,
@@ -44,12 +46,22 @@ const SafeStatusBar = Platform.select({
 });
 import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
+import { useScrollToTop } from "@react-navigation/native";
 
 export default function DetailJournal(props) {
+  console.log(
+    "🚀 ~ file: DetailJournal.js ~ line 52 ~ DetailJournal ~ props",
+    props
+  );
   let [modalShare, setModalShare] = useState(false);
+  let [refY, setRefY] = useState(0);
   const tokenApps = useSelector((data) => data.token);
   let [modalLogin, setModalLogin] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
+  console.log(
+    "🚀 ~ file: DetailJournal.js ~ line 61 ~ DetailJournal ~ dataPopuler",
+    dataPopuler
+  );
   let [setting, setSetting] = useState();
   let slider = useRef();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -159,7 +171,7 @@ export default function DetailJournal(props) {
   };
 
   const [fetchData, { data, loading }] = useLazyQuery(JournalById, {
-    variables: { id: dataPopuler.id },
+    variables: { id: props.route.params.dataPopuler?.id },
     fetchPolicy: "network-only",
     context: {
       headers: {
@@ -168,6 +180,10 @@ export default function DetailJournal(props) {
       },
     },
   });
+  console.log(
+    "🚀 ~ file: DetailJournal.js ~ line 166 ~ DetailJournal ~ data",
+    data
+  );
 
   const afterComment = async () => {
     await refetch();
@@ -182,7 +198,7 @@ export default function DetailJournal(props) {
     networkStatus,
   } = useQuery(JournalCommentList, {
     variables: {
-      id: dataPopuler.id,
+      id: dataPopuler?.id,
       limit: 4,
       offset: 0,
     },
@@ -235,7 +251,7 @@ export default function DetailJournal(props) {
     if (dataComment?.comment_journal_list.page_info.hasNextPage) {
       return fetchMore({
         variables: {
-          id: dataPopuler.id,
+          id: dataPopuler?.id,
           limit: 20,
           offset: dataComment?.comment_journal_list.page_info.offset,
         },
@@ -457,6 +473,13 @@ export default function DetailJournal(props) {
     );
   }
 
+  const scrolTop = () => {
+    slider.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
+
+  const handleScroll = (e) => {
+    setRefY(e.nativeEvent.contentOffset.y);
+  };
   return (
     <View
       style={{
@@ -470,6 +493,20 @@ export default function DetailJournal(props) {
             : 0,
       }}
     >
+      {refY > 200 ? (
+        <Pressable
+          onPress={() => scrolTop()}
+          style={{
+            position: "absolute",
+            bottom: 80,
+            right: 15,
+            // backgroundColor: "#fff",
+            zIndex: 1,
+          }}
+        >
+          <Backtotop height="50" width="50" />
+        </Pressable>
+      ) : null}
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -601,8 +638,12 @@ export default function DetailJournal(props) {
           </View>
         </View>
       </Modal>
-      {data && data.journal_byid ? (
-        <ScrollView ref={slider} showsVerticalScrollIndicator={false}>
+      {data && data?.journal_byid ? (
+        <ScrollView
+          ref={slider}
+          showsVerticalScrollIndicator={false}
+          onScroll={(e) => handleScroll(e)}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -1088,7 +1129,7 @@ export default function DetailJournal(props) {
                       onPress={() =>
                         tokenApps
                           ? props.navigation.navigate("JournalComment", {
-                              dataJournalById: dataPopuler.id,
+                              dataJournalById: dataPopuler?.id,
                             })
                           : setModalLogin(true)
                       }

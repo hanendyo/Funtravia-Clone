@@ -29,7 +29,7 @@ export default function CardEvents({ data, props, setData, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });
@@ -41,7 +41,7 @@ export default function CardEvents({ data, props, setData, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });

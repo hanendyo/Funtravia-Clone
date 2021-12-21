@@ -33,7 +33,7 @@ import {
   DefaultProfileSquare,
 } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
-import User_Post from "../../../graphQL/Query/Profile/otherpost";
+import User_Post from "../../../graphQL/Query/Profile/post";
 import album_post from "../../../graphQL/Query/Profile/albumPost";
 import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
@@ -109,6 +109,11 @@ export default function OtherProfile(props) {
   let [token, setToken] = useState(null);
   let [setting, setSetting] = useState("");
   const [dataPost, setdataPost] = useState([]);
+  console.log(
+    "🚀 ~ file: index.js ~ line 112 ~ OtherProfile ~ dataPost",
+    dataPost
+  );
+  const [dataPostBefore, setdataPostBefore] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
@@ -180,24 +185,56 @@ export default function OtherProfile(props) {
     await _refresh();
   };
 
-  const [
-    Getdatapost,
-    { data: dataposting, loading: loadingpost, error: errorpost },
-  ] = useLazyQuery(User_Post, {
-    fetchPolicy: "network-only",
+  const {
+    data: datapost,
+    loading: loadingpost,
+    error: errorpost,
+    fetchMore,
+    refetch: refetchPost,
+    networkStatus,
+  } = useQuery(User_Post, {
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    variables: {
+      user_id: id,
+      limit: 50,
+      offset: 0,
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
         Authorization: tokenApps,
       },
     },
-    variables: {
-      id: id,
-    },
-    onCompleted: () => {
-      setdataPost(spreadData(dataposting.user_postbyid));
+    notifyOnNetworkStatusChange: true,
+    onCompleted: async () => {
+      await setdataPost(spreadData(datapost?.user_post_paging?.datas));
+      await setdataPostBefore(datapost?.user_post_paging?.datas);
     },
   });
+
+  console.log("datapost", datapost);
+  // const [
+  //   Getdatapost,
+  //   { data: dataposting, loading: loadingpost, error: errorpost },
+  // ] = useLazyQuery(User_Post, {
+  //   fetchPolicy: "network-only",
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: tokenApps,
+  //     },
+  //   },
+  //   variables: {
+  //     id: id,
+  //   },
+  //   onCompleted: () => {
+  //     setdataPost(spreadData(dataposting?.user_post_paging?.datas));
+  //     setdataPostBefore(dataposting?.user_post_paging?.datas);
+  //   },
+  // });
 
   // const [
   //   Getdataalbum,
@@ -1576,10 +1613,9 @@ export default function OtherProfile(props) {
       return (
         <Post
           item={e.item}
-          index={e.index}
           navigation={e.props.navigation}
           user={dataUser}
-          dataPost={dataPost}
+          dataPostBefore={dataPostBefore}
         />
       );
     } else if (tabPost === 1) {
@@ -2159,7 +2195,7 @@ export default function OtherProfile(props) {
       onCompleted: (data) => {
         setDataUser(data.user_profilebyid);
 
-        Getdatapost();
+        // Getdatapost();
         // Getdataalbum();
         QueryFotoAlbum();
         LoadReview();

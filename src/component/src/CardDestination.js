@@ -34,7 +34,6 @@ const deviceId = DeviceInfo.getModel();
 export default function CardDestination({ data, props, setData, token }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
-
   const [
     mutationlikedAnother,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -42,7 +41,7 @@ export default function CardDestination({ data, props, setData, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });
@@ -54,7 +53,7 @@ export default function CardDestination({ data, props, setData, token }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     },
   });

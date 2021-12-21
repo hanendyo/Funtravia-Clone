@@ -28,8 +28,6 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Destinasi from "../../graphQL/Query/Wishlist/Destination";
 import { useTranslation } from "react-i18next";
 import { TabBar, TabView } from "react-native-tab-view";
-import { RNToasty } from "react-native-toasty";
-import UnLiked from "../../graphQL/Mutation/unliked";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
@@ -47,10 +45,6 @@ export default function SearchListEventHome(props) {
   let [setting, setSetting] = useState("");
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
-  console.log(
-    "🚀 ~ file: SearchListEventHome.js ~ line 50 ~ SearchListEventHome ~ index",
-    index
-  );
   let [show, setShow] = useState(false);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [datacountry, setdatacountry] = useState([]);
@@ -1323,9 +1317,6 @@ export default function SearchListEventHome(props) {
     return array?.length;
   };
 
-  console.log("dataEventAll", dataEventAll.length);
-  console.log("dataEventPublic", dataEventPublic.length);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -1462,7 +1453,7 @@ export default function SearchListEventHome(props) {
 
       {/* END TAB VIEW */}
 
-      {index == 1 && dataEventAll.length == 0 ? (
+      {index == 0 && dataEventAll.length == 0 ? (
         <View
           style={{
             width: Dimensions.get("screen").width,

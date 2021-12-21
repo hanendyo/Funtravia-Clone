@@ -6,7 +6,11 @@ const { width, height } = Dimensions.get("screen");
 import { FunVideo, FunImage } from "../../../../component";
 import { useSelector } from "react-redux";
 
-export default function Posts({ item, index, navigation, user }) {
+export default function Posts({ item, navigation, user, dataPostBefore }) {
+  console.log(
+    "🚀 ~ file: Post.js ~ line 10 ~ Posts ~ dataPostBefore",
+    dataPostBefore
+  );
   const tokenApps = useSelector((data) => data.token);
   let { width, height } = Dimensions.get("screen");
   let videoView = useRef(null);
@@ -28,6 +32,8 @@ export default function Posts({ item, index, navigation, user }) {
                 // index: index,
                 datauser: user,
                 post_id: item[0].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -84,6 +90,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -134,6 +142,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[2].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -198,6 +208,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[0].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -248,6 +260,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -299,6 +313,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[2].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -361,6 +377,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -411,6 +429,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[1].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -461,6 +481,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[2].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -524,6 +546,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -575,6 +599,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -639,6 +665,8 @@ export default function Posts({ item, index, navigation, user }) {
                 token: tokenApps,
                 datauser: user,
                 post_id: item[0].id,
+                isProfil: true,
+                dataPostBefore: dataPostBefore,
               },
             })
           }
@@ -690,6 +718,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[1].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }
@@ -743,6 +773,8 @@ export default function Posts({ item, index, navigation, user }) {
                   token: tokenApps,
                   datauser: user,
                   post_id: item[2].id,
+                  isProfil: true,
+                  dataPostBefore: dataPostBefore,
                 },
               })
             }

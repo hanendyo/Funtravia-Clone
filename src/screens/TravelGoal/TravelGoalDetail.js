@@ -37,8 +37,8 @@ const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   // android: StatusBar.currentHeight,
-  // android: normalize(28),
-  android: normalize(38),
+  android: normalize(28),
+  // android: normalize(38),
 });
 const deviceId = DeviceInfo.getModel();
 import { useSelector } from "react-redux";
@@ -791,7 +791,7 @@ export default function TravelGoalDetail(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar - 15,
+          top: SafeStatusBar - 13,
           opacity: backOpacity,
         }}
       >
@@ -827,7 +827,7 @@ export default function TravelGoalDetail(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar - 15,
+          top: SafeStatusBar - 13,
         }}
       >
         <Pressable

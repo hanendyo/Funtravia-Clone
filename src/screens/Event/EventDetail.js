@@ -1302,11 +1302,7 @@ export default function EventDetail(props) {
                     source={
                       dataevent
                         ? {
-                            uri:
-                              dataevent?.vendor.cover.substr(0, 4) == "http"
-                                ? dataevent?.vendor.cover
-                                : "https://fa12.funtravia.com/" +
-                                  dataevent?.vendor.cover,
+                            uri: dataevent?.vendor.cover,
                           }
                         : default_image
                     }
