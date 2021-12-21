@@ -342,7 +342,7 @@ export default function SettingNegara(props) {
                   style={{
                     paddingLeft: 15,
                     color:
-                      storage?.countries.id == item.id ? "#209fae" : "#000",
+                      storage?.countries?.id == item.id ? "#209fae" : "#000",
                   }}
                 >
                   {item.name
@@ -354,7 +354,7 @@ export default function SettingNegara(props) {
                 </Text>
               </View>
               <View>
-                {storage?.countries.id == item.id ? (
+                {storage?.countries?.id == item.id ? (
                   <Check width={20} height={15} />
                 ) : null}
               </View>

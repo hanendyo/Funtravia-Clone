@@ -70,7 +70,7 @@ export default function SettingsAkun(props) {
   let [modalDisconnect, setModalDisconnect] = useState(false);
   let [token, setToken] = useState(props.route.params.token);
   let [setting, setSetting] = useState(props.route.params.setting);
-  let [genders, setGender] = useState(props.route.params.setting?.user.gender);
+  let [genders, setGender] = useState(props.route.params.setting?.user?.gender);
   let [dates, setDate] = useState();
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);

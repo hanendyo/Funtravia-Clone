@@ -481,7 +481,7 @@ export default function OtherProfile(props) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + tokens,
+            Authorization: tokenApps,
             "Content-Type": "application/json",
           },
           // body: formBodys,
@@ -1379,7 +1379,7 @@ export default function OtherProfile(props) {
                 if (position === "profile") {
                   props.navigation.push("ProfileStack", {
                     screen: "FollowerPage",
-                    token: tokenApps,
+                    params: { token: tokenApps },
                   });
                 } else {
                   props.navigation.push("otherFollower", {
@@ -1412,7 +1412,7 @@ export default function OtherProfile(props) {
                 if (position === "profile") {
                   props.navigation.push("ProfileStack", {
                     screen: "FollowingPage",
-                    token: tokenApps,
+                    params: { token: tokenApps },
                   });
                 } else {
                   props.navigation.push("otherFollowing", {
