@@ -11,10 +11,12 @@ import { useMutation } from "@apollo/react-hooks";
 import Modal from "react-native-modal";
 import { show_password, hide_password } from "../../../assets/png";
 import normalize from "react-native-normalize";
+import { useDispatch } from "react-redux";
 
 export default function HasPassword(props) {
-  const [token, setToken] = useState("");
-  const [setting, setSetting] = useState("");
+  let dispatch = useDispatch();
+  const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState(props.route.params.setting);
   let { t, i18n } = useTranslation();
   let [text, setText] = useState("");
   let [text1, setText1] = useState("");
@@ -90,7 +92,8 @@ export default function HasPassword(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -102,7 +105,7 @@ export default function HasPassword(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

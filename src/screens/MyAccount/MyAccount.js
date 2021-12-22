@@ -23,10 +23,13 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useDispatch, useSelector } from "react-redux";
 import { setTokenApps } from "../../redux/action";
+import { useQuery } from "@apollo/client";
+import GetSettingUser from "../../graphQL/Query/Settings/GetSettingUser";
 
 export default function MyAccount(props) {
   let dispatch = useDispatch();
   let tokenApps = useSelector((data) => data.token);
+  let [setting, setSetting] = useState("");
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
@@ -103,7 +106,27 @@ export default function MyAccount(props) {
     },
   });
 
-  console.log("users", userData);
+  const { data: datas, loading: loadings, error: errors } = useQuery(
+    GetSettingUser,
+    {
+      fetchPolicy: "network-only",
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: tokenApps,
+        },
+      },
+      onCompleted: () => {
+        // if (datas.setting_data.user) {
+        setSetting(datas?.setting_data_user);
+        AsyncStorage.setItem(
+          "setting",
+          JSON.stringify(datas?.setting_data_user)
+        );
+        // }
+      },
+    }
+  );
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -393,7 +416,11 @@ export default function MyAccount(props) {
               onPress={() =>
                 props.navigation.navigate("AccountStack", {
                   screen: "settings",
-                  params: { userData: userData, token: tokenApps },
+                  params: {
+                    userData: userData,
+                    token: tokenApps,
+                    setting: setting,
+                  },
                 })
               }
               style={{

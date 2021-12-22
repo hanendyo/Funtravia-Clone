@@ -190,7 +190,6 @@ export default function Invitation({
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
   const counter = useSelector((data) => data.token);
-  console.log("🚀 ~ file: Invitation.js ~ line 195 ~ counter", counter);
 
   // let [datanotif, SetDataNotif] = useState([]);
   let [selected] = useState(new Map());

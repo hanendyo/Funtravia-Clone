@@ -336,7 +336,10 @@ export default function SettingsAkun(props) {
           position: "bottom",
         });
         setTimeout(() => {
-          props.navigation.navigate("AddPassword");
+          props.navigation.navigate("AddPassword", {
+            setting: setting,
+            token: token,
+          });
         }, 500);
       }
     } catch (error) {
@@ -548,9 +551,15 @@ export default function SettingsAkun(props) {
     if (token !== "" && token !== null) {
       if (cek_haspassword) {
         if (cek_haspassword.ishasPassword === true) {
-          props.navigation.navigate("HasPassword");
+          props.navigation.navigate("HasPassword", {
+            setting: setting,
+            token: token,
+          });
         } else {
-          props.navigation.navigate("AddPassword");
+          props.navigation.navigate("AddPassword", {
+            setting: setting,
+            token: token,
+          });
         }
       }
     }
@@ -561,9 +570,13 @@ export default function SettingsAkun(props) {
     if (dataPassword?.cek_haspassword?.ishasPassword === true) {
       return await props.navigation.navigate("SettingEmailChange", {
         setting: setting,
+        token: token,
       });
     } else {
-      return await props.navigation.navigate("AddPasswordEmail");
+      return await props.navigation.navigate("AddPasswordEmail", {
+        setting: setting,
+        token: token,
+      });
     }
   };
 
@@ -718,7 +731,10 @@ export default function SettingsAkun(props) {
                 }}
                 onPress={() => {
                   setModalPhone(false),
-                    props.navigation.navigate("SettingPhoneChange");
+                    props.navigation.navigate("SettingPhoneChange", {
+                      setting: setting,
+                      token: token,
+                    });
                 }}
               >
                 {t("ChangePhoneNumber")}
@@ -1251,9 +1267,13 @@ export default function SettingsAkun(props) {
                       ) {
                         return props.navigation.navigate("SettingEmailChange", {
                           setting: setting,
+                          token: token,
                         });
                       } else {
-                        return props.navigation.navigate("AddPasswordEmail");
+                        return props.navigation.navigate("AddPasswordEmail", {
+                          setting: setting,
+                          token: token,
+                        });
                       }
                     }
                   }
@@ -1309,8 +1329,13 @@ export default function SettingsAkun(props) {
                 cek_haspassword && cek_haspassword.ishasPassword === true
                   ? props.navigation.navigate("SettingEmail", {
                       dataEmail: setting.user,
+                      setting: setting,
+                      token: token,
                     })
-                  : props.navigation.navigate("AddPassword");
+                  : props.navigation.navigate("AddPassword", {
+                      setting: setting,
+                      token: token,
+                    });
               }}
             />
           )}

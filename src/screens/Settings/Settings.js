@@ -21,10 +21,10 @@ export default function Settings(props) {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
+  let [setting, setSetting] = useState(props.route.params.setting);
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
-  let [setting, setSetting] = useState("");
   let [country, setCountry] = useState();
   let [index, setIndex] = useState(0);
 
