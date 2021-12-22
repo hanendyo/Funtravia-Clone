@@ -44,6 +44,7 @@ import { setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("propshome", props);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);

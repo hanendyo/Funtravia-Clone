@@ -670,11 +670,12 @@ export default function EventDetail(props) {
             backgroundColor: "#209FAE",
             position: "absolute",
             left: 0,
+
             right: 0,
             // height: Platform.OS == "ios" ? 100 : 80,
             height: Platform.select({
               ios: Notch ? 100 : 70,
-              android: deviceId == "CPH2127" ? 100 : 80,
+              android: deviceId == "CPH2127" ? 100 : 85,
             }),
             flexDirection: "row",
             top: 0,
@@ -702,7 +703,7 @@ export default function EventDetail(props) {
                     ? SafeStatusBar
                     : deviceId == "CPH2127"
                     ? SafeStatusBar + 5
-                    : 0,
+                    : SafeStatusBar + 5,
                 borderRadius: 30,
                 justifyContent: "center",
                 alignItems: "center",
@@ -725,7 +726,7 @@ export default function EventDetail(props) {
                   ? SafeStatusBar + 15
                   : deviceId == "CPH2127"
                   ? SafeStatusBar + 16
-                  : SafeStatusBar + 10,
+                  : SafeStatusBar + 16,
               fontFamily: "Lato-Bold",
             }}
           >

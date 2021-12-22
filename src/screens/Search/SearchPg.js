@@ -1700,22 +1700,31 @@ export default function SearchPg(props, { navigation, route }) {
               }}
             >
               {beranda_popularV2.map((value, index) => {
+                console.log("value", value);
                 return (
                   <TouchableOpacity
                     key={index}
                     onPress={() => {
-                      props.navigation.navigate("CountryStack", {
-                        screen: "CityDetail",
-                        params: {
-                          data: {
-                            city_id: value.id,
-                            city_name: value.name,
-                            latitude: null,
-                            longitude: null,
-                          },
-                          exParam: true,
-                        },
-                      });
+                      value.type == "city"
+                        ? props.navigation.navigate("CountryStack", {
+                            screen: "CityDetail",
+                            params: {
+                              data: {
+                                city_id: value.id,
+                                city_name: value.name,
+                                latitude: null,
+                                longitude: null,
+                              },
+                              exParam: true,
+                            },
+                          })
+                        : props.navigation.navigate("CountryStack", {
+                            screen: "Province",
+                            params: {
+                              data: value,
+                              exParam: true,
+                            },
+                          });
                       BackHandler.removeEventListener(
                         "hardwareBackPress",
                         onBackPress
