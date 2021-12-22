@@ -5,13 +5,17 @@ import { useTranslation } from "react-i18next";
 import { View, Dimensions, CheckBox } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity, TextInput } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../../redux/action";
 
 export default function SettingPhoneChange(props) {
-  let [token, setToken] = useState("");
+  let dispatch = useDispatch();
+  const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState(props.route.params.setting);
   const { t } = useTranslation();
   let [region, setRegion] = useState("+62");
   let [selector, setSelector] = useState(false);
-  let [setSetting] = useState();
+  // let [setSetting] = useState();
   const HeaderComponent = {
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>
@@ -49,7 +53,8 @@ export default function SettingPhoneChange(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer  ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };

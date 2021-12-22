@@ -23,12 +23,14 @@ import { useMutation } from "@apollo/client";
 import DeviceInfo from "react-native-device-info";
 import { Input, Item, Label } from "native-base";
 import { RNToasty } from "react-native-toasty";
+import { useDispatch } from "react-redux";
 
 export default function SettingEmailChange(props) {
+  let dispatch = useDispatch();
   const Notch = DeviceInfo.hasNotch();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
+  let [setting, setSetting] = useState(props.route.params.setting);
   let { t } = useTranslation();
-  let [setting, setSetting] = useState("");
   let [email1, setEmail1] = useState("");
   let [email2, setEmail2] = useState("");
   const [ishide, setIshide] = useState(true);
@@ -105,6 +107,14 @@ export default function SettingEmailChange(props) {
     },
   };
 
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
+
   const onBackPress = useCallback(() => {
     if (myStateRef.current == true) {
       setInputPassword(false);
@@ -131,13 +141,6 @@ export default function SettingEmailChange(props) {
     });
   }, [onBackPress]);
 
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -153,7 +156,7 @@ export default function SettingEmailChange(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

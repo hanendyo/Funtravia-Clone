@@ -544,7 +544,9 @@ export default function Home(props) {
             <Pressable
               onPress={() => {
                 tokenApps
-                  ? props.navigation.navigate("Notification")
+                  ? props.navigation.navigate("Notification", {
+                      token: tokenApps,
+                    })
                   : setModalLogin(true);
               }}
               style={{

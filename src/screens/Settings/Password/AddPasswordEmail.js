@@ -21,8 +21,8 @@ import normalize from "react-native-normalize";
 import { RNToasty } from "react-native-toasty";
 
 export default function AddPasswordEmail(props) {
-  const [token, setToken] = useState("");
-  const [setting, setSetting] = useState("");
+  const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState(props.route.params.setting);
   let { t, i18n } = useTranslation();
   let [text1, setText1] = useState("");
   let [text2, setText2] = useState("");
@@ -108,7 +108,7 @@ export default function AddPasswordEmail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

@@ -11,12 +11,15 @@ import { useMutation } from "@apollo/react-hooks";
 import { show_password, hide_password } from "../../../assets/png";
 import { CustomImage } from "../../../component";
 import normalize from "react-native-normalize";
+import { setTokenApps } from "../../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function AddPassword(props) {
+  let dispatch = useDispatch();
   const [disable1, setDisable1] = useState("");
   const [disable2, setDisable2] = useState("");
-  const [token, setToken] = useState("");
-  const [setting, setSetting] = useState("");
+  const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState(props.route.params.setting);
   let { t, i18n } = useTranslation();
   let [text1, setText1] = useState("");
   let [text2, setText2] = useState("");
@@ -97,14 +100,15 @@ export default function AddPassword(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };

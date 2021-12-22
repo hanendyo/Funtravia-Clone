@@ -128,7 +128,7 @@ export default function SettingCurrency(props) {
             for (var i in tempData) {
               ({ ...i, selected: false });
             }
-            var index = tempData.findIndex((k) => k["id"] === detail.id);
+            var index = tempData.findIndex((k) => k["id"] === detail?.id);
             if (index >= 0) {
               ({ ...tempData[index], selected: true });
             }
@@ -172,7 +172,7 @@ export default function SettingCurrency(props) {
                   paddingHorizontal: 20,
                   borderBottomWidth: 0.5,
                   borderBottomColor:
-                    storage.currency?.id == item.id ? "#209fae" : "#D1D1D1",
+                    storage?.currency?.id == item?.id ? "#209fae" : "#D1D1D1",
                   flexDirection: "row",
                   alignContent: "center",
                   alignItems: "center",
@@ -195,7 +195,9 @@ export default function SettingCurrency(props) {
                       size="label"
                       style={{
                         color:
-                          storage.currency?.id == item.id ? "#209fae" : "#000",
+                          storage?.currency?.id == item?.id
+                            ? "#209fae"
+                            : "#000",
                       }}
                     >
                       {item.code}
@@ -205,21 +207,21 @@ export default function SettingCurrency(props) {
                     size="description"
                     style={{
                       color:
-                        storage.currency?.id == item.id ? "#209fae" : "#000",
+                        storage?.currency?.id == item?.id ? "#209fae" : "#000",
                     }}
                   >
                     {item?.name}
                   </Text>
                 </View>
                 <View>
-                  {storage.currency?.id == item.id ? (
+                  {storage?.currency?.id == item?.id ? (
                     <Check width={20} height={15} />
                   ) : null}
                 </View>
               </Ripple>
             );
           }}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item?.id}
         />
       ) : (
         <View style={{ marginVertical: 20, alignItems: "center" }}>

@@ -674,38 +674,52 @@ export default function Trip(props) {
                       width: "90%",
                     }}
                   >
-                    <Search width={15} height={15} />
-
-                    <TextInput
-                      value={countrys}
-                      underlineColorAndroid="transparent"
-                      placeholder={t("search")}
+                    <View
                       style={{
-                        width: "85%",
-                        marginLeft: 5,
-                        padding: 0,
+                        backgroundColor: "#f6f6f6",
+                        borderRadius: 3,
+                        flex: 1,
+                        flexDirection: "row",
+                        alignSelf: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        marginVertical: 5,
+                        height: 35,
                       }}
-                      returnKeyType="search"
-                      autoCorrect={false}
-                      onChangeText={(text) => Searchcountry(text)}
-                      onSubmitEditing={(text) => Searchcountry(text)}
-                    />
-                    {countrys.length !== 0 ? (
-                      <TouchableOpacity
-                        onPress={() => {
-                          // _setSearch(null);
-                          setCountrys("");
+                    >
+                      <Search width={15} height={15} />
+
+                      <TextInput
+                        value={countrys}
+                        underlineColorAndroid="transparent"
+                        placeholder={t("search")}
+                        style={{
+                          width: "85%",
+                          marginLeft: 5,
+                          padding: 0,
                         }}
-                      >
-                        <Xblue
-                          width="20"
-                          height="20"
-                          style={{
-                            alignSelf: "center",
+                        returnKeyType="search"
+                        autoCorrect={false}
+                        onChangeText={(text) => Searchcountry(text)}
+                        onSubmitEditing={(text) => Searchcountry(text)}
+                      />
+                      {countrys.length !== 0 ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            // _setSearch(null);
+                            setCountrys("");
                           }}
-                        />
-                      </TouchableOpacity>
-                    ) : null}
+                        >
+                          <Xblue
+                            width="20"
+                            height="20"
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
                   </View>
                   <View
                     style={{

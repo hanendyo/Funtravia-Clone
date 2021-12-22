@@ -6,6 +6,7 @@ import {
   Animated,
   Platform,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Button } from "../../component";
@@ -17,6 +18,8 @@ import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import DeviceInfo from "react-native-device-info";
+import { useDispatch } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 const ListNotifikasi_ = gql`
   query {
@@ -116,8 +119,9 @@ const ListNotifikasi_ = gql`
 `;
 
 export default function Notification(props) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let [datanotif, SetDataNotif] = useState([]);
 
   let [readall, setreadall] = useState(true);
@@ -202,15 +206,22 @@ export default function Notification(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
+    // setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     // GetListInvitation();
+  };
+
+  const funcSetIndex = (e) => {
+    setIndex(() => {
+      return (token = e);
+    });
   };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
     // GetListNotif();
-  }, [token]);
+  }, [props.navigation, token, index]);
 
   const {
     data: datasnotif,
@@ -226,7 +237,7 @@ export default function Notification(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
@@ -276,12 +287,12 @@ export default function Notification(props) {
     );
   };
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <TabView
         lazy={true}
         navigationState={{ index, routes }}
         renderScene={renderScene}
-        onIndexChange={setIndex}
+        onIndexChange={funcSetIndex}
         renderTabBar={(props) => {
           return (
             <TabBar
@@ -300,7 +311,7 @@ export default function Notification(props) {
           );
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

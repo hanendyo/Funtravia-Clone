@@ -15,9 +15,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import addEmail from "../../../graphQL/Mutation/Setting/addEmail";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
+import { setTokenApps } from "../../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function SettingEmail(props) {
-  let [token, setToken] = useState("");
+  let dispatch = useDispatch();
+  const [token, setToken] = useState(props.route.params.token);
+  const [setting, setSetting] = useState(props.route.params.setting);
   const { t, i18n } = useTranslation();
   const [inputPassword, setInputPassword] = useState(false);
   const myStateRef = React.useRef(inputPassword);
@@ -27,7 +31,6 @@ export default function SettingEmail(props) {
   const [loginFailed, setLoginFailed] = useState(false);
   let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
 
-  let [setSetting] = useState();
   const HeaderComponent = {
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>
@@ -62,6 +65,15 @@ export default function SettingEmail(props) {
       return null;
     },
   };
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
+    let setsetting = await AsyncStorage.getItem("setting");
+    setSetting(JSON.parse(setsetting));
+  };
+
   const onBackPress = useCallback(() => {
     if (myStateRef.current == true) {
       setInputPassword(false);
@@ -120,13 +132,6 @@ export default function SettingEmail(props) {
     }
   };
 
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -142,7 +147,7 @@ export default function SettingEmail(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
