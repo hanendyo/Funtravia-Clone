@@ -864,5 +864,6 @@
   "searchByAccount": "Search By Account",
   "failedCommentJournal": "Failed comment this journal",
   "deletePhoneNumber": "Delete phone number",
-  "favoriteJournal": "Favorite journal"
+  "favoriteJournal": "Favorite journal",
+  "media": "Media"
 }

@@ -160,12 +160,12 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                   </Text>
                   {item.recent ? (
                     <RecentChat
+                      data={item.recent}
                       style={
                         {
                           // marginTop: -5,
                         }
                       }
-                      data={item.recent}
                       room={item.id}
                     />
                   ) : null}

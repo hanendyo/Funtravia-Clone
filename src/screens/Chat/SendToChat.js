@@ -24,8 +24,10 @@ import { StackActions } from "@react-navigation/native";
 import { RNToasty } from "react-native-toasty";
 import io from "socket.io-client";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 export default function SendToChat({ navigation, route }) {
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState("");
   const socket = useRef();
@@ -53,7 +55,7 @@ export default function SendToChat({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
@@ -183,7 +185,7 @@ export default function SendToChat({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
         "Content-Type": "application/json",
       },
     });
@@ -242,7 +244,7 @@ export default function SendToChat({ navigation, route }) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: token ? `Bearer ${token}` : null,
+            Authorization: tokenApps,
             "Content-Type": "application/json",
           },
         }

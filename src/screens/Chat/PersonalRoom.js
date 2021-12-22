@@ -60,7 +60,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import { ASSETS_SERVER } from "../../config";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
-
+import { useSelector } from "react-redux";
 // import "./CustomKeyboard/demoKeyboards";
 const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
 const KeyboardUtils = Keyboard.KeyboardUtils;
@@ -79,6 +79,7 @@ const keyboards = [
 ];
 
 export default function Room({ navigation, route }) {
+  const tokenApps = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -101,6 +102,7 @@ export default function Room({ navigation, route }) {
   // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
+
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -177,8 +179,8 @@ export default function Room({ navigation, route }) {
   }, [connection_check]);
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      getUserToken();
+    navigation.addListener("focus", async () => {
+      await getUserToken();
     });
   }, []);
   const socket = useRef(null);
@@ -187,11 +189,10 @@ export default function Room({ navigation, route }) {
     socket.current = io(CHATSERVER, {
       withCredentials: true,
       extraHeaders: {
-        Authorization: token,
+        Authorization: tokenApps,
       },
     });
     socket.current.emit("join", room);
-    updateReadMassage();
     clearPushNotification();
     socket.current.on("connect", () => {
       console.log("isConnect");
@@ -210,7 +211,11 @@ export default function Room({ navigation, route }) {
     });
 
     return () => socket.current.disconnect();
-  }, [connected, token]);
+  }, [connected, tokenApps]);
+
+  useEffect(() => {
+    updateReadMassage();
+  }, [user, connected, socket.current]);
 
   const clearPushNotification = () => {
     if (Platform.OS === "ios") {
@@ -378,7 +383,7 @@ export default function Room({ navigation, route }) {
           method: "POST",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: tokenApps,
             "Content-Type": "multipart/form-data",
           },
           body: formData,
@@ -575,7 +580,7 @@ export default function Room({ navigation, route }) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + access_token,
+            Authorization: tokenApps,
             "Content-Type": "application/json",
           },
         }
@@ -672,6 +677,10 @@ export default function Room({ navigation, route }) {
       user_id: user.id,
       time: dateTime,
     };
+    console.log(
+      "🚀 ~ file: PersonalRoom.js ~ line 680 ~ updateReadMassage ~ chatData",
+      chatData
+    );
 
     await socket.current.emit("message", chatData);
   };
@@ -694,7 +703,7 @@ export default function Room({ navigation, route }) {
       await fetch(`${CHATSERVER}/api/personal/send`, {
         method: "POST",
         headers: {
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `room=${room}&type=sticker&chat=personal&text=${x}&user_id=${user.id}`,

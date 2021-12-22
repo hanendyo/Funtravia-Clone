@@ -4,7 +4,7 @@ import { Text } from "../../component";
 import { Tagdestination, Tagimage, Tagsticker, PinAbu } from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function ChatList({ data, style, room }) {
+export default function RecentChat({ data, style, room }) {
   const [datas, setDatas] = useState(data);
 
   // const getlocal = async () => {
@@ -18,10 +18,10 @@ export default function ChatList({ data, style, room }) {
         // data = recent[0];
         setDatas(recent[0]);
       } else {
-        data = data;
-
         setDatas(data);
       }
+    } else {
+      setDatas(data);
     }
   });
   // };

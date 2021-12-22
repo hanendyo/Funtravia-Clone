@@ -38,7 +38,7 @@ import { CHATSERVER } from "../../config";
 import { TabBar, SceneMap, TabView } from "react-native-tab-view";
 import ChatGroupList from "./RenderChatGroupList";
 import ChatList from "./RenderChatList";
-
+import { useSelector } from "react-redux";
 //TRY SOCKET
 import io from "socket.io-client";
 //TRY SOCKET
@@ -50,6 +50,7 @@ import io from "socket.io-client";
 // });
 
 export default function ChatsearchPage({ navigation, route }) {
+  const tokenApps = useSelector((data) => data.token);
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
   const [user, setUser] = useState({});
@@ -141,7 +142,7 @@ export default function ChatsearchPage({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
         "Content-Type": "application/json",
       },
     });
@@ -162,7 +163,7 @@ export default function ChatsearchPage({ navigation, route }) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
         "Content-Type": "application/json",
       },
     });
@@ -179,14 +180,14 @@ export default function ChatsearchPage({ navigation, route }) {
     if (setting) {
       await setUser(setting.user);
     }
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
+    // let token = await AsyncStorage.getItem("access_token");
+    if (tokenApps) {
       await setToken(token);
       await getRoom();
       await getRoomGroup();
     }
 
-    if (token === null) {
+    if (tokenApps === null) {
       setModalLogin(true);
       // navigation.navigate("HomeScreen");
     }
@@ -218,13 +219,13 @@ export default function ChatsearchPage({ navigation, route }) {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
       }
     );
     await AsyncStorage.removeItem("history_" + room_id);
-    getRoom(token);
+    getRoom(tokenApps);
   };
 
   const _searchHandle = (text) => {

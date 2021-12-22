@@ -693,7 +693,7 @@ export default function ChatTypelayout({
             </Text>
           </View>
 
-          <FunImageAutoSize
+          <FunImage
             source={
               data.assets[0].type === "video"
                 ? {
