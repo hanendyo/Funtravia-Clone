@@ -189,8 +189,6 @@ export default function Invitation({
 }) {
   let videoView = useRef(null);
   const { t, i18n } = useTranslation();
-  const counter = useSelector((data) => data.token);
-
   // let [datanotif, SetDataNotif] = useState([]);
   let [selected] = useState(new Map());
   let [dataTrans, setTrans] = useState(DataInformasi);
@@ -212,7 +210,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -252,7 +250,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -310,7 +308,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -322,7 +320,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -334,7 +332,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -527,7 +525,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
     onCompleted: () => {
