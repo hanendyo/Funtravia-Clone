@@ -14,12 +14,13 @@ import {
 import { Button, Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 import UpdatePrivacy from "../../../graphQL/Mutation/Itinerary/EditPrivacy";
+import { useSelector } from "react-redux";
 
 export default function editprivacy(props) {
   const { t, i18n } = useTranslation();
   const [dataPrivate, setDataPrivate] = useState(props.route.params.isprivate);
   const [dataID, setDataId] = useState(props.route.params.id);
-  const [token, setToken] = useState(props.route.params.token);
+  const token = useSelector((data) => data.token);
   const HeaderComponent = {
     headerShown: true,
     title: (
@@ -85,7 +86,7 @@ export default function editprivacy(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
