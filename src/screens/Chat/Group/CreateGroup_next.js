@@ -29,10 +29,11 @@ import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 
 export default function NewGroup(props) {
   const Notch = DeviceInfo.hasNotch();
-
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [title, settitle] = useState("");
@@ -52,7 +53,7 @@ export default function NewGroup(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -227,7 +228,7 @@ export default function NewGroup(props) {
         method: "POST",
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
         body: data_kirim,

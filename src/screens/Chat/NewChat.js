@@ -24,8 +24,10 @@ import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
+import { useSelector } from "react-redux";
 
 export default function NewChat({ navigation }) {
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [search, setSearch] = useState("");
@@ -43,7 +45,7 @@ export default function NewChat({ navigation }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -126,7 +128,7 @@ export default function NewChat({ navigation }) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: tokenApps,
             "Content-Type": "application/json",
           },
         }

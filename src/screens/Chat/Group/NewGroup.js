@@ -34,8 +34,10 @@ import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from "react-native-device-info";
+import { useSelector } from "react-redux";
 
 export default function NewGroup({ navigation, route }) {
+  const tokenApps = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
@@ -55,7 +57,7 @@ export default function NewGroup({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {

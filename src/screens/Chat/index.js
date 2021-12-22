@@ -225,7 +225,7 @@ export default function Message({ navigation, route }) {
         method: "DELETE",
         headers: {
           Accept: "application/json",
-          Authorization: tokenApps ? `Bearer ${tokenApps}` : null,
+          Authorization: tokenApps,
           "Content-Type": "application/json",
         },
       }

@@ -35,6 +35,7 @@ import {
   PensilPutih,
   ArrowRightHome,
   ItineraryIcon,
+  Next,
 } from "../../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
@@ -57,6 +58,8 @@ import normalize from "react-native-normalize";
 import Animated from "react-native-reanimated";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
+import ImageViewer from "react-native-image-zoom-viewer";
+
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -80,6 +83,14 @@ export default function GroupDetail(props) {
   const [modalCover, setmodalCover] = useState(false);
   const [selected, setSelected] = useState(false);
   const [indexActive, setIndexActive] = useState(null);
+  const [indexMediaView, setIndexMediaView] = useState(0);
+  const [modalimageview, setModalimageview] = useState(false);
+  const [mediaArray, setMediaArray] = useState([]);
+  console.log(
+    "🚀 ~ file: GroupDetail.js ~ line 89 ~ GroupDetail ~ mediaArray",
+    mediaArray
+  );
+
   let _menu = null;
 
   const HEADER_MAX_HEIGHT = normalize(240);
@@ -167,6 +178,7 @@ export default function GroupDetail(props) {
     if (data_setting) {
       await getDetailGroup(tokenApps, data_setting);
     }
+    initialHistoryMedia();
   };
   // useEffect(() => {
   //   props.navigation.setOptions(headerOptions);
@@ -222,6 +234,39 @@ export default function GroupDetail(props) {
           position: "bottom",
         });
       });
+  };
+
+  function compare(a, b) {
+    if (a.time > b.time) {
+      return -1;
+    }
+    if (a.time < b.time) {
+      return 1;
+    }
+    return 0;
+  }
+  const [media, setMedia] = useState(null);
+  const initialHistoryMedia = async () => {
+    let history = await AsyncStorage.getItem(
+      "history_" + props.route.params.room_id
+    );
+    let init_local = await JSON.parse(history);
+    let filteredList = [];
+    if (init_local) {
+      filteredList = [...new Set(init_local.map(JSON.stringify))].map(
+        JSON.parse
+      );
+      filteredList.sort(compare);
+      let filter = filteredList.filter(function(x) {
+        return x.type == "att_image";
+      });
+      setMedia(filter);
+      let arrayimg = [];
+      for (const val of filter) {
+        arrayimg.push({ url: val.text });
+      }
+      setMediaArray(arrayimg);
+    }
   };
 
   const _changecoverGalery = async () => {
@@ -823,16 +868,93 @@ export default function GroupDetail(props) {
         <View
           style={{
             backgroundColor: "#f6f6f6",
-            height: 5,
+            height: 10,
           }}
         />
-        <View
+        {/* <View
           style={{
             backgroundColor: "#f6f6f6",
             height: 5,
           }}
-        />
+        /> */}
 
+        <View
+          style={{
+            backgroundColor: "#FFFFFF",
+          }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 15,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingBottom: 10,
+              paddingTop: 13,
+              // borderWidth: 1,
+            }}
+          >
+            <Text size="label" type="bold" style={{}}>
+              {t("media")}
+            </Text>
+
+            <Pressable
+              onPress={() => {
+                setIndexMediaView(0);
+                setModalimageview(true);
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text type="bold" style={{ marginRight: 5 }}>
+                {media?.length}
+              </Text>
+              <Next width={12} height={12} />
+            </Pressable>
+          </View>
+          <FlatList
+            data={media}
+            contentContainerStyle={{
+              paddingHorizontal: 15,
+              paddingBottom: 15,
+            }}
+            horizontal={true}
+            renderItem={({ item, index }) => {
+              if (index <= 4) {
+                return (
+                  <Pressable
+                    style={
+                      {
+                        // borderWidth: 1,
+                      }
+                    }
+                    onPress={() => {
+                      setIndexMediaView(index);
+                      setModalimageview(true);
+                    }}
+                  >
+                    <FunImage
+                      source={{ uri: item.text }}
+                      style={{
+                        width: (width - 30) / 5 - 3,
+                        height: (width - 30) / 5 - 3,
+                        marginRight: 3,
+                      }}
+                    />
+                  </Pressable>
+                );
+              }
+            }}
+          />
+        </View>
+        <View
+          style={{
+            backgroundColor: "#f6f6f6",
+            height: 10,
+          }}
+        />
         <View
           style={{
             backgroundColor: "#FFFFFF",
@@ -1578,6 +1700,38 @@ export default function GroupDetail(props) {
               ></Button>
             </View>
           </View>
+        </Modal>
+
+        {/* modal view image */}
+        <Modal
+          visible={modalimageview}
+          transparent={true}
+          onRequestClose={() => {
+            setModalimageview(false);
+          }}
+        >
+          <ImageViewer
+            imageUrls={mediaArray}
+            useNativeDriver={true}
+            // onSwipeDown={() => {
+            //   setModalimageview(false);
+            // }}
+            index={indexMediaView}
+            enablePreload={true}
+            // enableSwipeDown={true}
+            renderHeader={() => (
+              <Pressable
+                onPress={() => {
+                  setModalimageview(false);
+                }}
+              >
+                {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
+                <Text size="h5" styles={{ color: "white" }}>
+                  {" X "}
+                </Text>
+              </Pressable>
+            )}
+          />
         </Modal>
       </Animated.ScrollView>
 

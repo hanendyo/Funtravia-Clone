@@ -21,8 +21,9 @@ import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
 import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useSelector } from "react-redux";
 export default function AddMember(props) {
+  const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
@@ -92,9 +93,7 @@ export default function AddMember(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -108,9 +107,7 @@ export default function AddMember(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
     variables: { id: props.route.params.id_group },
@@ -131,7 +128,7 @@ export default function AddMember(props) {
             method: "POST",
             headers: {
               Accept: "application/json",
-              Authorization: "Bearer " + token,
+              Authorization: tokenApps,
               "Content-Type": "application/json",
             },
             body: data_kirim,
@@ -205,9 +202,7 @@ export default function AddMember(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route.params.token
-          ? `Bearer ${props.route.params.token}`
-          : null,
+        Authorization: tokenApps,
       },
     },
   });
