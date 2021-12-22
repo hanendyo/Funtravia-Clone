@@ -123,9 +123,7 @@ export default function Notification(props) {
   const { t, i18n } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
   let [datanotif, SetDataNotif] = useState([]);
-
   let [readall, setreadall] = useState(true);
-
   const [canScroll, setCanScroll] = useState(true);
   const _tabIndex = useRef(0);
   const [tabIndex, setTabIndex] = useState(0);
@@ -148,6 +146,14 @@ export default function Notification(props) {
   const PullToRefreshDist = 150;
   const Notch = DeviceInfo.hasNotch();
   const listOffset = useRef({});
+
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    // setToken(tkn);
+    refetchnotif();
+    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // GetListInvitation();
+  };
 
   const refresh = async () => {
     refreshStatusRef.current = true;
@@ -204,13 +210,6 @@ export default function Notification(props) {
     ),
   };
 
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
-    // GetListInvitation();
-  };
-
   const funcSetIndex = (e) => {
     setIndex(() => {
       return (token = e);
@@ -221,12 +220,13 @@ export default function Notification(props) {
     props.navigation.setOptions(HeaderComponent);
     loadAsync();
     // GetListNotif();
-  }, [props.navigation, token, index]);
+  }, [props.navigation]);
 
   const {
     data: datasnotif,
     loading: loadingnotif,
     error: errornotif,
+    refetch: refetchnotif,
   } = useQuery(ListNotifikasi_, {
     options: {
       fetchPolicy: "network-only",
@@ -240,12 +240,13 @@ export default function Notification(props) {
         Authorization: token,
       },
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       SetDataNotif(datasnotif?.list_notification);
       let status = 0;
       for (var x of datasnotif?.list_notification) {
         if (x.isread === false) {
           status = 1;
+          break;
         }
       }
       if (status === 1) {
@@ -292,7 +293,9 @@ export default function Notification(props) {
         lazy={true}
         navigationState={{ index, routes }}
         renderScene={renderScene}
-        onIndexChange={funcSetIndex}
+        onIndexChange={(id) => {
+          return setIndex(id);
+        }}
         renderTabBar={(props) => {
           return (
             <TabBar
