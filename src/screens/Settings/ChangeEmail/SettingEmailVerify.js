@@ -20,10 +20,13 @@ import RESEND from "../../../graphQL/Mutation/Register/ResendOtpRegEmail";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
 import useTimer from "../../../component/src/CountDownTimer";
+import { setTokenApps } from "../../../redux/action";
+import { useDispatch } from "react-redux";
 
 export default function SettingEmailVerify(props) {
+  let dispatch = useDispatch();
   const Notch = DeviceInfo.hasNotch();
-  let [token, setToken] = useState("");
+  let [token, setToken] = useState(props.route.params.token);
   let { t, i18n } = useTranslation();
   let [setting, setSetting] = useState("");
   const [resend] = useMutation(RESEND);
@@ -82,7 +85,8 @@ export default function SettingEmailVerify(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
+    // await setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };
@@ -118,7 +122,7 @@ export default function SettingEmailVerify(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -152,6 +156,7 @@ export default function SettingEmailVerify(props) {
             await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
             await props.navigation.navigate("SettingsAkun", {
               setting: setting,
+              token: token,
             });
           }
         }

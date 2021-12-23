@@ -46,6 +46,7 @@ import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
+import deviceInfoModule from "react-native-device-info";
 
 const deviceId = DeviceInfo.getModel();
 
@@ -109,6 +110,7 @@ export default function ItineraryDestination(props) {
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
   let [dataDes, setdataDes] = useState([]);
+  const Notch = deviceInfoModule.hasNotch();
 
   let [aktif, setaktif] = useState("categories");
 
@@ -838,6 +840,7 @@ export default function ItineraryDestination(props) {
         }}
         onRequestClose={() => setshow(false)}
         onDismiss={() => setshow(false)}
+        avoidKeyboard={true}
         isVisible={show}
         style={{
           justifyContent: "flex-end",
@@ -847,7 +850,12 @@ export default function ItineraryDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.51
+                  : Dimensions.get("screen").height * 0.53
+                : Dimensions.get("screen").height * 0.5,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,

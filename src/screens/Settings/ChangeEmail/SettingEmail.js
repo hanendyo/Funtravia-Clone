@@ -180,6 +180,7 @@ export default function SettingEmail(props) {
           } else {
             await props.navigation.navigate("SettingEmailVerify", {
               emailNew: email,
+              token: token,
               // emailOld: oldEmail,
             });
           }
@@ -209,11 +210,13 @@ export default function SettingEmail(props) {
           style={{
             // width: Dimensions.get("screen").width * 0.9,
             marginHorizontal: 20,
-            marginTop: 100,
+            marginTop: 50,
+            marginBottom: 50,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
+          <View></View>
           <PasswordUpdateEmail width={170} height={170} />
           <Text size="label" type="bold">
             {t("inputPassword")}

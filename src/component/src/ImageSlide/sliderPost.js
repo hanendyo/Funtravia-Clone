@@ -137,7 +137,7 @@ export default function ImageSlide({
               color: "white",
             }}
           >
-            Photos on trip
+            {t("photosFromTrip")}
           </Text>
           {location ? (
             <Text
@@ -342,7 +342,7 @@ export default function ImageSlide({
                 marginRight: 10,
               }}
             >
-              View photo on Fun Feed
+              {t("viewPhotoOnFunFeed")}
             </Text>
             <Arrowrightwhite width={20} height={20}></Arrowrightwhite>
           </TouchableOpacity>

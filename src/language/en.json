@@ -782,7 +782,7 @@
   "uploadFlightTicket": "Upload your flight ticket, hotel voucher, etc.",
   "alertDisconnectGoogle": "Do you want to disconnect this google?",
   "alertDisconnectFacebook": "Do you want to disconnect this facebook?",
-  "disconnectGoogle": "Disconneact Google",
+  "disconnectGoogle": "Disconnect Google",
   "disconnectFacebook": "Disconnect Facebook",
   "successCopyLink": "Success Copy Link To Clipboard",
   "failedCopyLink": "Failed To Copy Link To Clipboard",
@@ -865,5 +865,7 @@
   "failedCommentJournal": "Failed comment this journal",
   "deletePhoneNumber": "Delete phone number",
   "favoriteJournal": "Favorite journal",
-  "media": "Media"
+  "media": "Media",
+  "photosFromTrip": "Photos from trip",
+  "viewPhotoOnFunFeed": "View photo on fun feed"
 }

@@ -70,14 +70,10 @@ export default function CountrySrc({
     variables: {
       keyword: continentsearch ? continentsearch : null,
     },
-    onCompleted: async () => {
+    onCompleted: () => {
       setDatacontinent(datacontinent?.continent_list);
     },
   });
-
-  useEffect(() => {
-    refetchcontinent();
-  }, []);
 
   const { data, loading, error, refetch } = useQuery(CountryListSrcMovie, {
     variables: {
@@ -157,7 +153,6 @@ export default function CountrySrc({
       animationIn="slideInRight"
       animationOut="slideOutRight"
       isVisible={modalshown}
-      avoidKeyboard={true}
       style={{
         justifyContent: "flex-end",
         alignItems: "center",
@@ -412,7 +407,6 @@ export default function CountrySrc({
         onRequestClose={() => setmodalFilter(false)}
         onDismiss={() => setmodalFilter(false)}
         isVisible={modalFilter}
-        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
           margin: 0,
@@ -421,12 +415,7 @@ export default function CountrySrc({
         <View
           style={{
             flexDirection: "column",
-            height:
-              Platform.OS == "ios"
-                ? Notch
-                  ? Dimensions.get("screen").height * 0.51
-                  : Dimensions.get("screen").height * 0.53
-                : Dimensions.get("screen").height * 0.5,
+            height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             borderTopRightRadius: 15,
             borderTopLeftRadius: 15,

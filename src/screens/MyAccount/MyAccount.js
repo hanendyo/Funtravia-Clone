@@ -659,7 +659,7 @@ export default function MyAccount(props) {
               type="regular"
               style={{ marginTop: 12, marginBottom: 15 }}
             >
-              {t("Journal")}
+              {t("journal")}
             </Text>
             <View
               style={{
@@ -670,7 +670,7 @@ export default function MyAccount(props) {
             >
               <Text type="bold" size="label" style={{ marginRight: 10 }}>
                 {userData && userData.count_journal_favorite
-                  ? userData.count_journal_favorite + " " + "Journal"
+                  ? userData.count_journal_favorite + " " + t("journal")
                   : "0"}
               </Text>
               <Next width={15} height={15} />

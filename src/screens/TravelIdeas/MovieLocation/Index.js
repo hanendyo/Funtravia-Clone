@@ -92,11 +92,11 @@ export default function MovieLocation({ navigation, route }) {
     error: errorcountry,
     refetch: refetchcountry,
   } = useQuery(CountryListSrcMovie, {
+    fetchPolicy: "network-only",
     variables: {
       continent_id: null,
       keyword: "",
     },
-    fetchPolicy: "network-only",
     onCompleted: () => {
       SetselectedCountry({
         id: datacountry?.list_country_src_movie[0].id,
