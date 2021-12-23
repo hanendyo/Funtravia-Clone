@@ -2471,6 +2471,47 @@ export default function OtherProfile(props) {
     <View style={styles.container}>
       <StaBar backgroundColor="#209fae" barStyle="light-content" />
 
+      {tabPost == 0 && dataPost.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            paddingTop: SafeStatusBar + HeaderHeight + TabBarHeight + 100,
+          }}
+        >
+          {loadingFeed ? (
+            <ActivityIndicator size="large" color="#209fae" />
+          ) : (
+            <Text size="label" type="regular">
+              {t("noData")}
+            </Text>
+          )}
+        </View>
+      ) : null}
+      {tabPost == 1 && dataalbums.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            paddingTop: SafeStatusBar + HeaderHeight + TabBarHeight + 100,
+          }}
+        >
+          {loadingFotoAlbum ? (
+            <ActivityIndicator size="large" color="#209fae" />
+          ) : (
+            <Text size="label" type="regular">
+              {t("noData")}
+            </Text>
+          )}
+        </View>
+      ) : null}
+
       {/* header before scroll */}
       <Animated.View
         style={{
