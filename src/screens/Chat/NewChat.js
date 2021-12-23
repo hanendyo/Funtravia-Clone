@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import {
   Button,
@@ -19,7 +20,12 @@ import {
 } from "../../component";
 import { default_image, search_button } from "../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { Arrowbackwhite, SendMessage } from "../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  Magnifying,
+  SendMessage,
+} from "../../assets/svg";
 import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -78,7 +84,11 @@ export default function NewChat({ navigation }) {
             marginLeft: 10,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
         <Text type="bold" size="title" style={{ color: "#FFF", marginLeft: 5 }}>
           {t("newMessage")}
@@ -167,12 +177,14 @@ export default function NewChat({ navigation }) {
               onPress={() => _sendMessage(value.id)}
               style={{
                 flexDirection: "row",
-                width: Dimensions.get("screen").width,
+                width: Dimensions.get("screen").width - 30,
                 paddingHorizontal: 20,
                 paddingVertical: 10,
                 justifyContent: "space-between",
                 alignItems: "center",
                 alignContent: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "#f6f6f6",
               }}
             >
               <View
@@ -180,6 +192,7 @@ export default function NewChat({ navigation }) {
                   flexDirection: "row",
                   alignItems: "center",
                   alignContent: "center",
+                  flex: 1,
                 }}
               >
                 <FunImage
@@ -197,11 +210,11 @@ export default function NewChat({ navigation }) {
                   }}
                 />
 
-                <View>
+                <View style={{ flex: 1 }}>
                   <Text
                     size="label"
                     type="bold"
-                    numberOfLines={1}
+                    numberOfLines={2}
                     style={{
                       marginLeft: 20,
                     }}
@@ -216,20 +229,32 @@ export default function NewChat({ navigation }) {
                       marginLeft: 20,
                     }}
                   >
-                    {value.username}
+                    {`@${value.username}`}
                   </Text>
                 </View>
               </View>
-              <Button
+              <Pressable
+                onPress={() => _sendMessage(value.id)}
+                style={{
+                  width: 50,
+                  height: 50,
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                }}
+              >
+                <SendMessage width={22} height={22} />
+              </Pressable>
+              {/* <Button
                 onPress={() => _sendMessage(value.id)}
                 text=""
                 size="medium"
                 color="primary"
                 variant="transparent"
                 type="icon"
+                style={{ borderWidth: 1 }}
               >
                 <SendMessage width={22} height={22} />
-              </Button>
+              </Button> */}
             </TouchableOpacity>
           );
         })}
@@ -242,6 +267,7 @@ export default function NewChat({ navigation }) {
       style={{
         flex: 1,
         padding: 10,
+        margin: 15,
       }}
     >
       <Loading show={loading} />
@@ -265,11 +291,11 @@ export default function NewChat({ navigation }) {
               alignContent: "center",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              paddingVertical: 20,
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 20,
+              flex: 1,
             }}
           >
             <View
@@ -280,29 +306,23 @@ export default function NewChat({ navigation }) {
                 height: 40,
                 flexDirection: "row",
                 alignItems: "center",
+                marginHorizontal: 20,
+                paddingHorizontal: 10,
+                flex: 1,
+                marginTop: 10,
               }}
             >
-              <View>
-                <Image
-                  source={search_button}
-                  style={{
-                    resizeMode: "cover",
-                    height: 17,
-                    width: 17,
-                    alignSelf: "center",
-                    zIndex: 100,
-                    marginHorizontal: 10,
-                  }}
-                />
-              </View>
-
+              <Magnifying width="15" height="15" />
               <TextInput
                 underlineColorAndroid="transparent"
                 placeholder={t("search")}
+                placeholderTextColor="#464646"
                 style={{
-                  width: "100%",
+                  // width: "100%",
                   fontFamily: "Lato-Regular",
                   fontSize: 14,
+                  marginLeft: 10,
+                  flex: 1,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}

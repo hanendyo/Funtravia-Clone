@@ -36,13 +36,37 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
     let date = new Date().toLocaleDateString();
     return date;
   };
-  const timeChatGroup = (item) => {
-    let timeChat = new Date(item.recent?.time).toTimeString();
-    return timeChat;
-  };
-  const dateChatGroup = (item) => {
-    let dateChat = new Date(item.recent?.time).toLocaleDateString();
+  // const timeChatGroup = (item) => {
+  //   let timeChat = new Date(item.recent?.time).toTimeString();
+  //   return timeChat;
+  // };
 
+  const timeChatGroup = () => {
+    const dates = new Date();
+    let day = dates.getDate();
+    let month = dates.getMonth();
+    let year = dates
+      .getFullYear()
+      .toString()
+      .substr(2, 2);
+    let date = day + "/" + (month + 1) + "/" + year;
+    return date;
+  };
+
+  // const dateChatGroup = (item) => {
+  //   let dateChat = new Date(item.recent?.time).toLocaleDateString();
+
+  //   return dateChat;
+  // };
+  const dateChatGroup = (item) => {
+    let dateChateDate = new Date(item.recent?.time).getDate();
+    let dateChateMonth = new Date(item.recent?.time).getMonth();
+    let dateChateYear = new Date(item.recent?.time)
+      .getFullYear()
+      .toString()
+      .substr(2, 2);
+    let dateChat =
+      dateChateDate + "/" + (dateChateMonth + 1) + "/" + dateChateYear;
     return dateChat;
   };
 
@@ -125,8 +149,6 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                     justifyContent: "center",
                     alignItems: "flex-start",
                     width: "80%",
-                    // backgroundColor: "red",
-                    // paddingLeft: 10,
                   }}
                 >
                   {item.itinerary ? (

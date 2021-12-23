@@ -29,6 +29,7 @@ import {
   Xgray,
   Xblue,
   ArrowRight,
+  Magnifying,
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
@@ -195,7 +196,7 @@ export default function NewGroup({ navigation, route }) {
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 50,
+              width: Dimensions.get("screen").width - 30,
             }}
           >
             <View
@@ -204,31 +205,23 @@ export default function NewGroup({ navigation, route }) {
                 borderRadius: 5,
                 width: "100%",
                 height: 40,
-                paddingHorizontal: 5,
+                paddingHorizontal: 10,
                 flexDirection: "row",
                 alignItems: "center",
               }}
             >
-              <View>
-                <CustomImage
-                  source={search_button}
-                  customImageStyle={{ resizeMode: "cover" }}
-                  customStyle={{
-                    height: 17,
-                    width: 17,
-                    alignSelf: "center",
-                    zIndex: 100,
-                    marginHorizontal: 5,
-                  }}
-                />
-              </View>
+              <Magnifying width="15" height="15" />
+
               <TextInput
                 underlineColorAndroid="transparent"
                 placeholder={t("search")}
+                placeholderTextColor="#464646"
                 style={{
                   width: "85%",
                   fontFamily: "Lato-Regular",
                   fontSize: 14,
+                  flex: 1,
+                  marginLeft: 10,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}
@@ -338,7 +331,7 @@ export default function NewGroup({ navigation, route }) {
                 onPress={() => selectUser(item)}
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width,
+                  width: Dimensions.get("screen").width - 30,
                   paddingHorizontal: 20,
                   paddingVertical: 10,
                   justifyContent: "space-between",
@@ -353,6 +346,7 @@ export default function NewGroup({ navigation, route }) {
                     flexDirection: "row",
                     alignItems: "center",
                     alignContent: "center",
+                    width: "100%",
                   }}
                 >
                   <FunImageBackground
@@ -395,24 +389,25 @@ export default function NewGroup({ navigation, route }) {
                       </View>
                     ) : null}
                   </FunImageBackground>
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text
                       size="label"
                       type="bold"
                       style={{
                         marginLeft: 20,
                       }}
-                      numberOfLines={1}
+                      numberOfLines={2}
                     >
                       {item.first_name} {item.last_name ? item.last_name : ""}
                     </Text>
 
                     <Text
+                      numberOfLines={1}
                       size="description"
                       type="regular"
                       style={{
                         marginLeft: 20,
-                        // marginTop: 5,
+                        marginTop: 3,
                       }}
                     >
                       @{item.username}

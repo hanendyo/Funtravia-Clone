@@ -229,7 +229,7 @@ export default function RecentChat({ data, style, room }) {
   }
 
   return (
-    <Text style={style} size="description" numberOfLines={2}>
+    <Text style={style} size="description" numberOfLines={1}>
       {datas.text}
     </Text>
   );
