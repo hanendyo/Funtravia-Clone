@@ -1504,9 +1504,9 @@ export default function SearchListEventHome(props) {
             height:
               Platform.OS == "ios"
                 ? Notch
-                  ? Dimensions.get("screen").height * 0.6
-                  : Dimensions.get("screen").height * 0.63
-                : Dimensions.get("screen").height * 0.6,
+                  ? Dimensions.get("screen").height * 0.51
+                  : Dimensions.get("screen").height * 0.53
+                : Dimensions.get("screen").height * 0.5,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,

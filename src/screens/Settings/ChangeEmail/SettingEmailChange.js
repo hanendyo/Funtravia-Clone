@@ -210,6 +210,7 @@ export default function SettingEmailChange(props) {
             await props.navigation.navigate("SettingEmailVerify", {
               emailNew: newEmail,
               emailOld: oldEmail,
+              token: token,
             });
           }
         }

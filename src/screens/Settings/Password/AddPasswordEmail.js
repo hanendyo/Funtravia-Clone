@@ -168,6 +168,7 @@ export default function AddPasswordEmail(props) {
             await setTimeout(() => {
               props.navigation.navigate("SettingEmailChange", {
                 setting: setting,
+                token: token,
               });
             }, 2000);
           } else {

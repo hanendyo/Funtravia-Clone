@@ -27,6 +27,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
 import ContinentList from "../../../graphQL/Query/Countries/ContinentList";
 import CheckBox from "@react-native-community/checkbox";
+import deviceInfoModule from "react-native-device-info";
 
 export default function CountrySrc({
   selectedCountry,
@@ -45,6 +46,11 @@ export default function CountrySrc({
   let [continent_listfilter, setDatacontinentfilter] = useState([]);
   // show filter
   let [show, setshow] = useState(false);
+  const Notch = deviceInfoModule.hasNotch();
+
+  useEffect(() => {
+    refetchcontinent();
+  }, []);
 
   const {
     data: datacontinent,
@@ -55,7 +61,7 @@ export default function CountrySrc({
     variables: {
       keyword: "",
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       continent_list = setDatacontinent(datacontinent?.continent_list);
       setDatacontinentfilter(datacontinent?.continent_list);
     },
@@ -152,6 +158,8 @@ export default function CountrySrc({
     setContinentSelecteds([]);
     setDatacontinent([]);
     setDatacontinentfilter(tempes);
+    searchcontinentfilter("");
+    setContinent("");
   };
   return (
     <Modal
@@ -161,6 +169,7 @@ export default function CountrySrc({
       animationIn="slideInRight"
       animationOut="slideOutRight"
       isVisible={modalshown}
+      avoidKeyboard={true}
       style={{
         justifyContent: "flex-end",
         alignItems: "center",
@@ -457,6 +466,7 @@ export default function CountrySrc({
         onRequestClose={() => setshow(false)}
         onDismiss={() => setshow(false)}
         isVisible={show}
+        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
           margin: 0,
@@ -465,7 +475,12 @@ export default function CountrySrc({
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.51
+                  : Dimensions.get("screen").height * 0.53
+                : Dimensions.get("screen").height * 0.5,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopWidth: 1,
