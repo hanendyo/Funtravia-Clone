@@ -170,7 +170,7 @@ export default function OtherProfile(props) {
     await setSetting(JSON.parse(settingData));
 
     await LoadUserProfile();
-    await _refresh();
+    // await _refresh();
   };
 
   const {

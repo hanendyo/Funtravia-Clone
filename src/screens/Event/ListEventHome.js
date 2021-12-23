@@ -1938,7 +1938,7 @@ export default function ListEventHome(props) {
                       paddingVertical: 15,
                       paddingHorizontal: 20,
                       borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -1947,23 +1947,24 @@ export default function ListEventHome(props) {
                   >
                     <View
                       style={{
+                        marginRight: 15,
                         flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        elevation: 1,
                       }}
                     >
                       <View
                         style={{
-                          marginRight: 15,
-                          elevation: 1,
-                          height: 30,
-                          width: 42,
-                          backgroundColor: "#fff",
-                          // borderWidth: 1,
+                          borderWidth: 1,
+                          borderColor: "#d1d1d1",
+                          overflow: "hidden",
                         }}
                       >
                         <FunIcon
                           icon={item.flag}
-                          height={30}
-                          width={42}
+                          height={25}
+                          width={37}
                           variant="f"
                           style={
                             {
@@ -1972,8 +1973,15 @@ export default function ListEventHome(props) {
                           }
                         />
                       </View>
-                      <View style={{ paddingTop: 5 }}>
-                        <Text size="description">{item.name}</Text>
+                      <View style={{ paddingLeft: 15 }}>
+                        <Text
+                          size="description"
+                          style={{
+                            color: item.checked ? "#209FAE" : "#000",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
                       </View>
                     </View>
                     <View>
@@ -1991,7 +1999,7 @@ export default function ListEventHome(props) {
                       paddingVertical: 15,
                       paddingHorizontal: 20,
                       borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -2026,7 +2034,14 @@ export default function ListEventHome(props) {
                         />
                       </View>
                       <View style={{ paddingTop: 5 }}>
-                        <Text size="description">{item.name}</Text>
+                        <Text
+                          size="description"
+                          style={{
+                            color: item.checked ? "#209FAE" : "#D1D1D1",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
                       </View>
                     </View>
                     <View>

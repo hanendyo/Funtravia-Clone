@@ -64,7 +64,6 @@ function TripPlaningscreen(props) {
 }
 const Feedstack = createStackNavigator();
 function Feedstackscreen(props) {
-  const [token, setToken] = useState(null);
   return (
     <Feedstack.Navigator initialRouteName={"FeedScreen"}>
       <Feedstack.Screen
