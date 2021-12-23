@@ -1992,6 +1992,7 @@ const Index = (props) => {
         style={{
           paddingHorizontal: 15,
           paddingVertical: 10,
+          marginBottom: HEADER_MIN_HEIGHT,
           transform: [{ translateY: y }],
         }}
       >

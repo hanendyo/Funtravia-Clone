@@ -29,6 +29,7 @@ import { useMutation } from "@apollo/client";
 import ItineraryLiked from "../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { RNToasty } from "react-native-toasty";
+import { StackActions } from "@react-navigation/native";
 
 export default function CardItinerary({
   data,
@@ -196,16 +197,29 @@ export default function CardItinerary({
               <Pressable
                 onPress={() =>
                   token
-                    ? props.navigation.navigate("ItineraryStack", {
-                        screen: "itindetail",
-                        params: {
-                          itintitle: item.name,
-                          country: item.id,
-                          token: token,
-                          status: "favorite",
-                          index: 0,
-                        },
-                      })
+                    ? props.route.params.Position
+                      ? props.navigation.dispatch(
+                          StackActions.replace("ItineraryStack", {
+                            screen: "ItineraryChooseday",
+                            params: {
+                              Iditinerary: item.id,
+                              Kiriman: props.route.params.idkiriman,
+                              token: token,
+                              Position: props.route.params.Position,
+                              // datadayaktif: props.route.params.datadayaktif,
+                            },
+                          })
+                        )
+                      : props.navigation.navigate("ItineraryStack", {
+                          screen: "itindetail",
+                          params: {
+                            itintitle: item.name,
+                            country: item.id,
+                            token: token,
+                            status: "favorite",
+                            index: 0,
+                          },
+                        })
                     : setModalLogin(true)
                 }
                 style={{
@@ -219,15 +233,28 @@ export default function CardItinerary({
                 <Pressable
                   onPress={() => {
                     token
-                      ? props.navigation.navigate("ItineraryStack", {
-                          screen: "itindetail",
-                          params: {
-                            itintitle: item.name,
-                            country: item.id,
-                            token: token,
-                            status: "favorite",
-                          },
-                        })
+                      ? props.route.params.Position
+                        ? props.navigation.dispatch(
+                            StackActions.replace("ItineraryStack", {
+                              screen: "ItineraryChooseday",
+                              params: {
+                                Iditinerary: item.id,
+                                Kiriman: props.route.params.idkiriman,
+                                token: token,
+                                Position: props.route.params.Position,
+                                // datadayaktif: props.route.params.datadayaktif,
+                              },
+                            })
+                          )
+                        : props.navigation.navigate("ItineraryStack", {
+                            screen: "itindetail",
+                            params: {
+                              itintitle: item.name,
+                              country: item.id,
+                              token: token,
+                              status: "favorite",
+                            },
+                          })
                       : setModalLogin(true);
                   }}
                 >

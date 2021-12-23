@@ -9,6 +9,7 @@ import {
   FlatList,
   Pressable,
   Platform,
+  BackHandler,
 } from "react-native";
 import { Sharegreen, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -63,6 +64,24 @@ export default function albumdetail(props) {
       </Button>
     ),
   };
+
+  const backAction = () => {
+    props.navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   let token = props.route.params.token;
   let judul = props.route.params.judul;

@@ -722,9 +722,10 @@ export default function TravelGoalDetail(props) {
           // top: 0,
           left: 0,
           right: 0,
-          backgroundColor: "#209fae",
+          backgroundColor: "#209FAE",
           overflow: "hidden",
-          height: HEADER_MAX_HEIGHT,
+          height:
+            Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT + 10,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -737,7 +738,10 @@ export default function TravelGoalDetail(props) {
             left: 0,
             right: 0,
             width: null,
-            height: HEADER_MAX_HEIGHT,
+            height:
+              Platform.OS === "ios"
+                ? HEADER_MAX_HEIGHT
+                : HEADER_MAX_HEIGHT + 10,
             resizeMode: "cover",
             opacity: imageOpacity,
             transform: [{ translateY: imageTranslateY }],
@@ -756,16 +760,17 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(40) : normalize(55),
+          height: Platform.OS === "ios" ? normalize(53) : normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
           left: 60,
+          bottom: 0,
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar,
+          top: Platform.OS === "ios" ? SafeStatusBar : SafeStatusBar + 15,
         }}
       >
         <Text
@@ -798,7 +803,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 8 : 15,
+            marginTop: Platform.OS === "ios" ? 15 : 30,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 40,
@@ -833,7 +838,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 8 : 15,
+            marginTop: Platform.OS === "ios" ? 15 : 30,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

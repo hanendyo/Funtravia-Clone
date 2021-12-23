@@ -170,10 +170,6 @@ export default function EventDetail(props) {
   };
 
   let [dataevent, setDataEvent] = useState({});
-  console.log(
-    "🚀 ~ file: EventDetail.js ~ line 173 ~ EventDetail ~ dataevent",
-    dataevent
-  );
   let event_id = props.route.params.event_id
     ? props.route.params.event_id
     : dataevent.id;

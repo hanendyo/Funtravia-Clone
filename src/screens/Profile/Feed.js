@@ -6,6 +6,7 @@ import {
   Pressable,
   Modal,
   Platform,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -103,6 +104,24 @@ export default function myfeed(props) {
     headerRight: () => <View style={{ flexDirection: "row" }}></View>,
     headerRightStyle: {},
   };
+
+  const backAction = () => {
+    props.navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions(HeaderComponent);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   const isFocused = useIsFocused();
   const ref = useRef(null);

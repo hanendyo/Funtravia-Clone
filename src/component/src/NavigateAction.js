@@ -8,7 +8,6 @@ export default async function NavigateAction(navigation, shareId) {
 
   response = await response.json();
   let data = response.result;
-  console.log("data", data);
   switch (data.og_from) {
     case "journal":
       navigation.navigate("JournalStackNavigation", {
