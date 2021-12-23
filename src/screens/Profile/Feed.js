@@ -7,6 +7,7 @@ import {
   Modal,
   Platform,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -63,7 +64,6 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
-  console.log("🚀 ~ file: Feed.js ~ line 65 ~ myfeed ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
@@ -133,14 +133,12 @@ export default function myfeed(props) {
   let [users, setuser] = useState(null);
   let [selectedOption, SetOption] = useState({});
   let [play, setPlay] = useState(null);
-  console.log("🚀 ~ file: Feed.js ~ line 117 ~ myfeed ~ play", play);
   let [muted, setMuted] = useState(true);
-  let { width, height } = Dimensions.get("screen");
   let [activelike, setactivelike] = useState(true);
   let [setting, setSetting] = useState();
   let [datas, setDatas] = useState(props.route.params.dataPost);
-  console.log("🚀 ~ file: Feed.js ~ line 122 ~ myfeed ~ datas", datas);
   let [indekScrollto, setIndeksScrollto] = useState(0);
+  let [showLoading, setShowLoading] = useState(false);
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
     setTimeout(() => {
@@ -260,7 +258,7 @@ export default function myfeed(props) {
         Alert.alert("" + error);
       }
     } else {
-      Alert.alert("Please Login");
+      console.warn("Please Login");
     }
   };
 
@@ -285,7 +283,6 @@ export default function myfeed(props) {
         }
       }
       if (props.route.params.isProfil) {
-        console.log("isprofil");
         let tempdata = [...props.route.params.dataPost];
         if (tempdata) {
           let indeks = tempdata.findIndex(
@@ -294,8 +291,12 @@ export default function myfeed(props) {
           if (indeks) {
             setIndeksScrollto(indeks);
             Scroll_to(indeks);
+            props.route.params.isProfil = false;
           }
         }
+      }
+      if (play == props.route.params.post_id) {
+        setShowLoading(true);
       }
     }
   }, [
@@ -303,6 +304,7 @@ export default function myfeed(props) {
     props.route.params.isProfil,
     props.route.params.post_id,
     props.route.params.dataPost,
+    play,
   ]);
 
   const [
@@ -660,117 +662,115 @@ export default function myfeed(props) {
     }
   };
 
-  if (loadingpost) {
-    return (
-      <SkeletonPlaceholder
-        speed={1000}
-        // highlightColor="d1d1d1"
-        // backgroundColor="red"
-      >
-        <View
-          style={{
-            padding: 10,
-            marginHorizontal: 15,
-            marginVertical: 5,
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: "#f6f6f6",
-            paddingBottom: 20,
-          }}
-        >
-          <View
-            style={{
-              // height: 200,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <SkeletonPlaceholder.Item
-                width={40}
-                height={40}
-                borderRadius={20}
-              />
-              <View
-                style={{
-                  marginLeft: 20,
-                }}
-              >
-                <SkeletonPlaceholder.Item
-                  width={120}
-                  height={15}
-                  borderRadius={5}
-                />
-                <SkeletonPlaceholder.Item
-                  marginTop={6}
-                  width={80}
-                  height={15}
-                  borderRadius={5}
-                />
-              </View>
-            </View>
-            <SkeletonPlaceholder.Item width={30} height={15} borderRadius={5} />
-          </View>
+  // if (loadingpost) {
+  //   return (
+  //     <SkeletonPlaceholder
+  //       speed={1000}
+  //     >
+  //       <View
+  //         style={{
+  //           padding: 10,
+  //           marginHorizontal: 15,
+  //           marginVertical: 5,
+  //           borderRadius: 20,
+  //           borderWidth: 1,
+  //           borderColor: "#f6f6f6",
+  //           paddingBottom: 20,
+  //         }}
+  //       >
+  //         <View
+  //           style={{
+  //             // height: 200,
+  //             flexDirection: "row",
+  //             justifyContent: "space-between",
+  //           }}
+  //         >
+  //           <View
+  //             style={{
+  //               flexDirection: "row",
+  //             }}
+  //           >
+  //             <SkeletonPlaceholder.Item
+  //               width={40}
+  //               height={40}
+  //               borderRadius={20}
+  //             />
+  //             <View
+  //               style={{
+  //                 marginLeft: 20,
+  //               }}
+  //             >
+  //               <SkeletonPlaceholder.Item
+  //                 width={120}
+  //                 height={15}
+  //                 borderRadius={5}
+  //               />
+  //               <SkeletonPlaceholder.Item
+  //                 marginTop={6}
+  //                 width={80}
+  //                 height={15}
+  //                 borderRadius={5}
+  //               />
+  //             </View>
+  //           </View>
+  //           <SkeletonPlaceholder.Item width={30} height={15} borderRadius={5} />
+  //         </View>
 
-          <SkeletonPlaceholder.Item
-            marginVertical={15}
-            height={Dimensions.get("window").width - 50}
-            borderRadius={15}
-          ></SkeletonPlaceholder.Item>
+  //         <SkeletonPlaceholder.Item
+  //           marginVertical={15}
+  //           height={Dimensions.get("window").width - 50}
+  //           borderRadius={15}
+  //         ></SkeletonPlaceholder.Item>
 
-          <SkeletonPlaceholder.Item
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-            marginVertical={10}
-            // marginHorizontal={15}
-          >
-            <SkeletonPlaceholder.Item flexDirection="row">
-              <SkeletonPlaceholder.Item
-                width={50}
-                height={25}
-                borderRadius={20}
-              />
-              <SkeletonPlaceholder.Item
-                width={50}
-                height={25}
-                borderRadius={20}
-                marginLeft={20}
-              />
-            </SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item
-              width={50}
-              height={25}
-              borderRadius={20}
-            />
-          </SkeletonPlaceholder.Item>
-          <SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item
-              // width={Dimensions.get("window").width - 30}
-              height={15}
-              borderRadius={4}
-            />
-            <SkeletonPlaceholder.Item
-              // width={Dimensions.get("window").width - 30}
-              height={15}
-              borderRadius={4}
-              marginTop={6}
-            />
-            <SkeletonPlaceholder.Item
-              marginTop={6}
-              width={80}
-              height={15}
-              borderRadius={4}
-            />
-          </SkeletonPlaceholder.Item>
-        </View>
-      </SkeletonPlaceholder>
-    );
-  }
+  //         <SkeletonPlaceholder.Item
+  //           flexDirection="row"
+  //           justifyContent="space-between"
+  //           alignItems="center"
+  //           marginVertical={10}
+  //           // marginHorizontal={15}
+  //         >
+  //           <SkeletonPlaceholder.Item flexDirection="row">
+  //             <SkeletonPlaceholder.Item
+  //               width={50}
+  //               height={25}
+  //               borderRadius={20}
+  //             />
+  //             <SkeletonPlaceholder.Item
+  //               width={50}
+  //               height={25}
+  //               borderRadius={20}
+  //               marginLeft={20}
+  //             />
+  //           </SkeletonPlaceholder.Item>
+  //           <SkeletonPlaceholder.Item
+  //             width={50}
+  //             height={25}
+  //             borderRadius={20}
+  //           />
+  //         </SkeletonPlaceholder.Item>
+  //         <SkeletonPlaceholder.Item>
+  //           <SkeletonPlaceholder.Item
+  //             // width={Dimensions.get("window").width - 30}
+  //             height={15}
+  //             borderRadius={4}
+  //           />
+  //           <SkeletonPlaceholder.Item
+  //             // width={Dimensions.get("window").width - 30}
+  //             height={15}
+  //             borderRadius={4}
+  //             marginTop={6}
+  //           />
+  //           <SkeletonPlaceholder.Item
+  //             marginTop={6}
+  //             width={80}
+  //             height={15}
+  //             borderRadius={4}
+  //           />
+  //         </SkeletonPlaceholder.Item>
+  //       </View>
+  //     </SkeletonPlaceholder>
+  //   );
+  // }
 
   const scrollToIndexFailed = (error) => {
     const offset = error.averageItemLength * error.index;
@@ -839,27 +839,21 @@ export default function myfeed(props) {
         flex: 1,
       }}
     >
-      {/* {stillLoading ? (
+      {!showLoading ? (
         <View
           style={{
             position: "absolute",
-            backgroundColor: "#209fae",
-            height: 100,
-            width: 100,
+            backgroundColor: "#fff",
+            height: Dimensions.get("screen").height,
+            width: Dimensions.get("screen").width,
             zIndex: 1,
+            // opacity: 0.7,
+            paddingTop: 20,
           }}
-        />
-      ) : (
-        <View
-          style={{
-            position: "absolute",
-            backgroundColor: "#209fae",
-            height: 100,
-            width: 100,
-            zIndex: 1,
-          }}
-        />
-      )} */}
+        >
+          <ActivityIndicator size="large" color="#209fae" />
+        </View>
+      ) : null}
       <FlatList
         pinchGestureEnabled={false}
         ref={ref}
