@@ -174,9 +174,7 @@ export default function NewGroup({ navigation, route }) {
       <View
         style={{
           flex: 1,
-          // margin: 10,
           borderRadius: 15,
-          // paddingBottom: 10,
         }}
       >
         <View
@@ -196,7 +194,8 @@ export default function NewGroup({ navigation, route }) {
               height: 50,
               zIndex: 5,
               flexDirection: "row",
-              width: Dimensions.get("screen").width - 30,
+              flex: 1,
+              marginTop: 10,
             }}
           >
             <View

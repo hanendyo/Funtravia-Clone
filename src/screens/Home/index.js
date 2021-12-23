@@ -666,9 +666,7 @@ export default function Home(props) {
                       justifyContent: "center",
                     }}
                   >
-                    {loadingProfiles ? (
-                      <ActivityIndicator size="large" color="#209fae" />
-                    ) : tokenApps ? (
+                    {tokenApps ? (
                       <TouchableOpacity
                         onPress={goToProfile}
                         style={{
@@ -676,31 +674,33 @@ export default function Home(props) {
                           shadowColor: "#464646",
                         }}
                       >
-                        <FunImage
-                          style={{
-                            width:
-                              Platform.OS === "ios"
-                                ? normalize(ukuran - 50)
-                                : normalize(ukuran - 55),
-                            height:
-                              Platform.OS === "ios"
-                                ? normalize(ukuran - 50)
-                                : normalize(ukuran - 55),
-                            borderRadius: 50,
-                            resizeMode: "cover",
-                          }}
-                          source={
-                            data && data?.picture
-                              ? {
-                                  uri: data?.picture,
-                                }
-                              : DefaultProfileSquare
-                          }
-                        />
+                        {loadingProfiles ? null : data ? (
+                          <FunImage
+                            style={{
+                              width:
+                                Platform.OS === "ios"
+                                  ? normalize(ukuran - 50)
+                                  : normalize(ukuran - 55),
+                              height:
+                                Platform.OS === "ios"
+                                  ? normalize(ukuran - 50)
+                                  : normalize(ukuran - 55),
+                              borderRadius: 50,
+                              resizeMode: "cover",
+                            }}
+                            source={
+                              data && data?.picture
+                                ? {
+                                    uri: data?.picture,
+                                  }
+                                : DefaultProfileSquare
+                            }
+                          />
+                        ) : null}
                       </TouchableOpacity>
                     ) : null}
                   </View>
-                  {loadingProfiles ? null : tokenApps ? (
+                  {tokenApps ? (
                     <View
                       style={{
                         // flexDirection: "row",
@@ -711,10 +711,12 @@ export default function Home(props) {
                         marginVertical: Platform.OS === "ios" ? 5 : 7,
                       }}
                     >
-                      <Text size="title" type="black">
-                        {data && data.first_name ? `${data.first_name}` : ""}
-                        {data && data.last_name ? ` ${data.last_name}` : ""}
-                      </Text>
+                      {loadingProfiles ? null : data ? (
+                        <Text size="title" type="black">
+                          {data && data.first_name ? `${data.first_name}` : ""}
+                          {data && data.last_name ? ` ${data.last_name}` : ""}
+                        </Text>
+                      ) : null}
                       <View
                         style={{
                           flexDirection: "row",
@@ -722,9 +724,11 @@ export default function Home(props) {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text size="description" type="regular">
-                          {data && data.username ? `@${data.username}` : ""}
-                        </Text>
+                        {loadingProfiles ? null : data ? (
+                          <Text size="description" type="regular">
+                            {data && data.username ? `@${data.username}` : ""}
+                          </Text>
+                        ) : null}
                         <TouchableOpacity
                           onPress={goToProfile}
                           style={{
@@ -734,22 +738,26 @@ export default function Home(props) {
                             width: 110,
                           }}
                         >
-                          <Text
-                            size="description"
-                            type="bold"
-                            style={{
-                              color: "#209FAE",
-                              // fontWeight: "bold",
-                              marginRight: 5,
-                            }}
-                          >
-                            {t("viewProfile")}
-                          </Text>
-                          <ArrowRightHome
-                            width={6}
-                            height={8}
-                            style={{ marginTop: 2 }}
-                          />
+                          {loadingProfiles ? null : data ? (
+                            <>
+                              <Text
+                                size="description"
+                                type="bold"
+                                style={{
+                                  color: "#209FAE",
+                                  // fontWeight: "bold",
+                                  marginRight: 5,
+                                }}
+                              >
+                                {t("viewProfile")}
+                              </Text>
+                              <ArrowRightHome
+                                width={6}
+                                height={8}
+                                style={{ marginTop: 2 }}
+                              />
+                            </>
+                          ) : null}
                         </TouchableOpacity>
                       </View>
 

@@ -1127,7 +1127,6 @@ export default function Country(props) {
                 minHeight: 50,
                 justifyContent: "center",
                 padding: 10,
-
                 backgroundColor: "#FFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -1146,8 +1145,9 @@ export default function Country(props) {
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
                   backgroundColor: "#white",
-
-                  width: Dimensions.get("screen").width,
+                  // width: Dimensions.get("screen").width,
+                  flex: 1,
+                  marginBottom: -10,
                 }}
                 customButtons={(position, move) => (
                   <View
@@ -1256,6 +1256,7 @@ export default function Country(props) {
                       marginTop: 40,
                       alignItems: "center",
                       alignContent: "center",
+                      flex: 1,
                     }}
                   >
                     <Ripple
@@ -1318,14 +1319,11 @@ export default function Country(props) {
                                 );
                               }}
                               style={{
-                                // width: (width - 60) / 4,
-                                // borderWidth: 1,
                                 marginLeft: 2,
                                 marginHorizontal: 10,
                                 alignContent: "center",
                                 alignItems: "center",
                                 borderColor: "#209fae",
-                                // padding: 2,
                               }}
                             >
                               <Image
@@ -1347,7 +1345,7 @@ export default function Country(props) {
                                 type="bold"
                                 style={{
                                   textAlign: "center",
-                                  marginVertical: 5,
+                                  marginVertical: 10,
                                 }}
                               >
                                 <Truncate

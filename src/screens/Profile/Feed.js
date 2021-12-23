@@ -280,6 +280,7 @@ export default function myfeed(props) {
           setDatas(tempdata);
           setIndeksScrollto(indeks);
           Scroll_to(indeks);
+          props.route.params.updateDataPost = null;
         }
       }
       if (props.route.params.isProfil) {
