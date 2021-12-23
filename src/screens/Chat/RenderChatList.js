@@ -256,7 +256,6 @@ export default function ChatList({
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
         paddingBottom: 10,
-        // paddingHorizontal: 5,
         backgroundColor: "#FFFFFF",
       }}
     >
@@ -290,6 +289,7 @@ export default function ChatList({
                   borderBottomColor: "#EEEEEE",
                   alignContent: "center",
                   alignItems: "center",
+                  width: Dimensions.get("screen").width,
                 }}
               >
                 <FunImage
@@ -308,23 +308,21 @@ export default function ChatList({
                     borderColor: "#EEEEEE",
                   }}
                 />
-                <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    justifyContent: "space-between",
+                  }}
+                >
                   <View
                     style={{
-                      width: width - 180,
+                      flex: 1,
                       paddingHorizontal: 10,
                       alignContent: "center",
                     }}
                   >
-                    <Text
-                      size="label"
-                      type="bold"
-                      style={
-                        {
-                          //  paddingVertical: 5
-                        }
-                      }
-                    >
+                    <Text numberOfLines={2} size="label" type="bold">
                       {item.sender_id === user.id
                         ? `${item.receiver?.first_name} ${
                             item.receiver?.last_name
@@ -337,26 +335,17 @@ export default function ChatList({
                     </Text>
 
                     {item.recent ? (
-                      <RecentChat
-                        style={
-                          {
-                            // marginTop: -5,
-                          }
-                        }
-                        data={item.recent}
-                        room={item.id}
-                      />
+                      <RecentChat data={item.recent} room={item.id} />
                     ) : null}
                   </View>
                   {item.recent ? (
                     <View
                       style={{
-                        width: 100,
+                        width: 70,
                         alignItems: "flex-end",
-                        paddingRight: 20,
                       }}
                     >
-                      <Text size="small">
+                      <Text size="small" type="regular">
                         {timeChat(item)
                           ? dateChat(item) == date()
                             ? timeChat(item).substring(0, 5)
@@ -395,11 +384,6 @@ export default function ChatList({
           </View>
         )}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={
-          {
-            // marginHorizontal: 10,
-          }
-        }
       />
       {param == "list" ? (
         <Button
