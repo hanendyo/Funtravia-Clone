@@ -65,10 +65,6 @@ function TripPlaningscreen(props) {
 const Feedstack = createStackNavigator();
 function Feedstackscreen(props) {
   const [token, setToken] = useState(null);
-  console.log(
-    "🚀 ~ file: BottomNavigation.js ~ line 67 ~ Feedstackscreen ~ props feedstack",
-    props
-  );
   return (
     <Feedstack.Navigator initialRouteName={"FeedScreen"}>
       <Feedstack.Screen
@@ -133,10 +129,6 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
-  console.log(
-    "🚀 ~ file: BottomNavigation.js ~ line 131 ~ BottomNavigationItems ~ props",
-    props
-  );
   const { t, i18n } = useTranslation();
 
   return (

@@ -38,7 +38,7 @@ export default function JournalFavorite(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("favoriteJournal")}
       </Text>
     ),
@@ -106,8 +106,6 @@ export default function JournalFavorite(props) {
       },
     },
   });
-
-  console.log("Data", dataFavorite);
 
   const JournalDetail = (data) => {
     props.navigation.navigate("DetailJournal", {
@@ -183,9 +181,8 @@ export default function JournalFavorite(props) {
           flex: 1,
           width: Dimensions.get("window").width,
           paddingHorizontal: 15,
-
           alignContent: "center",
-          // backgroundColor: "#FFF",
+          backgroundColor: "#FFF",
         }}
       >
         <FlatList
@@ -302,7 +299,6 @@ export default function JournalFavorite(props) {
           keyExtractor={(item) => item?.travel_journal?.id}
           nestedScrollEnabled
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ marginTop: 15 }}
           refreshing={refreshing}
           refreshControl={
             <RefreshControl

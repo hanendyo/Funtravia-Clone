@@ -105,7 +105,6 @@ export default function myfeed(props) {
   };
 
   const isFocused = useIsFocused();
-  console.log("🚀 ~ file: Feed.js ~ line 108 ~ myfeed ~ isFocused", isFocused);
   const ref = useRef(null);
   let [datauser] = useState(props.route.params.datauser);
   let index = props.route.params.index;
@@ -115,30 +114,14 @@ export default function myfeed(props) {
   let [users, setuser] = useState(null);
   let [selectedOption, SetOption] = useState({});
   let [play, setPlay] = useState(null);
-  console.log("🚀 ~ file: Feed.js ~ line 118 ~ myfeed ~ play", play);
+  console.log("🚀 ~ file: Feed.js ~ line 117 ~ myfeed ~ play", play);
   let [muted, setMuted] = useState(true);
   let { width, height } = Dimensions.get("screen");
   let [activelike, setactivelike] = useState(true);
   let [setting, setSetting] = useState();
-  let [datas, setDatas] = useState(props.route.params.dataPostBefore);
+  let [datas, setDatas] = useState(props.route.params.dataPost);
+  console.log("🚀 ~ file: Feed.js ~ line 122 ~ myfeed ~ datas", datas);
   let [indekScrollto, setIndeksScrollto] = useState(0);
-  let [stillLoading, setStillLoading] = useState(true);
-  console.log(
-    "🚀 ~ file: Feed.js ~ line 126 ~ myfeed ~ stillLoading",
-    stillLoading
-  );
-
-  // useEffect(() => {
-  //   console.log("id sama", props.route.params.post_id == play);
-  //   let status = 0;
-  //   if (props.route.params.post_id == play && isFocused) {
-  //     status = 1;
-  //   }
-  //   if (status == 1) {
-  //     setStillLoading(true);
-  //   }
-  // }, [stillLoading, props.route.params.post_id]);
-
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
     setTimeout(() => {
@@ -149,12 +132,6 @@ export default function myfeed(props) {
         });
       }
     }, 200);
-  };
-
-  const loadAsync = async () => {
-    await LoadFollowing();
-    // await refetch();
-    // await Scroll_to(indekScrollto);
   };
 
   const {
@@ -276,10 +253,12 @@ export default function myfeed(props) {
         let tempdata = [...datas];
         if (tempdata) {
           let indeks = tempdata.findIndex(
-            (k) => k["id"] == props.route.params.updateDataPost.id
+            (k) => k.node["id"] == props.route.params.updateDataPost.id
           );
           let tempdataIndeks = { ...tempdata[indeks] };
-          tempdataIndeks = props.route.params.updateDataPost;
+          let tempdatas = { ...tempdata[indeks].node };
+          tempdatas = props.route.params.updateDataPost;
+          tempdataIndeks.node = tempdatas;
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDatas(tempdata);
           setIndeksScrollto(indeks);
@@ -287,15 +266,11 @@ export default function myfeed(props) {
         }
       }
       if (props.route.params.isProfil) {
-        console.log("masuk props profil");
-        let tempdata = [...props.route.params.dataPostBefore];
-        console.log(
-          "🚀 ~ file: Feed.js ~ line 274 ~ useEffect ~ tempdata",
-          tempdata
-        );
+        console.log("isprofil");
+        let tempdata = [...props.route.params.dataPost];
         if (tempdata) {
           let indeks = tempdata.findIndex(
-            (k) => k["id"] == props.route.params.post_id
+            (k) => k.node["id"] == props.route.params.post_id
           );
           if (indeks) {
             setIndeksScrollto(indeks);
@@ -308,7 +283,7 @@ export default function myfeed(props) {
     props.route.params.updateDataPost,
     props.route.params.isProfil,
     props.route.params.post_id,
-    props.route.params.dataPostBefore,
+    props.route.params.dataPost,
   ]);
 
   const [
@@ -337,16 +312,18 @@ export default function myfeed(props) {
 
   const _liked = async (id, index) => {
     let tempData = [...datas];
-    index = tempData.findIndex((k) => k["id"] === id);
-    if (index !== -1) {
+    index = tempData.findIndex((k) => k.node["id"] === id);
+    if (index != -1) {
       if (activelike) {
         if (tokenApps) {
           setactivelike(false);
           let tempData = [...datas];
-          let tempDatas = { ...tempData[index] };
+          let tempDataAll = { ...tempData[index] };
+          let tempDatas = { ...tempData[index].node };
           tempDatas.liked = true;
           tempDatas.response_count = tempDatas.response_count + 1;
-          tempData.splice(index, 1, tempDatas);
+          tempDataAll.node = tempDatas;
+          tempData.splice(index, 1, tempDataAll);
           setDatas(tempData);
           try {
             let response = await MutationLike({
@@ -355,9 +332,6 @@ export default function myfeed(props) {
               },
             });
 
-            if (errorLike) {
-              throw new Error("Error");
-            }
             if (response.data) {
               if (response.data.like_post.code == 200) {
                 setactivelike(true);
@@ -368,10 +342,12 @@ export default function myfeed(props) {
           } catch (error) {
             setactivelike(true);
             let tempData = [...datas];
-            let tempDatas = { ...tempData[index] };
+            let tempDataAll = { ...tempData[index] };
+            let tempDatas = { ...tempData[index].node };
             tempDatas.liked = false;
             tempDatas.response_count = tempDatas.response_count - 1;
-            tempData.splice(index, 1, tempDatas);
+            tempDataAll.node = tempDatas;
+            tempData.splice(index, 1, tempDataAll);
             setDatas(tempData);
           }
         } else {
@@ -389,16 +365,18 @@ export default function myfeed(props) {
 
   const _unliked = async (id, index) => {
     let tempData = [...datas];
-    index = tempData.findIndex((k) => k["id"] === id);
+    index = tempData.findIndex((k) => k.node["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (tokenApps) {
           setactivelike(false);
           let tempData = [...datas];
-          let tempDatas = { ...tempData[index] };
+          let tempDataAll = { ...tempData[index] };
+          let tempDatas = { ...tempData[index].node };
           tempDatas.liked = false;
           tempDatas.response_count = tempDatas.response_count - 1;
-          tempData.splice(index, 1, tempDatas);
+          tempDataAll.node = tempDatas;
+          tempData.splice(index, 1, tempDataAll);
           setDatas(tempData);
           try {
             let response = await MutationunLike({
@@ -407,26 +385,22 @@ export default function myfeed(props) {
               },
             });
 
-            if (errorunLike) {
-              throw new Error("Error");
-            }
-
             if (response.data) {
               if (response.data.unlike_post.code == 200) {
                 setactivelike(true);
               } else {
-                throw new Error(response.data.unlike_post.message);
+                console.warn(response.data.unlike_post.message);
               }
-
-              // Alert.alert('Succes');
             }
           } catch (error) {
             setactivelike(true);
             let tempData = [...datas];
-            let tempDatas = { ...tempData[index] };
+            let tempDataAll = { ...tempData[index] };
+            let tempDatas = { ...tempData[index].node };
             tempDatas.liked = true;
             tempDatas.response_count = tempDatas.response_count + 1;
-            tempData.splice(index, 1, tempDatas);
+            tempDataAll.node = tempDatas;
+            tempData.splice(index, 1, tempDataAll);
             setDatas(tempData);
           }
         } else {
@@ -472,8 +446,8 @@ export default function myfeed(props) {
 
   const countKoment = (id) => {
     const tempd = [...datas];
-    const index = tempd.findIndex((k) => k["id"] === id);
-    tempd[index].comment_count = tempd[index].comment_count + 1;
+    const index = tempd.findIndex((k) => k.node["id"] === id);
+    tempd[index].node.comment_count = tempd[index].node.comment_count + 1;
   };
 
   const viewcomment = (data, index, time) => {
@@ -609,13 +583,6 @@ export default function myfeed(props) {
             id: id,
           },
         });
-        if (loadUnfolMut) {
-          Alert.alert("Loading!!");
-        }
-        if (errorUnfolMut) {
-          throw new Error("Error Input");
-        }
-
         if (response.data) {
           if (
             response.data.unfollow_user.code === 200 ||
@@ -623,20 +590,14 @@ export default function myfeed(props) {
           ) {
             LoadFollowing();
           } else {
-            throw new Error(response.data.unfollow_user.message);
+            console.warn(response.data.unfollow_user.message);
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        console.warn(error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
-        position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
-      });
+      console.warn("please login");
     }
   };
 
@@ -661,12 +622,7 @@ export default function myfeed(props) {
             id: id,
           },
         });
-        if (loadFollowMut) {
-          Alert.alert("Loading!!");
-        }
-        if (errorFollowMut) {
-          throw new Error("Error Input");
-        }
+
         if (response.data) {
           if (
             response.data.follow_user.code === 200 ||
@@ -674,20 +630,14 @@ export default function myfeed(props) {
           ) {
             LoadFollowing();
           } else {
-            throw new Error(response.data.follow_user.message);
+            console.warn(response.data.follow_user.message);
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        console.warn(error);
       }
     } else {
-      // Alert.alert("Please Login");
-      Toast.show({
-        text: "Please Login",
-        position: "bottom",
-        buttonText: "Ok",
-        duration: 3000,
-      });
+      console.warn("please login");
     }
   };
 
@@ -804,10 +754,6 @@ export default function myfeed(props) {
   }
 
   const scrollToIndexFailed = (error) => {
-    console.log(
-      "🚀 ~ file: Feed.js ~ line 789 ~ scrollToIndexFailed ~ error",
-      error
-    );
     const offset = error.averageItemLength * error.index;
     ref.current.scrollToOffset({ offset });
     setTimeout(
@@ -846,9 +792,11 @@ export default function myfeed(props) {
       });
       if (response.data.remove_albums_post.code == 200) {
         let tempdata = [...datas];
-        let indeks = tempdata.findIndex((k) => k["id"] == post_id);
+        let indeks = tempdata.findIndex((k) => k.node["id"] == post_id);
         let tempdataIndex = { ...tempdata[indeks] };
-        tempdataIndex.album = null;
+        let tempDatas = { ...tempdata[indeks].node };
+        tempDatas.album = null;
+        tempdataIndex.node = tempDatas;
         tempdata.splice(indeks, 1, tempdataIndex);
         await setDatas(tempdata);
         await setModalmenu(false);
@@ -899,19 +847,19 @@ export default function myfeed(props) {
         data={datas}
         onViewableItemsChanged={onViewRef.current}
         viewabilityConfig={viewConfigRef.current}
-        keyExtractor={(item) => item.id}
-        refreshing={refreshing}
+        keyExtractor={(item) => item?.node?.id}
+        // refreshing={refreshing}
         showsVerticalScrollIndicator={false}
         scrollToIndex={indekScrollto}
         onScrollToIndexFailed={(e) => {
           scrollToIndexFailed(e);
         }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        // }
         onEndReachedThreshold={1}
-        onEndReached={handleOnEndReached}
-        onEndThreshold={3000}
+        // onEndReached={handleOnEndReached}
+        // onEndThreshold={3000}
         renderItem={({ item, index }) => (
           <View
             style={{
@@ -1007,9 +955,9 @@ export default function myfeed(props) {
                       // marginTop: 7,
                     }}
                   >
-                    {duration(item.created_at)}
+                    {duration(item.node.created_at)}
                   </Text>
-                  {item.location_name ? (
+                  {item.node.location_name ? (
                     <View
                       style={{
                         marginHorizontal: 5,
@@ -1020,7 +968,7 @@ export default function myfeed(props) {
                       }}
                     ></View>
                   ) : null}
-                  {item.location_name ? (
+                  {item.node.location_name ? (
                     <Text
                       size="small"
                       style={{
@@ -1028,13 +976,13 @@ export default function myfeed(props) {
                         // marginTop: 7,
                       }}
                     >
-                      <Truncate text={item.location_name} length={40} />
+                      <Truncate text={item.node.location_name} length={40} />
                     </Text>
                   ) : null}
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => OptionOpen(item)}
+                onPress={() => OptionOpen(item.node)}
                 style={{
                   position: "absolute",
                   right: 15,
@@ -1059,9 +1007,9 @@ export default function myfeed(props) {
                 borderRadius: 15,
               }}
             >
-              {item.is_single == false ? (
+              {item.node.is_single == false ? (
                 <RenderAlbum
-                  data={item}
+                  data={item.node}
                   props={props}
                   play={play}
                   muted={muted}
@@ -1072,7 +1020,7 @@ export default function myfeed(props) {
                 />
               ) : (
                 <RenderSinglePhoto
-                  data={item}
+                  data={item.node}
                   props={props}
                   play={play}
                   muted={muted}
@@ -1108,9 +1056,9 @@ export default function myfeed(props) {
                     // justifyContent: 'space-evenly',
                   }}
                 >
-                  {item.liked ? (
+                  {item.node.liked ? (
                     <Button
-                      onPress={() => _unliked(item.id, index)}
+                      onPress={() => _unliked(item.node.id, index)}
                       type="icon"
                       // variant="transparent"
                       position="left"
@@ -1133,12 +1081,12 @@ export default function myfeed(props) {
                           color: "#BE3737",
                         }}
                       >
-                        {item.response_count}
+                        {item.node.response_count}
                       </Text>
                     </Button>
                   ) : (
                     <Button
-                      onPress={() => _liked(item.id, index)}
+                      onPress={() => _liked(item.node.id, index)}
                       type="icon"
                       position="left"
                       size="small"
@@ -1156,14 +1104,18 @@ export default function myfeed(props) {
                         size="label"
                         style={{ marginHorizontal: 7 }}
                       >
-                        {item.response_count}
+                        {item.node.response_count}
                       </Text>
                     </Button>
                   )}
 
                   <Button
                     onPress={() =>
-                      viewcomment(item, index, duration(item.created_at))
+                      viewcomment(
+                        item.node,
+                        index,
+                        duration(item.node.created_at)
+                      )
                     }
                     type="icon"
                     variant="transparent"
@@ -1181,7 +1133,7 @@ export default function myfeed(props) {
                       size="label"
                       style={{ marginHorizontal: 7 }}
                     >
-                      {item.comment_count}
+                      {item.node.comment_count}
                     </Text>
                   </Button>
                 </View>
@@ -1192,11 +1144,11 @@ export default function myfeed(props) {
                       screen: "SendToChat",
                       params: {
                         dataSend: {
-                          id: item?.id,
-                          assets: item?.assets,
-                          caption: item?.caption,
-                          user: item?.user,
-                          media_orientation: item?.media_orientation,
+                          id: item.node?.id,
+                          assets: item.node?.assets,
+                          caption: item.node?.caption,
+                          user: item.node?.user,
+                          media_orientation: item.node?.media_orientation,
                         },
                         title: "Post",
                         tag_type: "tag_post",
@@ -1223,10 +1175,10 @@ export default function myfeed(props) {
                 }}
                 More
               >
-                {item?.album && item?.album?.itinerary !== null ? (
+                {item.node?.album && item.node?.album?.itinerary !== null ? (
                   <View>
                     <Pressable
-                      onPress={() => goToItinerary(item)}
+                      onPress={() => goToItinerary(item.node)}
                       style={{
                         flexDirection: "row",
                         marginBottom: 10,
@@ -1243,10 +1195,10 @@ export default function myfeed(props) {
                         }}
                       />
                       <Text type="bold" size="title">
-                        {item.album.itinerary.name}
+                        {item.node.album.itinerary.name}
                       </Text>
                     </Pressable>
-                    {item.caption ? (
+                    {item.node.caption ? (
                       <ReadMore
                         numberOfLines={3}
                         renderTruncatedFooter={ReadMorehendle}
@@ -1260,12 +1212,12 @@ export default function myfeed(props) {
                             lineHeight: 20,
                           }}
                         >
-                          {item.caption}
+                          {item.node.caption}
                         </Text>
                       </ReadMore>
                     ) : null}
                   </View>
-                ) : item.caption ? (
+                ) : item.node.caption ? (
                   <ReadMore
                     numberOfLines={3}
                     renderTruncatedFooter={ReadMorehendle}
@@ -1289,7 +1241,7 @@ export default function myfeed(props) {
                         {datauser.first_name}{" "}
                         {datauser.first_name ? datauser.last_name : null}{" "}
                       </Text>
-                      {item.caption}
+                      {item.node.caption}
                     </Text>
                   </ReadMore>
                 ) : null}

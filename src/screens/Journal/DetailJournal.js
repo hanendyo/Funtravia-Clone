@@ -49,19 +49,11 @@ import { useSelector } from "react-redux";
 import { useScrollToTop } from "@react-navigation/native";
 
 export default function DetailJournal(props) {
-  console.log(
-    "🚀 ~ file: DetailJournal.js ~ line 52 ~ DetailJournal ~ props",
-    props
-  );
   let [modalShare, setModalShare] = useState(false);
   let [refY, setRefY] = useState(0);
   const tokenApps = useSelector((data) => data.token);
   let [modalLogin, setModalLogin] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
-  console.log(
-    "🚀 ~ file: DetailJournal.js ~ line 61 ~ DetailJournal ~ dataPopuler",
-    dataPopuler
-  );
   let [setting, setSetting] = useState();
   let slider = useRef();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -180,10 +172,6 @@ export default function DetailJournal(props) {
       },
     },
   });
-  console.log(
-    "🚀 ~ file: DetailJournal.js ~ line 166 ~ DetailJournal ~ data",
-    data
-  );
 
   const afterComment = async () => {
     await refetch();
