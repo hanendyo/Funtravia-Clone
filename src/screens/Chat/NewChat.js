@@ -170,14 +170,13 @@ export default function NewChat({ navigation }) {
 
   const RenderBuddy = ({ databuddy }) => {
     return (
-      <View style={{ width: Dimensions.get("screen").width }}>
+      <View style={{ flex: 1 }}>
         {databuddy.map((value, i) => {
           return (
             <TouchableOpacity
               onPress={() => _sendMessage(value.id)}
               style={{
                 flexDirection: "row",
-                width: Dimensions.get("screen").width - 30,
                 paddingHorizontal: 20,
                 paddingVertical: 10,
                 justifyContent: "space-between",
@@ -185,6 +184,7 @@ export default function NewChat({ navigation }) {
                 alignContent: "center",
                 borderBottomWidth: 1,
                 borderBottomColor: "#f6f6f6",
+                flex: 1,
               }}
             >
               <View
@@ -337,7 +337,7 @@ export default function NewChat({ navigation }) {
               <ActivityIndicator animating={true} color="#209FAE" />
             </View>
           ) : DataBuddy && DataBuddy.search_travelwith.length > 0 ? (
-            <RenderBuddy databuddy={DataBuddy.search_travelwith} />
+            <RenderBuddy databuddy={DataBuddy?.search_travelwith} />
           ) : (
             <View
               style={{
