@@ -292,9 +292,6 @@ export default function FeedList({ props, token }) {
               },
             });
 
-            if (errorLike) {
-              throw new Error("Error");
-            }
             if (response.data) {
               if (response.data.like_post.code == 200) {
                 setactivelike(true);
@@ -342,12 +339,6 @@ export default function FeedList({ props, token }) {
                 post_id: id,
               },
             });
-            // if (loadingunLike) {
-            //   Alert.alert("Loading!!");
-            // }
-            if (errorunLike) {
-              throw new Error("Error");
-            }
 
             if (response.data) {
               if (response.data.unlike_post.code == 200) {
@@ -445,6 +436,7 @@ export default function FeedList({ props, token }) {
     return feedback;
   };
   const handleOnEndReached = () => {
+    console.log("handleOnEndReached");
     if (status == 0) {
       if (dataPost?.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
         return fetchMore({

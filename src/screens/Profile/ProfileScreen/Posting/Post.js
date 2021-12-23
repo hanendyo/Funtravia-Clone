@@ -1,16 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
 import { Play, PlayVideo } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
-import { FunVideo, FunImage } from "../../../../component";
+import { FunVideo, FunImage, Text } from "../../../../component";
 import { useSelector } from "react-redux";
 
-export default function Posts({ item, navigation, user, dataPostBefore }) {
-  console.log(
-    "🚀 ~ file: Post.js ~ line 10 ~ Posts ~ dataPostBefore",
-    dataPostBefore
-  );
+export default function Posts({ item, navigation, user, dataPost }) {
   const tokenApps = useSelector((data) => data.token);
   let { width, height } = Dimensions.get("screen");
   let videoView = useRef(null);
@@ -29,29 +25,28 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               screen: "myfeed",
               params: {
                 token: tokenApps,
-                // index: index,
                 datauser: user,
-                post_id: item[0].id,
+                post_id: item[0].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[0]?.assets[0]?.type === "video" ? (
+          {item[0]?.node.assets[0]?.type === "video" ? (
             <FunVideo
               innerRef={(ref) => {
                 videoView = ref;
               }}
               onBuffer={videoView?.current?.onBuffer}
               onError={videoView?.current?.videoError}
-              poster={item[0].assets[0].filepath.replace(
+              poster={item[0].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -68,7 +63,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               style={{
                 height: (width + width) / 3 - 15,
@@ -89,23 +84,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[1].id,
+                  post_id: item[1].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
           >
-            {item[1].assets[0].type === "video" ? (
+            {item[1].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[1].assets[0].filepath.replace(
+                poster={item[1].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[0].assets[0].filepath,
+                  uri: item[0].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -121,7 +116,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -141,23 +136,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[2].id,
+                  post_id: item[2].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
           >
-            {item[2].assets[0].type === "video" ? (
+            {item[2].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[2].assets[0].filepath.replace(
+                poster={item[2].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[2].assets[0].filepath,
+                  uri: item[2].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -173,7 +168,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[2].assets[0].filepath,
+                  uri: item[2].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -207,23 +202,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[0].id,
+                  post_id: item[0].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
           >
-            {item[0].assets[0].type === "video" ? (
+            {item[0].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[0].assets[0].filepath.replace(
+                poster={item[0].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[0].assets[0].filepath,
+                  uri: item[0].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -239,7 +234,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[0].assets[0].filepath,
+                  uri: item[0].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -259,23 +254,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[1].id,
+                  post_id: item[1].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
           >
-            {item[1].assets[0].type === "video" ? (
+            {item[1].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[1].assets[0].filepath.replace(
+                poster={item[1].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -291,7 +286,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -312,23 +307,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[2].id,
+                post_id: item[2].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[2].assets[0].type === "video" ? (
+          {item[2].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[2].assets[0].filepath.replace(
+              poster={item[2].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[2].assets[0].filepath,
+                uri: item[2].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -344,7 +339,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[2].assets[0].filepath,
+                uri: item[2].node.assets[0].filepath,
               }}
               style={{
                 height: (width + width) / 3 - 15,
@@ -376,23 +371,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[0].id,
+                post_id: item[0].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[0].assets[0].type === "video" ? (
+          {item[0].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[0].assets[0].filepath.replace(
+              poster={item[0].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -408,7 +403,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               style={{
                 height: width / 3 - 12,
@@ -428,23 +423,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[1].id,
+                post_id: item[1].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[1].assets[0].type === "video" ? (
+          {item[1].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[0].assets[0].filepath.replace(
+              poster={item[0].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -460,7 +455,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[1].assets[0].filepath,
+                uri: item[1].node.assets[0].filepath,
               }}
               style={{
                 height: width / 3 - 12,
@@ -480,23 +475,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[2].id,
+                post_id: item[2].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[2].assets[0].type === "video" ? (
+          {item[2].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[2].assets[0].filepath.replace(
+              poster={item[2].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[2].assets[0].filepath,
+                uri: item[2].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -512,7 +507,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[2].assets[0].filepath,
+                uri: item[2].node.assets[0].filepath,
               }}
               style={{
                 height: width / 3 - 12,
@@ -545,23 +540,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[0].id,
+                post_id: item[0].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[0].assets[0].type === "video" ? (
+          {item[0].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[0].assets[0].filepath.replace(
+              poster={item[0].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -577,7 +572,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               style={{
                 height: width / 3 - 10,
@@ -598,24 +593,24 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[1].id,
+                  post_id: item[1].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
             style={{}}
           >
-            {item[1].assets[0].type === "video" ? (
+            {item[1].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[1].assets[0].filepath.replace(
+                poster={item[1].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -631,7 +626,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -664,23 +659,23 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
               params: {
                 token: tokenApps,
                 datauser: user,
-                post_id: item[0].id,
+                post_id: item[0].node.id,
                 isProfil: true,
-                dataPostBefore: dataPostBefore,
+                dataPost: dataPost,
               },
             })
           }
         >
-          {item[0].assets[0].type === "video" ? (
+          {item[0].node.assets[0].type === "video" ? (
             <FunVideo
               grid
-              poster={item[0].assets[0].filepath.replace(
+              poster={item[0].node.assets[0].filepath.replace(
                 "output.m3u8",
                 "thumbnail.png"
               )}
               posterResizeMode={"cover"}
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               repeat={true}
               style={{
@@ -696,7 +691,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
           ) : (
             <FunImage
               source={{
-                uri: item[0].assets[0].filepath,
+                uri: item[0].node.assets[0].filepath,
               }}
               style={{
                 height: width / 3 - 10,
@@ -717,24 +712,24 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[1].id,
+                  post_id: item[1].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
             style={{}}
           >
-            {item[1].assets[0].type === "video" ? (
+            {item[1].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[1].assets[0].filepath.replace(
+                poster={item[1].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -750,7 +745,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[1].assets[0].filepath,
+                  uri: item[1].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,
@@ -772,24 +767,24 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
                 params: {
                   token: tokenApps,
                   datauser: user,
-                  post_id: item[2].id,
+                  post_id: item[2].node.id,
                   isProfil: true,
-                  dataPostBefore: dataPostBefore,
+                  dataPost: dataPost,
                 },
               })
             }
             style={{}}
           >
-            {item[1].assets[0].type === "video" ? (
+            {item[1].node.assets[0].type === "video" ? (
               <FunVideo
                 grid
-                poster={item[2].assets[0].filepath.replace(
+                poster={item[2].node.assets[0].filepath.replace(
                   "output.m3u8",
                   "thumbnail.png"
                 )}
                 posterResizeMode={"cover"}
                 source={{
-                  uri: item[2].assets[0].filepath,
+                  uri: item[2].node.assets[0].filepath,
                 }}
                 repeat={true}
                 style={{
@@ -805,7 +800,7 @@ export default function Posts({ item, navigation, user, dataPostBefore }) {
             ) : (
               <FunImage
                 source={{
-                  uri: item[2].assets[0].filepath,
+                  uri: item[2].node.assets[0].filepath,
                 }}
                 style={{
                   height: width / 3 - 10,

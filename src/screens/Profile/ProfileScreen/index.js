@@ -34,6 +34,7 @@ import {
 } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
 import User_Post from "../../../graphQL/Query/Profile/post";
+import PostCursorBased from "../../../graphQL/Query/Profile/postCursorBased";
 import album_post from "../../../graphQL/Query/Profile/albumPost";
 import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
@@ -80,14 +81,6 @@ import { setTokenApps } from "../../../redux/action";
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-// const Notch = DeviceInfo.hasNotch();
-// const SafeStatusBar = Platform.select({
-//   ios: Notch ? 48 : 20,
-//   android: StatusBar.currentHeight,
-// });
-
-// const HeaderHeight = 310 - SafeStatusBar + 100;
-// const HeaderHeight = 310 - SafeStatusBar + 55;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
@@ -106,14 +99,9 @@ export default function OtherProfile(props) {
   let [soon, setSoon] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
-  let [token, setToken] = useState(null);
   let [setting, setSetting] = useState("");
   const [dataPost, setdataPost] = useState([]);
-  console.log(
-    "🚀 ~ file: index.js ~ line 112 ~ OtherProfile ~ dataPost",
-    dataPost
-  );
-  const [dataPostBefore, setdataPostBefore] = useState([]);
+  const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
@@ -186,21 +174,17 @@ export default function OtherProfile(props) {
   };
 
   const {
-    data: datapost,
-    loading: loadingpost,
-    error: errorpost,
-    fetchMore,
-    refetch: refetchPost,
-    networkStatus,
-  } = useQuery(User_Post, {
-    options: {
-      fetchPolicy: "network-only",
-      errorPolicy: "ignore",
-    },
+    loading: loadingFeed,
+    data: dataFeed,
+    error: errorFeed,
+    fetchMore: fetchMoreFeed,
+    refetch: refetchFeed,
+    networkStatus: networkStatusFeed,
+  } = useQuery(PostCursorBased, {
     variables: {
-      user_id: id,
-      limit: 50,
-      offset: 0,
+      user_id: props.route.params.idUser,
+      first: 18,
+      after: "",
     },
     context: {
       headers: {
@@ -208,14 +192,46 @@ export default function OtherProfile(props) {
         Authorization: tokenApps,
       },
     },
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
     notifyOnNetworkStatusChange: true,
-    onCompleted: async () => {
-      await setdataPost(spreadData(datapost?.user_post_paging?.datas));
-      await setdataPostBefore(datapost?.user_post_paging?.datas);
+    onCompleted: () => {
+      setdataFeedBased(spreadData(dataFeed?.user_post_cursor_based?.edges));
+      setdataPost(dataFeed?.user_post_cursor_based?.edges);
     },
   });
 
-  console.log("datapost", datapost);
+  // const {
+  //   data: datapost,
+  //   loading: loadingpost,
+  //   error: errorpost,
+  //   fetchMore,
+  //   refetch: refetchPost,
+  //   networkStatus,
+  // } = useQuery(User_Post, {
+  //   options: {
+  //     fetchPolicy: "network-only",
+  //     errorPolicy: "ignore",
+  //   },
+  //   variables: {
+  //     user_id: id,
+  //     limit: 50,
+  //     offset: 0,
+  //   },
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: tokenApps,
+  //     },
+  //   },
+  //   notifyOnNetworkStatusChange: true,
+  //   onCompleted: async () => {
+  //     await setdataPost(spreadData(datapost?.user_post_paging?.datas));
+  //     await setdataPostBefore(datapost?.user_post_paging?.datas);
+  //   },
+  // });
   // const [
   //   Getdatapost,
   //   { data: dataposting, loading: loadingpost, error: errorpost },
@@ -766,6 +782,7 @@ export default function OtherProfile(props) {
   useEffect(() => {
     QueryFotoAlbum();
     const unsubscribe = props.navigation.addListener("focus", (data) => {
+      refetchFeed();
       loadAsync();
     });
 
@@ -1608,6 +1625,14 @@ export default function OtherProfile(props) {
     );
   };
 
+  let [showLoading, setShowLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 3000);
+  }, []);
+
   const renderPost = (tabPost, e) => {
     if (tabPost === 0) {
       return (
@@ -1615,7 +1640,7 @@ export default function OtherProfile(props) {
           item={e.item}
           navigation={e.props.navigation}
           user={dataUser}
-          dataPostBefore={dataPostBefore}
+          dataPost={dataPost}
         />
       );
     } else if (tabPost === 1) {
@@ -1634,13 +1659,22 @@ export default function OtherProfile(props) {
 
   const renderdataPost = (tabPost) => {
     if (tabPost === 0) {
-      return dataPost;
+      return dataFeedBased;
     } else if (tabPost === 1) {
       return dataalbums;
     } else {
-      return dataPost;
+      return dataFeedBased;
     }
   };
+  // const renderdataPost = (tabPost) => {
+  //   if (tabPost === 0) {
+  //     return dataPost;
+  //   } else if (tabPost === 1) {
+  //     return dataalbums;
+  //   } else {
+  //     return dataPost;
+  //   }
+  // };
 
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
@@ -1685,6 +1719,24 @@ export default function OtherProfile(props) {
       default:
         return null;
     }
+
+    const handleOnEndReached = (e) => {
+      console.log("e", e);
+      // if (status == 0) {
+      //   if (dataPost?.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
+      //     return fetchMore({
+      //       updateQuery: onUpdate,
+      //       variables: {
+      //         first: 5,
+      //         after: dataPost?.post_cursor_based.pageInfo?.endCursor,
+      //       },
+      //     });
+      //   }
+      // } else {
+      //   setModalLogin(true);
+      // }
+    };
+
     return (
       <Animated.FlatList
         scrollToOverflowEnabled={true}
@@ -1792,6 +1844,9 @@ export default function OtherProfile(props) {
         renderItem={({ item, index }) =>
           renderItem({ position, tokenApps, props, item, index })
         }
+        initialNumToRender={10}
+        onEndReachedThreshold={1}
+        onEndReached={(e) => handleOnEndReached(e)}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         style={{}}
