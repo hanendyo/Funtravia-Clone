@@ -13,6 +13,7 @@ import {
   Pressable,
   BackHandler,
   Modal as ModalRN,
+  Keyboard as onKeyboard,
 } from "react-native";
 import io from "socket.io-client";
 import {
@@ -24,6 +25,7 @@ import {
   Xgray,
   Errorr,
   Arrowbackios,
+  Keyboard as IconKeyboard,
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -332,6 +334,40 @@ export default function Room({ navigation, route }) {
       console.log("failed get detail group");
     }
   };
+
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [showKeyboardOffset, setShowKeyboardOffset] = useState(false);
+
+  const onKeyboardShow = (event) => {
+    if (event) {
+      setShowKeyboardOffset(true);
+    }
+    setKeyboardOffset(event.endCoordinates.height);
+  };
+  const onKeyboardHide = (event) => {
+    if (event) {
+      setShowKeyboardOffset(false);
+    }
+    setKeyboardOffset(0);
+  };
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+
+  useEffect(() => {
+    keyboardDidShowListener.current = onKeyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = onKeyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
 
   const myStateRef = React.useRef(route.params?.is_itinerary);
   const data_group_picture = useRef("");
@@ -1000,8 +1036,8 @@ export default function Room({ navigation, route }) {
       {keyboardOpenState ? (
         <>
           <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : ""}
-            keyboardVerticalOffset={Notch ? 90 : 65}
+            // behavior={Platform.OS == "ios" ? "padding" : ""}
+            // keyboardVerticalOffset={Notch ? 90 : 65}
             style={{
               flexDirection: "row",
               paddingHorizontal: 5,
@@ -1009,9 +1045,17 @@ export default function Room({ navigation, route }) {
               alignItems: "center",
               paddingVertical: 10,
               marginHorizontal: 13,
-              marginBottom: 13,
+              // marginBottom: 13,
               backgroundColor: "#FFFFFF",
               borderRadius: 10,
+              marginBottom:
+                Platform.OS === "ios" &&
+                keyboardOffset < 300 &&
+                keyboardOffset > 0
+                  ? 275
+                  : keyboardOffset > 300
+                  ? 120
+                  : 13,
             }}
           >
             {!keyboardOpenState ? (
@@ -1021,38 +1065,26 @@ export default function Room({ navigation, route }) {
                 size="medium"
                 variant="transparent"
                 style={{ width: 35, height: 35 }}
-                // onPress={() => Alert.alert("Sticker Cooming Soon")}
-                // onPress={() => modals()}
-                // onPress={() => {
-                //     navigation.navigate("ChatStack", {
-                //         screen: "KeyboardInput",
-                //     });
-                // }}
-                onPress={() =>
-                  // showKeyboardView("unicorn.StikerKeyboard")
-                  {
-                    dismissKeyboard();
-                    SetkeyboardOpenState(true);
-                  }
-                }
+                onPress={() => {
+                  setShowKeyboardOffset(false);
+                  dismissKeyboard();
+                  SetkeyboardOpenState(true);
+                }}
                 style={{
                   marginRight: 5,
                 }}
               >
-                <Emoticon height={35} width={35} />
+                <Emoticon height={30} width={30} />
               </Button>
             ) : (
               <Button
                 text=""
                 type="circle"
                 size="medium"
-                variant="normal"
-                style={{ width: 35, height: 35 }}
-                // onPress={() => Alert.alert("Sticker Cooming Soon")}
-                // onPress={() => modals()}
-                // onPress={() => setStickerModal(!_stickerModal)}
+                variant="transparent"
+                style={{ width: 30, height: 30 }}
                 onPress={() => {
-                  // resetKeyboardView();
+                  setShowKeyboardOffset(true);
                   SetkeyboardOpenState(false);
                   refInput.current.focus();
                   // KeyboardUtils.onFocus();
@@ -1061,7 +1093,7 @@ export default function Room({ navigation, route }) {
                   marginRight: 5,
                 }}
               >
-                <Chat height={13} width={13} />
+                <IconKeyboard height={13} width={13} />
               </Button>
             )}
             <View
@@ -1078,6 +1110,7 @@ export default function Room({ navigation, route }) {
               }}
             >
               <TextInput
+                autoFocus={showKeyboardOffset}
                 value={chat}
                 multiline
                 ref={refInput}
@@ -1112,8 +1145,6 @@ export default function Room({ navigation, route }) {
                   setmodalCamera(true);
                 }}
                 style={{
-                  // borderWidth: 1,
-                  // width: "15%",
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
@@ -1139,8 +1170,8 @@ export default function Room({ navigation, route }) {
         </>
       ) : (
         <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Notch ? 90 : 65}
+          // behavior={Platform.OS == "ios" ? "padding" : "height"}
+          // keyboardVerticalOffset={Notch ? 90 : 65}
           style={{
             flexDirection: "row",
             paddingHorizontal: 5,
@@ -1148,9 +1179,17 @@ export default function Room({ navigation, route }) {
             alignItems: "center",
             paddingVertical: 10,
             marginHorizontal: 13,
-            marginBottom: 13,
+            // marginBottom: 13,
             backgroundColor: "#FFFFFF",
             borderRadius: 10,
+            marginBottom:
+              Platform.OS === "ios" &&
+              keyboardOffset < 300 &&
+              keyboardOffset > 0
+                ? 275
+                : keyboardOffset > 300
+                ? 120
+                : 13,
           }}
         >
           {!keyboardOpenState ? (
@@ -1160,20 +1199,11 @@ export default function Room({ navigation, route }) {
               size="medium"
               variant="transparent"
               style={{ width: 35, height: 35 }}
-              // onPress={() => Alert.alert("Sticker Cooming Soon")}
-              // onPress={() => modals()}
-              // onPress={() => {
-              //     navigation.navigate("ChatStack", {
-              //         screen: "KeyboardInput",
-              //     });
-              // }}
-              onPress={() =>
-                // showKeyboardView("unicorn.StikerKeyboard")
-                {
-                  dismissKeyboard();
-                  SetkeyboardOpenState(true);
-                }
-              }
+              onPress={() => {
+                setShowKeyboardOffset(false);
+                dismissKeyboard();
+                SetkeyboardOpenState(true);
+              }}
               style={{
                 marginRight: 5,
               }}
@@ -1187,11 +1217,8 @@ export default function Room({ navigation, route }) {
               size="medium"
               variant="normal"
               style={{ width: 35, height: 35 }}
-              // onPress={() => Alert.alert("Sticker Cooming Soon")}
-              // onPress={() => modals()}
-              // onPress={() => setStickerModal(!_stickerModal)}
               onPress={() => {
-                // resetKeyboardView();
+                setShowKeyboardOffset(true);
                 SetkeyboardOpenState(false);
                 refInput.current.focus();
                 // KeyboardUtils.onFocus();
@@ -1200,7 +1227,7 @@ export default function Room({ navigation, route }) {
                 marginRight: 5,
               }}
             >
-              <Chat height={13} width={13} />
+              <IconKeyboard height={13} width={13} />
             </Button>
           )}
           <View
@@ -1218,6 +1245,7 @@ export default function Room({ navigation, route }) {
             }}
           >
             <TextInput
+              autoFocus={showKeyboardOffset}
               value={chat}
               multiline
               ref={refInput}

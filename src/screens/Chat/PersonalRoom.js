@@ -258,9 +258,6 @@ export default function Room({ navigation, route }) {
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [showKeyboardOffset, setShowKeyboardOffset] = useState(false);
 
-  console.log("showKeyboardOffset", showKeyboardOffset);
-
-  console.log("keyboardOffset", keyboardOffset);
   const onKeyboardShow = (event) => {
     if (event) {
       setShowKeyboardOffset(true);
@@ -1163,8 +1160,6 @@ export default function Room({ navigation, route }) {
                   setmodalCamera(true);
                 }}
                 style={{
-                  // borderWidth: 1,
-                  // width: "15%",
                   justifyContent: "center",
                   alignContent: "center",
                   alignItems: "center",
@@ -1218,22 +1213,11 @@ export default function Room({ navigation, route }) {
               size="medium"
               variant="transparent"
               style={{ width: 30, height: 30 }}
-              // onPress={() => Alert.alert("Sticker Cooming Soon")}
-              // onPress={() => modals()}
-              // onPress={() => {
-              //     navigation.navigate("ChatStack", {
-              //         screen: "KeyboardInput",
-              //     });
-              // }}
-              onPress={() =>
-                // showKeyboardView("unicorn.StikerKeyboard")
-                {
-                  setShowKeyboardOffset(false);
-
-                  dismissKeyboard();
-                  SetkeyboardOpenState(true);
-                }
-              }
+              onPress={() => {
+                setShowKeyboardOffset(false);
+                dismissKeyboard();
+                SetkeyboardOpenState(true);
+              }}
               style={{
                 marginRight: 5,
               }}
@@ -1248,7 +1232,6 @@ export default function Room({ navigation, route }) {
               variant="normal"
               style={{ width: 30, height: 30 }}
               onPress={() => {
-                console.log("keyboard on");
                 setShowKeyboardOffset(true);
                 SetkeyboardOpenState(false);
                 refInput.current.focus();
@@ -1276,6 +1259,7 @@ export default function Room({ navigation, route }) {
             }}
           >
             <TextInput
+              autoFocus={showKeyboardOffset}
               value={chat}
               multiline
               ref={refInput}
