@@ -80,7 +80,7 @@ import { setTokenApps } from "../../../redux/action";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 48;
+const TabBarHeight = 42;
 const PullToRefreshDist = 150;
 
 export default function OtherProfile(props) {
@@ -1604,24 +1604,14 @@ export default function OtherProfile(props) {
 
   const renderLabel = ({ route, focused }) => {
     return (
-      <View
-        style={{
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          width: Dimensions.get("screen").width / 3,
-        }}
+      <Text
+        style={[
+          focused ? styles.labelActive : styles.label,
+          { opacity: focused ? 1 : 1, height: "100%", marginTop: 2 },
+        ]}
       >
-        <Text
-          type={focused ? "bold" : "regular"}
-          size="title"
-          style={{
-            color: focused ? "#209FAE" : "#464646",
-          }}
-        >
-          {route.title}
-        </Text>
-      </View>
+        {route.title}
+      </Text>
     );
   };
 
@@ -2108,84 +2098,6 @@ export default function OtherProfile(props) {
         onIndexChange={(id) => {
           _tabIndex.current = id;
           setIndex(id);
-
-          // props.navigation.setOptions({
-          //   headerLeft: () => (
-          //     <View
-          //       style={{
-          //         flexDirection: "row",
-          //         alignContent: "center",
-          //         alignItems: "center",
-          //       }}
-          //     >
-          //       <Button
-          //         text={""}
-          //         size="medium"
-          //         type="circle"
-          //         variant="transparent"
-          //         onPress={() => props.navigation.goBack()}
-          //         style={{
-          //           height: 55,
-          //         }}
-          //       >
-          //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          //       </Button>
-
-          //       <Animated.View
-          //         style={{
-          //           position: "absolute",
-          //           left: 55,
-          //           opacity: hides.current,
-          //         }}
-          //       >
-          //         <Text
-          //           size="label"
-          //           type="bold"
-          //           style={{
-          //             color: "#fff",
-          //           }}
-          //         >
-          //           {t("profile")}
-          //         </Text>
-          //       </Animated.View>
-
-          //       <Animated.Image
-          //         source={
-          //           data?.user_profilebyid?.picture
-          //             ? { uri: data?.user_profilebyid?.picture }
-          //             : DefaultProfileSquare
-          //         }
-          //         style={{
-          //           width: width / 9,
-          //           height: width / 9,
-          //           borderRadius: width / 18,
-          //           borderWidth: 2,
-          //           borderColor: "#FFF",
-          //           opacity: hide.current,
-          //         }}
-          //       />
-          //     </View>
-          //   ),
-          //   headerTitle: (
-          //     <View>
-          //       <Animated.View
-          //         style={{
-          //           opacity: hide.current,
-          //         }}
-          //       >
-          //         <Text
-          //           type="bold"
-          //           style={{
-          //             color: "#fff",
-          //           }}
-          //         >
-          //           {data?.user_profilebyid?.first_name}{" "}
-          //           {data?.user_profilebyid?.last_name}
-          //         </Text>
-          //       </Animated.View>
-          //     </View>
-          //   ),
-          // });
         }}
         navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
@@ -2892,7 +2804,16 @@ const styles = StyleSheet.create({
   //   position: "absolute",
   //   backgroundColor: "#FFA088",
   // },
-  label: { fontSize: 16, color: "#222" },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
   tab: {
     elevation: 0,
     shadowOpacity: 0,

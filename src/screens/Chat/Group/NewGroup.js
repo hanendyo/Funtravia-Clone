@@ -190,7 +190,7 @@ export default function NewGroup({ navigation, route }) {
               alignContent: "center",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: 20,
+              paddingVertical: 20,
               height: 50,
               zIndex: 5,
               flexDirection: "row",
@@ -200,13 +200,18 @@ export default function NewGroup({ navigation, route }) {
           >
             <View
               style={{
-                backgroundColor: "#F6F6F6",
-                borderRadius: 5,
-                width: "100%",
-                height: 40,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 2,
+                flex: 1,
                 paddingHorizontal: 10,
+                marginHorizontal: 10,
                 flexDirection: "row",
                 alignItems: "center",
+                alignContent: "center",
+                height: 35,
+                borderWidth: 1,
+
+                borderColor: "#e8e8e8",
               }}
             >
               <Magnifying width="15" height="15" />
@@ -217,10 +222,9 @@ export default function NewGroup({ navigation, route }) {
                 placeholderTextColor="#464646"
                 style={{
                   width: "85%",
-                  fontFamily: "Lato-Regular",
+                  marginLeft: 5,
                   fontSize: 14,
-                  flex: 1,
-                  marginLeft: 10,
+                  padding: 0,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}

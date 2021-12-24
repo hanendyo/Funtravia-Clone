@@ -551,7 +551,7 @@ export default function aboutcountry(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item?.title ? item.title : ""} length={14} />
+                  <Truncate text={item?.title ? item.title : ""} length={12} />
                 </Text>
               </View>
             </Ripple>

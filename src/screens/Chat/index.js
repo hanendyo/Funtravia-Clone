@@ -545,6 +545,7 @@ export default function Message({ navigation, route }) {
                 style={{
                   backgroundColor: "white",
                   height: 42,
+
                   justifyContent: "center",
                 }}
                 renderLabel={renderLabel}
@@ -586,7 +587,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: 50,
+    height: 40,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });
