@@ -260,7 +260,11 @@ export default function ChatsearchPage({ navigation, route }) {
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 0.7 },
+          {
+            opacity: focused ? 1 : 1,
+            height: "100%",
+            marginTop: -4,
+          },
         ]}
       >
         {route.title}
@@ -468,7 +472,6 @@ export default function ChatsearchPage({ navigation, route }) {
           justifyContent: "space-between",
           paddingHorizontal: 15,
 
-          // borderWidth: 1,
           height: 50,
           zIndex: 5,
           flexDirection: "row",
@@ -487,6 +490,7 @@ export default function ChatsearchPage({ navigation, route }) {
             alignContent: "center",
             height: 35,
             borderWidth: 1,
+
             borderColor: "#e8e8e8",
           }}
         >
@@ -500,7 +504,7 @@ export default function ChatsearchPage({ navigation, route }) {
               placeholderTextColor="#464646"
               style={{
                 width: "85%",
-                marginLeft: 10,
+                marginLeft: 5,
                 fontSize: 14,
                 padding: 0,
               }}
@@ -517,6 +521,7 @@ export default function ChatsearchPage({ navigation, route }) {
                 height="20"
                 style={{
                   alignSelf: "center",
+                  marginLeft: 5,
                 }}
               />
             </TouchableOpacity>
@@ -535,8 +540,10 @@ export default function ChatsearchPage({ navigation, route }) {
               {...props}
               style={{
                 backgroundColor: "white",
-                // borderTopLeftRadius: searchAktif ? 0 : 15,
-                // borderTopRightRadius: searchAktif ? 0 : 15,
+                height: 42,
+                // borderWidth: 1,
+                marginTop: -4,
+                justifyContent: "center",
               }}
               renderLabel={renderLabel}
               indicatorStyle={styles.indicator}
@@ -564,12 +571,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   label: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
     fontFamily: "Lato-Bold",
   },
   labelActive: {
-    fontSize: 14,
+    fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
   },
@@ -577,7 +584,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
-    height: 50,
+    height: 45,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });

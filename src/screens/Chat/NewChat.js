@@ -25,6 +25,7 @@ import {
   Arrowbackwhite,
   Magnifying,
   SendMessage,
+  Xblue,
 } from "../../assets/svg";
 import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
@@ -300,16 +301,18 @@ export default function NewChat({ navigation }) {
           >
             <View
               style={{
-                backgroundColor: "#f1f1f1",
-                borderRadius: 5,
-                width: "100%",
-                height: 40,
+                backgroundColor: "#f6f6f6",
+                borderRadius: 2,
+                flex: 1,
+                paddingHorizontal: 10,
+                marginHorizontal: 10,
                 flexDirection: "row",
                 alignItems: "center",
-                marginHorizontal: 20,
-                paddingHorizontal: 10,
-                flex: 1,
-                marginTop: 10,
+                alignContent: "center",
+                height: 35,
+                borderWidth: 1,
+
+                borderColor: "#e8e8e8",
               }}
             >
               <Magnifying width="15" height="15" />
@@ -318,15 +321,30 @@ export default function NewChat({ navigation }) {
                 placeholder={t("search")}
                 placeholderTextColor="#464646"
                 style={{
-                  // width: "100%",
-                  fontFamily: "Lato-Regular",
+                  width: "85%",
+                  marginLeft: 5,
                   fontSize: 14,
-                  marginLeft: 10,
-                  flex: 1,
+                  padding: 0,
                 }}
                 value={search}
                 onChangeText={(text) => _setSearch(text)}
               />
+              {search && search.length !== 0 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    _setSearch("");
+                  }}
+                >
+                  <Xblue
+                    width="20"
+                    height="20"
+                    style={{
+                      alignSelf: "center",
+                      marginLeft: 5,
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
         </View>

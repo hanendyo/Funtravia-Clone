@@ -1,22 +1,48 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Dimensions, Image, Pressable } from "react-native";
+import {
+  View,
+  Dimensions,
+  Image,
+  Pressable,
+  Animated,
+  StatusBar,
+  Platform,
+} from "react-native";
 import { default_image } from "../../../../assets/png";
 import { Play, PlayVideo } from "../../../../assets/svg";
 const { width, height } = Dimensions.get("screen");
 import { FunVideo, FunImage, Text } from "../../../../component";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
+
+const Notch = DeviceInfo.hasNotch();
+const SafeStatusBar = Platform.select({
+  ios: Notch ? 48 : 20,
+  android: StatusBar.currentHeight,
+});
+const HeaderHeight = 310 - SafeStatusBar + 55;
 
 export default function Posts({ item, navigation, user, dataPost }) {
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const [captionHeight, setCaptionHeight] = useState(0);
+
   const tokenApps = useSelector((data) => data.token);
   let { width, height } = Dimensions.get("screen");
   let videoView = useRef(null);
   if (item.length == 4 && item[3].grid == 1) {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
     return (
-      <View
+      <Animated.View
         style={{
           flexDirection: "row",
           width: width - 20,
           marginHorizontal: 10,
+          // transform: [{ translateY: y }],
         }}
       >
         <Pressable
@@ -182,7 +208,7 @@ export default function Posts({ item, navigation, user, dataPost }) {
             )}
           </Pressable>
         </View>
-      </View>
+      </Animated.View>
     );
   }
   if (item.length == 4 && item[3].grid == 2) {
