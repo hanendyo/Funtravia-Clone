@@ -25,7 +25,7 @@ export default function Settings(props) {
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
-  let [country, setCountry] = useState();
+  let [country, setCountry] = useState([]);
   let [index, setIndex] = useState(0);
 
   const HeaderComponent = {
@@ -297,20 +297,22 @@ export default function Settings(props) {
         </Ripple>
         <Ripple
           rippleCentered={true}
-          onPress={() =>
-            props.navigation.navigate("AccountStack", {
-              screen: "SettingCurrency",
-              params: {
-                props: props,
-                setting: setting,
-                token: token,
-                setSetting: (e) => setSetting(e),
-                index: index,
-                data: datacurrency?.currency_list
-                  ? datacurrency?.currency_list
-                  : [],
-              },
-            })
+          onPress={async () =>
+            (await datacurrency) && datacurrency?.currency_list
+              ? props.navigation.navigate("AccountStack", {
+                  screen: "SettingCurrency",
+                  params: {
+                    props: props,
+                    setting: setting,
+                    token: token,
+                    setSetting: (e) => setSetting(e),
+                    index: index,
+                    data: datacurrency?.currency_list
+                      ? datacurrency?.currency_list
+                      : [],
+                  },
+                })
+              : null
           }
           style={{
             paddingHorizontal: 15,
