@@ -2722,7 +2722,7 @@ const Index = (props) => {
       {/* BottomButton */}
 
       <BottomButton
-        routed={_tabIndex.current}
+        routed={tabIndex}
         props={props}
         data={data?.destinationById}
         token={tokenApps}

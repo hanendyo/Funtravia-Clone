@@ -297,9 +297,6 @@ export default function Trip(
             : 30,
         borderRadius: 5,
         shadowOffset: { width: 0, height: 1 },
-        // shadowOpacity: arrayShadow.shadowOpacity,
-        // shadowRadius: arrayShadow.shadowRadius,
-        // elevation: arrayShadow.elevation,
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         overflow: "hidden",
@@ -400,6 +397,7 @@ export default function Trip(
                   paddingHorizontal: 10,
                   borderRadius: 3,
                   overflow: "hidden",
+                  width: "70%",
                 }}
               >
                 <Text
@@ -408,6 +406,7 @@ export default function Trip(
                   style={{
                     color: "white",
                   }}
+                  numberOfLines={1}
                 >
                   {item.user_created
                     ? item.user_created.first_name
@@ -515,7 +514,12 @@ export default function Trip(
                 )
               ) : null}
             </View>
-            <Text size="label" type="black" style={{ marginTop: 5 }}>
+            <Text
+              size="label"
+              type="black"
+              style={{ marginTop: 5 }}
+              numberOfLines={1}
+            >
               <Truncate text={item.name} length={40} />
             </Text>
             <View

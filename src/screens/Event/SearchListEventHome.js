@@ -61,6 +61,7 @@ export default function SearchListEventHome(props) {
   );
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   const [categoryName, setCategoryName] = useState("");
+  const [countryName, setCountryName] = useState("");
   const [timeModalStartDate, setTimeModalStartDate] = useState("");
   const [timeModalEndDate, setTimeModalEndDate] = useState("");
   const [isValidDate, setIsValidDate] = useState(true);
@@ -405,9 +406,28 @@ export default function SearchListEventHome(props) {
             }}
             returnKeyType="search"
             placeholderTextColor="#464646"
-            onChangeText={(x) => searchCountry(x)}
+            value={countryName}
+            onChangeText={(x) => {
+              searchCountry(x), setCountryName(x);
+            }}
             onSubmitEditing={(x) => searchCountry(x)}
           />
+          {countryName.length ? (
+            <TouchableOpacity
+              onPress={() => {
+                searchCountry("");
+                setCountryName("");
+              }}
+            >
+              <Xblue
+                width="15"
+                height="15"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
         <ScrollView
           nestedScrollEnabled={true}

@@ -556,7 +556,7 @@ export default function Country(props) {
                 alignContent: "center",
                 alignItems: "center",
                 padding: 10,
-                paddingHorizontal: 0,
+                paddingHorizontal: 5,
                 borderRightWidth:
                   index !== 8 &&
                   index !== 5 &&
@@ -1144,10 +1144,10 @@ export default function Country(props) {
                 style={{
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
-                  backgroundColor: "#white",
-                  // width: Dimensions.get("screen").width,
-                  flex: 1,
-                  marginBottom: -10,
+                  backgroundColor: "#FFF",
+                  width: Dimensions.get("screen").width,
+                  // flex: 1,
+                  marginBottom: -5,
                 }}
                 customButtons={(position, move) => (
                   <View

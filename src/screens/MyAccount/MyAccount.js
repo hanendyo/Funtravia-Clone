@@ -367,7 +367,13 @@ export default function MyAccount(props) {
               flexDirection: "row",
             }}
           >
-            <View style={{ width: "70%", justifyContent: "center" }}>
+            <View
+              style={{
+                width: "70%",
+                justifyContent: "center",
+                marginTop: 10,
+              }}
+            >
               <Text type="bold" size="title">
                 {userData && userData.first_name ? userData.first_name : null}{" "}
                 {userData && userData.last_name ? userData.last_name : null}
@@ -384,7 +390,7 @@ export default function MyAccount(props) {
                 }}
                 style={{
                   height: 20,
-                  marginTop: 20,
+                  marginTop: 10,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
@@ -480,10 +486,17 @@ export default function MyAccount(props) {
             >
               {t("fullName")}
             </Text>
-            <Text size="label" type="regular">
-              {userData && userData.first_name ? userData.first_name : null}{" "}
-              {userData && userData.last_name ? userData.last_name : null}
-            </Text>
+            <View style={{ width: "55%", marginBottom: 5 }}>
+              <Text
+                size="label"
+                type="regular"
+                numberOfLines={2}
+                style={{ textAlign: "right" }}
+              >
+                {userData && userData.first_name ? userData.first_name : null}{" "}
+                {userData && userData.last_name ? userData.last_name : null}
+              </Text>
+            </View>
           </View>
           <View
             style={{
