@@ -751,9 +751,9 @@ export default function AllDestination(props) {
                     underlineColorAndroid="transparent"
                     style={{
                       width: "85%",
-                      // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
+                      flex: 1,
                     }}
                     // returnKeyType="search"
                     placeholderTextColor="#464646"

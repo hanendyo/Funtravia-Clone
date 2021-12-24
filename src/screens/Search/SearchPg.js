@@ -12,6 +12,7 @@ import {
   Keyboard,
   BackHandler,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { Toast, Root } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -848,7 +849,11 @@ export default function SearchPg(props, { navigation, route }) {
                             }
                             // props.navigation.push("otherprofile", { idUser: item.id })
                           }
-                          style={{ flexDirection: "row" }}
+                          style={{
+                            flexDirection: "row",
+                            flex: 1,
+                            alignItems: "center",
+                          }}
                         >
                           <Image
                             source={
@@ -867,33 +872,19 @@ export default function SearchPg(props, { navigation, route }) {
                           />
                           <View
                             style={{
-                              marginLeft: 20,
+                              marginHorizontal: 15,
                               justifyContent: "center",
+                              flex: 1,
                             }}
                           >
-                            {item.last_name !== null ? (
-                              <Text size="label" type="bold">
-                                {item.first_name + "" + item.last_name}
-                              </Text>
-                            ) : (
-                              <Text size="label" type="bold">
-                                {item.first_name}
-                              </Text>
-                            )}
+                            <Text size="label" type="bold" numberOfLines={2}>
+                              {item.first_name + " " + item.last_name
+                                ? item.last_name
+                                : ""}
+                            </Text>
                             <Text size="label" type="regular">
                               {`@${item.username}`}test
                             </Text>
-                            {/* <Text
-                                                        style={{
-                                                            fontSize: 10,
-                                                            fontFamily:
-                                                                "lato-light",
-                                                        }}
-                                                    >
-                                                        {item.bio
-                                                            ? item.bio
-                                                            : "Funtravia"}
-                                                    </Text> */}
                           </View>
                         </TouchableOpacity>
 
@@ -1463,14 +1454,12 @@ export default function SearchPg(props, { navigation, route }) {
                     />
                   </View>
                 ) : (
-                  dat(
-                    <CardDestination
-                      data={destinationSearch}
-                      props={props}
-                      setData={(e) => SetdestinationSearch(e)}
-                      token={tokenApps}
-                    />
-                  )
+                  <CardDestination
+                    data={destinationSearch}
+                    props={props}
+                    setData={(e) => SetdestinationSearch(e)}
+                    token={tokenApps}
+                  />
                 )
               ) : null}
               {active_src === "event" ? (
@@ -1502,7 +1491,6 @@ export default function SearchPg(props, { navigation, route }) {
                     style={{
                       alignItems: "center",
                       marginTop: 30,
-                      backgroundColor: "#209fae",
                       width: Dimensions.get("screen").width,
                     }}
                   >
@@ -1693,7 +1681,7 @@ export default function SearchPg(props, { navigation, route }) {
             </View>
             <View
               style={{
-                width: "100%",
+                width: Dimensions.get("screen").width - 30,
                 flexWrap: "wrap",
                 flexDirection: "row",
                 marginHorizontal: 15,
@@ -1776,119 +1764,112 @@ export default function SearchPg(props, { navigation, route }) {
                     {t("people")}
                   </Text>
                 </View>
-                {loadingRekomendasi ? (
-                  <ActivityIndicator
-                    animating={loadingRekomendasi}
-                    size="large"
-                    color="#209fae"
-                  />
-                ) : (
-                  <FlatList
-                    scrollEnabled={true}
-                    contentContainerStyle={{
-                      marginTop: 5,
-                      justifyContent: "space-evenly",
-                      paddingHorizontal: 15,
-                    }}
-                    data={list_rekomendasi_user}
-                    renderItem={({ item, index }) =>
-                      setting?.user_id != item.id && (
-                        <View
+                <FlatList
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    // justifyContent: "space-evenly",
+                    paddingHorizontal: 15,
+                  }}
+                  data={list_rekomendasi_user}
+                  renderItem={({ item, index }) =>
+                    setting?.user_id != item.id && (
+                      <View
+                        style={{
+                          width: "100%",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          alignContent: "center",
+                          paddingVertical: 10,
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={
+                            () => {
+                              BackHandler.removeEventListener(
+                                "hardwareBackPress",
+                                onBackPress
+                              );
+                              props.navigation.push("ProfileStack", {
+                                screen: "otherprofile",
+                                params: {
+                                  idUser: item.id,
+                                  token: tokenApps,
+                                },
+                              });
+                            }
+                            // props.navigation.push("otherprofile", { idUser: item.id })
+                          }
                           style={{
-                            width: "100%",
                             flexDirection: "row",
-                            justifyContent: "space-between",
+                            flex: 1,
+                            marginRight: 10,
                             alignItems: "center",
-                            alignContent: "center",
-                            paddingVertical: 10,
                           }}
                         >
-                          <TouchableOpacity
-                            onPress={
-                              () => {
-                                BackHandler.removeEventListener(
-                                  "hardwareBackPress",
-                                  onBackPress
-                                );
-                                props.navigation.push("ProfileStack", {
-                                  screen: "otherprofile",
-                                  params: {
-                                    idUser: item.id,
-                                    token: tokenApps,
-                                  },
-                                });
-                              }
-                              // props.navigation.push("otherprofile", { idUser: item.id })
+                          <FunImage
+                            source={
+                              item.picture
+                                ? {
+                                    uri: item.picture,
+                                  }
+                                : DefaultProfile
                             }
-                            style={{ flexDirection: "row" }}
+                            style={{
+                              resizeMode: "cover",
+                              height: 50,
+                              width: 50,
+                              borderRadius: 25,
+                            }}
+                          />
+                          <View
+                            style={{
+                              marginLeft: 20,
+                              justifyContent: "center",
+                              flex: 1,
+                            }}
                           >
-                            <FunImage
-                              source={
-                                item.picture
-                                  ? {
-                                      uri: item.picture,
-                                    }
-                                  : DefaultProfile
-                              }
-                              style={{
-                                resizeMode: "cover",
-                                height: 50,
-                                width: 50,
-                                borderRadius: 25,
-                              }}
-                            />
-                            <View
-                              style={{
-                                marginLeft: 20,
-                                justifyContent: "center",
-                              }}
-                            >
-                              {item.last_name !== null ? (
-                                <Text size="label" type="bold">
-                                  {item.first_name + "" + item.last_name}
-                                </Text>
-                              ) : (
-                                <Text size="label" type="bold">
-                                  {item.first_name}
-                                </Text>
-                              )}
-                              <Text size="label" type="regular">
-                                {`@${item.username}`}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-
-                          <View style={{}}>
-                            {item.status_following === false ? (
-                              <Button
-                                size="small"
-                                type="circle"
-                                variant="bordered"
-                                style={{ width: 100 }}
-                                text={t("follow")}
-                                onPress={() => {
-                                  _follow_rekomendasi(item.id, index);
-                                }}
-                              ></Button>
-                            ) : (
-                              <Button
-                                size="small"
-                                type="circle"
-                                style={{ width: 100 }}
-                                onPress={() => {
-                                  _unfollow_rekomendasi(item.id, index);
-                                }}
-                                text={t("following")}
-                              ></Button>
-                            )}
+                            <Text size="label" type="bold" numberOfLines={2}>
+                              {item.first_name + " " + item.last_name
+                                ? item.last_name
+                                : ""}
+                            </Text>
+                            <Text size="label" type="regular">
+                              {`@${item.username}`}
+                            </Text>
                           </View>
+                        </TouchableOpacity>
+
+                        <View style={{}}>
+                          {item.status_following === false ? (
+                            <Button
+                              size="small"
+                              type="circle"
+                              variant="bordered"
+                              style={{ width: 100 }}
+                              text={t("follow")}
+                              onPress={() => {
+                                _follow_rekomendasi(item.id, index);
+                              }}
+                            ></Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              type="circle"
+                              style={{ width: 100 }}
+                              onPress={() => {
+                                _unfollow_rekomendasi(item.id, index);
+                              }}
+                              text={t("following")}
+                            ></Button>
+                          )}
                         </View>
-                      )
-                    }
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                  />
-                )}
+                      </View>
+                    )
+                  }
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={false}
+                />
               </View>
             ) : null}
           </View>

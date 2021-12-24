@@ -1093,7 +1093,7 @@ export default function Room({ navigation, route }) {
                   marginRight: 5,
                 }}
               >
-                <IconKeyboard height={13} width={13} />
+                <IconKeyboard height={30} width={30} />
               </Button>
             )}
             <View
@@ -1215,7 +1215,7 @@ export default function Room({ navigation, route }) {
               text=""
               type="circle"
               size="medium"
-              variant="normal"
+              variant="transparent"
               style={{ width: 35, height: 35 }}
               onPress={() => {
                 setShowKeyboardOffset(true);
@@ -1227,7 +1227,7 @@ export default function Room({ navigation, route }) {
                 marginRight: 5,
               }}
             >
-              <IconKeyboard height={13} width={13} />
+              <IconKeyboard height={30} width={30} />
             </Button>
           )}
           <View

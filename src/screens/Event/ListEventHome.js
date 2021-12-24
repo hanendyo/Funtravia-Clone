@@ -1796,6 +1796,11 @@ export default function ListEventHome(props) {
     );
   };
 
+  const HeightBar = Platform.select({
+    ios: Notch ? 95 : 70,
+    android: 60,
+  });
+
   const renderCountryFilter = () => {
     return (
       <Modal
@@ -1823,6 +1828,17 @@ export default function ListEventHome(props) {
             height: Dimensions.get("screen").height,
           }}
         >
+          {Platform.OS == "ios" ? (
+            <View
+              style={{
+                height: 50,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "#14646e",
+                marginTop: Notch ? -25 : -50,
+              }}
+            ></View>
+          ) : null}
+
           <View
             style={{
               flexDirection: "row",
@@ -1832,7 +1848,7 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
+              // marginTop: Platform.OS === "ios" ? 10 : -20,
             }}
           >
             <Button
