@@ -198,6 +198,8 @@ export default function DestinationUnescoReview(props) {
             throw new Error(response.data.create_review_without_img.message);
           }
           setloading(false);
+          setText("");
+          setDefaultRate(0);
           await props.navigation.dispatch(
             StackActions.push("DestinationUnescoDetail", {
               id: data.id,
@@ -214,6 +216,7 @@ export default function DestinationUnescoReview(props) {
           // });
         }
       } catch (err) {
+        setloading(false);
         console.log(
           "🚀 ~ file: DestinationUnescoReview.js ~ line 223 ~ upload ~ err",
           err
@@ -530,6 +533,8 @@ export default function DestinationUnescoReview(props) {
           bordered
           maxLength={160}
           onChangeText={(text) => setText(text)}
+          autoCorrect={false}
+          autoComplete={false}
         />
         {/* <TextInput
             placeholder={t("tellUs")}

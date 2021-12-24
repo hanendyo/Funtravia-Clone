@@ -1970,6 +1970,7 @@ export default function FeedList({ props, token }) {
                   style={{
                     justifyContent: "center",
                     marginHorizontal: 10,
+                    width: "75%",
                   }}
                 >
                   <Text
@@ -1992,6 +1993,7 @@ export default function FeedList({ props, token }) {
                     }}
                     size="title"
                     type="bold"
+                    numberOfLines={1}
                     style={{
                       flexWrap: "wrap",
                       // marginTop: 7,

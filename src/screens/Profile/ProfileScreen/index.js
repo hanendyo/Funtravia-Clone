@@ -966,145 +966,23 @@ export default function OtherProfile(props) {
     let data = { ...datas };
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [
-        0,
-        -HeaderHeight +
-          (captionHeight == 10
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 45
-                : 65
-              : 75
-            : captionHeight == 20
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 5
-                : 55
-              : 15
-            : captionHeight == 30
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 55
-                : 55
-              : 35
-            : captionHeight == 40
-            ? Platform.OS === "ios"
-              ? Notch
-                ? -5
-                : 55
-              : 10
-            : captionHeight == 50
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 55
-                : 55
-              : 35
-            : captionHeight == 60
-            ? Platform.OS === "ios"
-              ? Notch
-                ? -25
-                : 35
-              : -15
-            : captionHeight == 70
-            ? Platform.OS === "ios"
-              ? Notch
-                ? 55
-                : 55
-              : 20
-            : captionHeight == 80
-            ? Platform.OS === "ios"
-              ? Notch
-                ? -35
-                : 55
-              : -30
-            : captionHeight == 90
-            ? Platform.OS === "ios"
-              ? Notch
-                ? -75
-                : 21
-              : -40
-            : HeaderHeight),
-      ],
+      outputRange: [0, -HeaderHeight + (Platform.OS === "ios" ? -20 : 15)],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
     return (
       <Animated.View
-        // onLayout={() => {
-        //   props.navigation.setOptions(HeaderComponent);
-        // }}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
-          // height:
-          //   Platform.OS === "ios"
-          //     ? Notch
-          //       ? HeaderHeight
-          //       : HeaderHeight - 40
-          //     : HeaderHeight + 20,
-          height:
-            captionHeight == 10
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight
-                  : HeaderHeight - 20
-                : HeaderHeight - 20
-              : captionHeight == 20
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 40
-                  : HeaderHeight
-                : HeaderHeight + 40
-              : captionHeight == 30
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight
-                  : HeaderHeight - 10
-                : HeaderHeight + 20
-              : captionHeight == 40
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 50
-                  : HeaderHeight
-                : HeaderHeight + 50
-              : captionHeight == 50
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 40
-                  : HeaderHeight
-                : HeaderHeight + 20
-              : captionHeight == 60
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 70
-                  : HeaderHeight + 10
-                : HeaderHeight + 70
-              : captionHeight == 70
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 20
-                  : HeaderHeight
-                : HeaderHeight + 40
-              : captionHeight == 80
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 80
-                  : HeaderHeight
-                : HeaderHeight + 90
-              : captionHeight == 90
-              ? Platform.OS === "ios"
-                ? Notch
-                  ? HeaderHeight + 120
-                  : HeaderHeight + 20
-                : HeaderHeight + 100
-              : HeaderHeight,
+
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
           // borderWidth: 2,
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#209FAE",
         }}
       >
         <Animated.View
@@ -1170,62 +1048,6 @@ export default function OtherProfile(props) {
             opacity: imageOpacity,
             // borderWidth: 1,
             justifyContent: "center",
-            paddingTop:
-              captionHeight == 10
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "10%"
-                    : "6%"
-                  : "5%"
-                : captionHeight == 20
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "3%"
-                    : "5%"
-                  : "2%"
-                : captionHeight == 30
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "40%"
-                    : "5%"
-                  : "7%"
-                : captionHeight == 40
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "5%"
-                    : "10%"
-                  : "8%"
-                : captionHeight == 50
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "8%"
-                    : "8%"
-                  : "5%"
-                : captionHeight == 60
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "5%"
-                    : "5%"
-                  : "5%"
-                : captionHeight == 70
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "8%"
-                    : "8%"
-                  : "5%"
-                : captionHeight == 80
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "5%"
-                    : "5%"
-                  : "0%"
-                : captionHeight == 90
-                ? Platform.OS === "ios"
-                  ? Notch
-                    ? "2%"
-                    : "5%"
-                  : "5%"
-                : "5%",
             marginTop:
               captionHeight == 10
                 ? Platform.OS === "ios"
@@ -1727,6 +1549,8 @@ export default function OtherProfile(props) {
       // }
     };
 
+    let heightTotal = HeaderHeight + SafeStatusBar + TabBarHeight;
+
     return (
       <Animated.FlatList
         scrollToOverflowEnabled={true}
@@ -1765,67 +1589,20 @@ export default function OtherProfile(props) {
         ListHeaderComponent={() => <View style={{ height: 5 }}></View>}
         contentContainerStyle={{
           paddingTop:
-            tabIndex === 0
-              ? HeaderHeight +
-                TabBarHeight +
-                (captionHeight == 10
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 60
-                      : 45
-                    : 45
-                  : captionHeight == 20
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 110
-                      : 110
-                    : 110
-                  : captionHeight == 30
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 40
-                      : 65
-                    : 80
-                  : captionHeight == 40
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 120
-                      : 80
-                    : 120
-                  : captionHeight == 50
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 40
-                      : 40
-                    : 85
-                  : captionHeight == 60
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 135
-                      : 80
-                    : 150
-                  : captionHeight == 70
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 40
-                      : 40
-                    : 105
-                  : captionHeight == 80
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 150
-                      : 65
-                    : 150
-                  : captionHeight == 90
-                  ? Platform.OS === "ios"
-                    ? Notch
-                      ? 170
-                      : 85
-                    : 170
-                  : 50)
-              : HeaderHeight + TabBarHeight,
+            Platform.OS === "ios"
+              ? tabIndex === 0
+                ? heightTotal + 85
+                : tabIndex === 1
+                ? heightTotal + 20
+                : heightTotal - 50
+              : tabIndex === 0
+              ? heightTotal + 55
+              : tabIndex === 1
+              ? heightTotal - 10
+              : heightTotal - 25,
+
           minHeight: height - SafeStatusBar + HeaderHeight,
-          paddingBottom: Platform.OS === "ios" ? 80 : 20,
+          paddingBottom: Platform.OS === "ios" ? 120 : 70,
           // paddingHorizontal: 15,
           // margin: Platform.OS === "ios" ? 10 : 5,
         }}
@@ -1850,62 +1627,8 @@ export default function OtherProfile(props) {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [
-        HeaderHeight,
-        captionHeight == 10
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 50
-              : 60
-            : 70
-          : captionHeight == 20
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 0
-              : 0
-            : 10
-          : captionHeight == 30
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 40
-              : 40
-            : 30
-          : captionHeight == 40
-          ? Platform.OS === "ios"
-            ? Notch
-              ? -15
-              : 40
-            : 10
-          : captionHeight == 50
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 40
-              : 40
-            : 30
-          : captionHeight == 60
-          ? Platform.OS === "ios"
-            ? Notch
-              ? -25
-              : 20
-            : -30
-          : captionHeight == 70
-          ? Platform.OS === "ios"
-            ? Notch
-              ? 40
-              : 40
-            : 20
-          : captionHeight == 80
-          ? Platform.OS === "ios"
-            ? Notch
-              ? -40
-              : 40
-            : -25
-          : captionHeight == 90
-          ? Platform.OS === "ios"
-            ? Notch
-              ? -65
-              : 20
-            : -40
-          : 50,
+        HeaderHeight + (Platform.OS === "ios" ? 0 : 10),
+        Platform.OS === "ios" ? -25 : 30,
       ],
 
       // extrapolate: 'clamp',
