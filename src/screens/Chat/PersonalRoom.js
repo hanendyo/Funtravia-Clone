@@ -7,26 +7,18 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  Image,
   StatusBar,
-  Alert,
   Dimensions,
-  ActivityIndicator,
   Pressable,
   Switch,
-  BackHandler,
-  ScrollView,
   FlatList,
+  Keyboard as onKeyboard,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
-// import { FlatList } from "react-native-bidirectional-infinite-scroll";
 import {
   Arrowbackwhite,
   Send,
-  Smile,
-  Chat,
-  Sticker,
   Emoticon,
   CameraChat,
   Keyboard as IconKeyboard,
@@ -86,6 +78,7 @@ export default function Room({ navigation, route }) {
   const [modal_camera, setmodalCamera] = useState(false);
   const toastRef = useRef();
   const refInput = useRef();
+  console.log("refInput", refInput.current);
   const { width, height } = Dimensions.get("screen");
   const [room, setRoom] = useState(route.params.room_id);
   const [receiver, setReceiver] = useState(route.params.receiver);
@@ -113,6 +106,8 @@ export default function Room({ navigation, route }) {
   const [receivedKeyboardData, SetreceivedKeyboardData] = useState(undefined);
   const [useSafeArea, SetuseSafeArea] = useState(true);
   const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
+
+  console.log("keyboardOpenState", keyboardOpenState);
 
   const onKeyboardItemSelected = (keyboardId, params) => {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(
@@ -259,6 +254,43 @@ export default function Room({ navigation, route }) {
       </View>
     );
   };
+
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [showKeyboardOffset, setShowKeyboardOffset] = useState(false);
+
+  console.log("showKeyboardOffset", showKeyboardOffset);
+
+  console.log("keyboardOffset", keyboardOffset);
+  const onKeyboardShow = (event) => {
+    if (event) {
+      setShowKeyboardOffset(true);
+    }
+    setKeyboardOffset(event.endCoordinates.height);
+  };
+  const onKeyboardHide = (event) => {
+    if (event) {
+      setShowKeyboardOffset(false);
+    }
+    setKeyboardOffset(0);
+  };
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+
+  useEffect(() => {
+    keyboardDidShowListener.current = onKeyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = onKeyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
 
   const requestShowKeyboard = () => {
     KeyboardRegistry.requestShowKeyboard("unicorn.ImagesKeyboard");
@@ -677,10 +709,6 @@ export default function Room({ navigation, route }) {
       user_id: user.id,
       time: dateTime,
     };
-    console.log(
-      "🚀 ~ file: PersonalRoom.js ~ line 680 ~ updateReadMassage ~ chatData",
-      chatData
-    );
 
     await socket.current.emit("message", chatData);
   };
@@ -1012,18 +1040,27 @@ export default function Room({ navigation, route }) {
       {keyboardOpenState ? (
         <>
           <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Notch ? 90 : 65}
+            // behavior={Platform.OS == "ios" ? "padding" : "height"}
+            // keyboardVerticalOffset={
+            //   Platform.OS == "ios" ? (Notch ? 90 : 65) : 0
+            // }
             style={{
               flexDirection: "row",
               paddingHorizontal: 5,
               alignContent: "center",
               alignItems: "center",
-              paddingVertical: 10,
               marginHorizontal: 13,
-              marginBottom: 13,
+              // marginBottom: 300,
               backgroundColor: "#FFFFFF",
               borderRadius: 10,
+              marginBottom:
+                Platform.OS === "ios" &&
+                keyboardOffset < 300 &&
+                keyboardOffset > 0
+                  ? 275
+                  : keyboardOffset > 300
+                  ? 120
+                  : 13,
             }}
           >
             {!keyboardOpenState ? (
@@ -1043,6 +1080,7 @@ export default function Room({ navigation, route }) {
                 onPress={() =>
                   // showKeyboardView("unicorn.StikerKeyboard")
                   {
+                    setShowKeyboardOffset(false);
                     dismissKeyboard();
                     SetkeyboardOpenState(true);
                   }
@@ -1060,10 +1098,9 @@ export default function Room({ navigation, route }) {
                 size="medium"
                 variant="transparent"
                 style={{ width: 30, height: 30 }}
-                // onPress={() => Alert.alert("Sticker Cooming Soon")}
-                // onPress={() => modals()}
-                // onPress={() => setStickerModal(!_stickerModal)}
                 onPress={() => {
+                  console.log("keyboard on");
+                  setShowKeyboardOffset(true);
                   // resetKeyboardView();
                   SetkeyboardOpenState(false);
                   refInput.current.focus();
@@ -1087,9 +1124,11 @@ export default function Room({ navigation, route }) {
                 flexDirection: "row",
                 maxHeight: 70,
                 justifyContent: "space-between",
+                marginVertical: 15,
               }}
             >
               <TextInput
+                autoFocus={showKeyboardOffset}
                 value={chat}
                 multiline
                 ref={refInput}
@@ -1151,18 +1190,25 @@ export default function Room({ navigation, route }) {
         </>
       ) : (
         <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : ""}
-          keyboardVerticalOffset={Notch ? 90 : 65}
+          // behavior={Platform.OS == "ios" ? "padding" : ""}
+          // keyboardVerticalOffset={Notch ? 90 : 65}
           style={{
             flexDirection: "row",
             paddingHorizontal: 5,
             alignContent: "center",
             alignItems: "center",
-            paddingVertical: 10,
             marginHorizontal: 13,
-            marginBottom: 13,
+            // marginBottom: 13,
             backgroundColor: "#FFFFFF",
             borderRadius: 10,
+            marginBottom:
+              Platform.OS === "ios" &&
+              keyboardOffset < 300 &&
+              keyboardOffset > 0
+                ? 275
+                : keyboardOffset > 300
+                ? 120
+                : 13,
           }}
         >
           {!keyboardOpenState ? (
@@ -1182,6 +1228,8 @@ export default function Room({ navigation, route }) {
               onPress={() =>
                 // showKeyboardView("unicorn.StikerKeyboard")
                 {
+                  setShowKeyboardOffset(false);
+
                   dismissKeyboard();
                   SetkeyboardOpenState(true);
                 }
@@ -1199,11 +1247,9 @@ export default function Room({ navigation, route }) {
               size="medium"
               variant="normal"
               style={{ width: 30, height: 30 }}
-              // onPress={() => Alert.alert("Sticker Cooming Soon")}
-              // onPress={() => modals()}
-              // onPress={() => setStickerModal(!_stickerModal)}
               onPress={() => {
-                // resetKeyboardView();
+                console.log("keyboard on");
+                setShowKeyboardOffset(true);
                 SetkeyboardOpenState(false);
                 refInput.current.focus();
                 // KeyboardUtils.onFocus();
@@ -1226,6 +1272,7 @@ export default function Room({ navigation, route }) {
               flexDirection: "row",
               maxHeight: 70,
               justifyContent: "space-between",
+              marginVertical: 15,
             }}
           >
             <TextInput

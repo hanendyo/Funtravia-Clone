@@ -9,7 +9,14 @@ import {
   Modal,
 } from "react-native";
 import { Text, FunImage, FunImageAutoSize, FunVideo } from "../../component";
-import { Star, AddHijau, Reupload, Xwhite } from "../../assets/svg";
+import {
+  Star,
+  AddHijau,
+  Reupload,
+  Xwhite,
+  LikeBlack,
+  CommentBlack,
+} from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
@@ -655,21 +662,9 @@ export default function ChatTypelayout({
             borderColor: "#209FAE",
             borderRadius: 10,
             paddingVertical: 10,
-            // minHeight: 330,
-            // padding: 10,
             marginBottom: 10,
             width: 250,
-            // flexDirection: "row",
             backgroundColor: "#F6F6F6",
-            // shadowColor: "#DAF0F2",
-            // shadowOffset: {
-            //   width: 0,
-            //   height: 5,
-            // },
-            // shadowOpacity: 0.1,
-            // shadowRadius: 6.27,
-
-            // elevation: 6,
           }}
         >
           <View
@@ -682,15 +677,17 @@ export default function ChatTypelayout({
             <FunImage
               source={{ uri: data?.user.picture }}
               style={{
-                width: 35,
-                height: 35,
+                width: 33,
+                height: 33,
                 borderRadius: 18,
                 marginRight: 10,
               }}
             />
-            <Text type="bold">
-              {data?.user.first_name} {data?.user.last_name}
-            </Text>
+            <View style={{ flex: 1 }}>
+              <Text type="bold" size="description" numberOfLines={1}>
+                {data?.user.first_name} {data?.user.last_name}
+              </Text>
+            </View>
           </View>
 
           <FunImage
@@ -717,29 +714,47 @@ export default function ChatTypelayout({
             style={{
               flex: 1,
               marginHorizontal: 10,
-              // width: "100%",
-              // alignSelf: "center",
-              // borderBottomWidth: 1,
-              // borderBottomColor: "d75995",
+              justifyContent: "center",
             }}
           >
+            <View
+              style={{
+                height: 30,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <LikeBlack width="15" height="15" />
+                <Text size="label" type="black" style={{ marginLeft: 5 }}>
+                  15
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 15,
+                }}
+              >
+                <CommentBlack width="15" height="15" />
+                <Text size="label" type="black" style={{ marginLeft: 5 }}>
+                  15
+                </Text>
+              </View>
+            </View>
             {/* Caption */}
             {data.caption ? (
-              <Text numberOfLines={2} style={{}}>
-                <Text
-                  // size="title"
-                  type="black"
-                  style={{}}
-                  // numberOfLines={1}
-                >
+              <Text numberOfLines={2} style={{ marginBottom: 10 }}>
+                <Text size="description" type="black">
                   {data.user.first_name} {data.user.last_name}{" "}
                 </Text>
-                <Text
-                  // size="title"
-                  // type="black"
-                  style={{}}
-                  // numberOfLines={1}
-                >
+                <Text size="description" type="regular" style={{}}>
                   {data.caption}
                 </Text>
               </Text>
