@@ -448,6 +448,9 @@ export default function Unesco({ navigation, route }) {
    * render Helper
    */
 
+  let [heights, setHeights] = useState(0);
+  console.log("heights", heights);
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -457,7 +460,7 @@ export default function Unesco({ navigation, route }) {
     });
     return (
       <Animated.View
-        pointerEvents={"box-none"}
+        // pointerEvents={"none"}
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
@@ -477,8 +480,13 @@ export default function Unesco({ navigation, route }) {
             width: width,
           }}
         >
-          {Banner && Banner.banner_asset.length > 0 ? (
+          {Banner && Banner?.banner_asset.length > 0 ? (
             <Animated.Image
+              onLayout={(event) => {
+                const layout = event.nativeEvent.layout;
+                console.log("layout", layout);
+                setHeights(layout.height);
+              }}
               style={{
                 flex: 1,
                 // height: 180,
@@ -499,6 +507,11 @@ export default function Unesco({ navigation, route }) {
             />
           )}
           <Animated.View
+            onLayout={(event) => {
+              const layout = event.nativeEvent.layout;
+              console.log("layout", layout);
+              setHeights(layout.height);
+            }}
             pointerEvents="box-none"
             style={{
               // flex: 1,
@@ -583,9 +596,8 @@ export default function Unesco({ navigation, route }) {
         <Animated.View
           style={{
             position: "absolute",
-            // top: normalize(190),
             top: Platform.select({
-              ios: Notch ? normalize(190) : normalize(220),
+              ios: Notch ? normalize(190) : normalize(200),
               android: normalize(186),
             }),
             alignItems: "center",
