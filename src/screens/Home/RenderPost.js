@@ -11,6 +11,7 @@ import { CommentWhite, LikeRed, LikeWhite, Play } from "../../assets/svg";
 import LinearGradient from "react-native-linear-gradient";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
+import deviceInfoModule from "react-native-device-info";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderVideo({
@@ -22,6 +23,7 @@ export default function RenderVideo({
   _unlike,
 }) {
   const { t, i18n } = useTranslation();
+  const Notch = deviceInfoModule.hasNotch();
   let videoView = useRef(null);
   if (data.assets[0].type === "video") {
     return (
@@ -66,6 +68,7 @@ export default function RenderVideo({
                     screen: "otherprofile",
                     params: {
                       idUser: data.user.id,
+                      token: token,
                     },
                   })
                 : navigation.push("ProfileStack", {
@@ -75,6 +78,7 @@ export default function RenderVideo({
             } else {
               props.navigation.navigate("AuthStack", {
                 screen: "LoginScreen",
+                params: { token: token },
               });
               RNToasty.Show({
                 title: t("pleaselogin"),
@@ -102,12 +106,12 @@ export default function RenderVideo({
               justifyContent: "center",
               alignContent: "center",
               alignSelf: "center",
-              marginLeft: -10,
+              marginLeft: -5,
               backgroundColor: "rgba(0,0,0,0.4)",
               paddingHorizontal: 3,
               borderRadius: 2,
               height: 20,
-              width: "68%",
+              maxWidth: Notch ? "78%" : "73%",
             }}
           >
             <Text
@@ -115,9 +119,11 @@ export default function RenderVideo({
               type="bold"
               numberOfLines={1}
               style={{
-                textAlign: "center",
-                marginHorizontal: 7,
+                textAlign: "left",
+                // marginHorizontal: 7,
+                marginLeft: 5,
                 color: "rgba(255,255,255,1)",
+                // width: "100%",
               }}
             >
               {`@${data.user.username}`}
@@ -309,6 +315,7 @@ export default function RenderVideo({
                       screen: "otherprofile",
                       params: {
                         idUser: data.user.id,
+                        token: token,
                       },
                     })
                   : navigation.push("ProfileStack", {
@@ -318,6 +325,7 @@ export default function RenderVideo({
               } else {
                 props.navigation.navigate("AuthStack", {
                   screen: "LoginScreen",
+                  params: { token: token },
                 });
                 RNToasty.Show({
                   title: t("pleaselogin"),
@@ -345,23 +353,27 @@ export default function RenderVideo({
                 justifyContent: "center",
                 alignContent: "center",
                 alignSelf: "center",
-                marginLeft: -10,
+                marginLeft: -5,
                 backgroundColor: "rgba(0,0,0,0.4)",
                 paddingHorizontal: 3,
                 borderRadius: 2,
                 height: 20,
+                maxWidth: Notch ? "78%" : "73%",
               }}
             >
               <Text
                 size="small"
                 type="bold"
+                numberOfLines={1}
                 style={{
-                  textAlign: "center",
-                  marginHorizontal: 12,
+                  textAlign: "left",
+                  // marginHorizontal: 5,
+                  marginLeft: 5,
                   color: "rgba(255,255,255,1)",
+                  // width: "80%",
                 }}
               >
-                <Truncate text={`@${data.user.username}`} length={15} />
+                {`@${data.user.username}`}
               </Text>
             </View>
           </TouchableOpacity>

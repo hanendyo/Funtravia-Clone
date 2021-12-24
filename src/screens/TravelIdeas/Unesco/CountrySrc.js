@@ -48,9 +48,9 @@ export default function CountrySrc({
   let [show, setshow] = useState(false);
   const Notch = deviceInfoModule.hasNotch();
 
-  useEffect(() => {
-    refetchcontinent();
-  }, []);
+  // useEffect(() => {
+  //   refetchcontinent();
+  // }, []);
 
   const {
     data: datacontinent,
@@ -62,7 +62,7 @@ export default function CountrySrc({
       keyword: "",
     },
     onCompleted: async () => {
-      continent_list = setDatacontinent(datacontinent?.continent_list);
+      setDatacontinent(datacontinent?.continent_list);
       setDatacontinentfilter(datacontinent?.continent_list);
     },
   });
@@ -139,14 +139,14 @@ export default function CountrySrc({
     await setshow(false);
   };
 
-  const ClearAllFilter = () => {
+  const ClearAllFilter = async () => {
     let tempe = [...continent_listfilter];
     let tempes = [];
     for (var x of tempe) {
       let data = { ...x };
       data.checked = false;
       data.show = false;
-      tempes.push(data);
+      await tempes.push(data);
     }
 
     // let tempdatascountry = [...dataFilterCountry];
@@ -154,12 +154,12 @@ export default function CountrySrc({
     //   tempdatascountry[i].checked = false;
     //   tempdatascountry[i].show = false;
     // }
-    setshow(false);
-    setContinentSelecteds([]);
-    setDatacontinent([]);
-    setDatacontinentfilter(tempes);
-    searchcontinentfilter("");
-    setContinent("");
+    await setshow(false);
+    await setContinentSelecteds([]);
+    await setDatacontinent([]);
+    await setDatacontinentfilter(tempes);
+    await searchcontinentfilter("");
+    await setContinent("");
   };
   return (
     <Modal
@@ -688,6 +688,7 @@ export default function CountrySrc({
                         style={{
                           marginLeft: 0,
                           color: "#464646",
+                          marginBottom: 5,
                           // borderWidth: 5,
                         }}
                       >

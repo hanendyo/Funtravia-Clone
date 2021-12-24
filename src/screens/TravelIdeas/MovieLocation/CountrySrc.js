@@ -77,7 +77,7 @@ export default function CountrySrc({
 
   useEffect(() => {
     refetchcontinent();
-  }, []);
+  }, [continent_list]);
 
   const { data, loading, error, refetch } = useQuery(CountryListSrcMovie, {
     variables: {
@@ -134,19 +134,21 @@ export default function CountrySrc({
     setDatacontinent(result);
   };
 
-  const ClearAllFilter = () => {
+  const ClearAllFilter = async () => {
     let temp = [...continent_list];
     let tempData = [];
     for (var x of temp) {
       let data = { ...x };
       data.checked = false;
-      tempData.push(data);
+      await tempData.push(data);
     }
 
-    setDatacontinent(tempData);
-    setContinentSelected(null);
-    setfilterResults([]);
-    setmodalFilter(false);
+    await setDatacontinent(tempData);
+    await setContinentSelected(null);
+    await setfilterResults([]);
+    await setmodalFilter(false);
+    await searchContinent("");
+    await setContinent("");
   };
 
   return (
@@ -646,6 +648,7 @@ export default function CountrySrc({
                         style={{
                           marginLeft: 0,
                           color: "#464646",
+                          marginBottom: 5,
 
                           // borderWidth: 5,
                         }}

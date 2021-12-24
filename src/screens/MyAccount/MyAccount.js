@@ -482,7 +482,7 @@ export default function MyAccount(props) {
             <Text
               size="label"
               type="regular"
-              style={{ marginTop: 5, marginBottom: 15 }}
+              style={{ marginTop: 0, marginBottom: 15 }}
             >
               {t("fullName")}
             </Text>
