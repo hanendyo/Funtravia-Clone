@@ -340,7 +340,7 @@ export default function ProvinceDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_journal(dataJournal.journal_by_province);
+      setList_journal(dataJournal?.journal_by_province);
     },
   });
 
@@ -368,7 +368,7 @@ export default function ProvinceDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_journal(dataJournal_lazy.journal_by_province);
+      setList_journal(dataJournal_lazy?.journal_by_province);
     },
   });
 

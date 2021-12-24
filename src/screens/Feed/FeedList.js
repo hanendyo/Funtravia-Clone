@@ -770,7 +770,7 @@ export default function FeedList({ props, token }) {
   let status = 0;
 
   if (dataFeed?.length > 11) {
-    if (tokenApps) {
+    if (!tokenApps) {
       status = 1;
     } else {
       status = 0;

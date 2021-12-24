@@ -66,7 +66,7 @@ export default function LocationSelector({
         alignSelf: "center",
         alignContent: "center",
         marginTop: Platform.select({
-          ios: Notch ? -25 : 0,
+          ios: Notch ? -25 : -40,
           android: 0,
         }),
       }}

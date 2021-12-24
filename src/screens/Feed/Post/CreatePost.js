@@ -587,6 +587,13 @@ export default function CreatePost(props) {
             >
               <Arrowbackwhite height={20} width={20} />
             </Button>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
             <Text
               size="header"
               type="bold"
@@ -669,10 +676,11 @@ export default function CreatePost(props) {
                     backgroundColor: "#f6f6f6",
                     // width: "77%",
                     maxHeight: 60,
-                    minHeight: 30,
+                    minHeight: Platform.OS == "ios" ? 40 : 30,
                     borderRadius: 5,
                     paddingHorizontal: 10,
                     flex: 1,
+                    justifyContent: "center",
                   }}
                 >
                   <TextInput
@@ -686,6 +694,7 @@ export default function CreatePost(props) {
                     style={{
                       borderWidth: 0,
                       width: "100%",
+                      marginBottom: Platform.OS == "ios" ? 5 : 0,
                     }}
                   />
                 </View>
