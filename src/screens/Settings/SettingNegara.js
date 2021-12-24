@@ -110,6 +110,12 @@ export default function SettingNegara(props) {
 
   useEffect(() => {
     clearFilter();
+    setTimeout(() => {
+      ref.current.scrollToIndex({
+        index: props.route.params.index,
+        animated: true,
+      });
+    }, 1000);
   }, []);
 
   const pushselected = async () => {
@@ -291,9 +297,9 @@ export default function SettingNegara(props) {
           })}
           data={data}
           scrollToIndex={indekScrollto}
-          onScrollToIndexFailed={(e) => {
-            scrollToIndexFailed(e);
-          }}
+          // onScrollToIndexFailed={(e) => {
+          //   scrollToIndexFailed(e);
+          // }}
           renderItem={({ item, index }) => (
             <Ripple
               onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}

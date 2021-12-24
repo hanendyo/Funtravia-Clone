@@ -39,6 +39,8 @@ export default function SettingCity(props) {
   let token = props.route.params.token;
   let [indekScrollto, setIndeksScrollto] = useState(0);
   const { t, i18n } = useTranslation();
+  let [play, setPlay] = useState(null);
+  let [showLoading, setShowLoading] = useState(false);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -108,7 +110,7 @@ export default function SettingCity(props) {
   //     setData(tempData);
   //   }
   // };
-  const ref = React.useRef(null);
+  const ref = useRef();
 
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
@@ -122,6 +124,16 @@ export default function SettingCity(props) {
     }, 100);
   };
 
+  const onViewRef = React.useRef(({ viewableItems, changed }) => {
+    if (viewableItems) {
+      setPlay(viewableItems[0]?.key);
+    }
+  });
+
+  const viewConfigRef = React.useRef({
+    viewAreaCoveragePercentThreshold: 50,
+  });
+
   const [
     querycity,
     { loading: loadingKota, data: dataKota, error: errorKota },
@@ -133,23 +145,36 @@ export default function SettingCity(props) {
     },
     onCompleted: async () => {
       setData(dataKota.cities_search);
-      const tempData = [...dataKota.cities_search];
-      await setIndeksScrollto(indeks);
-      const indeks = tempData.findIndex((k) => {
-        k["id"] == props.route.params.index;
-      });
+      const indeks = props.route.params.index;
+
       if (indeks != -1) {
         await setIndeksScrollto(indeks);
         await Scroll_to(indeks);
       }
+      console.log(`PLAY: `, play);
+      console.log(`INDEX: `, props.route.params.index);
+
+      // if (play == props.route.params.index) {
+      //   await setShowLoading(true);
+      // }
     },
   });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     // pushselected();
-    querycity();
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      querycity();
+    });
+    return unsubscribe;
+
+    // setTimeout(() => {
+    //   ref.current.scrollToIndex({
+    //     index: props.route.params.index,
+    //     animated: true,
+    //   });
+    // }, 1000);
+  }, [play, props.route.params.index, props.navigation]);
 
   const [
     mutationCity,
@@ -162,6 +187,18 @@ export default function SettingCity(props) {
       },
     },
   });
+
+  const scrollToIndexFailed = (error) => {
+    const offset = error.averageItemLength * error.index;
+    ref.current.scrollToOffset({ offset });
+    setTimeout(
+      () =>
+        ref?.current?.scrollToIndex({
+          index: error.index,
+        }),
+      500
+    );
+  };
 
   const hasil = async (detail) => {
     if (token || token !== "") {
@@ -267,13 +304,27 @@ export default function SettingCity(props) {
           ) : null}
         </KeyboardAvoidingView>
       </View>
+      {console.log(`SHOWLOADING: `, showLoading)}
       {loadingKota ? (
         <View style={{ paddingVertical: 20 }}>
           <ActivityIndicator animating={true} color="#209FAE" size="large" />
         </View>
-      ) : data ? (
+      ) : null}
+      {data ? (
         <FlatList
-          focusable={true}
+          ref={ref}
+          data={data}
+          onViewableItemsChanged={onViewRef.current}
+          viewabilityConfig={viewConfigRef.current}
+          keyExtractor={(item, index) => index}
+          scrollToIndex={indekScrollto}
+          onScrollToIndexFailed={(e) => {
+            scrollToIndexFailed(e);
+          }}
+          onEndReachedThreshold={1}
+          showsVerticalScrollIndicator={false}
+          pinchGestureEnabled={false}
+          // focusable={true}
           keyboardShouldPersistTaps={"handled"}
           getItemLayout={(data, index) => ({
             // length:  46,
@@ -293,12 +344,6 @@ export default function SettingCity(props) {
           })}
           contentContainerStyle={{
             paddingBottom: 50,
-          }}
-          ref={ref}
-          data={data}
-          scrollToIndex={indekScrollto}
-          onScrollToIndexFailed={(e) => {
-            scrollToIndexFailed(e);
           }}
           renderItem={({ item, index }) => (
             <Pressable
@@ -344,7 +389,7 @@ export default function SettingCity(props) {
               </View>
             </Pressable>
           )}
-          keyExtractor={(item) => item /*  */.id}
+          // keyExtractor={(item) => item /*  */.id}
         />
       ) : (
         <View style={{ marginVertical: 20, alignItems: "center" }}>

@@ -1653,7 +1653,7 @@ export default function SettingsAkun(props) {
                     size="label"
                     style={{
                       alignSelf: "flex-start",
-                      // marginBottom: 5,
+                      marginTop: 8,
                     }}
                   >
                     Google
@@ -1675,7 +1675,7 @@ export default function SettingsAkun(props) {
                     color: dataAccountConnection.gmail ? "#D75995" : "#209fae",
                     // color: "#D75995",
                     // width: "30%",
-                    // marginBottom: 5,
+                    marginBottom: 8,
                   }}
                 >
                   {dataAccountConnection.gmail ? t("disConnect") : t("connect")}
