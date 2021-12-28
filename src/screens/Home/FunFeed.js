@@ -21,11 +21,14 @@ import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { useMutation } from "@apollo/client";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Xgray } from "../../assets/svg";
+import { setTokenApps } from "../../redux/action";
+import { useDispatch } from "react-redux";
 
 const { width, height } = Dimensions.get("screen");
 export default function SearchFeed({ props, tokenApps }) {
+  let dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState(tokenApps);
+  // let [token, setToken] = useState(tokenApps);
   let [users, setuser] = useState(null);
   let [datas, setDatas] = useState(null);
   let [modalLogin, setModalLogin] = useState(false);
@@ -41,7 +44,7 @@ export default function SearchFeed({ props, tokenApps }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => setDatas(dataPost?.feed_post_populer),
@@ -50,7 +53,8 @@ export default function SearchFeed({ props, tokenApps }) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    setToken(tkn);
+    // setToken(tkn);
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     setuser(user?.user);
@@ -69,7 +73,7 @@ export default function SearchFeed({ props, tokenApps }) {
       params: {
         post_id: id,
         data: item,
-        token: token,
+        token: tokenApps,
         _liked: (e) => _like(e),
         _unliked: (e) => _unlike(e),
         indeks: index,
@@ -85,7 +89,7 @@ export default function SearchFeed({ props, tokenApps }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -97,13 +101,13 @@ export default function SearchFeed({ props, tokenApps }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _like = async (id) => {
-    if (token) {
+    if (tokenApps) {
       try {
         let tempData = [...datas];
         let index = tempData.findIndex((k) => k["id"] === id);
@@ -121,8 +125,6 @@ export default function SearchFeed({ props, tokenApps }) {
 
         if (response?.data?.like_post?.code == 200) {
           querySearchPost();
-        } else {
-          console.log("gagal like");
         }
       } catch (e) {
         let tempData = [...datas];
@@ -139,7 +141,7 @@ export default function SearchFeed({ props, tokenApps }) {
   };
 
   const _unlike = async (id, index) => {
-    if (token) {
+    if (tokenApps) {
       try {
         let tempData = [...datas];
         let index = tempData.findIndex((k) => k["id"] === id);
@@ -156,9 +158,6 @@ export default function SearchFeed({ props, tokenApps }) {
 
         if (response?.data?.unlike_post?.code == 200) {
           querySearchPost();
-          console.log("sukses unlike");
-        } else {
-          console.log("gagal unlike");
         }
       } catch (e) {
         let tempData = [...datas];
@@ -349,7 +348,7 @@ export default function SearchFeed({ props, tokenApps }) {
                 data={item}
                 user={users}
                 navigation={props.navigation}
-                token={token ? token : props.route.params.token}
+                token={tokenApps}
                 _like={(e) => _like(e)}
                 _unlike={(e) => _unlike(e)}
                 index={index}

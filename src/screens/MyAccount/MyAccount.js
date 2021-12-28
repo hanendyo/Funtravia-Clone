@@ -29,7 +29,8 @@ import GetSettingUser from "../../graphQL/Query/Settings/GetSettingUser";
 export default function MyAccount(props) {
   let dispatch = useDispatch();
   let tokenApps = useSelector((data) => data.token);
-  let [setting, setSetting] = useState("");
+  let setting = useSelector((data) => data.setting);
+  // let [setting, setSetting] = useState("");
   const toastRef = useRef();
   const { width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
@@ -118,7 +119,8 @@ export default function MyAccount(props) {
       },
       onCompleted: () => {
         // if (datas.setting_data.user) {
-        setSetting(datas?.setting_data_user);
+        // setSetting(datas?.setting_data_user);
+
         AsyncStorage.setItem(
           "setting",
           JSON.stringify(datas?.setting_data_user)
@@ -734,6 +736,7 @@ export default function MyAccount(props) {
                   await AsyncStorage.setItem("access_token", "");
                   await AsyncStorage.setItem("setting", "");
                   dispatch(setTokenApps(null));
+                  dispatch(setSettingUser(null));
 
                   // await LoadUserProfile();
                   props.navigation.navigate("AuthStack", {

@@ -108,8 +108,9 @@ export default function RenderVideo({
               alignSelf: "center",
               marginLeft: -5,
               backgroundColor: "rgba(0,0,0,0.4)",
-              paddingHorizontal: 3,
+              paddingHorizontal: 4,
               borderRadius: 2,
+              marginVertical: -5,
               height: 20,
               maxWidth: Notch ? "78%" : "73%",
             }}
@@ -120,7 +121,8 @@ export default function RenderVideo({
               numberOfLines={1}
               style={{
                 textAlign: "left",
-                // marginHorizontal: 7,
+                // marginHorizontal: 10,
+                // marginVertical: 10,
                 marginLeft: 5,
                 color: "rgba(255,255,255,1)",
                 // width: "100%",
@@ -355,8 +357,9 @@ export default function RenderVideo({
                 alignSelf: "center",
                 marginLeft: -5,
                 backgroundColor: "rgba(0,0,0,0.4)",
-                paddingHorizontal: 3,
+                paddingHorizontal: 4,
                 borderRadius: 2,
+                marginVertical: -5,
                 height: 20,
                 maxWidth: Notch ? "78%" : "73%",
               }}
@@ -367,10 +370,11 @@ export default function RenderVideo({
                 numberOfLines={1}
                 style={{
                   textAlign: "left",
-                  // marginHorizontal: 5,
+                  // marginHorizontal: 10,
+                  // marginVertical: 10,
                   marginLeft: 5,
                   color: "rgba(255,255,255,1)",
-                  // width: "80%",
+                  // width: "100%",
                 }}
               >
                 {`@${data.user.username}`}

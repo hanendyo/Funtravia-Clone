@@ -36,7 +36,7 @@ import { Keyboard, KeyboardEvent } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import normalize from "react-native-normalize";
 import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../redux/action";
+import { setSettingUser, setTokenApps } from "../../redux/action";
 
 export default function Login({ navigation, route }) {
   let dispatch = useDispatch();
@@ -67,6 +67,7 @@ export default function Login({ navigation, route }) {
             response.data.login.access_token
           );
           dispatch(setTokenApps(`Bearer ${response.data.login.access_token}`));
+
           await AsyncStorage.setItem(
             "user",
             JSON.stringify(response.data.login.user)
@@ -75,6 +76,7 @@ export default function Login({ navigation, route }) {
             "setting",
             JSON.stringify(response.data.login.data_setting)
           );
+          dispatch(setSettingUser(response.data.login.data_setting));
           navigation.reset({
             index: 0,
             routes: [

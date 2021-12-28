@@ -21,7 +21,7 @@ import {
   statusCodes,
 } from "@react-native-community/google-signin";
 import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../../redux/action";
+import { setSettingUser, setTokenApps } from "../../../redux/action";
 
 export default function LoginGoogle({ navigation }) {
   let dispatch = useDispatch();
@@ -38,20 +38,13 @@ export default function LoginGoogle({ navigation }) {
         offlineAccess: false,
       });
       let data = await GoogleSignin.getCurrentUser();
-      console.log(
-        "🚀 ~ file: LoginGoogle.js ~ line 38 ~ signInWithGoogle ~ data",
-        data
-      );
+
       if (data) {
         await GoogleSignin.revokeAccess();
       }
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signIn();
       const result = await GoogleSignin.getTokens();
-      console.log(
-        "🚀 ~ file: LoginGoogle.js ~ line 44 ~ signInWithGoogle ~ result",
-        result
-      );
       let response;
       let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
 
@@ -63,11 +56,7 @@ export default function LoginGoogle({ navigation }) {
           },
         });
       }
-      // console.log(
-      //   "🚀 ~ file: LoginGoogle.js ~ line 57 ~ signInWithGoogle ~ response",
-      //   response
-      // );
-      //   console.log(response);
+
       if (
         response.data.login_google.code === 200 ||
         response.data.login_google.code === "200"
@@ -79,14 +68,17 @@ export default function LoginGoogle({ navigation }) {
         dispatch(
           setTokenApps(`Bearer ${response.data.login_google.access_token}`)
         );
+
         await AsyncStorage.setItem(
           "user",
           JSON.stringify(response.data.login_google.user)
         );
+
         await AsyncStorage.setItem(
           "setting",
           JSON.stringify(response.data.login_google.data_setting)
         );
+        dispatch(setSettingUser(response.data.login_google.data_setting));
         navigation.reset({
           index: 0,
           routes: [
@@ -116,7 +108,6 @@ export default function LoginGoogle({ navigation }) {
       }
     } catch {
       if (error?.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log("error");
         setModalError(true);
         setMessage("Google sign in has been canceled");
         return setTimeout(() => {
@@ -147,7 +138,6 @@ export default function LoginGoogle({ navigation }) {
       setTimeout(() => {
         signInWithGoogle();
       }, 1000);
-      console.log("cc");
     });
   }, [navigation]);
   return (

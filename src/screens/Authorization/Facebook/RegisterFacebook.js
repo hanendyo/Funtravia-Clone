@@ -20,7 +20,7 @@ import { LoginManager, AccessToken } from "react-native-fbsdk";
 import { loading_intertwine } from "../../../assets/gif";
 import { RNToasty } from "react-native-toasty";
 import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../../redux/action";
+import { setSettingUser, setTokenApps } from "../../../redux/action";
 
 export default function RegisterFacebook({ navigation }) {
   let dispatch = useDispatch();
@@ -72,6 +72,7 @@ export default function RegisterFacebook({ navigation }) {
           "setting",
           JSON.stringify(response.data.register_facebook.data_setting)
         );
+        dispatch(setSettingUser(response.data.register_facebook.data_setting));
         navigation.reset({
           index: 0,
           routes: [

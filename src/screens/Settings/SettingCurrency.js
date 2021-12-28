@@ -25,12 +25,16 @@ import { RNToasty } from "react-native-toasty";
 import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
 
 import DeviceInfo from "react-native-device-info";
+import { useSelector, useDispatch } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 
 export default function SettingCurrency(props) {
-  let token = props.route.params.token;
+  let dispatch = useDispatch();
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const { t } = useTranslation();
   let [datacurrency, setdataCurrency] = useState(props?.route?.params?.data);
-  let [storage, setStorage] = useState(props?.route?.params?.setting);
+  // let [storage, setStorage] = useState(props?.route?.params?.setting);
   let slider = useRef();
 
   const HeaderComponent = {
@@ -118,12 +122,14 @@ export default function SettingCurrency(props) {
             response.data.update_currency_settings.code === 200 ||
             response.data.update_currency_settings.code === "200"
           ) {
-            let newstorage = { ...storage };
+            let newstorage = { ...setting };
             newstorage["currency"] = detail;
 
-            await setStorage(newstorage);
+            // await setStorage(newstorage);
+            // await props.route.params.setSetting(newstorage);
             await AsyncStorage.setItem("setting", JSON.stringify(newstorage));
-            await props.route.params.setSetting(newstorage);
+            dispatch(setSettingUser(newstorage));
+
             var tempData = [...datacurrency];
             for (var i in tempData) {
               ({ ...i, selected: false });
@@ -172,7 +178,7 @@ export default function SettingCurrency(props) {
                   paddingHorizontal: 20,
                   borderBottomWidth: 0.5,
                   borderBottomColor:
-                    storage?.currency?.id == item?.id ? "#209fae" : "#D1D1D1",
+                    setting?.currency?.id == item?.id ? "#209fae" : "#D1D1D1",
                   flexDirection: "row",
                   alignContent: "center",
                   alignItems: "center",
@@ -195,7 +201,7 @@ export default function SettingCurrency(props) {
                       size="label"
                       style={{
                         color:
-                          storage?.currency?.id == item?.id
+                          setting?.currency?.id == item?.id
                             ? "#209fae"
                             : "#000",
                       }}
@@ -207,14 +213,14 @@ export default function SettingCurrency(props) {
                     size="description"
                     style={{
                       color:
-                        storage?.currency?.id == item?.id ? "#209fae" : "#000",
+                        setting?.currency?.id == item?.id ? "#209fae" : "#000",
                     }}
                   >
                     {item?.name}
                   </Text>
                 </View>
                 <View>
-                  {storage?.currency?.id == item?.id ? (
+                  {setting?.currency?.id == item?.id ? (
                     <Check width={20} height={15} />
                   ) : null}
                 </View>
