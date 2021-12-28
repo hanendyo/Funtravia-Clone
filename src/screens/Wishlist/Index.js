@@ -157,6 +157,7 @@ export default function Wishlist(props) {
           props={props}
           setData={(e) => setdataDes(e)}
           token={tokenApps}
+          dataFrom="wishlist"
         />
       );
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -14,6 +14,7 @@ import {
   StatusBar,
   Modal as ModalRN,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import {
   CustomImage,
@@ -208,6 +209,21 @@ export default function EventDetail(props) {
     props.navigation.setOptions(HeaderComponent);
   }, []);
 
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
+
+  const hardwareBack = useCallback(() => {
+    props.navigation.goBack();
+    return true;
+  }, []);
+
   const addToPlan = () => {
     if (tokenApps) {
       props.route.params && props.route.params.iditinerary
@@ -228,6 +244,7 @@ export default function EventDetail(props) {
             params: {
               idkiriman: event_id,
               Position: "Event",
+              data_from: "eventdetail",
             },
           });
     } else {
@@ -1037,7 +1054,7 @@ export default function EventDetail(props) {
                   alignSelf: "flex-start",
                 }}
               >
-                {dataevent.liked === false ? (
+                {dataevent?.liked === false ? (
                   <Button
                     size="small"
                     type="circle"

@@ -31,7 +31,13 @@ import DeviceInfo from "react-native-device-info";
 
 const deviceId = DeviceInfo.getModel();
 
-export default function CardDestination({ data, props, setData, token }) {
+export default function CardDestination({
+  data,
+  props,
+  setData,
+  token,
+  dataFrom,
+}) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
   const [
@@ -148,6 +154,7 @@ export default function CardDestination({ data, props, setData, token }) {
               params: {
                 idkiriman: kiriman.id,
                 Position: "destination",
+                data_from: dataFrom,
               },
             });
       } else {
@@ -169,6 +176,7 @@ export default function CardDestination({ data, props, setData, token }) {
               params: {
                 idkiriman: data?.id,
                 Position: "destination",
+                data_from: dataFrom,
               },
             });
       }

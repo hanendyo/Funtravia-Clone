@@ -1192,8 +1192,7 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.route.params.onbackhandler == "list" ||
-    props.route.params.onbackhandler == "chooseDay"
+    props.route.params.onbackhandler == "list"
       ? props.navigation.navigate("TripBottomPlaning")
       : props.navigation.goBack();
     // props.navigation.goBack();
