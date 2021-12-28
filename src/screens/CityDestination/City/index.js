@@ -171,7 +171,6 @@ export default function CityDetail(props) {
     var date1 = new Date(start[0]);
     var date2 = new Date(end[0]);
     var Difference_In_Time = date2.getTime() - date1.getTime();
-    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
     return (
       <View
         style={{
