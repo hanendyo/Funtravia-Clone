@@ -171,10 +171,11 @@ export default function CountrySrc({
       isVisible={modalshown}
       avoidKeyboard={true}
       style={{
-        justifyContent: "flex-end",
-        alignItems: "center",
-        alignSelf: "center",
-        alignContent: "center",
+        // justifyContent: "flex-end",
+        // alignItems: "center",
+        // alignSelf: "center",
+        // alignContent: "center",
+        margin: 0,
       }}
     >
       <View

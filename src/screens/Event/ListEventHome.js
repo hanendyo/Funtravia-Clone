@@ -766,9 +766,7 @@ export default function ListEventHome(props) {
         <Animated.View
           style={{
             flexDirection: "row",
-
             position: "absolute",
-            // top: normalize(190),
             top: Platform.select({
               ios: Notch ? normalize(185) : normalize(200),
               android: normalize(205),
@@ -781,37 +779,47 @@ export default function ListEventHome(props) {
             opacity: imageOpacity,
           }}
         >
-          <TouchableOpacity
+          <TouchableHighlight
             onPress={() => setModelSetNegara(true)}
             style={{
-              height: normalize(45),
               borderTopLeftRadius: 50,
               borderBottomLeftRadius: 50,
-              borderWidth: 1,
-              borderColor: "#d8d8d8",
-              paddingVertical: 10,
-              paddingHorizontal: 0,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-
-              backgroundColor: "#209FAE",
-              flexDirection: "row",
-              width: "35%",
             }}
+            underlayColor={"#f6f6f6"}
           >
-            <Text
-              size="label"
-              numberOfLines={1}
+            <View
               style={{
-                marginRight: 10,
-                color: "#fff",
+                height: normalize(45),
+                borderTopLeftRadius: 50,
+                borderBottomLeftRadius: 50,
+                borderWidth: 1,
+                borderColor: "#d8d8d8",
+                paddingVertical: 10,
+                paddingHorizontal: 0,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+
+                backgroundColor: "#209FAE",
+                flexDirection: "row",
+                // width: "35%",
               }}
             >
-              {Capital({ text: country?.name })}
-            </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </TouchableOpacity>
+              <Text
+                size="label"
+                numberOfLines={1}
+                style={{
+                  marginLeft: 30,
+                  marginRight: 5,
+                  color: "#fff",
+                  marginBottom: 5,
+                }}
+              >
+                {Capital({ text: country?.name })}
+              </Text>
+              <Down width={10} height={10} style={{ marginRight: 20 }} />
+            </View>
+          </TouchableHighlight>
           <Ripple
             onPress={() => {
               !openFlatlist ? setOpenFlatlist(true) : setOpenFlatlist(false);
@@ -1815,10 +1823,11 @@ export default function ListEventHome(props) {
         animationOut="slideOutRight"
         isVisible={modals}
         style={{
-          justifyContent: "flex-end",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
+          // justifyContent: "flex-end",
+          // alignItems: "center",
+          // alignSelf: "center",
+          // alignContent: "center",
+          margin: 0,
         }}
       >
         <View
@@ -1865,10 +1874,11 @@ export default function ListEventHome(props) {
               )}
             </Button>
             <Text
-              size="label"
+              size="title"
               style={{
                 color: "white",
               }}
+              type="bold"
             >
               {t("country")}
             </Text>
