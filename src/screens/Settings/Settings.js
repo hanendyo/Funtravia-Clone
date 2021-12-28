@@ -14,14 +14,16 @@ import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
 import Ripple from "react-native-material-ripple";
-import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../redux/action";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser, setTokenApps } from "../../redux/action";
 
 export default function Settings(props) {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
-  let [token, setToken] = useState(props.route.params.token);
-  let [setting, setSetting] = useState(props.route.params.setting);
+  // let [token, setToken] = useState(props.route.params.token);
+  // let [setting, setSetting] = useState(props.route.params.setting);
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   let [language, setLanguage] = useState(i18n.language);
   let [modsettingnegara, setModelSetNegara] = useState(false);
   let [modsettingcurrency, setModelSetCurrency] = useState(false);
@@ -72,7 +74,8 @@ export default function Settings(props) {
     await GetCurrencyList();
     await getSettingUser();
     let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
+    // setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   const [GetCountryList, { data, loading, error }] = useLazyQuery(CountryList, {
@@ -114,8 +117,9 @@ export default function Settings(props) {
     },
     onCompleted: () => {
       // if (datas.setting_data.user) {
-      setSetting(datas?.setting_data_user);
+      // setSetting(datas?.setting_data_user);
       AsyncStorage.setItem("setting", JSON.stringify(datas?.setting_data_user));
+      dispatch(setSettingUser(datas?.setting_data_user));
       // }
     },
   });
@@ -250,9 +254,9 @@ export default function Settings(props) {
               screen: "SettingCountry",
               params: {
                 props: props,
-                setting: setting,
-                token: token,
-                setSetting: (e) => setSetting(e),
+                // setting: setting,
+                // token: token,
+                // setSetting: (e) => setSetting(e),
                 index: index,
                 country: country,
               },
@@ -303,9 +307,9 @@ export default function Settings(props) {
                   screen: "SettingCurrency",
                   params: {
                     props: props,
-                    setting: setting,
-                    token: token,
-                    setSetting: (e) => setSetting(e),
+                    // setting: setting,
+                    // token: token,
+                    // setSetting: (e) => setSetting(e),
                     index: index,
                     data: datacurrency?.currency_list
                       ? datacurrency?.currency_list

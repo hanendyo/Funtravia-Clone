@@ -21,7 +21,7 @@ import {
   statusCodes,
 } from "@react-native-community/google-signin";
 import { loading_intertwine } from "../../../assets/gif";
-import { setTokenApps } from "../../../redux/action";
+import { setSettingUser, setTokenApps } from "../../../redux/action";
 import { useDispatch } from "react-redux";
 
 export default function RegisterGoogle({ navigation }) {
@@ -57,19 +57,7 @@ export default function RegisterGoogle({ navigation }) {
           },
         });
       }
-      console.log(
-        "🚀 ~ file: RegisterGoogle.js ~ line 55 ~ signInWithGoogle ~ FCM_TOKEN",
-        FCM_TOKEN
-      );
-      console.log(
-        "🚀 ~ file: RegisterGoogle.js ~ line 53 ~ signInWithGoogle ~ result.accessToken",
-        result.accessToken
-      );
 
-      console.log(
-        "🚀 ~ file: RegisterGoogle.js ~ line 51 ~ signInWithGoogle ~ response",
-        response
-      );
       if (response?.data === undefined || response?.data === "undefined") {
         setModalError(true);
         setMessage("Registration With Facebook is Failed");
@@ -89,10 +77,12 @@ export default function RegisterGoogle({ navigation }) {
         dispatch(
           setTokenApps(`Bearer ${response.data.register_facebook.access_token}`)
         );
+
         await AsyncStorage.setItem(
           "setting",
           JSON.stringify(response.data.register_google.data_setting)
         );
+        dispatch(setSettingUser(response.data.register_google.data_setting));
         navigation.reset({
           index: 0,
           routes: [

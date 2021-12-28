@@ -29,9 +29,14 @@ import CountriesMutation from "../../graphQL/Mutation/Setting/setCountry";
 import { TextInput } from "react-native-gesture-handler";
 import Country from "../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 
 export default function SettingNegara(props) {
-  let [token, setToken] = useState(props.route.params.token);
+  // let [token, setToken] = useState(props.route.params.token);
+  let dispatch = useDispatch();
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   let [indekScrollto, setIndeksScrollto] = useState(0);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
@@ -76,7 +81,7 @@ export default function SettingNegara(props) {
 
   let [data, setData] = useState([]);
   let [country, setCountry] = useState("");
-  let [storage, setStorage] = useState(props.route.params.setting);
+  // let [storage, setStorage] = useState(props.route.params.setting);
   let [rippleHeight, setRippleHeight] = useState(0);
 
   // let slider = useRef();
@@ -119,13 +124,13 @@ export default function SettingNegara(props) {
   }, []);
 
   const pushselected = async () => {
-    if (storage?.countries && data) {
+    if (setting?.countries && data) {
       var tempData = [...data];
 
       for (var i of tempData) {
         ({ ...i, selected: false });
       }
-      var index = tempData.findIndex((k) => k["id"] === storage?.countries?.id);
+      var index = tempData.findIndex((k) => k["id"] === setting?.countries?.id);
       if (index >= 0) {
         ({ ...tempData[index], selected: true });
       }
@@ -182,18 +187,19 @@ export default function SettingNegara(props) {
             countries_id: detail.id,
           },
         });
-
         if (response.data) {
           if (
             response.data.update_country_settings.code === 200 ||
             response.data.update_country_settings.code === "200"
           ) {
-            let newstorage = { ...storage };
+            let newstorage = { ...setting };
             newstorage["countries"] = detail;
 
-            await setStorage(newstorage);
-            await props.route.params.setSetting(newstorage);
+            // await setStorage(newstorage);
+            // await props.route.params.setSetting(newstorage);
             await AsyncStorage.setItem("setting", JSON.stringify(newstorage));
+            dispatch(setSettingUser(newstorage));
+
             var tempData = [...data];
             for (var i of tempData) {
               ({ ...i, selected: false });
@@ -309,7 +315,7 @@ export default function SettingNegara(props) {
                 paddingHorizontal: 20,
                 borderBottomWidth: 0.5,
                 borderBottomColor:
-                  storage?.countries?.id == item.id ? "#209fae" : "#D1D1D1",
+                  setting?.countries?.id == item.id ? "#209fae" : "#D1D1D1",
                 flexDirection: "row",
                 alignContent: "center",
                 alignItems: "center",
@@ -348,7 +354,7 @@ export default function SettingNegara(props) {
                   style={{
                     paddingLeft: 15,
                     color:
-                      storage?.countries?.id == item.id ? "#209fae" : "#000",
+                      setting?.countries?.id == item.id ? "#209fae" : "#000",
                   }}
                 >
                   {item.name
@@ -360,7 +366,7 @@ export default function SettingNegara(props) {
                 </Text>
               </View>
               <View>
-                {storage?.countries?.id == item.id ? (
+                {setting?.countries?.id == item.id ? (
                   <Check width={20} height={15} />
                 ) : null}
               </View>

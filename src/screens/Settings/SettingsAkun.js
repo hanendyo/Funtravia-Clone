@@ -56,11 +56,15 @@ import {
 } from "@react-native-community/google-signin";
 import unConnectionGoogle from "../../graphQL/Mutation/Setting/disConnectionGoogle";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
-import { setTokenApps } from "../../redux/action";
-import { useDispatch } from "react-redux";
+import { setSettingUser, setTokenApps } from "../../redux/action";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SettingsAkun(props) {
   let dispatch = useDispatch();
+  // let [token, setToken] = useState(props.route.params.token);
+  // let [setting, setSetting] = useState(props.route.params.setting);
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   let { t, i18n } = useTranslation();
   let [modalEmail, setModalEmail] = useState(false);
   let [modalPhone, setModalPhone] = useState(false);
@@ -68,8 +72,6 @@ export default function SettingsAkun(props) {
   let [modalBirth1, setModalBirth1] = useState(false);
   let [modalGender, setModalGender] = useState(false);
   let [modalDisconnect, setModalDisconnect] = useState(false);
-  let [token, setToken] = useState(props.route.params.token);
-  let [setting, setSetting] = useState(props.route.params.setting);
   let [genders, setGender] = useState(props.route.params.setting?.user?.gender);
   let [dates, setDate] = useState();
   let [searchCity, setSearchCity] = useState("");
@@ -139,6 +141,7 @@ export default function SettingsAkun(props) {
       if (index > -1) {
         setIndex(index);
       }
+      console.log(`INDEX USEEFF: `, index);
     },
   });
 
@@ -427,7 +430,8 @@ export default function SettingsAkun(props) {
     refatchAccountConnect();
     // await passwords();
     let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
+    // setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   const [
@@ -501,8 +505,9 @@ export default function SettingsAkun(props) {
           });
           let tmp_data = { ...setting };
           tmp_data.user.gender = x;
-          await setSetting(tmp_data);
+          // await setSetting(tmp_data);
           await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+          dispatch(setSettingUser(tmp_data));
         }
       }
     } catch (error) {
@@ -535,8 +540,9 @@ export default function SettingsAkun(props) {
           });
           let tmp_data = { ...setting };
           tmp_data.user.birth_date = format;
-          await setSetting(tmp_data);
+          // await setSetting(tmp_data);
           await AsyncStorage.setItem("setting", JSON.stringify(tmp_data));
+          dispatch(setSettingUser(tmp_data));
         }
       }
     } catch (error) {
@@ -1160,9 +1166,9 @@ export default function SettingsAkun(props) {
               screen: "SettingCity",
               params: {
                 props: props,
-                setting: setting,
-                token: token,
-                setSetting: (e) => setSetting(e),
+                // setting: setting,
+                // token: token,
+                // setSetting: (e) => setSetting(e),
                 index: index,
                 setIndex: (e) => setIndex(e),
               },

@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { Text, CustomImage, Errors } from "../../../component";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
 import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../../redux/action";
+import { setSettingUser, setTokenApps } from "../../../redux/action";
 
 export default function LoginFacebook({ navigation }) {
   let dispatch = useDispatch();
@@ -34,7 +34,6 @@ export default function LoginFacebook({ navigation }) {
     }
     let FCM_TOKEN = await AsyncStorage.getItem("FCM_TOKEN");
     let response;
-    console.log(FB_Data);
     if (FB_Data) {
       response = await mutationFB({
         variables: {
@@ -42,7 +41,6 @@ export default function LoginFacebook({ navigation }) {
           token: FCM_TOKEN,
         },
       });
-      console.log(data);
       if (response) {
         if (
           response.data.login_facebook.code === 200 ||
@@ -55,14 +53,17 @@ export default function LoginFacebook({ navigation }) {
           dispatch(
             setTokenApps(`Bearer ${response.data.login_facebook.access_token}`)
           );
+
           await AsyncStorage.setItem(
             "user",
             JSON.stringify(response.data.login_facebook.user)
           );
+
           await AsyncStorage.setItem(
             "setting",
             JSON.stringify(response.data.login_facebook.data_setting)
           );
+          dispatch(setSettingUser(response.data.login_facebook.data_setting));
           navigation.reset({
             index: 0,
             routes: [
@@ -90,7 +91,6 @@ export default function LoginFacebook({ navigation }) {
         }
       }
     } else {
-      console.log(error);
       setModalError(true);
       setMessage("Login With Facebook");
       setTimeout(() => {

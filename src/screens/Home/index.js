@@ -40,13 +40,14 @@ import {
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useDispatch, useSelector } from "react-redux";
-import { setTokenApps } from "../../redux/action";
+import { setSettingUser, setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
@@ -56,12 +57,15 @@ export default function Home(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
+    let sttng = await AsyncStorage.getItem("setting");
+
     // if (tkn === null && props.route.params.nameLayout !== "HomeBottomScreen") {
     //   setModalLogin(true);
     //   // props.navigation.navigate("HomeScreen");
     // } else {
     if (tkn) {
       dispatch(setTokenApps(`Bearer ${tkn}`));
+      dispatch(setSettingUser(JSON.parse(sttng)));
       // await setToken(tkn);
       await NotifCount();
       await LoadUserProfile();

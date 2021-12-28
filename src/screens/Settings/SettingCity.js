@@ -32,11 +32,16 @@ import { TextInput } from "react-native-gesture-handler";
 import City from "../../graphQL/Query/Itinerary/City";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 
 export default function SettingCity(props) {
-  let token = props.route.params.token;
+  // let token = props.route.params.token;
+  let dispatch = useDispatch();
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   let [indekScrollto, setIndeksScrollto] = useState(0);
   const { t, i18n } = useTranslation();
   let [play, setPlay] = useState(null);
@@ -82,7 +87,7 @@ export default function SettingCity(props) {
   };
   let [data, setData] = useState([]);
   let [city, setCity] = useState("");
-  let [storage, setStorage] = useState(props.route.params.setting);
+  // let [storage, setStorage] = useState(props.route.params.setting);
   let [rippleHeight, setRippleHeight] = useState(0);
 
   // let slider = useRef();
@@ -141,22 +146,23 @@ export default function SettingCity(props) {
     fetchPolicy: "network-only",
     variables: {
       keyword: city,
-      countries_id: storage?.countries?.id,
+      countries_id: setting?.countries?.id,
     },
     onCompleted: async () => {
-      setData(dataKota.cities_search);
-      const indeks = props.route.params.index;
+      setData(dataKota?.cities_search);
+      const tempData = [...dataKota?.cities_search];
+      const indeks = await tempData.findIndex(
+        (k) => k["id"] === setting?.cities?.id
+      );
 
       if (indeks != -1) {
         await setIndeksScrollto(indeks);
         await Scroll_to(indeks);
       }
-      console.log(`PLAY: `, play);
-      console.log(`INDEX: `, props.route.params.index);
 
-      // if (play == props.route.params.index) {
-      //   await setShowLoading(true);
-      // }
+      if (play == props.route.params.index) {
+        await setShowLoading(true);
+      }
     },
   });
 
@@ -211,9 +217,11 @@ export default function SettingCity(props) {
 
         if (response.data) {
           if (response.data.update_city_settings.code === 200) {
-            storage.cities = detail;
-            await props.route.params.setSetting(storage);
-            await AsyncStorage.setItem("setting", JSON.stringify(storage));
+            let newstorage = { ...setting };
+            newstorage["cities"] = detail;
+            // await props.route.params.setSetting(storage);
+            await AsyncStorage.setItem("setting", JSON.stringify(newstorage));
+            dispatch(setSettingUser(newstorage));
             var tempData = [...data];
             for (var i of tempData) {
               ({ ...i, selected: false });
@@ -304,7 +312,6 @@ export default function SettingCity(props) {
           ) : null}
         </KeyboardAvoidingView>
       </View>
-      {console.log(`SHOWLOADING: `, showLoading)}
       {loadingKota ? (
         <View style={{ paddingVertical: 20 }}>
           <ActivityIndicator animating={true} color="#209FAE" size="large" />
@@ -331,13 +338,13 @@ export default function SettingCity(props) {
             // offset: 46 * index,
 
             length: Platform.select({
-              ios: Notch ? 48.5 : 47,
-              android: deviceId == "LYA-L29" ? 45.5 : 47.6,
+              ios: Notch ? 50 : 47,
+              android: deviceId == "LYA-L29" ? 45.5 : 50,
             }),
 
             offset: Platform.select({
-              ios: Notch ? 48.5 * index : 47 * index,
-              android: deviceId == "LYA-L29" ? 45.5 * index : 47.6 * index,
+              ios: Notch ? 50 * index : 47 * index,
+              android: deviceId == "LYA-L29" ? 45.5 * index : 50 * index,
             }),
 
             index,
@@ -354,7 +361,7 @@ export default function SettingCity(props) {
                 paddingHorizontal: 20,
                 borderBottomWidth: 0.5,
                 borderBottomColor:
-                  storage.cities?.id == item.id ? "#209fae" : "#D1D1D1",
+                  setting.cities?.id == item.id ? "#209fae" : "#D1D1D1",
                 flexDirection: "row",
                 alignContent: "center",
                 alignItems: "center",
@@ -371,7 +378,7 @@ export default function SettingCity(props) {
                   size="description"
                   type="regular"
                   style={{
-                    color: storage?.cities?.id == item?.id ? "#209fae" : "#000",
+                    color: setting?.cities?.id == item?.id ? "#209fae" : "#000",
                   }}
                 >
                   {item.name
@@ -383,7 +390,7 @@ export default function SettingCity(props) {
                 </Text>
               </View>
               <View>
-                {storage?.cities?.id == item?.id ? (
+                {setting?.cities?.id == item?.id ? (
                   <Check width={20} height={15} />
                 ) : null}
               </View>
