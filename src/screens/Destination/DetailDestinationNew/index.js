@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal as ModalRN,
+  BackHandler,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -73,6 +74,7 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
+  console.log("props -> detailDestinationNew -> index", props.route.params);
   const { t, i18n } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
@@ -1260,6 +1262,21 @@ const Index = (props) => {
     );
   };
 
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
+
+  const hardwareBack = useCallback(() => {
+    props.navigation.goBack();
+    return true;
+  }, []);
+
   const addToPlan = (kiriman) => {
     if (tokenApps) {
       if (kiriman) {
@@ -1281,6 +1298,8 @@ const Index = (props) => {
               params: {
                 idkiriman: kiriman.id,
                 Position: "destination",
+                data_from: "detail_destination",
+                token: tokenApps,
               },
             });
       } else {
@@ -1302,6 +1321,8 @@ const Index = (props) => {
               params: {
                 idkiriman: data?.destinationById?.id,
                 Position: "destination",
+                data_from: "detail_destination",
+                token: tokenApps,
               },
             });
       }
@@ -1961,6 +1982,7 @@ const Index = (props) => {
             props={props}
             setData={(e) => setAnotherDes(e)}
             token={tokenApps}
+            dataFrom="detail_destination"
           />
         </View>
       </Animated.View>

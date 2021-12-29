@@ -1052,6 +1052,7 @@ export default function SearchPg(props, { navigation, route }) {
                     props={props}
                     setData={(e) => SetdestinationSearch(e)}
                     token={tokenApps}
+                    dataFrom="search"
                   />
                 ) : (
                   <View style={{ marginTop: 30, alignItems: "center" }}>
@@ -1459,6 +1460,7 @@ export default function SearchPg(props, { navigation, route }) {
                     props={props}
                     setData={(e) => SetdestinationSearch(e)}
                     token={tokenApps}
+                    dataFrom="search"
                   />
                 )
               ) : null}

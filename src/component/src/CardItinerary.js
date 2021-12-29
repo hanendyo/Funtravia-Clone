@@ -37,6 +37,7 @@ export default function CardItinerary({
   setData,
   token,
   setting,
+  dataFrom,
 }) {
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
@@ -197,7 +198,7 @@ export default function CardItinerary({
               <Pressable
                 onPress={() =>
                   token
-                    ? props.route.params.Position
+                    ? props.route.params?.Position
                       ? props.navigation.dispatch(
                           StackActions.replace("ItineraryStack", {
                             screen: "ItineraryChooseday",
@@ -206,7 +207,7 @@ export default function CardItinerary({
                               Kiriman: props.route.params.idkiriman,
                               token: token,
                               Position: props.route.params.Position,
-                              // datadayaktif: props.route.params.datadayaktif,
+                              data_from: dataFrom,
                             },
                           })
                         )
@@ -218,6 +219,7 @@ export default function CardItinerary({
                             token: token,
                             status: "favorite",
                             index: 0,
+                            data_from: "setting",
                           },
                         })
                     : setModalLogin(true)

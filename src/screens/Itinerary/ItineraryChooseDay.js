@@ -25,21 +25,34 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 
 export default function ItineraryChooseday(props) {
-  console.log("props", props);
+  console.log("props chooseday", props.route.params);
   const { t, i18n } = useTranslation();
 
   const handlerBack = () => {
-    props.navigation.push("ItineraryStack", {
-      screen: "itindetail",
-      params: {
-        itintitle: "",
-        country: props.route.params.Iditinerary,
-        token: props.route.params.token,
-        status: "favorite",
-        onbackhandler: "chooseDay",
-        index: 0,
-      },
-    });
+    if (props.route.params.data_from) {
+      props.navigation.push("ItineraryStack", {
+        screen: "ItineraryPlaning",
+        params: {
+          idkiriman: props.route.params.Kiriman,
+          Position: "destination",
+          data_from: props.route.params.data_from,
+          token: props.route.params.token,
+          onbackhandler: "chooseDay",
+        },
+      });
+    } else {
+      props.navigation.push("ItineraryStack", {
+        screen: "itindetail",
+        params: {
+          itintitle: "",
+          country: props.route.params.Iditinerary,
+          token: props.route.params.token,
+          status: "favorite",
+          onbackhandler: "chooseDay",
+          index: 0,
+        },
+      });
+    }
   };
 
   //function hardwareBack

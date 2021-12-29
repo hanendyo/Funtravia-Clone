@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -13,7 +13,9 @@ import {
   Image,
   Modal,
   Pressable,
+  BackHandler,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CardItinerary, CustomImage, ModalLogin } from "../../../component";
@@ -74,7 +76,7 @@ export default function listItinPlaning(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => _handleBack()}
         style={{
           height: 55,
         }}
@@ -88,9 +90,57 @@ export default function listItinPlaning(props) {
     ),
   };
 
+  const dataFromPicker = {
+    search: [
+      "SearchPg",
+      {
+        token: props.route.params.token,
+      },
+    ],
+    eventdetail: [
+      "eventdetail",
+      {
+        event_id: props.route.params.idkiriman,
+        token: props.route.params.token,
+      },
+    ],
+    detail_destination: [
+      "DestinationUnescoDetail",
+      {
+        id: props.route.params.idkiriman,
+        token: props.route.params.token,
+      },
+    ],
+    wishlist: ["Wishlist", {}],
+  };
+
+  const _handleBack = () => {
+    props.route.params.onbackhandler === "chooseDay"
+      ? props.navigation.navigate(
+          dataFromPicker[props.route.params.data_from][0],
+          dataFromPicker[props.route.params.data_from][1]
+        )
+      : props.navigation.goBack();
+  };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
+
   const token = useSelector((data) => data.token);
   let idkiriman = props.route.params.idkiriman;
   let [datas, setDatas] = useState();
+
+  const hardwareBack = useCallback(() => {
+    _handleBack();
+    return true;
+  }, []);
 
   const [
     GetListitinaktif,
@@ -548,7 +598,7 @@ export default function listItinPlaning(props) {
   }, [props.navigation]);
 
   return (
-    <View style={{ flex: 1, justifyContent: "flex-end" }}>
+    <View style={{ flex: 1, justifyContent: "space-between" }}>
       <ModalLogin
         props={props}
         modalLogin={modalLogin}
@@ -561,8 +611,13 @@ export default function listItinPlaning(props) {
           token={token}
           //  setting={setting}
           setData={(e) => setDatas(e)}
+          dataFrom={props.route.params.data_from}
         />
-      ) : null}
+      ) : (
+        <View>
+          <ActivityIndicator size="large" color="#209FAE" />
+        </View>
+      )}
 
       <View
         style={{
