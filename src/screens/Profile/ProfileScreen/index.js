@@ -16,6 +16,7 @@ import {
   Image,
   Pressable,
   Modal as ModalRN,
+  FlatList,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import {
@@ -25,6 +26,7 @@ import {
   Text,
   shareAction,
   ModalLogin,
+  Truncate,
   // CardItinerary,
 } from "../../../component";
 import {
@@ -79,6 +81,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTokenApps } from "../../../redux/action";
 import normalize from "react-native-normalize";
 
+const deviceId = DeviceInfo.getModel();
+
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -93,6 +97,7 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function OtherProfile(props) {
+  const tokenApps = useSelector((data) => data.token);
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
@@ -112,10 +117,13 @@ export default function OtherProfile(props) {
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(305) + heightname + heightbio - 20
+      ? normalize(301) + heightname + heightbio - 20
       : normalize(320) + heightname + heightbio - 20,
 
-    android: normalize(300) + heightname + heightbio - StatusBar.currentHeight,
+    android:
+      deviceId == "LYA-L29"
+        ? normalize(265) + heightname + heightbio - StatusBar.currentHeight
+        : normalize(300) + heightname + heightbio - StatusBar.currentHeight,
   });
 
   let [datas, setdatas] = useState(null);
@@ -124,7 +132,7 @@ export default function OtherProfile(props) {
   let [id, seID] = useState(props.route.params.idUser);
   let [dataUser, setDataUser] = useState({});
   let dispatch = useDispatch();
-  let tokenApps = props?.route?.params?.token;
+
   let [position, setposition] = useState(false);
   const { t } = useTranslation();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -592,6 +600,7 @@ export default function OtherProfile(props) {
   });
 
   const spreadData = (data) => {
+    console.log("data", data);
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
@@ -826,7 +835,7 @@ export default function OtherProfile(props) {
         position: "bottom",
       });
     }
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
     let settingData = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(settingData));
     await LoadUserProfile();
@@ -1015,7 +1024,10 @@ export default function OtherProfile(props) {
                   if (line == 2) {
                     Platform.select({
                       ios: Notch ? setHeightName(30) : setHeightName(25),
-                      android: setHeightName(25),
+                      android:
+                        deviceId == "LYA-L29"
+                          ? setHeightName(20)
+                          : setHeightName(25),
                     });
                   }
                 }}
@@ -1209,42 +1221,57 @@ export default function OtherProfile(props) {
                 if (line == 0) {
                   Platform.select({
                     ios: Notch ? setHeightBio(0) : setHeightBio(0),
-                    android: 10,
+                    android: setHeightBio(0),
                   });
                 }
 
                 if (line == 1) {
                   Platform.select({
                     ios: Notch ? setHeightBio(25) : setHeightBio(20),
-                    android: 10,
+                    android:
+                      deviceId == "LYA-L29"
+                        ? setHeightBio(70)
+                        : setHeightBio(48),
                   });
                 }
 
                 if (line == 2) {
                   Platform.select({
                     ios: Notch ? setHeightBio(45) : setHeightBio(37),
-                    android: 10,
+                    android:
+                      deviceId == "LYA-L29"
+                        ? setHeightBio(80)
+                        : setHeightBio(63),
                   });
                 }
 
                 if (line == 3) {
                   Platform.select({
                     ios: Notch ? setHeightBio(65) : setHeightBio(50),
-                    android: 10,
+                    android:
+                      deviceId == "LYA-L29"
+                        ? setHeightBio(100)
+                        : setHeightBio(77),
                   });
                 }
 
                 if (line == 4) {
                   Platform.select({
                     ios: Notch ? setHeightBio(83) : setHeightBio(67),
-                    android: 10,
+                    android:
+                      deviceId == "LYA-L29"
+                        ? setHeightBio(120)
+                        : setHeightBio(86),
                   });
                 }
 
                 if (line == 5) {
                   Platform.select({
-                    ios: Notch ? setHeightBio(100) : setHeightBio(67),
-                    android: 10,
+                    ios: Notch ? setHeightBio(120) : setHeightBio(125),
+                    android:
+                      deviceId == "LYA-L29"
+                        ? setHeightBio(140)
+                        : setHeightBio(105),
                   });
                 }
               }}
@@ -1366,32 +1393,31 @@ export default function OtherProfile(props) {
                 ? heightTotal + 70
                 : tabIndex === 1
                 ? heightTotal + 5
-                : heightTotal - 20,
+                : heightTotal - 25,
             android:
               tabIndex === 0
                 ? heightTotal + 55
                 : tabIndex === 1
-                ? heightTotal + 5
-                : heightTotal + 5,
+                ? heightTotal - 10
+                : heightTotal - 40,
           }),
-          // marginTop:
-          //   Platform.OS === "ios"
-          //     ? tabIndex === 0
-          //       ? heightTotal + 70
-          //       : tabIndex === 1
-          //       ? heightTotal + 5
-          //       : heightTotal - 25
-          //     : tabIndex === 0
-          //     ? heightTotal + 55
-          //     : tabIndex === 1
-          //     ? heightTotal + 10
-          //     : heightTotal + 25,
+          paddingBottom: Platform.select({
+            ios:
+              tabIndex === 0
+                ? heightTotal + 100
+                : tabIndex === 1
+                ? heightTotal + 20
+                : heightTotal + 10,
+            android:
+              tabIndex === 0
+                ? heightTotal + 70
+                : tabIndex === 1
+                ? heightTotal + 5
+                : heightTotal - 20,
+          }),
 
           backgroundColor: "#f6f6f6",
           minHeight: height - SafeStatusBar + HeaderHeight,
-          paddingBottom: Platform.OS === "ios" ? 120 : 70,
-          // paddingHorizontal: 15,
-          // margin: Platform.OS === "ios" ? 10 : 5,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1430,26 +1456,87 @@ export default function OtherProfile(props) {
   };
 
   let [tabPost, settabPost] = useState(0);
+  let scrollRef = useRef();
   // render tabbar
   const renderTabBar = (props) => {
+    let scrolltab = Platform.OS == "ios" ? 45 : 50;
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 50],
+      outputRange: [HeaderHeight, scrolltab],
 
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          // top: -10,
-          // borderWidth: 1,
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
           width: "100%",
         }}
       >
-        <TabBar
+        <FlatList
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            backgroundColor: "white",
+          }}
+          renderItem={({ item, index }) => (
+            <Ripple
+              key={"tabx" + index}
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  alignContent: "center",
+
+                  width:
+                    props.navigationState.routes.length <= 2
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 1,
+                      borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  <Truncate text={item?.title ? item.title : ""} length={15} />
+                </Text>
+              </View>
+            </Ripple>
+          )}
+        />
+        {/* <TabBar
           {...props}
           onTabPress={({ route, preventDefault }) => {
             if (isListGliding.current) {
@@ -1466,11 +1553,11 @@ export default function OtherProfile(props) {
           }}
           renderLabel={renderLabel}
           indicatorStyle={{
-            backgroundColor: "#209fae",
-            height: "5%",
-            bottom: "-3%",
+            backgroundColor: "#fff",
+            height: 2,
+            // bottom: "-3%",
           }}
-        />
+        /> */}
         {tabIndex === 0 ? (
           <View
             style={{
@@ -1765,7 +1852,7 @@ export default function OtherProfile(props) {
         {position && position === "other" ? (
           <View
             style={{
-              marginRight: 15,
+              marginRight: 20,
               flexDirection: "column",
               alignItems: "flex-end",
             }}
@@ -1784,7 +1871,7 @@ export default function OtherProfile(props) {
                 width: 50,
 
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "flex-end",
               }}
             >
               <Message height={20} width={20}></Message>
@@ -1881,8 +1968,9 @@ export default function OtherProfile(props) {
         {position && position === "other" ? (
           <View
             style={{
-              marginRight: 15,
+              marginRight: 20,
               flexDirection: "column",
+
               alignItems: "flex-end",
             }}
           >
@@ -1900,7 +1988,7 @@ export default function OtherProfile(props) {
                 width: 50,
 
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "flex-end",
               }}
             >
               <Message height={20} width={20}></Message>
