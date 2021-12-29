@@ -73,7 +73,7 @@ import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 40;
+const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 const SafeStatusBar = Platform.select({

@@ -82,7 +82,7 @@ import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 42;
+const TabBarHeight = Platform.OS == "ios" ? 44 : 42;
 
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
@@ -101,11 +101,10 @@ export default function OtherProfile(props) {
   let [heightbio, setHeightBio] = useState(0);
   let [heightname, setHeightName] = useState(0);
   let [heightusername, setHeightUsername] = useState(0);
-
+  const [canScroll, setCanScroll] = useState(true);
   let [soon, setSoon] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
 
-  // const HeaderHeight = 260 + heightbio + heightname;
   const SafeStatusBar = Platform.select({
     ios: Notch ? 42 : 20,
     android: StatusBar.currentHeight,
@@ -113,10 +112,10 @@ export default function OtherProfile(props) {
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(290) + heightname + heightbio - 20
-      : normalize(338) + heightname + heightbio - 20,
+      ? normalize(305) + heightname + heightbio - 20
+      : normalize(320) + heightname + heightbio - 20,
 
-    android: normalize(378) + heightname + heightbio - StatusBar.currentHeight,
+    android: normalize(300) + heightname + heightbio - StatusBar.currentHeight,
   });
 
   let [datas, setdatas] = useState(null);
@@ -125,7 +124,7 @@ export default function OtherProfile(props) {
   let [id, seID] = useState(props.route.params.idUser);
   let [dataUser, setDataUser] = useState({});
   let dispatch = useDispatch();
-  let tokenApps = props.route.params.token;
+  let tokenApps = props?.route?.params?.token;
   let [position, setposition] = useState(false);
   const { t } = useTranslation();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -138,6 +137,97 @@ export default function OtherProfile(props) {
   const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
+
+  const startRefreshAction = () => {
+    if (Platform.OS === "ios") {
+      listRefArr.current.forEach((listRef) => {
+        listRef.value.scrollToOffset({
+          offset: -50,
+          animated: true,
+        });
+      });
+      refresh().finally(() => {
+        syncScrollOffset();
+        if (scrollY._value < 0) {
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      });
+    } else if (Platform.OS === "android") {
+      Animated.timing(headerMoveScrollY, {
+        toValue: -150,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      refresh().finally(() => {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      });
+    }
+  };
+
+  const refresh = async () => {
+    refreshStatusRef.current = true;
+    await getdataEvent();
+    await getdataEventPublic();
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("done");
+      }, 2000);
+    }).then((value) => {
+      refreshStatusRef.current = false;
+    });
+  };
+
+  const handlePanReleaseOrEnd = (evt, gestureState) => {
+    syncScrollOffset();
+    headerScrollY.setValue(scrollY._value);
+    if (Platform.OS === "ios") {
+      if (scrollY._value < 0) {
+        if (scrollY._value < -PullToRefreshDist && !refreshStatusRef.current) {
+          startRefreshAction();
+        } else {
+          listRefArr.current.forEach((listRef) => {
+            listRef.value.scrollToOffset({
+              offset: 0,
+              animated: true,
+            });
+          });
+        }
+      } else {
+        if (Math.abs(gestureState.vy) < 0.2) {
+          return;
+        }
+        Animated.decay(headerScrollY, {
+          velocity: -gestureState.vy,
+          useNativeDriver: true,
+        }).start(() => {
+          syncScrollOffset();
+        });
+      }
+    } else if (Platform.OS === "android") {
+      if (
+        headerMoveScrollY._value < 0 &&
+        headerMoveScrollY._value / 1.5 < -PullToRefreshDist
+      ) {
+        startRefreshAction();
+      } else {
+        Animated.timing(headerMoveScrollY, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  };
+
   let hides = React.useRef(
     scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -289,6 +379,120 @@ export default function OtherProfile(props) {
     // check pull to refresh
   };
 
+  const _unfollow = async (id) => {
+    if (tokenApps) {
+      try {
+        let response = await UnfollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+
+        if (errorUnfolMut) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.unfollow_user.code === 200 ||
+            response.data.unfollow_user.code === "200"
+          ) {
+            loadAsync();
+          } else {
+            throw new Error(response.data.unfollow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert(t("somethingwrong"));
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  const _follow = async (id) => {
+    if (tokenApps) {
+      try {
+        let response = await FollowMutation({
+          variables: {
+            id: id,
+          },
+        });
+
+        if (errorFollowMut) {
+          throw new Error("Error Input");
+        }
+        if (response.data) {
+          if (
+            response.data.follow_user.code === 200 ||
+            response.data.follow_user.code === "200"
+          ) {
+            loadAsync();
+          } else {
+            throw new Error(response.data.follow_user.message);
+          }
+        }
+      } catch (error) {
+        Alert.alert(t("somethingwrong"));
+      }
+    } else {
+      Alert.alert("Please Login");
+    }
+  };
+
+  // handle message
+  const _handlemessage = async (id, tokens) => {
+    try {
+      let response = await fetch(
+        "https://scf.funtravia.com/api/personal/chat?receiver_id=" + id,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: tokenApps,
+            "Content-Type": "application/json",
+          },
+          // body: formBodys,
+        }
+      );
+
+      let responseJson = await response.json();
+
+      if (responseJson) {
+        if (responseJson.sender_id === users.id) {
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.receiver.id,
+              name:
+                responseJson.receiver.first_name +
+                " " +
+                (responseJson.receiver.last_name
+                  ? responseJson.receiver.last_name
+                  : ""),
+              picture: responseJson.receiver.picture,
+            },
+          });
+        } else {
+          props.navigation.push("ChatStack", {
+            screen: "RoomChat",
+            params: {
+              room_id: responseJson.id,
+              receiver: responseJson.sender.id,
+              name:
+                responseJson.sender.first_name +
+                " " +
+                (responseJson.sender.last_name
+                  ? responseJson.sender.last_name
+                  : ""),
+              picture: responseJson.sender.picture,
+            },
+          });
+        }
+      }
+    } catch (error) {}
+  };
+
   const onSelect = async (data, inde) => {
     var tempdatas = [];
     var x = 0;
@@ -408,7 +612,7 @@ export default function OtherProfile(props) {
         tmpArray = [];
       }
     }
-    if (tmpArray.length) {
+    if (tmpArray?.length) {
       tmpData.push(tmpArray);
     }
 
@@ -425,7 +629,7 @@ export default function OtherProfile(props) {
     networkStatus: networkStatusFeed,
   } = useQuery(PostCursorBased, {
     variables: {
-      user_id: props.route.params.idUser,
+      user_id: props?.route?.params?.idUser,
       first: 18,
       after: "",
     },
@@ -591,27 +795,25 @@ export default function OtherProfile(props) {
     },
   });
 
-  console.log("user", dataUser);
-
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
     await setuser(user?.user);
 
-    if (!props.route.params.idUser) {
+    if (!props?.route?.params?.idUser) {
       await seID(user?.user?.id);
 
       await props.navigation.setParams({ idUser: user?.user?.id });
       setposition("profile");
     } else {
-      if (props.route.params.idUser === user?.user?.id) {
+      if (props?.route?.params?.idUser === user?.user?.id) {
         await seID(user?.user?.id);
 
         setposition("profile");
       } else {
         await seID(props.route.params.idUser);
 
-        setposition("other");
+        await setposition("other");
       }
     }
     let tkn = await AsyncStorage.getItem("access_token");
@@ -709,7 +911,7 @@ export default function OtherProfile(props) {
           top: SafeStatusBar,
           paddingTop: Platform.select({
             ios: Notch ? 10 : 20,
-            android: 10,
+            android: 20,
           }),
           paddingBottom: 3,
           // height: HeaderHeight,
@@ -791,7 +993,7 @@ export default function OtherProfile(props) {
           >
             <Animated.View
               style={{
-                width: "100%",
+                width: "80%",
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "center",
@@ -802,24 +1004,24 @@ export default function OtherProfile(props) {
               <Text
                 onTextLayout={(x) => {
                   let line = x.nativeEvent.lines.length;
-                  console.log("line", line);
-                  if (line == 0) {
-                    Platform.OS == "ios"
-                      ? Notch
-                        ? setHeightName(0)
-                        : setHeightName(0)
-                      : setHeightName(line * 11);
-                  } else {
-                    Platform.OS == "ios"
-                      ? Notch
-                        ? setHeightName(line * 10)
-                        : setHeightName(line - 20)
-                      : setHeightName(line);
+
+                  if (line == 1) {
+                    Platform.select({
+                      ios: Notch ? setHeightName(0) : setHeightName(0),
+                      android: setHeightName(0),
+                    });
+                  }
+
+                  if (line == 2) {
+                    Platform.select({
+                      ios: Notch ? setHeightName(30) : setHeightName(25),
+                      android: setHeightName(25),
+                    });
                   }
                 }}
                 type="bold"
                 size="title"
-                style={{ marginRight: 10 }}
+                style={{ marginRight: 10, textAlign: "center" }}
               >
                 {`${data.first_name ? data.first_name : ""} ` +
                   `${data.last_name ? data.last_name : ""}`}
@@ -996,32 +1198,61 @@ export default function OtherProfile(props) {
             style={{
               width: Dimensions.get("screen").width,
               // borderWidth: 1,
-              paddingTop: 10,
+              paddingTop: data.bio ? 12 : 0,
               paddingHorizontal: 20,
             }}
           >
             <Text
               onTextLayout={(x) => {
                 let line = x.nativeEvent.lines.length;
-
+                console.log("line", line);
                 if (line == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setHeightBio(10)
-                      : setHeightBio(10)
-                    : setHeightBio(line * 11);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setHeightBio(line * 25)
-                      : setHeightBio(line * 20)
-                    : setHeightBio(line);
+                  Platform.select({
+                    ios: Notch ? setHeightBio(0) : setHeightBio(0),
+                    android: 10,
+                  });
+                }
+
+                if (line == 1) {
+                  Platform.select({
+                    ios: Notch ? setHeightBio(25) : setHeightBio(20),
+                    android: 10,
+                  });
+                }
+
+                if (line == 2) {
+                  Platform.select({
+                    ios: Notch ? setHeightBio(45) : setHeightBio(37),
+                    android: 10,
+                  });
+                }
+
+                if (line == 3) {
+                  Platform.select({
+                    ios: Notch ? setHeightBio(65) : setHeightBio(50),
+                    android: 10,
+                  });
+                }
+
+                if (line == 4) {
+                  Platform.select({
+                    ios: Notch ? setHeightBio(83) : setHeightBio(67),
+                    android: 10,
+                  });
+                }
+
+                if (line == 5) {
+                  Platform.select({
+                    ios: Notch ? setHeightBio(100) : setHeightBio(67),
+                    android: 10,
+                  });
                 }
               }}
               type="regular"
               size="description"
               style={{
                 textAlign: "center",
+                // borderWidth: 1,
                 // paddingBottom: 10,
               }}
             >
@@ -1078,22 +1309,7 @@ export default function OtherProfile(props) {
         return null;
     }
 
-    const handleOnEndReached = (e) => {
-      console.log("e", e);
-      // if (status == 0) {
-      //   if (dataPost?.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
-      //     return fetchMore({
-      //       updateQuery: onUpdate,
-      //       variables: {
-      //         first: 5,
-      //         after: dataPost?.post_cursor_based.pageInfo?.endCursor,
-      //       },
-      //     });
-      //   }
-      // } else {
-      //   setModalLogin(true);
-      // }
-    };
+    const handleOnEndReached = (e) => {};
 
     // let heightTotal = HeaderHeight + SafeStatusBar + TabBarHeight - 55;
 
@@ -1101,6 +1317,8 @@ export default function OtherProfile(props) {
       ios: Notch
         ? HeaderHeight + SafeStatusBar + TabBarHeight - 55
         : HeaderHeight + SafeStatusBar + TabBarHeight - 40,
+      android:
+        HeaderHeight + SafeStatusBar + TabBarHeight - StatusBar.currentHeight,
     });
 
     return (
@@ -1140,19 +1358,36 @@ export default function OtherProfile(props) {
         // ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={() => <View style={{ height: 5 }}></View>}
         contentContainerStyle={{
-          marginTop:
-            Platform.OS === "ios"
-              ? tabIndex === 0
-                ? heightTotal + 85
+          // marginTop: heightTotal + 45,
+          paddingTop: 10,
+          marginTop: Platform.select({
+            ios:
+              tabIndex === 0
+                ? heightTotal + 70
                 : tabIndex === 1
-                ? heightTotal + 20
-                : heightTotal - 50
-              : tabIndex === 0
-              ? heightTotal + 55
-              : tabIndex === 1
-              ? heightTotal - 10
-              : heightTotal - 25,
-          borderWidth: 1,
+                ? heightTotal + 5
+                : heightTotal - 20,
+            android:
+              tabIndex === 0
+                ? heightTotal + 55
+                : tabIndex === 1
+                ? heightTotal + 5
+                : heightTotal + 5,
+          }),
+          // marginTop:
+          //   Platform.OS === "ios"
+          //     ? tabIndex === 0
+          //       ? heightTotal + 70
+          //       : tabIndex === 1
+          //       ? heightTotal + 5
+          //       : heightTotal - 25
+          //     : tabIndex === 0
+          //     ? heightTotal + 55
+          //     : tabIndex === 1
+          //     ? heightTotal + 10
+          //     : heightTotal + 25,
+
+          backgroundColor: "#f6f6f6",
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingBottom: Platform.OS === "ios" ? 120 : 70,
           // paddingHorizontal: 15,
@@ -1199,7 +1434,7 @@ export default function OtherProfile(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 45],
+      outputRange: [HeaderHeight, 50],
 
       extrapolateRight: "clamp",
     });
@@ -1327,13 +1562,130 @@ export default function OtherProfile(props) {
     );
   };
 
+  // render alert login
+  const renderAlert = () => {
+    return (
+      <>
+        <ModalLogin
+          modalLogin={modalLogin}
+          setModalLogin={() => setModalLogin(false)}
+          props={props}
+        />
+        <ModalRN
+          useNativeDriver={true}
+          visible={soon}
+          onRequestClose={() => setSoon(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            // onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 3,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <View
+              style={{
+                // backgroundColor: "white",
+                // width: Dimensions.get("screen").width - 100,
+                padding: 20,
+                paddingHorizontal: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 10,
+              }}
+            >
+              <Image
+                source={Bg_soon}
+                style={{
+                  height: Dimensions.get("screen").width - 180,
+                  width: Dimensions.get("screen").width - 110,
+                  borderRadius: 10,
+                  position: "absolute",
+                }}
+              />
+              <Text type="bold" size="h5">
+                {t("comingSoon")}!
+              </Text>
+              <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                {t("soonUpdate")}.
+              </Text>
+              <Button
+                text={"OK"}
+                style={{
+                  marginTop: 20,
+                  width: Dimensions.get("screen").width - 300,
+                }}
+                type="box"
+                onPress={() => setSoon(false)}
+              ></Button>
+            </View>
+          </View>
+        </ModalRN>
+      </>
+    );
+  };
+
+  const renderCustomRefresh = () => {
+    // headerMoveScrollY
+    return (
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: headerMoveScrollY.interpolate({
+                inputRange: [-300, 0],
+                outputRange: [150, 0],
+                extrapolate: "clamp",
+              }),
+            },
+          ],
+          backgroundColor: "#eee",
+          height: 38,
+          width: 38,
+          borderRadius: 19,
+          borderWidth: 2,
+          borderColor: "#ddd",
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          top: -50,
+          position: "absolute",
+        }}
+      >
+        <ActivityIndicator animating={true} color="#209fae" size="large" />
+      </Animated.View>
+    );
+  };
+
   // render label
   const renderLabel = ({ route, focused }) => {
     return (
       <Text
         style={[
           focused ? styles.labelActive : styles.label,
-          { opacity: focused ? 1 : 1, height: "100%", marginTop: 2 },
+          {
+            opacity: focused ? 1 : 1,
+            height: "100%",
+            marginTop: Platform.OS == "ios" ? 2 : 0,
+          },
         ]}
       >
         {route.title}
@@ -1556,8 +1908,10 @@ export default function OtherProfile(props) {
           </View>
         ) : null}
       </Animated.View>
+      {renderAlert()}
       {renderTabView()}
       {renderHeader(dataUser)}
+      {renderCustomRefresh()}
     </View>
   );
 }
