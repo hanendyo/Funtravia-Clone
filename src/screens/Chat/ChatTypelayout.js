@@ -22,10 +22,12 @@ import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER } from "../../config";
+import { CHATSERVER, RESTFULL_API } from "../../config";
 import normalize from "react-native-normalize";
 import ImageView from "react-native-image-viewing";
 import ImageViewer from "react-native-image-zoom-viewer";
+import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -34,13 +36,23 @@ export default function ChatTypelayout({
   navigation,
   tmpRChat,
   socket,
-  _uploadimage,
+  // _uploadimage,
   index,
   datas,
   token,
   connected,
   socket_connect,
+  room,
+  flatListRef,
+  _sendmsg,
+  type,
+  from,
+  user,
 }) {
+  const tokenApps = useSelector((data) => data.token);
+  const [loading, setloading] = useState(true);
+  console.log("🚀 ~ file: ChatTypelayout.js ~ line 54 ~ loading", loading);
+
   // useEffect(() => {
   //   if (item.chat == "group") {
   //     for (let i of dataMember.buddy) {
@@ -48,22 +60,129 @@ export default function ChatTypelayout({
   //     }
   //   }
   // }, []);
+  const _uploadimages = async (image, id) => {
+    try {
+      setloading(true);
+      console.log("ssss");
+      image = JSON.parse(image);
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, "0");
+      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+      var yyyy = today.getFullYear();
+
+      today = dd + "/" + mm + "/" + yyyy;
+      var formData = new FormData();
+      formData.append("id", id);
+      let ext = image.mime.split("/");
+      let image_name = "imageChat." + ext[1];
+      formData.append("img", {
+        name: image_name,
+        type: image.mime,
+        uri:
+          Platform.OS === "android"
+            ? image.path
+            : image.path.replace("file://", ""),
+      });
+      let response = await fetch(
+        `${RESTFULL_API}room/personal/upload_image_chat`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: tokenApps,
+            "Content-Type": "multipart/form-data",
+          },
+          body: formData,
+        }
+      );
+      let responseJson = await response.json();
+      // console.log(
+      //   "🚀 ~ file: ChatTypelayout.js ~ line 81 ~ const_uploadimage= ~ responseJson",
+      //   responseJson
+      // );
+      if (responseJson.status == true) {
+        // getUserAndToken();
+        let dateTime = new Date();
+        let chatData;
+        if (type == "group") {
+          chatData = {
+            id: id,
+            room: room,
+            chat: "group",
+            from: from,
+            type: "att_image",
+            text: responseJson.filepath,
+            user_id: user.id,
+            time: dateTime,
+            is_send: true,
+            name: `${user.first_name} ${user.last_name ? user.last_name : ""}`,
+          };
+        } else {
+          chatData = {
+            id: id,
+            room: room,
+            chat: "personal",
+            type: "att_image",
+            text: responseJson.filepath,
+            user_id: user_id,
+            time: dateTime,
+            is_send: true,
+          };
+        }
+
+        // if (socket.connected) {
+        // await socket.current.emit("message", chatData);
+        _sendmsg(chatData);
+        // } else {
+        //   sendOffline(chatData);
+        // }
+        // RNToasty.Show({
+        //   duration: 1,
+        //   title: "Success upload image",
+        //   position: "bottom",
+        // });
+        setloading(true);
+
+        setTimeout(function() {
+          if (flatListRef !== null && flatListRef.current) {
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
+        }, 2000);
+      } else {
+        console.log("errr");
+        setloading(false);
+        //   setloading(false);
+        throw new Error(responseJson.message);
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ChatTypelayout.js ~ line 121 ~ const_uploadimages= ~ error",
+        error
+      );
+      setloading(false);
+      // RNToasty.Show({
+      //   duration: 1,
+      //   title: "error : someting wrong!",
+      //   position: "bottom",
+      // });
+    }
+  };
   let videoView = useRef(null);
   const { t } = useTranslation();
   const playerRef = useRef(null);
-  const [loading, setloading] = useState(true);
   const [modalss, setModalss] = useState(false);
-  const Loadingkirim = () => {
-    setTimeout(() => {
-      setloading(false);
-    }, 5000);
-    if (loading) {
+  const [count, setCount] = useState(0);
+  const Loadingkirim = ({ loadings }) => {
+    // setTimeout(() => {
+    //   setloading(false);
+    // }, 5000);
+    if (loadings) {
       return <ActivityIndicator size="large" color="#209fae" />;
     } else {
       return (
         <Pressable
           onPress={() => {
-            _uploadimage(item.text, item.id);
+            _uploadimages(item.text, item.id);
             setloading(true);
           }}
           style={{
@@ -109,15 +228,22 @@ export default function ChatTypelayout({
     }
   };
 
-  let count = 0;
+  // let count = 0;
   useEffect(() => {
     if (item.is_send == false && item.type !== "att_image") {
       socket.current.emit("message", item);
     }
-    if (item.is_send == false && item.type == "att_image" && count == 0) {
-      count = 1;
-      setloading(true);
-      _uploadimage(item.text, item.id);
+    if (item.is_send == false && item.type == "att_image") {
+      // count = 1;
+      // if (count > 0) {
+      //   setCount(1);
+      setTimeout(function() {
+        _uploadimages(item.text, item.id);
+      }, 1000);
+      // } else {
+      //   setCount(1);
+      //   _uploadimages(item.text, item.id);
+      // }
     }
   }, [connected, socket_connect]);
   // sticker layout
@@ -1074,7 +1200,55 @@ export default function ChatTypelayout({
               }}
               blurRadius={3}
             >
-              <Loadingkirim />
+              {loading ? (
+                <ActivityIndicator size="large" color="#209fae" />
+              ) : (
+                <Pressable
+                  onPress={() => {
+                    _uploadimages(item.text, item.id);
+                    setloading(true);
+                  }}
+                  style={{
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    height: 40,
+                    width: 150,
+                    borderRadius: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      position: "absolute",
+                      backgroundColor: "#000",
+                      borderRadius: 5,
+                      opacity: 0.3,
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      position: "absolute",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Reupload height={15} width={15} />
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        color: "white",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {t("reUpload")}
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
+              {/* <Loadingkirim loadings={loading} /> */}
             </ImageBackground>
           )}
         </Pressable>

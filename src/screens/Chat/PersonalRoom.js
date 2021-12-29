@@ -322,6 +322,7 @@ export default function Room({ navigation, route }) {
       // width: 500,
       // height: 500,
       cropping: true,
+      mediaType: "photo",
       // cropperCircleOverlay: true,
       // includeBase64: true,
     }).then((image) => {
@@ -340,6 +341,7 @@ export default function Room({ navigation, route }) {
       };
       setChatHistory(chatData);
       setTimeout(function() {
+        console.log("pickcamera");
         _uploadimage(image, id);
         if (flatListRef !== null && flatListRef.current) {
           flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -353,9 +355,10 @@ export default function Room({ navigation, route }) {
     ImagePicker.openPicker({
       // width: 500,
       // height: 500,
-      cropping: true,
-      // cropperCircleOverlay: true,
-      // includeBase64: true,
+      cropping: false,
+      cropperCircleOverlay: false,
+      includeBase64: false,
+      mediaType: "photo",
     })
       .then((image) => {
         let id = Uuid();
@@ -373,6 +376,7 @@ export default function Room({ navigation, route }) {
         };
         setChatHistory(chatData);
         setTimeout(function() {
+          console.log("pickGallery");
           _uploadimage(image, id);
           if (flatListRef !== null && flatListRef.current) {
             flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -387,6 +391,7 @@ export default function Room({ navigation, route }) {
 
   const _uploadimage = async (image, id) => {
     try {
+      // console.log("rewr");
       image = JSON.parse(image);
       var today = new Date();
       var dd = String(today.getDate()).padStart(2, "0");
@@ -437,11 +442,11 @@ export default function Room({ navigation, route }) {
         // } else {
         //   sendOffline(chatData);
         // }
-        RNToasty.Show({
-          duration: 1,
-          title: "Success upload image",
-          position: "bottom",
-        });
+        // RNToasty.Show({
+        //   duration: 1,
+        //   title: "Success upload image",
+        //   position: "bottom",
+        // });
         setTimeout(function() {
           if (flatListRef !== null && flatListRef.current) {
             flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -697,6 +702,9 @@ export default function Room({ navigation, route }) {
       }
     }
   };
+  const _sendmsg = async (chatData) => {
+    await socket.current.emit("message", chatData);
+  };
 
   const updateReadMassage = async () => {
     let dateTime = new Date();
@@ -841,9 +849,12 @@ export default function Room({ navigation, route }) {
             navigation={navigation}
             token={token}
             socket={socket}
-            _uploadimage={(image, id) => _uploadimage(image, id)}
             connected={connected}
             socket_connect={socket_connect}
+            room={room}
+            flatListRef={flatListRef}
+            _sendmsg={(e) => _sendmsg(e)}
+            type={"personal"}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>
