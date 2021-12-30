@@ -18,7 +18,7 @@ import { Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTokenApps } from "../../redux/action";
 
 export default function Following(props) {
@@ -69,13 +69,16 @@ export default function Following(props) {
     ),
   };
 
-  let [token, setToken] = useState(props.route.params.token);
+  // let [token, setToken] = useState(props.route.params.token);
+  // let [setting, setSetting] = useState();
+  let token = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
+
   let [loadin, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const idUser = props.route.params.idUser;
   let [data, setdata] = useState(null);
-  let [setting, setSetting] = useState();
 
   const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
     FollowingQuery,
@@ -102,7 +105,8 @@ export default function Following(props) {
     // setToken(tkn);
     dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
+    dispatch(setSettingApps(setsetting));
+    // setSetting(JSON.parse(setsetting));
     await LoadFollowing();
     await setLoading(false);
   };

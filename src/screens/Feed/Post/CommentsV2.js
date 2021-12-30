@@ -265,7 +265,7 @@ export default function Comments(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       setDataPost(queryDataPost?.feed_post_byid);
     },
   });
@@ -281,7 +281,7 @@ export default function Comments(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       setDatasFollow(dataFollow.user_following);
     },
   });
@@ -1532,7 +1532,7 @@ export default function Comments(props) {
                           })
                         : props.navigation.push("ProfileStack", {
                             screen: "ProfileTab",
-                            params: { token: tokenApps },
+                            // params: { idUser: dataPost?.user?.id },
                           })
                       : setModalLogin(true);
                   }}
@@ -1558,9 +1558,15 @@ export default function Comments(props) {
                     style={{
                       justifyContent: "center",
                       marginHorizontal: 10,
+                      maxWidth: "80%",
                     }}
                   >
-                    <Text type={"bold"} size="title" style={{}}>
+                    <Text
+                      numberOfLines={1}
+                      type={"bold"}
+                      size="title"
+                      style={{}}
+                    >
                       {dataPost?.user?.first_name}{" "}
                       {dataPost?.user?.first_name
                         ? dataPost?.user?.last_name

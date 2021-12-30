@@ -21,11 +21,11 @@ import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
 import { setTokenApps } from "../../redux/action";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Following(props) {
   let dispatch = useDispatch();
-  const token = props.route.params.token;
+  const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTintColor: "white",
@@ -105,7 +105,7 @@ export default function Following(props) {
           Authorization: token,
         },
       },
-      onCompleted: () => {
+      onCompleted: async () => {
         setdata(dataFollow.user_following);
       },
     }

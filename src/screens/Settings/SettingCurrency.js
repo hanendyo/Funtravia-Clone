@@ -42,7 +42,7 @@ export default function SettingCurrency(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("currency")}
       </Text>
     ),

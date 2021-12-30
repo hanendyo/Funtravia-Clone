@@ -90,7 +90,7 @@ export default function SettingsAkun(props) {
 
   const HeaderComponent = {
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("accountInformation")}
       </Text>
     ),
@@ -141,7 +141,6 @@ export default function SettingsAkun(props) {
       if (index > -1) {
         setIndex(index);
       }
-      console.log(`INDEX USEEFF: `, index);
     },
   });
 
@@ -602,6 +601,7 @@ export default function SettingsAkun(props) {
 
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       style={{
         backgroundColor: "#F6F6F6",
         // flex: 1,
@@ -1575,7 +1575,7 @@ export default function SettingsAkun(props) {
                     size="label"
                     style={{
                       alignSelf: "flex-start",
-                      // marginBottom: 5,
+                      marginTop: dataAccountConnection?.facebook ? -15 : -5,
                     }}
                   >
                     Facebook
@@ -1659,12 +1659,12 @@ export default function SettingsAkun(props) {
                     size="label"
                     style={{
                       alignSelf: "flex-start",
-                      marginTop: 8,
+                      marginTop: dataAccountConnection?.gmail ? -5 : 0,
                     }}
                   >
                     Google
                   </Text>
-                  {dataAccountConnection.gmail ? (
+                  {dataAccountConnection?.gmail ? (
                     <Text
                       type="regular"
                       size="small"

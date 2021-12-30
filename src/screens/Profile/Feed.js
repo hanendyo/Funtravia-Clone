@@ -951,7 +951,10 @@ export default function myfeed(props) {
                         });
                   }}
                   size="title"
-                  style={{}}
+                  style={{
+                    maxWidth: "85%",
+                  }}
+                  numberOfLines={1}
                 >
                   {datauser.first_name}{" "}
                   {datauser.first_name ? datauser.last_name : null}

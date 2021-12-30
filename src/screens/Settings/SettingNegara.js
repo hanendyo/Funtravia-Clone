@@ -44,7 +44,7 @@ export default function SettingNegara(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("country")}
       </Text>
     ),
@@ -95,6 +95,7 @@ export default function SettingNegara(props) {
   //     }
   //   }, 1000);
   // }, []);
+
   const ref = React.useRef(null);
 
   const Scroll_to = async (index) => {
@@ -164,8 +165,11 @@ export default function SettingNegara(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     // pushselected();
-    queryCountry();
-  }, []);
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      queryCountry();
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
   const [
     mutationCity,
