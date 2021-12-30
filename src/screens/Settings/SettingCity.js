@@ -46,6 +46,7 @@ export default function SettingCity(props) {
   const { t, i18n } = useTranslation();
   let [play, setPlay] = useState(null);
   let [showLoading, setShowLoading] = useState(false);
+  let [indexSend, setIndexSend] = useState(null);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -72,7 +73,12 @@ export default function SettingCity(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          props.navigation.goBack();
+          props.navigation.navigate("SettingsAkun", {
+            indexFromSettingCity: indexSend,
+          });
+        }}
         style={{
           height: 55,
         }}
@@ -119,6 +125,7 @@ export default function SettingCity(props) {
 
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
+    // setIndexSend(index);
     setTimeout(() => {
       if (ref && ref?.current) {
         ref?.current?.scrollToIndex({
@@ -131,7 +138,7 @@ export default function SettingCity(props) {
 
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
     if (viewableItems) {
-      setPlay(viewableItems[0]?.key);
+      setPlay(viewableItems[0]?.index);
     }
   });
 
@@ -160,15 +167,20 @@ export default function SettingCity(props) {
         await Scroll_to(indeks);
       }
 
-      if (play == props.route.params.index) {
-        await setShowLoading(true);
-      }
+      // setTimeout(() => {
+      // }, 500);
     },
   });
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     // pushselected();
+    setTimeout(() => {
+      if (play == props.route.params.index) {
+        setShowLoading(true);
+      }
+    }, 2000);
+
     const unsubscribe = props.navigation.addListener("focus", () => {
       querycity();
     });
@@ -229,6 +241,7 @@ export default function SettingCity(props) {
             var index = tempData.findIndex((k) => k["id"] === detail.id);
             if (index >= 0) {
               ({ ...tempData[index], selected: true });
+              setIndexSend(index);
             }
             setData(tempData);
             Keyboard.dismiss();
@@ -312,8 +325,18 @@ export default function SettingCity(props) {
           ) : null}
         </KeyboardAvoidingView>
       </View>
-      {loadingKota ? (
-        <View style={{ paddingVertical: 20 }}>
+      {!showLoading ? (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: "#fff",
+            height: Dimensions.get("screen").height,
+            width: Dimensions.get("screen").width,
+            zIndex: 1,
+            // opacity: 0.7,
+            paddingTop: 50,
+          }}
+        >
           <ActivityIndicator animating={true} color="#209FAE" size="large" />
         </View>
       ) : null}

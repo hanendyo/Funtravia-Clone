@@ -164,7 +164,7 @@ export default function OtherProfile(props) {
     }
 
     // await setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
 
     let settingData = await AsyncStorage.getItem("setting");
     await setSetting(JSON.parse(settingData));

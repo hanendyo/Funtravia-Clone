@@ -69,7 +69,7 @@ export default function Settings(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     // await setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
     await GetCountryList();
     await GetCurrencyList();
     await getSettingUser();
