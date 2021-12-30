@@ -46,9 +46,11 @@ const SafeStatusBar = Platform.select({
 });
 import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
+import { Bg_soon } from "../../assets/png";
 import { useScrollToTop } from "@react-navigation/native";
 
 export default function DetailJournal(props) {
+  let [soon, setSoon] = useState(false);
   let [modalShare, setModalShare] = useState(false);
   let [refY, setRefY] = useState(0);
   const tokenApps = useSelector((data) => data.token);
@@ -729,7 +731,11 @@ export default function DetailJournal(props) {
             {data.journal_byid &&
             data.journal_byid.userby &&
             data.journal_byid.userby.id ? (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  tokenApps ? setSoon(true) : setModalLogin(true)
+                }
+              >
                 <View
                   style={{
                     borderColor: "#209FAE",
@@ -752,6 +758,75 @@ export default function DetailJournal(props) {
               </TouchableOpacity>
             ) : null}
           </View>
+          <Modal
+            useNativeDriver={true}
+            visible={soon}
+            onRequestClose={() => setSoon(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              // onPress={() => setModalLogin(false)}
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            ></Pressable>
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                borderRadius: 3,
+                marginTop: Dimensions.get("screen").height / 3,
+              }}
+            >
+              <View
+                style={{
+                  // backgroundColor: "white",
+                  // width: Dimensions.get("screen").width - 100,
+                  padding: 20,
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 10,
+                }}
+              >
+                <Image
+                  source={Bg_soon}
+                  style={{
+                    height: Dimensions.get("screen").width - 180,
+                    width: Dimensions.get("screen").width - 110,
+                    borderRadius: 10,
+                    position: "absolute",
+                  }}
+                />
+                <Text type="bold" size="h5">
+                  {t("comingSoon")}!
+                </Text>
+                <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                  {t("soonUpdate")}.
+                </Text>
+                <Button
+                  text={"OK"}
+                  style={{
+                    marginTop: 20,
+                    width: Dimensions.get("screen").width - 300,
+                  }}
+                  type="box"
+                  onPress={() => setSoon(false)}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
+
           <View
             style={{
               marginHorizontal: 20,
@@ -1174,7 +1249,6 @@ export default function DetailJournal(props) {
       {data && data.journal_byid ? (
         <AddCommentLike
           data={data.journal_byid}
-          token={tokenApps}
           fetchData={(e) => fetchData(e)}
           listComments={() => afterComment()}
           setting={setting}

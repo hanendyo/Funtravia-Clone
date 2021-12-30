@@ -18,15 +18,18 @@ import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 export default function AddCommentLike({
   data,
-  token,
   listComments,
   setting,
   setModalShare,
   props,
 }) {
+  const token = useSelector((data) => data.token);
+
+  console.log("token", token);
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();
@@ -273,20 +276,32 @@ export default function AddCommentLike({
               justifyContent: "center",
               height: "100%",
               width: "80%",
+
               position: "absolute",
               paddingLeft: 20,
             }}
           >
-            <Text
-              size="label"
-              type="regular"
-              numberOfLines={1}
-              style={{ color: "#d1d1d1" }}
-            >
-              {`${t("commentAs")} ${setting?.user?.first_name} ${
-                setting?.user?.last_name ? setting?.user?.last_name : ""
-              }`}
-            </Text>
+            {token ? (
+              <Text
+                size="label"
+                type="regular"
+                numberOfLines={1}
+                style={{ color: "#d1d1d1" }}
+              >
+                {`${t("commentAs")} ${setting?.user?.first_name} ${
+                  setting?.user?.last_name ? setting?.user?.last_name : ""
+                }`}
+              </Text>
+            ) : (
+              <Text
+                size="label"
+                type="regular"
+                numberOfLines={1}
+                style={{ color: "#d1d1d1" }}
+              >
+                {`${t("comment")}`}
+              </Text>
+            )}
           </View>
         ) : null}
         <TextInput
@@ -303,7 +318,7 @@ export default function AddCommentLike({
           }}
           multiline={true}
           onChangeText={(text) => {
-            setText(text);
+            token ? setText(text) : setModalLogin(true);
           }}
           value={text}
         />

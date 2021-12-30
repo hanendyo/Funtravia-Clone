@@ -88,10 +88,8 @@ export default function CityDetail(props) {
   console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
-  console.log(
-    "🚀 ~ file: index.js ~ line 90 ~ CityDetail ~ tokenApps",
-    tokenApps
-  );
+  console.log("tokenCity", tokenApps);
+
   let [setting, setSetting] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
@@ -2669,8 +2667,6 @@ export default function CityDetail(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            // borderBottomWidth: 1,
-            // borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
