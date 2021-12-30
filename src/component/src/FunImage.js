@@ -13,6 +13,7 @@ import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
 import { moderateScale } from "react-native-size-matters";
 import FastImage from "react-native-fast-image";
+import { AlbumFeed } from "../../assets/svg";
 
 export default function Image({
   children,
@@ -21,6 +22,7 @@ export default function Image({
   imageStyle,
   size,
   filename,
+  assets,
   ...otherProps
 }) {
   let [loading, setLoading] = useState(false);
@@ -79,10 +81,24 @@ export default function Image({
   }
 
   return (
-    <RNImage
-      {...otherProps}
-      style={style}
-      source={isUri ? { uri: path } : default_image}
-    />
+    <>
+      <RNImage
+        {...otherProps}
+        style={style}
+        source={isUri ? { uri: path } : default_image}
+      />
+      {assets > 1 ? (
+        <View style={{ position: "absolute", top: 10, right: 0 }}>
+          <AlbumFeed
+            height={15}
+            width={15}
+            style={{
+              marginHorizontal: 15,
+              marginVertical: 5,
+            }}
+          />
+        </View>
+      ) : null}
+    </>
   );
 }

@@ -112,6 +112,13 @@ export default function listItinPlaning(props) {
       },
     ],
     wishlist: ["Wishlist", {}],
+    destination_list: [
+      "DestinationList",
+      {
+        token: props.route.params.token,
+        idcity: props.route.params.idkiriman,
+      },
+    ],
   };
 
   const _handleBack = () => {
@@ -165,65 +172,6 @@ export default function listItinPlaning(props) {
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
   };
 
-  const RenderBuddy = ({ databuddy }) => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        {databuddy.map((value, i) => {
-          if (i < 3) {
-            return (
-              <View key={i}>
-                <Image
-                  source={
-                    value.user && value.user.picture
-                      ? { uri: value.user.picture }
-                      : default_image
-                  }
-                  style={{
-                    resizeMode: "cover",
-                    height: 30,
-                    width: 30,
-                    borderRadius: 15,
-                    marginLeft: -10,
-                  }}
-                />
-              </View>
-            );
-          }
-        })}
-
-        {databuddy.length > 1 ? (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              size="small"
-              type={"regular"}
-              style={{
-                color: "white",
-              }}
-            >
-              {"    "}
-              {t("with")}{" "}
-              {databuddy[1].user && databuddy[1].user.first_name
-                ? databuddy[1].user.first_name
-                : ""}
-              {databuddy.length > 2
-                ? " + " + (databuddy.length - 2) + " Others"
-                : " "}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-    );
-  };
-
   const getDN = (start, end) => {
     var x = start;
     var y = end,
@@ -236,27 +184,11 @@ export default function listItinPlaning(props) {
 
     return (
       <View style={{ flexDirection: "row" }}>
-        <Text
-          size="description"
-          type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
-        >
+        <Text size="description" type={"regular"}>
           {Difference_In_Days + 1} {t("days")}
           {", "}
         </Text>
-        <Text
-          size="description"
-          type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
-        >
+        <Text size="description" type={"regular"}>
           {Difference_In_Days} {t("nights")}
         </Text>
       </View>
@@ -614,8 +546,8 @@ export default function listItinPlaning(props) {
           dataFrom={props.route.params.data_from}
         />
       ) : (
-        <View>
-          <ActivityIndicator size="large" color="#209FAE" />
+        <View style={{ marginTop: 15 }}>
+          <ActivityIndicator size="small" color="#209FAE" />
         </View>
       )}
 

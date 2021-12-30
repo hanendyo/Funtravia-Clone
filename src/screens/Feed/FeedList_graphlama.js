@@ -1223,6 +1223,8 @@ export default function FeedList({ props, token }) {
                   CopyLink({
                     from: "feed",
                     target: selectedOption.id,
+                    success: t("successCopyLink"),
+                    failed: t("failedCopyLink"),
                   });
                 }}
               >

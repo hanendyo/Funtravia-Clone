@@ -908,6 +908,8 @@ export default function EventDetail(props) {
                 CopyLink({
                   from: "event",
                   target: dataevent.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >

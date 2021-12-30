@@ -3237,6 +3237,8 @@ const Index = (props) => {
                 CopyLink({
                   from: "destination",
                   target: dataDestination.id,
+                    success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
                 SetShareModal(false);
               }}

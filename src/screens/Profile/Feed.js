@@ -1571,6 +1571,8 @@ export default function myfeed(props) {
                 CopyLink({
                   from: "feed",
                   target: selectedOption.id,
+                    success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >

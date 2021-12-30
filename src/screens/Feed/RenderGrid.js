@@ -48,6 +48,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[0].assets.length}
               source={{
                 uri: item[0].assets[0].filepath,
               }}
@@ -97,6 +98,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[1].assets.length}
                 source={{
                   uri: item[1].assets[0].filepath,
                 }}
@@ -145,6 +147,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[2].assets.length}
                 source={{
                   uri: item[2].assets[0].filepath,
                 }}
@@ -201,6 +204,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[0].assets.length}
                 source={{
                   uri: item[0].assets[0].filepath,
                 }}
@@ -249,6 +253,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[1].assets.length}
                 source={{
                   uri: item[1].assets[0].filepath,
                 }}
@@ -298,6 +303,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[2].assets.length}
               source={{
                 uri: item[2].assets[0].filepath,
               }}
@@ -352,6 +358,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[0].assets.length}
               source={{
                 uri: item[0].assets[0].filepath,
               }}
@@ -400,6 +407,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[1].assets.length}
               source={{
                 uri: item[1].assets[0].filepath,
               }}
@@ -448,6 +456,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[2].assets.length}
               source={{
                 uri: item[2].assets[0].filepath,
               }}
@@ -503,6 +512,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[0].assets.length}
               source={{
                 uri: item[0].assets[0].filepath,
               }}
@@ -553,6 +563,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[1].assets.length}
                 source={{
                   uri: item[1].assets[0].filepath,
                 }}
@@ -608,6 +619,7 @@ export default function RenderGrid({ item, grid, props }) {
             />
           ) : (
             <FunImage
+              assets={item[0].assets.length}
               source={{
                 uri: item[0].assets[0].filepath,
               }}
@@ -658,6 +670,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[1].assets.length}
                 source={{
                   uri: item[1].assets[0].filepath,
                 }}
@@ -709,6 +722,7 @@ export default function RenderGrid({ item, grid, props }) {
               />
             ) : (
               <FunImage
+                assets={item[2].assets.length}
                 source={{
                   uri: item[2].assets[0].filepath,
                 }}

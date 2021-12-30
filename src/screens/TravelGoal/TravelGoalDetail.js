@@ -361,6 +361,8 @@ export default function TravelGoalDetail(props) {
                 CopyLink({
                   from: "travelgoal",
                   target: datadetail?.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >

@@ -79,6 +79,7 @@ import {
   shareAction,
   FunImage,
   FunVideo,
+  Peringatan,
 } from "../../../component";
 import { rupiah } from "../../../component/src/Rupiah";
 
@@ -1760,6 +1761,14 @@ export default function ItineraryDetail(props) {
    * render Helper
    */
 
+  let statususer = "";
+
+  let [aler, showAlert] = useState({
+    show: false,
+    judul: t("editPrivacyDisabled"),
+    detail: t("notAdmin"),
+  });
+
   const renderHeader = (rD) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -1767,8 +1776,6 @@ export default function ItineraryDetail(props) {
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
-
-    let statususer = "";
     datadetail.itinerary_detail.buddy.map((item, index) => {
       if (item.user_id === users?.id) {
         statususer = item.isadmin;
@@ -1790,6 +1797,7 @@ export default function ItineraryDetail(props) {
         }}
       >
         {/* image animated */}
+
         <Animated.Image
           source={
             rD.cover
@@ -1906,7 +1914,7 @@ export default function ItineraryDetail(props) {
                           token: token,
                         },
                       })
-                    : null
+                    : showAlert({ ...aler, show: true })
                 }
               >
                 {datadetail.itinerary_detail.isprivate == false ? (
@@ -7316,6 +7324,133 @@ export default function ItineraryDetail(props) {
                 </TouchableOpacity>
               </View>
             </View>
+          </View>
+        </Modalss>
+
+        <Modalss
+          useNativeDriver={true}
+          visible={aler.show}
+          onRequestClose={() => true}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setClose()}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              alignSelf: "center",
+              zIndex: 100,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "#F6F6F6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: 13,
+                  marginBottom: 15,
+                }}
+              >
+                Oops
+              </Text>
+            </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "white",
+                paddingTop: 20,
+                paddingHorizontal: 20,
+                // borderWidth: 1,
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  justifyContent: "space-evenly",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Errors width={70} height={70} style={{ marginBottom: 15 }} />
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{ marginBottom: 10, textAlign: "center" }}
+                >
+                  {t(aler.judul)}
+                </Text>
+                {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
+                  <View
+                    style={{
+                      backgroundColor: "#F6F6F6",
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        color: "#464646",
+                        textAlign: "center",
+                        marginTop: 5,
+                        marginBottom: 7,
+                        marginHorizontal: 10,
+                      }}
+                    >
+                      {t(aler?.detail)}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+            <Pressable
+              onPress={() => showAlert({ ...aler, show: false })}
+              underlayColor="#F6F6F6"
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "white",
+                alignItems: "center",
+                justifyContent: "center",
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+                paddingBottom: 5,
+                // paddingVertical: 15,
+                paddingTop: aler.detail.length === 0 ? 5 : 0,
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: aler.detail.length > 0 ? 13 : 0,
+                  marginBottom: 15,
+                  color: "#209fae",
+                }}
+              >
+                {t("understand")}
+              </Text>
+            </Pressable>
           </View>
         </Modalss>
         {showside ? (

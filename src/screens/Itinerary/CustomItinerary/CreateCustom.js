@@ -154,11 +154,11 @@ export default function CreateCustom(props) {
 
   const validation = (name, value) => {
     if (name === "tittle") {
-      return value.length >= 6 ? true : false;
+      return value.length >= 1 ? true : false;
     } else if (name === "address") {
       return value.length >= 2 ? true : false;
     } else if (name === "detail") {
-      return value.length >= 8 ? true : false;
+      return value.length >= 5 ? true : false;
     } else {
       return true;
     }

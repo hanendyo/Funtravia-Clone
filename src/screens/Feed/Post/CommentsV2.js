@@ -1142,6 +1142,8 @@ export default function Comments(props) {
                 CopyLink({
                   from: "feed",
                   target: selectedOption.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >
@@ -1347,6 +1349,8 @@ export default function Comments(props) {
                 CopyLink({
                   from: "feed",
                   target: selectedOption.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >

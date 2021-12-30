@@ -85,11 +85,14 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
-  console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
+  // console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+<<<<<<< Updated upstream
   console.log("tokenCity", tokenApps);
 
+=======
+>>>>>>> Stashed changes
   let [setting, setSetting] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
@@ -301,8 +304,6 @@ export default function CityDetail(props) {
       await getJournalCity();
     },
   });
-
-  console.log("dataCity", dataCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -3526,6 +3527,8 @@ export default function CityDetail(props) {
                 CopyLink({
                   from: "city",
                   target: dataCity?.CitiesInformation.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
                 SetShareModal(false);
               }}

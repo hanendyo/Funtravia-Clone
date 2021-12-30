@@ -3144,6 +3144,8 @@ export default function Country(props) {
                 CopyLink({
                   from: "country",
                   target: data.country_detail.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
                 SetShareModal(false);
               }}

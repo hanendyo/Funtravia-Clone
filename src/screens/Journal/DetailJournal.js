@@ -618,6 +618,8 @@ export default function DetailJournal(props) {
                 CopyLink({
                   from: "journal",
                   target: data?.journal_byid?.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >
