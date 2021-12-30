@@ -97,6 +97,7 @@ export default function ListEventHome(props) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [openFlatlist, setOpenFlatlist] = useState(false);
   const [arrayYear, setArrayYear] = useState([]);
+  let [loadingIndicator, setLoadingIndicator] = useState(true);
 
   const HeaderHeight = Platform.select({
     ios: Notch
@@ -211,6 +212,10 @@ export default function ListEventHome(props) {
   ).current;
 
   useEffect(() => {
+    setTimeout(() => {
+      setLoadingIndicator(false);
+    }, 4000);
+
     // props.navigation.setOptions(HeaderComponent);
     // loadAsync();
     scrollY.addListener(({ value }) => {
@@ -1823,10 +1828,6 @@ export default function ListEventHome(props) {
         animationOut="slideOutRight"
         isVisible={modals}
         style={{
-          // justifyContent: "flex-end",
-          // alignItems: "center",
-          // alignSelf: "center",
-          // alignContent: "center",
           margin: 0,
         }}
       >
@@ -1843,7 +1844,8 @@ export default function ListEventHome(props) {
                 height: 50,
                 width: Dimensions.get("screen").width,
                 backgroundColor: "#14646e",
-                marginTop: Notch ? -25 : -50,
+
+                marginTop: Notch ? -10 : -50,
               }}
             ></View>
           ) : null}
@@ -1857,7 +1859,6 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
-              // marginTop: Platform.OS === "ios" ? 10 : -20,
             }}
           >
             <Button
@@ -1892,10 +1893,6 @@ export default function ListEventHome(props) {
             }}
           >
             <View
-              // onLayout={event => {
-              //   var { x, y, width, height } = event.nativeEvent.layout;
-              //   setheight(height);
-              // }}
               style={{
                 flexDirection: "row",
                 zIndex: 5,
@@ -1914,6 +1911,7 @@ export default function ListEventHome(props) {
                   borderRadius: 3,
                   flexDirection: "row",
                   alignItems: "center",
+
                   alignContent: "center",
                   paddingHorizontal: 10,
                 }}
@@ -1928,6 +1926,7 @@ export default function ListEventHome(props) {
                   autoCorrect={false}
                   style={{
                     width: "93%",
+                    paddingRight: 25,
                     // borderWidth: 1,
                     marginLeft: 10,
                     padding: 0,
@@ -2025,7 +2024,10 @@ export default function ListEventHome(props) {
                       paddingVertical: 15,
                       paddingHorizontal: 20,
                       borderBottomWidth: 0.5,
-                      borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
+                      borderBottomColor:
+                        item.id === country.id || item.checked
+                          ? "#209FAE"
+                          : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -2050,6 +2052,7 @@ export default function ListEventHome(props) {
                         <FunIcon
                           icon={item.flag}
                           height={30}
+                          x
                           width={42}
                           variant="f"
                           style={
@@ -2063,7 +2066,7 @@ export default function ListEventHome(props) {
                         <Text
                           size="description"
                           style={{
-                            color: item.checked ? "#209FAE" : "#D1D1D1",
+                            color: item.checked ? "#209FAE" : "#000",
                           }}
                         >
                           {item.name}
@@ -2071,7 +2074,8 @@ export default function ListEventHome(props) {
                       </View>
                     </View>
                     <View>
-                      {item.checked && item.checked === true ? (
+                      {item.id === country.id ||
+                      (item.checked && item.checked === true) ? (
                         <Check width={20} height={15} />
                       ) : null}
                     </View>
@@ -2484,7 +2488,7 @@ export default function ListEventHome(props) {
     data["country"] = hasil;
     await setSearch(data);
 
-    await setModelSetNegara(false);
+    // await setModelSetNegara(false);
     await setcountry(item);
     await setRenderCountry("");
   };
@@ -2595,9 +2599,28 @@ export default function ListEventHome(props) {
     return dat.length;
   };
 
+  // loading sebelum tampil layout
+  if (loadingIndicator) {
+    return (
+      <View style={styles.container}>
+        <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          <ActivityIndicator color="#209FAE" animating={true} />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+
       {loadingPublic ? (
         <View>
           <ActivityIndicator size="small" color="#209fae" />

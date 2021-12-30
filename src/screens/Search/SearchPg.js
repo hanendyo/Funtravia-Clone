@@ -38,7 +38,7 @@ import {
   Arrowbackwhite,
   Arrowbackios,
 } from "../../assets/svg";
-import { search_button, DefaultProfile } from "../../assets/png";
+import { search_button, DefaultProfile, default_image } from "../../assets/png";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import SearchUserQueryNew from "../../graphQL/Query/Search/SearchPeopleNew";
 import RekomendasiPeople from "../../graphQL/Query/Search/RekomendasiPeople";
@@ -64,8 +64,7 @@ export default function SearchPg(props, { navigation, route }) {
   const [locationname, setLocationname] = useState(
     props.route.params.locationname ? props.route.params.locationname : null
   );
-  const default_image =
-    "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
+
   const myStateRef = React.useRef(aktifsearch);
   const fromotherpage = React.useRef(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
