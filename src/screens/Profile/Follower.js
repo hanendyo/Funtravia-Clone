@@ -18,12 +18,12 @@ import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
-import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../redux/action";
+import { useDispatch, useSelector } from "react-redux";
+import { setApps } from "../../redux/action";
 
 export default function Follower(props) {
   let dispatch = useDispatch();
-  const token = props.route.params.token;
+  const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerTransparent: false,
@@ -92,7 +92,7 @@ export default function Follower(props) {
           Authorization: token,
         },
       },
-      onCompleted: () => {
+      onCompleted: async () => {
         setdata(dataFollow.user_followers);
       },
     }

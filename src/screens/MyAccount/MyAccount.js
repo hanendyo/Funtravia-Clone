@@ -22,7 +22,7 @@ import Toast from "react-native-fast-toast";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useDispatch, useSelector } from "react-redux";
-import { setTokenApps } from "../../redux/action";
+import { setSettingUser, setTokenApps } from "../../redux/action";
 import { useQuery } from "@apollo/client";
 import GetSettingUser from "../../graphQL/Query/Settings/GetSettingUser";
 
@@ -363,7 +363,7 @@ export default function MyAccount(props) {
           <View
             style={{
               flex: 1,
-              height: 120,
+              maxHeight: "90%",
               marginLeft: 15,
               justifyContent: "center",
               flexDirection: "row",
@@ -488,7 +488,7 @@ export default function MyAccount(props) {
             >
               {t("fullName")}
             </Text>
-            <View style={{ width: "55%", marginBottom: 5 }}>
+            <View style={{ width: "60%", marginBottom: 15 }}>
               <Text
                 size="label"
                 type="regular"
@@ -744,6 +744,10 @@ export default function MyAccount(props) {
                   });
                 }
               } catch (error) {
+                console.log(
+                  "🚀 ~ file: MyAccount.js ~ line 747 ~ onPress={ ~ error",
+                  error
+                );
                 RNToasty.Show({
                   title: error,
                   position: "bottom",

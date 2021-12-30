@@ -51,7 +51,7 @@ export default function SettingCity(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("City")}
       </Text>
     ),

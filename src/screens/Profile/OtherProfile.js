@@ -28,6 +28,7 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import { TabBar, TabView } from "react-native-tab-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector, useDispatch } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -41,7 +42,8 @@ const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 // let [token, setToken] = useState(route.params.token);
 export default function Render({ navigation, route }) {
-  let [token, setToken] = useState(route.params.token);
+  // let [token, setToken] = useState(route.params.token);
+  let token = useSelector((data) => data.token);
   const Hello = ({ route }) => {
     const { data, loading, error } = useQuery(Account, {
       variables: {
@@ -61,7 +63,8 @@ export default function Render({ navigation, route }) {
   return <Hello route={route} />;
 }
 export function MyProfile({ navigation, route }) {
-  let [token, setToken] = useState(route.params.token);
+  // let [token, setToken] = useState(route.params.token);
+  let token = useSelector((data) => data.token);
   let [canScroll, setCanScroll] = useState(true);
   let [loadings, setLoading] = useState(false);
   const { t } = useTranslation();
