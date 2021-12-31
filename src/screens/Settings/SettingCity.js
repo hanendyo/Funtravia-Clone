@@ -158,6 +158,10 @@ export default function SettingCity(props) {
     onCompleted: async () => {
       setData(dataKota?.cities_search);
       const tempData = [...dataKota?.cities_search];
+      console.log(
+        "🚀 ~ file: SettingCity.js ~ line 161 ~ onCompleted: ~ tempData",
+        tempData
+      );
       const indeks = await tempData.findIndex(
         (k) => k["id"] === setting?.cities?.id
       );

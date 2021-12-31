@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import {
   Arrowbackios,
@@ -146,7 +147,7 @@ export default function LocationSelector({
                 <View
                   style={{
                     justifyContent: "center",
-                    paddingBottom: 5,
+                    paddingBottom: 0,
                   }}
                 >
                   <Search width={20} height={20} />
@@ -231,6 +232,8 @@ export default function LocationSelector({
                 paddingHorizontal: 10,
               },
               textInput: {
+                // marginTop: 5,
+                paddingTop: 10,
                 marginLeft: 0,
                 marginRight: 0,
                 height: 35,

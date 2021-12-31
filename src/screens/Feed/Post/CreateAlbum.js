@@ -612,7 +612,7 @@ export default function CreateAlbum(props) {
                 size="title"
                 style={{ marginBottom: 15, marginTop: 13 }}
               >
-                New Album
+                {t("newAlbum")}
               </Text>
               <Pressable
                 onPress={() => setNewFeedAlbums(false)}
@@ -643,7 +643,7 @@ export default function CreateAlbum(props) {
                 placeholderStyle={{ fontSize: 50 }}
                 placeholderTextColor="#6C6C6C"
                 style={{
-                  height: 50,
+                  height: Platform.OS === "ios" ? 30 : 50,
                   borderRadius: 5,
                   paddingHorizontal: 10,
                   fontSize: 14,
