@@ -76,7 +76,9 @@ export default function TravelGoalList(props) {
 
   let dataList = [];
   let dataListx = {};
-  let [texts, setText] = useState(null);
+  let [dataFillter, setdataFillter] = useState([]);
+  let [dataFillters, setdataFillters] = useState([]);
+  let [texts, setText] = useState("");
   let [textCategory, setTextCategory] = useState("");
   let [modal, setModal] = useState(false);
 
@@ -85,13 +87,24 @@ export default function TravelGoalList(props) {
   let [datacategory, setdatacategory] = useState([]);
   let [datacategoryFilter, setdatacategoryFilter] = useState([]);
 
+  const _handleModalSearch = async (text) => {
+    setTextCategory(text);
+
+    let searchData = new RegExp(text, "i");
+    let categoryData = datacategoryFilter.filter((item) =>
+      searchData.test(item.name)
+    );
+    setdatacategory(categoryData);
+  };
+
+  const [keyword, setKeyword] = useState("");
+
   const {
     loading: loadingcategory,
     data: datacategorys,
     error: errorcategory,
   } = useQuery(Travelcategorys, {
-    variables: { keyword: textCategory },
-    fetchPolicy: "network-only",
+    variables: { keyword: keyword },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -244,10 +257,12 @@ export default function TravelGoalList(props) {
           data.checked = false;
           await dataCheck.splice(index, 1, data);
           await setdatacategory(dataCheck);
+          setdatacategoryFilter(dataCheck);
         } else {
           data.checked = true;
           await dataCheck.splice(index, 1, data);
           await setdatacategory(dataCheck);
+          setdatacategoryFilter(dataCheck);
         }
       }
     }
@@ -258,6 +273,7 @@ export default function TravelGoalList(props) {
     await setdatacategoryFilter(datacategory);
     await setModal(false);
     await setTextCategory("");
+    setKeyword(textCategory);
   };
 
   const ClearAllFilter = async () => {
@@ -268,9 +284,11 @@ export default function TravelGoalList(props) {
       data.checked = false;
       temp_category_push.push(data);
     }
-    await setdatacategory(temp_category_push);
-    await setIdCategory([]);
-    await setModal(false);
+    setdatacategory(temp_category_push);
+    setdatacategoryFilter(temp_category_push);
+    setIdCategory([]);
+    setIdFilterCategory([]);
+    setModal(false);
   };
 
   useEffect(() => {
@@ -328,7 +346,7 @@ export default function TravelGoalList(props) {
             height={18}
             style={{ marginHorizontal: 7 }}
           />
-          {idFilterCategory.length > 0 ? (
+          {idCategory.length > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
@@ -344,7 +362,7 @@ export default function TravelGoalList(props) {
                   color: "#fff",
                 }}
               >
-                {idFilterCategory.length}
+                {idCategory.length}
               </Text>
             </View>
           ) : null}
@@ -382,17 +400,15 @@ export default function TravelGoalList(props) {
             onChangeText={(x) => setText(x)}
             onSubmitEditing={(x) => setText(x)}
           />
-          {texts !== null ? (
-            <TouchableOpacity
-              onPress={() => setText(null)}
-              style={{
-                width: 30,
-                height: 35,
-                alignItems: "flex-end",
-                justifyContent: "center",
-              }}
-            >
-              <Xblue width="20" height="20" />
+          {texts.length ? (
+            <TouchableOpacity onPress={() => setText("")}>
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -639,22 +655,20 @@ export default function TravelGoalList(props) {
                     padding: 0,
                     fontSize: normalize(14),
                   }}
-                  onChangeText={(e) => setTextCategory(e)}
+                  onChangeText={(e) => _handleModalSearch(e)}
                   placeholderTextColor="#464646"
                   value={textCategory}
                   placeholder={t("search")}
-                />
-                {textCategory.length !== 0 ? (
-                  <TouchableOpacity
-                    onPress={() => setTextCategory("")}
-                    style={{
-                      width: 30,
-                      height: 35,
-                      alignItems: "flex-end",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Xblue width="20" height="20" />
+                ></TextInput>
+                {textCategory.length ? (
+                  <TouchableOpacity onPress={() => _handleModalSearch("")}>
+                    <Xblue
+                      width="20"
+                      height="20"
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    />
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -676,6 +690,7 @@ export default function TravelGoalList(props) {
                         >
                           <CheckBox
                             onCheckColor="#FFF"
+                            animationDuration={0}
                             lineWidth={4}
                             onFillColor="#209FAE"
                             onTintColor="#209FAE"
@@ -697,9 +712,7 @@ export default function TravelGoalList(props) {
                             // }
                             value={item["checked"]}
                             onValueChange={(newValue) =>
-                              Platform.OS == "ios"
-                                ? null
-                                : _handleCheck(item["id"], index, item)
+                              _handleCheck(item["id"], index, item)
                             }
                           />
                           <Pressable
