@@ -78,7 +78,6 @@ export default function Room({ navigation, route }) {
   const [modal_camera, setmodalCamera] = useState(false);
   const toastRef = useRef();
   const refInput = useRef();
-  console.log("refInput", refInput.current);
   const { width, height } = Dimensions.get("screen");
   const [room, setRoom] = useState(route.params.room_id);
   const [receiver, setReceiver] = useState(route.params.receiver);
@@ -106,8 +105,6 @@ export default function Room({ navigation, route }) {
   const [receivedKeyboardData, SetreceivedKeyboardData] = useState(undefined);
   const [useSafeArea, SetuseSafeArea] = useState(true);
   const [keyboardOpenState, SetkeyboardOpenState] = useState(false);
-
-  console.log("keyboardOpenState", keyboardOpenState);
 
   const onKeyboardItemSelected = (keyboardId, params) => {
     const receivedKeyboardData = `onItemSelected from "${keyboardId}"\nreceived params: ${JSON.stringify(
@@ -190,12 +187,10 @@ export default function Room({ navigation, route }) {
     socket.current.emit("join", room);
     clearPushNotification();
     socket.current.on("connect", () => {
-      console.log("isConnect");
       setSocketConnect(true);
     });
 
     socket.current.on("disconnect", () => {
-      console.log("isDisConnect");
       setSocketConnect(false);
     });
     navigation.setOptions(navigationOptions);
@@ -341,7 +336,6 @@ export default function Room({ navigation, route }) {
       };
       setChatHistory(chatData);
       setTimeout(function() {
-        console.log("pickcamera");
         _uploadimage(image, id);
         if (flatListRef !== null && flatListRef.current) {
           flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -376,7 +370,6 @@ export default function Room({ navigation, route }) {
         };
         setChatHistory(chatData);
         setTimeout(function() {
-          console.log("pickGallery");
           _uploadimage(image, id);
           if (flatListRef !== null && flatListRef.current) {
             flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
@@ -384,14 +377,11 @@ export default function Room({ navigation, route }) {
         }, 1000);
         setmodalCamera(false);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const _uploadimage = async (image, id) => {
     try {
-      // console.log("rewr");
       image = JSON.parse(image);
       var today = new Date();
       var dd = String(today.getDate()).padStart(2, "0");
@@ -1107,7 +1097,6 @@ export default function Room({ navigation, route }) {
                 variant="transparent"
                 style={{ width: 30, height: 30 }}
                 onPress={() => {
-                  console.log("keyboard on");
                   setShowKeyboardOffset(true);
                   // resetKeyboardView();
                   SetkeyboardOpenState(false);

@@ -57,7 +57,6 @@ export default function Render({ navigation, route }) {
       },
     });
     if (loading) return <Text>Loading ...</Text>;
-    console.log(data);
     return <Text>Hello!</Text>;
   };
   return <Hello route={route} />;
@@ -104,6 +103,10 @@ export function MyProfile({ navigation, route }) {
   /**
    * PanResponder for header
    */
+  console.log(
+    "🚀 ~ file: OtherProfile.js ~ line 125 ~ MyProfile ~ listRefArr",
+    listRefArr
+  );
   const headerPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
@@ -371,14 +374,14 @@ export function MyProfile({ navigation, route }) {
   };
 
   const refresh = async () => {
-    console.log("-- start refresh");
+    // console.log("-- start refresh");
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      console.log("-- refresh done!");
+      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -524,7 +527,7 @@ export function MyProfile({ navigation, route }) {
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error(`error: `, error);
     }
   };
 
@@ -689,9 +692,10 @@ export function MyProfile({ navigation, route }) {
                 onPress={() =>
                   navigation.push("ProfileStack", {
                     screen: "otherFollower",
-                    params: {
-                      token: token,
-                    },
+                    // params: {
+                    //   idUser: route.params.idUser,
+                    //   datauser: data.user_profile,
+                    // },
                   })
                 }
               >
@@ -710,9 +714,10 @@ export function MyProfile({ navigation, route }) {
                 onPress={() =>
                   navigation.push("ProfileStack", {
                     screen: "otherFollowing",
-                    params: {
-                      token: token,
-                    },
+                    // params: {
+                    //   idUser: route.params.idUser,
+                    //   datauser: data.user_profile,
+                    // },
                   })
                 }
               >
@@ -1251,6 +1256,10 @@ export function MyProfile({ navigation, route }) {
       default:
         return null;
     }
+    console.log(
+      "🚀 ~ file: OtherProfile.js ~ line 1266 ~ renderScene ~ listRefArr",
+      listRefArr
+    );
     if (dataR && dataR.length > 0) {
       return (
         <Animated.FlatList

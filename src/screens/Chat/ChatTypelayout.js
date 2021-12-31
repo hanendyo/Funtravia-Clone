@@ -51,7 +51,6 @@ export default function ChatTypelayout({
 }) {
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
-  console.log("🚀 ~ file: ChatTypelayout.js ~ line 54 ~ loading", loading);
 
   // useEffect(() => {
   //   if (item.chat == "group") {
@@ -63,7 +62,6 @@ export default function ChatTypelayout({
   const _uploadimages = async (image, id) => {
     try {
       setloading(true);
-      console.log("ssss");
       image = JSON.parse(image);
       var today = new Date();
       var dd = String(today.getDate()).padStart(2, "0");
@@ -96,7 +94,6 @@ export default function ChatTypelayout({
         }
       );
       let responseJson = await response.json();
-      // console.log(
       //   "🚀 ~ file: ChatTypelayout.js ~ line 81 ~ const_uploadimage= ~ responseJson",
       //   responseJson
       // );
@@ -149,16 +146,11 @@ export default function ChatTypelayout({
           }
         }, 2000);
       } else {
-        console.log("errr");
         setloading(false);
         //   setloading(false);
         throw new Error(responseJson.message);
       }
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ChatTypelayout.js ~ line 121 ~ const_uploadimages= ~ error",
-        error
-      );
       setloading(false);
       // RNToasty.Show({
       //   duration: 1,

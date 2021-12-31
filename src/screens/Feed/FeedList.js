@@ -2010,6 +2010,7 @@ export default function FeedList({ props, token }) {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                      maxWidth: "80%",
                     }}
                   >
                     <Text
@@ -2039,8 +2040,10 @@ export default function FeedList({ props, token }) {
                           fontFamily: "Lato-Regular",
                           // marginTop: 7,
                         }}
+                        numberOfLines={1}
                       >
-                        <Truncate text={item.node.location_name} length={40} />
+                        {/* <Truncate text={item.node.location_name} length={40} /> */}
+                        {item.node.location_name}
                       </Text>
                     ) : null}
                   </View>
