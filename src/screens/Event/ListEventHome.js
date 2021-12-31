@@ -971,7 +971,7 @@ export default function ListEventHome(props) {
               // height: Dimensions.get("screen").width * 0.7,
               height: normalize(250),
               margin: 5,
-
+              // borderWidth: 1,
               marginBottom: -5,
               flexDirection: "column",
               backgroundColor: "white",
@@ -1274,6 +1274,7 @@ export default function ListEventHome(props) {
           minHeight: height - SafeStatusBar + HeaderHeight,
           paddingHorizontal: 15,
           backgroundColor: "#F6F6F6",
+          paddingBottom: 100,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1287,7 +1288,7 @@ export default function ListEventHome(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 55],
+      outputRange: [HeaderHeight, 50],
       extrapolateRight: "clamp",
     });
     return (
@@ -1308,18 +1309,13 @@ export default function ListEventHome(props) {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            marginTop: -5,
-            borderBottomWidth: 1,
-            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
-            <TouchableOpacity
+            <Ripple
+              key={"tabx" + index}
               onPress={() => {
-                _tabIndex.current = index;
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
-                  // y: 0,
-                  // x: 100,
                   index: index,
                   animated: true,
                 });
@@ -1327,12 +1323,10 @@ export default function ListEventHome(props) {
             >
               <View
                 style={{
-                  // borderWidth: 1,
-                  borderBottomWidth: index == tabIndex ? 2 : 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#FFFFFF",
-                  // borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
-                  paddingHorizontal: 15,
+
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -1342,6 +1336,7 @@ export default function ListEventHome(props) {
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "center",
+                  alignSelf: "center",
                 }}
               >
                 <Text
@@ -1349,31 +1344,22 @@ export default function ListEventHome(props) {
                     index == tabIndex ? styles.labelActive : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 1,
-                      // height: "100%",
                       borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
                           ? "#FFFFFF"
                           : "#209fae",
-                      // height: 35,
-                      // paddingTop: 2,
-                      // paddingLeft:
-                      //   props.navigationState.routes.length < 2 ? 15 : null,
                       textTransform: "capitalize",
-                      marginBottom: index == tabIndex ? 0 : 0,
                     },
                   ]}
-                  size="h3"
-                  type={index == tabIndex ? "bold" : "regular"}
                 >
-                  <Truncate
-                    length="15"
-                    text={item && item.title ? item.title : "-"}
-                  />
+                  <Truncate text={item?.title ? item.title : ""} length={15} />
                 </Text>
               </View>
-            </TouchableOpacity>
+            </Ripple>
           )}
         />
       </Animated.View>
@@ -2066,7 +2052,10 @@ export default function ListEventHome(props) {
                         <Text
                           size="description"
                           style={{
-                            color: item.checked ? "#209FAE" : "#000",
+                            color:
+                              item.id === country.id || item.checked
+                                ? "#209FAE"
+                                : "#000",
                           }}
                         >
                           {item.name}

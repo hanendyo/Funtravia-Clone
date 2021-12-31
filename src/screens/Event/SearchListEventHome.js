@@ -34,6 +34,7 @@ import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 
 export default function SearchListEventHome(props) {
+  console.log("years", props.route.params.year);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   let [oldYear, setOldYear] = useState(

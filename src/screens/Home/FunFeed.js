@@ -53,7 +53,6 @@ export default function SearchFeed({ props, tokenApps }) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
 
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
