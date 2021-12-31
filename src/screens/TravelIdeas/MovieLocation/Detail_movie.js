@@ -630,6 +630,8 @@ export default function Detail_movie(props) {
                 CopyLink({
                   from: "movie",
                   target: movie_byid?.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
               }}
             >

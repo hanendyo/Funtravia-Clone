@@ -8,6 +8,7 @@ import {
   Pressable,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import {
   Capital,
@@ -32,6 +33,7 @@ import {
   Arrowbackios,
   UnescoIcon,
   MovieIcon,
+  Xblue,
 } from "../../assets/svg";
 import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
 import filterDestination from "../../graphQL/Query/Destination/Destinasifilter";
@@ -51,7 +53,7 @@ import deviceInfoModule from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
-  console.log("props", props);
+  // console.log("props", props);
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
@@ -249,44 +251,41 @@ export default function ItineraryDestination(props) {
     },
   });
 
-  console.log("search", search);
-
-  const [GetListDestination, { data, loading, error }] = useLazyQuery(
-    Listdestination,
-    {
-      fetchPolicy: "network-only",
-      variables: {
-        keyword: search.keyword ? search.keyword : null,
-        // type: search.type ? search.type : null,
-        grouptype: props.route?.params?.idgroup
-          ? [props.route?.params?.idgroup]
-          : [],
-        type: search.type && search.type.length > 0 ? search.type : null,
-        cities:
-          search.cities && search.cities.length > 0 ? search.cities : null,
-        countries:
-          search.countries && search.countries.length > 0
-            ? search.countries
-            : null,
-        provinces:
-          search.provinces && search.provinces.length > 0
-            ? search.provinces
-            : null,
-        goodfor: search.goodfor ? search.goodfor : null,
-        facilities: search.facilities ? search.facilities : null,
-        rating: search.rating ? search.rating : null,
+  const [
+    GetListDestination,
+    { data, loading: loadingDes, error },
+  ] = useLazyQuery(Listdestination, {
+    fetchPolicy: "network-only",
+    variables: {
+      keyword: search.keyword ? search.keyword : null,
+      // type: search.type ? search.type : null,
+      grouptype: props.route?.params?.idgroup
+        ? [props.route?.params?.idgroup]
+        : [],
+      type: search.type && search.type.length > 0 ? search.type : null,
+      cities: search.cities && search.cities.length > 0 ? search.cities : null,
+      countries:
+        search.countries && search.countries.length > 0
+          ? search.countries
+          : null,
+      provinces:
+        search.provinces && search.provinces.length > 0
+          ? search.provinces
+          : null,
+      goodfor: search.goodfor ? search.goodfor : null,
+      facilities: search.facilities ? search.facilities : null,
+      rating: search.rating ? search.rating : null,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : null,
       },
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
-        },
-      },
-      onCompleted: () => {
-        setdataDes(data?.destinationList_v2);
-      },
-    }
-  );
+    },
+    onCompleted: () => {
+      setdataDes(data?.destinationList_v2);
+    },
+  });
 
   const [
     mutationliked,
@@ -400,6 +399,9 @@ export default function ItineraryDestination(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const [searchText, setSearchText] = useState("");
+  const [searchTextModal, setSearchTextModal] = useState("");
 
   const searchs = async (teks) => {
     setkeyword(teks);
@@ -611,7 +613,7 @@ export default function ItineraryDestination(props) {
     }
   };
 
-  const [filterResults, setfilterResults] = useState(2);
+  const [filterResults, setfilterResults] = useState(null);
   // Count data filter checked//
   const cekData = (data) => {
     let dat = dataFilterCategori.filter((k) => k.checked === true);
@@ -621,8 +623,16 @@ export default function ItineraryDestination(props) {
 
     let countallFil = dat.length + datF.length + datL.length + datC.length;
     setfilterResults(countallFil);
-    // return countallFil;
   };
+
+  useEffect(() => {
+    cekData();
+  }, [
+    dataFilterCategori,
+    dataFilterFacility,
+    dataFilterCity,
+    dataFilterCountry,
+  ]);
 
   const onSelectFilter = async (ceked, id, item) => {
     // let dat = filtershow.concat(filtershowcity);
@@ -734,6 +744,7 @@ export default function ItineraryDestination(props) {
         shadowOpacity: 0.25,
         shadowRadius: 1,
         elevation: 3,
+        marginBottom: 80,
       }}
     >
       <View
@@ -811,6 +822,7 @@ export default function ItineraryDestination(props) {
           <TextInput
             underlineColorAndroid="transparent"
             placeholder={t("search")}
+            autoCorrect={false}
             style={{
               width: "85%",
               marginLeft: 5,
@@ -818,9 +830,29 @@ export default function ItineraryDestination(props) {
             }}
             returnKeyType="search"
             placeholderTextColor="#464646"
-            onChangeText={(x) => _setSearch(x)}
-            onSubmitEditing={(x) => _setSearch(x)}
+            onChangeText={(x) => {
+              _setSearch(x), setSearchText(x);
+            }}
+            onSubmitEditing={(x) => {
+              _setSearch(x), setSearchText(x);
+            }}
+            value={searchText}
           />
+          {searchText.length ? (
+            <TouchableOpacity
+              onPress={() => {
+                _setSearch(""), setSearchText("");
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       {/* modal filter */}
@@ -831,8 +863,19 @@ export default function ItineraryDestination(props) {
           props={props}
           setData={(e) => setdataDes(e)}
           token={token}
+          dataFrom="destination_list"
         />
-      ) : null}
+      ) : (
+        <View style={{ marginTop: 15 }}>
+          {loadingDes ? (
+            <ActivityIndicator color="#209FAE" size="small" />
+          ) : (
+            <View style={{ alignSelf: "center" }}>
+              <Text>{t("noData")}</Text>
+            </View>
+          )}
+        </View>
+      )}
 
       <Modal
         onBackdropPress={() => {
@@ -1047,20 +1090,54 @@ export default function ItineraryDestination(props) {
                   <TextInput
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
+                    autoCorrect={false}
                     Text={keyword}
                     style={{
-                      width: "100%",
+                      width: "80%",
                       // borderWidth: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
                     // returnKeyType="search"
+                    value={searchTextModal}
                     placeholderTextColor="#464646"
-                    onChangeText={(x) => searchs(x)}
-                    onSubmitEditing={(x) => searchs(x)}
+                    onChangeText={(x) => {
+                      searchs(x);
+                      setSearchTextModal(x);
+                    }}
+                    onSubmitEditing={(x) => {
+                      searchs(x), setSearchTextModal(x);
+                    }}
                   />
+
+                  {searchTextModal.length ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        searchs(""), setSearchTextModal("");
+                      }}
+                    >
+                      <Xblue
+                        width="20"
+                        height="20"
+                        style={{
+                          alignSelf: "center",
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
+
+              {aktif === "categories" && !dataFilterCategoris.length ? (
+                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+              ) : aktif === "facilities" && !dataFilterFacilitys.length ? (
+                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+              ) : aktif === "country" && !dataFilterCountrys.length ? (
+                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+              ) : aktif === "city" && !dataFilterCitys.length ? (
+                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+              ) : null}
+
               {aktif === "categories" ? (
                 <ScrollView
                   // style={{ borderWidth: 1, height: 100 }}
@@ -1087,6 +1164,7 @@ export default function ItineraryDestination(props) {
                     >
                       <CheckBox
                         onCheckColor="#FFF"
+                        animationDuration={0}
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
@@ -1154,6 +1232,8 @@ export default function ItineraryDestination(props) {
                     >
                       <CheckBox
                         onCheckColor="#FFF"
+                        animationDuration={0}
+                        offAnimationType="flat"
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
@@ -1221,6 +1301,7 @@ export default function ItineraryDestination(props) {
                     >
                       <CheckBox
                         onCheckColor="#FFF"
+                        animationDuration={0}
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
@@ -1289,6 +1370,7 @@ export default function ItineraryDestination(props) {
                       <CheckBox
                         onCheckColor="#FFF"
                         lineWidth={1}
+                        animationDuration={0}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
                         boxType={"square"}

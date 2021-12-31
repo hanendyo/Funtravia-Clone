@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Pressable,
   Animated,
+  ActivityIndicator,
 } from "react-native";
 import Modal from "react-native-modal";
 import {
@@ -30,6 +31,7 @@ import { useLazyQuery } from "@apollo/react-hooks";
 import CheckBox from "@react-native-community/checkbox";
 import Fillter from "./Fillter/index";
 import { Arrowbackwhite, OptionsVertWhite } from "../../assets/svg";
+import FastImage from "react-native-fast-image";
 import {
   Button,
   Text,
@@ -88,11 +90,22 @@ export default function AllDestination(props) {
   let [selected] = useState(new Map());
   let [search, setSearch] = useState({
     type: null,
-    keyword: null,
+    keyword: "",
   });
 
   const [dataResult, setDataResult] = useState([]);
   const [show, setShow] = useState(false);
+  const [totalCity, setTotalCity] = useState(null);
+
+  const _getAllData = (data) => {
+    let tempData = [...data.populer_city_destination_v2];
+    let temp = [];
+
+    for (let i = 0; i < tempData.length; i++) {
+      temp.push(tempData[i].city.length);
+    }
+    setTotalCity(temp.reduce((a, b) => a + b));
+  };
 
   const [GetRegionList, { data, loading, error }] = useLazyQuery(
     RegionList_v2,
@@ -108,6 +121,7 @@ export default function AllDestination(props) {
       },
       onCompleted: () => {
         setDataResult(data);
+        _getAllData(data);
       },
     }
   );
@@ -132,6 +146,8 @@ export default function AllDestination(props) {
     let data = { ...search };
     data["keyword"] = input;
     setSearch(data);
+    setTotalCity(0);
+    _getAllData(dataResult);
   };
 
   const [regionName, setRegionName] = useState([]);
@@ -374,6 +390,7 @@ export default function AllDestination(props) {
             {/* </TouchableOpacity> */}
           </View>
         ) : null}
+
         <View
           style={{
             marginVertical: showcity == item.name ? 10 : 0,
@@ -429,30 +446,48 @@ export default function AllDestination(props) {
                           justifyContent: "center",
                         }}
                       >
-                        <FunImage
-                          key={value.id}
-                          source={
-                            value.cover ? { uri: value.cover } : default_image
-                          }
-                          style={{
-                            width: (Dimensions.get("window").width - 270) / 2,
-                            height: (Dimensions.get("window").width - 270) / 2,
-                            borderRadius: 5,
-                            marginHorizontal: 10,
-                            marginVertical: 10,
-                          }}
-                          imageStyle={[
-                            styles.Image,
-                            {
+                        {value.cover ? (
+                          <FastImage
+                            source={{
+                              uri: value.cover,
+                              priority: FastImage.priority.normal,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                            style={{
                               width: (Dimensions.get("window").width - 270) / 2,
                               height:
                                 (Dimensions.get("window").width - 270) / 2,
                               borderRadius: 5,
                               marginHorizontal: 10,
                               marginVertical: 10,
-                            },
-                          ]}
-                        ></FunImage>
+                            }}
+                          />
+                        ) : (
+                          <FunImage
+                            key={value.id}
+                            source={default_image}
+                            style={{
+                              width: (Dimensions.get("window").width - 270) / 2,
+                              height:
+                                (Dimensions.get("window").width - 270) / 2,
+                              borderRadius: 5,
+                              marginHorizontal: 10,
+                              marginVertical: 10,
+                            }}
+                            imageStyle={[
+                              styles.Image,
+                              {
+                                width:
+                                  (Dimensions.get("window").width - 270) / 2,
+                                height:
+                                  (Dimensions.get("window").width - 270) / 2,
+                                borderRadius: 5,
+                                marginHorizontal: 10,
+                                marginVertical: 10,
+                              },
+                            ]}
+                          />
+                        )}
                       </View>
 
                       <View
@@ -473,7 +508,7 @@ export default function AllDestination(props) {
                             text={Capital({
                               text: value.name,
                             })}
-                            length={20}
+                            length={25}
                           />
                         </Text>
                         <Text
@@ -604,11 +639,10 @@ export default function AllDestination(props) {
               setSearch({ ...search, ["keyword"]: x });
             }}
           />
-          {search["keyword"] !== null ? (
+          {search["keyword"] !== "" || search["keyword"] === null ? (
             <TouchableOpacity
               onPress={() => {
                 searchCity("");
-                setSearch({ ...search, ["keyword"]: null });
               }}
             >
               <Xblue
@@ -616,6 +650,7 @@ export default function AllDestination(props) {
                 height="20"
                 style={{
                   alignSelf: "center",
+                  marginLeft: 5,
                 }}
               />
             </TouchableOpacity>
@@ -899,11 +934,30 @@ export default function AllDestination(props) {
           paddingBottom: Platform.OS === "ios" ? 0 : 60,
         }}
         horizontal={false}
+        keyExtractor={(item) => item.key}
         data={dataResult ? dataResult.populer_city_destination_v2 : null}
-        renderItem={({ item, index }) => <RenderList item={item} />}
+        renderItem={({ item }) => <RenderList item={item} />}
+        ListEmptyComponent={
+          <View style={{ marginTop: 15 }}>
+            <ActivityIndicator size="small" color="#209FAE" />
+          </View>
+        }
+        ListFooterComponent={<View>{}</View>}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
       />
+      {totalCity === 0 && (
+        <View
+          style={{
+            alignSelf: "center",
+            marginTop: 10,
+            position: "absolute",
+            top: 80,
+          }}
+        >
+          <Text>{t("noData")}</Text>
+        </View>
+      )}
     </View>
   );
 }

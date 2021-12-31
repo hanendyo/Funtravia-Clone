@@ -49,7 +49,7 @@ export default function Albumheader({
   const { t, i18n } = useTranslation();
   let slider = useRef();
   let [modalcreate, setModalcreate] = useState(false);
-  let [name, setname] = useState(dataalbumaktif.title);
+  let [name, setname] = useState(dataalbumaktif?.title);
   const [modalDeleteAlbum, setmodalDeleteAlbum] = useState(false);
   const [modalOptions, setmodalOptions] = useState(false);
   const [itemName, setitemName] = useState("");
@@ -76,7 +76,7 @@ export default function Albumheader({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -110,7 +110,7 @@ export default function Albumheader({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -123,7 +123,7 @@ export default function Albumheader({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -326,7 +326,7 @@ export default function Albumheader({
           ) : (
             <Button
               onPress={() => setdataalbumaktif(item)}
-              text={item.title}
+              text={item?.title}
               size="small"
               color={item.id !== dataalbumaktif?.id ? "green" : "primary"}
               type="box"
@@ -514,7 +514,7 @@ export default function Albumheader({
               onPress={() => {
                 setmodalOptions(false);
                 setEditStatus(true);
-                setname(dataalbumaktif.title);
+                setname(dataalbumaktif?.title);
                 setModalcreate(true);
                 // Alert.alert("Sorry, feature is not available");
               }}

@@ -309,6 +309,8 @@
   "hotel": "Hotel",
   "addNotes": "Add Note",
   "edit": "Edit",
+  "editPrivacyDisabled": "Edit privacy disabled",
+  "notAdmin": "You're not this trip's admin",
   "minutes": "Minute",
   "addDestination": "Add Destination",
   "addOption": "Add Option",

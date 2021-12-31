@@ -307,6 +307,8 @@
   "hotel": "Hotel",
   "addNotes": "Tambahkan Catatan",
   "edit": "Edit",
+  "editPrivacyDisabled": "Ubah privasi dinonaktifkan",
+  "notAdmin": "Anda bukan admin perjalanan ini",
   "minutes": "Menit",
   "addDestination": "Tambahkan Destinasi",
   "addOption": "Pilihan Lainnya",

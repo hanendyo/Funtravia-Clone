@@ -3908,6 +3908,8 @@ export default function ProvinceDetail(props) {
                 CopyLink({
                   from: "province",
                   target: dataProvince.province_detail_v2.id,
+                  success: t("successCopyLink"),
+                  failed: t("failedCopyLink"),
                 });
                 SetShareModal(false);
               }}

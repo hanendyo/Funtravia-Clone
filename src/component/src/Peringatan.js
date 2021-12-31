@@ -39,7 +39,7 @@ export default function ImageSlide({ aler, setClose }) {
           style={{
             width: Dimensions.get("screen").width - 100,
             alignSelf: "center",
-            zIndex: 15,
+            zIndex: 100,
             marginTop: Dimensions.get("screen").height / 3,
           }}
         >
