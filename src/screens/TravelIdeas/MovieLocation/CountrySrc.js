@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -51,33 +52,41 @@ export default function CountrySrc({
   SetselectedCountry,
   modalshown,
   setModelCountry,
+  navigation,
 }) {
   const { t } = useTranslation();
-  let [datacountry, setdataCountry] = useState(data);
-  let [select_continent, setContinentSelected] = useState();
+  let [select_continent, setContinentSelected] = useState([]);
   let [keyword, setKeyword] = useState("");
   let [modalFilter, setmodalFilter] = useState(false);
   let [filterResults, setfilterResults] = useState([]);
   let slider = useRef();
   let [continent_list, setDatacontinent] = useState([]);
-  let [continentsearch, setcontinentSearch] = useState("");
+  const [filterContinent, setfilterContinent] = useState([]);
+
   const {
     data: datacontinent,
     loading: loadingcontinent,
     error: errorcontinent,
     refetch: refetchcontinent,
   } = useQuery(ContinentList, {
+    fetchPolicy: "network-only",
     variables: {
-      keyword: continentsearch ? continentsearch : null,
+      keyword: "",
     },
     onCompleted: async () => {
-      setDatacontinent(datacontinent?.continent_list);
+      await setDatacontinent(datacontinent?.continent_list);
+      await setfilterContinent(datacontinent?.continent_list);
+      await setfilterResults(datacontinent?.continent_list);
     },
   });
 
   useEffect(() => {
-    refetchcontinent();
-  }, [continent_list]);
+    if (modalFilter == false && select_continent.length == 0) {
+      setDatacontinent(filterResults);
+      setfilterContinent(filterResults);
+      setContinent("");
+    }
+  }, [modalFilter]);
 
   const { data, loading, error, refetch } = useQuery(CountryListSrcMovie, {
     variables: {
@@ -99,7 +108,6 @@ export default function CountrySrc({
     });
   };
 
-  const [filterContinent, setfilterContinent] = useState([]);
   const _handleCheck = async (id, index, item) => {
     let tempe = [...continent_list];
     let items = { ...item };
@@ -110,8 +118,9 @@ export default function CountrySrc({
     await setDatacontinent(tempe);
   };
 
-  const _handleCheckonModal = async () => {
-    await setfilterContinent(continent_list);
+  const cekData = (data) => {
+    // let dat = continent_list.filter((k) => k.checked === true);
+    return select_continent.length;
   };
 
   // filter oke
@@ -130,24 +139,25 @@ export default function CountrySrc({
   const [continent, setContinent] = useState("");
   const searchContinent = async (input) => {
     let search = new RegExp(input, "i");
-    let result = filterContinent.filter((item) => search.test(item.name));
-    setDatacontinent(result);
+    let result = continent_list.filter((item) => search.test(item.name));
+    setfilterContinent(result);
   };
 
   const ClearAllFilter = async () => {
-    let temp = [...continent_list];
+    let temp = [...filterContinent];
     let tempData = [];
     for (var x of temp) {
-      let data = { ...x };
-      data.checked = false;
-      await tempData.push(data);
+      let datas = { ...x };
+      if (datas.checked) {
+        datas.checked = false;
+      }
+      tempData.push(datas);
     }
-
     await setDatacontinent(tempData);
-    await setContinentSelected(null);
-    await setfilterResults([]);
+    await setfilterContinent(tempData);
+    await setContinentSelected([]);
+    await setfilterResults(tempData);
     await setmodalFilter(false);
-    await searchContinent("");
     await setContinent("");
   };
 
@@ -252,7 +262,7 @@ export default function CountrySrc({
               <Pressable
                 onPress={() => {
                   setmodalFilter(true);
-                  _handleCheckonModal();
+                  // _handleCheckonModal();
                 }}
                 style={{
                   borderWidth: 1,
@@ -268,7 +278,7 @@ export default function CountrySrc({
                   height={18}
                   style={{ marginHorizontal: 7 }}
                 />
-                {filterResults.length > 0 ? (
+                {cekData() > 0 ? (
                   <View
                     style={{
                       backgroundColor: "#209fae",
@@ -284,7 +294,7 @@ export default function CountrySrc({
                         color: "#fff",
                       }}
                     >
-                      {filterResults.length}
+                      {cekData(select_continent)}
                     </Text>
                   </View>
                 ) : null}
@@ -312,9 +322,8 @@ export default function CountrySrc({
                   // placeholder={t("search")}
                   placeholder={t("country")}
                   style={{
-                    width: "88%",
-                    // borderWidth: 1,
                     marginLeft: 5,
+                    flex: 1,
                     padding: 0,
                   }}
                   returnKeyType="search"
@@ -325,17 +334,17 @@ export default function CountrySrc({
                 />
                 {keyword.length !== 0 ? (
                   <TouchableOpacity
+                    style={{
+                      height: 35,
+                      width: 30,
+                      justifyContent: "center",
+                      alignItems: "flex-end",
+                    }}
                     onPress={() => {
                       setKeyword("");
                     }}
                   >
-                    <Xblue
-                      width="20"
-                      height="20"
-                      style={{
-                        alignSelf: "center",
-                      }}
-                    />
+                    <Xblue width="20" height="20" />
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -352,8 +361,9 @@ export default function CountrySrc({
                     {
                       paddingVertical: 15,
                       paddingHorizontal: 20,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomWidth: 1,
+                      borderBottomColor:
+                        item.id == selectedCountry.id ? "#209fae" : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -392,7 +402,16 @@ export default function CountrySrc({
                         <FunIcon icon={item.flag} width={37} height={25} />
                       </View>
                     </View>
-                    <Text size="description">{item.name}</Text>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color:
+                          item.id == selectedCountry.id ? "#209fae" : "#464646",
+                      }}
+                    >
+                      {item.name}
+                    </Text>
                   </View>
                   <View>
                     {item.id == selectedCountry.id ? (
@@ -402,6 +421,19 @@ export default function CountrySrc({
                 </Pressable>
               );
             }}
+            ListHeaderComponent={
+              loading ? (
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <ActivityIndicator color={"#209fae"} size={"small"} />
+                </View>
+              ) : list_country_src_movie.length == 0 ? (
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <Text size="label" type="regular">
+                    {t("noData")}
+                  </Text>
+                </View>
+              ) : null
+            }
             keyExtractor={(item) => item.id}
           />
         </View>
@@ -409,10 +441,17 @@ export default function CountrySrc({
       {/* modal filter continent */}
       <Modal
         onBackdropPress={() => {
+          setStatus(1);
           setmodalFilter(false);
         }}
-        onRequestClose={() => setmodalFilter(false)}
-        onDismiss={() => setmodalFilter(false)}
+        onRequestClose={() => {
+          setStatus(1);
+          setmodalFilter(false);
+        }}
+        onDismiss={() => {
+          setStatus(1);
+          setmodalFilter(false);
+        }}
         isVisible={modalFilter}
         avoidKeyboard={true}
         style={{
@@ -557,8 +596,7 @@ export default function CountrySrc({
                     underlineColorAndroid="transparent"
                     placeholder={t("search")}
                     style={{
-                      width: "85%",
-                      // borderWidth: 1,
+                      flex: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
@@ -576,18 +614,18 @@ export default function CountrySrc({
                   />
                   {continent.length !== 0 ? (
                     <TouchableOpacity
+                      style={{
+                        height: 35,
+                        width: 25,
+                        justifyContent: "center",
+                        alignItems: "flex-end",
+                      }}
                       onPress={() => {
                         searchContinent("");
                         setContinent("");
                       }}
                     >
-                      <Xblue
-                        width="15"
-                        height="15"
-                        style={{
-                          alignSelf: "center",
-                        }}
-                      />
+                      <Xblue width="15" height="15" />
                     </TouchableOpacity>
                   ) : null}
                 </View>
@@ -599,8 +637,19 @@ export default function CountrySrc({
                   paddingHorizontal: 15,
                 }}
               >
-                {continent_list &&
-                  continent_list.map((item, index) => (
+                {loadingcontinent ? (
+                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <ActivityIndicator size={"small"} color={"#209fae"} />
+                  </View>
+                ) : filterContinent && filterContinent.length == 0 ? (
+                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <Text size="label" type="regular">
+                      {t("noData")}
+                    </Text>
+                  </View>
+                ) : null}
+                {filterContinent &&
+                  filterContinent.map((item, index) => (
                     <TouchableOpacity
                       onPress={() => _handleCheck(item["id"], index, item)}
                       style={{

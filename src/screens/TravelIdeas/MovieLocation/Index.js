@@ -276,6 +276,7 @@ export default function MovieLocation({ navigation, route }) {
           SetselectedCountry={(e) => SetselectedCountry(e)}
           modalshown={modalcountry}
           setModelCountry={(e) => setModelCountry(e)}
+          navigation={navigation}
         />
         <View
           style={{
@@ -687,6 +688,7 @@ export default function MovieLocation({ navigation, route }) {
       >
         <Text
           size="title"
+          type="bold"
           style={{
             color: "#fff",
           }}

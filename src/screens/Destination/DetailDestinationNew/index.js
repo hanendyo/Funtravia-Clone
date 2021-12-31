@@ -2452,7 +2452,6 @@ const Index = (props) => {
           opacity: hide.current,
           flexDirection: "row",
           // justifyContent: "space-between",
-          // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
           marginHorizontal: 20,
@@ -2488,13 +2487,14 @@ const Index = (props) => {
           </Animated.View>
         </Button>
         <Animated.Text
-          // size="title"
+          // size="header"
           // type="bold"
           style={{
+            flex: 1,
             opacity: hide.current,
             color: "#fff",
             marginLeft: 10,
-            fontSize: 16,
+            fontSize: 20,
             fontFamily: "Lato-Bold",
           }}
         >
@@ -2846,10 +2846,10 @@ const Index = (props) => {
               {data && data.destinationById && data.destinationById.openat ? (
                 <Text
                   size="label"
-                  type="reguler"
+                  type="regular"
                   style={{ marginBottom: 18, marginTop: 15 }}
                 >
-                  {data.destinationById.openat}
+                  {data?.destinationById?.openat}
                 </Text>
               ) : (
                 <Text>-</Text>
@@ -2954,7 +2954,7 @@ const Index = (props) => {
               data.destinationById.phone1 !== "null" ? (
                 <Text
                   size="label"
-                  type="reguler"
+                  type="regular"
                   style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.phone1}
@@ -2996,7 +2996,7 @@ const Index = (props) => {
               data.destinationById.website !== "null" ? (
                 <Text
                   size="label"
-                  type="reguler"
+                  type="regular"
                   style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.website}
@@ -3036,7 +3036,7 @@ const Index = (props) => {
               data.destinationById.instagram !== "null" ? (
                 <Text
                   size="label"
-                  type="reguler"
+                  type="regular"
                   style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
                 >
                   {data.destinationById.instagram}

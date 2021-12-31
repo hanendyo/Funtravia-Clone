@@ -9,10 +9,10 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import {
   Arrowbackwhite,
-  IdFlag,
   Check,
   Search,
   Filternewbiru,
@@ -34,23 +34,18 @@ export default function CountrySrc({
   SetselectedCountry,
   modalshown,
   setModelCountry,
+  navigation,
 }) {
   const { t } = useTranslation();
-  let [datacountry, setdataCountry] = useState(data);
-  let [select_continent, setContinentSelected] = useState("");
+  const [continent, setContinent] = useState("");
   let [select_continents, setContinentSelecteds] = useState([]);
   let [keyword, setKeyword] = useState("");
   let slider = useRef();
-  let [FilterContinent, setFilterContinent] = useState([]);
   let [continent_list, setDatacontinent] = useState([]);
   let [continent_listfilter, setDatacontinentfilter] = useState([]);
-  // show filter
+  let [tempDataSelected, setTempDataSelected] = useState([]);
   let [show, setshow] = useState(false);
   const Notch = deviceInfoModule.hasNotch();
-
-  // useEffect(() => {
-  //   refetchcontinent();
-  // }, []);
 
   const {
     data: datacontinent,
@@ -58,12 +53,13 @@ export default function CountrySrc({
     error: errorcontinent,
     refetch: refetchcontinent,
   } = useQuery(ContinentList, {
+    fetchPolicy: "network-only",
     variables: {
       keyword: "",
     },
     onCompleted: async () => {
-      setDatacontinent(datacontinent?.continent_list);
-      setDatacontinentfilter(datacontinent?.continent_list);
+      await setDatacontinent(datacontinent?.continent_list);
+      await setDatacontinentfilter(datacontinent?.continent_list);
     },
   });
 
@@ -87,13 +83,13 @@ export default function CountrySrc({
     });
   };
 
-  const selectedContinent = (item, select_continent) => {
-    if (item.id == select_continent) {
-      setContinentSelected("");
-    } else {
-      setContinentSelected(item.id);
+  useEffect(() => {
+    if (!show && tempDataSelected.length != 0) {
+      setDatacontinent(tempDataSelected);
+      setDatacontinentfilter(tempDataSelected);
+      setContinent("");
     }
-  };
+  }, [show]);
 
   // cek data filter
 
@@ -103,7 +99,6 @@ export default function CountrySrc({
   };
 
   // set filter
-  const [continent, setContinent] = useState("");
   const searchcontinentfilter = async (teks) => {
     let searching = new RegExp(teks, "i");
     let Continent = continent_list.filter((item) => searching.test(item.name));
@@ -113,52 +108,50 @@ export default function CountrySrc({
   // checkbox handle
 
   const _handleCheck = async (id, index, item) => {
-    let tempe = [...continent_listfilter];
-    let items = { ...item };
-    items.checked = !items.checked;
-    let inde = tempe.findIndex((key) => key.id === id);
-    tempe.splice(inde, 1, items);
-    await setDatacontinentfilter(tempe);
-    await setDatacontinent(tempe);
-
-    // await setdataFilterCategoris(tempe);
+    let tempData = [...continent_list];
+    let tempDataItem = { ...item };
+    tempDataItem.checked = !tempDataItem.checked;
+    let indeks = tempData.findIndex((key) => key.id === id);
+    tempData.splice(indeks, 1, tempDataItem);
+    setDatacontinent(tempData);
+    setDatacontinentfilter(tempData);
   };
 
   // update filter handle
   const UpdateFilter = async () => {
     let idselected = [];
-    let tempdatasfilter = [...continent_listfilter];
-    for (var i in tempdatasfilter) {
-      if (tempdatasfilter[i].checked == true) {
-        tempdatasfilter[i].show = true;
-        tempdatasfilter.push(tempdatasfilter[i]);
-        idselected.push(tempdatasfilter[i].id);
+    let tempDataSelecteds = [];
+    let tempData = [...continent_list];
+    for (var i in tempData) {
+      if (tempData[i].checked == true) {
+        idselected.push(tempData[i].id);
+        tempDataSelecteds.push(tempData);
       }
     }
+    await setTempDataSelected(tempData);
     await setContinentSelecteds(idselected);
+    await setContinent("");
     await setshow(false);
   };
 
   const ClearAllFilter = async () => {
-    let tempe = [...continent_listfilter];
-    let tempes = [];
-    for (var x of tempe) {
+    let tempData = [...continent_listfilter];
+    console.log("~ tempData", tempData);
+    let tempDataResult = [];
+    for (var x of tempData) {
+      console.log("~ x", x);
       let data = { ...x };
-      data.checked = false;
-      data.show = false;
-      await tempes.push(data);
+      if (data.checked == true) {
+        data.checked = false;
+      }
+      console.log("~ data", data);
+      tempDataResult.push(data);
     }
-
-    // let tempdatascountry = [...dataFilterCountry];
-    // for (var i in tempdatascountry) {
-    //   tempdatascountry[i].checked = false;
-    //   tempdatascountry[i].show = false;
-    // }
-    await setshow(false);
+    await setDatacontinentfilter(tempDataResult);
+    await setTempDataSelected(tempDataResult);
+    await setDatacontinent(tempDataResult);
     await setContinentSelecteds([]);
-    await setDatacontinent([]);
-    await setDatacontinentfilter(tempes);
-    await searchcontinentfilter("");
+    await setshow(false);
     await setContinent("");
   };
   return (
@@ -294,7 +287,7 @@ export default function CountrySrc({
                         color: "#fff",
                       }}
                     >
-                      {cekData(continent_list)}
+                      {cekData(select_continents)}
                     </Text>
                   </View>
                 ) : null}
@@ -321,7 +314,8 @@ export default function CountrySrc({
                   // placeholder={t("search")}
                   placeholder={t("country")}
                   style={{
-                    width: "85%",
+                    // width: "85%",
+                    flex: 1,
                     // borderWidth: 1,
                     marginLeft: 5,
                     padding: 0,
@@ -334,17 +328,17 @@ export default function CountrySrc({
                 />
                 {keyword.length !== 0 ? (
                   <TouchableOpacity
+                    style={{
+                      height: 35,
+                      width: 30,
+                      alignItems: "flex-end",
+                      justifyContent: "center",
+                    }}
                     onPress={() => {
                       setKeyword("");
                     }}
                   >
-                    <Xblue
-                      width="20"
-                      height="20"
-                      style={{
-                        alignSelf: "center",
-                      }}
-                    />
+                    <Xblue width="20" height="20" />
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -405,8 +399,9 @@ export default function CountrySrc({
                     {
                       paddingVertical: 15,
                       paddingHorizontal: 20,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomWidth: 1,
+                      borderBottomColor:
+                        selectedCountry.id == item.id ? "#209fae" : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -437,18 +432,24 @@ export default function CountrySrc({
                           alignItems: "center",
                           justifyContent: "center",
                           overflow: "hidden",
-                          // width: 35,
-                          // height: 25,
-                          // paddingTop: 0,
                         }}
                       >
                         <FunIcon icon={item.flag} width={37} height={25} />
                       </View>
                     </View>
-                    <Text size="description">{item.name}</Text>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color:
+                          selectedCountry.id == item.id ? "#209fae" : "#464646",
+                      }}
+                    >
+                      {item.name}
+                    </Text>
                   </View>
                   <View>
-                    {item.selected && item.selected == true ? (
+                    {selectedCountry.id == item.id ? (
                       <Check width={20} height={15} />
                     ) : null}
                   </View>
@@ -456,6 +457,20 @@ export default function CountrySrc({
               );
             }}
             keyExtractor={(item) => item.id}
+            ListHeaderComponent={
+              loading ? (
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <ActivityIndicator color={"#209fae"} size={"small"} />
+                </View>
+              ) : list_country_src_unesco &&
+                list_country_src_unesco.length == 0 ? (
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <Text size="label" type="regular">
+                    {t("noData")}
+                  </Text>
+                </View>
+              ) : null
+            }
           />
         </View>
       </View>
@@ -464,8 +479,12 @@ export default function CountrySrc({
         onBackdropPress={() => {
           setshow(false);
         }}
-        onRequestClose={() => setshow(false)}
-        onDismiss={() => setshow(false)}
+        onRequestClose={() => {
+          setshow(false);
+        }}
+        onDismiss={() => {
+          setshow(false);
+        }}
         isVisible={show}
         avoidKeyboard={true}
         style={{
@@ -595,10 +614,11 @@ export default function CountrySrc({
                   <Search width={15} height={15} style={{ marginRight: 5 }} />
                   <TextInput
                     underlineColorAndroid="transparent"
+                    enablesReturnKeyAutomatically={true}
                     placeholder={t("search")}
                     style={{
-                      width: "85%",
-                      // borderWidth: 1,
+                      // width: "85%",
+                      flex: 1,
                       marginLeft: 5,
                       padding: 0,
                     }}
@@ -614,20 +634,20 @@ export default function CountrySrc({
                       setContinent(x);
                     }}
                   />
-                  {continent.length !== 0 ? (
+                  {continent && continent.length !== 0 ? (
                     <TouchableOpacity
+                      style={{
+                        height: 35,
+                        width: 30,
+                        justifyContent: "center",
+                        alignItems: "flex-end",
+                      }}
                       onPress={() => {
                         searchcontinentfilter("");
                         setContinent("");
                       }}
                     >
-                      <Xblue
-                        width="20"
-                        height="20"
-                        style={{
-                          alignSelf: "center",
-                        }}
-                      />
+                      <Xblue width="20" height="20" />
                     </TouchableOpacity>
                   ) : null}
                 </View>
@@ -639,6 +659,17 @@ export default function CountrySrc({
                   paddingHorizontal: 15,
                 }}
               >
+                {loadingcontinent ? (
+                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <ActivityIndicator color={"#209fae"} size={"small"} />
+                  </View>
+                ) : continent_list && continent_list.length == 0 ? (
+                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <Text size="label" type="regular">
+                      {t("noData")}
+                    </Text>
+                  </View>
+                ) : null}
                 {continent_listfilter &&
                   continent_listfilter.map((item, index) => (
                     <TouchableOpacity

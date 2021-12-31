@@ -28,17 +28,16 @@ export default function albumdetail(props) {
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "Album " + props?.route?.params?.judul,
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        Album {props?.route?.params?.judul}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
     },
     headerLeftContainerStyle: {
       background: "#FFF",

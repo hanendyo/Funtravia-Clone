@@ -12,7 +12,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { Button, Capital, CustomImage, Text, Truncate } from "../../component";
+import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import {
   Arrowbackios,
@@ -24,9 +24,8 @@ import {
 } from "../../assets/svg";
 import TravelLists from "../../graphQL/Query/TravelGoal/TravelList";
 import Travelcategorys from "../../graphQL/Query/TravelGoal/Travelcategory";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import Modal from "react-native-modal";
-import DropDownPicker from "react-native-dropdown-picker";
 import { default_image } from "../../assets/png";
 import CheckBox from "@react-native-community/checkbox";
 import normalize from "react-native-normalize";
@@ -77,13 +76,9 @@ export default function TravelGoalList(props) {
 
   let dataList = [];
   let dataListx = {};
-  let [dataFillter, setdataFillter] = useState([]);
-  let [dataFillters, setdataFillters] = useState([]);
   let [texts, setText] = useState(null);
   let [textCategory, setTextCategory] = useState("");
   let [modal, setModal] = useState(false);
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
 
   let [idCategory, setIdCategory] = useState([]);
   let [idFilterCategory, setIdFilterCategory] = useState([]);
@@ -96,20 +91,13 @@ export default function TravelGoalList(props) {
     error: errorcategory,
   } = useQuery(Travelcategorys, {
     variables: { keyword: textCategory },
+    fetchPolicy: "network-only",
     context: {
       headers: {
         "Content-Type": "application/json",
       },
     },
     onCompleted: async () => {
-      let filter = [];
-      for (var x of datacategorys?.category_travelgoal) {
-        if (x.checked === true) {
-          filter.push(x);
-        }
-      }
-      await setdataFillter(filter);
-      await setdataFillter(filter);
       await setdatacategory(datacategorys?.category_travelgoal);
       await setdatacategoryFilter(datacategorys?.category_travelgoal);
     },
@@ -282,6 +270,7 @@ export default function TravelGoalList(props) {
     }
     await setdatacategory(temp_category_push);
     await setIdCategory([]);
+    await setModal(false);
   };
 
   useEffect(() => {
@@ -381,9 +370,9 @@ export default function TravelGoalList(props) {
             underlineColorAndroid="transparent"
             placeholder={t("search")}
             style={{
-              width: "85%",
               marginLeft: 5,
               padding: 0,
+              flex: 1,
             }}
             returnKeyType="search"
             placeholderTextColor="#464646"
@@ -394,14 +383,16 @@ export default function TravelGoalList(props) {
             onSubmitEditing={(x) => setText(x)}
           />
           {texts !== null ? (
-            <TouchableOpacity onPress={() => setText(null)}>
-              <Xblue
-                width="20"
-                height="20"
-                style={{
-                  alignSelf: "center",
-                }}
-              />
+            <TouchableOpacity
+              onPress={() => setText(null)}
+              style={{
+                width: 30,
+                height: 35,
+                alignItems: "flex-end",
+                justifyContent: "center",
+              }}
+            >
+              <Xblue width="20" height="20" />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -454,12 +445,14 @@ export default function TravelGoalList(props) {
               shadowColor: "#d3d3d3",
               elevation: 3,
               flexDirection: "row",
-              width: "100%",
+              // width: "100%",
               backgroundColor: "#fff",
               borderRadius: 5,
               justifyContent: "flex-start",
               padding: 10,
               marginVertical: 5,
+              width: Dimensions.get("screen").width - 30,
+              marginHorizontal: 15,
             }}
           >
             <Image
@@ -473,7 +466,7 @@ export default function TravelGoalList(props) {
             <View
               style={{
                 paddingLeft: 10,
-                width: (Dimensions.get("screen").width - 60) * 0.75,
+                flex: 1,
               }}
             >
               <View
@@ -641,7 +634,7 @@ export default function TravelGoalList(props) {
                 <Search width={15} height={15} style={{ marginRight: 5 }} />
                 <TextInput
                   style={{
-                    width: "80%",
+                    flex: 1,
                     marginLeft: 5,
                     padding: 0,
                     fontSize: normalize(14),
@@ -650,16 +643,18 @@ export default function TravelGoalList(props) {
                   placeholderTextColor="#464646"
                   value={textCategory}
                   placeholder={t("search")}
-                ></TextInput>
+                />
                 {textCategory.length !== 0 ? (
-                  <TouchableOpacity onPress={() => setTextCategory("")}>
-                    <Xblue
-                      width="20"
-                      height="20"
-                      style={{
-                        alignSelf: "center",
-                      }}
-                    />
+                  <TouchableOpacity
+                    onPress={() => setTextCategory("")}
+                    style={{
+                      width: 30,
+                      height: 35,
+                      alignItems: "flex-end",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Xblue width="20" height="20" />
                   </TouchableOpacity>
                 ) : null}
               </View>
