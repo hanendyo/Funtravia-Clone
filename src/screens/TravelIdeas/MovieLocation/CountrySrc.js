@@ -441,15 +441,12 @@ export default function CountrySrc({
       {/* modal filter continent */}
       <Modal
         onBackdropPress={() => {
-          setStatus(1);
           setmodalFilter(false);
         }}
         onRequestClose={() => {
-          setStatus(1);
           setmodalFilter(false);
         }}
         onDismiss={() => {
-          setStatus(1);
           setmodalFilter(false);
         }}
         isVisible={modalFilter}
