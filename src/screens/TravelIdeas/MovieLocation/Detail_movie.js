@@ -29,6 +29,7 @@ import {
   StatusBar as Satbar,
   ModalLogin,
   CardDestination,
+  FunImage,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MovieLocationByIDQuery from "../../../graphQL/Query/TravelIdeas/MovieLocationByID";
@@ -333,7 +334,13 @@ export default function Detail_movie(props) {
 
   if (loadingmovie)
     return (
-      <View style={{ alignItems: "center", marginTop: 50 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: Dimensions.get("screen").height,
+        }}
+      >
         <ActivityIndicator color="#029fae" size="large" />
       </View>
     );
@@ -416,6 +423,7 @@ export default function Detail_movie(props) {
         </View>
         {movie_byid?.movie_destination?.map((item, index) => {
           indeks = index;
+          console.log("item", item);
           return (
             <View
               key={index}
@@ -441,8 +449,12 @@ export default function Detail_movie(props) {
                   {" " + item.list_destination.name}
                 </Text>
               </View>
-              <Image
-                source={item ? { uri: item.image } : default_image}
+              <FunImage
+                source={
+                  item && item.image
+                    ? { uri: item.image }
+                    : { uri: item.list_destination.images[0].image }
+                }
                 style={{
                   height: 150,
                   width: Dimensions.get("screen").width - 30,
@@ -751,6 +763,7 @@ export default function Detail_movie(props) {
           style={{
             color: "#fff",
           }}
+          type="bold"
           numberOfLines={1}
         >
           {movie_byid?.title}

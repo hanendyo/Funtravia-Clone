@@ -4,36 +4,19 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
-  FlatList,
   Pressable,
   TextInput,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import {
-  Capital,
-  CardDestination,
-  CustomImage,
-  FunIcon,
-  FunImage,
-} from "../../component";
+import { Capital, CardDestination } from "../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
-  LikeEmpty,
   Arrowbackwhite,
-  Star,
-  PinHijau,
-  Love,
-  FilterIcon,
   Search,
-  Google,
   Xhitam,
   Filternewbiru,
-  BlockDestination,
   Arrowbackios,
-  UnescoIcon,
-  MovieIcon,
-  Xblue,
 } from "../../assets/svg";
 import Listdestination from "../../graphQL/Query/Destination/ListDestinationV2";
 import filterDestination from "../../graphQL/Query/Destination/Destinasifilter";
@@ -41,19 +24,16 @@ import Liked from "../../graphQL/Mutation/Destination/Liked";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../component";
-import { StackActions } from "@react-navigation/routers";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 import { RNToasty } from "react-native-toasty";
-import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
 import deviceInfoModule from "react-native-device-info";
 
 const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
-  // console.log("props", props);
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
@@ -151,9 +131,13 @@ export default function ItineraryDestination(props) {
     error: errorfilter,
   } = useQuery(filterDestination, {
     onCompleted: async () => {
-      let datloop = [...datafilter.destination_filter.type];
+      let datloop = [...datafilter?.destination_filter?.type];
       let hasil = [...filtershow];
       let des = [];
+      // // console.log(
+      // // "🚀 ~ file: DestinationList.js ~ line 137 ~ onCompleted: ~ des",
+      // // des
+      // // );
 
       for (var ix in datloop) {
         if (datloop[ix].id === props?.route?.params?.idtype) {
@@ -168,10 +152,10 @@ export default function ItineraryDestination(props) {
 
       await setdataFilterCategori(datloop);
       await setdataFilterCategoris(datloop);
-      await setdataFilterFacility(datafilter.destination_filter.facility);
-      await setdataFilterFacilitys(datafilter.destination_filter.facility);
-      await setdataFilterCountry(datafilter.destination_filter.country);
-      await setdataFilterCountrys(datafilter.destination_filter.country);
+      await setdataFilterFacility(datafilter?.destination_filter?.facility);
+      await setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+      await setdataFilterCountry(datafilter?.destination_filter?.country);
+      await setdataFilterCountrys(datafilter?.destination_filter?.country);
 
       let dtat = datloop.filter((item) => item.sugestion === true);
 
@@ -187,7 +171,7 @@ export default function ItineraryDestination(props) {
         }
       }
 
-      let dtf = datafilter.destination_filter.facility.filter(
+      let dtf = datafilter?.destination_filter?.facility.filter(
         (item) => item.sugestion === true
       );
 
@@ -224,7 +208,7 @@ export default function ItineraryDestination(props) {
       countries_id: searcountry ? searcountry : null,
     },
     onCompleted: async () => {
-      let datloop = [...datasearchlocation.searchlocation_populer];
+      let datloop = [...datasearchlocation?.searchlocation_populer];
       let hasil = [...filtershowcity];
       let wle = [];
 
@@ -251,41 +235,42 @@ export default function ItineraryDestination(props) {
     },
   });
 
-  const [
-    GetListDestination,
-    { data, loading: loadingDes, error },
-  ] = useLazyQuery(Listdestination, {
-    fetchPolicy: "network-only",
-    variables: {
-      keyword: search.keyword ? search.keyword : null,
-      // type: search.type ? search.type : null,
-      grouptype: props.route?.params?.idgroup
-        ? [props.route?.params?.idgroup]
-        : [],
-      type: search.type && search.type.length > 0 ? search.type : null,
-      cities: search.cities && search.cities.length > 0 ? search.cities : null,
-      countries:
-        search.countries && search.countries.length > 0
-          ? search.countries
-          : null,
-      provinces:
-        search.provinces && search.provinces.length > 0
-          ? search.provinces
-          : null,
-      goodfor: search.goodfor ? search.goodfor : null,
-      facilities: search.facilities ? search.facilities : null,
-      rating: search.rating ? search.rating : null,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+  const [GetListDestination, { data, loading, error }] = useLazyQuery(
+    Listdestination,
+    {
+      fetchPolicy: "network-only",
+      variables: {
+        keyword: search.keyword ? search.keyword : null,
+        // type: search.type ? search.type : null,
+        grouptype: props.route?.params?.idgroup
+          ? [props.route?.params?.idgroup]
+          : [],
+        type: search.type && search.type.length > 0 ? search.type : null,
+        cities:
+          search.cities && search.cities.length > 0 ? search.cities : null,
+        countries:
+          search.countries && search.countries.length > 0
+            ? search.countries
+            : null,
+        provinces:
+          search.provinces && search.provinces.length > 0
+            ? search.provinces
+            : null,
+        goodfor: search.goodfor ? search.goodfor : null,
+        facilities: search.facilities ? search.facilities : null,
+        rating: search.rating ? search.rating : null,
       },
-    },
-    onCompleted: () => {
-      setdataDes(data?.destinationList_v2);
-    },
-  });
+      context: {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : null,
+        },
+      },
+      onCompleted: () => {
+        setdataDes(data?.destinationList_v2);
+      },
+    }
+  );
 
   const [
     mutationliked,
@@ -444,7 +429,7 @@ export default function ItineraryDestination(props) {
   };
 
   const _handleCheckC = async (id, index, item) => {
-    let tempe = [...datafilter.destination_filter.country];
+    let tempe = [...datafilter?.destination_filter?.country];
     let items = { ...item };
     items.checked = true;
 
@@ -548,22 +533,22 @@ export default function ItineraryDestination(props) {
       type: [],
       grouptype: [],
     });
-    setdataFilterCategori(datafilter?.destination_filter.type);
-    setdataFilterCategoris(datafilter?.destination_filter.type);
-    setdataFilterFacility(datafilter?.destination_filter.facility);
-    setdataFilterFacilitys(datafilter?.destination_filter.facility);
-    setdataFilterCountry(datafilter?.destination_filter.country);
-    setdataFilterCountrys(datafilter?.destination_filter.country);
+    setdataFilterCategori(datafilter?.destination_filter?.type);
+    setdataFilterCategoris(datafilter?.destination_filter?.type);
+    setdataFilterFacility(datafilter?.destination_filter?.facility);
+    setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+    setdataFilterCountry(datafilter?.destination_filter?.country);
+    setdataFilterCountrys(datafilter?.destination_filter?.country);
     setdataFilterCity(datasearchlocation?.searchlocation_populer);
     setdataFilterCitys(datasearchlocation?.searchlocation_populer);
 
     let hasil = [];
 
-    let dta = datafilter.destination_filter.type.filter(
+    let dta = datafilter?.destination_filter?.type.filter(
       (item) => item.sugestion === true
     );
     hasil = hasil.concat(dta);
-    let wle = datafilter.destination_filter.facility.filter(
+    let wle = datafilter?.destination_filter?.facility.filter(
       (item) => item.sugestion === true
     );
     hasil = hasil.concat(wle);

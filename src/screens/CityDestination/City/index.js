@@ -88,11 +88,6 @@ export default function CityDetail(props) {
   // console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
-<<<<<<< Updated upstream
-  console.log("tokenCity", tokenApps);
-
-=======
->>>>>>> Stashed changes
   let [setting, setSetting] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);

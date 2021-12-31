@@ -11,6 +11,8 @@ import {
   View,
   Pressable,
   FlatList,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { unesco } from "../../../assets/png";
@@ -157,7 +159,7 @@ export default function Unesco({ navigation, route }) {
     ListDestinationByUnesco,
     {
       variables: {
-        countries_id: selectedCountry.id,
+        countries_id: selectedCountry?.id,
       },
       context: {
         headers: {
@@ -449,6 +451,7 @@ export default function Unesco({ navigation, route }) {
    */
 
   let [heights, setHeights] = useState(0);
+  console.log("heights", heights);
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
@@ -483,6 +486,7 @@ export default function Unesco({ navigation, route }) {
             <Animated.Image
               onLayout={(event) => {
                 const layout = event.nativeEvent.layout;
+                console.log("layout", layout);
                 setHeights(layout.height);
               }}
               style={{
@@ -507,6 +511,7 @@ export default function Unesco({ navigation, route }) {
           <Animated.View
             onLayout={(event) => {
               const layout = event.nativeEvent.layout;
+              console.log("layout", layout);
               setHeights(layout.height);
             }}
             pointerEvents="box-none"
@@ -1051,139 +1056,91 @@ export default function Unesco({ navigation, route }) {
   };
 
   if (loading) {
-    <View style={{ marginTop: 20, backgroundColor: "#FFF" }}>
+    <View
+      style={{
+        marginTop: 20,
+        backgroundColor: "#FFF",
+        paddingTop: StatusBar.currentHeight,
+      }}
+    >
       <ActivityIndicator size="small" animating="true" />
     </View>;
   }
 
+  let [contentY, setContentY] = useState(0);
+
   return (
-    <View style={styles.container}>
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
-      <CountrySrc
-        selectedCountry={selectedCountry}
-        SetselectedCountry={(e) => SetselectedCountry(e)}
-        modalshown={modalcountry}
-        setModelCountry={(e) => setModelCountry(e)}
-        navigation = {navigation}
-      />
-
-      <Animated.View
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: StatusBar.currentHeight,
+      }}
+    >
+      <ScrollView
         style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
+          backgroundColor: "#fff",
+        }}
+        onScroll={(event) => {
+          console.log("event", event.nativeEvent.contentOffset.y);
+          setContentY(event.nativeEvent.contentOffset.y);
         }}
       >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
         <View
           style={{
-            width: Dimensions.get("screen").width - 95,
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            padding: 10,
+            height: 150,
+            backgroundColor: "#fff",
+            width: Dimensions.get("screen").width,
           }}
-        >
-          <Text
-            size="title"
-            type="bold"
-            style={{
-              color: "#FFFFFF",
-            }}
-          >
-            {t("UnescoTitle")}
-          </Text>
-        </View>
-      </Animated.View>
-
-      {/* {renderNavigation()} */}
-      {renderTabView()}
-      {renderHeader()}
-      {renderCustomRefresh()}
-    </View>
+        ></View>
+        <View
+          style={{
+            height: 55,
+            marginBottom: -55,
+            backgroundColor: "yellow",
+            width: Dimensions.get("screen").width,
+          }}
+        ></View>
+        <View
+          style={{
+            height: 55,
+            backgroundColor: "#209fae",
+            width: Dimensions.get("screen").width,
+          }}
+        ></View>
+        <FlatList
+          // stickyHeaderIndices={[0]}
+          data={listdestinasi_unesco}
+          renderItem={({ item, index }) => {
+            <View style={{ height: 50, width: Dimensions.get("screen").width }}>
+              <Image
+                source={{ uri: item.images.image }}
+                height="30"
+                width="30"
+              />
+              <Text size="label">{item.description}</Text>
+            </View>;
+            console.log("item", item);
+          }}
+          ListHeaderComponent={
+            <View>
+              <Text size="title">Tab</Text>
+            </View>
+          }
+        />
+        <Text size="h1">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu
+          ultricies est. Aenean vel metus mi. Quisque sapien odio, semper in
+          tincidunt at, tristique vel turpis. Pellentesque quis tortor lectus.
+          Etiam convallis sit amet felis et faucibus. Aenean eu arcu sed nulla
+          faucibus porttitor in quis nisl. Quisque vitae scelerisque dui. Sed
+          pretium justo turpis, eget suscipit tortor blandit id. Praesent
+          fringilla sem in odio aliquet, sit amet aliquam nibh vulputate. Etiam
+          ut tortor facilisis, blandit urna nec, tincidunt sem. Proin
+          sollicitudin ac ligula at molestie. Maecenas id purus et tortor
+          molestie aliquet sit amet ac magna
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

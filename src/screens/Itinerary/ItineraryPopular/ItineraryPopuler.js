@@ -14,7 +14,13 @@ import {
   Modal as ModalRN,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, FunIcon, Text, CardItinerary } from "../../../component";
+import {
+  Button,
+  FunIcon,
+  Text,
+  CardItinerary,
+  FunImage,
+} from "../../../component";
 import { default_image, Bg_soon, empty_image } from "../../../assets/png";
 import {
   Arrowbackwhite,
@@ -442,7 +448,7 @@ export default function ItineraryPopuler(props) {
                 }}
               >
                 <View style={{ width: "100%", height: "63%" }}>
-                  <Image
+                  <FunImage
                     style={{
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
@@ -512,7 +518,7 @@ export default function ItineraryPopuler(props) {
                       alignItems: "center",
                     }}
                   >
-                    <Image
+                    <FunImage
                       style={{
                         width: 30,
                         height: 30,
@@ -589,7 +595,7 @@ export default function ItineraryPopuler(props) {
                     })
                   }
                 >
-                  <Image
+                  <FunImage
                     source={
                       item.firstimg ? { uri: item.firstimg } : default_image
                     }
@@ -800,7 +806,7 @@ export default function ItineraryPopuler(props) {
               borderRadius: 10,
             }}
           >
-            <Image
+            <FunImage
               source={Bg_soon}
               style={{
                 height: Dimensions.get("screen").width - 180,

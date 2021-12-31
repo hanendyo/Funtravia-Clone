@@ -19,13 +19,12 @@ export default function TravelIdeas(props) {
   let tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
     headerShown: true,
-    title: (
+    headerTransparent: false,
+    headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("travelideas")}
       </Text>
     ),
-    headerTransparent: false,
-    headerTitle: t("travelideas"),
     // headerMode: "none",
     headerStyle: {
       backgroundColor: "#209FAE",

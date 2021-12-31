@@ -108,11 +108,18 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
         setClose={() => setModalss(false)}
       />
       {data?.destinationById?.review.length > 0 ? (
-        <View style={{ paddingTop: 20, paddingLeft: 15 }}>
+        <View style={{ paddingTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
             let set = [1, 2, 3, 4, 5];
             return (
-              <View key={item.id + "1"} style={{ marginBottom: 20 }}>
+              <View
+                key={item.id + "1"}
+                style={{
+                  marginBottom: 20,
+                  width: Dimensions.get("screen").width - 30,
+                  marginHorizontal: 15,
+                }}
+              >
                 <Pressable
                   style={{
                     flexDirection: "row",
@@ -156,7 +163,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                   <View
                     style={{
                       marginLeft: 10,
-                      width: Dimensions.get("screen").width * 0.7,
+                      flex: 1,
                     }}
                   >
                     <Text size="label" type="bold" numberOfLines={1}>
@@ -177,7 +184,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                         {item?.rating}
                       </Text>
                     </View>
-                    <Text size="small" type="reguler">
+                    <Text size="small" type="regular">
                       {dateFormatMDY(item?.updated_at)}
                     </Text>
                   </View>
@@ -192,7 +199,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                     <Text
                       ellipsizeMode="head"
                       size="label"
-                      type="reguler"
+                      type="regular"
                       style={{ lineHeight: 20 }}
                     >
                       {item.ulasan}
