@@ -202,11 +202,11 @@ export function MyProfile({ navigation, route }) {
       });
     });
 
-    AsyncStorage.getItem("access_token").then((value) => {
-      if (value) {
-        dispatch(setTokenApps(`Bearer ${value}`));
-      }
-    });
+    // AsyncStorage.getItem("access_token").then((value) => {
+    //   if (value) {
+    //     dispatch(setTokenApps(`Bearer ${value}`));
+    //   }
+    // });
 
     return () => {
       scrollY.removeAllListeners();

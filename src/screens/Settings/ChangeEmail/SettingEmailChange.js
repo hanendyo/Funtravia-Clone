@@ -110,7 +110,7 @@ export default function SettingEmailChange(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     // await setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
   };

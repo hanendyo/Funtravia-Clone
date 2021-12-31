@@ -76,7 +76,9 @@ export default function SettingsAkun(props) {
   let [dates, setDate] = useState();
   let [searchCity, setSearchCity] = useState("");
   let [soon, setSoon] = useState(false);
+  let indexSend = props?.route?.param?.indexFromSettingCity;
   let [index, setIndex] = useState(0);
+  let [indexTemp, setIndexTemp] = useState(0);
   let [dataCitySetting, setDataCitySetting] = useState();
 
   const closeBirth = () => {
@@ -140,6 +142,7 @@ export default function SettingsAkun(props) {
       );
       if (index > -1) {
         setIndex(index);
+        setIndexTemp(index);
       }
     },
   });
@@ -423,8 +426,10 @@ export default function SettingsAkun(props) {
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     // await setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
-    await querycity();
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
+    if (index === indexTemp) {
+      querycity();
+    }
     refetchHasPassword();
     refatchAccountConnect();
     // await passwords();
@@ -466,9 +471,10 @@ export default function SettingsAkun(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
+      console.log(`INDEX AKUN: `, index);
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, index, indexSend]);
 
   const arrayShadow = {
     shadowOffset: { width: 0, height: 1 },
@@ -1169,7 +1175,7 @@ export default function SettingsAkun(props) {
                 // setting: setting,
                 // token: token,
                 // setSetting: (e) => setSetting(e),
-                index: index,
+                index: index != indexSend ? indexSend : index,
                 setIndex: (e) => setIndex(e),
               },
             })

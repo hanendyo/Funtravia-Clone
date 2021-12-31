@@ -158,7 +158,7 @@ export default function TripPlaning(props) {
     let setsetting = await AsyncStorage.getItem("setting");
     setSetting(JSON.parse(setsetting));
     // setToken(tkn);
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
     if (tkn === null) {
       setModalLogin(true);
       // props.navigation.navigate("HomeScreen");

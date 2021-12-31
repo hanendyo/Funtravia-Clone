@@ -151,7 +151,7 @@ export default function Notification(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     // setToken(tkn);
     refetchnotif();
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    // dispatch(setTokenApps(`Bearer ${tkn}`));
     // GetListInvitation();
   };
 
