@@ -122,6 +122,7 @@ export default function ItineraryDestination(props) {
     facilities: [],
   });
 
+  console.log("search :", search);
   let [keyword, setkeyword] = useState("");
   let [searcountry, setsearcountry] = useState(null);
 
@@ -235,42 +236,35 @@ export default function ItineraryDestination(props) {
     },
   });
 
-  const [GetListDestination, { data, loading, error }] = useLazyQuery(
-    Listdestination,
-    {
-      fetchPolicy: "network-only",
-      variables: {
-        keyword: search.keyword ? search.keyword : null,
-        // type: search.type ? search.type : null,
-        grouptype: props.route?.params?.idgroup
-          ? [props.route?.params?.idgroup]
-          : [],
-        type: search.type && search.type.length > 0 ? search.type : null,
-        cities:
-          search.cities && search.cities.length > 0 ? search.cities : null,
-        countries:
-          search.countries && search.countries.length > 0
-            ? search.countries
-            : null,
-        provinces:
-          search.provinces && search.provinces.length > 0
-            ? search.provinces
-            : null,
-        goodfor: search.goodfor ? search.goodfor : null,
-        facilities: search.facilities ? search.facilities : null,
-        rating: search.rating ? search.rating : null,
-      },
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : null,
-        },
-      },
-      onCompleted: () => {
-        setdataDes(data?.destinationList_v2);
-      },
-    }
-  );
+  const [
+    GetListDestination,
+    { data, loading: loadingDes, error },
+  ] = useLazyQuery(Listdestination, {
+    fetchPolicy: "network-only",
+    variables: {
+      keyword: search.keyword ? search.keyword : null,
+      // type: search.type ? search.type : null,
+      grouptype: props.route?.params?.idgroup
+        ? [props.route?.params?.idgroup]
+        : [],
+      type: search.type && search.type.length > 0 ? search.type : null,
+      cities: search.cities && search.cities.length > 0 ? search.cities : null,
+      countries:
+        search.countries && search.countries.length > 0
+          ? search.countries
+          : null,
+      provinces:
+        search.provinces && search.provinces.length > 0
+          ? search.provinces
+          : null,
+      goodfor: search.goodfor ? search.goodfor : null,
+      facilities: search.facilities ? search.facilities : null,
+      rating: search.rating ? search.rating : null,
+    },
+    onCompleted: () => {
+      setdataDes(data?.destinationList_v2);
+    },
+  });
 
   const [
     mutationliked,
@@ -555,6 +549,7 @@ export default function ItineraryDestination(props) {
 
     setfiltershow(hasil);
     cekData();
+    setshow(false);
   };
 
   const _setSearch = async (teks) => {
