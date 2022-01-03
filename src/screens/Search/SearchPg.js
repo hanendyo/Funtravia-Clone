@@ -52,9 +52,11 @@ import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 
 export default function SearchPg(props, { navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
   const [active_src, setActiveSrc] = useState("location");
   let [list_rekomendasi_user, SetListrequser] = useState([]);
@@ -69,7 +71,7 @@ export default function SearchPg(props, { navigation, route }) {
   const fromotherpage = React.useRef(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
   );
-  let [setting, setSetting] = useState();
+  // let [setting, setSetting] = useState();
   let [recent, setRecent] = useState([]);
   let [aktifsearch, setAktifSearch] = useState(
     props.route.params.aktifsearch ? props.route.params.aktifsearch : false
@@ -110,7 +112,8 @@ export default function SearchPg(props, { navigation, route }) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
+    // setSetting(JSON.parse(setsetting));
+    // dispatch(setSettingUser(setsetting));
     let recent_src = await AsyncStorage.getItem("recent_src");
     if (recent_src) {
       setRecent(JSON.parse(recent_src));
@@ -290,10 +293,6 @@ export default function SearchPg(props, { navigation, route }) {
   }, [props.navigation]);
 
   let [event_search, SetEventSearch] = useState([]);
-  console.log(
-    "🚀 ~ file: SearchPg.js ~ line 299 ~ SearchPg ~ event_search",
-    event_search
-  );
   const {
     loading: loadingEvent,
     data: dataEvent,
@@ -407,8 +406,6 @@ export default function SearchPg(props, { navigation, route }) {
         if (response.data) {
           if (response.data.unfollow_user.code !== 200) {
             throw new Error(response.data.unfollow_user.message);
-          } else {
-            console.log("berhasil");
           }
 
           // Alert.alert('Succes');
@@ -455,8 +452,6 @@ export default function SearchPg(props, { navigation, route }) {
         if (response.data) {
           if (response.data.follow_user.code !== 200) {
             throw new Error(response.data.follow_user.message);
-          } else {
-            console.log("berhasil");
           }
         }
       } catch (error) {
@@ -528,9 +523,6 @@ export default function SearchPg(props, { navigation, route }) {
         if (response.data) {
           if (response.data.unfollow_user.code !== 200) {
             throw new Error(response.data.unfollow_user.message);
-          } else {
-            console.log("berhasil");
-            // refetchRekomendasi();
           }
         }
       } catch (error) {
@@ -1689,7 +1681,6 @@ export default function SearchPg(props, { navigation, route }) {
               }}
             >
               {beranda_popularV2.map((value, index) => {
-                console.log("value", value);
                 return (
                   <TouchableOpacity
                     key={index}

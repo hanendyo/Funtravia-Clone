@@ -16,7 +16,13 @@ import {
   Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, FunIcon, Text, CardItinerary } from "../../../component";
+import {
+  Button,
+  FunIcon,
+  Text,
+  CardItinerary,
+  ModalLogin,
+} from "../../../component";
 import { default_image, Bg_soon } from "../../../assets/png";
 import {
   Arrowbackwhite,
@@ -42,14 +48,18 @@ import { RNToasty } from "react-native-toasty";
 import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../../redux/action";
 
 export default function ItinerarySearchCategory(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
+  const [modalLogin, setModalLogin] = useState(false);
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
-  let [setting, setSetting] = useState();
+  const setting = useSelector((data) => data.setting);
+  let dispatch = useDispatch();
+  // let [setting, setSetting] = useState();
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
   let [list_populer, setlist_populer] = useState([]);
@@ -358,7 +368,8 @@ export default function ItinerarySearchCategory(props) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(setsetting));
     // await fetchCategory();
     // await fetchDataListPopuler();
   };
@@ -494,152 +505,163 @@ export default function ItinerarySearchCategory(props) {
       );
     } else if (aktif == "Album") {
       return dataAlbums && dataAlbums.length > 0 ? (
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            paddingHorizontal: 15,
-            justifyContent: "space-between",
-            marginTop: 15,
-            backgroundColor: "#f6f6f6",
-          }}
-        >
-          {dataAlbums.map((item, index) => {
-            return (
-              <Pressable
-                focusable={true}
-                keyboardShouldPersistTaps={"handled"}
-                key={index}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  props.navigation.push("ProfileStack", {
-                    screen: "albumdetail",
-                    params: {
-                      id: item.id,
-                      type: item.type,
-                      token: token,
-                      judul: item.title,
-                    },
-                  });
-                }}
-                style={{
-                  height: 250,
-                  width: "49%",
-                  marginBottom: 10,
-                  borderRadius: 5,
-                  // borderWidth: 1,
-                  backgroundColor: "#fff",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                }}
-              >
-                <View style={{ width: "100%", height: "58%" }}>
-                  <Image
-                    style={{
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    source={item?.cover ? { uri: item?.cover } : default_image}
-                  />
-                  <View
-                    style={{
-                      position: "absolute",
-                      borderRadius: 2,
-                      bottom: 10,
-                      left: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        backgroundColor: "#000",
-                        opacity: 0.6,
-                        position: "absolute",
-                        borderRadius: 2,
-                      }}
-                    />
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{
-                        color: "#fff",
-                        marginHorizontal: 10,
-                        marginTop: 3,
-                        marginBottom: 5,
-                      }}
-                    >
-                      {item.count_foto}{" "}
-                      {item.count_foto > 1 ? t("photos") : t("photo")}
-                    </Text>
-                  </View>
-                </View>
-
-                <View
+        <>
+          <ModalLogin
+            modalLogin={modalLogin}
+            setModalLogin={() => setModalLogin(false)}
+            props={props}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              paddingHorizontal: 15,
+              justifyContent: "space-between",
+              marginTop: 15,
+              backgroundColor: "#f6f6f6",
+            }}
+          >
+            {dataAlbums.map((item, index) => {
+              return (
+                <Pressable
+                  focusable={true}
+                  keyboardShouldPersistTaps={"handled"}
+                  key={index}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: item.id,
+                        type: item.type,
+                        token: token,
+                        judul: item.title,
+                      },
+                    });
+                  }}
                   style={{
-                    flex: 1,
-                    paddingHorizontal: 15,
+                    height: 250,
+                    width: "49%",
+                    marginBottom: 10,
+                    borderRadius: 5,
                     // borderWidth: 1,
-                    justifyContent: "space-between",
-                    paddingTop: 10,
-                    paddingBottom: 13,
+                    backgroundColor: "#fff",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
                   }}
                 >
-                  <Text size={"label"} type="bold" numberOfLines={2}>
-                    {item.title}
-                  </Text>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: item.id,
-                          token: token,
-                        },
-                      })
-                    }
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  <View style={{ width: "100%", height: "58%" }}>
                     <Image
                       style={{
-                        width: 35,
-                        height: 35,
-                        borderRadius: 17,
-                        marginRight: 10,
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        width: "100%",
+                        height: "100%",
                       }}
                       source={
-                        item && item?.user
-                          ? { uri: item?.user?.picture }
-                          : default_image
+                        item?.cover ? { uri: item?.cover } : default_image
                       }
                     />
-                    <Text
-                      size="label"
-                      type="regular"
-                      numberOfLines={1}
-                      style={{ flex: 1 }}
+                    <View
+                      style={{
+                        position: "absolute",
+                        borderRadius: 2,
+                        bottom: 10,
+                        left: 10,
+                      }}
                     >
-                      {`${item.user.first_name} ${
-                        item.user.last_name ? item.user.last_name : ""
-                      }`}
+                      <View
+                        style={{
+                          height: "100%",
+                          width: "100%",
+                          backgroundColor: "#000",
+                          opacity: 0.6,
+                          position: "absolute",
+                          borderRadius: 2,
+                        }}
+                      />
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          color: "#fff",
+                          marginHorizontal: 10,
+                          marginTop: 3,
+                          marginBottom: 5,
+                        }}
+                      >
+                        {item.count_foto}{" "}
+                        {item.count_foto > 1 ? t("photos") : t("photo")}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingHorizontal: 15,
+                      // borderWidth: 1,
+                      justifyContent: "space-between",
+                      paddingTop: 10,
+                      paddingBottom: 13,
+                    }}
+                  >
+                    <Text size={"label"} type="bold" numberOfLines={2}>
+                      {item.title}
                     </Text>
-                  </Pressable>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
+                    <Pressable
+                      onPress={() =>
+                        token
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.id,
+                                token: token,
+                              },
+                            })
+                          : setModalLogin(true)
+                      }
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{
+                          width: 35,
+                          height: 35,
+                          borderRadius: 17,
+                          marginRight: 10,
+                        }}
+                        source={
+                          item && item?.user
+                            ? { uri: item?.user?.picture }
+                            : default_image
+                        }
+                      />
+                      <Text
+                        size="label"
+                        type="regular"
+                        numberOfLines={1}
+                        style={{ flex: 1 }}
+                      >
+                        {`${item.user.first_name} ${
+                          item.user.last_name ? item.user.last_name : ""
+                        }`}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        </>
       ) : (
         <View
           style={{
