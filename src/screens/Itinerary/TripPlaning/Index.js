@@ -21,13 +21,14 @@ import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import ListItineraryActive from "../../../graphQL/Query/Itinerary/listitineraryA";
 import ListItineraryFinish from "../../../graphQL/Query/Itinerary/listitineraryF";
 import { useDispatch, useSelector } from "react-redux";
-import { setTokenApps } from "../../../redux/action";
+import { setTokenApps, setSettingUser } from "../../../redux/action";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function TripPlaning(props) {
   let dispatch = useDispatch();
   let tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
 
@@ -72,7 +73,7 @@ export default function TripPlaning(props) {
   };
 
   // let [token, setToken] = useState("");
-  let [setting, setSetting] = useState("");
+  // let [setting, setSetting] = useState("");
   let [loading, setloading] = useState(false);
   let [rData, setData] = useState([]);
   let [AData, setDataActive] = useState([]);
@@ -156,7 +157,8 @@ export default function TripPlaning(props) {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(setsetting));
+    // setSetting(JSON.parse(setsetting));
     // setToken(tkn);
     // dispatch(setTokenApps(`Bearer ${tkn}`));
     if (tkn === null) {

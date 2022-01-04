@@ -40,7 +40,7 @@ const SafeStatusBar = Platform.select({
 });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
-// let [token, setToken] = useState(route.params.token);
+
 export default function Render({ navigation, route }) {
   // let [token, setToken] = useState(route.params.token);
   let token = useSelector((data) => data.token);
@@ -61,6 +61,7 @@ export default function Render({ navigation, route }) {
   };
   return <Hello route={route} />;
 }
+
 export function MyProfile({ navigation, route }) {
   // let [token, setToken] = useState(route.params.token);
   let token = useSelector((data) => data.token);
@@ -103,10 +104,6 @@ export function MyProfile({ navigation, route }) {
   /**
    * PanResponder for header
    */
-  console.log(
-    "🚀 ~ file: OtherProfile.js ~ line 125 ~ MyProfile ~ listRefArr",
-    listRefArr
-  );
   const headerPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
@@ -306,7 +303,6 @@ export function MyProfile({ navigation, route }) {
   };
 
   const handlePanReleaseOrEnd = (evt, gestureState) => {
-    // console.log('handlePanReleaseOrEnd', scrollY._value);
     syncScrollOffset();
     headerScrollY.setValue(scrollY._value);
     if (Platform.OS === "ios") {
@@ -356,13 +352,11 @@ export function MyProfile({ navigation, route }) {
   const onMomentumScrollEnd = () => {
     isListGliding.current = false;
     syncScrollOffset();
-    // console.log('onMomentumScrollEnd');
   };
 
   const onScrollEndDrag = (e) => {
     syncScrollOffset();
     const offsetY = e.nativeEvent.contentOffset.y;
-    // console.log('onScrollEndDrag', offsetY);
     // iOS only
     if (Platform.OS === "ios") {
       if (offsetY < -PullToRefreshDist && !refreshStatusRef.current) {
@@ -374,14 +368,12 @@ export function MyProfile({ navigation, route }) {
   };
 
   const refresh = async () => {
-    // console.log("-- start refresh");
     refreshStatusRef.current = true;
     await new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve("done");
       }, 2000);
     }).then((value) => {
-      // console.log("-- refresh done!");
       refreshStatusRef.current = false;
     });
   };
@@ -526,9 +518,7 @@ export function MyProfile({ navigation, route }) {
           });
         }
       }
-    } catch (error) {
-      console.error(`error: `, error);
-    }
+    } catch (error) {}
   };
 
   const _unfollow = async (id) => {
@@ -1256,10 +1246,6 @@ export function MyProfile({ navigation, route }) {
       default:
         return null;
     }
-    console.log(
-      "🚀 ~ file: OtherProfile.js ~ line 1266 ~ renderScene ~ listRefArr",
-      listRefArr
-    );
     if (dataR && dataR.length > 0) {
       return (
         <Animated.FlatList
@@ -1437,16 +1423,6 @@ export function MyProfile({ navigation, route }) {
     >
       <ActivityIndicator animating={true} color="#209fae" size="large" />
     </View>;
-  }
-
-  if (error && errorPost && errorReview && errorTrip) {
-    console.log({
-      TOKEN: token,
-      ERROR: error,
-      POST: errorPost,
-      REVIEW: errorReview,
-      TRIP: errorTrip,
-    });
   }
 
   return (

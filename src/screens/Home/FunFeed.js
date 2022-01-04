@@ -21,15 +21,17 @@ import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { useMutation } from "@apollo/client";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Xgray } from "../../assets/svg";
-import { setTokenApps } from "../../redux/action";
-import { useDispatch } from "react-redux";
+import { setSettingUser, setTokenApps } from "../../redux/action";
+import { useDispatch, useSelector } from "react-redux";
 
 const { width, height } = Dimensions.get("screen");
-export default function SearchFeed({ props, tokenApps }) {
+export default function SearchFeed({ props }) {
   let dispatch = useDispatch();
+  const tokenApps = useSelector((data) => data.token);
+  const users = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
   // let [token, setToken] = useState(tokenApps);
-  let [users, setuser] = useState(null);
+  // let [users, setuser] = useState(null);
   let [datas, setDatas] = useState(null);
   let [modalLogin, setModalLogin] = useState(false);
 
@@ -55,8 +57,9 @@ export default function SearchFeed({ props, tokenApps }) {
     let tkn = await AsyncStorage.getItem("access_token");
 
     let user = await AsyncStorage.getItem("setting");
-    user = JSON.parse(user);
-    setuser(user?.user);
+    // user = JSON.parse(user);
+    // setuser(user?.user);
+    dispatch(setSettingUser(user));
   };
   useEffect(() => {
     const feedasync = props.navigation.addListener("focus", () => {
@@ -344,6 +347,7 @@ export default function SearchFeed({ props, tokenApps }) {
               onPress={() => Ceklogin(item.id, item, index)}
             >
               <RenderPost
+                props={props}
                 data={item}
                 user={users}
                 navigation={props.navigation}

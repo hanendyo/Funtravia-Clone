@@ -20,6 +20,7 @@ import {
   Text,
   CardItinerary,
   FunImage,
+  ModalLogin,
 } from "../../../component";
 import { default_image, Bg_soon, empty_image } from "../../../assets/png";
 import {
@@ -48,14 +49,18 @@ import Albums from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import normalize from "react-native-normalize";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../../redux/action";
 
 export default function ItineraryPopuler(props) {
   let [actives, setActives] = useState("Itinerary");
+  const [modalLogin, setModalLogin] = useState(false);
   let [select, setSelect] = useState(true);
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
-  let [setting, setSetting] = useState();
+  const setting = useSelector((data) => data.setting);
+  const dispatch = useDispatch();
+  // let [setting, setSetting] = useState();
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
   let [dataAlbums, setDataAlbums] = useState(null);
@@ -265,7 +270,8 @@ export default function ItineraryPopuler(props) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(setsetting));
+    // await setSetting(JSON.parse(setsetting));
     // await fetchCategory();
     // await fetchDataListPopuler();
   };
@@ -405,148 +411,156 @@ export default function ItineraryPopuler(props) {
       );
     } else if (aktif == "Album") {
       return dataAlbums && dataAlbums.length > 0 ? (
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            paddingHorizontal: 15,
-            justifyContent: "space-between",
-            marginTop: 15,
-            backgroundColor: "#f6f6f6",
-          }}
-        >
-          {dataAlbums.map((item, index) => {
-            return (
-              <Pressable
-                key={index}
-                onPress={() => {
-                  props.navigation.push("ProfileStack", {
-                    screen: "albumdetail",
-                    params: {
-                      id: item.id,
-                      type: item.type,
-                      token: token,
-                      judul: item.title,
-                    },
-                  });
-                }}
-                style={{
-                  height: 230,
-                  width: "48.5%",
-                  marginBottom: 10,
-                  borderRadius: 5,
-                  // borderWidth: 1,
-                  backgroundColor: "#fff",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                }}
-              >
-                <View style={{ width: "100%", height: "63%" }}>
-                  <FunImage
-                    style={{
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                      width: "100%",
-                      height: "110%",
-                    }}
-                    source={item?.cover ? { uri: item?.cover } : empty_image}
-                  />
-                  <View
-                    style={{
-                      position: "absolute",
-                      borderRadius: 2,
-                      bottom: 112,
-                      left: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: "100%",
-                        width: "100%",
-                        backgroundColor: "#000",
-                        opacity: 0.6,
-                        position: "absolute",
-                        borderRadius: 2,
-                      }}
-                    />
-                    <Text
-                      size="small"
-                      type="regular"
-                      style={{
-                        color: "#fff",
-                        marginHorizontal: 10,
-                        marginTop: 3,
-                        marginBottom: 5,
-                      }}
-                    >
-                      {item.count_foto}{" "}
-                      {item.count_foto > 1 ? t("photos") : t("photo")}
-                    </Text>
-                  </View>
-                </View>
-
-                <View
+        <>
+          <ModalLogin
+            modalLogin={modalLogin}
+            setModalLogin={() => setModalLogin(false)}
+            props={props}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              paddingHorizontal: 15,
+              justifyContent: "space-between",
+              marginTop: 15,
+              backgroundColor: "#f6f6f6",
+            }}
+          >
+            {dataAlbums.map((item, index) => {
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    props.navigation.push("ProfileStack", {
+                      screen: "albumdetail",
+                      params: {
+                        id: item.id,
+                        type: item.type,
+                        token: token,
+                        judul: item.title,
+                      },
+                    });
+                  }}
                   style={{
-                    flex: 1,
-                    paddingHorizontal: 15,
-                    justifyContent: "space-between",
-                    paddingTop: 20,
-                    paddingBottom: 8,
+                    height: 230,
+                    width: "48.5%",
+                    marginBottom: 10,
+                    borderRadius: 5,
+                    // borderWidth: 1,
+                    backgroundColor: "#fff",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
                   }}
                 >
-                  <Text size={"label"} type="bold" numberOfLines={2}>
-                    {item.title}
-                  </Text>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.push("ProfileStack", {
-                        screen: "otherprofile",
-                        params: {
-                          idUser: item.id,
-                          token: token,
-                        },
-                      })
-                    }
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  <View style={{ width: "100%", height: "63%" }}>
                     <FunImage
                       style={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: 17,
-                        marginRight: 10,
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        width: "100%",
+                        height: "110%",
                       }}
-                      source={
-                        item && item?.user
-                          ? { uri: item?.user?.picture }
-                          : default_image
-                      }
+                      source={item?.cover ? { uri: item?.cover } : empty_image}
                     />
-                    <Text
-                      size="label"
-                      type="regular"
-                      numberOfLines={1}
-                      style={{ flex: 1 }}
+                    <View
+                      style={{
+                        position: "absolute",
+                        borderRadius: 2,
+                        bottom: 112,
+                        left: 10,
+                      }}
                     >
-                      {`${item.user.first_name} ${
-                        item.user.last_name ? item.user.last_name : ""
-                      }`}
+                      <View
+                        style={{
+                          height: "100%",
+                          width: "100%",
+                          backgroundColor: "#000",
+                          opacity: 0.6,
+                          position: "absolute",
+                          borderRadius: 2,
+                        }}
+                      />
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          color: "#fff",
+                          marginHorizontal: 10,
+                          marginTop: 3,
+                          marginBottom: 5,
+                        }}
+                      >
+                        {item.count_foto}{" "}
+                        {item.count_foto > 1 ? t("photos") : t("photo")}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingHorizontal: 15,
+                      justifyContent: "space-between",
+                      paddingTop: 20,
+                      paddingBottom: 8,
+                    }}
+                  >
+                    <Text size={"label"} type="bold" numberOfLines={2}>
+                      {item.title}
                     </Text>
-                  </Pressable>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
+                    <Pressable
+                      onPress={() =>
+                        token
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                              params: {
+                                idUser: item.user.id,
+                              },
+                            })
+                          : setModalLogin(true)
+                      }
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <FunImage
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: 17,
+                          marginRight: 10,
+                        }}
+                        source={
+                          item && item?.user
+                            ? { uri: item?.user?.picture }
+                            : default_image
+                        }
+                      />
+                      <Text
+                        size="label"
+                        type="regular"
+                        numberOfLines={1}
+                        style={{ flex: 1 }}
+                      >
+                        {`${item.user.first_name} ${
+                          item.user.last_name ? item.user.last_name : ""
+                        }`}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        </>
       ) : (
         <View
           style={{
@@ -882,7 +896,7 @@ export default function ItineraryPopuler(props) {
                   marginVertical: 3,
                 }}
               >
-                New Itinerary
+                {t("newItinerary")}
               </Text>
             </View>
           </Ripple>
@@ -924,7 +938,7 @@ export default function ItineraryPopuler(props) {
                   marginVertical: 3,
                 }}
               >
-                Popular Itinerary
+                {t("popularItinerary")}
               </Text>
             </View>
           </Ripple>
