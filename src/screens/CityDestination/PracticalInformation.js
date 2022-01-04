@@ -142,7 +142,7 @@ export default function PracticalInformation(props) {
       onCompleted: () => {
         let tab = [];
 
-        data.list_practical_article_city.map((item, index) => {
+        data?.list_practical_article_city.map((item, index) => {
           tab.push({ key: item.id, title: item.name });
         });
 
@@ -169,8 +169,8 @@ export default function PracticalInformation(props) {
   ).current;
 
   let practical = [];
-  if (data && data.list_practical_article_city) {
-    practical = data.list_practical_article_city;
+  if (data && data?.list_practical_article_city) {
+    practical = data?.list_practical_article_city;
   }
 
   // console.log("Practical", practical);

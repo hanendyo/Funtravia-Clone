@@ -58,7 +58,7 @@ export default function SendCity({ navigation, route }) {
       },
     },
     onCompleted: () => {
-      SetDatBuddy(DataBuddy.search_travelwith);
+      SetDatBuddy(DataBuddy?.search_travelwith);
     },
   });
   const ChatOptions = {

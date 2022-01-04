@@ -177,7 +177,7 @@ export default function Trip(props) {
     },
     onCompleted: () => {
       let tempdata = [];
-      for (var i of dataCategory.category_journal) {
+      for (var i of dataCategory?.category_journal) {
         tempdata.push({
           label: i.name,
           value: i.id,
@@ -204,7 +204,7 @@ export default function Trip(props) {
       keyword: countrys,
     },
     onCompleted: () => {
-      setCountryData(datacountry.country_search);
+      setCountryData(datacountry?.country_search);
     },
   });
 
@@ -752,7 +752,7 @@ export default function Trip(props) {
                         keyboardType="default"
                       />
                     </Item> */}
-                    {datacountry && datacountry.country_search.length > 0 ? (
+                    {datacountry && datacountry?.country_search.length > 0 ? (
                       <FlatList
                         // ref={slider}
                         // getItemLayout={(data, index) => ({

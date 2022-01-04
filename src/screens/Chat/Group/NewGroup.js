@@ -62,7 +62,7 @@ export default function NewGroup({ navigation, route }) {
       },
     },
     onCompleted: () => {
-      setDataBuddy(DataBuddys.search_travelwith);
+      setDataBuddy(DataBuddys?.search_travelwith);
     },
   });
 

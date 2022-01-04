@@ -219,7 +219,7 @@ export default function Country(props) {
       onCompleted: () => {
         let tab = [{ key: "general", title: "General" }];
 
-        data.country_detail.article_header.map((item, index) => {
+        data?.country_detail?.article_header.map((item, index) => {
           tab.push({
             key: item.title,
             title: item.title,
@@ -248,7 +248,7 @@ export default function Country(props) {
       },
     },
     onCompleted: () => {
-      setListJournal(dataJournal.journal_by_country);
+      setListJournal(dataJournal?.journal_by_country);
     },
   });
 
@@ -274,7 +274,7 @@ export default function Country(props) {
       },
     },
     onCompleted: () => {
-      setCountryfact(datacountryfact.category_article_bycountry);
+      setCountryfact(datacountryfact?.category_article_bycountry);
     },
   });
 
@@ -598,7 +598,7 @@ export default function Country(props) {
   // Render General
   const RenderGeneral = ({ item, index }) => {
     let render = [];
-    render = data && data.country_detail ? data.country_detail : null;
+    render = data && data?.country_detail ? data?.country_detail : null;
     let renderjournal = [];
     renderjournal = list_journal;
 
@@ -2024,8 +2024,8 @@ export default function Country(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            data && data.country_detail.cover
-              ? { uri: data.country_detail.cover }
+            data && data?.country_detail?.cover
+              ? { uri: data?.country_detail?.cover }
               : default_image
           }
         />
@@ -2057,11 +2057,11 @@ export default function Country(props) {
               }}
             >
               <Text size="title" type="bold">
-                {data && data.country_detail ? (
+                {data && data?.country_detail ? (
                   <Truncate
                     text={Capital({
                       text: data?.country_detail?.name
-                        ? data.country_detail.name
+                        ? data?.country_detail?.name
                         : "",
                     })}
                     length={20}
@@ -2087,8 +2087,8 @@ export default function Country(props) {
                 >
                   <PinHijau height={14} width={14} />
                   <Text size="label" type="regular" style={{ marginLeft: 5 }}>
-                    {data && data.country_detail
-                      ? data.country_detail.continent.name
+                    {data && data?.country_detail
+                      ? data?.country_detail?.continent?.name
                       : "-"}
                   </Text>
                 </View>
@@ -2836,7 +2836,7 @@ export default function Country(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              idcountry: data.country_detail.id,
+              idcountry: data?.country_detail?.id,
               searchInput: "",
               locationname: data?.country_detail?.name,
               aktifsearch: true,
@@ -2954,7 +2954,7 @@ export default function Country(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              idcountry: data.country_detail.id,
+              idcountry: data?.country_detail?.id,
               searchInput: "",
               locationname: data?.country_detail?.name,
               aktifsearch: true,
@@ -3103,10 +3103,10 @@ export default function Country(props) {
                       screen: "SendToChat",
                       params: {
                         dataSend: {
-                          id: data.country_detail?.id,
-                          cover: data.country_detail?.cover,
-                          name: data.country_detail?.name,
-                          description: data.country_detail?.description,
+                          id: data?.country_detail?.id,
+                          cover: data?.country_detail?.cover,
+                          name: data?.country_detail?.name,
+                          description: data?.country_detail?.description,
                         },
                         title: t("country"),
                         tag_type: "tag_country",
@@ -3129,7 +3129,7 @@ export default function Country(props) {
               onPress={() => {
                 shareAction({
                   from: "country",
-                  target: data.country_detail?.id,
+                  target: data?.country_detail?.id,
                 });
                 SetShareModal(false);
               }}
@@ -3147,7 +3147,7 @@ export default function Country(props) {
               onPress={() => {
                 CopyLink({
                   from: "country",
-                  target: data.country_detail.id,
+                  target: data?.country_detail?.id,
                   success: t("successCopyLink"),
                   failed: t("failedCopyLink"),
                 });

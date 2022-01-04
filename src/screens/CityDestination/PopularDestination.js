@@ -98,7 +98,7 @@ export default function AllDestination(props) {
   const [totalCity, setTotalCity] = useState(null);
 
   const _getAllData = (data) => {
-    let tempData = [...data.populer_city_destination_v2];
+    let tempData = [...data?.populer_city_destination_v2];
     let temp = [];
 
     for (let i = 0; i < tempData.length; i++) {
@@ -205,8 +205,8 @@ export default function AllDestination(props) {
   ] = useLazyQuery(Continent, {
     fetchPolicy: "network-only",
     onCompleted: () => {
-      setRegionName(dataFillter.continent_type);
-      setFilterRegion(dataFillter.continent_type);
+      setRegionName(dataFillter?.continent_type);
+      setFilterRegion(dataFillter?.continent_type);
     },
   });
 
@@ -935,7 +935,7 @@ export default function AllDestination(props) {
         }}
         horizontal={false}
         keyExtractor={(item) => item.key}
-        data={dataResult ? dataResult.populer_city_destination_v2 : null}
+        data={dataResult ? dataResult?.populer_city_destination_v2 : null}
         renderItem={({ item }) => <RenderList item={item} />}
         ListEmptyComponent={
           <View style={{ marginTop: 15 }}>

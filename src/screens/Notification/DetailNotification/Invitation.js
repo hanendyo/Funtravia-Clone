@@ -529,10 +529,10 @@ export default function Invitation({
       },
     },
     onCompleted: () => {
-      SetDataNotif(datasnotif.list_notification);
+      SetDataNotif(datasnotif?.list_notification);
 
       let status = 0;
-      for (var x of datasnotif.list_notification) {
+      for (var x of datasnotif?.list_notification) {
         if (x.isread === false) {
           status = 1;
         }

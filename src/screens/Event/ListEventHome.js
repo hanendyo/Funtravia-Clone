@@ -2196,7 +2196,7 @@ export default function ListEventHome(props) {
       },
     },
     onCompleted: () => {
-      if (data && data.event_list_v2) {
+      if (data && data?.event_list_v2) {
         setdataEvent(data?.event_list_v2);
       }
     },
@@ -2236,7 +2236,7 @@ export default function ListEventHome(props) {
       },
     },
     onCompleted: () => {
-      setdataEventPublic(dataPublic.event_list_public);
+      setdataEventPublic(dataPublic?.event_list_public);
     },
   });
 
@@ -2245,9 +2245,9 @@ export default function ListEventHome(props) {
     {
       fetchPolicy: "network-only",
       onCompleted: () => {
-        setdataFilterCategori(dataFillter.event_filter.type);
-        setdataFilterCategoris(dataFillter.event_filter.type);
-        setdatacountry(dataFillter.event_filter.country);
+        setdataFilterCategori(dataFillter?.event_filter?.type);
+        setdataFilterCategoris(dataFillter?.event_filter?.type);
+        setdatacountry(dataFillter?.event_filter?.country);
       },
     }
   );

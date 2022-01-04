@@ -106,7 +106,7 @@ export default function Following(props) {
         },
       },
       onCompleted: async () => {
-        setdata(dataFollow.user_following);
+        setdata(dataFollow?.user_following);
       },
     }
   );

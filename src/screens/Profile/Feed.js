@@ -578,7 +578,7 @@ export default function myfeed(props) {
         },
       },
       onCompleted: () => {
-        setDatasFollow(dataFollow.user_following);
+        setDatasFollow(dataFollow?.user_following);
       },
     }
   );
@@ -1571,7 +1571,7 @@ export default function myfeed(props) {
                 CopyLink({
                   from: "feed",
                   target: selectedOption.id,
-                    success: t("successCopyLink"),
+                  success: t("successCopyLink"),
                   failed: t("failedCopyLink"),
                 });
               }}

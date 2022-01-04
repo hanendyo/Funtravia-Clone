@@ -136,7 +136,7 @@ export default function PracticalInformation(props) {
       onCompleted: () => {
         let tab = [];
 
-        data.list_practical_article_country.map((item, index) => {
+        data?.list_practical_article_country.map((item, index) => {
           tab.push({ key: item.id, title: item.name });
         });
 
@@ -163,8 +163,8 @@ export default function PracticalInformation(props) {
   ).current;
 
   let practical = [];
-  if (data && data.list_practical_article_country) {
-    practical = data.list_practical_article_country;
+  if (data && data?.list_practical_article_country) {
+    practical = data?.list_practical_article_country;
   }
 
   // console.log("Practical", practical);

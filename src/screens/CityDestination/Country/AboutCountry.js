@@ -149,7 +149,7 @@ export default function aboutcountry(props) {
       onCompleted: () => {
         let tab = [];
 
-        data.list_about_article_country.map((item, index) => {
+        data?.list_about_article_country.map((item, index) => {
           tab.push({ key: item.id, title: item.name });
         });
 
@@ -159,8 +159,8 @@ export default function aboutcountry(props) {
     }
   );
   let about = [];
-  if (data && data.list_about_article_country) {
-    about = data.list_about_article_country;
+  if (data && data?.list_about_article_country) {
+    about = data?.list_about_article_country;
   }
 
   // console.log("about", about);

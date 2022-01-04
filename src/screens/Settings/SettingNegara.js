@@ -149,7 +149,7 @@ export default function SettingNegara(props) {
       continent_id: null,
     },
     onCompleted: async () => {
-      setData(dataNegara.list_country_src);
+      setData(dataNegara?.list_country_src);
       const tempData = [...dataNegara?.list_country_src];
       await setIndeksScrollto(indeks);
       const indeks = tempData.findIndex((k) => {

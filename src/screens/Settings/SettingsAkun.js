@@ -171,7 +171,7 @@ export default function SettingsAkun(props) {
     pollInterval: 5000,
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setCekHasPassword(dataPassword.cek_haspassword);
+      setCekHasPassword(dataPassword?.cek_haspassword);
     },
   });
   const [dataAccountConnection, setDataAccountConnection] = useState({});
@@ -193,7 +193,7 @@ export default function SettingsAkun(props) {
     // pollInterval: 5000,
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setDataAccountConnection(dataConnectionAkun.user_connection_account);
+      setDataAccountConnection(dataConnectionAkun?.user_connection_account);
     },
   });
 
