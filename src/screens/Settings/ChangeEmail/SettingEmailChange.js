@@ -466,6 +466,8 @@ export default function SettingEmailChange(props) {
             <TextInput
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCompleteType="off"
+              autoComplete="off"
               style={{
                 fontSize: 14,
                 width: "100%",
@@ -506,6 +508,8 @@ export default function SettingEmailChange(props) {
             <TextInput
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCompleteType="off"
+              autoComplete="off"
               style={{
                 width: "100%",
                 fontSize: 14,
