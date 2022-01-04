@@ -21,15 +21,15 @@ import { Text, Button, FunVideo, Peringatan } from "../../../component";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
 import { useTranslation } from "react-i18next";
-import { Video } from "react-native-compressor";
 import { stat } from "react-native-fs";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Image as ImageCompress } from "react-native-compressor";
 import { RNToasty } from "react-native-toasty";
 import { VESDK } from "react-native-videoeditorsdk";
 import { useSelector } from "react-redux";
+import { Video, Image as ImageCompress } from "react-native-compressor";
 
 export default function Crop(props) {
+  console.log("props", props);
   const [data, setData] = useState(props?.route?.params?.data);
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
@@ -117,9 +117,9 @@ export default function Crop(props) {
     let tempData = [...data];
     for (var i in tempData) {
       if (tempData[i].node.type.substr(0, 5) == "video") {
-        const result = await Video.compress(tempData[i].node.image.uri, {
-          compressionMethod: "auto",
-        });
+        // const result = await Video.compress(tempData[i].node.image.uri, {
+        //   compressionMethod: "auto",
+        // });
         // const statResult = await stat(result);
         const statResult = await stat(tempData[i].node.image.uri);
 
@@ -138,40 +138,43 @@ export default function Crop(props) {
           });
         }
       } else {
-        const result = await ImageCompress.compress(
-          tempData[i].node.image.uri,
-          {
-            compressionMethod: "auto",
-          }
-        );
-        const statResult = await stat(result);
+        // const result = await ImageCompress.compress(
+        //   tempData[i].node.image.uri,
+        //   {
+        //     compressionMethod: "auto",
+        //   }
+        // );
+        // const statResult = await stat(result);
+        const statResult = await stat(tempData[i].node.image.uri);
         const tempDatas = { ...tempData[i].node.image };
         tempDatas.path = statResult.path;
         tempDatas.size = statResult.size;
         tempData[i].node.image = tempDatas;
+        console.log("tempData", tempData);
         setData(tempData);
       }
     }
-    props.navigation.dispatch(
-      StackActions.replace("FeedStack", {
-        screen: "CreatePostScreen",
-        params: {
-          location: props.route.params.location,
-          type: "multi",
-          file: data,
-          token: tokenApps,
-          id_album: props.route.params.id_album,
-          id_itin: props.route.params.id_itin,
-          title_album: props.route.params.title_album,
-          album: props.route.params.album,
-          ratio: {
-            width: ratio == "L" ? 3 : 4,
-            height: ratio == "L" ? 2.2 : 5,
-            label: ratio,
-          },
-        },
-      })
-    );
+    console.log("data", data);
+    // props.navigation.dispatch(
+    //   StackActions.replace("FeedStack", {
+    //     screen: "CreatePostScreen",
+    //     params: {
+    //       location: props.route.params.location,
+    //       type: "multi",
+    //       file: data,
+    //       token: tokenApps,
+    //       id_album: props.route.params.id_album,
+    //       id_itin: props.route.params.id_itin,
+    //       title_album: props.route.params.title_album,
+    //       album: props.route.params.album,
+    //       ratio: {
+    //         width: ratio == "L" ? 3 : 4,
+    //         height: ratio == "L" ? 2.2 : 5,
+    //         label: ratio,
+    //       },
+    //     },
+    //   })
+    // );
   };
 
   const deleteFile = (index) => {

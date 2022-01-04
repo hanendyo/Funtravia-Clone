@@ -355,7 +355,7 @@ export default function ActivePlan({
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "red" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -364,7 +364,7 @@ export default function ActivePlan({
             tintColor={"#209fae"}
           />
         }
-        style={{ flex: 1, marginBottom: 20, backgroundColor: "red" }}
+        style={{ flex: 1, marginBottom: 20 }}
       >
         <View
           style={{

@@ -40,6 +40,7 @@ import { useIsFocused } from "@react-navigation/native";
 const { width } = Dimensions.get("screen");
 import { stat } from "react-native-fs";
 import { useSelector } from "react-redux";
+import ImageEditor from "@react-native-community/image-editor";
 
 export default function Post(props) {
   const tokenApps = useSelector((data) => data.token);
@@ -47,6 +48,7 @@ export default function Post(props) {
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
+  console.log("imageRoll", imageRoll);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Preview, setPreview] = useState(true);
@@ -199,6 +201,7 @@ export default function Post(props) {
           width = 1080;
           height = 1080;
         }
+        console.log("uri image", recent.node.image.uri);
         ImagePicker.openCropper({
           path: recent.node.image.uri,
           width: width,
@@ -423,6 +426,17 @@ export default function Post(props) {
       mediaType: "camera",
     };
     data_foto.splice(0, 0, camera);
+    let tempDataFoto = [];
+
+    if (Platform.OS == "ios") {
+      for (var x of data_foto) {
+        if (x.node) {
+          const uri = await ImageEditor.cropImage(x.node.image.uri);
+          console.log("uri", uri);
+        }
+      }
+    }
+    console.log("data_foto", data_foto);
     setImageRoll(data_foto);
     setPageInfo(dataCamera.page_info);
     await selectImg(data_foto[1]);
@@ -464,16 +478,9 @@ export default function Post(props) {
           });
           break;
       }
-      // let dataCamera = await CameraRoll.getPhotos({
-      //   after: page_info.end_cursor,
-      //   first: 40,
-      //   assetType: "All",
-      //   // groupTypes: "Album",
-      //   groupName: selectedAlbum.title,
-      //   include: ["location", "filename", "imageSize", "playableDuration"],
-      // });
       let data_foto = dataCamera.edges;
       const datas = [...imageRoll, ...data_foto];
+      console.log("datas", datas);
       setImageRoll(datas);
       setPageInfo(dataCamera.page_info);
       await setLoadimg(false);
