@@ -116,12 +116,12 @@ export default function ItineraryDestination(props) {
     error: errorfilter,
   } = useQuery(filterDestination, {
     onCompleted: () => {
-      setdataFilterCategori(datafilter.destination_filter.type);
-      setdataFilterCategoris(datafilter.destination_filter.type);
-      setdataFilterFacility(datafilter.destination_filter.facility);
-      setdataFilterFacilitys(datafilter.destination_filter.facility);
-      setdataFilterCountry(datafilter.destination_filter.country);
-      setdataFilterCountrys(datafilter.destination_filter.country);
+      setdataFilterCategori(datafilter?.destination_filter?.type);
+      setdataFilterCategoris(datafilter?.destination_filter?.type);
+      setdataFilterFacility(datafilter?.destination_filter?.facility);
+      setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+      setdataFilterCountry(datafilter?.destination_filter?.country);
+      setdataFilterCountrys(datafilter?.destination_filter?.country);
     },
   });
 

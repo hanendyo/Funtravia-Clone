@@ -303,7 +303,7 @@ PODS:
   - React-jsinspector (0.63.4)
   - react-native-cameraroll (4.1.2):
     - React-Core
-  - react-native-compressor (0.5.9):
+  - react-native-compressor (0.5.11):
     - NextLevelSessionExporter
     - React-Core
   - react-native-document-picker (5.3.0):

@@ -12,7 +12,6 @@
   "dependencies": {
     "@apollo/client": "^3.3.6",
     "@apollo/react-hooks": "^4.0.0",
-    "@nomi9995/react-native-image-compressor": "^0.0.2",
     "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-clipboard/clipboard": "^1.7.0",
     "@react-native-community/cameraroll": "^4.0.1",
@@ -48,7 +47,7 @@
     "react-native-bidirectional-infinite-scroll": "^0.3.3",
     "react-native-circular-progress-indicator": "^2.0.4",
     "react-native-collapsible-tab-view": "^4.4.0",
-    "react-native-compressor": "0.5.9",
+    "react-native-compressor": "0.5.11",
     "react-native-dashed-line": "^1.1.0",
     "react-native-device-info": "^8.0.8",
     "react-native-document-picker": "^5.0.2",
