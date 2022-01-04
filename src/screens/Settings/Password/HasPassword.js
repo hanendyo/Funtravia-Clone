@@ -403,7 +403,7 @@ export default function HasPassword(props) {
               : "secondary"
           }
           onPress={() => onSubmit(text, text1)}
-          text={"Submit"}
+          text={t("submit")}
         ></Button>
       </View>
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
@@ -429,7 +429,7 @@ export default function HasPassword(props) {
             }}
           >
             <Text size="description" type="regular" style={{ color: "#FFF" }}>
-              Successfully updated password
+              {t("successUpdatedPassword")}
             </Text>
           </Pressable>
         </View>
@@ -467,7 +467,7 @@ export default function HasPassword(props) {
               </Text>
             ) : (
               <Text size="description" type="regular" style={{ color: "#FFF" }}>
-                Failed updated password
+                {t("failedUpdatedPassword")}
               </Text>
             )}
           </Pressable>

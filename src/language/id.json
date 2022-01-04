@@ -852,6 +852,7 @@
   "deleteAlbumWith": "Apakah anda ingin menghapus album",
   "year": "Tahun",
   "successCreatePassword": "Sukses membuat password",
+  "successUpdatedPassword": "Successfully updated password",
   "failedUpdatedPassword": "Gagal memperbarui password",
   "max50Char": "Maks. 50 karakter",
   "deleteFileCrop": "Ingin menghapus",
@@ -868,5 +869,7 @@
   "favoriteJournal": "Jurnal Favorit",
   "media": "Media",
   "photosFromTrip": "Foto dari perjalanan",
-  "viewPhotoOnFunFeed": "Lihat foto di fun feed"
+  "viewPhotoOnFunFeed": "Lihat foto di fun feed",
+  "register": "Daftar",
+  "login": "Masuk"
 }

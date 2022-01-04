@@ -1047,7 +1047,7 @@ export default function SettingsAkun(props) {
                   text={
                     setting.user.first_name
                       ? setting.user.first_name
-                      : "Not Set"
+                      : t("notSet")
                   }
                   length={30}
                 />
@@ -1087,7 +1087,7 @@ export default function SettingsAkun(props) {
                   text={
                     setting && setting.user && setting.user?.last_name
                       ? setting.user?.last_name
-                      : "Not Set"
+                      : t("notSet")
                   }
                   length={30}
                 />

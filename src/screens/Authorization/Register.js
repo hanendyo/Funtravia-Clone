@@ -37,18 +37,27 @@ export default function Register({ navigation }) {
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
-    title: "",
-    headerTransparent: true,
-    headerTintColor: "white",
-    headerTitle: "",
+    headerTransparent: false,
+    headerTintColor: "black",
+    headerTitle: (
+      <Text
+        type="bold"
+        size="header"
+        style={{ color: "black" }}
+        allowFontScaling={false}
+      >
+        {t("register")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: "#fff",
-      elevation: 0,
-      borderBottomWidth: 0,
+      elevation: 0, // remove shadow on Android
+      shadowOpacity: 0, // remove shadow on iOS
+      borderBottomWidth: 0, // Just in case.
     },
     headerLeftContainerStyle: {
-      background: "#FFF",
+      background: "black",
 
       marginLeft: 10,
     },

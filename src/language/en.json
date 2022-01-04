@@ -854,6 +854,7 @@
   "deleteAlbumWith": "Do you want to delete album",
   "year": "Year",
   "successCreatePassword": "Successfully created a password",
+  "successUpdatedPassword": "Successfully updated password",
   "failedUpdatedPassword": "Failed updated password",
   "max50Char": "Max 50 characters",
   "deleteFileCrop": "Do you want to delete selected",
@@ -870,5 +871,7 @@
   "favoriteJournal": "Favorite journal",
   "media": "Media",
   "photosFromTrip": "Photos from trip",
-  "viewPhotoOnFunFeed": "View photo on fun feed"
+  "viewPhotoOnFunFeed": "View photo on fun feed",
+  "register": "Register",
+  "login": "login"
 }

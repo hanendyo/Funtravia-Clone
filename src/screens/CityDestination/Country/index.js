@@ -2291,6 +2291,7 @@ export default function Country(props) {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "center",
+                  paddingHorizontal: Platform.OS === "ios" ? 10 : null,
                 }}
               >
                 <Text
@@ -2310,7 +2311,10 @@ export default function Country(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item?.key ? item.key : ""} length={15} />
+                  <Truncate
+                    text={item?.key ? item.key : ""}
+                    length={Platform.OS === "ios" ? 15 : 15}
+                  />
                 </Text>
               </View>
             </Ripple>

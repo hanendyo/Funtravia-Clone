@@ -172,18 +172,27 @@ export default function Login({ navigation, route }) {
 
   const HeaderComponent = {
     headerShown: true,
-    // title: "About",
-    headerTransparent: true,
-    // headerTintColor: "white",
-    headerTitle: "",
+    headerTransparent: false,
+    headerTintColor: "black",
+    headerTitle: (
+      <Text
+        type="bold"
+        size="header"
+        style={{ color: "black" }}
+        allowFontScaling={false}
+      >
+        {t("login")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
+      backgroundColor: "#fff",
+      elevation: 0, // remove shadow on Android
+      shadowOpacity: 0, // remove shadow on iOS
+      borderBottomWidth: 0, // Just in case.
     },
     headerLeftContainerStyle: {
-      background: "#FFF",
+      background: "black",
 
       marginLeft: 10,
     },
@@ -206,7 +215,6 @@ export default function Login({ navigation, route }) {
       </Button>
     ),
   };
-
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
     AsyncStorage.setItem("isFirst", "false");
