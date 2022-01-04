@@ -109,6 +109,7 @@ export default function FeedList({ props, token }) {
   const [uploadFailed, setUploadFailed] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [successAfterRefetch, setSuccessAfterRefetch] = useState(false);
+  console.log("~ successAfterRefetch", successAfterRefetch);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
@@ -224,10 +225,6 @@ export default function FeedList({ props, token }) {
           assets: props?.route?.params?.assets,
         },
       });
-      console.log(
-        "🚀 ~ file: FeedList.js ~ line 232 ~ SubmitData ~ response",
-        response
-      );
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
@@ -250,6 +247,9 @@ export default function FeedList({ props, token }) {
               ref?.current.scrollToIndex({ animated: true, index: 0 });
             }
           });
+          setTimeout(() => {
+            setSuccessAfterRefetch(false);
+          }, 4000);
         } else {
           setTempDataLoading(false);
           setUploadSuccess(false);
@@ -436,7 +436,6 @@ export default function FeedList({ props, token }) {
     return feedback;
   };
   const handleOnEndReached = () => {
-    console.log("handleOnEndReached");
     if (status == 0) {
       if (dataPost?.post_cursor_based?.pageInfo.hasNextPage && !loadingPost) {
         return fetchMore({
@@ -667,7 +666,7 @@ export default function FeedList({ props, token }) {
         },
       },
       onCompleted: () => {
-        setDatasFollow(dataFollow.user_following);
+        setDatasFollow(dataFollow?.user_following);
       },
     }
   );
@@ -1662,7 +1661,6 @@ export default function FeedList({ props, token }) {
                 width: Dimensions.get("screen").width - 20,
                 borderRadius: 10,
                 zIndex: 10,
-                left: -5,
               }}
             >
               <View

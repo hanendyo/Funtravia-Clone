@@ -98,7 +98,7 @@ export default function TripPlaning(props) {
       },
     },
     onCompleted: () => {
-      setPlancount(dataCount.count_myitinerary);
+      setPlancount(dataCount?.count_myitinerary);
     },
   });
 
@@ -115,7 +115,7 @@ export default function TripPlaning(props) {
       },
     },
     onCompleted: () => {
-      setData(data.itinerary_list_draf);
+      setData(data?.itinerary_list_draf);
     },
   });
 
@@ -131,7 +131,7 @@ export default function TripPlaning(props) {
       },
     },
     onCompleted: () => {
-      setDataActive(dataActive.itinerary_list_active);
+      setDataActive(dataActive?.itinerary_list_active);
     },
     // variables: { status: "D" },
   });
@@ -148,7 +148,7 @@ export default function TripPlaning(props) {
       },
     },
     onCompleted: () => {
-      setDataFinish(dataFinish.itinerary_list_finish);
+      setDataFinish(dataFinish?.itinerary_list_finish);
     },
     // variables: { status: "D" },
   });

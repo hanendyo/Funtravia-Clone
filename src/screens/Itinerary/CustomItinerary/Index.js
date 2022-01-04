@@ -107,9 +107,9 @@ export default function CustomItinerary(props) {
     },
     variables: { id: idDay },
     onCompleted: () => {
-      setcustome_timeline(datati.custome_timeline);
-      settotal_hours(datati.custome_timeline.total_hours);
-      spreadtimeline(datati.custome_timeline.timeline);
+      setcustome_timeline(datati?.custome_timeline);
+      settotal_hours(datati?.custome_timeline?.total_hours);
+      spreadtimeline(datati?.custome_timeline?.timeline);
     },
   });
 

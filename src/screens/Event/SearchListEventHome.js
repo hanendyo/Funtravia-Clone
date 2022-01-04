@@ -149,10 +149,10 @@ export default function SearchListEventHome(props) {
     {
       fetchPolicy: "network-only",
       onCompleted: () => {
-        setdataFilterCategori(dataFillter.event_filter.type);
-        setdataFilterCategoris(dataFillter.event_filter.type);
-        setdatacountry(dataFillter.event_filter.country);
-        setdatacountrys(dataFillter.event_filter.country);
+        setdataFilterCategori(dataFillter?.event_filter?.type);
+        setdataFilterCategoris(dataFillter?.event_filter?.type);
+        setdatacountry(dataFillter?.event_filter?.country);
+        setdatacountrys(dataFillter?.event_filter?.country);
       },
     }
   );

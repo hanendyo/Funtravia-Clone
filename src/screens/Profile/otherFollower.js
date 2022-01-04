@@ -86,7 +86,7 @@ export default function Follower(props) {
         id: idUser,
       },
       onCompleted: () => {
-        setdata(dataFollow.user_followersbyid);
+        setdata(dataFollow?.user_followersbyid);
       },
     }
   );

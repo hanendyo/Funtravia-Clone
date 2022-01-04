@@ -282,7 +282,7 @@ export default function Comments(props) {
       },
     },
     onCompleted: async () => {
-      setDatasFollow(dataFollow.user_following);
+      setDatasFollow(dataFollow?.user_following);
     },
   });
 

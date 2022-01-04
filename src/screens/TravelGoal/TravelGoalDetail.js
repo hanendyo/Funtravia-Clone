@@ -110,7 +110,7 @@ export default function TravelGoalDetail(props) {
       },
     },
     onCompleted: () => {
-      setdatadetail(datadetails.detail_travelgoal);
+      setdatadetail(datadetails?.detail_travelgoal);
     },
   });
 
@@ -128,7 +128,7 @@ export default function TravelGoalDetail(props) {
       },
     },
     onCompleted: () => {
-      setdatarelated(datarelateds.related_travelgoal);
+      setdatarelated(datarelateds?.related_travelgoal);
     },
   });
 

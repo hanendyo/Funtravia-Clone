@@ -225,7 +225,7 @@ export default function ItineraryDestination(props) {
       // console.log("masukkk", dataKota);
       // console.log("masukkk", datasearchlocation);
 
-      let datloop = [...datasearchlocation.searchlocation_populer];
+      let datloop = [...datasearchlocation?.searchlocation_populer];
 
       for (var ix in datloop) {
         if (
@@ -239,7 +239,7 @@ export default function ItineraryDestination(props) {
         }
       }
 
-      await setdataFilterCityfull(datasearchlocation.searchlocation_populer);
+      await setdataFilterCityfull(datasearchlocation?.searchlocation_populer);
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
     },

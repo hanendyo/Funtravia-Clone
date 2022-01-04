@@ -457,9 +457,9 @@ export default function ItineraryDetail(props) {
     },
     variables: { id: idDay },
     onCompleted: (res) => {
-      setDataListItem(res.day_timeline);
+      setDataListItem(res?.day_timeline);
 
-      spreadtimeline(res.day_timeline);
+      spreadtimeline(res?.day_timeline);
     },
   });
   if (datatimeline && datatimeline.day_timeline.length) {

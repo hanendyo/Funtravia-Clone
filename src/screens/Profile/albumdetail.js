@@ -131,7 +131,7 @@ export default function albumdetail(props) {
       // type: props?.route?.params?.type,
     },
     onCompleted: () => {
-      setdata(dataalbum.all_albums_post_v2);
+      setdata(dataalbum?.all_albums_post_v2);
     },
   });
 

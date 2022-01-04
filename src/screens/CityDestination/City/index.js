@@ -333,7 +333,7 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_journal(dataJournal.journal_by_city);
+      setList_journal(dataJournal?.journal_by_city);
     },
   });
 
@@ -353,7 +353,7 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_populer(dataItinerary.itinerary_populer_by_city);
+      setList_populer(dataItinerary?.itinerary_populer_by_city);
     },
   });
 

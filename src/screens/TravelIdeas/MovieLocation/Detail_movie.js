@@ -74,7 +74,7 @@ export default function Detail_movie(props) {
         },
       },
       onCompleted: () => {
-        setlistdestinasi_bymovie(data.listdestinasi_bymovie);
+        setlistdestinasi_bymovie(data?.listdestinasi_bymovie);
       },
     }
   );

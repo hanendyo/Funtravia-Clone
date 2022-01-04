@@ -297,8 +297,8 @@ export default function ProvinceDetail(props) {
 
       let loop = 0;
       let eventavailable = [];
-      if (dataProvince.province_detail_v2?.event) {
-        dataProvince.province_detail_v2?.event.map((item, index) => {
+      if (dataProvince?.province_detail_v2?.event) {
+        dataProvince?.province_detail_v2?.event.map((item, index) => {
           if (item.month == datenow) {
             eventavailable = item;
           }
@@ -716,8 +716,8 @@ export default function ProvinceDetail(props) {
   const RenderGeneral = ({}) => {
     let render = [];
     render =
-      dataProvince && dataProvince.province_detail_v2
-        ? dataProvince.province_detail_v2
+      dataProvince && dataProvince?.province_detail_v2
+        ? dataProvince?.province_detail_v2
         : null;
 
     let renderjournal = [];
@@ -2794,8 +2794,8 @@ export default function ProvinceDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataProvince && dataProvince.province_detail_v2.cover
-              ? { uri: dataProvince.province_detail_v2.cover }
+            dataProvince && dataProvince?.province_detail_v2.cover
+              ? { uri: dataProvince?.province_detail_v2.cover }
               : default_image
           }
         />
@@ -2827,11 +2827,11 @@ export default function ProvinceDetail(props) {
               }}
             >
               <Text size="title" type="bold">
-                {dataProvince && dataProvince.province_detail_v2 ? (
+                {dataProvince && dataProvince?.province_detail_v2 ? (
                   <Truncate
                     text={Capital({
                       text: dataProvince?.province_detail_v2?.name
-                        ? dataProvince.province_detail_v2.name
+                        ? dataProvince?.province_detail_v2?.name
                         : "",
                     })}
                     length={20}
@@ -2857,8 +2857,8 @@ export default function ProvinceDetail(props) {
                 >
                   <PinHijau height={12} width={12} />
                   <Text size="label" type="regular" style={{ marginLeft: 10 }}>
-                    {dataProvince && dataProvince.province_detail_v2
-                      ? dataProvince.province_detail_v2.countries.name
+                    {dataProvince && dataProvince?.province_detail_v2
+                      ? dataProvince?.province_detail_v2?.countries?.name
                       : "-"}
                   </Text>
                 </View>
@@ -3610,7 +3610,7 @@ export default function ProvinceDetail(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              province_id: dataProvince.province_detail_v2.id,
+              province_id: dataProvince?.province_detail_v2?.id,
               searchInput: "",
               locationname: lisProvince.name,
               aktifsearch: true,
@@ -3724,7 +3724,7 @@ export default function ProvinceDetail(props) {
         <TouchableOpacity
           onPress={(x) =>
             props.navigation.push("SearchPg", {
-              province_id: dataProvince.province_detail_v2.id,
+              province_id: dataProvince?.province_detail_v2?.id,
               searchInput: "",
               locationname: lisProvince.name,
               aktifsearch: true,
@@ -3866,11 +3866,11 @@ export default function ProvinceDetail(props) {
                       screen: "SendToChat",
                       params: {
                         dataSend: {
-                          id: dataProvince.province_detail_v2?.id,
-                          cover: dataProvince.province_detail_v2?.cover,
-                          name: dataProvince.province_detail_v2?.name,
+                          id: dataProvince?.province_detail_v2?.id,
+                          cover: dataProvince?.province_detail_v2?.cover,
+                          name: dataProvince?.province_detail_v2?.name,
                           description:
-                            dataProvince.province_detail_v2?.description,
+                            dataProvince?.province_detail_v2?.description,
                         },
                         title: t("province"),
                         tag_type: "tag_province",
@@ -3893,7 +3893,7 @@ export default function ProvinceDetail(props) {
               onPress={() => {
                 shareAction({
                   from: "province",
-                  target: dataProvince.province_detail_v2.id,
+                  target: dataProvince?.province_detail_v2.id,
                 });
                 SetShareModal(false);
               }}
@@ -3911,7 +3911,7 @@ export default function ProvinceDetail(props) {
               onPress={() => {
                 CopyLink({
                   from: "province",
-                  target: dataProvince.province_detail_v2.id,
+                  target: dataProvince?.province_detail_v2.id,
                   success: t("successCopyLink"),
                   failed: t("failedCopyLink"),
                 });
@@ -3958,7 +3958,7 @@ export default function ProvinceDetail(props) {
     //     <TouchableOpacity
     //       onPress={(x) =>
     //         props.navigation.push("SearchPg", {
-    //           province_id: dataProvince.province_detail_v2.id,
+    //           province_id: dataProvince?.province_detail_v2.id,
     //           searchInput: "",
     //           locationname: lisProvince.name,
     //           aktifsearch: true,
@@ -3999,7 +3999,7 @@ export default function ProvinceDetail(props) {
     //         returnKeyType="search"
     //         onSubmitEditing={(x) =>
     //           props.navigation.push("SearchPg", {
-    //             idcity: dataProvince.province_detail_v2.id,
+    //             idcity: dataProvince?.province_detail_v2.id,
     //             searchInput: search,
     //             aktifsearch: true,
     //           })

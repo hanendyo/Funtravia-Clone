@@ -710,7 +710,7 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: () => {
-      setdataReview(datareview.user_reviewbyid);
+      setdataReview(datareview?.user_reviewbyid);
     },
   });
 
@@ -747,7 +747,7 @@ export default function OtherProfile(props) {
         id: id,
       },
       onCompleted: (data) => {
-        setDataUser(data.user_profilebyid);
+        setDataUser(data?.user_profilebyid);
 
         QueryFotoAlbum();
         LoadReview();
@@ -781,7 +781,7 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: () => {
-      setdataTrip(datatrip.user_tripbyid);
+      setdataTrip(datatrip?.user_tripbyid);
     },
   });
 
@@ -800,7 +800,7 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: () => {
-      setdataTrip(datatripX.user_trip);
+      setdataTrip(datatripX?.user_trip);
     },
   });
 

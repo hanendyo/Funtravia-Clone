@@ -154,7 +154,7 @@ export default function about(props) {
     onCompleted: () => {
       let tab = [];
 
-      data.list_about_article_city.map((item, index) => {
+      data?.list_about_article_city.map((item, index) => {
         tab.push({ key: item.id, title: item.name });
       });
 
@@ -163,8 +163,8 @@ export default function about(props) {
     },
   });
   let about = [];
-  if (data && data.list_about_article_city) {
-    about = data.list_about_article_city;
+  if (data && data?.list_about_article_city) {
+    about = data?.list_about_article_city;
   }
 
   useEffect(() => {

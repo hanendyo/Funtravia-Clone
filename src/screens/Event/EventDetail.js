@@ -196,7 +196,7 @@ export default function EventDetail(props) {
       },
     },
     onCompleted: () => {
-      setDataEvent(data.event_detail);
+      setDataEvent(data?.event_detail);
     },
   });
 

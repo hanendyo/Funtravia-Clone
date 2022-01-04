@@ -155,7 +155,7 @@ export default function CopyItinerary(props) {
     },
     onCompleted: () => {
       let tempdata = [];
-      for (var i of dataCategory.category_journal) {
+      for (var i of dataCategory?.category_journal) {
         tempdata.push({
           label: i.name,
           value: i.id,

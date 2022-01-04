@@ -120,7 +120,7 @@ export default function TravelGoal(props) {
       },
     },
     onCompleted: () => {
-      setdataPopular(dataPopulars.travelgoal_populer);
+      setdataPopular(dataPopulars?.travelgoal_populer);
     },
   });
 
@@ -140,7 +140,7 @@ export default function TravelGoal(props) {
       },
     },
     onCompleted: () => {
-      setdataNew(dataNews.travelgoal_newer);
+      setdataNew(dataNews?.travelgoal_newer);
     },
   });
 
