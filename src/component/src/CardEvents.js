@@ -136,7 +136,7 @@ export default function CardEvents({ data, props, setData, token }) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: 40 }}>
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}

@@ -1,7 +1,7 @@
 export const API = "https://dev-gql.funtravia.com/graphql";
 export const API_DOMAIN = "https://dev-gql.funtravia.com";
-// export const API = "http://20.1.32.9:8000/graphql";
-// export const API = "http://localhost:8000/graphql";
+// export const API = "http://20.1.32.47:8000/graphql";
+// export const API = "http://127.0.0.1:8000/graphql";
 export const RESTFULL_CHAT =
   "https://dev-gql.funtravia.com/api/room/group/store";
 export const RESTFULL_API = "https://dev-gql.funtravia.com/api/";
