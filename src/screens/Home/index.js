@@ -57,14 +57,11 @@ export default function Home(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-
-    console.log("token", tkn);
     let sttng = await AsyncStorage.getItem("setting");
     if (tkn) {
       console.log("as");
       dispatch(setTokenApps(`Bearer ${tkn}`));
       dispatch(setSettingUser(JSON.parse(sttng)));
-
       await NotifCount();
       await LoadUserProfile();
       await LoadPost();

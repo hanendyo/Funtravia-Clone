@@ -31,19 +31,21 @@ import { TabBar, TabView } from "react-native-tab-view";
 import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 
 export default function SearchListEventHome(props) {
-  console.log("years", props.route.params.year);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
   let [oldYear, setOldYear] = useState(
     props.route.params.year ? props.route.params.year : null
   );
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
-  let [setting, setSetting] = useState("");
+  // let [setting, setSetting] = useState("");
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
   let [show, setShow] = useState(false);
@@ -1183,7 +1185,8 @@ export default function SearchListEventHome(props) {
     await GetDataEventsPublic();
 
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   const [

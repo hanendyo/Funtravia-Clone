@@ -36,7 +36,9 @@ export default function Wishlist(props) {
   const { t, i18n } = useTranslation();
   let [dataEvent, setdataEvent] = useState([]);
   let [dataDes, setdataDes] = useState([]);
-  let [setting, setSetting] = useState("");
+  // let [setting, setSetting] = useState("");
+  const setting = useSelector((data) => data.setting);
+
   let [texts, setText] = useState("");
   let [tabIndex, setIndex] = useState(0);
   let scrollRef = useRef();
