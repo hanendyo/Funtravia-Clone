@@ -396,6 +396,7 @@ export default function SearchListEventHome(props) {
             paddingHorizontal: 10,
             borderWidth: 1,
             borderColor: "#e8e8e8",
+            marginBottom: 10,
           }}
         >
           <Search width={15} height={15} style={{ marginRight: 5 }} />
@@ -468,7 +469,6 @@ export default function SearchListEventHome(props) {
                 style={{
                   marginLeft: 0,
                   color: "#464646",
-                  // borderWidth: 5,
                 }}
               >
                 {Capital({ text: item?.name })}

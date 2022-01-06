@@ -129,7 +129,7 @@ export default function SettingCity(props) {
     setTimeout(() => {
       if (ref && ref?.current) {
         ref?.current?.scrollToIndex({
-          animation: false,
+          animated: false,
           index: index,
         });
       }
@@ -338,7 +338,7 @@ export default function SettingCity(props) {
             width: Dimensions.get("screen").width,
             zIndex: 1,
             // opacity: 0.7,
-            paddingTop: 50,
+            paddingTop: Dimensions.get("screen").height / 3,
           }}
         >
           <ActivityIndicator animating={true} color="#209FAE" size="large" />
@@ -366,12 +366,12 @@ export default function SettingCity(props) {
 
             length: Platform.select({
               ios: Notch ? 50 : 47,
-              android: deviceId == "LYA-L29" ? 45.5 : 50,
+              android: deviceId == "LYA-L29" ? 45.5 : 48.8,
             }),
 
             offset: Platform.select({
               ios: Notch ? 50 * index : 47 * index,
-              android: deviceId == "LYA-L29" ? 45.5 * index : 50 * index,
+              android: deviceId == "LYA-L29" ? 45.5 * index : 48.8 * index,
             }),
 
             index,

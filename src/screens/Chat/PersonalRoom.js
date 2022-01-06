@@ -484,7 +484,11 @@ export default function Room({ navigation, route }) {
             alignContent: "center",
             alignItems: "center",
           }}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            route?.params?.fromNewChat == true
+              ? navigation.navigate("ChatScreen")
+              : navigation.goBack();
+          }}
         >
           {Platform.OS === "ios" ? (
             <Arrowbackios width={15} height={15} />

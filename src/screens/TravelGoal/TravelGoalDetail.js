@@ -190,7 +190,7 @@ export default function TravelGoalDetail(props) {
 
   const titleTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, -8],
+    outputRange: [0, 0, 0],
     extrapolate: "clamp",
   });
 
@@ -212,7 +212,7 @@ export default function TravelGoalDetail(props) {
   });
   const titleOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE + 10],
-    outputRange: [0, 0, 1],
+    outputRange: [0, 1.3, 1],
     extrapolate: "clamp",
   });
 
@@ -727,7 +727,9 @@ export default function TravelGoalDetail(props) {
           backgroundColor: "#209FAE",
           overflow: "hidden",
           height:
-            Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT + 10,
+            Platform.OS === "ios"
+              ? HEADER_MAX_HEIGHT - 5
+              : HEADER_MAX_HEIGHT - 5,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -772,7 +774,7 @@ export default function TravelGoalDetail(props) {
           right: 20,
           zIndex: 999,
           opacity: titleOpacity,
-          top: Platform.OS === "ios" ? SafeStatusBar : SafeStatusBar + 15,
+          top: Platform.OS === "ios" ? SafeStatusBar - 3 : SafeStatusBar - 3,
         }}
       >
         <Text
@@ -805,7 +807,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 15 : 30,
+            marginTop: Platform.OS === "ios" ? 20 : 20,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 40,
@@ -829,18 +831,19 @@ export default function TravelGoalDetail(props) {
 
       <Animated.View
         style={{
-          transform: [{ translateY: backOpacity }],
+          transform: [{ translateY: titleTranslateY }],
           height: 100,
           width: 100,
           position: "absolute",
           zIndex: 999,
           top: SafeStatusBar - 13,
+          opacity: titleOpacity,
         }}
       >
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 15 : 30,
+            marginTop: Platform.OS === "ios" ? 20 : 20,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

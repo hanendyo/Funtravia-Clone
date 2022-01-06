@@ -45,7 +45,8 @@ import CreateAlbum from "./CreateAlbum";
 import { RNToasty } from "react-native-toasty";
 import DashedLine from "react-native-dashed-line";
 import { useIsFocused } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../../redux/action";
 
 const PostMut = gql`
   mutation(
@@ -84,14 +85,15 @@ const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
   const tokenApps = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
   const [Img, setImg] = useState("");
-  console.log("🚀 ~ file: CreatePost.js ~ line 95 ~ CreatePost ~ Img", Img);
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
-  let [setting, setSetting] = useState();
+  // let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
   let [modalAlbum, setModalAlbum] = useState(false);
   let [idAlbums, setIdAlbums] = useState({});
@@ -291,7 +293,8 @@ export default function CreatePost(props) {
   const loadAsync = async () => {
     LoadUserProfile();
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   useEffect(() => {
