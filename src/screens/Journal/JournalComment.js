@@ -21,12 +21,13 @@ import AddComment from "./AddComment";
 import JournalById from "../../graphQL/Query/Journal/JournalById";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function JournalComment(props) {
   const [dataById] = useState(props.route.params.dataJournalById);
   const tokenApps = useSelector((data) => data.token);
-  const [setting, setSetting] = useState("");
+  const setting = useSelector((data) => data.setting);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   let slider = useRef();
   let { width, height } = Dimensions.get("screen");
@@ -104,7 +105,8 @@ export default function JournalComment(props) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
     await fetchData();
   };
 

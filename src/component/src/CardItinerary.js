@@ -266,7 +266,7 @@ export default function CardItinerary({
                     }
                     style={{
                       height: "100%",
-                      width: Dimensions.get("screen").width * 0.3,
+                      width: Dimensions.get("screen").width * 0.32,
                       borderTopLeftRadius: 5,
                     }}
                   />
@@ -312,28 +312,36 @@ export default function CardItinerary({
                           : default_profile
                       }
                     />
-                    <Text
-                      size="small"
-                      type="regular"
+                    <View
                       style={{
-                        zIndex: 0,
-                        paddingLeft: 10,
-                        paddingRight: 5,
-                        backgroundColor: "rgba(0, 0, 0, 0.6)",
-                        borderRadius: 2,
-                        color: "white",
-                        marginLeft: -5,
-                        padding: 2,
-                        paddingBottom: 5,
+                        maxWidth: "75%",
                       }}
                     >
-                      {Truncate({
-                        text: item?.user_created?.first_name
-                          ? item?.user_created?.first_name
-                          : "unknown",
-                        length: 13,
-                      })}
-                    </Text>
+                      <Text
+                        size="small"
+                        type="regular"
+                        style={{
+                          zIndex: 0,
+                          paddingLeft: 10,
+                          paddingRight: 5,
+                          backgroundColor: "rgba(0, 0, 0, 0.6)",
+                          borderRadius: 2,
+                          color: "white",
+                          marginLeft: -5,
+                          padding: 2,
+                          paddingBottom: 5,
+                        }}
+                        numberOfLines={1}
+                      >
+                        {/* {Truncate({
+                          text: item?.user_created?.first_name
+                            ? item?.user_created?.first_name
+                            : "unknown",
+                          length: 13,
+                        })} */}
+                        {item?.user_created?.first_name}
+                      </Text>
+                    </View>
                   </Pressable>
                 </Pressable>
                 <View

@@ -284,7 +284,7 @@ export default function Trip(
                   paddingHorizontal: 10,
                   borderRadius: 3,
                   overflow: "hidden",
-                  width: "70%",
+                  maxWidth: "80%",
                 }}
               >
                 <Text

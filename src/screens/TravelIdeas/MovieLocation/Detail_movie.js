@@ -57,9 +57,7 @@ export default function Detail_movie(props) {
   let [modalShare, setModalShare] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
   let [movie_byid, setMoviebyid] = useState({});
-
   let [listdestinasi_bymovie, setlistdestinasi_bymovie] = useState([]);
-  console.log("listdestinasi_bymovie", listdestinasi_bymovie);
   const [fetchDataAnotherDes, { data, loading, error }] = useLazyQuery(
     ListDestinationByMovie,
     {

@@ -75,7 +75,7 @@ export default function RegisterGoogle({ navigation }) {
           response.data.register_google.access_token
         );
         dispatch(
-          setTokenApps(`Bearer ${response.data.register_facebook.access_token}`)
+          setTokenApps(`Bearer ${response.data.register_google.access_token}`)
         );
 
         await AsyncStorage.setItem(

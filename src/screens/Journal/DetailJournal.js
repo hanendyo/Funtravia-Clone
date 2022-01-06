@@ -45,7 +45,8 @@ const SafeStatusBar = Platform.select({
   android: StatusBar.currentHeight,
 });
 import { RNToasty } from "react-native-toasty";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../redux/action";
 import { Bg_soon } from "../../assets/png";
 import { useScrollToTop } from "@react-navigation/native";
 
@@ -54,9 +55,10 @@ export default function DetailJournal(props) {
   let [modalShare, setModalShare] = useState(false);
   let [refY, setRefY] = useState(0);
   const tokenApps = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
+  const dispatch = useDispatch();
   let [modalLogin, setModalLogin] = useState(false);
   let [dataPopuler] = useState(props.route.params.dataPopuler);
-  let [setting, setSetting] = useState();
   let slider = useRef();
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const onKeyboardShow = (event) =>
@@ -252,7 +254,8 @@ export default function DetailJournal(props) {
 
   const loadAsync = async () => {
     let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // await setSetting(JSON.parse(setsetting));
+    dispatch(setSettingUser(JSON.parse(setsetting)));
     await fetchData();
     // await fetchDataComment();
   };
@@ -278,6 +281,9 @@ export default function DetailJournal(props) {
     props.navigation.setOptions(HeaderComponent);
     props.navigation.setOptions({ headerLeft: title });
     loadAsync();
+    setTimeout(() => {
+      console.log(`SETTING: `, setting);
+    }, 2000);
   }, []);
 
   const wait = (timeout) => {
