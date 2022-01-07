@@ -37,7 +37,7 @@ export default function Wishlist(props) {
   let [dataEvent, setdataEvent] = useState([]);
   let [dataDes, setdataDes] = useState([]);
   // let [setting, setSetting] = useState("");
-  const setting = useSelector((data) => data.setting);
+  // const setting = useSelector((data) => data.setting);
 
   let [texts, setText] = useState("");
   let [tabIndex, setIndex] = useState(0);
@@ -88,8 +88,8 @@ export default function Wishlist(props) {
       getEvent();
       getDes();
     }
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
+    // let setsetting = await AsyncStorage.getItem("setting");
+    // await setSetting(JSON.parse(setsetting));
   };
 
   const [getEvent, { loading, data: dataEven, error }] = useLazyQuery(Events, {

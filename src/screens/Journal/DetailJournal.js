@@ -253,9 +253,9 @@ export default function DetailJournal(props) {
   };
 
   const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
+    // let setsetting = await AsyncStorage.getItem("setting");
     // await setSetting(JSON.parse(setsetting));
-    dispatch(setSettingUser(JSON.parse(setsetting)));
+    // dispatch(setSettingUser(JSON.parse(setsetting)));
     await fetchData();
     // await fetchDataComment();
   };
@@ -281,9 +281,6 @@ export default function DetailJournal(props) {
     props.navigation.setOptions(HeaderComponent);
     props.navigation.setOptions({ headerLeft: title });
     loadAsync();
-    setTimeout(() => {
-      console.log(`SETTING: `, setting);
-    }, 2000);
   }, []);
 
   const wait = (timeout) => {

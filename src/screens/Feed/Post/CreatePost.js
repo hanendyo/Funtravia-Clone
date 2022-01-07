@@ -83,7 +83,6 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("props create post", props.route.params);
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const isFocused = useIsFocused();
