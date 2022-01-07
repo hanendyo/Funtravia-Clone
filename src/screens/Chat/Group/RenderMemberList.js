@@ -239,8 +239,8 @@ export default function RenderMemberList({
                 marginRight: 20,
               }}
             />
-            <View>
-              <Text size="label" type="bold">
+            <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+              <Text size="label" type="bold" numberOfLines={1}>
                 {item.first_name} {item?.last_name}
               </Text>
               <Text size="label" type="regular">
@@ -273,7 +273,7 @@ export default function RenderMemberList({
                   color: "#464646",
                 }}
               >
-                Pending
+                {t("pending")}
               </Text>
             </View>
           ) : null}
@@ -331,8 +331,8 @@ export default function RenderMemberList({
                   marginRight: 20,
                 }}
               />
-              <View>
-                <Text>
+              <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+                <Text numberOfLines={1}>
                   {item.first_name} {item?.last_name}
                 </Text>
                 <Text>@{item.username}</Text>
@@ -401,8 +401,8 @@ export default function RenderMemberList({
                 marginRight: 20,
               }}
             />
-            <View>
-              <Text>
+            <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+              <Text numberOfLines={1}>
                 {item.first_name} {item?.last_name}
               </Text>
               <Text>@{item.username}</Text>
@@ -463,8 +463,8 @@ export default function RenderMemberList({
               marginRight: 20,
             }}
           />
-          <View>
-            <Text size="label" type="bold">
+          <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+            <Text size="label" type="bold" numberOfLines={1}>
               {item.first_name} {item?.last_name}
             </Text>
             <Text size="label" type="regular">

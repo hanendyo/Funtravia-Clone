@@ -186,7 +186,11 @@ export default function CardDestination({
   };
 
   return (
-    <>
+    <View
+      style={{
+        paddingTop: 40,
+      }}
+    >
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -502,6 +506,6 @@ export default function CardDestination({
           </Text>
         </View>
       )}
-    </>
+    </View>
   );
 }

@@ -175,8 +175,6 @@ export default function TravelGoal(props) {
     }
   };
 
-  console.log("Data", dataTop);
-
   return (
     <ScrollView
       contentContainerStyle={{

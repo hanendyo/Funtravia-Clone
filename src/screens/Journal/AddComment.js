@@ -17,14 +17,16 @@ import { useMutation } from "@apollo/react-hooks";
 import deviceInfoModule from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { useSelector } from "react-redux";
 
 export default function AddComment({
   data,
-  token,
+  // token,
   fetchData,
   listComments,
   setting,
 }) {
+  const token = useSelector((data) => data.token);
   const Notch = deviceInfoModule.hasNotch();
   let [statusText, setStatusText] = useState("");
   let [text, setText] = useState("");

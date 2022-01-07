@@ -252,10 +252,13 @@ export default function ChatList({
   return (
     <View
       style={{
+        paddingTop: 40,
         flex: 1,
+
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
-        paddingBottom: 10,
+        // paddingBottom: 5,
+        // paddingHorizontal: 5,
         backgroundColor: "#FFFFFF",
       }}
     >

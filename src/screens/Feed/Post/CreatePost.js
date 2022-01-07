@@ -44,7 +44,8 @@ import CreateAlbum from "./CreateAlbum";
 import { RNToasty } from "react-native-toasty";
 import DashedLine from "react-native-dashed-line";
 import { useIsFocused } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSettingUser } from "../../../redux/action";
 
 const PostMut = gql`
   mutation(

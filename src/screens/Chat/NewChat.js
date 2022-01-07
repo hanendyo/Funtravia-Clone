@@ -38,7 +38,6 @@ export default function NewChat({ navigation }) {
   const { t, i18n } = useTranslation();
   const [token, setToken] = useState(null);
   let [search, setSearch] = useState("");
-  console.log(search);
   const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [
@@ -56,7 +55,6 @@ export default function NewChat({ navigation }) {
       },
     },
   });
-  console.log(DataBuddy);
   const ChatOptions = {
     headerShown: true,
     headerTitle: "",
@@ -117,7 +115,6 @@ export default function NewChat({ navigation }) {
       await setToken(token);
       await _setSearch(null);
       await querywith();
-      console.log(token);
     }
 
     let data = await AsyncStorage.getItem("setting");
@@ -161,6 +158,7 @@ export default function NewChat({ navigation }) {
               " " +
               (change.last_name ? change.last_name : ""),
             picture: change.picture,
+            fromNewChat: true,
           },
         });
       }

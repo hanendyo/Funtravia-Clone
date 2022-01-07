@@ -28,8 +28,6 @@ export default function AddCommentLike({
   props,
 }) {
   const token = useSelector((data) => data.token);
-
-  console.log("token", token);
   let [dataList, setDataList] = useState(data);
   let [text, setText] = useState("");
   const { t } = useTranslation();

@@ -2003,7 +2003,7 @@ export default function FeedList({ props, token }) {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                      maxWidth: "80%",
+                      maxWidth: "70%",
                     }}
                   >
                     <Text

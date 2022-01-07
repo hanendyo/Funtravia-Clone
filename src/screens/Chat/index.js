@@ -11,6 +11,8 @@ import {
   Keyboard,
   Modal,
   Pressable,
+  Animated,
+  FlatList,
 } from "react-native";
 import {
   NewGroup,
@@ -44,6 +46,7 @@ import { useSelector } from "react-redux";
 //TRY SOCKET
 import io from "socket.io-client";
 import Delete from "../../component/src/AlertModal/Delete";
+const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 //TRY SOCKET
 // import DeviceInfo from "react-native-device-info";
 // const Notch = DeviceInfo.hasNotch();
@@ -53,6 +56,7 @@ import Delete from "../../component/src/AlertModal/Delete";
 // });
 
 export default function Message({ navigation, route }) {
+  const _tabIndex = useRef(0);
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
   const [user, setUser] = useState({});
@@ -271,7 +275,7 @@ export default function Message({ navigation, route }) {
     );
   };
 
-  const [index, setIndex] = React.useState(
+  const [tabIndex, setIndex] = React.useState(
     route.params?.page ? route.params.page : 0
   );
   const [routes] = React.useState([
@@ -302,6 +306,94 @@ export default function Message({ navigation, route }) {
       );
     }
   };
+  let scrollRef = useRef();
+
+  const renderTabBar = (props) => {
+    // const y = scrollY.interpolate({
+    //   inputRange: [0, HeaderHeight],
+    //   outputRange: [HeaderHeight, 55],
+    //   extrapolateRight: "clamp",
+    // });
+    return (
+      <Animated.View
+        style={{
+          top: 0,
+          zIndex: 1,
+
+          position: "absolute",
+          // transform: [{ translateY: y }],
+          width: "100%",
+        }}
+      >
+        <FlatList
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            backgroundColor: "white",
+          }}
+          renderItem={({ item, index }) => (
+            <Ripple
+              key={"tabx" + index}
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  alignContent: "center",
+
+                  width:
+                    props.navigationState.routes.length <= 2
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  paddingHorizontal: Platform.OS === "ios" ? 15 : null,
+                }}
+              >
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 1,
+                      borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  <Truncate
+                    text={item?.key ? item.key : ""}
+                    length={Platform.OS === "ios" ? 13 : 15}
+                  />
+                </Text>
+              </View>
+            </Ripple>
+          )}
+        />
+      </Animated.View>
+    );
+  };
+
   const srcinpt = useRef();
   return (
     <View style={{ flex: 1 }}>
@@ -477,6 +569,7 @@ export default function Message({ navigation, route }) {
         <View
           style={{
             backgroundColor: "#FFFFFF",
+
             // borderTopLeftRadius: 15,
             // borderTopRightRadius: 15,
           }}
@@ -485,6 +578,7 @@ export default function Message({ navigation, route }) {
             style={{
               marginHorizontal: 15,
               marginTop: 15,
+
               backgroundColor: "#f6f6f6",
               flexDirection: "row",
               borderRadius: 3,
@@ -534,24 +628,25 @@ export default function Message({ navigation, route }) {
         </View>
       ) : (
         <TabView
-          lazy={true}
-          navigationState={{ index, routes }}
+          // onSwipeStart={() => setCanScroll(false)}
+          // onSwipeEnd={() => setCanScroll(true)}
+          onIndexChange={(id) => {
+            _tabIndex.current = id;
+            setIndex(id);
+            scrollRef.current?.scrollToIndex({
+              // y: 0,
+              // x: 100,
+              index: id,
+              animated: true,
+            });
+          }}
+          navigationState={{ index: tabIndex, routes }}
           renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={(props) => {
-            return (
-              <TabBar
-                {...props}
-                style={{
-                  backgroundColor: "white",
-                  height: 42,
-
-                  justifyContent: "center",
-                }}
-                renderLabel={renderLabel}
-                indicatorStyle={styles.indicator}
-              />
-            );
+          renderTabBar={renderTabBar}
+          initialLayout={{
+            height: 0,
+            // borderWidth: 1,
+            width: width,
           }}
         />
       )}
@@ -587,6 +682,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     backgroundColor: "#FFF",
+
     height: 40,
   },
   indicator: { backgroundColor: "#209FAE", height: 2 },
