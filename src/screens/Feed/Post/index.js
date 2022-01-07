@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   ImageBackground,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -42,7 +43,6 @@ import { hash, stat } from "react-native-fs";
 import { useSelector } from "react-redux";
 import { Video, Image as ImageCompress } from "react-native-compressor";
 import RNFS from "react-native-fs";
-// import RNConvertPhAsset from "react-native-convert-ph-asset";
 
 export default function Post(props) {
   const tokenApps = useSelector((data) => data.token);
@@ -166,14 +166,12 @@ export default function Post(props) {
             0,
             0
           );
-          console.log("sbdolute", absolutePath);
           const statResult = await stat(absolutePath);
           if (statResult.size <= 50000000) {
             tempData.height = height;
             tempData.width = width;
             tempData.size = statResult.size;
             tempData.uri = "file://" + statResult.path;
-            console.log("tempData", tempData);
             props.navigation.navigate("CreatePostScreen", {
               location: recent.node.location,
               type: recent.node.type.substr(0, 5),
@@ -196,7 +194,6 @@ export default function Post(props) {
             tempData.width = width;
             tempData.size = statResult.size;
             tempData.uri = statResult.path;
-            console.log("tempData", tempData);
             props.navigation.navigate("CreatePostScreen", {
               location: recent.node.location,
               type: recent.node.type.substr(0, 5),
@@ -267,6 +264,33 @@ export default function Post(props) {
       for (var i = 0; i < checklistVideo.length; i++) {
         checklistVideo[i].node.image.width = width;
       }
+
+      // if (Platform.OS == "ios") {
+      //   for (var i of checklistVideo) {
+      //     let extension = i.node.image.filename.split(".").pop();
+      //     const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
+      //       .toString(36)
+      //       .substring(7)}.${extension}`;
+      //     console.log("~ dest", dest);
+      //     let absolutePath = await RNFS.copyAssetsFileIOS(
+      //       i.node.image.uri,
+      //       dest,
+      //       0,
+      //       0
+      //     );
+      //     i.node.image.uri = "file://" + absolutePath;
+      //   }
+      // }
+
+      // const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
+      //   .toString(36)
+      //   .substring(7)}.MOV`;
+      // let absolutePath = await RNFS.copyAssetsVideoIOS(
+      //   tempData.uri,
+      //   dest,
+      //   0,
+      //   0
+      // );
 
       props.navigation.navigate("FeedStack", {
         screen: "Crop",
@@ -474,7 +498,6 @@ export default function Post(props) {
       }
       let data_foto = dataCamera.edges;
       const datas = [...imageRoll, ...data_foto];
-      console.log("datas", datas);
       setImageRoll(datas);
       setPageInfo(dataCamera.page_info);
       await setLoadimg(false);
@@ -625,12 +648,22 @@ export default function Post(props) {
   };
 
   const durationTime = (data) => {
-    data.currentTime < 60.0 ? setTime(false) : setTime(true);
+    data.currentTime < 60.0
+      ? recent?.node?.image?.playableDuration.toString().substr(0, 1) ==
+        data.currentTime.toString().substr(0, 1)
+        ? setTime(true)
+        : setTime(false)
+      : setTime(false);
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
+    <SafeAreaView
+      style={{
+        // flex: 1,
+        backgroundColor: "#14646e",
+      }}
+    >
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <Loading show={loading} />
       <_modalGalery />
 
@@ -643,7 +676,7 @@ export default function Post(props) {
           alignItems: "center",
           alignContent: "center",
 
-          marginTop: -10,
+          // marginTop: Platform.OS == "android" ? StatusBar.currentHeight : 0,
           paddingLeft: 5,
         }}
       >
@@ -691,11 +724,8 @@ export default function Post(props) {
       {/* {Preview ? ( */}
       <View
         style={{
-          marginBottom: 5,
           alignItems: "center",
-          // position: "absolute",
-          // top: 0,
-          // flex: 1,
+          backgroundColor: "#fff",
         }}
       >
         {recent?.node?.type.substr(0, 5) === "video" ? (
@@ -838,6 +868,8 @@ export default function Post(props) {
           paddingStart: 0,
           alignContent: "center",
           backgroundColor: "white",
+          backgroundColor: "#fff",
+          height: Dimensions.get("screen").height,
         }}
         ref={slider}
         data={imageRoll && imageRoll.length ? imageRoll : null}
@@ -1067,7 +1099,7 @@ export default function Post(props) {
         aler={aler}
         setClose={() => showAlert({ ...aler, show: false })}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

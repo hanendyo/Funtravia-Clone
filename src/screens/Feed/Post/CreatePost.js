@@ -392,18 +392,21 @@ export default function CreatePost(props) {
       return (
         <FunVideo
           source={{
-            uri:
-              Platform.OS === "ios"
-                ? `assets-library://asset/asset.${chosenFile.filename.substring(
-                    chosenFile.filename.length - 3
-                  )}?id=${chosenFile.uri.substring(
-                    5,
-                    41
-                  )}&ext=${chosenFile.filename.substring(
-                    chosenFile.filename.length - 3
-                  )}`
-                : chosenFile.uri,
+            uri: chosenFile.uri,
           }}
+          // source={{
+          //   uri:
+          //     Platform.OS === "ios"
+          //       ? `assets-library://asset/asset.${chosenFile.filename.substring(
+          //           chosenFile.filename.length - 3
+          //         )}?id=${chosenFile.uri.substring(
+          //           5,
+          //           41
+          //         )}&ext=${chosenFile.filename.substring(
+          //           chosenFile.filename.length - 3
+          //         )}`
+          //       : chosenFile.uri,
+          // }}
           ref={(ref) => {
             videoView = ref;
           }}
@@ -453,18 +456,21 @@ export default function CreatePost(props) {
           {chosenFile[indexAktif].node.type.substr(0, 5) === "video" ? (
             <Video
               source={{
-                uri:
-                  Platform.OS === "ios"
-                    ? `assets-library://asset/asset.${chosenFile.filename.substring(
-                        chosenFile.filename.length - 3
-                      )}?id=${chosenFile.uri.substring(
-                        5,
-                        41
-                      )}&ext=${chosenFile.filename.substring(
-                        chosenFile.filename.length - 3
-                      )}`
-                    : Img,
+                uri: Img,
               }}
+              // source={{
+              //   uri:
+              //     Platform.OS === "ios"
+              //       ? `assets-library://asset/asset.${chosenFile.filename.substring(
+              //           chosenFile.filename.length - 3
+              //         )}?id=${chosenFile.uri.substring(
+              //           5,
+              //           41
+              //         )}&ext=${chosenFile.filename.substring(
+              //           chosenFile.filename.length - 3
+              //         )}`
+              //       : Img,
+              // }}
               ref={(ref) => {
                 videoView = ref;
               }}
