@@ -289,6 +289,7 @@ export default function ChooseAlbumItinerary(props) {
                 marginTop: 20,
               }}
             >
+              {console.log(item)}
               <View
                 style={{
                   width: Dimensions.get("screen").width / 3 - 20,

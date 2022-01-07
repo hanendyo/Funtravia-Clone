@@ -17,7 +17,6 @@ import {
   Platform,
   Image,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import CommentList from "../../../graphQL/Query/Feed/CommentList";
@@ -76,10 +75,10 @@ import { useSelector } from "react-redux";
 export default function Comments(props) {
   const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
   const [dataPost, setDataPost] = useState(null);
   const [dataComment, setDataComment] = useState();
-  const [setting, setSetting] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [modalMenu, setModalMenu] = useState(false);
   const [modalMenuOther, setModalMenuOther] = useState(false);
@@ -190,8 +189,6 @@ export default function Comments(props) {
     await GetCommentList();
     await LoadFollowing();
     await scroll_to_index();
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
   };
 
   // const backAction = () => {

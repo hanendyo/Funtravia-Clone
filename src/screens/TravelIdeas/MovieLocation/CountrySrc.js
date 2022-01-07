@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -171,20 +172,19 @@ export default function CountrySrc({
       isVisible={modalshown}
       avoidKeyboard={true}
       style={{
-        justifyContent: "flex-end",
-        alignItems: "center",
-        alignSelf: "center",
-        alignContent: "center",
+        // justifyContent: "flex-end",
+        // alignItems: "center",
+        // alignSelf: "center",
+        // alignContent: "center",
+        margin: 0,
       }}
     >
-      <View
+      <SafeAreaView
         style={{
           flex: 1,
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
+          backgroundColor: "#14646e",
         }}
       >
-        <StaBar backgroundColor="#14646e" barStyle="light-content" />
         <View
           style={{
             flexDirection: "row",
@@ -192,9 +192,10 @@ export default function CountrySrc({
             alignItems: "flex-end",
             alignContent: "flex-end",
             backgroundColor: "#209fae",
-            height: HeightBar,
+            // height: HeightBar,
+            height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: SafeStatusBar,
+            // marginTop: SafeStatusBar,
           }}
         >
           <View
@@ -437,7 +438,7 @@ export default function CountrySrc({
             keyExtractor={(item) => item.id}
           />
         </View>
-      </View>
+      </SafeAreaView>
       {/* modal filter continent */}
       <Modal
         onBackdropPress={() => {

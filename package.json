@@ -48,6 +48,7 @@
     "react-native-circular-progress-indicator": "^2.0.4",
     "react-native-collapsible-tab-view": "^4.4.0",
     "react-native-compressor": "0.5.11",
+    "react-native-convert-ph-asset": "^1.0.3",
     "react-native-dashed-line": "^1.1.0",
     "react-native-device-info": "^8.0.8",
     "react-native-document-picker": "^5.0.2",

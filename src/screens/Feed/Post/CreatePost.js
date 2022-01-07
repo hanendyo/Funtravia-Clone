@@ -12,7 +12,6 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { default_image } from "../../../assets/png";
 import {
   Text,
@@ -83,15 +82,15 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  console.log("props create post", props.route.params);
   const tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const isFocused = useIsFocused();
   const [datanearby, setDataNearby] = useState([]);
   const { t } = useTranslation();
   const [Img, setImg] = useState("");
-  console.log("🚀 ~ file: CreatePost.js ~ line 95 ~ CreatePost ~ Img", Img);
   let [statusText, setStatusText] = useState("");
   let [modellocation, setModellocation] = useState(false);
-  let [setting, setSetting] = useState();
   let [modalCreate, setModalCreate] = useState(false);
   let [modalAlbum, setModalAlbum] = useState(false);
   let [idAlbums, setIdAlbums] = useState({});
@@ -109,8 +108,6 @@ export default function CreatePost(props) {
     latitude: "",
     longitude: "",
   });
-
-  // console.log("chosenFile", chosenFile);
 
   const [MutationCreate, { loading, data, error }] = useMutation(PostMut, {
     context: {
@@ -290,8 +287,6 @@ export default function CreatePost(props) {
 
   const loadAsync = async () => {
     LoadUserProfile();
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
   };
 
   useEffect(() => {
@@ -573,7 +568,11 @@ export default function CreatePost(props) {
           <View
             style={{
               flexDirection: "row",
+              // borderWidth: 2,
               alignItems: "center",
+              justifyContent:
+                Platform.OS == "ios" ? "space-between" : "flex-start",
+              width: Dimensions.get("screen").width / 1.8,
             }}
           >
             <Button
@@ -587,20 +586,20 @@ export default function CreatePost(props) {
             >
               <Arrowbackwhite height={20} width={20} />
             </Button>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              size="header"
-              type="bold"
-              style={{ color: "#fff", marginLeft: 10 }}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
             >
-              {t("newPost")}
-            </Text>
+              <Text
+                size="header"
+                type="bold"
+                style={{ color: "#fff", marginLeft: 10 }}
+              >
+                {t("newPost")}
+              </Text>
+            </View>
           </View>
           <View
             style={{
