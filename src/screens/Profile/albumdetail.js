@@ -11,16 +11,25 @@ import {
   Platform,
   BackHandler,
 } from "react-native";
-import { Sharegreen, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
+import {
+  Sharegreen,
+  Arrowbackwhite,
+  Arrowbackios,
+  Xgray,
+} from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import { Item, Input, Label } from "native-base";
 import { Button, Text, FunVideo } from "../../component";
 import { useTranslation } from "react-i18next";
 import { default_image } from "../../assets/png";
-import { PlayVideo } from "../../assets/svg";
+import { PlayVideo, OptionsVertWhite } from "../../assets/svg";
 import Modal from "react-native-modal";
 import album from "../../graphQL/Query/Profile/albumdetailpost";
+import RenameAlbumTitle from "../../graphQL/Mutation/Album/RenameAlbumTitle";
 import ImageSlide from "../../component/src/ImageSlide/sliderPost";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import Delete from "../../component/src/AlertModal/Delete";
+import DeleteAlbumAll from "../../graphQL/Mutation/Album/DeleteAlbumAll";
 const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
@@ -62,6 +71,21 @@ export default function albumdetail(props) {
         )}
       </Button>
     ),
+
+    headerRight: () => (
+      <TouchableOpacity
+        style={{
+          marginRight: 15,
+          width: 20,
+          height: 20,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={() => setmodalOptions(true)}
+      >
+        <OptionsVertWhite height={15} width={15} />
+      </TouchableOpacity>
+    ),
   };
 
   const backAction = () => {
@@ -83,9 +107,13 @@ export default function albumdetail(props) {
   }, [backAction]);
 
   let token = props.route.params.token;
-  let judul = props.route.params.judul;
+  const albumId = props.route.params.id;
+  const [judul, setJudul] = useState(props.route.params.judul);
   let [modals, setmodal] = useState(false);
   let [dataalbums, setdata] = useState(null);
+  const [modalOptions, setmodalOptions] = useState(false);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [modalDeleteAlbum, setModalDeleteAlbum] = useState(false);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -116,6 +144,43 @@ export default function albumdetail(props) {
   };
 
   const [
+    mutationDeleteAlbum,
+    { loading: loadingDelete, data: dataDelete, error: errorDelete },
+  ] = useMutation(DeleteAlbumAll, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+  });
+
+  const deleteAlbum = async () => {
+    try {
+      let response = await mutationDeleteAlbum({
+        variables: {
+          album_id: props.route.params.id,
+        },
+      });
+
+      if (response?.data) {
+        if (response.data.delete_album_all?.code !== 200) {
+          throw new Error(response.data.detele_album_all?.message);
+        } else {
+          setModalDeleteAlbum(false);
+          props.navigation.navigate("ProfileStack", {
+            screen: "ProfileTab",
+            params: { token: props.route.params.token },
+          });
+        }
+      }
+    } catch (error) {
+      setModalDeleteAlbum(false);
+      console.log(error);
+    }
+  };
+
+  const [
     getdataalbum,
     { data: dataalbum, loading: loadingalbum, error: erroralbum, refetch },
   ] = useLazyQuery(album, {
@@ -134,6 +199,47 @@ export default function albumdetail(props) {
       setdata(dataalbum?.all_albums_post_v2);
     },
   });
+
+  const [
+    mutationRenameAlbum,
+    {
+      loading: loadingRenameAlbum,
+      data: dataRenameAlbum,
+      error: errorRenameAlbum,
+    },
+  ] = useMutation(RenameAlbumTitle, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+  });
+
+  const renameAlbum = async () => {
+    try {
+      let response = await mutationRenameAlbum({
+        variables: {
+          album_id: props.route.params.id,
+          title: judul,
+        },
+      });
+      if (response.data) {
+        if (response.data.rename_album_itinerary.code !== 200) {
+          throw new Error(response.data.rename_album_itinerary.message);
+        } else {
+          setModalEdit(false);
+          props.navigation.navigate("ProfileStack", {
+            screen: "ProfileTab",
+            params: { token: props.route.params.token },
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setModalEdit(false);
+    }
+  };
 
   function wait(timeout) {
     return new Promise((resolve) => {
@@ -1258,6 +1364,180 @@ export default function albumdetail(props) {
         props={props}
         token={token}
         setClose={() => setModalss(!modalss)}
+      />
+
+      <Modal
+        // useNativeDriver={true}
+        animationType="fade"
+        visible={modalOptions}
+        onBackdropPress={() => setmodalOptions(false)}
+        onRequestClose={() => setmodalOptions(false)}
+        transparent={true}
+      >
+        <Pressable
+          onPress={() => setmodalOptions(false)}
+          style={{
+            width: Dimensions.get("screen").width + 25,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            left: -21,
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 140,
+            // marginHorizontal: 70,
+            alignSelf: "center",
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 10,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              width: Dimensions.get("screen").width - 100,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                backgroundColor: "#f6f6f6",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}
+            >
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setmodalOptions(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                setmodalOptions(false);
+                setModalEdit(true);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {`${t("edit")} ${t("title")}`}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                setmodalOptions(false);
+                setModalDeleteAlbum(true);
+              }}
+            >
+              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
+                {t("delete")} Album
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        onBackdropPress={() => {
+          setModalEdit(false);
+        }}
+        onRequestClose={() => setModalEdit(false)}
+        onDismiss={() => setModalEdit(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalEdit}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            width: Dimensions.get("screen").width - 60,
+            borderRadius: 5,
+            padding: 20,
+          }}
+        >
+          <Item
+            floatingLabel
+            style={{
+              marginVertical: 10,
+            }}
+          >
+            <Label
+              style={{
+                fontFamily: "Lato-Regular",
+                fontSize: 14,
+              }}
+            >
+              {t("title")}
+            </Label>
+            <Input
+              //   editable={false}
+              style={{
+                fontFamily: "Lato-Regular",
+                fontSize: 16,
+              }}
+              maxLength={15}
+              autoCorrect={false}
+              value={judul}
+              keyboardType="default"
+              onChangeText={(text) => setJudul(text)}
+            />
+          </Item>
+          <Button
+            onPress={() => {
+              renameAlbum();
+            }}
+            color="primary"
+            text={t("save")}
+          ></Button>
+        </View>
+      </Modal>
+
+      <Delete
+        modals={modalDeleteAlbum}
+        setModals={() => setModalDeleteAlbum()}
+        message={`${t("deleteAlbumWith")} ${judul}?`}
+        messageHeader={t("deleteAlbum")}
+        onDelete={() => {
+          deleteAlbum();
+        }}
       />
     </View>
   );

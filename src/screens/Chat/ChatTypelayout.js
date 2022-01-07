@@ -475,10 +475,10 @@ export default function ChatTypelayout({
             screen: "Country",
             params: {
               data: {
-                data: data,
-                exParam: true,
+                id: data.id,
               },
             },
+            exParam: true,
           });
         }}
         style={{

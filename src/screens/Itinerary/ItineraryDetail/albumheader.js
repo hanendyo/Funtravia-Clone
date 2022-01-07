@@ -48,13 +48,18 @@ export default function Albumheader({
 }) {
   const { t, i18n } = useTranslation();
   let slider = useRef();
+  let focusRef = useRef();
   let [modalcreate, setModalcreate] = useState(false);
-  let [name, setname] = useState(dataalbumaktif?.title);
+  let [name, setname] = useState(dataAlbum[0]?.title ? dataAlbum[0].title : "");
   const [modalDeleteAlbum, setmodalDeleteAlbum] = useState(false);
   const [modalOptions, setmodalOptions] = useState(false);
   const [itemName, setitemName] = useState("");
   const [albumId, setalbumId] = useState("");
   const [editStatus, setEditStatus] = useState(false);
+
+  useEffect(() => {
+    dataAlbum ? setdataalbumaktif(dataAlbum[0]) : null;
+  }, []);
 
   const LongPressAlbum = (item) => {
     setitemName(item.title);
@@ -114,7 +119,6 @@ export default function Albumheader({
       },
     },
   });
-  console.log("daata album aktif", dataalbumaktif);
 
   const [
     mutationDeleteAlbum,
@@ -138,16 +142,22 @@ export default function Albumheader({
 
       if (response?.data) {
         if (response.data.delete_albums_with_post?.code !== 200) {
-          throw new Error(response.data.detele_albums_with_post.message);
+          throw new Error(response.data.detele_albums_with_post?.message);
         } else {
-          setdataalbumaktif(dataAlbum[0]);
-          startRefreshAction();
+          if (dataAlbum.length === 1) {
+            setdataalbumaktif(null);
+            setname("");
+          } else {
+            setname(dataAlbum[0]);
+            setdataalbumaktif(dataAlbum[0]);
+          }
         }
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
+  // console.log("dataalbumaktif", dataalbumaktif);
 
   const savecreatealbum = async () => {
     if (name) {
@@ -168,6 +178,7 @@ export default function Albumheader({
           } else {
             await setdataalbumaktif({
               id: response?.data?.create_itinerary_album?.id,
+              title: name,
             });
             await setModalcreate(false);
             // await setname("");
@@ -184,15 +195,7 @@ export default function Albumheader({
   };
 
   return (
-    <View
-      onLayout={() => {
-        {
-          dataalbumaktif && dataalbumaktif.id
-            ? setdataalbumaktif(dataalbumaktif)
-            : setdataalbumaktif(dataAlbum[0]);
-        }
-      }}
-    >
+    <View>
       <FlatList
         ref={slider}
         style={{}}
@@ -351,9 +354,9 @@ export default function Albumheader({
             }}
           >
             <Text type="bold">
-              {dataalbumaktif?.title ? dataalbumaktif?.title : name}
+              {dataalbumaktif?.title ? dataalbumaktif.title : null}
             </Text>
-            {Anggota === "true" && (
+            {Anggota === "true" && dataalbumaktif?.id && (
               <TouchableOpacity onPress={() => setmodalOptions(true)}>
                 <OptionsVertBlack width={15} height={15} />
               </TouchableOpacity>

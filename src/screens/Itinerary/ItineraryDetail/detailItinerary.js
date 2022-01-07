@@ -360,7 +360,7 @@ export default function DetailItinerary(props) {
               }}
             ></View>
             <Text type="regular" size="label" style={{ marginLeft: 5 }}>
-              Privacy
+              {t("privacy")}
             </Text>
           </View>
           <View
@@ -373,8 +373,8 @@ export default function DetailItinerary(props) {
           >
             <Text type="bold" size="label">
               {props?.route?.params?.data?.itinerary_detail?.isprivate === true
-                ? "Private"
-                : "Public (shared)"}
+                ? t("private")
+                : t("public (shared)")}
             </Text>
           </View>
         </View>

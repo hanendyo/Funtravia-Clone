@@ -66,7 +66,7 @@ export default function ItineraryDestination(props) {
     headerTintColor: "white",
     headerTitle: (
       <Text type="bold" size="header" style={{ color: "#fff" }}>
-        {t("Destination")}
+        {t("destination")}
       </Text>
     ),
     headerMode: "screen",

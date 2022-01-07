@@ -24,12 +24,12 @@ import {
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
+import { useSelector } from "react-redux";
 
 export default function ItineraryDay({
   dataitin,
   dataDay,
   props,
-  token,
   iditinerary,
   setAkhir,
   setidDayz,
@@ -48,6 +48,7 @@ export default function ItineraryDay({
   setgrid,
   errors,
 }) {
+  const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   let [modalmenu, setModalmenu] = useState(false);
   // let [dataDay, setDataday] = useState(dataday);
@@ -68,7 +69,7 @@ export default function ItineraryDay({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -80,7 +81,7 @@ export default function ItineraryDay({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });
@@ -92,7 +93,7 @@ export default function ItineraryDay({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: token,
       },
     },
   });

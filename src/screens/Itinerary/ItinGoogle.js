@@ -382,7 +382,7 @@ export default function ItinGoogle(props) {
             </TouchableOpacity>
             <Text
               style={{
-                top: 13,
+                top: 15,
                 left: 55,
                 fontFamily: "Lato-Regular",
                 fontSize: 14,
@@ -431,7 +431,7 @@ export default function ItinGoogle(props) {
               listViewDisplayed="auto"
               onFail={(error) => console.log(error)}
               currentLocation={true}
-              placeholder={"Search for location"}
+              placeholder={t("SearchForLocation")}
               currentLocationLabel="Nearby location"
               renderLeftButton={() => {
                 return (

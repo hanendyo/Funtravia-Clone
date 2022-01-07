@@ -1766,7 +1766,8 @@ export default function ItineraryDetail(props) {
   let [aler, showAlert] = useState({
     show: false,
     judul: t("editPrivacyDisabled"),
-    detail: t("notAdmin"),
+    judulDetail: t("canNotChangePrivacy"),
+    detail: t("notAdminTrip"),
   });
 
   const renderHeader = (rD) => {
@@ -2957,6 +2958,7 @@ export default function ItineraryDetail(props) {
                         <TouchableOpacity
                           onPress={() => {
                             setdataimagepost(item.posted, i);
+                            console.log("data", data);
                           }}
                         >
                           <FunImage
@@ -5200,7 +5202,7 @@ export default function ItineraryDetail(props) {
                   {t("Flight")}
                 </Text>
                 <Text size="description" type="regular">
-                  {t("Add flight number to your itinerary")}
+                  {t("addFlightDetail")}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -5248,7 +5250,7 @@ export default function ItineraryDetail(props) {
                   {t("Stay")}
                 </Text>
                 <Text size="description" type="regular">
-                  {t("Add place name")}
+                  {t("addPlaceName")}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -7174,32 +7176,30 @@ export default function ItineraryDetail(props) {
                   </TouchableOpacity>
                 ) : null}
 
-                {Anggota === "true" && status !== "finish" ? (
-                  <TouchableOpacity
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 5,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setshowside(false), setmodalcover(true);
+                  }}
+                >
+                  <Create height={20} width={20} />
+
+                  <Text
+                    size="label"
+                    type="regular"
                     style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 5,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setshowside(false), setmodalcover(true);
+                      marginLeft: 10,
                     }}
                   >
-                    <Create height={20} width={20} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("EditCover")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
+                    {t("EditCover")}
+                  </Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   style={{
@@ -7396,9 +7396,16 @@ export default function ItineraryDetail(props) {
                 <Text
                   size="label"
                   type="bold"
-                  style={{ marginBottom: 10, textAlign: "center" }}
+                  style={{ marginBottom: 5, textAlign: "center" }}
                 >
                   {t(aler.judul)}
+                </Text>
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginBottom: 15, textAlign: "center" }}
+                >
+                  {t(aler.judulDetail)}
                 </Text>
                 {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
                   <View
