@@ -26,6 +26,7 @@ import {
   FunImage,
   StatusBar as StaBar,
   Text,
+  ModalLogin,
   Truncate,
 } from "../../component";
 import {
@@ -43,9 +44,9 @@ import {
   SearchWhite,
   Xhitam,
   Xblue,
+  CheckWhite,
 } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
 import ListEventPublic from "../../graphQL/Query/Event/ListEventPublic";
@@ -65,12 +66,14 @@ import CheckBox from "@react-native-community/checkbox";
 import { Alert } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
 import { RNToasty } from "react-native-toasty";
-import { color } from "react-native-reanimated";
 import normalize from "react-native-normalize";
+import Ripple from "react-native-material-ripple";
+import { TouchableHighlight } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = 60;
+const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 const SafeStatusBar = Platform.select({
@@ -82,16 +85,48 @@ const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
-  let [heightjudul, setheightjudul] = useState(150);
-  let HeaderHeight = Dimensions.get("screen").height * 0.15 + heightjudul;
-  const HeaderHeightCustom = Platform.select({
-    ios: Notch ? 360 - 48 : 360 - 20,
-    // android: 305 - StatusBar.currentHeight,
-    // android: 320 - StatusBar.currentHeight,
-    android: 340 - StatusBar.currentHeight,
-  });
-  let [heightview, setheight] = useState(0);
   const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
+  let [tambahan, setTambahan] = useState(0);
+  let [tambahanJudul, setTambahanJudul] = useState(0);
+  let [tambahanDeskripsi, setTambahanDeskripsi] = useState(0);
+  let [modalLogin, setModalLogin] = useState(false);
+  let [show, setshow] = useState(false);
+  let [modals, setModelSetNegara] = useState(false);
+  let [Modaldate, setModaldate] = useState(false);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [openFlatlist, setOpenFlatlist] = useState(false);
+  const [arrayYear, setArrayYear] = useState([]);
+  let [loadingIndicator, setLoadingIndicator] = useState(true);
+
+  const HeaderHeight = Platform.select({
+    ios: Notch
+      ? i18n.language === "id"
+        ? normalize(380) + tambahanJudul + tambahan - 48
+        : normalize(384) + tambahanJudul + tambahan - 48
+      : i18n.language === "id"
+      ? normalize(380) + tambahanJudul + tambahan - 20
+      : normalize(384) + tambahanJudul + tambahan - 20,
+
+    android:
+      i18n.language === "id"
+        ? deviceId == "LYA-L29"
+          ? normalize(372) + tambahanJudul + tambahan - StatusBar.currentHeight
+          : deviceId == "CPH2127"
+          ? normalize(400) + tambahanJudul + tambahan - StatusBar.currentHeight
+          : normalize(385) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : deviceId == "LYA-L29"
+        ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : deviceId == "CPH2127"
+        ? normalize(387) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(378) + tambahanJudul + tambahan - StatusBar.currentHeight,
+  });
+
+  let [heightview, setheight] = useState(0);
+  const tambahanValidation = () => {
+    let valid = (tambahanDeskripsi + tambahanJudul) % 3 === 0 ? true : false;
+    return valid;
+  };
 
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
@@ -176,62 +211,12 @@ export default function ListEventHome(props) {
     })
   ).current;
 
-  const HeaderComponent = {
-    headerShown: true,
-    headerTransparent: false,
-    headerTintColor: "white",
-    headerTitle: (
-      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
-        {t("event")}
-      </Text>
-    ),
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
-    },
-    headerLeftContainerStyle: {
-      background: "#FFF",
-
-      marginLeft: 10,
-    },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={20} width={20}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-    headerRight: () => (
-      <TouchableOpacity
-        style={styles.searchWhite}
-        // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-        onPress={() => props.navigation.navigate("searchListEventHome")}
-      >
-        <SearchWhite width="20" height="20" />
-      </TouchableOpacity>
-    ),
-  };
-
   useEffect(() => {
-    props.navigation.setOptions(HeaderComponent);
+    setTimeout(() => {
+      setLoadingIndicator(false);
+    }, 4000);
+
+    // props.navigation.setOptions(HeaderComponent);
     // loadAsync();
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
@@ -265,9 +250,14 @@ export default function ListEventHome(props) {
     // props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
+      listYear();
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  useEffect(() => {
+    getDate();
+  }, []);
 
   const syncScrollOffset = () => {
     const curRouteKey = routes[_tabIndex.current].key;
@@ -438,163 +428,421 @@ export default function ListEventHome(props) {
     });
   };
 
+  const listYear = () => {
+    let thisyear = new Date().getFullYear();
+    let threeyear = 3;
+    let currentArray = [];
+    for (let index = 0; index < threeyear; index++) {
+      let currentyear = thisyear + index;
+      currentArray.push(currentyear);
+    }
+    setArrayYear(currentArray);
+  };
+
+  const renderNavDefault = () => {
+    return (
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 1,
+          opacity: hides.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 45,
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
+          style={{
+            height: 60,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
+          style={{
+            height: 40,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <SearchWhite width="20" height="20" />
+          </Animated.View>
+        </Button>
+      </Animated.View>
+    );
+  };
+
+  const FlatlistSet = (item) => {
+    setCurrentYear(item);
+    setOpenFlatlist(!openFlatlist);
+    loadAsync();
+  };
+
+  const renderNavInterpolated = () => {
+    return (
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 1,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          // borderWidth: 1,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
+          height: 45,
+          // backgroundColor: "red",
+          width: Dimensions.get("screen").width - 40,
+        }}
+      >
+        <View flexDirection="row">
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
+            style={{
+              height: 60,
+              // marginLeft: 8,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <View
+            style={{
+              // width: Dimensions.get("screen").width - 100,
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("event")}
+            </Text>
+          </View>
+        </View>
+
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
+          style={{
+            height: 40,
+            // marginLeft: 8,
+          }}
+        >
+          {/* <TouchableOpacity
+          style={styles.searchWhite}
+          // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+          onPress={() => props.navigation.navigate("searchListEventHome")}
+        >
+          <SearchWhite width="20" height="20" />
+        </TouchableOpacity> */}
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <SearchWhite width="20" height="20" />
+          </Animated.View>
+        </Button>
+      </Animated.View>
+    );
+  };
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
-      inputRange: [heightview, HeaderHeight],
-      outputRange:
-        Platform.OS == "ios"
-          ? [heightview, -HeaderHeight - 40]
-          : [heightview, -HeaderHeight - 40],
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, -HeaderHeight + 50],
       extrapolateRight: "clamp",
+      // extrapolate: 'clamp',
     });
     return (
       <Animated.View
+        pointerEvents={"box-none"}
         {...headerPanResponder.panHandlers}
         style={{
-          position: "absolute",
           transform: [{ translateY: y }],
-          // height: Platform.OS == "ios" ? 270 : 222,
+          top: SafeStatusBar,
           height: HeaderHeight,
           width: "100%",
           alignItems: "center",
-          justifyContent: "flex-start",
-          backgroundColor: "white",
-          zIndex: Platform.OS == "ios" ? 1 : 0,
+
+          justifyContent: "center",
+          position: "absolute",
+          backgroundColor: "#209fae",
         }}
       >
-        {Banner && Banner.banner_asset.length > 0 ? (
-          <FunImage
-            source={{ uri: Banner.banner_asset[0].filepath }}
-            style={{
-              height:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? Dimensions.get("screen").height * 0.2
-                    : Dimensions.get("screen").height * 0.22
-                  : Dimensions.get("screen").height * 0.2,
-              // height: 0.1,
-              width: "100%",
-              resizeMode: "cover",
-              marginBottom: 0,
-            }}
-          />
-        ) : (
-          <Image
-            source={Eventcover}
-            style={{
-              height: Dimensions.get("screen").height * 0.2,
-              width: "100%",
-              resizeMode: "cover",
-              position: "absolute",
-            }}
-          />
-        )}
-        <View
-          onLayout={(events) => {
-            var { x, y, width, height } = events.nativeEvent.layout;
-            setheightjudul(height);
-          }}
+        <Animated.View
           style={{
-            paddingHorizontal: 20,
-            paddingTop: 35,
-            backgroundColor: "white",
-            // borderWidth: 2,
-            // height: Platform.OS == "ios" ? 120 : 125
+            opacity: imageOpacity,
+            flex: 1,
+            width: width,
           }}
         >
-          <Text
-            size="title"
-            type="bold"
-            style={{
-              textAlign: "justify",
-              paddingBottom: 5,
-            }}
-          >
-            {// Banner && Banner.title ? Banner.title : t("EventTitle")
-            t("EventTitle")}
-          </Text>
-          <Text
-            size="label"
-            type="regular"
-            style={{
-              textAlign: "justify",
-              marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
-            }}
-          >
-            {// Banner && Banner.description
-            //   ? Banner.description
-            //   : t("EventDescription")
-            t("EventDescription")}
-          </Text>
-        </View>
-        <View
-          style={{
-            position: "absolute",
-            flexDirection: "row",
-            // top: HeaderHeightCustom - 160,
-            // top:
-            //   HeaderHeightCustom -
-            //   (Platform.OS == "ios" ? (Notch ? 155 : 215) : 183),
-            top:
-              Platform.OS == "ios"
-                ? Notch
-                  ? deviceId === "iPhone 12 Pro"
-                    ? Dimensions.get("screen").height - 698
-                    : Dimensions.get("screen").height - 740
-                  : Dimensions.get("screen").height - 540
-                : Dimensions.get("screen").height - 650,
+          {Banner && Banner.banner_asset.length > 0 ? (
+            <Animated.Image
+              source={{ uri: Banner.banner_asset[0].filepath }}
+              style={{
+                flex: 1,
 
-            // zIndex: 1
+                width: "100%",
+                opacity: imageOpacity,
+              }}
+            />
+          ) : (
+            <Animated.Image
+              source={Eventcover}
+              style={{
+                flex: 1,
+
+                width: "100%",
+                opacity: imageOpacity,
+              }}
+            />
+          )}
+          <View
+            pointerEvents="box-none"
+            style={{
+              // flex: 1,
+              marginTop: 0,
+
+              paddingTop: Platform.OS == "ios" ? 25 : 20,
+              paddingHorizontal: 15,
+              paddingBottom: Platform.OS == "ios" ? 3 : 1,
+
+              zIndex: -10,
+              backgroundColor: "#fff",
+            }}
+          >
+            <Text
+              onTextLayout={(x) => {
+                let line = x.nativeEvent.lines.length;
+                let lines = +line;
+                if (+lines % 3 == 0) {
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? setTambahanJudul(lines * 3)
+                      : setTambahanJudul(lines * -6)
+                    : setTambahanJudul(lines * 1);
+                  // setTambahanJudul(lines * 12);
+                } else {
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? setTambahanJudul(lines * -10)
+                      : setTambahanJudul(lines * -20)
+                    : setTambahanJudul(lines * 1);
+                }
+              }}
+              size="title"
+              type="bold"
+              style={{
+                textAlign: "left",
+                paddingBottom: 5,
+                flexShrink: 0,
+                // borderWidth: 2,
+              }}
+              // wordWra
+            >
+              {t("EventTitle")}
+            </Text>
+            <Text
+              onTextLayout={(x) => {
+                let line = x.nativeEvent.lines.length;
+                let lines = line - 1;
+                // setTambahanDeskripsi(lines * 32);
+                if (+lines % 3 == 0) {
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? setTambahan(lines * 15)
+                      : setTambahan(lines * 17)
+                    : setTambahan(lines * 11);
+                  // setTambahanDeskripsi(lines * 12);
+                } else {
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? setTambahan(lines * 16)
+                      : setTambahan(lines - 20)
+                    : setTambahan(lines);
+                }
+              }}
+              size="label"
+              type="regular"
+              style={{
+                textAlign: "left",
+                // paddingHorizontal:
+                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
+              }}
+            >
+              {t("EventDescription")}
+            </Text>
+          </View>
+        </Animated.View>
+
+        {/* filter negara */}
+        <Animated.View
+          style={{
+            flexDirection: "row",
+            position: "absolute",
+            top: Platform.select({
+              ios: Notch ? normalize(185) : normalize(200),
+              android: normalize(205),
+            }),
+            justifyContent: "center",
+            alignContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: normalize(44),
+            opacity: imageOpacity,
           }}
         >
-          <TouchableOpacity
+          <TouchableHighlight
             onPress={() => setModelSetNegara(true)}
             style={{
-              backgroundColor: "#209fae",
-              borderWidth: 2,
-              borderRightWidth: 0,
-              // paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderBottomLeftRadius: 20,
-              borderTopStartRadius: 20,
-              borderColor: "#d1d1d1",
-              alignItems: "center",
-              alignContent: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
+              borderTopLeftRadius: 50,
+              borderBottomLeftRadius: 50,
             }}
+            underlayColor={"#f6f6f6"}
           >
-            <Text
-              size="label"
-              numberOfLines={1}
+            <View
               style={{
-                marginRight: 10,
-                color: "#fff",
-                paddingBottom: 5,
+                height: normalize(45),
+                borderTopLeftRadius: 50,
+                borderBottomLeftRadius: 50,
+                borderWidth: 1,
+                borderColor: "#d8d8d8",
+                paddingVertical: 10,
+                paddingHorizontal: 0,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+
+                backgroundColor: "#209FAE",
+                flexDirection: "row",
+                // width: "35%",
               }}
             >
-              {Capital({ text: country?.name })}
-            </Text>
-            <Down width={10} height={10} />
-          </TouchableOpacity>
-          <TouchableOpacity
+              <Text
+                size="label"
+                numberOfLines={1}
+                style={{
+                  marginLeft: 30,
+                  marginRight: 5,
+                  color: "#fff",
+                  marginBottom: 5,
+                }}
+              >
+                {Capital({ text: country?.name })}
+              </Text>
+              <Down width={10} height={10} style={{ marginRight: 20 }} />
+            </View>
+          </TouchableHighlight>
+          <Ripple
             onPress={() => {
-              setModaldate(true);
+              !openFlatlist ? setOpenFlatlist(true) : setOpenFlatlist(false);
             }}
             style={{
-              backgroundColor: "#209fae",
-              borderWidth: 2,
+              height: normalize(45),
+              borderTopRightRadius: 50,
+              borderBottomRightRadius: 50,
+              borderWidth: 1,
+              borderColor: "#d8d8d8",
               paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderBottomRightRadius: 20,
-              borderTopEndRadius: 20,
-              borderColor: "#d1d1d1",
-              alignItems: "center",
+              paddingHorizontal: 0,
+              justifyContent: "center",
               alignContent: "center",
+              alignItems: "center",
+              backgroundColor: "#209FAE",
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
+              width: "35%",
             }}
           >
             <Text
@@ -605,11 +853,85 @@ export default function ListEventHome(props) {
                 color: "#fff",
               }}
             >
-              {month}
+              {currentYear}
             </Text>
             <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </TouchableOpacity>
-        </View>
+          </Ripple>
+          <FlatList
+            style={{
+              position: "absolute",
+              right:
+                Platform.OS == "ios"
+                  ? Notch
+                    ? 63
+                    : 59.5
+                  : deviceId == "LYA-L29"
+                  ? 55
+                  : deviceId == "CPH2127"
+                  ? 65
+                  : 58,
+              top:
+                Platform.OS == "ios"
+                  ? 32
+                  : deviceId == "LYA-L29"
+                  ? 26
+                  : deviceId == "CPH2127"
+                  ? 33
+                  : 29,
+              borderLeftWidth: 2,
+              borderRightWidth: 1,
+              borderLeftColor: "#d8d8d8",
+              borderRightColor: "#d8d8d8",
+              paddingHorizontal: 10,
+              borderBottomRightRadius: 20,
+              paddingVertical: openFlatlist ? 10 : 0,
+              backgroundColor: "#209FAE",
+              width: "35%",
+              zIndex: 1,
+            }}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => `${index}`}
+            data={openFlatlist ? arrayYear : 0}
+            renderItem={({ item, i }) => (
+              <TouchableHighlight
+                underlayColor={"#209FAE"}
+                key={item + "as"}
+                onPress={() => {
+                  FlatlistSet(item);
+                }}
+                style={{
+                  paddingVertical: 5,
+                  justifyContent: "center",
+                  paddingRight: 5,
+                  paddingLeft: currentYear == item ? 10 : 0,
+
+                  alignSelf: "center",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                  }}
+                >
+                  <Text
+                    size="label"
+                    numberOfLines={1}
+                    style={{
+                      marginRight: 10,
+                      color: "#fff",
+                      // flex: 1,
+                    }}
+                  >
+                    {item}
+                  </Text>
+                  {currentYear == item ? (
+                    <CheckWhite width={15} height={15} />
+                  ) : null}
+                </View>
+              </TouchableHighlight>
+            )}
+          />
+        </Animated.View>
       </Animated.View>
     );
   };
@@ -619,231 +941,274 @@ export default function ListEventHome(props) {
     return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
   };
 
-  const rederTab1Item = ({ item, index }, position) => {
-    return (
-      <View
-        style={{
-          justifyContent: "center",
-          width: (Dimensions.get("screen").width - 40) / 2,
-          height: Dimensions.get("screen").width * 0.7,
-          margin: 5,
-          flexDirection: "column",
-          backgroundColor: "white",
-          borderRadius: 5,
-          shadowColor: "gray",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 0.5,
-          shadowRadius: 3,
-          elevation: 3,
-        }}
-      >
-        <View
+  let [loadings, setLoadings] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadings(false);
+    }, 2000);
+  }, []);
+
+  const rederTab1Item = ({ item, index, loading }, position) => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+    if (item.id != 0) {
+      return (
+        <Animated.View
           style={{
-            position: "absolute",
-            top: 15,
-            left: 10,
-            right: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            zIndex: 9999,
+            transform: [{ translateY: y }],
+            paddingTop: 10,
           }}
         >
           <View
+            key={index.toString()}
             style={{
-              // bottom: (9),
-              height: 21,
-              minWidth: 60,
-              borderRadius: 11,
-              alignSelf: "center",
               justifyContent: "center",
-              backgroundColor: "rgba(226, 236, 248, 0.85)",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text
-              size="small"
-              style={{
-                textAlign: "center",
-              }}
-            >
-              {item.category.name}
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 26,
-              width: 26,
-              borderRadius: 50,
-              alignSelf: "center",
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(226, 236, 248, 0.85)",
-              // zIndex: 999,
-            }}
-          >
-            {item.liked === false ? (
-              <TouchableOpacity
-                style={{
-                  height: 26,
-                  width: 26,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-
-                  zIndex: 9999,
-                }}
-                onPress={() => _liked(item.id, item, position)}
-              >
-                <LikeEmpty height={13} width={13} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={{
-                  height: 26,
-                  width: 26,
-                  borderRadius: 50,
-                  alignSelf: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-
-                  zIndex: 9999,
-                }}
-                onPress={() => _unliked(item.id, item, position)}
-              >
-                <LikeRed height={13} width={13} />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => eventdetail(item)}
-          style={{
-            height: Dimensions.get("window").width * 0.47 - 16,
-          }}
-        >
-          <FunImageBackground
-            key={item.id}
-            source={
-              item.cover
-                ? { uri: item.cover }
-                : item.images.length > 0
-                ? { uri: item.images[0].image }
-                : { default_image }
-            }
-            style={[styles.ImageView]}
-            imageStyle={[styles.Image]}
-          />
-        </TouchableOpacity>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "space-around",
-            height: 230,
-            marginVertical: 5,
-            marginHorizontal: 10,
-          }}
-        >
-          <Text
-            onPress={() => eventdetail(item)}
-            size="label"
-            type="bold"
-            style={{}}
-          >
-            <Truncate text={item.name} length={27} />
-          </Text>
-          <View
-            style={{
-              height: "50%",
+              width: (Dimensions.get("screen").width - 50) / 2,
+              // height: Dimensions.get("screen").width * 0.7,
+              height: normalize(250),
+              margin: 5,
+              // borderWidth: 1,
+              marginBottom: -5,
               flexDirection: "column",
-              justifyContent: "space-around",
+              backgroundColor: "white",
+              borderRadius: 5,
+              shadowColor: "gray",
+              shadowOffset: { width: 2, height: 2 },
+              shadowOpacity: 0.5,
+              shadowRadius: 3,
+
+              elevation: 3,
             }}
           >
             <View
               style={{
-                // flex: 1,
+                position: "absolute",
+                top: 10,
+                left: 10,
+                right: 10,
                 flexDirection: "row",
-                width: "100%",
-                marginBottom: 3,
+                justifyContent: "space-between",
                 alignContent: "center",
-                alignItems: "center",
+                zIndex: 9999,
               }}
             >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={CalenderGrey}
-              />
-              {item.is_repeat === true ? (
-                <Text
-                  size="small"
-                  style={{
-                    paddingRight: 20,
-                    width: "100%",
-                  }}
-                >
-                  {handlerepeat(item.start_date, item.end_date)}
-                </Text>
-              ) : (
-                <Text
-                  size="small"
-                  style={{
-                    paddingRight: 20,
-                    width: "100%",
-                  }}
-                >
-                  {dateFormatBetween(item.start_date, item.end_date)}
-                </Text>
-              )}
-            </View>
-            <View
-              style={{
-                // flex: 1,
-                flexDirection: "row",
-                width: "100%",
-                borderColor: "grey",
-              }}
-            >
-              <CustomImage
-                customStyle={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 5,
-                }}
-                customImageStyle={{
-                  width: 15,
-                  height: 15,
-                  resizeMode: "contain",
-                }}
-                source={MapIconGreen}
-              />
-              <Text
-                size="small"
+              <View
                 style={{
-                  width: "100%",
+                  // bottom: (9),
+                  height: 21,
+                  minWidth: 60,
+                  borderRadius: 11,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  paddingHorizontal: 10,
                 }}
               >
-                {item.city.name}
+                <Text
+                  size="small"
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  {item.category.name}
+                </Text>
+              </View>
+              <View
+                style={{
+                  height: 26,
+                  width: 26,
+                  borderRadius: 50,
+                  alignSelf: "center",
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(226, 236, 248, 0.85)",
+                  // zIndex: 999,
+                }}
+              >
+                {item.liked === false ? (
+                  <TouchableOpacity
+                    style={{
+                      height: 26,
+                      width: 26,
+                      borderRadius: 50,
+                      alignSelf: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+
+                      zIndex: 9999,
+                    }}
+                    onPress={() => _liked(item.id, item, position)}
+                  >
+                    <LikeEmpty height={13} width={13} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      height: 26,
+                      width: 26,
+                      borderRadius: 50,
+                      alignSelf: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                      justifyContent: "center",
+
+                      zIndex: 9999,
+                    }}
+                    onPress={() => _unliked(item.id, item, position)}
+                  >
+                    <LikeRed height={13} width={13} />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => eventdetail(item)}
+              style={{
+                height: Dimensions.get("window").width * 0.47 - 16,
+              }}
+            >
+              <FunImageBackground
+                key={item.id}
+                source={
+                  item.cover
+                    ? { uri: item.cover }
+                    : item.images.length > 0
+                    ? { uri: item.images[0].image }
+                    : { default_image }
+                }
+                style={[styles.ImageView]}
+                imageStyle={[styles.Image]}
+              />
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "space-around",
+                height: 230,
+                marginVertical: 3,
+                marginHorizontal: 10,
+              }}
+            >
+              <Text
+                onPress={() => eventdetail(item)}
+                size="label"
+                type="bold"
+                numberOfLines={2}
+                style={{}}
+              >
+                {item.name}
+                {/* <Truncate text={item.name} length={36} /> */}
               </Text>
+              <View
+                style={{
+                  height: "50%",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                }}
+              >
+                <View
+                  style={{
+                    // flex: 1,
+                    flexDirection: "row",
+                    width: "100%",
+                    marginBottom: 3,
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CustomImage
+                    customStyle={{
+                      width: 15,
+                      height: 15,
+                      marginRight: 5,
+                    }}
+                    customImageStyle={{
+                      width: 15,
+                      height: 15,
+                      resizeMode: "contain",
+                    }}
+                    source={CalenderGrey}
+                  />
+                  {item.is_repeat === true ? (
+                    <Text
+                      size="description"
+                      style={{
+                        paddingRight: 20,
+                        width: "100%",
+                      }}
+                    >
+                      {handlerepeat(item.start_date, item.end_date)}
+                    </Text>
+                  ) : (
+                    <Text
+                      size="description"
+                      style={{
+                        paddingRight: 20,
+                        width: "100%",
+                      }}
+                    >
+                      {dateFormatBetween(item.start_date, item.end_date)}
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    // flex: 1,
+                    flexDirection: "row",
+                    width: "100%",
+                    borderColor: "grey",
+                  }}
+                >
+                  <CustomImage
+                    customStyle={{
+                      width: 15,
+                      height: 15,
+                      marginRight: 5,
+                    }}
+                    customImageStyle={{
+                      width: 15,
+                      height: 15,
+                      resizeMode: "contain",
+                    }}
+                    source={MapIconGreen}
+                  />
+                  <Text
+                    size="description"
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    {item.city.name}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
+        </Animated.View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: Dimensions.get("screen").height,
+          }}
+        >
+          <Text size="label" type="bold">
+            {t("noData")}
+          </Text>
         </View>
-      </View>
-    );
+      );
+    }
   };
 
   // const [tab1, set]
@@ -860,7 +1225,7 @@ export default function ListEventHome(props) {
         break;
       case "tab2":
         numCols = 2;
-        data = dataEvent;
+        // data = dataEvent;
         data = dataEventPublic;
         renderItem = (e) => rederTab1Item(e, "public");
         break;
@@ -905,9 +1270,11 @@ export default function ListEventHome(props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         // ListHeaderComponent={() => <View style={{ height: -100 }} />}
         contentContainerStyle={{
-          paddingTop: HeaderHeight + TabBarHeight - 15,
-          paddingHorizontal: 10,
-          minHeight: height - SafeStatusBar + HeaderHeight + heightview,
+          paddingTop: HeaderHeight + TabBarHeight,
+          minHeight: height - SafeStatusBar + HeaderHeight,
+          paddingHorizontal: 15,
+          backgroundColor: "#F6F6F6",
+          paddingBottom: 100,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -917,56 +1284,83 @@ export default function ListEventHome(props) {
       />
     );
   };
-
+  let scrollRef = useRef();
   const renderTabBar = (props) => {
-    console.log(`PROP RENDER: `, props);
     const y = scrollY.interpolate({
-      inputRange: [heightview - 10, HeaderHeight],
-      outputRange: [HeaderHeight, heightview - 40],
+      inputRange: [0, HeaderHeight],
+      outputRange: [HeaderHeight, 50],
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          zIndex: Platform.OS == "ios" ? 1 : 1,
+          top: 0,
+          zIndex: 1,
+          position: "absolute",
           transform: [{ translateY: y }],
           width: "100%",
-          borderBottomWidth: 2,
-          borderBottomColor: "#d1d1d1",
-          marginTop: Platform.OS == "ios" ? (Notch ? 40 : 35) : 30,
-          marginBottom: Platform.OS == "ios" ? -45 : -45,
-          // paddingTop: 3,
         }}
       >
-        <TabBar
-          {...props}
-          onTabPress={({ route, preventDefault }) => {
-            if (isListGliding.current) {
-              preventDefault();
-            }
-          }}
+        <FlatList
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
           style={{
-            elevation: 0,
-            shadowOpacity: 0,
-            // backgroundColor: "#fff",
             backgroundColor: "white",
-            height: TabBarHeight,
-
-            // marginBottom: Platform.OS == "ios" ? -40 : 0
           }}
-          renderLabel={({ route, focused }) => (
-            <Text
-              size="label"
-              type="regular"
-              style={{
-                opacity: focused ? 1 : 0.5,
-                marginTop: 12,
+          renderItem={({ item, index }) => (
+            <Ripple
+              key={"tabx" + index}
+              onPress={() => {
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  index: index,
+                  animated: true,
+                });
               }}
             >
-              {route.title}
-            </Text>
+              <View
+                style={{
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  alignContent: "center",
+
+                  width:
+                    props.navigationState.routes.length <= 2
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                }}
+              >
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 1,
+                      borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
+                      textTransform: "capitalize",
+                    },
+                  ]}
+                >
+                  <Truncate text={item?.title ? item.title : ""} length={15} />
+                </Text>
+              </View>
+            </Ripple>
           )}
-          indicatorStyle={{ backgroundColor: "#209fae" }}
         />
       </Animated.View>
     );
@@ -975,6 +1369,7 @@ export default function ListEventHome(props) {
   const renderTabView = () => {
     return (
       <TabView
+        // style={{ marginTop: 100 }}
         onSwipeStart={() => setCanScroll(false)}
         onSwipeEnd={() => setCanScroll(true)}
         onIndexChange={(id) => {
@@ -1132,92 +1527,6 @@ export default function ListEventHome(props) {
         </Animated.View>
       ),
     });
-  };
-
-  const renderCountryAndMonthModal = () => {
-    return (
-      <View
-        style={{
-          position: "absolute",
-          bottom: 100,
-          width: "100%",
-          alignContent: "center",
-          alignItems: "center",
-          marginBottom: 460,
-          // transform: [{ translateY: displays }],
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingBottom: 20,
-            top: HeaderHeight - 160,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => setModelSetNegara(true)}
-            style={{
-              backgroundColor: "#209fae",
-              borderWidth: 2,
-              borderRightWidth: 0,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderBottomLeftRadius: 20,
-              borderTopStartRadius: 20,
-              borderColor: "#d1d1d1",
-              alignItems: "center",
-              alignContent: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
-            }}
-          >
-            <Text
-              size="label"
-              numberOfLines={1}
-              style={{
-                marginRight: 10,
-                color: "#fff",
-              }}
-            >
-              {Capital({ text: country?.name })}
-            </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setModaldate(true);
-            }}
-            style={{
-              backgroundColor: "#209fae",
-              borderWidth: 2,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderBottomRightRadius: 20,
-              borderTopEndRadius: 20,
-              borderColor: "#d1d1d1",
-              alignItems: "center",
-              alignContent: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("screen").width * 0.3,
-            }}
-          >
-            <Text
-              size="label"
-              numberOfLines={1}
-              style={{
-                marginRight: 10,
-                color: "#fff",
-              }}
-            >
-              {month}
-            </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
   };
 
   const renderFilterCategory = () => {
@@ -1486,6 +1795,11 @@ export default function ListEventHome(props) {
     );
   };
 
+  const HeightBar = Platform.select({
+    ios: Notch ? 95 : 70,
+    android: 60,
+  });
+
   const renderCountryFilter = () => {
     return (
       <Modal
@@ -1500,10 +1814,7 @@ export default function ListEventHome(props) {
         animationOut="slideOutRight"
         isVisible={modals}
         style={{
-          justifyContent: "flex-end",
-          alignItems: "center",
-          alignSelf: "center",
-          alignContent: "center",
+          margin: 0,
         }}
       >
         <View
@@ -1513,6 +1824,18 @@ export default function ListEventHome(props) {
             height: Dimensions.get("screen").height,
           }}
         >
+          {Platform.OS == "ios" ? (
+            <View
+              style={{
+                height: 50,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "#14646e",
+
+                marginTop: Notch ? -10 : -50,
+              }}
+            ></View>
+          ) : null}
+
           <View
             style={{
               flexDirection: "row",
@@ -1522,7 +1845,6 @@ export default function ListEventHome(props) {
               backgroundColor: "#209fae",
               height: 55,
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
             }}
           >
             <Button
@@ -1539,10 +1861,11 @@ export default function ListEventHome(props) {
               )}
             </Button>
             <Text
-              size="label"
+              size="title"
               style={{
                 color: "white",
               }}
+              type="bold"
             >
               {t("country")}
             </Text>
@@ -1556,10 +1879,6 @@ export default function ListEventHome(props) {
             }}
           >
             <View
-              // onLayout={event => {
-              //   var { x, y, width, height } = event.nativeEvent.layout;
-              //   setheight(height);
-              // }}
               style={{
                 flexDirection: "row",
                 zIndex: 5,
@@ -1569,6 +1888,7 @@ export default function ListEventHome(props) {
                 backgroundColor: "#fff",
                 // position: "absolute",
                 top: 0,
+                height: Platform.OS == "ios" ? (Notch ? "6%" : "8%") : "6%",
               }}
             >
               <View
@@ -1577,35 +1897,45 @@ export default function ListEventHome(props) {
                   borderRadius: 3,
                   flexDirection: "row",
                   alignItems: "center",
-                  alignContent: "center",
-                  height: 30,
 
+                  alignContent: "center",
                   paddingHorizontal: 10,
                 }}
               >
                 <Search width={15} height={15} />
 
                 <TextInput
+                  value={renderCountry}
                   underlineColorAndroid="transparent"
                   enablesReturnKeyAutomatically={true}
                   placeholder={t("search")}
+                  autoCorrect={false}
                   style={{
-                    width: "80%",
+                    width: "93%",
+                    paddingRight: 25,
                     // borderWidth: 1,
-                    marginLeft: 5,
+                    marginLeft: 10,
                     padding: 0,
+                    fontSize: 16,
                   }}
                   returnKeyType="search"
                   onChangeText={(x) => {
                     searchCountry(x);
+                    setRenderCountry(x);
                   }}
                   onSubmitEditing={(x) => {
                     searchCountry(x);
                   }}
                 />
-                {filterCountry.length !== 0 ? (
-                  <TouchableOpacity onPress={() => searchCountry("")}>
-                    <Xblue width="10" height="10" />
+                {renderCountry.length !== 0 ? (
+                  <TouchableOpacity
+                    style={{ marginLeft: -20 }}
+                    onPress={() => {
+                      setFilterCountry("");
+                      setRenderCountry("");
+                    }}
+                  >
+                    <Xblue width="20" height="20" />
                   </TouchableOpacity>
                 ) : null}
               </View>
@@ -1613,12 +1943,13 @@ export default function ListEventHome(props) {
             {filterCountry.length > 0
               ? filterCountry.map((item, index) => (
                   <Pressable
+                    key={index.toString()}
                     onPress={() => handlecountry(item, index)}
                     style={{
                       paddingVertical: 15,
                       paddingHorizontal: 20,
                       borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -1627,23 +1958,24 @@ export default function ListEventHome(props) {
                   >
                     <View
                       style={{
+                        marginRight: 15,
                         flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        elevation: 1,
                       }}
                     >
                       <View
                         style={{
-                          marginRight: 15,
-                          elevation: 1,
-                          height: 30,
-                          width: 42,
-                          backgroundColor: "#fff",
-                          // borderWidth: 1,
+                          borderWidth: 1,
+                          borderColor: "#d1d1d1",
+                          overflow: "hidden",
                         }}
                       >
                         <FunIcon
                           icon={item.flag}
-                          height={30}
-                          width={42}
+                          height={25}
+                          width={37}
                           variant="f"
                           style={
                             {
@@ -1652,8 +1984,15 @@ export default function ListEventHome(props) {
                           }
                         />
                       </View>
-                      <View style={{ paddingTop: 5 }}>
-                        <Text size="description">{item.name}</Text>
+                      <View style={{ paddingLeft: 15 }}>
+                        <Text
+                          size="description"
+                          style={{
+                            color: item.checked ? "#209FAE" : "#000",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
                       </View>
                     </View>
                     <View>
@@ -1665,12 +2004,16 @@ export default function ListEventHome(props) {
                 ))
               : datacountry.map((item, index) => (
                   <Pressable
+                    key={"country" + index}
                     onPress={() => handlecountry(item, index)}
                     style={{
                       paddingVertical: 15,
                       paddingHorizontal: 20,
                       borderBottomWidth: 0.5,
-                      borderBottomColor: "#D1D1D1",
+                      borderBottomColor:
+                        item.id === country.id || item.checked
+                          ? "#209FAE"
+                          : "#D1D1D1",
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
@@ -1695,6 +2038,7 @@ export default function ListEventHome(props) {
                         <FunIcon
                           icon={item.flag}
                           height={30}
+                          x
                           width={42}
                           variant="f"
                           style={
@@ -1705,11 +2049,22 @@ export default function ListEventHome(props) {
                         />
                       </View>
                       <View style={{ paddingTop: 5 }}>
-                        <Text size="description">{item.name}</Text>
+                        <Text
+                          size="description"
+                          style={{
+                            color:
+                              item.id === country.id || item.checked
+                                ? "#209FAE"
+                                : "#000",
+                          }}
+                        >
+                          {item.name}
+                        </Text>
                       </View>
                     </View>
                     <View>
-                      {item.checked && item.checked === true ? (
+                      {item.id === country.id ||
+                      (item.checked && item.checked === true) ? (
                         <Check width={20} height={15} />
                       ) : null}
                     </View>
@@ -1748,26 +2103,23 @@ export default function ListEventHome(props) {
           style={{
             // height: 100,
             width: Dimensions.get("screen").width - 30,
-            borderRadius: 5,
+            borderRadius: 10,
           }}
         >
           <DatePicker
             mode="monthYear"
             style={{
-              borderRadius: 5,
+              borderRadius: 10,
             }}
             selectorStartingYear={2000}
-            onMonthYearChange={(selectedDate) => _handledate(selectedDate)}
+            onMonthYearChange={(selectedDate) => {
+              _handledate(selectedDate);
+            }}
           />
         </View>
       </Modal>
     );
   };
-
-  let [token, setToken] = useState("");
-  let [show, setshow] = useState(false);
-  let [modals, setModelSetNegara] = useState(false);
-  let [Modaldate, setModaldate] = useState(false);
 
   const monthNames = [
     "January",
@@ -1810,6 +2162,7 @@ export default function ListEventHome(props) {
     countries: null,
     date_from: null,
     date_until: null,
+    city: null,
   });
 
   const [getdataEvent, { data, loading, error }] = useLazyQuery(ListEventGQL, {
@@ -1820,28 +2173,32 @@ export default function ListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
-        search.country && search.country.length > `0`
+        search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
+      province: null,
       price_start: null,
       price_end: null,
-      date_from: search.date_from,
-      date_until: search.date_until,
+      date_from: null,
+      date_until: null,
+      years: currentYear,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
-      setdataEvent(data.event_list_v2);
+      if (data && data?.event_list_v2) {
+        setdataEvent(data?.event_list_v2);
+      }
     },
   });
 
@@ -1856,28 +2213,30 @@ export default function ListEventHome(props) {
       cities:
         search.city && search.city.length > 0
           ? search.city
-          : props.route.params && props.route.params.idcity
+          : props.route.params
           ? [props.route.params.idcity]
           : null,
       countries:
         search.country && search.country.length > 0
           ? search.country
-          : props.route.params && props.route.params.idcountries
+          : props.route.params
           ? [props.route.params.idcountries]
           : null,
+      province: null,
       price_start: null,
       price_end: null,
-      date_from: search.date_from,
-      date_until: search.date_until,
+      date_from: null,
+      date_until: null,
+      years: currentYear,
     },
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
     onCompleted: () => {
-      setdataEventPublic(dataPublic.event_list_public);
+      setdataEventPublic(dataPublic?.event_list_public);
     },
   });
 
@@ -1886,9 +2245,9 @@ export default function ListEventHome(props) {
     {
       fetchPolicy: "network-only",
       onCompleted: () => {
-        setdataFilterCategori(dataFillter.event_filter.type);
-        setdataFilterCategoris(dataFillter.event_filter.type);
-        setdatacountry(dataFillter.event_filter.country);
+        setdataFilterCategori(dataFillter?.event_filter?.type);
+        setdataFilterCategoris(dataFillter?.event_filter?.type);
+        setdatacountry(dataFillter?.event_filter?.country);
       },
     }
   );
@@ -1904,7 +2263,7 @@ export default function ListEventHome(props) {
     },
     // fetchPolicy: "network-only",
     onCompleted: () => {
-      SetDataBanner(dataBanner.get_banner);
+      SetDataBanner(dataBanner?.get_banner);
     },
   });
 
@@ -1921,7 +2280,7 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
@@ -1933,13 +2292,13 @@ export default function ListEventHome(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : null,
+        Authorization: tokenApps,
       },
     },
   });
 
   const _liked = async (id, item, position) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       let items = { ...item };
       items.liked = true;
 
@@ -1961,12 +2320,6 @@ export default function ListEventHome(props) {
             event_id: id,
           },
         });
-        if (loadingLike) {
-          Alert.alert(t("somethingwrong"));
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (
@@ -1990,18 +2343,12 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
   const _unliked = async (id, item, position) => {
-    if (token && token !== "" && token !== null) {
+    if (tokenApps) {
       let items = { ...item };
       items.liked = false;
 
@@ -2023,12 +2370,6 @@ export default function ListEventHome(props) {
             type: "event",
           },
         });
-        if (loadingUnLike) {
-          Alert.alert(t("somethingwrong"));
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (
@@ -2051,19 +2392,11 @@ export default function ListEventHome(props) {
         Alert.alert(t("somethingwrong"));
       }
     } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
+      setModalLogin(true);
     }
   };
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    await setToken(tkn);
     await refresh();
   };
 
@@ -2071,7 +2404,7 @@ export default function ListEventHome(props) {
     props.navigation.navigate("eventdetail", {
       event_id: data.id,
       name: data.name,
-      token: token,
+      token: tokenApps,
     });
   };
 
@@ -2079,9 +2412,36 @@ export default function ListEventHome(props) {
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
+  let hides = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    })
+  );
+
+  let hide = React.useRef(
+    scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    })
+  );
+
+  const imageTranslate = scrollY.interpolate({
+    inputRange: [0, HeaderHeight],
+    outputRange: [0, -60],
+    extrapolate: "clamp",
+  });
+  const imageTranslateTab = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -285],
+    extrapolate: "clamp",
+  });
+
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 100, 100],
+    outputRange: [1, 0.5, 0],
     extrapolate: "clamp",
   });
 
@@ -2117,8 +2477,9 @@ export default function ListEventHome(props) {
     data["country"] = hasil;
     await setSearch(data);
 
-    await setModelSetNegara(false);
+    // await setModelSetNegara(false);
     await setcountry(item);
+    await setRenderCountry("");
   };
 
   const UpdateFilter = async () => {
@@ -2138,18 +2499,40 @@ export default function ListEventHome(props) {
     getdataEventPublic();
   };
 
+  const getDate = async () => {
+    const dateObj = new Date();
+    let hari = parseFloat(dateObj.getUTCDate());
+    let bulan = parseFloat(dateObj.getUTCMonth() + 1); //months from 1-12
+    let tahun = parseFloat(dateObj.getUTCFullYear());
+    let arrDate = [];
+
+    arrDate.push(tahun);
+    arrDate.push(bulan);
+
+    let awalArr = new Date(arrDate[0], bulan - 1, 1);
+    let akhirArr = new Date(arrDate[0], bulan, 1);
+    let dateNow = `${tahun}-${bulan}-${hari}`;
+
+    let datas = { ...search };
+    datas["date_from"] = awalArr;
+    datas["date_until"] = awalArr;
+    await setSearch(datas);
+    await setModaldate(false);
+    await setmonth(monthNames[bulan - 1]);
+  };
+
   const _handledate = async (selected) => {
     let data = selected.split(" ");
-    let month = data[1]; // January
-    let awal = new Date(data[0], parseFloat(month) - 1, 1);
-    let akhir = new Date(data[0], parseFloat(month), 1);
+    let bulan = data[1]; // January
+    let awal = new Date(data[0], parseFloat(bulan) - 1, 1);
+    let akhir = new Date(data[0], parseFloat(bulan), 1);
 
     let datas = { ...search };
     datas["date_from"] = awal;
     datas["date_until"] = akhir;
     await setSearch(datas);
     await setModaldate(false);
-    await setmonth(monthNames[parseFloat(month - 1)]);
+    await setmonth(monthNames[bulan - 1]);
   };
 
   const ClearAllFilter = async () => {
@@ -2185,6 +2568,7 @@ export default function ListEventHome(props) {
   const [filterCategory, setFilterCategory] = useState(dataFilterCategoris);
 
   const [filterCountry, setFilterCountry] = useState([]);
+  const [renderCountry, setRenderCountry] = useState("");
   const searchCountry = async (teks) => {
     let searching = new RegExp(teks, "i");
     let b = datacountry.filter((item) => searching.test(item.name));
@@ -2194,7 +2578,6 @@ export default function ListEventHome(props) {
 
   const [findCountry, setFindCountry] = useState("");
   const clearSearchCountry = async (teks) => {
-    console.log(datacountry);
     let searching = new RegExp(teks, "i");
     let b = datacountry.filter((item) => searching.test(item.name));
   };
@@ -2205,15 +2588,79 @@ export default function ListEventHome(props) {
     return dat.length;
   };
 
+  // loading sebelum tampil layout
+  if (loadingIndicator) {
+    return (
+      <View style={styles.container}>
+        <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          <ActivityIndicator color="#209FAE" animating={true} />
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }}>
-      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
-      {renderTabView()}
+    <View style={styles.container}>
+      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+
+      {loadingPublic ? (
+        <View>
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : tabIndex == 1 && dataEventPublic.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
+      {loading ? (
+        <View>
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : tabIndex == 0 && dataEvent && dataEvent.length == 0 ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
+            zIndex: 1,
+            position: "absolute",
+            alignItems: "center",
+          }}
+        >
+          <Text size="title" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      ) : null}
+      <ModalLogin
+        modalLogin={modalLogin}
+        setModalLogin={() => setModalLogin(false)}
+        props={props}
+      />
       {/* {renderFilterAndSearchHeader()} */}
+      {renderNavDefault()}
+      {renderNavInterpolated()}
+      {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
       {/* {renderCountryAndMonthModal()} */}
-      {renderFilterCategory()}
+      {/* {renderFilterCategory()} */}
       {renderCountryFilter()}
       {renderMonthFilter()}
     </View>
@@ -2228,9 +2675,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFF",
   },
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
   searchWhite: {
     marginRight: 25,
     marginTop: Platform.OS == "ios" ? 0 : 5,
+    height: 35,
+    width: 35,
+
+    borderRadius: 30,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   ImageView: {
     height: Dimensions.get("window").width * 0.47 - 16,
@@ -2245,5 +2703,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
     overflow: "hidden",
+  },
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
   },
 });

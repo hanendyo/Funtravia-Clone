@@ -14,6 +14,7 @@ import {
   ScrollView,
   FlatList,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DeviceInfo from "react-native-device-info";
@@ -101,25 +102,13 @@ export default function ListEventHome(props) {
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? i18n.language === "id"
-        ? normalize(380) + tambahanJudul + tambahan - 48
-        : normalize(384) + tambahanJudul + tambahan - 48
-      : i18n.language === "id"
       ? normalize(380) + tambahanJudul + tambahan - 20
       : normalize(384) + tambahanJudul + tambahan - 20,
 
     android:
-      i18n.language === "id"
-        ? deviceId == "LYA-L29"
-          ? normalize(372) + tambahanJudul + tambahan - StatusBar.currentHeight
-          : deviceId == "CPH2127"
-          ? normalize(400) + tambahanJudul + tambahan - StatusBar.currentHeight
-          : normalize(385) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : deviceId == "LYA-L29"
-        ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : deviceId == "CPH2127"
-        ? normalize(387) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(378) + tambahanJudul + tambahan - StatusBar.currentHeight,
+      deviceId == "LYA-L29"
+        ? normalize(265) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(250) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -541,21 +530,86 @@ export default function ListEventHome(props) {
           // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
+          // marginHorizontal: 20,
+          backgroundColor: "#209FAE",
           height: 45,
           // backgroundColor: "red",
-          width: Dimensions.get("screen").width - 40,
+          width: Dimensions.get("screen").width,
         }}
       >
-        <View flexDirection="row">
+        <View
+          flexDirection="row"
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <View flexDirection="row" style={{ flex: 1 }}>
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => props.navigation.goBack()}
+              style={{
+                height: 60,
+                // marginLeft: 8,
+              }}
+            >
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <View
+              style={{
+                // width: Dimensions.get("screen").width - 100,
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{
+                  color: "#FFFFFF",
+                }}
+              >
+                {t("event")}
+              </Text>
+            </View>
+          </View>
+
           <Button
             text={""}
             size="medium"
             type="circle"
             variant="transparent"
-            onPress={() => props.navigation.goBack()}
+            onPress={() => {
+              props.navigation.navigate("searchListEventHome", {
+                idcity: null,
+                idcountries: country.id,
+                countryName: country.name,
+                eventList: null,
+                year: currentYear,
+              });
+            }}
             style={{
-              height: 60,
+              height: 40,
               // marginLeft: 8,
             }}
           >
@@ -568,94 +622,36 @@ export default function ListEventHome(props) {
                 alignItems: "center",
               }}
             >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
+              <SearchWhite width="20" height="20" />
             </Animated.View>
           </Button>
-          <View
-            style={{
-              // width: Dimensions.get("screen").width - 100,
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-              padding: 10,
-            }}
-          >
-            <Text
-              size="title"
-              type="bold"
-              style={{
-                color: "#FFFFFF",
-              }}
-            >
-              {t("event")}
-            </Text>
-          </View>
         </View>
-
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => {
-            props.navigation.navigate("searchListEventHome", {
-              idcity: null,
-              idcountries: country.id,
-              countryName: country.name,
-              eventList: null,
-              year: currentYear,
-            });
-          }}
-          style={{
-            height: 40,
-            // marginLeft: 8,
-          }}
-        >
-          {/* <TouchableOpacity
-          style={styles.searchWhite}
-          // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-          onPress={() => props.navigation.navigate("searchListEventHome")}
-        >
-          <SearchWhite width="20" height="20" />
-        </TouchableOpacity> */}
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchWhite width="20" height="20" />
-          </Animated.View>
-        </Button>
       </Animated.View>
     );
   };
 
+  const ref = useRef(0);
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 50],
+      outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
-      // extrapolate: 'clamp',
     });
+
     return (
       <Animated.View
-        pointerEvents={"box-none"}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
-          height: HeaderHeight,
+          // top: SafeStatusBar,
+          paddingTop: Platform.select({
+            ios: Notch ? 10 : 20,
+            android: 20,
+          }),
+
           width: "100%",
           alignItems: "center",
-
           justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
@@ -663,119 +659,90 @@ export default function ListEventHome(props) {
       >
         <Animated.View
           style={{
+            width: "100%",
+            // borderWidth: 1,
+            backgroundColor: "#fff",
             opacity: imageOpacity,
-            flex: 1,
-            width: width,
+            justifyContent: "center",
           }}
         >
-          {Banner && Banner.banner_asset.length > 0 ? (
-            <Animated.Image
-              source={{ uri: Banner.banner_asset[0].filepath }}
-              style={{
-                flex: 1,
+          <Animated.View>
+            {Banner && Banner.banner_asset.length > 0 ? (
+              <Animated.Image
+                source={{ uri: Banner.banner_asset[0].filepath }}
+                style={{
+                  flex: 1,
+                  height: 200,
+                  width: "100%",
+                  opacity: imageOpacity,
+                }}
+              />
+            ) : (
+              <Animated.Image
+                source={Eventcover}
+                style={{
+                  flex: 1,
 
-                width: "100%",
-                opacity: imageOpacity,
-              }}
-            />
-          ) : (
-            <Animated.Image
-              source={Eventcover}
-              style={{
-                flex: 1,
-
-                width: "100%",
-                opacity: imageOpacity,
-              }}
-            />
-          )}
+                  width: "100%",
+                  opacity: imageOpacity,
+                }}
+              />
+            )}
+          </Animated.View>
           <View
-            pointerEvents="box-none"
+            onLayout={(event) => {
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              console.log("height", height);
+              setTambahanJudul(height - 15);
+            }}
             style={{
-              // flex: 1,
-              marginTop: 0,
-
-              paddingTop: Platform.OS == "ios" ? 25 : 20,
               paddingHorizontal: 15,
-              paddingBottom: Platform.OS == "ios" ? 3 : 1,
-
-              zIndex: -10,
-              backgroundColor: "#fff",
             }}
           >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = +line;
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanJudul(lines * 3)
-                      : setTambahanJudul(lines * -6)
-                    : setTambahanJudul(lines * 1);
-                  // setTambahanJudul(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanJudul(lines * -10)
-                      : setTambahanJudul(lines * -20)
-                    : setTambahanJudul(lines * 1);
-                }
-              }}
               size="title"
               type="bold"
               style={{
                 textAlign: "left",
                 paddingBottom: 5,
                 flexShrink: 0,
-                // borderWidth: 2,
+                paddingTop: 25,
               }}
-              // wordWra
             >
-              {t("EventTitle")}
+              {Banner?.title}
             </Text>
+          </View>
+          <View
+            onLayout={(event) => {
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              console.log("height", height);
+              setTambahan(height);
+            }}
+            style={{
+              paddingHorizontal: 15,
+            }}
+          >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = line - 1;
-                // setTambahanDeskripsi(lines * 32);
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 15)
-                      : setTambahan(lines * 17)
-                    : setTambahan(lines * 11);
-                  // setTambahanDeskripsi(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 16)
-                      : setTambahan(lines - 20)
-                    : setTambahan(lines);
-                }
-              }}
               size="label"
               type="regular"
               style={{
                 textAlign: "left",
-                // paddingHorizontal:
-                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
+                paddingBottom: 5,
+                flexShrink: 0,
               }}
             >
-              {t("EventDescription")}
+              {Banner?.description}
             </Text>
           </View>
         </Animated.View>
-
         {/* filter negara */}
         <Animated.View
           style={{
             flexDirection: "row",
             position: "absolute",
-            top: Platform.select({
-              ios: Notch ? normalize(185) : normalize(200),
-              android: normalize(205),
-            }),
+            top: 200,
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
@@ -1288,7 +1255,7 @@ export default function ListEventHome(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 50],
+      outputRange: [HeaderHeight, 70],
       extrapolateRight: "clamp",
     });
     return (
@@ -1298,6 +1265,7 @@ export default function ListEventHome(props) {
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
+
           width: "100%",
         }}
       >
@@ -2607,8 +2575,8 @@ export default function ListEventHome(props) {
   }
 
   return (
-    <View style={styles.container}>
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+    <SafeAreaView style={styles.container}>
+      {/* <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} /> */}
 
       {loadingPublic ? (
         <View>
@@ -2663,7 +2631,7 @@ export default function ListEventHome(props) {
       {/* {renderFilterCategory()} */}
       {renderCountryFilter()}
       {renderMonthFilter()}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -2677,7 +2645,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
   },
   searchWhite: {
     marginRight: 25,
