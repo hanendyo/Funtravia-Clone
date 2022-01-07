@@ -392,7 +392,7 @@ export default function FeedList({ props, token }) {
     onCompleted: () => {
       setDataFeed(dataPost?.post_cursor_based?.edges);
     },
-  });
+  })
 
   // useEffect(() => {
   //   const unsubscribe = props.navigation.addListener("focus", () => {
@@ -2003,7 +2003,7 @@ export default function FeedList({ props, token }) {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                      maxWidth: "70%",
+                      maxWidth: "80%",
                     }}
                   >
                     <Text
