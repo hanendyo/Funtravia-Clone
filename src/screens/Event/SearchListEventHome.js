@@ -36,9 +36,9 @@ import { setSettingUser } from "../../redux/action";
 
 export default function SearchListEventHome(props) {
   const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  // const setting = useSelector((data) => data.setting);
   const tokenApps = useSelector((data) => data.token);
-  const setting = useSelector((data) => data.setting);
   let [oldYear, setOldYear] = useState(
     props.route.params.year ? props.route.params.year : null
   );
@@ -1184,9 +1184,9 @@ export default function SearchListEventHome(props) {
     await GetDataEventsAll();
     await GetDataEventsPublic();
 
-    let setsetting = await AsyncStorage.getItem("setting");
+    // let setsetting = await AsyncStorage.getItem("setting");
     // await setSetting(JSON.parse(setsetting));
-    dispatch(setSettingUser(JSON.parse(setsetting)));
+    // dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   const [
