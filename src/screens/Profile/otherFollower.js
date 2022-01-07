@@ -92,12 +92,6 @@ export default function Follower(props) {
   );
   const loadAsync = async () => {
     setLoading(true);
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    // dispatch(setTokenApps(`Bearer ${tkn}`));
-    let setsetting = await AsyncStorage.getItem("setting");
-    dispatch(setSettingApps(setsetting));
-    // setSetting(JSON.parse(setsetting));
     await LoadFollower();
     await setLoading(false);
   };

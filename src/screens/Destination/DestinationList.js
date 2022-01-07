@@ -15,6 +15,7 @@ import {
   Arrowbackwhite,
   Search,
   Xhitam,
+  Xblue,
   Filternewbiru,
   Arrowbackios,
 } from "../../assets/svg";

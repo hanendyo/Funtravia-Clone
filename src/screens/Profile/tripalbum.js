@@ -108,8 +108,6 @@ export default function tripalbum(props) {
     },
   });
 
-  //   console.log(dataalbum);
-
   const [
     mutationUpload,
     { loading: loadingupload, data: dataupload, error: errorupload },

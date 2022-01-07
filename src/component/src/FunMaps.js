@@ -55,26 +55,62 @@ export default function FunMaps({
     });
 
   if (loading) {
-    return <ActivityIndicator />;
+    return (
+      <View
+        style={{
+          width: width ? width : 50,
+          height: height ? height : 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color="#209fae" />
+      </View>
+    );
   }
 
   if (status) {
     return (
-      <SvgCssUri
-        uri={path}
-        width={width ? width : 50}
-        height={height ? height : 50}
-        fill={fill ? fill : "#464646"}
-      />
+      <>
+        <SvgCssUri
+          uri={path}
+          width={width ? width : 50}
+          height={height ? height : 50}
+          fill={fill ? fill : "#464646"}
+        />
+      </>
     );
   } else {
     return (
-      <SvgCssUri
-        uri={url}
-        width={width ? width : 50}
-        height={height ? height : 50}
-        fill={fill ? fill : "#464646"}
-      />
+      <>
+        <View
+          style={{
+            width: width ? width : 50,
+            height: height ? height : 50,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+        {/* <ActivityIndicator
+          size="large"
+          color="#209fae"
+          style={{
+            position: "absolute",
+            zIndex: 1,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        /> */}
+        <SvgCssUri
+          uri={path}
+          width={width ? width : 50}
+          height={height ? height : 50}
+          fill={fill ? fill : "#464646"}
+          style={{ position: "absolute", zIndex: 2 }}
+        />
+      </>
     );
   }
 }

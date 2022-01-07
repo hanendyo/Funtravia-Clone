@@ -670,9 +670,10 @@ export default function ItineraryChooseday(props) {
     }
   };
 
-  const RenderActive = ({ item }) => {
+  const RenderActive = ({ item, index }) => {
     return (
       <TouchableOpacity
+        key={index}
         onPress={() =>
           _handleCheck(
             item.id,
@@ -874,10 +875,10 @@ export default function ItineraryChooseday(props) {
             </Text>
             {ArrayDay.length
               ? ArrayDay.map((item, i) => {
-                  return <RenderActive item={item} />;
+                  return <RenderActive item={item} index={i} />;
                 })
               : dataItinerary.itinerary_detail.day.map((item, i) => {
-                  return <RenderActive item={item} />;
+                  return <RenderActive item={item} index={i} />;
                 })}
             <TouchableOpacity
               style={{

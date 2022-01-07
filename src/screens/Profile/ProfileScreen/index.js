@@ -804,6 +804,8 @@ export default function OtherProfile(props) {
     },
   });
 
+  console.log("dataAlbum", dataalbums);
+
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
