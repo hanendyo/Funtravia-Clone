@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -21,7 +22,7 @@ import {
   Xblue,
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import { Text, Button, FunIcon } from "../../../component";
+import { Text, Button, FunIcon, StatusBar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import CountryListSrcUnesco from "../../../graphQL/Query/Countries/CountryListSrcUnesco";
@@ -171,11 +172,12 @@ export default function CountrySrc({
         margin: 0,
       }}
     >
-      <View
+      <SafeAreaView
         style={{
           flex: 1,
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
+          // width: Dimensions.get("screen").width,
+          // height: Dimensions.get("screen").height,
+          backgroundColor: "#14646e",
         }}
       >
         <View
@@ -187,7 +189,7 @@ export default function CountrySrc({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Notch ? 20 : 0,
+            // marginTop: Notch ? 20 : 0,
           }}
         >
           <Button
@@ -473,7 +475,7 @@ export default function CountrySrc({
             }
           />
         </View>
-      </View>
+      </SafeAreaView>
       {/* modal filter */}
       <Modal
         onBackdropPress={() => {

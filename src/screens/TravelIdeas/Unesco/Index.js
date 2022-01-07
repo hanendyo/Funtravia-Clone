@@ -189,8 +189,9 @@ export default function Unesco({ navigation, route }) {
     variables: {
       page_location: "Unesco",
     },
-    // fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
     onCompleted: () => {
+      console.log("dataBanner", dataBanner);
       SetDataBanner(dataBanner?.get_banner);
     },
   });
@@ -449,6 +450,9 @@ export default function Unesco({ navigation, route }) {
    */
 
   let [heights, setHeights] = useState(0);
+  let [tinggi, setTinggi] = useState(0);
+  console.log("heights", heights);
+  console.log("tinggi", tinggi);
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
@@ -483,6 +487,7 @@ export default function Unesco({ navigation, route }) {
             <Animated.Image
               onLayout={(event) => {
                 const layout = event.nativeEvent.layout;
+                console.log("layout", layout);
                 setHeights(layout.height);
               }}
               style={{
@@ -496,6 +501,10 @@ export default function Unesco({ navigation, route }) {
             />
           ) : (
             <Animated.Image
+              onLayout={(event) => {
+                const layout = event.nativeEvent.layout;
+                setTinggi(layout.height);
+              }}
               style={{
                 flex: 1,
                 width: "100%",
@@ -593,10 +602,17 @@ export default function Unesco({ navigation, route }) {
         <Animated.View
           style={{
             position: "absolute",
-            top: Platform.select({
-              ios: Notch ? normalize(190) : normalize(200),
-              android: normalize(186),
-            }),
+            // top: Banner?.banner_asset.length > 0 ? heights - 22 : tinggi - 22,
+            top:
+              Platform.OS == "ios"
+                ? Notch
+                  ? tinggi - 35
+                  : tinggi + 27
+                : tinggi - 25,
+            // top: Platform.select({
+            //   ios: Notch ? normalize(190) : normalize(200),
+            //   android: normalize(186),
+            // }),
             alignItems: "center",
             width: "100%",
             height: normalize(44),
@@ -1050,21 +1066,39 @@ export default function Unesco({ navigation, route }) {
     });
   };
 
-  if (loading) {
-    <View style={{ marginTop: 20, backgroundColor: "#FFF" }}>
-      <ActivityIndicator size="small" animating="true" />
-    </View>;
-  }
+  let [loadingPage, setLoadingPage] = useState(true);
+  console.log("loadingPage", loadingPage);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadingPage(false);
+    }, 2000);
+  }, []);
 
   return (
     <View style={styles.container}>
+      {loadingPage ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            backgroundColor: "#FFF",
+            zIndex: 1000000,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#209fae" />
+        </View>
+      ) : null}
       <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
       <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}
         modalshown={modalcountry}
         setModelCountry={(e) => setModelCountry(e)}
-        navigation = {navigation}
+        navigation={navigation}
       />
 
       <Animated.View

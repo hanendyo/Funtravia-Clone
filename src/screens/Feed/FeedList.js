@@ -14,7 +14,6 @@ import {
   Modal,
   Platform,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   LikeRed,
   Send_to,
@@ -34,7 +33,6 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
 import { Text, Button, shareAction, CopyLink, FunImage } from "../../component";
-import { Truncate } from "../../component";
 import { useTranslation } from "react-i18next";
 import FeedListCursorBased from "../../graphQL/Query/Feed/FeedListCursorBased";
 import ViewMoreText from "react-native-view-more-text";
@@ -100,6 +98,7 @@ const PostMut = gql`
 export default function FeedList({ props, token }) {
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const ref = React.useRef(null);
   const [modalLogin, setModalLogin] = useState(false);
   const isFocused = useIsFocused();
@@ -109,13 +108,11 @@ export default function FeedList({ props, token }) {
   const [uploadFailed, setUploadFailed] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [successAfterRefetch, setSuccessAfterRefetch] = useState(false);
-  console.log("~ successAfterRefetch", successAfterRefetch);
   let [selectedOption, SetOption] = useState({});
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
   let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
-  let [setting, setSetting] = useState();
   let [activelike, setactivelike] = useState(true);
 
   let { width, height } = Dimensions.get("screen");
@@ -514,8 +511,6 @@ export default function FeedList({ props, token }) {
   };
 
   const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
     await LoadFollowing();
   };
 

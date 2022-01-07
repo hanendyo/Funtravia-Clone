@@ -38,9 +38,11 @@ import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import { useIsFocused } from "@react-navigation/native";
 const { width } = Dimensions.get("screen");
-import { stat } from "react-native-fs";
+import { hash, stat } from "react-native-fs";
 import { useSelector } from "react-redux";
-import ImageEditor from "@react-native-community/image-editor";
+import { Video, Image as ImageCompress } from "react-native-compressor";
+import RNFS from "react-native-fs";
+// import RNConvertPhAsset from "react-native-convert-ph-asset";
 
 export default function Post(props) {
   const tokenApps = useSelector((data) => data.token);
@@ -48,7 +50,6 @@ export default function Post(props) {
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
-  console.log("imageRoll", imageRoll);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Preview, setPreview] = useState(true);
@@ -154,39 +155,63 @@ export default function Post(props) {
           height = 1080;
         }
         let tempData = { ...recent.node.image };
-        // await setLoadVid(true);
-        // const result = await Video.compress(tempData.uri, {
-        //   compressionMethod: "auto",
-        // });
-        // const statResult = await stat(result);
-        const statResult = await stat(tempData?.uri);
-        if (statResult.size <= 50000000) {
-          tempData.height = height;
-          tempData.width = width;
-          tempData.size = statResult.size;
-          tempData.uri =
-            statResult.originalFilepath.substring(0, 1) != "/"
-              ? `file:///${statResult.originalFilepath}`
-              : `file://${statResult.originalFilepath}`;
-          // tempData.uri =
-          //   result.substring(0, 8) != "file:///"
-          //     ? result.replace("file://", "file:///")
-          //     : result;
-          props.navigation.navigate("CreatePostScreen", {
-            location: recent.node.location,
-            type: recent.node.type.substr(0, 5),
-            file: tempData,
-            token: tokenApps,
-            ratio: ratio,
-          });
-          // setLoadVid(false);
+
+        if (Platform.OS == "ios") {
+          const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
+            .toString(36)
+            .substring(7)}.MOV`;
+          let absolutePath = await RNFS.copyAssetsVideoIOS(
+            tempData.uri,
+            dest,
+            0,
+            0
+          );
+          console.log("sbdolute", absolutePath);
+          const statResult = await stat(absolutePath);
+          if (statResult.size <= 50000000) {
+            tempData.height = height;
+            tempData.width = width;
+            tempData.size = statResult.size;
+            tempData.uri = "file://" + statResult.path;
+            console.log("tempData", tempData);
+            props.navigation.navigate("CreatePostScreen", {
+              location: recent.node.location,
+              type: recent.node.type.substr(0, 5),
+              file: tempData,
+              token: tokenApps,
+              ratio: ratio,
+            });
+          } else {
+            showAlert({
+              ...aler,
+              show: true,
+              judul: t("fileTolarge"),
+              detail: t("descMaxUpload"),
+            });
+          }
         } else {
-          showAlert({
-            ...aler,
-            show: true,
-            judul: t("fileTolarge"),
-            detail: t("descMaxUpload"),
-          });
+          const statResult = await stat(tempData.uri);
+          if (statResult.size <= 50000000) {
+            tempData.height = height;
+            tempData.width = width;
+            tempData.size = statResult.size;
+            tempData.uri = statResult.path;
+            console.log("tempData", tempData);
+            props.navigation.navigate("CreatePostScreen", {
+              location: recent.node.location,
+              type: recent.node.type.substr(0, 5),
+              file: tempData,
+              token: tokenApps,
+              ratio: ratio,
+            });
+          } else {
+            showAlert({
+              ...aler,
+              show: true,
+              judul: t("fileTolarge"),
+              detail: t("descMaxUpload"),
+            });
+          }
         }
       } else if (type.substr(0, 5) === "image") {
         let height;
@@ -201,7 +226,6 @@ export default function Post(props) {
           width = 1080;
           height = 1080;
         }
-        console.log("uri image", recent.node.image.uri);
         ImagePicker.openCropper({
           path: recent.node.image.uri,
           width: width,
@@ -270,25 +294,6 @@ export default function Post(props) {
   }, [selectedAlbum, props.navigation]);
 
   let buka = useRef(false);
-
-  // const backAction = () => {
-  //   if (buka.current === true) {
-  //     buka.current = false;
-  //     setChecklistVideo([]);
-
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  //     BackHandler.addEventListener("hardwareBackPress", backDei);
-  //   } else {
-  //     props.navigation.goBack();
-  //   }
-
-  //   return true;
-  // };
-
-  // const backDei = () => {
-  //   props.navigation.goBack();
-  //   return true;
-  // };
 
   const [selectedAlbum, setSelectedAlbum] = useState({
     title: "Folder",
@@ -426,17 +431,6 @@ export default function Post(props) {
       mediaType: "camera",
     };
     data_foto.splice(0, 0, camera);
-    let tempDataFoto = [];
-
-    if (Platform.OS == "ios") {
-      for (var x of data_foto) {
-        if (x.node) {
-          const uri = await ImageEditor.cropImage(x.node.image.uri);
-          console.log("uri", uri);
-        }
-      }
-    }
-    console.log("data_foto", data_foto);
     setImageRoll(data_foto);
     setPageInfo(dataCamera.page_info);
     await selectImg(data_foto[1]);

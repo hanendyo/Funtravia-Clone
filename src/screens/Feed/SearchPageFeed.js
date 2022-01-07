@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomImage, Text, Truncate, StatusBar } from "../../component";
 import { NetworkStatus } from "@apollo/client";
 import {
@@ -34,6 +33,7 @@ import { useSelector } from "react-redux";
 export default function Feed(props) {
   const { t } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const Notch = DeviceInfo.hasNotch();
   const SafeStatusBar = Platform.select({
     ios: Notch ? 100 : -20,
@@ -42,7 +42,6 @@ export default function Feed(props) {
   const [active, setActive] = useState("personal");
   const [active_src, setActiveSrc] = useState("account");
   const [searchtext, SetSearchtext] = useState("");
-  let [setting, setSetting] = useState();
   const default_image =
     "https://fa12.funtravia.com/destination/20200508/6Ugw9_1b6737ff-4b42-4149-8f08-00796e8c6909";
   let [refreshing, setRefreshing] = useState(false);
@@ -77,10 +76,6 @@ export default function Feed(props) {
     return tmpData;
   };
 
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
   const _searchHandle = (text) => {
     SetSearchtext(text);
     _autocomplitLocation(text);
@@ -144,10 +139,6 @@ export default function Feed(props) {
   if (dataSrcuser && dataSrcuser.user_search_feed) {
     user_search_feed = dataSrcuser.user_search_feed;
   }
-
-  useEffect(() => {
-    loadAsync();
-  }, []);
 
   const refresh = networkStatus === NetworkStatus.refetch;
   const _refresh = async () => {

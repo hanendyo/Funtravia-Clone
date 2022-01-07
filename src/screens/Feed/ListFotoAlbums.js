@@ -9,19 +9,14 @@ import RenderGridAlbum from "./RenderGridAlbum";
 import AddAlbumFeed from "../../graphQL/Mutation/Post/AddAlbumFeed";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  StackActions,
-  NavigationActions,
-  CommonActions,
-} from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 export default function ListFotoAlbums(props) {
   const { t } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+  let setting = useSelector((data) => data.setting);
   const [show, setShow] = useState(true);
-  const [setting, setSetting] = useState();
   const froms = props.route.params.from;
   const HeaderComponent = {
     headerShown: true,
@@ -92,15 +87,8 @@ export default function ListFotoAlbums(props) {
     ),
   };
 
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
-    // props.navigation.setOptions({ headerLeft: View });
     QueryFotoAlbum();
   }, []);
 
