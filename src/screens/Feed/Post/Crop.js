@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Dimensions,
   SafeAreaView,
@@ -26,11 +26,16 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { RNToasty } from "react-native-toasty";
 import { VESDK } from "react-native-videoeditorsdk";
 import { useSelector } from "react-redux";
-import { Video, Image as ImageCompress } from "react-native-compressor";
+import {
+  Video as VideoCompress,
+  Image as ImageCompress,
+} from "react-native-compressor";
+import Video from "react-native-video";
+import RNFS from "react-native-fs";
 
 export default function Crop(props) {
-  console.log("props", props);
   const [data, setData] = useState(props?.route?.params?.data);
+  console.log("~ data", data[0].node.image);
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
@@ -46,7 +51,11 @@ export default function Crop(props) {
     transparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" type="bold" style={{ color: "#FFF" }}>
+      <Text
+        size={Platform.OS == "ios" ? "label" : "header"}
+        type="bold"
+        style={{ color: "#FFF" }}
+      >
         {t("cropNewPost")}
       </Text>
     ),
@@ -116,65 +125,138 @@ export default function Crop(props) {
   const Next = async (data) => {
     let tempData = [...data];
     for (var i in tempData) {
+      console.log("tempData[i].node", tempData[i].node.type);
       if (tempData[i].node.type.substr(0, 5) == "video") {
-        // const result = await Video.compress(tempData[i].node.image.uri, {
-        //   compressionMethod: "auto",
-        // });
-        // const statResult = await stat(result);
-        const statResult = await stat(tempData[i].node.image.uri);
-
-        if (statResult.size <= 50000000) {
+        if (Platform.OS == "ios") {
+          console.log("masuk ios");
+          let extension = tempData[i].node.image.filename.split(".").pop();
+          console.log("~ extension", extension);
+          const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
+            .toString(36)
+            .substring(7)}.${extension}`;
+          console.log("~ dest", dest);
+          let absolutePath = await RNFS.copyAssetsFileIOS(
+            tempData[i].node.image.uri,
+            dest,
+            0,
+            0
+          );
+          let result = await VideoCompress.compress("file://" + absolutePath, {
+            compressionMethod: "auto",
+          });
+          console.log("~ result", result);
+          const statResult = await stat(result);
+          console.log("~ statResult", statResult);
+          if (statResult.size <= 50000000) {
+            const tempDatas = { ...tempData[i].node.image };
+            tempDatas.path = statResult.path;
+            tempDatas.uri = statResult.path;
+            tempDatas.size = statResult.size;
+            tempData[i].node.image = tempDatas;
+            console.log("masuk size");
+            setData(tempData);
+          } else {
+            showAlert({
+              ...aler,
+              show: true,
+              judul: t("fileTolarge"),
+              detail: t("descMaxUpload"),
+            });
+          }
+        } else {
+          const result = await VideoCompress.compress(
+            tempData[i].node.image.uri,
+            {
+              compressionMethod: "auto",
+            }
+          );
+          const statResult = await stat(result);
+          // const statResult = await stat(tempData[i].node.image.uri);
+          if (statResult.size <= 50000000) {
+            const tempDatas = { ...tempData[i].node.image };
+            tempDatas.path = statResult.path;
+            tempDatas.size = statResult.size;
+            tempData[i].node.image = tempDatas;
+            setData(tempData);
+          } else {
+            showAlert({
+              ...aler,
+              show: true,
+              judul: t("fileTolarge"),
+              detail: t("descMaxUpload"),
+            });
+          }
+        }
+      } else {
+        if (Platform.OS == "ios") {
+          if (tempData[i].node.image.path) {
+            let result = await ImageCompress.compress(
+              "file://" + tempData[i].node.image.path,
+              {
+                compressionMethod: "auto",
+              }
+            );
+            let statResult = await stat(result);
+            const tempDatas = { ...tempData[i].node.image };
+            tempDatas.uri = statResult.path;
+            tempDatas.size = statResult.size;
+            tempData[i].node.image = tempDatas;
+            setData(tempData);
+          } else {
+            let extension = tempData[i].node.image.filename.split(".").pop();
+            const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
+              .toString(36)
+              .substring(7)}.${extension}`;
+            let absolutePath = await RNFS.copyAssetsFileIOS(
+              tempData[i].node.image.uri,
+              dest,
+              0,
+              0
+            );
+            let result = await ImageCompress.compress(
+              "file://" + absolutePath,
+              {
+                compressionMethod: "auto",
+              }
+            );
+            let statResult = await stat(result);
+            const tempDatas = { ...tempData[i].node.image };
+            tempDatas.path = statResult.path;
+            tempDatas.uri = statResult.path;
+            tempDatas.size = statResult.size;
+            tempData[i].node.image = tempDatas;
+            setData(tempData);
+          }
+        } else {
+          const statResult = await stat(tempData[i].node.image.uri);
           const tempDatas = { ...tempData[i].node.image };
           tempDatas.path = statResult.path;
           tempDatas.size = statResult.size;
           tempData[i].node.image = tempDatas;
           setData(tempData);
-        } else {
-          showAlert({
-            ...aler,
-            show: true,
-            judul: t("fileTolarge"),
-            detail: t("descMaxUpload"),
-          });
         }
-      } else {
-        // const result = await ImageCompress.compress(
-        //   tempData[i].node.image.uri,
-        //   {
-        //     compressionMethod: "auto",
-        //   }
-        // );
-        // const statResult = await stat(result);
-        const statResult = await stat(tempData[i].node.image.uri);
-        const tempDatas = { ...tempData[i].node.image };
-        tempDatas.path = statResult.path;
-        tempDatas.size = statResult.size;
-        tempData[i].node.image = tempDatas;
-        console.log("tempData", tempData);
-        setData(tempData);
       }
     }
-    console.log("data", data);
-    // props.navigation.dispatch(
-    //   StackActions.replace("FeedStack", {
-    //     screen: "CreatePostScreen",
-    //     params: {
-    //       location: props.route.params.location,
-    //       type: "multi",
-    //       file: data,
-    //       token: tokenApps,
-    //       id_album: props.route.params.id_album,
-    //       id_itin: props.route.params.id_itin,
-    //       title_album: props.route.params.title_album,
-    //       album: props.route.params.album,
-    //       ratio: {
-    //         width: ratio == "L" ? 3 : 4,
-    //         height: ratio == "L" ? 2.2 : 5,
-    //         label: ratio,
-    //       },
-    //     },
-    //   })
-    // );
+    props.navigation.dispatch(
+      StackActions.replace("FeedStack", {
+        screen: "CreatePostScreen",
+        params: {
+          location: props.route.params.location,
+          type: "multi",
+          file: data,
+          token: tokenApps,
+          id_album: props.route.params.id_album,
+          id_itin: props.route.params.id_itin,
+          title_album: props.route.params.title_album,
+          album: props.route.params.album,
+          ratio: {
+            width: ratio == "L" ? 3 : 4,
+            height: ratio == "L" ? 2.2 : 5,
+            label: ratio,
+          },
+        },
+      })
+    );
   };
 
   const deleteFile = (index) => {
@@ -221,26 +303,13 @@ export default function Crop(props) {
       .catch((error) => console.log(error));
   };
 
-  // const CroppedVideo = async (indexAktif) => {
-  //   VESDK.openEditor(data[indexAktif].node.image.uri).then(
-  //     (result) => {
-  //       let tempData = [...data];
-  //       if (result.video) {
-  //         tempData[indexAktif].node.image.uri = result.video;
-  //       }
-  //       setData(tempData);
-  //     },
-  //     (error) => {
-  //     }
-  //   );
-  // };
+  let videoView = useRef();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Modal
         useNativeDriver={true}
         visible={modalDelete}
-        onRequestClose={() => false}
         transparent={true}
         animationType="fade"
       >
@@ -258,7 +327,7 @@ export default function Crop(props) {
         />
         <View
           style={{
-            width: Dimensions.get("screen").width / 5,
+            width: Dimensions.get("screen").width / 1.5,
             alignSelf: "center",
             backgroundColor: "#FFF",
             zIndex: 15,
@@ -273,9 +342,10 @@ export default function Crop(props) {
           <View
             style={{
               backgroundColor: "white",
-              width: Dimensions.get("screen").width - 140,
+              width: Dimensions.get("screen").width / 1.5,
               justifyContent: "center",
               borderRadius: 5,
+              // borderWidth: 1,
             }}
           >
             <View
@@ -351,7 +421,6 @@ export default function Crop(props) {
           {data[indexAktif]?.node?.type?.substr(0, 5) == "video" ? null : (
             <TouchableHighlight
               underlayColor={"#f1f1f1"}
-              // onPress={() => console.log("crop")}
               onPress={() => Cropped(indexAktif)}
               style={{ marginRight: 10 }}
             >
@@ -369,18 +438,42 @@ export default function Crop(props) {
         data[indexAktif] &&
         data[indexAktif]?.node?.type?.substr(0, 5) == "video" ? (
           <>
-            <FunVideo
+            <Video
               style={{
                 width: Dimensions.get("window").width - 30,
-                // height: newRatio == "L" ? L : newRatio == "P" ? P : S,
                 height: ratio == "L" ? L : ratio == "P" ? P : S,
                 borderRadius: 10,
                 borderWidth: 1,
                 borderColor: "#f1f1f1",
               }}
               resizeMode="cover"
-              source={{ uri: data[indexAktif].node.image.uri }}
-              repeat={true}
+              poster={data[indexAktif].node.image.uri.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
+              source={{
+                uri:
+                  Platform.OS === "ios"
+                    ? `assets-library://asset/asset.${data[
+                        indexAktif
+                      ].node.image.filename.substring(
+                        data[indexAktif].node.image.filename.length - 3
+                      )}?id=${data[indexAktif].node.image.uri.substring(
+                        5,
+                        41
+                      )}&ext=${data[indexAktif].node.image.filename.substring(
+                        data[indexAktif].node.image.filename.length - 3
+                      )}`
+                    : data[indexAktif].node.image.uri,
+              }}
+              // source={{ uri: data[indexAktif].node.image.uri }}
+              paused={false}
+              ref={(ref) => {
+                videoView = ref;
+              }}
+              onBuffer={videoView?.current?.onBuffer}
+              onError={videoView?.current?.videoError}
             />
             {loadVid ? (
               <View
@@ -404,7 +497,6 @@ export default function Crop(props) {
           <Image
             style={{
               width: Dimensions.get("window").width - 30,
-              // height: newRatio == "L" ? L : newRatio == "P" ? P : S,
               height: ratio == "L" ? L : ratio == "P" ? P : S,
               borderRadius: 10,
             }}
@@ -413,11 +505,9 @@ export default function Crop(props) {
           />
         )}
         <FlatList
-          // onLayout={() => setImg(data.assets[0])}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
-            // paddingHorizontal: 10,
             marginVertical: 5,
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -430,21 +520,9 @@ export default function Crop(props) {
                 marginRight: data.length == index + 1 ? 0 : 5,
               }}
             >
-              {/* {croped > index ? (
-                <View
-                  style={{
-                    position: "absolute",
-                    top: 20,
-                    right: 20,
-                    zIndex: 99,
-                  }}
-                >
-                  <Check width={30} height={30} />
-                </View>
-              ) : null} */}
               {item.type === "video" ? (
                 <FunVideo
-                  // poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
+                  poster={item.filepath.replace("output.m3u8", "thumbnail.png")}
                   posterResizeMode={"cover"}
                   source={{
                     uri: item.node.image.uri,
@@ -463,7 +541,6 @@ export default function Crop(props) {
               ) : (
                 <Image
                   resizeMode="cover"
-                  // source={{ uri: item?.node?.image.path }}
                   source={{ uri: item?.node?.image.uri }}
                   style={{
                     width: 70,
