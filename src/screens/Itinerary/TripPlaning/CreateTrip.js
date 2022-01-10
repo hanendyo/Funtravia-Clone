@@ -54,6 +54,7 @@ import { StackActions } from "@react-navigation/routers";
 import { gql } from "apollo-boost";
 import Ripple from "react-native-material-ripple";
 import { useSelector } from "react-redux";
+import normalize from "react-native-normalize";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -715,6 +716,7 @@ export default function Trip(props) {
                             height="20"
                             style={{
                               alignSelf: "center",
+                              marginLeft: 10,
                             }}
                           />
                         </TouchableOpacity>
@@ -1039,6 +1041,7 @@ export default function Trip(props) {
                             height="20"
                             style={{
                               alignSelf: "center",
+                              marginLeft: 10,
                             }}
                           />
                         </TouchableOpacity>
@@ -1519,7 +1522,7 @@ export default function Trip(props) {
                   onPress={() => setModaltravel(true)}
                 ></TouchableOpacity>
               </View>
-              {/* modal travel */}
+              {/* modal travel with*/}
               <Modal
                 onRequestClose={() => setModaltravel(false)}
                 animationIn="slideInRight"
@@ -1583,7 +1586,7 @@ export default function Trip(props) {
                             marginLeft: 10,
                           }}
                         >
-                          {t("Searchpeople")}
+                          {t("SearchAccount")}
                         </Text>
                       </View>
                       <View style={{ height: 50, justifyContent: "center" }}>
@@ -1617,7 +1620,12 @@ export default function Trip(props) {
                       }}
                     >
                       {withSelected.length > 0 ? (
-                        <View style={{ paddingVertical: 10 }}>
+                        <View
+                          style={{
+                            paddingVertical: 10,
+                            marginHorizontal: "3%",
+                          }}
+                        >
                           <Text
                             type="regular"
                             size="description"
@@ -1675,7 +1683,7 @@ export default function Trip(props) {
                                     style={{
                                       height: 15,
                                       width: 15,
-                                      marginLeft: 5,
+                                      marginLeft: 10,
                                     }}
                                   >
                                     <Xblue height={15} width={15} />
@@ -1690,41 +1698,73 @@ export default function Trip(props) {
                       )}
                       <View
                         style={{
-                          backgroundColor: "white",
-                          // borderTopWidth: 1,
-                          // borderColor: '#d3d3d3',
+                          backgroundColor: "#f6f6f6",
+                          borderRadius: 3,
+                          flex: 1,
+                          flexDirection: "row",
+                          alignSelf: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 10,
+                          marginTop: 20,
+                          marginBottom: 5,
+                          height: 40,
+                          width: "90%",
                         }}
                       >
-                        <Item
-                          floatingLabel
+                        <View
                           style={{
-                            marginVertical: 10,
+                            backgroundColor: "#f6f6f6",
+                            borderRadius: 3,
+                            flex: 1,
+                            flexDirection: "row",
+                            alignSelf: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 5,
+                            marginVertical: 5,
+                            width: "100%",
+                            height: 35,
+                            // borderWidth: 1,
                           }}
                         >
-                          <Label
-                            style={{
-                              fontFamily: "Lato-Regular",
-                              fontSize: 14,
-                            }}
-                          >
-                            {t("Searchpeople")}
-                          </Label>
-                          <Input
-                            style={{
-                              fontFamily: "Lato-Regular",
-                              fontSize: 16,
-                            }}
-                            autoCorrect={false}
+                          <Search width={15} height={15} />
+
+                          <TextInput
                             value={travelWiths}
+                            underlineColorAndroid="transparent"
+                            placeholder={t("SearchAccount")}
+                            style={{
+                              width: "85%",
+                              marginLeft: 5,
+                              padding: 0,
+                              // borderWidth: 1,
+                            }}
+                            returnKeyType="search"
+                            autoCorrect={false}
                             onChangeText={(text) => {
                               SearchWith(text);
                             }}
-                            // onSubmitEditing={SearchWith}
-                            keyboardType="default"
+                            onSubmitEditing={SearchWith}
                           />
-                        </Item>
-                        {/* list selected */}
+                          {travelWiths.length !== 0 ? (
+                            <TouchableOpacity
+                              onPress={() => {
+                                // _setSearch(null);
+                                SearchWith("");
+                              }}
+                            >
+                              <Xblue
+                                width="20"
+                                height="20"
+                                style={{
+                                  alignSelf: "center",
+                                  marginLeft: 10,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          ) : null}
+                        </View>
                       </View>
+
                       {/* </list> */}
                       {datawith && datawith.search_travelwith.length > 0 ? (
                         <FlatList
@@ -1758,12 +1798,19 @@ export default function Trip(props) {
                                 style={{
                                   marginRight: 10,
                                   resizeMode: "cover",
-                                  height: 30,
-                                  width: 30,
-                                  borderRadius: 15,
+                                  height: normalize(50),
+                                  width: normalize(50),
+                                  borderRadius: normalize(50),
                                 }}
                               ></Image>
-                              <Text type="regular" size="title" style={{}}>
+                              <Text
+                                type="black"
+                                size="description"
+                                style={{
+                                  width: Dimensions.get("screen").width / 1.5,
+                                }}
+                                // numberOfLines={1}
+                              >
                                 {item.first_name}{" "}
                                 {item.last_name ? item.last_name : ""}
                               </Text>

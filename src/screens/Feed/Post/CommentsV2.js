@@ -168,7 +168,9 @@ export default function Comments(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          props.navigation.goBack();
+        }}
         style={{
           height: 55,
           marginLeft: 5,
@@ -1162,6 +1164,7 @@ export default function Comments(props) {
                     params: {
                       datapost: selectedOption,
                       time: duration(selectedOption?.created_at),
+                      fromCommentPost: "true",
                     },
                   });
               }}

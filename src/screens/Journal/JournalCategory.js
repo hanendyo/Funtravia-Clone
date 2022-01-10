@@ -33,10 +33,11 @@ export default function JournalCategory(props) {
   let { width, height } = Dimensions.get("screen");
   let [search, setSearch] = useState("");
   let [indekScrollto, setIndeksScrollto] = useState(0);
+  let [categoryId, setCategoryId] = useState("");
   const ref = React.useRef(null);
 
   const Scroll_to = async (index) => {
-    index = index ? index : indekScrollto;
+    index = index;
     setTimeout(() => {
       if (ref && ref?.current) {
         ref?.current?.scrollToIndex({
@@ -185,12 +186,15 @@ export default function JournalCategory(props) {
   //     },
   //   },
   // });
-  const {
-    data: dataCategory,
-    loading: loadingCategory,
-    error: errorCategory,
-    refetch: fetchCategory,
-  } = useQuery(Category, {
+  const [
+    getDataCategory,
+    {
+      data: dataCategory,
+      loading: loadingCategory,
+      error: errorCategory,
+      refetch: fetchCategory,
+    },
+  ] = useLazyQuery(Category, {
     variables: {
       category_id: null,
       order_by: null,
@@ -207,7 +211,7 @@ export default function JournalCategory(props) {
       const indeks = tempData.findIndex(
         (k) => k["id"] == props.route.params.category
       );
-      if (indeks != -1) {
+      if (indeks > -1) {
         await setIndeksScrollto(indeks);
         await Scroll_to(indeks);
       }
@@ -220,17 +224,28 @@ export default function JournalCategory(props) {
     });
   };
 
+  const indexSelector = async () => {
+    const tempData = [...dataCategory?.category_journal];
+    await setIndeksScrollto(indeks);
+    const indeks = tempData.findIndex((k) => k["id"] == categoryId);
+    if (indeks > -1) {
+      setIndeksScrollto(indeks);
+      Scroll_to(indeks);
+    }
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+    indexSelector();
     const unsubscribe = props.navigation.addListener("focus", () => {
-      // fetchCategory();
       fetchDataPopuler();
-      fetchCategory();
+      getDataCategory();
+      // fetchCategory();
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, categoryId]);
 
-  const selectCategory = (id) => {
+  const selectCategory = async (id) => {
     if (category == id) {
       setSelect(!select);
       setCategory(null);
@@ -354,7 +369,12 @@ export default function JournalCategory(props) {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <Pressable onPress={() => selectCategory(item.id)}>
+              <Pressable
+                onPress={() => {
+                  selectCategory(item.id);
+                  setCategoryId(item.id);
+                }}
+              >
                 <Text
                   style={{
                     padding: 10,

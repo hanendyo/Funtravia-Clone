@@ -73,7 +73,9 @@ export default function EditPost(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          props.navigation.goBack();
+        }}
         style={{
           width: 90,
           marginLeft: 25,
@@ -266,14 +268,10 @@ export default function EditPost(props) {
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          props.navigation.dispatch(
-            StackActions.replace("FeedStack", {
-              screen: "CommentPost",
-              params: {
-                post_id: dataPost.id,
-              },
-            })
-          );
+          props.navigation.navigate("FeedScreen", {
+            post_id: dataPost.id,
+          });
+
           // props.navigation.navigate("FeedStack", {
           //   screen: "CommentPost",
           //   params: {

@@ -30,18 +30,21 @@ import ItineraryLiked from "../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { RNToasty } from "react-native-toasty";
 import { StackActions } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 export default function CardItinerary({
   data,
   props,
   setData,
-  token,
-  setting,
+  // token,
+  // setting,
   dataFrom,
 }) {
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
+  const token = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
 
   const getDN = (start, end) => {
     start = start.split(" ");

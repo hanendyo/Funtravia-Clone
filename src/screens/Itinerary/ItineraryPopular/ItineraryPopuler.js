@@ -733,7 +733,7 @@ export default function ItineraryPopuler(props) {
           }}
         >
           <Text size="label" type="bold" style={{ textAlign: "center" }}>
-            Tidak ada Travel Stories
+            {t("thereAreNoTravelStories")}
           </Text>
         </View>
       );
@@ -746,8 +746,8 @@ export default function ItineraryPopuler(props) {
     setTimeout(() => {
       setLoadingsCategory(false);
     }, 3000);
-  }),
-    [];
+  }, []);
+
   let [loadingsCategory, setLoadingsCategory] = useState(true);
   if (loadingsCategory) {
     return <Skeletonindex />;
