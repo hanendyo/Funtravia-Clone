@@ -29,7 +29,6 @@ import CopyLink from "./src/CopyLink";
 import FunVideo from "./src/FunVideo";
 import StickerModal from "./src/Sticker/StickerModal";
 import FunMaps from "./src/FunMaps";
-import PagenotFound from "./src/PagenotFound";
 import Uuid from "./src/Uuid";
 import CardItinerary from "./src/CardItinerary";
 import ModalLogin from "./src/ModalLogin";
@@ -68,7 +67,6 @@ export {
   FunVideo,
   StickerModal,
   FunMaps,
-  PagenotFound,
   Uuid,
   CardItinerary,
   ModalLogin,

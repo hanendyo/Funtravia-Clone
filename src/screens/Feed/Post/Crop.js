@@ -175,6 +175,7 @@ export default function Crop(props) {
           if (statResult.size <= 50000000) {
             const tempDatas = { ...tempData[i].node.image };
             tempDatas.path = statResult.path;
+            tempDatas.uri = statResult.path;
             tempDatas.size = statResult.size;
             tempData[i].node.image = tempDatas;
             setData(tempData);
@@ -231,6 +232,7 @@ export default function Crop(props) {
           const statResult = await stat(tempData[i].node.image.uri);
           const tempDatas = { ...tempData[i].node.image };
           tempDatas.path = statResult.path;
+          tempDatas.uri = statResult.path;
           tempDatas.size = statResult.size;
           tempData[i].node.image = tempDatas;
           setData(tempData);
