@@ -21,6 +21,7 @@ export default function LoadingFeed({
   delay = 0,
   textColor,
   max = 100,
+  setDurationTime,
 }) {
   const animated = React.useRef(new Animated.Value(0)).current;
   const circleRef = React.useRef();
@@ -45,6 +46,9 @@ export default function LoadingFeed({
     animation(percentage);
     animated.addListener(
       (v) => {
+        if (v.toString().substr(0, 2) > 90) {
+          setDurationTime(true);
+        }
         const maxPerc = (100 * v.value) / max;
         const strokeDashoffset =
           circumference - (circumference * maxPerc) / 100;

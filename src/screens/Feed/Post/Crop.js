@@ -35,7 +35,6 @@ import RNFS from "react-native-fs";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
-  console.log("~ data", data[0].node.image);
   const [ratio, setRatio] = useState(props?.route?.params?.ratio);
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
@@ -125,16 +124,13 @@ export default function Crop(props) {
   const Next = async (data) => {
     let tempData = [...data];
     for (var i in tempData) {
-      console.log("tempData[i].node", tempData[i].node.type);
       if (tempData[i].node.type.substr(0, 5) == "video") {
         if (Platform.OS == "ios") {
           console.log("masuk ios");
           let extension = tempData[i].node.image.filename.split(".").pop();
-          console.log("~ extension", extension);
           const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
             .toString(36)
             .substring(7)}.${extension}`;
-          console.log("~ dest", dest);
           let absolutePath = await RNFS.copyAssetsFileIOS(
             tempData[i].node.image.uri,
             dest,
@@ -144,16 +140,13 @@ export default function Crop(props) {
           let result = await VideoCompress.compress("file://" + absolutePath, {
             compressionMethod: "auto",
           });
-          console.log("~ result", result);
           const statResult = await stat(result);
-          console.log("~ statResult", statResult);
           if (statResult.size <= 50000000) {
             const tempDatas = { ...tempData[i].node.image };
             tempDatas.path = statResult.path;
             tempDatas.uri = statResult.path;
             tempDatas.size = statResult.size;
             tempData[i].node.image = tempDatas;
-            console.log("masuk size");
             setData(tempData);
           } else {
             showAlert({
@@ -239,6 +232,8 @@ export default function Crop(props) {
         }
       }
     }
+
+    console.log("data di function necxt", data);
     props.navigation.dispatch(
       StackActions.replace("FeedStack", {
         screen: "CreatePostScreen",
@@ -252,8 +247,8 @@ export default function Crop(props) {
           title_album: props.route.params.title_album,
           album: props.route.params.album,
           ratio: {
-            width: ratio == "L" ? 3 : 4,
-            height: ratio == "L" ? 2.2 : 5,
+            width: ratio == "L" ? 3 : "P" ? 4 : 1,
+            height: ratio == "L" ? 2.2 : "P" ? 5 : 1,
             label: ratio,
           },
         },
