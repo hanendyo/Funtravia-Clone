@@ -27,9 +27,10 @@ import {
   shareAction,
   FunImage,
   CopyLink,
-  PagenotFound,
+  // PagenotFound,
   ModalLogin,
 } from "../../../component";
+import { PagenotFound } from "../../../component/src/PagenotFound";
 import {
   LikeRed,
   Send_to,
