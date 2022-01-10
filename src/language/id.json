@@ -394,7 +394,7 @@
   "StartDate": "Tanggal mulai",
   "EndDate": "Tanggal akhir",
   "TravelWith": "Teman perjalanan",
-  "Searchpeople": "Cari Account",
+  "SearchAccount": "Cari Akun",
   "CreateNewPlan": "Buat Rencana Baru",
   "TripPlanning": "Rencana Perjalanan",
   "public": "Publik",
@@ -876,5 +876,6 @@
   "addFlightDetail": "Tambahkan penerbangan di perjalanan anda",
   "addPlaceName": "Tambahkan tempat menginap anda",
   "public (shared)": "Publik (bagikan)",
-  "canNotChangePrivacy": "Anda tidak bisa mengubah pengaturan privasi"
+  "canNotChangePrivacy": "Anda tidak bisa mengubah pengaturan privasi",
+  "thereAreNoTravelStories": "Tidak ada Travel Stories"
 }

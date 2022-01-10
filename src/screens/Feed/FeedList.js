@@ -392,7 +392,7 @@ export default function FeedList({ props, token }) {
     onCompleted: () => {
       setDataFeed(dataPost?.post_cursor_based?.edges);
     },
-  })
+  });
 
   // useEffect(() => {
   //   const unsubscribe = props.navigation.addListener("focus", () => {
@@ -1280,6 +1280,7 @@ export default function FeedList({ props, token }) {
                       params: {
                         datapost: selectedOption,
                         time: duration(selectedOption?.created_at),
+                        fromFeedList: "true",
                       },
                     });
                 }}

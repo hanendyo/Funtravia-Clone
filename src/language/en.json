@@ -396,7 +396,7 @@
   "StartDate": "Start Date",
   "EndDate": "End Date",
   "TravelWith": "Travel With",
-  "Searchpeople": "Search Account",
+  "SearchAccount": "Search Account",
   "CreateNewPlan": "Create New Plan",
   "TripPlanning": "Trip Planning",
   "public": "Public",
@@ -878,5 +878,6 @@
   "AddFlightDetail": "Add flight number to your itinerary",
   "addPlaceName": "Add place name",
   "public (shared)": "Public (shared)",
-  "canNotChangePrivacy": "You can not change privacy setting"
+  "canNotChangePrivacy": "You can not change privacy setting",
+  "thereAreNoTravelStories": "There are no Travel Stories"
 }
