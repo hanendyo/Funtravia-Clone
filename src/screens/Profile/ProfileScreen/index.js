@@ -1900,9 +1900,10 @@ export default function OtherProfile(props) {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             marginHorizontal: -20,
             alignItems: "center",
+            flex: 1,
           }}
         >
           <Button
@@ -1914,6 +1915,7 @@ export default function OtherProfile(props) {
             style={{
               height: 50,
               marginRight: 10,
+              marginLeft: 20,
             }}
           >
             <Animated.View
@@ -1950,20 +1952,21 @@ export default function OtherProfile(props) {
           <Animated.View
             style={{
               opacity: hide.current,
-              width: "50%",
+              flex: 1,
             }}
           >
             <Text
-              // type="bold"
+              type="bold"
+              size="title"
               style={{
                 color: "#fff",
-
-                fontFamily: "Lato-Bold",
-                fontSize: 16,
               }}
+              numberOfLines={2}
             >
               {data?.user_profilebyid?.first_name}{" "}
-              {data?.user_profilebyid?.last_name}
+              {data?.user_profilebyid?.last_name
+                ? data?.user_profilebyid?.last_name
+                : ""}
             </Text>
           </Animated.View>
         </View>
@@ -1972,7 +1975,6 @@ export default function OtherProfile(props) {
             style={{
               marginRight: 20,
               flexDirection: "column",
-
               alignItems: "flex-end",
             }}
           >

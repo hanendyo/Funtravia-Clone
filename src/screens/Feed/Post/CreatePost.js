@@ -83,6 +83,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  console.log("~Create Post props", props);
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const isFocused = useIsFocused();
@@ -379,6 +380,7 @@ export default function CreatePost(props) {
   const [time, setTime] = useState(false);
 
   const durationTime = (data) => {
+    console.log(data);
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
 
@@ -387,6 +389,21 @@ export default function CreatePost(props) {
   const S = Dimensions.get("screen").width;
   const [indexAktif, setIndexAktive] = useState(0);
 
+  console.log("cek 1", chosenFile[indexAktif].node.image.uri);
+  console.log("cek 2", chosenFile[indexAktif].node.image.uri.split("/")[9]);
+  console.log(
+    "cek 3",
+    `assets-library://asset/asset.${chosenFile[
+      indexAktif
+    ].node.image.filename.substring(
+      chosenFile[indexAktif].node.image.filename.length - 3
+    )}?id=${
+      chosenFile[indexAktif].node.image.uri.split("/")[14]
+    }&ext=${chosenFile[indexAktif].node.image.filename.substring(
+      chosenFile[indexAktif].node.image.filename.length - 3
+    )}`
+  );
+
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {
       return (
@@ -394,22 +411,10 @@ export default function CreatePost(props) {
           source={{
             uri: chosenFile.uri,
           }}
-          // source={{
-          //   uri:
-          //     Platform.OS === "ios"
-          //       ? `assets-library://asset/asset.${chosenFile.filename.substring(
-          //           chosenFile.filename.length - 3
-          //         )}?id=${chosenFile.uri.substring(
-          //           5,
-          //           41
-          //         )}&ext=${chosenFile.filename.substring(
-          //           chosenFile.filename.length - 3
-          //         )}`
-          //       : chosenFile.uri,
-          // }}
           ref={(ref) => {
             videoView = ref;
           }}
+          posterResizeMode={"cover"}
           onProgress={durationTime}
           paused={isFocused ? false : true}
           repeat={time ? true : false}
@@ -455,41 +460,49 @@ export default function CreatePost(props) {
         <>
           {chosenFile[indexAktif].node.type.substr(0, 5) === "video" ? (
             <Video
-              source={{
-                uri: Img,
-              }}
               // source={{
-              //   uri:
-              //     Platform.OS === "ios"
-              //       ? `assets-library://asset/asset.${chosenFile.filename.substring(
-              //           chosenFile.filename.length - 3
-              //         )}?id=${chosenFile.uri.substring(
-              //           5,
-              //           41
-              //         )}&ext=${chosenFile.filename.substring(
-              //           chosenFile.filename.length - 3
-              //         )}`
-              //       : Img,
+              //   uri: Img,
               // }}
+              source={{
+                uri:
+                  Platform.OS === "ios"
+                    ? `assets-library://asset/asset.${chosenFile[
+                        indexAktif
+                      ].node.image.filename.substring(
+                        chosenFile[indexAktif].node.image.filename.length - 3
+                      )}?id=${chosenFile[indexAktif].node.image.uri.substring(
+                        5,
+                        41
+                      )}&ext=${chosenFile[
+                        indexAktif
+                      ].node.image.filename.substring(
+                        chosenFile[indexAktif].node.image.filename.length - 3
+                      )}`
+                    : chosenFile[indexAktif].node.image.uri,
+              }}
               ref={(ref) => {
                 videoView = ref;
               }}
+              poster={chosenFile[indexAktif].node.image.uri.replace(
+                "output.m3u8",
+                "thumbnail.png"
+              )}
+              posterResizeMode={"cover"}
               onProgress={durationTime}
               paused={isFocused ? false : true}
+              paused={false}
               repeat={time ? true : false}
               onBuffer={videoView?.current?.onBuffer}
               onError={videoView?.current?.videoError}
               style={{
-                marginVertical: 10,
-                borderRadius: 10,
-                marginHorizontal: 10,
-                width: width - 20,
+                width: width,
                 height:
                   props?.route?.params?.ratio?.label == "L"
                     ? L
                     : props?.route?.params?.ratio?.label == "P"
                     ? P
                     : S,
+                marginBottom: 10,
               }}
               resizeMode="cover"
             />

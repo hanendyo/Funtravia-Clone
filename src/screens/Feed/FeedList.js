@@ -96,6 +96,7 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
+  console.log("~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
@@ -114,6 +115,8 @@ export default function FeedList({ props, token }) {
   let [modalhapus, setModalhapus] = useState(false);
   let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
   let [activelike, setactivelike] = useState(true);
+  let [durationTime, setDurationTime] = useState(false);
+  console.log("~ durationTime", durationTime);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -225,13 +228,11 @@ export default function FeedList({ props, token }) {
 
       if (response.data) {
         if (response.data.create_post.code === 200) {
-          refetch();
-          setTimeout(() => {
+          if (durationTime) {
             setSuccessAfterRefetch(true);
-            setUploadSuccess(true);
-          }, 3000);
-          await setSuccessAfterRefetch(false);
+          }
           setTimeout(() => {
+            refetch();
             setTempDataLoading(false);
             setSuccessAfterRefetch(false);
             setUploadSuccess(true);
@@ -251,7 +252,7 @@ export default function FeedList({ props, token }) {
           setTempDataLoading(false);
           setUploadSuccess(false);
           setUploadFailed(true);
-          throw new Error(response.data.create_post.message);
+          // throw new Error(response.data.create_post.message);
         }
       } else {
         setTempDataLoading(false);
@@ -1713,6 +1714,7 @@ export default function FeedList({ props, token }) {
                       delay={0}
                       max={p.max}
                       duration={props?.route?.params?.allTime}
+                      setDurationTime={(e) => setDurationTime(e)}
                     />
                   );
                 })}
