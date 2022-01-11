@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   TextInput,
@@ -13,6 +13,7 @@ import {
   Switch,
   FlatList,
   Keyboard as onKeyboard,
+  BackHandler,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
@@ -549,6 +550,23 @@ export default function Room({ navigation, route }) {
       paddingRight: 20,
     },
   };
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [navigation, hardwareBack]);
+
+  const hardwareBack = useCallback(() => {
+    route?.params?.fromNewChat == true
+      ? navigation.navigate("ChatScreen")
+      : navigation.goBack();
+    return true;
+  }, []);
 
   const getUserToken = async () => {
     let data = await AsyncStorage.getItem("setting");

@@ -377,7 +377,7 @@ export default function Comments(props) {
           borderTopColor: "#EEEEEE",
           paddingHorizontal: 15,
           paddingVertical: 10,
-          // borderRadius: 20,
+          // borderRadius: 50,
           bottom: 3,
         }}
       >
@@ -414,7 +414,7 @@ export default function Comments(props) {
               style={{
                 height: 35,
                 width: 35,
-                borderRadius: 20,
+                borderRadius: 50,
                 alignSelf: "center",
                 resizeMode: "cover",
               }}
@@ -1551,7 +1551,7 @@ export default function Comments(props) {
                     style={{
                       height: 40,
                       width: 40,
-                      borderRadius: 18,
+                      borderRadius: 40,
                       alignSelf: "center",
                       resizeMode: "cover",
                     }}
