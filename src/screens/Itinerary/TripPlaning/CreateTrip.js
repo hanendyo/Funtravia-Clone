@@ -1497,10 +1497,16 @@ export default function Trip(props) {
                         style={{
                           alignItems: "center",
                           justifyContent: "center",
+                          maxWidth: "85%",
                         }}
                       >
-                        <Text type="regular" size="description" style={{}}>
-                          {"    "}
+                        <Text
+                          type="regular"
+                          size="description"
+                          numberOfLines={2}
+                          style={{ marginLeft: "5%" }}
+                        >
+                          {""}
                           {t("with")} {withSelected[0].name}{" "}
                           {withSelected.length - 1 !== 0
                             ? "+ " + (withSelected.length - 1) + " Other(s)"
@@ -1606,6 +1612,160 @@ export default function Trip(props) {
                         ></Button>
                       </View>
                     </View>
+                    {/* awal */}
+                    <View
+                      style={{
+                        width: Dimensions.get("screen").width,
+                        backgroundColor: "white",
+                        paddingTop: 10,
+                        paddingHorizontal: 10,
+                        paddingBottom: 20,
+                      }}
+                    >
+                      {withSelected.length > 0 ? (
+                        <View
+                          style={{
+                            paddingBottom: 10,
+                            marginHorizontal: "3%",
+                          }}
+                        >
+                          <Text
+                            type="regular"
+                            size="description"
+                            style={{ paddingVertical: 10 }}
+                          >
+                            {t("with")} :
+                          </Text>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              width: "100%",
+                              flexWrap: "wrap",
+                              // borderWidth: 1,
+                            }}
+                          >
+                            {withSelected.map((item, index) => {
+                              return (
+                                <TouchableOpacity
+                                  style={{
+                                    maxWidth: 130,
+                                    flexDirection: "row",
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    backgroundColor: "#f6f6f6",
+                                    borderRadius: 5,
+                                    padding: 5,
+                                    marginRight: 2.5,
+                                    marginBottom: 5,
+                                  }}
+                                  onPress={() => delselect(item.id, item.name)}
+                                >
+                                  <Image
+                                    source={
+                                      item.image
+                                        ? { uri: item.image }
+                                        : default_image
+                                    }
+                                    style={{
+                                      marginRight: 5,
+                                      resizeMode: "cover",
+                                      height: 25,
+                                      width: 25,
+                                      borderRadius: 15,
+                                    }}
+                                  ></Image>
+                                  <Text
+                                    type="regular"
+                                    size="description"
+                                    style={{}}
+                                  >
+                                    <Truncate text={item.name} length={8} />
+                                  </Text>
+                                  <View
+                                    style={{
+                                      height: 15,
+                                      width: 15,
+                                      marginLeft: 10,
+                                    }}
+                                  >
+                                    <Xblue height={15} width={15} />
+                                  </View>
+                                </TouchableOpacity>
+                              );
+                            })}
+                          </View>
+                        </View>
+                      ) : (
+                        <View></View>
+                      )}
+                      <View
+                        style={{
+                          backgroundColor: "#f6f6f6",
+                          borderRadius: 3,
+                          flex: 1,
+                          flexDirection: "row",
+                          alignSelf: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 10,
+                          marginTop: 20,
+                          marginBottom: 5,
+                          height: 40,
+                          width: "90%",
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: "#f6f6f6",
+                            borderRadius: 3,
+                            flex: 1,
+                            flexDirection: "row",
+                            alignSelf: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 5,
+                            marginVertical: 5,
+                            width: "100%",
+                            height: 35,
+                          }}
+                        >
+                          <Search width={15} height={15} />
+
+                          <TextInput
+                            value={travelWiths}
+                            underlineColorAndroid="transparent"
+                            placeholder={t("SearchAccount")}
+                            style={{
+                              width: "85%",
+                              marginLeft: 5,
+                              padding: 0,
+                            }}
+                            returnKeyType="search"
+                            autoCorrect={false}
+                            onChangeText={(text) => {
+                              SearchWith(text);
+                            }}
+                            onSubmitEditing={SearchWith}
+                          />
+                          {travelWiths.length !== 0 ? (
+                            <TouchableOpacity
+                              onPress={() => {
+                                // _setSearch(null);
+                                SearchWith("");
+                              }}
+                            >
+                              <Xblue
+                                width="20"
+                                height="20"
+                                style={{
+                                  alignSelf: "center",
+                                  marginLeft: 10,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          ) : null}
+                        </View>
+                      </View>
+                    </View>
                     <ScrollView
                       showsVerticalScrollIndicator={false}
                       stickyHeaderIndices={[1]}
@@ -1619,7 +1779,7 @@ export default function Trip(props) {
                         paddingBottom: 20,
                       }}
                     >
-                      {withSelected.length > 0 ? (
+                      {/* {withSelected.length > 0 ? (
                         <View
                           style={{
                             paddingVertical: 10,
@@ -1723,7 +1883,6 @@ export default function Trip(props) {
                             marginVertical: 5,
                             width: "100%",
                             height: 35,
-                            // borderWidth: 1,
                           }}
                         >
                           <Search width={15} height={15} />
@@ -1736,7 +1895,6 @@ export default function Trip(props) {
                               width: "85%",
                               marginLeft: 5,
                               padding: 0,
-                              // borderWidth: 1,
                             }}
                             returnKeyType="search"
                             autoCorrect={false}
@@ -1763,7 +1921,7 @@ export default function Trip(props) {
                             </TouchableOpacity>
                           ) : null}
                         </View>
-                      </View>
+                      </View> */}
 
                       {/* </list> */}
                       {datawith && datawith.search_travelwith.length > 0 ? (

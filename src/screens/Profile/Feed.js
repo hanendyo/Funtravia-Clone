@@ -1389,6 +1389,7 @@ export default function myfeed(props) {
                     params: {
                       datapost: selectedOption,
                       time: duration(selectedOption?.created_at),
+                      fromProfile: true,
                     },
                   });
               }}

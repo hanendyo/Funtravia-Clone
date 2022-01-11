@@ -30,6 +30,7 @@ import { StackActions } from "@react-navigation/routers";
 import RenderSinglePhoto from "../RenderSinglePhoto";
 import RenderAlbum from "../RenderAlbumItinerary";
 import { useIsFocused } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 
 const PostEdit = gql`
   mutation($post_id: ID!, $caption: String) {
@@ -268,16 +269,40 @@ export default function EditPost(props) {
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          props.navigation.navigate("FeedScreen", {
-            post_id: dataPost.id,
-          });
+          if (props.route.params.fromFeedList) {
+            props.navigation.navigate("FeedScreen", {
+              post_id: dataPost.id,
+            });
+          } else if (props.route.params.fromProfile) {
+            props.navigation.dispatch(
+              CommonActions.navigate({
+                name: "ProfileStack",
+                params: {
+                  screen: "myfeed",
+                  params: {
+                    post_id: dataPost.id,
+                  },
+                },
+              })
+            );
+          } else if (props.route.params.fromCommentPost) {
+            // props.navigation.dispatch(
+            //   CommonActions.navigate({
+            //     name: "FeedStack",
+            //     params: {
+            //       screen: "CommentPost",
+            //       params: {
+            //         post_id: dataPost.id,
+            //       },
+            //     },
+            //   })
+            // );
 
-          // props.navigation.navigate("FeedStack", {
-          //   screen: "CommentPost",
-          //   params: {
-          //     post_id: dataPost.id,
-          //   },
-          // });
+            // SEMENTARA
+            props.navigation.navigate("FeedScreen", {
+              post_id: dataPost.id,
+            });
+          }
         } else {
           setLoading(false);
           throw new Error(response.data.edit_post.message);
@@ -391,7 +416,7 @@ export default function EditPost(props) {
                 style={{
                   height: 35,
                   width: 35,
-                  borderRadius: 15,
+                  borderRadius: 35,
                   alignSelf: "center",
                   marginLeft: 15,
                   resizeMode: "cover",
