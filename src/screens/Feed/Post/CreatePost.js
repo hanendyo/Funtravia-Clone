@@ -389,21 +389,6 @@ export default function CreatePost(props) {
   const S = Dimensions.get("screen").width;
   const [indexAktif, setIndexAktive] = useState(0);
 
-  console.log("cek 1", chosenFile[indexAktif].node.image.uri);
-  console.log("cek 2", chosenFile[indexAktif].node.image.uri.split("/")[9]);
-  console.log(
-    "cek 3",
-    `assets-library://asset/asset.${chosenFile[
-      indexAktif
-    ].node.image.filename.substring(
-      chosenFile[indexAktif].node.image.filename.length - 3
-    )}?id=${
-      chosenFile[indexAktif].node.image.uri.split("/")[14]
-    }&ext=${chosenFile[indexAktif].node.image.filename.substring(
-      chosenFile[indexAktif].node.image.filename.length - 3
-    )}`
-  );
-
   const ReviewResult = () => {
     if (props?.route.params.type === "video") {
       return (
@@ -470,7 +455,9 @@ export default function CreatePost(props) {
                         indexAktif
                       ].node.image.filename.substring(
                         chosenFile[indexAktif].node.image.filename.length - 3
-                      )}?id=${chosenFile[indexAktif].node.image.uri.substring(
+                      )}?id=${chosenFile[
+                        indexAktif
+                      ].node.image.originalPath.substring(
                         5,
                         41
                       )}&ext=${chosenFile[
