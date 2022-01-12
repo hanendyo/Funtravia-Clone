@@ -113,7 +113,7 @@ export default function CreateCustom(props) {
 
   const pickFile = async () => {
     try {
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
 

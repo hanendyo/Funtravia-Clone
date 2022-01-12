@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   View,
   Dimensions,
-  Alert,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   Linking,
@@ -13,7 +11,6 @@ import {
   Pressable,
   StyleSheet,
   Picker,
-  ActivityIndicator,
 } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
 import {
@@ -251,13 +248,6 @@ export default function detailCustomItinerary(props) {
         },
       });
 
-      if (loadingSave) {
-        Alert.alert("Loading!!");
-      }
-      if (errorSave) {
-        throw new Error("Error Input");
-      }
-
       if (response.data) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
@@ -268,8 +258,10 @@ export default function detailCustomItinerary(props) {
         props.navigation.goBack();
       }
     } catch (error) {
-      Alert.alert("" + error);
-      console.log("err", error);
+      RNToasty.Show({
+        title: "Save time line failed",
+        position: "bottom",
+      });
     }
   };
 
@@ -336,9 +328,6 @@ export default function detailCustomItinerary(props) {
                 },
               });
 
-              if (errorSave) {
-                throw new Error("Error Input");
-              }
               if (response.data) {
                 if (response.data.update_timeline.code !== 200) {
                   throw new Error(response.data.update_timeline.message);
@@ -356,7 +345,10 @@ export default function detailCustomItinerary(props) {
                 );
               }
             } catch (error) {
-              Alert.alert("" + error);
+              RNToasty.Show({
+                title: error,
+                position: "bottom",
+              });
             }
           }
           await props.navigation.goBack();
@@ -365,7 +357,10 @@ export default function detailCustomItinerary(props) {
         setModalDeleteActivity(false);
       }
     } catch (error) {
-      Alert.alert("" + error);
+      RNToasty.Show({
+        title: error,
+        position: "bottom",
+      });
       setModalDeleteActivity(false);
     }
   };
@@ -381,10 +376,12 @@ export default function detailCustomItinerary(props) {
   let [dataUpload, setdataUpload] = useState([]);
 
   const pickFile = async (id, sumber) => {
+    console.log("masuk pick file");
     try {
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
+      console.log("~ res", res);
 
       let files = new ReactNativeFile({
         uri: res.uri,
@@ -399,6 +396,7 @@ export default function detailCustomItinerary(props) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
       } else {
+        console.log("err", err);
         throw err;
       }
     }
@@ -570,10 +568,16 @@ export default function detailCustomItinerary(props) {
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else {
-        Alert.alert("Waktu sudah melewati batas maksimal");
+        RNToasty.Show({
+          title: "Waktu sudah melewati batas maksimal",
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("Waktu sudah melewati batas maksimal");
+      RNToasty.Show({
+        title: "Waktu sudah melewati batas maksimal",
+        position: "bottom",
+      });
     }
   };
 
@@ -640,6 +644,10 @@ export default function detailCustomItinerary(props) {
   };
 
   const handleUpload = async (files, id, sumber, res) => {
+    console.log("~ sumber", sumber);
+    console.log("~ id", id);
+    console.log("~ files", files);
+
     try {
       let response = await mutationUpload({
         variables: {
@@ -701,7 +709,10 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      Alert.alert("error upload " + error);
+      RNToasty.Show({
+        title: error,
+        position: "bottom",
+      });
     }
   };
 
@@ -743,7 +754,10 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      Alert.alert("" + error);
+      RNToasty.Show({
+        title: error,
+        position: "bottom",
+      });
     }
   };
 
@@ -773,7 +787,10 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      Alert.alert("" + error);
+      RNToasty.Show({
+        title: error,
+        position: "bottom",
+      });
     }
   };
 
@@ -1680,7 +1697,10 @@ export default function detailCustomItinerary(props) {
                               format={data.extention}
                               progressBar
                               icon
-                              style={{ flex: 1, flexDirection: "row" }}
+                              style={{
+                                flex: 1,
+                                flexDirection: "row",
+                              }}
                             />
                             <TouchableOpacity
                               onPress={() => {
