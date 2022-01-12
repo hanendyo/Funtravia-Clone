@@ -471,7 +471,7 @@ export default function SettingsAkun(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
-      console.log(`INDEX AKUN: `, index);
+      // console.log(`INDEX AKUN: `, index);
     });
     return unsubscribe;
   }, [props.navigation, index, indexSend]);
@@ -1665,12 +1665,12 @@ export default function SettingsAkun(props) {
                     size="label"
                     style={{
                       alignSelf: "flex-start",
-                      marginTop: dataAccountConnection?.gmail ? -5 : 0,
+                      marginTop: dataAccountConnection?.gmail?.email ? -15 : -5,
                     }}
                   >
                     Google
                   </Text>
-                  {dataAccountConnection?.gmail ? (
+                  {dataAccountConnection?.gmail?.email ? (
                     <Text
                       type="regular"
                       size="small"

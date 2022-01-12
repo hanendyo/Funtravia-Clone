@@ -22,6 +22,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { dateFormats } from "../../../component/src/dateformatter";
 import saveCopy from "../../../graphQL/Mutation/Itinerary/CopyItinerary";
 import { StackActions } from "@react-navigation/routers";
+import { useSelector } from "react-redux";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -39,6 +40,7 @@ export default function CopyItinerary(props) {
       ? props.route?.params?.datadetail?.categori?.id
       : "a47944f4-a2e1-4eae-83d1-5bf001475074"
   );
+  const token = useSelector((data) => data.token);
 
   const jam = [
     1,
@@ -172,7 +174,7 @@ export default function CopyItinerary(props) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: props.route?.params?.token,
+        Authorization: token,
       },
     },
   });

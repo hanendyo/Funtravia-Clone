@@ -25,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 
 export default function ItineraryChooseday(props) {
-  console.log("props chooseday", props.route.params);
   const { t, i18n } = useTranslation();
 
   const handlerBack = () => {
@@ -42,14 +41,17 @@ export default function ItineraryChooseday(props) {
       });
     } else {
       props.navigation.push("ItineraryStack", {
-        screen: "itindetail",
+        screen: "itindest",
         params: {
-          itintitle: "",
-          country: props.route.params.Iditinerary,
+          IdItinerary: props.route.params.data_dest.IdItinerary,
           token: props.route.params.token,
-          status: "favorite",
+          datadayaktif: props.route.params.data_dest.datadayaktif,
+          dataDes: props.route.params.data_dest.dataDes,
+          lat: props.route.params.data_dest.lat,
+          long: props.route.params.data_dest.long,
+          idcity: props.route.params.data_dest.idcity,
+          idcountries: props.route.params.data_dest.idcountries,
           onbackhandler: "chooseDay",
-          index: 0,
         },
       });
     }
@@ -119,7 +121,6 @@ export default function ItineraryChooseday(props) {
   let [dataSelected, setDataSelected] = useState([]);
   let [loading, setLoading] = useState(false);
   let [ArrayDay, setArrayDay] = useState([]);
-  console.log(token);
 
   const [
     GetListEvent,
@@ -875,10 +876,10 @@ export default function ItineraryChooseday(props) {
             </Text>
             {ArrayDay.length
               ? ArrayDay.map((item, i) => {
-                  return <RenderActive item={item} index={i} />;
+                  return <RenderActive item={item} index={i} key={i} />;
                 })
               : dataItinerary.itinerary_detail.day.map((item, i) => {
-                  return <RenderActive item={item} index={i} />;
+                  return <RenderActive item={item} index={i} key={i} />;
                 })}
             <TouchableOpacity
               style={{

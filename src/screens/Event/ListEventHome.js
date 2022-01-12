@@ -868,8 +868,8 @@ export default function ListEventHome(props) {
                   : deviceId == "LYA-L29"
                   ? 55
                   : deviceId == "CPH2127"
-                  ? 65
-                  : 58,
+                  ? 70
+                  : 68,
               top:
                 Platform.OS == "ios"
                   ? 32

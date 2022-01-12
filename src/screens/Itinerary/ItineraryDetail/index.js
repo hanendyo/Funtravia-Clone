@@ -17,6 +17,7 @@ import {
   Pressable,
   Modal as Modalss,
   Picker,
+  BackHandler,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
@@ -1193,11 +1194,27 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.route.params.onbackhandler == "list"
+    props.route.params.onbackhandler === "list" ||
+    props.route.params.onbackhandler === "chooseDay"
       ? props.navigation.navigate("TripBottomPlaning")
       : props.navigation.goBack();
     // props.navigation.goBack();
   };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
+
+  const hardwareBack = useCallback(() => {
+    _handlerBack();
+    return true;
+  }, []);
 
   const [
     mutationChangestatus,

@@ -701,7 +701,7 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      Alert.alert("error upload" + error);
+      Alert.alert("error upload " + error);
     }
   };
 

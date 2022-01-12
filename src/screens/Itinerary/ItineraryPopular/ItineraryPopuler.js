@@ -268,20 +268,11 @@ export default function ItineraryPopuler(props) {
     },
   });
 
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    dispatch(setSettingUser(setsetting));
-    // await setSetting(JSON.parse(setsetting));
-    // await fetchCategory();
-    // await fetchDataListPopuler();
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     // refetch();
     const unsubscribe = props.navigation.addListener("focus", () => {
       Refresh();
-      loadAsync();
       // QueryFotoAlbum();
       // refetchAlbum();
     });

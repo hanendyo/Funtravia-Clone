@@ -18,7 +18,7 @@ import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 
-export default function CardEvents({ data, props, setData, token }) {
+export default function CardEvents({ data, props, setData, token, dataFrom }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
 
@@ -136,7 +136,7 @@ export default function CardEvents({ data, props, setData, token }) {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: 40 }}>
+    <View style={{ flex: 1, marginTop: dataFrom === "wishlist" ? 40 : 0 }}>
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
