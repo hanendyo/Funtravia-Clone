@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignSelf: "center",
   },
-  Filename: { color: "#464646" },
+  Filename: { color: "#464646", flex: 1 },
   ProgressBar: {
     marginLeft: 10,
     height: 10,

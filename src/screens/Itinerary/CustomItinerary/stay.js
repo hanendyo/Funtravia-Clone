@@ -147,7 +147,7 @@ export default function detailCustomItinerary(props) {
 
   const pickFile = async () => {
     try {
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
       let files = new ReactNativeFile({

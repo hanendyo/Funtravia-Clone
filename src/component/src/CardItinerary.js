@@ -317,7 +317,7 @@ export default function CardItinerary({
                     />
                     <View
                       style={{
-                        maxWidth: "75%",
+                        maxWidth: "70%",
                       }}
                     >
                       <Text
@@ -330,7 +330,7 @@ export default function CardItinerary({
                           backgroundColor: "rgba(0, 0, 0, 0.6)",
                           borderRadius: 2,
                           color: "white",
-                          marginLeft: -5,
+                          marginLeft: -8,
                           padding: 2,
                           paddingBottom: 5,
                         }}

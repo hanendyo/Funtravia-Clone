@@ -59,7 +59,6 @@ export default function Home(props) {
     let tkn = await AsyncStorage.getItem("access_token");
     let sttng = await AsyncStorage.getItem("setting");
     if (tkn) {
-      console.log("as");
       dispatch(setTokenApps(`Bearer ${tkn}`));
       dispatch(setSettingUser(JSON.parse(sttng)));
       await NotifCount();
