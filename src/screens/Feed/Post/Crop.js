@@ -145,6 +145,7 @@ export default function Crop(props) {
             const tempDatas = { ...tempData[i].node.image };
             tempDatas.path = statResult.path;
             tempDatas.uri = statResult.path;
+            tempDatas.originalPath = tempData[i].node.image.uri;
             tempDatas.size = statResult.size;
             tempData[i].node.image = tempDatas;
             setData(tempData);
