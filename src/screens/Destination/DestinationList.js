@@ -1110,13 +1110,13 @@ export default function ItineraryDestination(props) {
               </View>
 
               {aktif === "categories" && !dataFilterCategoris.length ? (
-                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
               ) : aktif === "facilities" && !dataFilterFacilitys.length ? (
-                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
               ) : aktif === "country" && !dataFilterCountrys.length ? (
-                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
               ) : aktif === "city" && !dataFilterCitys.length ? (
-                <Text style={{ marginLeft: 15 }}>{t("noData")}</Text>
+                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
               ) : null}
 
               {aktif === "categories" ? (

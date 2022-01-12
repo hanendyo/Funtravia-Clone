@@ -146,6 +146,7 @@ export default function CardDestination({
                   token: token,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
+                  data_dest: props.route.params,
                 },
               })
             )
@@ -188,7 +189,7 @@ export default function CardDestination({
   return (
     <View
       style={{
-        paddingTop: 40,
+        paddingTop: dataFrom === "wishlist" ? 40 : 0,
       }}
     >
       <ModalLogin
@@ -202,6 +203,7 @@ export default function CardDestination({
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
             paddingTop: 15,
+            paddingBottom: 70,
             paddingHorizontal: 15,
             width: Dimensions.get("screen").width,
           }}

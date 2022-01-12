@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   // Text,
@@ -12,6 +12,7 @@ import {
   Pressable,
   TextInput,
   ScrollView,
+  BackHandler,
 } from "react-native";
 import {
   Capital,
@@ -58,7 +59,7 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 
 export default function ItineraryDestination(props) {
-  console.log("props", props);
+  console.log("props itindes", props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -89,7 +90,7 @@ export default function ItineraryDestination(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => _handleBack()}
         style={{
           height: 55,
         }}
@@ -394,6 +395,36 @@ export default function ItineraryDestination(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const _handleBack = () => {
+    props.route.params.onbackhandler === "chooseDay"
+      ? props.navigation.navigate("itindetail", {
+          itintitle: props.route.params.dataDes.itinerary_detail.name,
+          country: props.route.params.IdItinerary,
+          datadayaktif: props.route.params.datadayaktif,
+          token: token,
+          data_from: "setting",
+          index: 0,
+          status: "favorite",
+          onbackhandler: props.route.params.onbackhandler,
+        })
+      : props.navigation.goBack();
+  };
+
+  useEffect(() => {
+    props.navigation.addListener("focus", () => {
+      BackHandler.addEventListener("hardwareBackPress", hardwareBack);
+    });
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", hardwareBack);
+    };
+  }, [props.navigation, hardwareBack]);
+
+  const hardwareBack = useCallback(() => {
+    _handleBack();
+    return true;
+  }, []);
 
   const searchs = async (teks) => {
     setkeyword(teks);

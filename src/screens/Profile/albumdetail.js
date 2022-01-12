@@ -30,10 +30,14 @@ import ImageSlide from "../../component/src/ImageSlide/sliderPost";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import Delete from "../../component/src/AlertModal/Delete";
 import DeleteAlbumAll from "../../graphQL/Mutation/Album/DeleteAlbumAll";
+import { useSelector } from "react-redux";
 const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
+  console.log("album detail :", props.route.params);
   const { t, i18n } = useTranslation();
+  const settingApps = useSelector((data) => data.setting);
+  const userID = settingApps?.user_id;
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -72,20 +76,21 @@ export default function albumdetail(props) {
       </Button>
     ),
 
-    headerRight: () => (
-      <TouchableOpacity
-        style={{
-          marginRight: 15,
-          width: 20,
-          height: 20,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        onPress={() => setmodalOptions(true)}
-      >
-        <OptionsVertWhite height={15} width={15} />
-      </TouchableOpacity>
-    ),
+    headerRight: () =>
+      user === userID ? (
+        <TouchableOpacity
+          style={{
+            marginRight: 15,
+            width: 20,
+            height: 20,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onPress={() => setmodalOptions(true)}
+        >
+          <OptionsVertWhite height={15} width={15} />
+        </TouchableOpacity>
+      ) : null,
   };
 
   const backAction = () => {
@@ -114,6 +119,10 @@ export default function albumdetail(props) {
   const [modalOptions, setmodalOptions] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDeleteAlbum, setModalDeleteAlbum] = useState(false);
+  const [user, setUser] = useState(props?.route?.params?.user);
+
+  console.log("user : ", user, userID);
+  console.log("setting", settingApps);
 
   const spreadData = (data) => {
     let tmpData = [];

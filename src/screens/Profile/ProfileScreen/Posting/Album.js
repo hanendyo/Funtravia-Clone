@@ -14,7 +14,7 @@ import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
-export default function Album({ item, props, token }) {
+export default function Album({ item, props, token, user }) {
   // const { t } = useTranslation();
   return (
     <Pressable
@@ -25,6 +25,7 @@ export default function Album({ item, props, token }) {
           type: item.type,
           token: token,
           judul: item.title,
+          user: user,
         });
       }}
       style={{

@@ -164,6 +164,7 @@ export default function Wishlist(props) {
           props={props}
           setData={(e) => setdataEvent(e)}
           token={tokenApps}
+          dataFrom="wishlist"
         />
       );
     } else if (route.key == "destination") {

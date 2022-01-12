@@ -600,7 +600,6 @@ export default function OtherProfile(props) {
   });
 
   const spreadData = (data) => {
-    console.log("data", data);
     let tmpData = [];
     let count = 1;
     let tmpArray = [];
@@ -804,8 +803,6 @@ export default function OtherProfile(props) {
     },
   });
 
-  console.log("dataAlbum", dataalbums);
-
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
     user = JSON.parse(user);
@@ -829,9 +826,7 @@ export default function OtherProfile(props) {
     }
     let tkn = await AsyncStorage.getItem("access_token");
     if (tkn === null) {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
+      setModalLogin(true);
       RNToasty.Show({
         title: t("pleaselogin"),
         position: "bottom",
@@ -897,6 +892,7 @@ export default function OtherProfile(props) {
           index={e.index}
           props={e.props}
           token={tokenApps}
+          user={props.route.params.idUser}
         />
       ); // return Albums(e);
     } else {
@@ -1657,7 +1653,10 @@ export default function OtherProfile(props) {
       <>
         <ModalLogin
           modalLogin={modalLogin}
-          setModalLogin={() => setModalLogin(false)}
+          setModalLogin={() => {
+            setModalLogin(false);
+            props.navigation.goBack();
+          }}
           props={props}
         />
         <ModalRN

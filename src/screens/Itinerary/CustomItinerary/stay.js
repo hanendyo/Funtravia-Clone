@@ -115,7 +115,6 @@ export default function detailCustomItinerary(props) {
       </View>
     ),
   };
-  console.log("props hotel", props.route.params);
   const Notch = DeviceInfo.hasNotch();
   const token = useSelector((data) => data.token);
   const GooglePlacesRef = useRef();
@@ -673,9 +672,6 @@ export default function detailCustomItinerary(props) {
       console.error(error);
     }
   };
-  useEffect(() => {
-    console.log("nearbyData", dataNearby);
-  }, [dataNearby]);
 
   return (
     <SafeAreaView

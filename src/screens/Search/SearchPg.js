@@ -153,6 +153,7 @@ export default function SearchPg(props, { navigation, route }) {
     SetSearchtext(text);
     myStateRef.current = true;
     setAktifSearch(true);
+    Ò;
   };
 
   const gotoLocation = (data) => {
