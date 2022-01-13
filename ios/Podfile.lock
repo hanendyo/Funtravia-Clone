@@ -340,7 +340,7 @@ PODS:
     - react-native-video/Video (= 5.2.0)
   - react-native-video/Video (5.2.0):
     - React-Core
-  - react-native-webview (11.15.0):
+  - react-native-webview (11.16.0):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -404,11 +404,11 @@ PODS:
     - React-jsi (= 0.63.4)
   - ReactNativeUiLib (3.0.4):
     - React
-  - RNCAsyncStorage (1.15.14):
+  - RNCAsyncStorage (1.15.15):
     - React-Core
   - RNCCheckbox (0.5.9):
     - React-Core
-  - RNCClipboard (1.9.0):
+  - RNCClipboard (1.8.5):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
@@ -783,7 +783,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
-  react-native-webview: e89bf2dba26a04cda967814df3ed1be99f291233
+  react-native-webview: 28a8636d97ee641f2ee8f20492d7a6c269c1d703
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -795,9 +795,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   ReactNativeUiLib: cde7263a7d308b60161cd286f95c9433e79f2f7d
-  RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
+  RNCAsyncStorage: 0bef6a21517c0254bd6bd59a3672963abfa0d18e
   RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
-  RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
+  RNCClipboard: cc054ad1e8a33d2a74cd13e565588b4ca928d8fd
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNConvertPhAsset: 9b366b8a1abc194b76572712c6f7dd89c9e4e37f
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45

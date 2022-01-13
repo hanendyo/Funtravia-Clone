@@ -346,7 +346,7 @@ export default function Register({ navigation }) {
             keyboardType="default"
             onChangeText={onChange("email")}
             label="Email"
-            autoCorrect={true}
+            autoCapitalize="none"
             customTextStyle={
               registerFailed === true && state.email === ""
                 ? styles.InputTextStyleFailed

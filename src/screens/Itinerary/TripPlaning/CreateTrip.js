@@ -663,14 +663,14 @@ export default function Trip(props) {
                   />
                   <View
                     style={{
-                      backgroundColor: "#f6f6f6",
-                      borderRadius: 3,
+                      // backgroundColor: "green",
+                      // borderRadius: 3,
                       flex: 1,
                       flexDirection: "row",
                       alignSelf: "center",
                       alignItems: "center",
-                      paddingHorizontal: 10,
-                      marginVertical: 5,
+                      // paddingHorizontal: 10,
+                      // marginVertical: 5,
                       maxHeight: 40,
                       width: "90%",
                     }}
@@ -1536,7 +1536,7 @@ export default function Trip(props) {
                 isVisible={modaltravel}
                 style={{
                   margin: 0,
-                  // backgroundColor: 'rgba(0, 0, 0, 0.25)',
+                  // backgroundColor: "rgba(0, 0, 0, 0.25)",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "center",
@@ -1619,7 +1619,7 @@ export default function Trip(props) {
                         backgroundColor: "white",
                         paddingTop: 10,
                         paddingHorizontal: 10,
-                        paddingBottom: 20,
+                        paddingBottom: 10,
                       }}
                     >
                       {withSelected.length > 0 ? (
@@ -1703,67 +1703,51 @@ export default function Trip(props) {
                         style={{
                           backgroundColor: "#f6f6f6",
                           borderRadius: 3,
-                          flex: 1,
+                          // flex: 1,
                           flexDirection: "row",
                           alignSelf: "center",
                           alignItems: "center",
                           paddingHorizontal: 10,
-                          marginTop: 20,
-                          marginBottom: 5,
-                          height: 40,
+                          // marginVertical: 0,
                           width: "90%",
+                          height: 30,
                         }}
                       >
-                        <View
-                          style={{
-                            backgroundColor: "#f6f6f6",
-                            borderRadius: 3,
-                            flex: 1,
-                            flexDirection: "row",
-                            alignSelf: "center",
-                            alignItems: "center",
-                            paddingHorizontal: 5,
-                            marginVertical: 5,
-                            width: "100%",
-                            height: 35,
-                          }}
-                        >
-                          <Search width={15} height={15} />
+                        <Search width={15} height={15} />
 
-                          <TextInput
-                            value={travelWiths}
-                            underlineColorAndroid="transparent"
-                            placeholder={t("SearchAccount")}
-                            style={{
-                              width: "85%",
-                              marginLeft: 5,
-                              padding: 0,
+                        <TextInput
+                          value={travelWiths}
+                          underlineColorAndroid="transparent"
+                          placeholder={t("SearchAccount")}
+                          style={{
+                            width: "85%",
+                            marginLeft: 5,
+                            padding: 0,
+                          }}
+                          returnKeyType="search"
+                          autoCorrect={false}
+                          onChangeText={(text) => {
+                            SearchWith(text);
+                          }}
+                          onSubmitEditing={SearchWith}
+                        />
+                        {travelWiths.length !== 0 ? (
+                          <TouchableOpacity
+                            onPress={() => {
+                              // _setSearch(null);
+                              SearchWith("");
                             }}
-                            returnKeyType="search"
-                            autoCorrect={false}
-                            onChangeText={(text) => {
-                              SearchWith(text);
-                            }}
-                            onSubmitEditing={SearchWith}
-                          />
-                          {travelWiths.length !== 0 ? (
-                            <TouchableOpacity
-                              onPress={() => {
-                                // _setSearch(null);
-                                SearchWith("");
+                          >
+                            <Xblue
+                              width="20"
+                              height="20"
+                              style={{
+                                alignSelf: "center",
+                                marginLeft: 10,
                               }}
-                            >
-                              <Xblue
-                                width="20"
-                                height="20"
-                                style={{
-                                  alignSelf: "center",
-                                  marginLeft: 10,
-                                }}
-                              />
-                            </TouchableOpacity>
-                          ) : null}
-                        </View>
+                            />
+                          </TouchableOpacity>
+                        ) : null}
                       </View>
                     </View>
                     <ScrollView

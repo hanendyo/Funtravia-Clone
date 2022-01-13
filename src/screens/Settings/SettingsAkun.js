@@ -1665,7 +1665,7 @@ export default function SettingsAkun(props) {
                     size="label"
                     style={{
                       alignSelf: "flex-start",
-                      marginTop: dataAccountConnection?.gmail?.email ? -15 : -5,
+                      marginTop: dataAccountConnection?.gmail?.email ? -5 : -5,
                     }}
                   >
                     Google
