@@ -1894,6 +1894,7 @@ export default function OtherProfile(props) {
           alignContent: "center",
           alignItems: "center",
           width: Dimensions.get("screen").width,
+          paddingRight: position === "other" ? 0 : 20,
         }}
       >
         <View

@@ -164,15 +164,16 @@ export default function Room({ navigation, route }) {
                 },
               });
             }}
+            size="h1"
             style={{
-              fontFamily: "Lato-Bold",
-              fontSize: 16,
+              // fontFamily: "Lato-Bold",
+              // fontSize: 16,
               color: "white",
               alignSelf: "center",
               paddingHorizontal: 10,
             }}
           >
-            {route.params.name}
+            {/* {route.params.name} */}
           </Text>
         </Pressable>
       </View>
@@ -317,13 +318,13 @@ export default function Room({ navigation, route }) {
                     },
                   });
                 }}
+                size="title"
                 style={{
-                  fontFamily: "Lato-Bold",
-                  fontSize: 16,
                   color: "white",
                   alignSelf: "center",
                   paddingHorizontal: 10,
                 }}
+                numberOfLines={2}
               >
                 {dataResponse.grup?.title}
               </Text>

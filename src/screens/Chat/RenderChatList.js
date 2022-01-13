@@ -1,36 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { View, TouchableOpacity, Dimensions, FlatList } from "react-native";
+import { Text, Button, FunImage } from "../../component";
 import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  FlatList,
-  Image,
-} from "react-native";
-import {
-  Text,
-  Button,
-  Truncate,
-  StatusBar,
-  Errors,
-  FunImage,
-} from "../../component";
-import {
-  NewGroup,
-  Magnifying,
   NewChat,
-  Kosong,
   Tagdestination,
-  Tagdocument,
   Tagimage,
   Tagsticker,
-  PinHitam,
   PinAbu,
-  Movie,
 } from "../../assets/svg";
-import { DefaultProfile, default_image } from "../../assets/png";
-import Ripple from "react-native-material-ripple";
-
 import RecentChat from "./RecentChat";
 
 const { width, height } = Dimensions.get("screen");
