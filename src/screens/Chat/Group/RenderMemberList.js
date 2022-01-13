@@ -182,7 +182,6 @@ export default function RenderMemberList({
       },
     ];
   };
-  // console.log(mydata);
   if (dataDetail && dataDetail.type == "itinerary") {
     return (
       <Swipeout
@@ -228,6 +227,7 @@ export default function RenderMemberList({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              flex: 1,
             }}
           >
             <FunImage
@@ -239,11 +239,11 @@ export default function RenderMemberList({
                 marginRight: 20,
               }}
             />
-            <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+            <View style={{ flex: 1, paddingRight: 10 }}>
               <Text size="label" type="bold" numberOfLines={1}>
                 {item.first_name} {item?.last_name}
               </Text>
-              <Text size="label" type="regular">
+              <Text size="label" type="regular" numberOfLines={1}>
                 @{item.username}
               </Text>
             </View>
@@ -437,7 +437,7 @@ export default function RenderMemberList({
           borderBottomWidth: 1,
           justifyContent: "space-between",
           alignItems: "center",
-          paddingHorizontal: 15,
+          marginHorizontal: 15,
         }}
       >
         <Pressable
@@ -452,6 +452,7 @@ export default function RenderMemberList({
           style={{
             flexDirection: "row",
             alignItems: "center",
+            flex: 1,
           }}
         >
           <FunImage
@@ -463,11 +464,17 @@ export default function RenderMemberList({
               marginRight: 20,
             }}
           />
-          <View style={{ maxWidth: item.isadmin == true ? "70%" : "75%" }}>
+          <View
+            style={{
+              // maxWidth: item.isadmin == true ? "70%" : "75%",
+              flex: 1,
+              paddingRight: 10,
+            }}
+          >
             <Text size="label" type="bold" numberOfLines={1}>
               {item.first_name} {item?.last_name}
             </Text>
-            <Text size="label" type="regular">
+            <Text size="label" type="regular" numberOfLines={1}>
               @{item.username}
             </Text>
           </View>

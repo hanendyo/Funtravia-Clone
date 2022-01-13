@@ -116,7 +116,6 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                 borderBottomWidth: 1,
                 justifyContent: "space-between",
                 borderBottomColor: "#EEEEEE",
-                // borderWidth: 1,
                 // alignContent: "center",
                 // width: width,
                 // alignItems: "center",
@@ -125,8 +124,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
               <View
                 style={{
                   flexDirection: "row",
-                  width: "80%",
-                  // borderWidth: 1,
+                  flex: 1,
                 }}
               >
                 <FunImage
@@ -146,11 +144,10 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                 />
                 <View
                   style={{
-                    // width: width - 160,
                     paddingHorizontal: 15,
                     justifyContent: "center",
                     alignItems: "flex-start",
-                    width: "80%",
+                    flex: 1,
                   }}
                 >
                   {item.itinerary ? (

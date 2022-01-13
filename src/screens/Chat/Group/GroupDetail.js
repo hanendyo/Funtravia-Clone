@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
-  ScrollView,
   FlatList,
   Pressable,
   ToastAndroid,
@@ -11,19 +10,15 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  SafeAreaView,
   StatusBar,
   ActivityIndicator,
 } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { ReactNativeFile } from "apollo-upload-client";
 import {
   Button,
   Text,
   StatusBar as StatBar,
   FunImage,
-  FunImageBackground,
-  Truncate,
 } from "../../../component";
 import {
   Arrowbackwhite,
@@ -31,7 +26,6 @@ import {
   AddParticipant,
   OptionsVertWhite,
   Xgray,
-  Pencilgreen,
   PensilPutih,
   ArrowRightHome,
   ItineraryIcon,
@@ -41,8 +35,6 @@ import { useTranslation } from "react-i18next";
 import { default_image } from "../../../assets/png";
 import { API_DOMAIN } from "../../../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Item } from "native-base";
-import Swipeout from "react-native-swipeout";
 import RenderMemberList from "./RenderMemberList";
 import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { RNToasty } from "react-native-toasty";
@@ -52,13 +44,14 @@ import DeletedBuddy from "../../../graphQL/Mutation/Itinerary/Deletedbuddy";
 import MakeAdmin from "../../../graphQL/Mutation/Itinerary/MakeAdmin";
 import LeftItinerary from "../../../graphQL/Mutation/Itinerary/LeftItinerary";
 import RemovAdmin from "../../../graphQL/Mutation/Itinerary/RemoveAdmin";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import Updatecover from "../../../graphQL/Mutation/Itinerary/UpdatecoverV2";
 import normalize from "react-native-normalize";
 import Animated from "react-native-reanimated";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 import ImageViewer from "react-native-image-zoom-viewer";
+import { useMutation } from "@apollo/client";
+
 
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
@@ -86,11 +79,6 @@ export default function GroupDetail(props) {
   const [indexMediaView, setIndexMediaView] = useState(0);
   const [modalimageview, setModalimageview] = useState(false);
   const [mediaArray, setMediaArray] = useState([]);
-  console.log(
-    "🚀 ~ file: GroupDetail.js ~ line 89 ~ GroupDetail ~ mediaArray",
-    mediaArray
-  );
-
   let _menu = null;
 
   const HEADER_MAX_HEIGHT = normalize(240);
@@ -315,7 +303,6 @@ export default function GroupDetail(props) {
             ? image.path
             : image.path.replace("file://", ""),
       });
-      console.log("formData", formData);
       let response = await fetch(`${RESTFULL_API}room/group/change_cover`, {
         method: "POST",
         headers: {
@@ -325,9 +312,7 @@ export default function GroupDetail(props) {
         },
         body: formData,
       });
-      console.log("response", response);
       let responseJson = await response.json();
-      console.log(responseJson);
 
       if (responseJson.status == true) {
         getUserAndToken();
@@ -409,7 +394,6 @@ export default function GroupDetail(props) {
         body: data_kirim,
       });
       let responseJson = await response.json();
-      console.log(responseJson);
       if (responseJson.status == true) {
         props.navigation.navigate("BottomStack", {
           screen: "ChatBottomScreen",
@@ -431,7 +415,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      // console.log(error);
     }
   };
 
@@ -509,7 +492,6 @@ export default function GroupDetail(props) {
 
   const _renameGroup = async (text) => {
     setIndexActive(null);
-    console.log(text);
     let data_kirim = JSON.stringify({
       group_id: dataDetail.id,
       title: text,
@@ -660,10 +642,7 @@ export default function GroupDetail(props) {
           buddy_id: idbuddy,
         },
       });
-      if (errorRemove) {
-        throw new Error("Error Deleted");
-      }
-      // console.log(response);
+
       if (response.data) {
         if (response.data.remove_admin.code !== 200) {
           throw new Error(response.data.remove_admin.message);
@@ -823,17 +802,16 @@ export default function GroupDetail(props) {
             <Text
               size="title"
               type="bold"
-              numberOfLines={1}
+              numberOfLines={2}
               style={{
                 color: "#000",
                 marginBottom: 15,
                 marginTop: 13,
+                flex: 1,
+                paddingRight: 10,
               }}
             >
-              <Truncate
-                text={dataDetail ? dataDetail.title : null}
-                length={20}
-              />
+              {dataDetail ? dataDetail.title : null}
             </Text>
             {dataDetail && dataDetail.type == "itinerary" ? (
               <Pressable
@@ -1818,7 +1796,6 @@ export default function GroupDetail(props) {
           opacity: titleOpacity,
           top: SafeStatusBar - 8,
           marginTop: 22,
-          // borderWidth: 1,
         }}
       >
         <Pressable
@@ -1849,15 +1826,16 @@ export default function GroupDetail(props) {
             size="title"
             style={{
               color: "#fff",
+              flex: 1,
             }}
             numberOfLines={1}
           >
-            <Truncate text={dataDetail ? dataDetail.title : null} length={20} />
+            {dataDetail ? dataDetail.title : null}
           </Text>
           <View
             style={{
               flexDirection: "row",
-              width: 80,
+              width: 50,
               justifyContent: "flex-end",
             }}
           >
