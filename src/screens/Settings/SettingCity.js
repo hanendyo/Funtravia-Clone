@@ -34,6 +34,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { useDispatch, useSelector } from "react-redux";
 import { setSettingUser } from "../../redux/action";
+import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
 
@@ -47,6 +48,7 @@ export default function SettingCity(props) {
   let [play, setPlay] = useState(null);
   let [showLoading, setShowLoading] = useState(false);
   let [indexSend, setIndexSend] = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -158,10 +160,6 @@ export default function SettingCity(props) {
     onCompleted: async () => {
       setData(dataKota?.cities_search);
       const tempData = [...dataKota?.cities_search];
-      console.log(
-        "🚀 ~ file: SettingCity.js ~ line 161 ~ onCompleted: ~ tempData",
-        tempData
-      );
       const indeks = await tempData.findIndex(
         (k) => k["id"] === setting?.cities?.id
       );
@@ -218,7 +216,7 @@ export default function SettingCity(props) {
         ref?.current?.scrollToIndex({
           index: error.index,
         }),
-      500
+      100
     );
   };
 
@@ -361,34 +359,35 @@ export default function SettingCity(props) {
           // focusable={true}
           keyboardShouldPersistTaps={"handled"}
           getItemLayout={(data, index) => ({
-            // length:  46,
-            // offset: 46 * index,
+            length: normalize(50),
+            offset: normalize(50) * index,
 
-            length: Platform.select({
-              ios: Notch ? 50 : 47,
-              android: deviceId == "LYA-L29" ? 45.5 : 48.8,
-            }),
-
-            offset: Platform.select({
-              ios: Notch ? 50 * index : 47 * index,
-              android: deviceId == "LYA-L29" ? 45.5 * index : 48.8 * index,
-            }),
+            // length: Platform.select({
+            //   ios: Notch ? 50 : 47,
+            //   android: deviceId == "LYA-L29" ? 45.5 : 48.3,
+            // }),
+            // offset: Platform.select({
+            //   ios: Notch ? 50 * index : 47 * index,
+            //   android: deviceId == "LYA-L29" ? 45.5 * index : 48.3 * index,
+            // }),
 
             index,
           })}
-          contentContainerStyle={{
-            paddingBottom: 50,
-          }}
+          // contentContainerStyle={{
+          //   paddingBottom: 50,
+          // }}
           renderItem={({ item, index }) => (
             <Pressable
               // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
               onPress={() => hasil(item)}
               style={{
-                paddingVertical: 15,
+                // paddingVertical: normalize(10),
+                // paddingHorizontal: normalize(20),
+                height: normalize(50),
                 paddingHorizontal: 20,
                 borderBottomWidth: 0.5,
                 borderBottomColor:
-                  setting.cities?.id == item.id ? "#209fae" : "#D1D1D1",
+                  setting.cities?.id == item.id ? "#209fae" : "#d0d0d0",
                 flexDirection: "row",
                 alignContent: "center",
                 alignItems: "center",

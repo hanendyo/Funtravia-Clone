@@ -157,7 +157,7 @@ export default function TripPlaning(props) {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
     let setsetting = await AsyncStorage.getItem("setting");
-    dispatch(setSettingUser(setsetting));
+    // dispatch(setSettingUser(setsetting));
     // setSetting(JSON.parse(setsetting));
     // setToken(tkn);
     // dispatch(setTokenApps(`Bearer ${tkn}`));
