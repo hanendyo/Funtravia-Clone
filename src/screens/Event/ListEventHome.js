@@ -14,6 +14,7 @@ import {
   ScrollView,
   FlatList,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DeviceInfo from "react-native-device-info";
@@ -46,6 +47,7 @@ import {
   Xblue,
   CheckWhite,
 } from "../../assets/svg";
+
 import { useTranslation } from "react-i18next";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ListEventGQL from "../../graphQL/Query/Event/ListEvent2";
@@ -58,6 +60,7 @@ import {
   default_image,
   CalenderGrey,
   MapIconGreen,
+  search_button,
   Eventcover,
 } from "../../assets/png";
 import { dateFormatBetween } from "../../component/src/dateformatter";
@@ -101,25 +104,13 @@ export default function ListEventHome(props) {
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? i18n.language === "id"
-        ? normalize(380) + tambahanJudul + tambahan - 48
-        : normalize(384) + tambahanJudul + tambahan - 48
-      : i18n.language === "id"
-      ? normalize(380) + tambahanJudul + tambahan - 20
-      : normalize(384) + tambahanJudul + tambahan - 20,
+      ? normalize(205) + tambahanJudul + tambahan - 20
+      : normalize(225) + tambahanJudul + tambahan - 20,
 
     android:
-      i18n.language === "id"
-        ? deviceId == "LYA-L29"
-          ? normalize(372) + tambahanJudul + tambahan - StatusBar.currentHeight
-          : deviceId == "CPH2127"
-          ? normalize(400) + tambahanJudul + tambahan - StatusBar.currentHeight
-          : normalize(385) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : deviceId == "LYA-L29"
-        ? normalize(370) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : deviceId == "CPH2127"
-        ? normalize(387) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(378) + tambahanJudul + tambahan - StatusBar.currentHeight,
+      deviceId == "LYA-L29"
+        ? normalize(230) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -524,7 +515,7 @@ export default function ListEventHome(props) {
 
   const FlatlistSet = (item) => {
     setCurrentYear(item);
-    setOpenFlatlist(!openFlatlist);
+    // setOpenFlatlist(!openFlatlist);
     loadAsync();
   };
 
@@ -541,21 +532,86 @@ export default function ListEventHome(props) {
           // borderWidth: 1,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
+          // marginHorizontal: 20,
+          backgroundColor: "#209FAE",
           height: 45,
           // backgroundColor: "red",
-          width: Dimensions.get("screen").width - 40,
+          width: Dimensions.get("screen").width,
         }}
       >
-        <View flexDirection="row">
+        <View
+          flexDirection="row"
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 20,
+          }}
+        >
+          <View flexDirection="row" style={{ flex: 1 }}>
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => props.navigation.goBack()}
+              style={{
+                height: 60,
+                // marginLeft: 8,
+              }}
+            >
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <View
+              style={{
+                // width: Dimensions.get("screen").width - 100,
+                flexDirection: "row",
+                alignContent: "center",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <Text
+                size="title"
+                type="bold"
+                style={{
+                  color: "#FFFFFF",
+                }}
+              >
+                {t("event")}
+              </Text>
+            </View>
+          </View>
+
           <Button
             text={""}
             size="medium"
             type="circle"
             variant="transparent"
-            onPress={() => props.navigation.goBack()}
+            onPress={() => {
+              props.navigation.navigate("searchListEventHome", {
+                idcity: null,
+                idcountries: country.id,
+                countryName: country.name,
+                eventList: null,
+                year: currentYear,
+              });
+            }}
             style={{
-              height: 60,
+              height: 40,
               // marginLeft: 8,
             }}
           >
@@ -568,214 +624,125 @@ export default function ListEventHome(props) {
                 alignItems: "center",
               }}
             >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
+              <SearchWhite width="20" height="20" />
             </Animated.View>
           </Button>
-          <View
-            style={{
-              // width: Dimensions.get("screen").width - 100,
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-              padding: 10,
-            }}
-          >
-            <Text
-              size="title"
-              type="bold"
-              style={{
-                color: "#FFFFFF",
-              }}
-            >
-              {t("event")}
-            </Text>
-          </View>
         </View>
-
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => {
-            props.navigation.navigate("searchListEventHome", {
-              idcity: null,
-              idcountries: country.id,
-              countryName: country.name,
-              eventList: null,
-              year: currentYear,
-            });
-          }}
-          style={{
-            height: 40,
-            // marginLeft: 8,
-          }}
-        >
-          {/* <TouchableOpacity
-          style={styles.searchWhite}
-          // hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-          onPress={() => props.navigation.navigate("searchListEventHome")}
-        >
-          <SearchWhite width="20" height="20" />
-        </TouchableOpacity> */}
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchWhite width="20" height="20" />
-          </Animated.View>
-        </Button>
       </Animated.View>
     );
   };
 
+  const ref = useRef(0);
+
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 50],
+      outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
     return (
       <Animated.View
-        pointerEvents={"box-none"}
         {...headerPanResponder.panHandlers}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
           height: HeaderHeight,
           width: "100%",
-          alignItems: "center",
-
-          justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
         }}
+        // pointerEvents="none"
       >
+        {Banner && Banner.banner_asset.length > 0 ? (
+          <Animated.Image
+            style={{
+              width: "100%",
+              height: 200,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslate }],
+            }}
+            source={{ uri: Banner.banner_asset[0].filepath }}
+          />
+        ) : (
+          <Animated.Image
+            style={{
+              width: "100%",
+              height: 200,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslate }],
+            }}
+            source={default_image}
+          />
+        )}
         <Animated.View
           style={{
+            // height: 55,
+
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#FFFFFF",
+
             opacity: imageOpacity,
-            flex: 1,
-            width: width,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
-          {Banner && Banner.banner_asset.length > 0 ? (
-            <Animated.Image
-              source={{ uri: Banner.banner_asset[0].filepath }}
-              style={{
-                flex: 1,
-
-                width: "100%",
-                opacity: imageOpacity,
-              }}
-            />
-          ) : (
-            <Animated.Image
-              source={Eventcover}
-              style={{
-                flex: 1,
-
-                width: "100%",
-                opacity: imageOpacity,
-              }}
-            />
-          )}
           <View
-            pointerEvents="box-none"
+            onLayout={(event) => {
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              setTambahanJudul(height - 15);
+            }}
             style={{
-              // flex: 1,
-              marginTop: 0,
-
-              paddingTop: Platform.OS == "ios" ? 25 : 20,
               paddingHorizontal: 15,
-              paddingBottom: Platform.OS == "ios" ? 3 : 1,
-
-              zIndex: -10,
-              backgroundColor: "#fff",
             }}
           >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = +line;
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanJudul(lines * 3)
-                      : setTambahanJudul(lines * -6)
-                    : setTambahanJudul(lines * 1);
-                  // setTambahanJudul(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanJudul(lines * -10)
-                      : setTambahanJudul(lines * -20)
-                    : setTambahanJudul(lines * 1);
-                }
-              }}
               size="title"
               type="bold"
               style={{
                 textAlign: "left",
                 paddingBottom: 5,
                 flexShrink: 0,
-                // borderWidth: 2,
+                paddingTop: Platform.select({
+                  ios: Notch ? 30 : 35,
+                  android: 25,
+                }),
               }}
-              // wordWra
             >
-              {t("EventTitle")}
+              {Banner?.title}
             </Text>
+          </View>
+          <View
+            onLayout={(event) => {
+              let { x, y, width, height } = event.nativeEvent.layout;
+              setTambahan(height);
+            }}
+            style={{
+              paddingHorizontal: 15,
+            }}
+          >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = line - 1;
-                // setTambahanDeskripsi(lines * 32);
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 15)
-                      : setTambahan(lines * 17)
-                    : setTambahan(lines * 11);
-                  // setTambahanDeskripsi(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 16)
-                      : setTambahan(lines - 20)
-                    : setTambahan(lines);
-                }
-              }}
               size="label"
               type="regular"
               style={{
                 textAlign: "left",
-                // paddingHorizontal:
-                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
+
+                paddingBottom: 8,
+                flexShrink: 0,
               }}
             >
-              {t("EventDescription")}
+              {Banner?.description}
             </Text>
           </View>
         </Animated.View>
-
-        {/* filter negara */}
         <Animated.View
           style={{
             flexDirection: "row",
             position: "absolute",
-            top: Platform.select({
-              ios: Notch ? normalize(185) : normalize(200),
-              android: normalize(205),
-            }),
+            top: 175,
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
@@ -825,112 +792,48 @@ export default function ListEventHome(props) {
               <Down width={10} height={10} style={{ marginRight: 20 }} />
             </View>
           </TouchableHighlight>
-          <Ripple
-            onPress={() => {
-              !openFlatlist ? setOpenFlatlist(true) : setOpenFlatlist(false);
-            }}
+          <TouchableHighlight
+            onPress={() => setOpenFlatlist(true)}
             style={{
-              height: normalize(45),
               borderTopRightRadius: 50,
               borderBottomRightRadius: 50,
-              borderWidth: 1,
-              borderColor: "#d8d8d8",
-              paddingVertical: 10,
-              paddingHorizontal: 0,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#209FAE",
-              flexDirection: "row",
-              width: "35%",
             }}
+            underlayColor={"#f6f6f6"}
           >
-            <Text
-              size="label"
-              numberOfLines={1}
+            <View
               style={{
-                marginRight: 10,
-                color: "#fff",
+                height: normalize(45),
+                borderTopRightRadius: 50,
+                borderBottomRightRadius: 50,
+                borderWidth: 1,
+                borderColor: "#d8d8d8",
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+
+                backgroundColor: "#209FAE",
+                flexDirection: "row",
+                // width: "55%",
               }}
             >
-              {currentYear}
-            </Text>
-            <Down width={10} height={10} style={{ marginTop: 5 }} />
-          </Ripple>
-          <FlatList
-            style={{
-              position: "absolute",
-              right:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? 63
-                    : 59.5
-                  : deviceId == "LYA-L29"
-                  ? 55
-                  : deviceId == "CPH2127"
-                  ? 70
-                  : 68,
-              top:
-                Platform.OS == "ios"
-                  ? 32
-                  : deviceId == "LYA-L29"
-                  ? 26
-                  : deviceId == "CPH2127"
-                  ? 33
-                  : 29,
-              borderLeftWidth: 2,
-              borderRightWidth: 1,
-              borderLeftColor: "#d8d8d8",
-              borderRightColor: "#d8d8d8",
-              paddingHorizontal: 10,
-              borderBottomRightRadius: 20,
-              paddingVertical: openFlatlist ? 10 : 0,
-              backgroundColor: "#209FAE",
-              width: "35%",
-              zIndex: 1,
-            }}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => `${index}`}
-            data={openFlatlist ? arrayYear : 0}
-            renderItem={({ item, i }) => (
-              <TouchableHighlight
-                underlayColor={"#209FAE"}
-                key={item + "as"}
-                onPress={() => {
-                  FlatlistSet(item);
-                }}
+              <Text
+                size="label"
+                numberOfLines={1}
                 style={{
-                  paddingVertical: 5,
-                  justifyContent: "center",
-                  paddingRight: 5,
-                  paddingLeft: currentYear == item ? 10 : 0,
-
-                  alignSelf: "center",
+                  marginLeft: 30,
+                  marginRight: 5,
+                  color: "#fff",
+                  marginBottom: 5,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                  }}
-                >
-                  <Text
-                    size="label"
-                    numberOfLines={1}
-                    style={{
-                      marginRight: 10,
-                      color: "#fff",
-                      // flex: 1,
-                    }}
-                  >
-                    {item}
-                  </Text>
-                  {currentYear == item ? (
-                    <CheckWhite width={15} height={15} />
-                  ) : null}
-                </View>
-              </TouchableHighlight>
-            )}
-          />
+                {currentYear}
+              </Text>
+              <Down width={10} height={10} style={{ marginRight: 20 }} />
+            </View>
+          </TouchableHighlight>
         </Animated.View>
       </Animated.View>
     );
@@ -1288,7 +1191,7 @@ export default function ListEventHome(props) {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 50],
+      outputRange: [HeaderHeight, 55],
       extrapolateRight: "clamp",
     });
     return (
@@ -1298,6 +1201,7 @@ export default function ListEventHome(props) {
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
+
           width: "100%",
         }}
       >
@@ -1831,7 +1735,7 @@ export default function ListEventHome(props) {
                 width: Dimensions.get("screen").width,
                 backgroundColor: "#14646e",
 
-                marginTop: Notch ? -10 : -50,
+                marginTop: Notch ? -10 : -30,
               }}
             ></View>
           ) : null}
@@ -2076,6 +1980,143 @@ export default function ListEventHome(props) {
     );
   };
 
+  const renderYearFilter = () => {
+    return (
+      <Modal
+        onRequestClose={() => {
+          setOpenFlatlist(false);
+        }}
+        onBackdropPress={() => {
+          setOpenFlatlist(false);
+        }}
+        onDismiss={() => setOpenFlatlist(false)}
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        isVisible={openFlatlist}
+        style={{
+          margin: 0,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+          }}
+        >
+          {Platform.OS == "ios" ? (
+            <View
+              style={{
+                height: 50,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "#14646e",
+
+                marginTop: Notch ? -10 : -30,
+              }}
+            ></View>
+          ) : null}
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-start",
+              alignItems: "center",
+              alignContent: "center",
+              backgroundColor: "#209fae",
+              height: 55,
+              width: Dimensions.get("screen").width,
+            }}
+          >
+            <Button
+              type="circle"
+              color="tertiary"
+              size="large"
+              variant="transparent"
+              onPress={() => setOpenFlatlist(false)}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={20} width={20}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Button>
+            <Text
+              size="title"
+              style={{
+                color: "white",
+              }}
+              type="bold"
+            >
+              {t("year")}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              backgroundColor: "white",
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              paddingBottom: 15,
+            }}
+          >
+            {arrayYear.map((item, index) => (
+              <Pressable
+                onPress={() => {
+                  FlatlistSet(item);
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+
+                    alignItems: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 20,
+                      width: 20,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderWidth: 1,
+                      marginRight: 10,
+                      borderRadius: 20,
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 10,
+                        width: 10,
+                        borderRadius: 10,
+                        backgroundColor:
+                          currentYear == item ? "#209FAE" : "#fff",
+                      }}
+                    ></View>
+                  </View>
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      marginLeft: 0,
+                      marginRight: -10,
+                      color: "#464646",
+                      marginTop: Platform.OS == "ios" ? -5 : -2,
+                    }}
+                  >
+                    {item}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   const renderMonthFilter = () => {
     return (
       <Modal
@@ -2261,7 +2302,7 @@ export default function ListEventHome(props) {
     variables: {
       page_location: "Event",
     },
-    // fetchPolicy: "network-only",
+    fetchPolicy: "network-only",
     onCompleted: () => {
       SetDataBanner(dataBanner?.get_banner);
     },
@@ -2608,61 +2649,198 @@ export default function ListEventHome(props) {
 
   return (
     <View style={styles.container}>
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
 
-      {loadingPublic ? (
-        <View>
-          <ActivityIndicator size="small" color="#209fae" />
-        </View>
-      ) : tabIndex == 1 && dataEventPublic.length == 0 ? (
-        <View
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hides.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: 52,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 15,
+
+          width: Dimensions.get("screen").width - 35,
+        }}
+      >
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => props.navigation.goBack()}
           style={{
-            width: Dimensions.get("screen").width,
-            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
-            zIndex: 1,
-            position: "absolute",
-            alignItems: "center",
+            height: 60,
+            // marginLeft: 8,
           }}
         >
-          <Text size="title" type="bold">
-            {t("noData")}
-          </Text>
-        </View>
-      ) : null}
-      {loading ? (
-        <View>
-          <ActivityIndicator size="small" color="#209fae" />
-        </View>
-      ) : tabIndex == 0 && dataEvent && dataEvent.length == 0 ? (
-        <View
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Animated.View>
+        </Button>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
           style={{
-            width: Dimensions.get("screen").width,
-            marginTop: HeaderHeight + TabBarHeight + SafeStatusBar + 10,
-            zIndex: 1,
-            position: "absolute",
-            alignItems: "center",
+            height: 40,
+            // marginLeft: 8,
           }}
         >
-          <Text size="title" type="bold">
-            {t("noData")}
-          </Text>
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+              borderRadius: 30,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <SearchWhite width="20" height="20" />
+          </Animated.View>
+        </Button>
+      </Animated.View>
+
+      {/* jika scrollheader, animated show */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: SafeStatusBar,
+          zIndex: 9999,
+          opacity: hide.current,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: 52,
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 15,
+
+          width: Dimensions.get("screen").width - 35,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+          }}
+        >
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
+            style={{
+              height: 60,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
+                // backgroundColor: "red",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <View
+            style={{
+              // width: Dimensions.get("screen").width - 100,
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("event")}
+            </Text>
+          </View>
         </View>
-      ) : null}
-      <ModalLogin
-        modalLogin={modalLogin}
-        setModalLogin={() => setModalLogin(false)}
-        props={props}
-      />
-      {/* {renderFilterAndSearchHeader()} */}
-      {renderNavDefault()}
-      {renderNavInterpolated()}
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => {
+            props.navigation.navigate("searchListEventHome", {
+              idcity: null,
+              idcountries: country.id,
+              countryName: country.name,
+              eventList: null,
+              year: currentYear,
+            });
+          }}
+          style={{
+            height: 40,
+            // marginLeft: 8,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 35,
+              width: 35,
+
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <SearchWhite width="20" height="20" />
+          </Animated.View>
+        </Button>
+      </Animated.View>
+
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
       {/* {renderCountryAndMonthModal()} */}
       {/* {renderFilterCategory()} */}
       {renderCountryFilter()}
-      {renderMonthFilter()}
+      {renderYearFilter()}
+
+      {/* modal share */}
     </View>
   );
 }
@@ -2677,7 +2855,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
   },
   searchWhite: {
     marginRight: 25,
