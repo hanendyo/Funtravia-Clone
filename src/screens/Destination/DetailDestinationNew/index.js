@@ -74,7 +74,9 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
-  console.log("props -> detailDestinationNew -> index", props.route.params);
+  // untuk hp yang layar camera dan sound misah dari layar utama
+  const NotchAndro = StatusBar.currentHeight > 24;
+
   const { t, i18n } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
@@ -85,14 +87,55 @@ const Index = (props) => {
     ios: Notch ? 40 : 40,
     android: 40,
   });
-  let [unesco, setUnesco] = useState(0);
-  let [tambahan, setTambahan] = useState(0);
-  let [tambahan1, setTambahan1] = useState(0);
-  let [tambahan2, setTambahan2] = useState(0);
+
+  // dinamis height tambahan header
+  let [HeightJudul, setHeightJudul] = useState(0);
+  let [Heightunesco, setHeightUnesco] = useState(0);
+  let [HeightAddress, setHeightAddress] = useState(0);
+  let [HeightTime, setHeightTime] = useState(0);
+  let [HeightWeb, setHeightWeb] = useState(0);
 
   const HeaderHeight = Platform.select({
-    ios: 457 + tambahan + tambahan1 + tambahan2 - unesco,
-    android: 440 + tambahan + tambahan1 + tambahan2 - unesco,
+    ios: Notch
+      ? normalize(198) +
+        HeightJudul +
+        Heightunesco +
+        HeightAddress +
+        HeightTime +
+        HeightWeb -
+        20
+      : normalize(225) +
+        HeightJudul +
+        Heightunesco +
+        HeightAddress +
+        HeightTime +
+        HeightWeb -
+        20,
+
+    android:
+      deviceId == "LYA-L29"
+        ? normalize(230) +
+          HeightJudul +
+          Heightunesco +
+          HeightAddress +
+          HeightTime +
+          HeightWeb -
+          StatusBar.currentHeight
+        : NotchAndro
+        ? normalize(224) +
+          HeightJudul +
+          Heightunesco +
+          HeightAddress +
+          HeightTime +
+          HeightWeb -
+          StatusBar.currentHeight
+        : normalize(198) +
+          HeightJudul +
+          Heightunesco +
+          HeightAddress +
+          HeightTime +
+          HeightWeb -
+          StatusBar.currentHeight,
   });
 
   let SafeStatusBar = Platform.select({
@@ -137,43 +180,6 @@ const Index = (props) => {
   const layoutText = (e) => {
     setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
   };
-
-  // const HeaderComponent = {
-  //   headerShown: true,
-  //   headerTransparent: true,
-  //   headerTintColor: "white",
-  //   headerTitle: data?.destinationById?.name,
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //   },
-  //   headerTitleStyle: {
-  //     fontFamily: "Lato-Bold",
-  //     fontSize: 18,
-  //     color: "white",
-  //   },
-  //   headerLeftContainerStyle: {
-  //     background: "#FFF",
-
-  //     marginLeft: 10,
-  //   },
-  //   headerLeft: () => (
-  //     <Button
-  //       text={""}
-  //       size="medium"
-  //       type="circle"
-  //       variant="transparent"
-  //       onPress={() => props.navigation.goBack()}
-  //       style={{
-  //         height: 55,
-  //       }}
-  //     >
-  //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //     </Button>
-  //   ),
-  // };
 
   const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
     variables: { id: props.route.params.id },
@@ -759,63 +765,49 @@ const Index = (props) => {
     return (
       <Animated.View
         pointerEvents="none"
-        // {...headerPanResponder.panHandlers}
-        // {...panResponder.panHandlers}
+        {...headerPanResponder.panHandlers}
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
-          flex: 1,
           transform: [{ translateY: y }],
-          // transform: [{ translateY: pan.y }, { translateX: pan.x }],
           top: SafeStatusBar,
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#209FAE",
+          backgroundColor: "#209fae",
         }}
       >
+        <Animated.Image
+          style={{
+            width: "100%",
+            height: 200,
+            resizeMode: "cover",
+            opacity: imageOpacity,
+            transform: [{ translateY: imageTranslate }],
+          }}
+          source={
+            dataDestination?.images[0] && dataDestination?.images[0].image
+              ? { uri: dataDestination?.images[0].image }
+              : default_image
+          }
+        />
         <Animated.View
           style={{
-            // transform: [{ translateY: imageTranslate }],
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#FFFFFF",
             opacity: imageOpacity,
-            // height:"100%",
-            flex: 1,
-            // height: HeaderHeight - 100,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
-          {/* Image */}
-          <Animated.Image
-            onLayout={(event) => {
-              let heights = event.nativeEvent.layout.height;
-              setLayoutImage(heights);
-            }}
-            source={
-              dataDestination?.images[0] && dataDestination?.images[0].image
-                ? { uri: dataDestination?.images[0].image }
-                : default_image
-            }
-            style={{
-              flex: 1,
-              // height: 180,
-              width: "100%",
-              opacity: imageOpacity,
-              // transform: [{ translateY: imageTranslate }],
-            }}
-          />
-
-          {/* Judul */}
+          {/* Judul dan bintang review */}
           <View
             onLayout={(event) => {
-              let heights = event.nativeEvent.layout.height;
-              setLayoutHeader(heights);
+              let { x, y, width, height } = event.nativeEvent.layout;
+              console.log("heightjudul", height);
+              setHeightJudul(height);
             }}
             style={{
-              paddingTop: 10,
-              paddingHorizontal: 18,
-              width: Dimensions.get("screen").width,
-              // height: 70,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "#FFF",
+              paddingHorizontal: 15,
+              paddingTop: 15,
             }}
           >
             <View
@@ -834,7 +826,7 @@ const Index = (props) => {
                   style={{
                     borderRadius: 3,
                     backgroundColor: "#F4F4F4",
-                    // padding: 3,
+
                     marginRight: 10,
                     height: 25,
                     justifyContent: "center",
@@ -885,79 +877,14 @@ const Index = (props) => {
                 </View>
               </View>
             </View>
-
-            {/* Button like and share */}
-            {/* <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              {dataDestination?.liked === true ? (
-                <Pressable
-                  style={{
-                    backgroundColor: "#F6F6F6",
-                    marginRight: 2,
-                    height: 34,
-                    width: 34,
-                    borderRadius: 17,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 5,
-                  }}
-                  onPress={() => _unliked(dataDestination?.id)}
-                >
-                  <Love height={20} width={20} />
-                </Pressable>
-              ) : (
-                <Pressable
-                  onPress={() =>
-                    shareAction({
-                      from: "destination",
-                      target: dataDestination?.id,
-                    })
-                  }
-                  style={{
-                    backgroundColor: "#F6F6F6",
-                    marginRight: 2,
-                    height: 34,
-                    width: 34,
-                    borderRadius: 17,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 5,
-                  }}
-                  onPress={() => _liked(dataDestination?.id)}
-                >
-                  <LikeEmpty height={20} width={20} />
-                </Pressable>
-              )}
-              <TouchableOpacity
-                onPress={() =>Modal(true)
-                }
-                style={{
-                  backgroundColor: "#F6F6F6",
-                  marginRight: 2,
-                  height: 34,
-                  width: 34,
-                  borderRadius: 17,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ShareBlack height={20} width={20} />
-              </TouchableOpacity>
-            </View> */}
-            {/*End Button like and share */}
           </View>
-
-          {/* Type */}
+          {/* type movie unesco */}
           {dataDestination?.movie_location?.length > 0 ||
           dataDestination?.type?.name.toLowerCase().substr(0, 6) == "unesco" ? (
             <View
               onLayout={(event) => {
-                let heights = event.nativeEvent.layout.height;
-                setLayoutUnesco(heights);
+                let { x, y, width, height } = event.nativeEvent.layout;
+                setHeightUnesco(height);
               }}
               style={{
                 width: Dimensions.get("screen").width,
@@ -1018,7 +945,10 @@ const Index = (props) => {
             </View>
           ) : (
             <View
-              onLayout={() => setUnesco(40)}
+              onLayout={(event) => {
+                let { x, y, width, height } = event.nativeEvent.layout;
+                setHeightUnesco(height);
+              }}
               style={{
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 15,
@@ -1030,13 +960,12 @@ const Index = (props) => {
               }}
             ></View>
           )}
-
           {/* View address */}
-
           <View
             onLayout={(event) => {
-              let heights = event.nativeEvent.layout.height;
-              setLayoutsAddress(heights);
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              setHeightAddress(height);
             }}
             style={{
               width: Dimensions.get("screen").width,
@@ -1066,11 +995,6 @@ const Index = (props) => {
                   style={{ marginRight: 10, alignSelf: "center" }}
                 />
                 <Text
-                  onTextLayout={(x) => {
-                    let line = x.nativeEvent.lines.length;
-                    let lines = line - 1;
-                    setTambahan(lines * 20);
-                  }}
                   size="label"
                   type="regular"
                   style={{ lineHeight: 18 }}
@@ -1079,39 +1003,14 @@ const Index = (props) => {
                   {dataDestination?.address ? dataDestination?.address : "-"}
                 </Text>
               </View>
-              {/* {dataDestination?.address ? (
-                <Ripple
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    Linking.openURL(
-                      Platform.OS == "ios"
-                        ? "maps://app?daddr=" +
-                            data?.destinationById?.latitude +
-                            "+" +
-                            data?.destinationById?.longitude
-                        : "google.navigation:q=" +
-                            data?.destinationById?.latitude +
-                            "+" +
-                            data?.destinationById?.longitude
-                    );
-                  }}
-                >
-                  <Mapsborder height="25" width="25" />
-                  
-                </Ripple>
-              ) : null} */}
             </View>
           </View>
-
           {/* View Time */}
-
           <View
             onLayout={(event) => {
-              let heights = event.nativeEvent.layout.height;
-              setLayoutsOpen(heights);
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              setHeightTime(height);
             }}
             style={{
               width: Dimensions.get("screen").width,
@@ -1146,50 +1045,24 @@ const Index = (props) => {
                   type="regular"
                   style={{ lineHeight: 18 }}
                   numberOfLines={2}
-                  onTextLayout={(x) => {
-                    let line = x.nativeEvent.lines.length;
-                    let lines = line - 1;
-                    setTambahan1(lines * 20);
-                  }}
                 >
                   {dataDestination?.openat ? dataDestination?.openat : "-"}
                 </Text>
               </View>
-              {/* {dataDestination?.openat ? (
-                <Pressable
-                  onPress={() => setModalTime(true)}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      color: "#209FAE",
-                      marginVertical: 8,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("more")}
-                  </Text>
-                </Pressable>
-              ) : null} */}
             </View>
           </View>
-
           {/* View Website */}
-
           <View
             onLayout={(event) => {
-              let heights = event.nativeEvent.layout.height;
-              setLayoutsWeb(heights);
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              setHeightWeb(height);
             }}
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 18,
               backgroundColor: "#FFF",
+              bottom: 0,
             }}
           >
             <View
@@ -1220,11 +1093,6 @@ const Index = (props) => {
                   type="regular"
                   numberOfLines={2}
                   style={{ lineHeight: 18 }}
-                  onTextLayout={(x) => {
-                    let line = x.nativeEvent.lines.length;
-                    let lines = line - 1;
-                    setTambahan2(lines * 20);
-                  }}
                 >
                   {dataDestination?.website &&
                   dataDestination.website !== "null"
@@ -1232,31 +1100,8 @@ const Index = (props) => {
                     : "-"}
                 </Text>
               </View>
-              {/* {data?.destinationById?.website ? (
-                <Pressable
-                  onPress={() => setModalSosial(true)}
-                  style={{
-                    // minHeight: 40,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      color: "#209FAE",
-                      marginVertical: 8,
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("more")}
-                  </Text>
-                </Pressable>
-              ) : null} */}
             </View>
           </View>
-          {/* <View style={{ height: 5, backgroundColor: "#F1F1F1" }}></View> */}
         </Animated.View>
       </Animated.View>
     );
@@ -1363,108 +1208,6 @@ const Index = (props) => {
     },
   });
 
-  const _likedAnother = async (id) => {
-    if (tokenApps) {
-      // var tempData = { ...dataAnother };
-      // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-      // tempData.another_place[index].liked = true;
-      // setDataAnother(tempData);
-      try {
-        let response = await mutationlikedAnother({
-          variables: {
-            destination_id: id,
-            qty: 1,
-          },
-        });
-        if (loadingLike) {
-          alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          fetchDataAnotherDes();
-          if (
-            response.data.setDestination_wishlist.code === 200 ||
-            response.data.setDestination_wishlist.code === "200"
-          ) {
-            // var tempData = { ...dataAnother };
-            // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-            // tempData.another_place[index].liked = true;
-            // setDataAnother(tempData);
-          } else {
-            throw new Error(response.data.setDestination_wishlist.message);
-          }
-        }
-      } catch (error) {
-        // var tempData = { ...dataAnother };
-        // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-        // tempData.another_place[index].liked = false;
-        // setDataAnother(tempData);
-        fetchDataAnotherDes();
-        // alert("" + error);
-      }
-    } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
-    }
-  };
-
-  const _unlikedAnother = async (id) => {
-    if (tokenApps) {
-      // var tempData = { ...dataAnother };
-      // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-      // tempData.another_place[index].liked = false;
-      // setDataAnother(tempData);
-      try {
-        let response = await mutationUnlikedAnother({
-          variables: {
-            destination_id: id,
-          },
-        });
-        if (loadingUnLike) {
-          alert("Loading!!");
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
-        if (response.data) {
-          fetchDataAnotherDes();
-          if (
-            response.data.unset_wishlist_destinasi.code === 200 ||
-            response.data.unset_wishlist_destinasi.code === "200"
-          ) {
-            // var tempData = { ...dataAnother };
-            // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-            // tempData.another_place[index].liked = false;
-            // setDataAnother(tempData);
-          } else {
-            throw new Error(response.data.unset_wishlist_destinasi.message);
-          }
-        }
-      } catch (error) {
-        fetchDataAnotherDes();
-        // var tempData = { ...dataAnother };
-        // var index = tempData.another_place.findIndex((k) => k["id"] === id);
-        // tempData.another_place[index].liked = true;
-        // setDataAnother(tempData);
-        // alert("" + error);
-      }
-    } else {
-      props.navigation.navigate("AuthStack", {
-        screen: "LoginScreen",
-      });
-      RNToasty.Show({
-        title: t("pleaselogin"),
-        position: "bottom",
-      });
-    }
-  };
   let [indeks, setIndeks] = useState(0);
 
   const ImagesSlider = async (index, data) => {
@@ -2119,29 +1862,6 @@ const Index = (props) => {
     );
   };
 
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <View
-        style={{
-          alignContent: "center",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          width: Dimensions.get("screen").width / 3,
-        }}
-      >
-        <Text
-          type={focused ? "bold" : "regular"}
-          size="label"
-          style={{
-            color: focused ? "#209FAE" : "#464646",
-          }}
-        >
-          {route.title}
-        </Text>
-      </View>
-    );
-  };
-
   const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
@@ -2501,34 +2221,23 @@ const Index = (props) => {
           {dataDestination?.name}
         </Animated.Text>
       </Animated.View>
-
       {/* Button Like and Share*/}
-
       <Animated.View
         style={{
           position: "absolute",
-          top:
-            deviceId == "LYA-L29"
-              ? normalize(layoutImage) + normalize(40)
-              : normalize(layoutImage) + normalize(20),
-          transform: [{ translateY: yButtonLikeShare }],
+          top: SafeStatusBar + 200 + HeightJudul / 4,
           right: 20,
           zIndex: 9999,
-          opacity: hides.current,
           alignItems: "flex-end",
-          justifyContent: "center",
+          transform: [{ translateY: yButtonLikeShare }],
+          opacity: hides.current,
           height: 55,
-          // opacity: opacityButton,
-          // opacity: opacityButtonLikeShare,
-          // opacity: 0.5,
         }}
       >
         <Animated.View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            opacity: opacityButtonLikeShare,
-            // opacity: opacityButton,
           }}
         >
           {dataDestination?.liked === true ? (
@@ -2592,151 +2301,153 @@ const Index = (props) => {
           </TouchableOpacity>
         </Animated.View>
       </Animated.View>
-
-      {/* End Button Like and Share*/}
-
-      {/* View SUb*/}
-      <Animated.View
-        style={{
-          position: "absolute",
-          marginTop:
-            layoutUnesco === 0
-              ? Platform.OS == "ios"
-                ? Notch
-                  ? normalize(layoutImage) +
-                    normalize(layoutHeader) +
-                    // normalize(layoutHeader) / normalize(3.5) +
-                    normalize(layoutUnesco) +
-                    normalize(23)
-                  : normalize(layoutImage) +
-                    normalize(layoutHeader) +
-                    // normalize(layoutHeader) / normalize(2.2) +
-                    normalize(layoutUnesco) +
-                    normalize(30)
-                : deviceId == "LYA-L29"
-                ? normalize(layoutImage) +
-                  normalize(layoutHeader) +
-                  normalize(layoutUnesco) +
-                  normalize(57)
-                : normalize(layoutImage) +
-                  normalize(layoutHeader) +
-                  normalize(layoutUnesco) +
-                  normalize(27)
-              : Platform.OS == "ios"
-              ? Notch
-                ? normalize(layoutImage) +
-                  normalize(layoutHeader) +
-                  // normalize(layoutHeader) / normalize(3.5) +
-                  normalize(layoutUnesco) +
-                  normalize(10)
-                : normalize(layoutImage) +
-                  normalize(layoutHeader) +
-                  // normalize(layoutHeader) / normalize(2.2) +
-                  normalize(layoutUnesco) +
-                  normalize(20)
-              : deviceId == "LYA-L29"
-              ? normalize(layoutImage) +
-                normalize(layoutHeader) +
-                normalize(layoutUnesco) +
-                normalize(50)
-              : normalize(layoutImage) +
-                normalize(layoutHeader) +
-                normalize(layoutUnesco) +
-                normalize(15),
-          transform: [{ translateY: yButtonLikeShare }],
-          zIndex: 100,
-          opacity: hides.current,
-          right: 20,
-          width: Dimensions.get("screen").width / 8,
-        }}
-      >
-        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
-          {data?.destinationById?.address ? (
-            <Ripple
-              style={{
-                height: layoutsAddress,
-                justifyContent: "center",
-                alignItems: "center",
-                alignSelf: "center",
-              }}
-              onPress={() => {
-                Linking.openURL(
-                  Platform.OS == "ios"
-                    ? "maps://app?daddr=" +
-                        data?.destinationById?.latitude +
-                        "+" +
-                        data?.destinationById?.longitude
-                    : "google.navigation:q=" +
-                        data?.destinationById?.latitude +
-                        "+" +
-                        data?.destinationById?.longitude
-                );
-              }}
-            >
-              <Mapsborder
-                height="25"
-                width="25"
-                style={{ marginVertical: 3 }}
-              />
-            </Ripple>
-          ) : null}
-        </Animated.View>
-
-        {/* View Time */}
-
-        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
-          {data?.destinationById?.openat ? (
-            <Pressable
-              onPress={() => setModalTime(true)}
-              style={{
-                height: layoutsOpen,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
+      {/* location icon */}
+      {HeightAddress > 0 ? (
+        <Animated.View
+          style={{
+            position: "absolute",
+            top:
+              SafeStatusBar +
+              200 +
+              HeightJudul +
+              Heightunesco +
+              HeightAddress / 1.3,
+            zIndex: 100,
+            transform: [{ translateY: yButtonLikeShare }],
+            opacity: hides.current,
+            right: 20,
+            alignItems: "flex-end",
+            width: Dimensions.get("screen").width / 8,
+          }}
+        >
+          <Animated.View>
+            {data?.destinationById?.address ? (
+              <Ripple
                 style={{
-                  color: "#209FAE",
-                  marginVertical: 8,
+                  height: layoutsAddress,
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                }}
+                onPress={() => {
+                  Linking.openURL(
+                    Platform.OS == "ios"
+                      ? "maps://app?daddr=" +
+                          data?.destinationById?.latitude +
+                          "+" +
+                          data?.destinationById?.longitude
+                      : "google.navigation:q=" +
+                          data?.destinationById?.latitude +
+                          "+" +
+                          data?.destinationById?.longitude
+                  );
                 }}
               >
-                {t("more")}
-              </Text>
-            </Pressable>
-          ) : null}
+                <Mapsborder
+                  height="25"
+                  width="25"
+                  style={{ marginVertical: 3 }}
+                />
+              </Ripple>
+            ) : null}
+          </Animated.View>
         </Animated.View>
-
-        {/* View Website */}
-
-        <Animated.View style={{ opacity: opacityButtonLikeShare }}>
-          {data?.destinationById?.website ? (
-            <Pressable
-              onPress={() => setModalSosial(true)}
-              style={{
-                height: layoutsWeb,
-                justifyContent: "center",
-                alignItems: "center",
-                // marginVertical: 5,
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
+      ) : null}
+      {HeightTime > 0 ? (
+        <Animated.View
+          style={{
+            position: "absolute",
+            top:
+              SafeStatusBar +
+              200 +
+              HeightJudul +
+              Heightunesco +
+              HeightAddress +
+              HeightTime / 20,
+            transform: [{ translateY: yButtonLikeShare }],
+            zIndex: 100,
+            opacity: hides.current,
+            right: 20,
+            alignItems: "flex-end",
+            width: Dimensions.get("screen").width / 8,
+          }}
+        >
+          <Animated.View>
+            {data?.destinationById?.openat ? (
+              <Pressable
+                onPress={() => setModalTime(true)}
                 style={{
-                  color: "#209FAE",
-                  marginVertical: 8,
+                  height: layoutsOpen,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // borderWidth: 1,
+                  height: "100%",
                 }}
               >
-                {t("more")}
-              </Text>
-            </Pressable>
-          ) : null}
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{
+                    color: "#209FAE",
+                    // borderWidth: 1,
+                    marginVertical: 8,
+                  }}
+                >
+                  {t("more")}
+                </Text>
+              </Pressable>
+            ) : null}
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
+      ) : null}
 
-      {/* End BView SUb*/}
+      {HeightWeb > 0 ? (
+        <Animated.View
+          style={{
+            position: "absolute",
+            top:
+              SafeStatusBar +
+              200 +
+              HeightJudul +
+              Heightunesco +
+              HeightAddress +
+              HeightTime +
+              HeightWeb / 15,
+            transform: [{ translateY: yButtonLikeShare }],
+            zIndex: 100,
+            opacity: hides.current,
+            right: 20,
+            alignItems: "flex-end",
+            width: Dimensions.get("screen").width / 8,
+          }}
+        >
+          <Animated.View>
+            {data?.destinationById?.website ? (
+              <Pressable
+                onPress={() => setModalSosial(true)}
+                style={{
+                  height: layoutsWeb,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                  // marginVertical: 5,
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{
+                    color: "#209FAE",
+
+                    marginVertical: 8,
+                  }}
+                >
+                  {t("more")}
+                </Text>
+              </Pressable>
+            ) : null}
+          </Animated.View>
+        </Animated.View>
+      ) : null}
 
       {renderTabView()}
       {renderHeader()}
@@ -3237,7 +2948,7 @@ const Index = (props) => {
                 CopyLink({
                   from: "destination",
                   target: dataDestination.id,
-                    success: t("successCopyLink"),
+                  success: t("successCopyLink"),
                   failed: t("failedCopyLink"),
                 });
                 SetShareModal(false);

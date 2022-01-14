@@ -273,8 +273,11 @@ export default function AddBuddy(props) {
                         }}
                         numberOfLines={1}
                       >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
-                        {value?.first_name} {value?.last_name}
+                        <Truncate
+                          text={value.first_name + " " + value?.last_name}
+                          length={17}
+                        />
+                        {/* {value?.first_name} {value?.last_name} */}
                         {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
@@ -348,8 +351,11 @@ export default function AddBuddy(props) {
                         }}
                         numberOfLines={1}
                       >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
-                        {value?.first_name} {value?.last_name}
+                        <Truncate
+                          text={value.first_name + " " + value?.last_name}
+                          length={17}
+                        />
+                        {/* {value?.first_name} {value?.last_name} */}
                         {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
@@ -423,8 +429,12 @@ export default function AddBuddy(props) {
                       }}
                       numberOfLines={1}
                     >
+                      <Truncate
+                        text={value.first_name + " " + value?.last_name}
+                        length={17}
+                      />
                       {/* <Truncate text={value.first_name} length={17} /> */}
-                      {value?.first_name} {value?.last_name}
+                      {/* {value?.first_name} {value?.last_name} */}
                       {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                     </Text>
 

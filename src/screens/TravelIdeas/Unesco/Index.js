@@ -13,7 +13,7 @@ import {
   FlatList,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
-import { unesco } from "../../../assets/png";
+import { default_image } from "../../../assets/png";
 import {
   Kosong,
   Select,
@@ -52,27 +52,27 @@ const deviceId = DeviceInfo.getModel();
 import { useSelector } from "react-redux";
 
 export default function Unesco({ navigation, route }) {
-  let [tambahantitle, setTambahanTitle] = useState(0);
-  let tokenApps = useSelector((data) => data.token);
+  // untuk hp yang layar camera dan sound misah dari layar utama
+  const NotchAndro = StatusBar.currentHeight > 24;
+
   let [tambahan, setTambahan] = useState(0);
+  let [tambahanJudul, setTambahanJudul] = useState(0);
+  let tokenApps = useSelector((data) => data.token);
+
   let [canScroll, setCanScroll] = useState(true);
   let [modalcountry, setModelCountry] = useState(false);
+
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(355) + tambahantitle + tambahan - 48
-      : normalize(342) + tambahantitle + tambahan - 20,
+      ? normalize(205) + tambahanJudul + tambahan - 20
+      : normalize(225) + tambahanJudul + tambahan - 20,
+
     android:
       deviceId == "LYA-L29"
-        ? normalize(330) + tambahantitle + tambahan - StatusBar.currentHeight
-        : normalize(342) + tambahantitle + tambahan - StatusBar.currentHeight,
-  });
-
-  let HEADER_MAX_HEIGHT = Platform.select({
-    ios: Notch
-      ? normalize(347) + tambahantitle + tambahan - 48
-      : normalize(342) + tambahantitle + tambahan - 20,
-    android:
-      normalize(380) + tambahantitle + tambahan - StatusBar.currentHeight,
+        ? normalize(230) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : NotchAndro
+        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({
@@ -123,6 +123,7 @@ export default function Unesco({ navigation, route }) {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
+  let HEADER_MAX_HEIGHT = HeaderHeight;
   let HEADER_MIN_HEIGHT = 55;
   let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -451,8 +452,6 @@ export default function Unesco({ navigation, route }) {
 
   let [heights, setHeights] = useState(0);
   let [tinggi, setTinggi] = useState(0);
-  console.log("heights", heights);
-  console.log("tinggi", tinggi);
 
   const renderHeader = () => {
     const y = scrollY.interpolate({
@@ -463,161 +462,112 @@ export default function Unesco({ navigation, route }) {
     });
     return (
       <Animated.View
-        // pointerEvents={"none"}
+        {...headerPanResponder.panHandlers}
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar,
           height: HeaderHeight,
           width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
           position: "absolute",
           backgroundColor: "#209fae",
         }}
+        // pointerEvents="none"
       >
+        {Banner && Banner.banner_asset.length > 0 ? (
+          <Animated.Image
+            style={{
+              width: "100%",
+              height: 200,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslate }],
+            }}
+            source={{ uri: Banner.banner_asset[0].filepath }}
+          />
+        ) : (
+          <Animated.Image
+            style={{
+              width: "100%",
+              height: 200,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslate }],
+            }}
+            source={default_image}
+          />
+        )}
         <Animated.View
           style={{
+            // height: 55,
+
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#FFFFFF",
+
             opacity: imageOpacity,
-            flex: 1,
-            width: width,
+            transform: [{ translateY: imageTranslate }],
           }}
         >
-          {Banner && Banner?.banner_asset.length > 0 ? (
-            <Animated.Image
-              onLayout={(event) => {
-                const layout = event.nativeEvent.layout;
-                console.log("layout", layout);
-                setHeights(layout.height);
-              }}
-              style={{
-                flex: 1,
-                // height: 180,
-                width: "100%",
-                opacity: imageOpacity,
-                // transform: [{ translateY: imageTranslate }],
-              }}
-              source={{ uri: Banner.banner_asset[0].filepath }}
-            />
-          ) : (
-            <Animated.Image
-              onLayout={(event) => {
-                const layout = event.nativeEvent.layout;
-                setTinggi(layout.height);
-              }}
-              style={{
-                flex: 1,
-                width: "100%",
-                opacity: imageOpacity,
-              }}
-              source={unesco}
-            />
-          )}
-          <Animated.View
+          <View
             onLayout={(event) => {
-              const layout = event.nativeEvent.layout;
-              setHeights(layout.height);
+              let { x, y, width, height } = event.nativeEvent.layout;
+
+              setTambahanJudul(height - 15);
             }}
-            pointerEvents="box-none"
             style={{
-              // flex: 1,
-              marginTop: 0,
-
-              paddingTop: Platform.OS == "ios" ? 25 : 20,
               paddingHorizontal: 15,
-              paddingBottom: 0,
-              opacity: imageOpacity,
-              zIndex: -10,
-              backgroundColor: "#fff",
-
-              // width: width,
-              // transform: [{ translateY: imageTranslate }],
             }}
           >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = +line;
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanTitle(lines * 3)
-                      : setTambahanTitle(lines * -6)
-                    : setTambahanTitle(lines * 1);
-                  // setTambahanJudul(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahanTitle(lines * -10)
-                      : setTambahanTitle(lines * -20)
-                    : setTambahanTitle(lines * 1);
-                }
-              }}
               size="title"
               type="bold"
               style={{
                 textAlign: "left",
                 paddingBottom: 5,
                 flexShrink: 0,
-                // borderWidth: 2,
+                paddingTop: Platform.select({
+                  ios: Notch ? 30 : 35,
+                  android: 25,
+                }),
               }}
-              // wordWra
             >
-              {t("UnescoTitle")}
+              {Banner?.title}
             </Text>
+          </View>
+          <View
+            onLayout={(event) => {
+              let { x, y, width, height } = event.nativeEvent.layout;
+              setTambahan(height);
+            }}
+            style={{
+              paddingHorizontal: 15,
+            }}
+          >
             <Text
-              onTextLayout={(x) => {
-                let line = x.nativeEvent.lines.length;
-                let lines = line - 1;
-                // setTambahanDeskripsi(lines * 32);
-                if (+lines % 3 == 0) {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 15)
-                      : setTambahan(lines * 17)
-                    : setTambahan(lines * 11);
-                  // setTambahanDeskripsi(lines * 12);
-                } else {
-                  Platform.OS == "ios"
-                    ? Notch
-                      ? setTambahan(lines * 16)
-                      : setTambahan(lines - 20)
-                    : setTambahan(lines);
-                }
-              }}
               size="label"
               type="regular"
               style={{
                 textAlign: "left",
-                // paddingHorizontal:
-                // marginBottom: Platform.OS == "ios" ? (Notch ? 10 : 15) : 10,
+
+                paddingBottom: 8,
+                flexShrink: 0,
               }}
             >
-              {t("UnescoDescription")} {selectedCountry?.name}.
+              {Banner?.description}
             </Text>
-          </Animated.View>
+          </View>
         </Animated.View>
-
-        {/* FILTER COUNTRY */}
+        {/* filter country */}
         <Animated.View
           style={{
             position: "absolute",
-            // top: Banner?.banner_asset.length > 0 ? heights - 22 : tinggi - 22,
-            top:
-              Platform.OS == "ios"
-                ? Notch
-                  ? tinggi - 35
-                  : tinggi + 27
-                : tinggi - 25,
-            // top: Platform.select({
-            //   ios: Notch ? normalize(190) : normalize(200),
-            //   android: normalize(186),
-            // }),
+
+            top: 175,
+
             alignItems: "center",
             width: "100%",
             height: normalize(44),
             opacity: imageOpacity,
-            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -664,7 +614,6 @@ export default function Unesco({ navigation, route }) {
             <Select height={10} width={10} />
           </Pressable>
         </Animated.View>
-        {/* END FILTER COUNTRY */}
       </Animated.View>
     );
   };
@@ -771,21 +720,6 @@ export default function Unesco({ navigation, route }) {
           </View>
         </Pressable>
       </Animated.View>
-    );
-  };
-
-  const renderLabel = ({ route, focused }) => {
-    return (
-      <Text
-        style={[
-          focused ? styles.labelActive : styles.label,
-          {
-            opacity: focused ? 1 : 0.8,
-          },
-        ]}
-      >
-        {route.title}
-      </Text>
     );
   };
 

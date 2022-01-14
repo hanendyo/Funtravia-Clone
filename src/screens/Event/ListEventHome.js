@@ -88,6 +88,9 @@ const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
 export default function ListEventHome(props) {
+  // untuk hp yang layar camera dan sound misah dari layar utama
+  const NotchAndro = StatusBar.currentHeight > 24;
+
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   let [tambahan, setTambahan] = useState(0);
@@ -102,6 +105,7 @@ export default function ListEventHome(props) {
   const [arrayYear, setArrayYear] = useState([]);
   let [loadingIndicator, setLoadingIndicator] = useState(true);
 
+  console.log("statusbar", StatusBar.currentHeight);
   const HeaderHeight = Platform.select({
     ios: Notch
       ? normalize(205) + tambahanJudul + tambahan - 20
@@ -110,7 +114,9 @@ export default function ListEventHome(props) {
     android:
       deviceId == "LYA-L29"
         ? normalize(230) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        : NotchAndro
+        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -430,206 +436,10 @@ export default function ListEventHome(props) {
     setArrayYear(currentArray);
   };
 
-  const renderNavDefault = () => {
-    return (
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 1,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 45,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 60,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-              // backgroundColor: "red",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => {
-            props.navigation.navigate("searchListEventHome", {
-              idcity: null,
-              idcountries: country.id,
-              countryName: country.name,
-              eventList: null,
-              year: currentYear,
-            });
-          }}
-          style={{
-            height: 40,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchWhite width="20" height="20" />
-          </Animated.View>
-        </Button>
-      </Animated.View>
-    );
-  };
-
   const FlatlistSet = (item) => {
     setCurrentYear(item);
     // setOpenFlatlist(!openFlatlist);
     loadAsync();
-  };
-
-  const renderNavInterpolated = () => {
-    return (
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 1,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          // marginHorizontal: 20,
-          backgroundColor: "#209FAE",
-          height: 45,
-          // backgroundColor: "red",
-          width: Dimensions.get("screen").width,
-        }}
-      >
-        <View
-          flexDirection="row"
-          style={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 20,
-          }}
-        >
-          <View flexDirection="row" style={{ flex: 1 }}>
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              onPress={() => props.navigation.goBack()}
-              style={{
-                height: 60,
-                // marginLeft: 8,
-              }}
-            >
-              <Animated.View
-                style={{
-                  height: 35,
-                  width: 35,
-
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {Platform.OS == "ios" ? (
-                  <Arrowbackios height={15} width={15}></Arrowbackios>
-                ) : (
-                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-                )}
-              </Animated.View>
-            </Button>
-            <View
-              style={{
-                // width: Dimensions.get("screen").width - 100,
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                padding: 10,
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{
-                  color: "#FFFFFF",
-                }}
-              >
-                {t("event")}
-              </Text>
-            </View>
-          </View>
-
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => {
-              props.navigation.navigate("searchListEventHome", {
-                idcity: null,
-                idcountries: country.id,
-                countryName: country.name,
-                eventList: null,
-                year: currentYear,
-              });
-            }}
-            style={{
-              height: 40,
-              // marginLeft: 8,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SearchWhite width="20" height="20" />
-            </Animated.View>
-          </Button>
-        </View>
-      </Animated.View>
-    );
   };
 
   const ref = useRef(0);
