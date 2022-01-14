@@ -35,6 +35,7 @@ import deviceInfoModule from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
+  console.log("props", props);
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
@@ -131,15 +132,12 @@ export default function ItineraryDestination(props) {
     data: datafilter,
     loading: loadingfilter,
     error: errorfilter,
+    refetch: refetchFilterDestination,
   } = useQuery(filterDestination, {
     onCompleted: async () => {
       let datloop = [...datafilter?.destination_filter?.type];
       let hasil = [...filtershow];
       let des = [];
-      // // console.log(
-      // // "🚀 ~ file: DestinationList.js ~ line 137 ~ onCompleted: ~ des",
-      // // des
-      // // );
 
       for (var ix in datloop) {
         if (datloop[ix].id === props?.route?.params?.idtype) {
@@ -198,6 +196,7 @@ export default function ItineraryDestination(props) {
     data: datasearchlocation,
     loading: loadingsearchlocation,
     error: errorsearchlocation,
+    refetch: refetchLocation,
   } = useQuery(Searching, {
     variables: {
       keyword: keyword,
@@ -376,6 +375,8 @@ export default function ItineraryDestination(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       GetListDestination();
+      refetchLocation();
+      refetchFilterDestination();
     });
     return unsubscribe;
   }, [props.navigation]);

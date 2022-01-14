@@ -214,7 +214,7 @@ export default function AddMember(props) {
 
   const RenderBuddy = ({ databuddy }) => {
     return (
-      <View style={{ width: Dimensions.get("screen").width }}>
+      <View style={{ width: Dimensions.get("screen").width - 20 }}>
         {databuddy.map((value, i) => {
           var datafilter = dataFilter.filter((e) =>
             (e.user_id ? e.user_id : e.id).includes(value.id)
@@ -230,7 +230,7 @@ export default function AddMember(props) {
                   style={{
                     opacity: 0.5,
                     flexDirection: "row",
-                    width: Dimensions.get("screen").width,
+                    width: Dimensions.get("screen").width - 20,
                     paddingHorizontal: 20,
                     paddingVertical: 10,
                     justifyContent: "space-between",
@@ -271,8 +271,11 @@ export default function AddMember(props) {
                         }}
                         numberOfLines={1}
                       >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
-                        {value?.first_name} {value?.last_name}
+                        <Truncate
+                          text={value.first_name + " " + value?.last_name}
+                          length={17}
+                        />
+                        {/* {value?.first_name} {value?.last_name} */}
                         {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
@@ -306,7 +309,7 @@ export default function AddMember(props) {
                 <View
                   style={{
                     flexDirection: "row",
-                    width: Dimensions.get("screen").width,
+                    width: Dimensions.get("screen").width - 20,
                     paddingHorizontal: 20,
                     paddingVertical: 10,
                     justifyContent: "space-between",
@@ -346,8 +349,11 @@ export default function AddMember(props) {
                         }}
                         numberOfLines={1}
                       >
-                        {/* <Truncate text={value.first_name} length={17} /> */}
-                        {value?.first_name} {value?.last_name}
+                        <Truncate
+                          text={value.first_name + " " + value?.last_name}
+                          length={17}
+                        />
+                        {/* {value?.first_name} {value?.last_name} */}
                         {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                       </Text>
 
@@ -382,7 +388,7 @@ export default function AddMember(props) {
               <View
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width,
+                  width: Dimensions.get("screen").width - 20,
                   paddingHorizontal: 20,
                   paddingVertical: 10,
                   justifyContent: "space-between",
@@ -421,8 +427,11 @@ export default function AddMember(props) {
                       }}
                       numberOfLines={1}
                     >
-                      {/* <Truncate text={value.first_name} length={17} /> */}
-                      {value?.first_name} {value?.last_name}
+                      <Truncate
+                        text={value.first_name + " " + value?.last_name}
+                        length={17}
+                      />
+                      {/* {value?.first_name} {value?.last_name} */}
                       {/* asep setidai nugroho jijijijij ijijijijiji huhuhuhuhu */}
                     </Text>
 
@@ -457,92 +466,117 @@ export default function AddMember(props) {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
+        // padding: 10,
       }}
     >
-      <Loading show={loading} />
-
       <View
         style={{
-          backgroundColor: "#f0f0f0",
-          paddingVertical: 10,
+          flex: 1,
+
+          borderRadius: 15,
+          //   padding: 10,
+          //   marginBottom: 20,
+          //   backgroundColor: "#FFFFFF",
         }}
       >
         <View
           style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: 20,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            flex: 1,
+            marginTop: 10,
+            marginHorizontal: 10,
+            borderRadius: 15,
+            // //   marginBottom: 20,
+            backgroundColor: "#FFFFFF",
           }}
         >
+          <Loading show={loading} />
           <View
             style={{
-              backgroundColor: "#F6F6F6",
-              borderRadius: 5,
-              width: "100%",
-              height: 40,
-
-              borderWidth: 0.3,
-              borderColor: "#464646",
-              // flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
+              //   backgroundColor: "#f0f0f0",
+              paddingVertical: 10,
             }}
           >
-            <View>
-              <CustomImage
-                source={search_button}
-                customImageStyle={{ resizeMode: "cover" }}
-                customStyle={{
-                  height: 15,
-                  width: 15,
-                  alignSelf: "center",
-                  zIndex: 100,
-                  marginHorizontal: 5,
-                }}
-              />
-            </View>
-
-            <TextInput
-              underlineColorAndroid="transparent"
-              placeholder={t("search")}
+            <View
               style={{
-                width: "100%",
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
-                color: "#464646",
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 20,
+                height: 50,
+                zIndex: 5,
+                flexDirection: "row",
+                width: Dimensions.get("screen").width - 20,
               }}
-              value={search}
-              onChangeText={(text) => _setSearch(text)}
-            />
+            >
+              <View
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  borderRadius: 5,
+                  width: "100%",
+                  height: 40,
+
+                  borderWidth: 0.3,
+                  borderColor: "#464646",
+                  // flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <View>
+                  <CustomImage
+                    source={search_button}
+                    customImageStyle={{ resizeMode: "cover" }}
+                    customStyle={{
+                      height: 15,
+                      width: 15,
+                      alignSelf: "center",
+                      zIndex: 100,
+                      marginHorizontal: 5,
+                    }}
+                  />
+                </View>
+
+                <TextInput
+                  //   underlineColorAndroid="transparent"
+                  placeholder={t("search")}
+                  style={{
+                    width: "100%",
+                    fontFamily: "Lato-Regular",
+                    fontSize: 14,
+                    color: "#464646",
+                  }}
+                  value={search}
+                  onChangeText={(text) => _setSearch(text)}
+                />
+              </View>
+            </View>
           </View>
+          {/* ========== */}
+          <ScrollView
+            style={{
+              flex: 1,
+            }}
+          >
+            {DataBuddy && DataBuddy.search_travelwith ? (
+              <RenderBuddy databuddy={DataBuddy.search_travelwith} />
+            ) : null}
+          </ScrollView>
         </View>
       </View>
-      {/* ========== */}
-
-      <ScrollView>
-        {DataBuddy && DataBuddy.search_travelwith ? (
-          <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-        ) : null}
-      </ScrollView>
-
       <View
         style={{
           zIndex: 999,
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          height: 60,
+          //   position: "absolute",
+          //   left: 0,
+          //   bottom: 0,
+          //   height: 60,
+          marginTop: 10,
           width: Dimensions.get("window").width,
-          backgroundColor: "#f0f0f0",
-          paddingVertical: 10,
+          backgroundColor: "#FFFFFF",
+          //   paddingVertical: ,
           borderTopWidth: 1,
           borderColor: "#F0F0F0",
           shadowColor: "#F0F0F0",
@@ -561,10 +595,11 @@ export default function AddMember(props) {
           type="box"
           onPress={() => _save()}
           style={{
+            marginVertical: 15,
             width: Dimensions.get("window").width - 40,
           }}
         ></Button>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
