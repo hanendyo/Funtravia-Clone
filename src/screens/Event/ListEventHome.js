@@ -113,10 +113,10 @@ export default function ListEventHome(props) {
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(230) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        : normalize(205) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
@@ -633,7 +633,7 @@ export default function ListEventHome(props) {
                 size="label"
                 numberOfLines={1}
                 style={{
-                  marginLeft: 30,
+                  marginLeft: 15,
                   marginRight: 5,
                   color: "#fff",
                   marginBottom: 5,
@@ -1879,7 +1879,6 @@ export default function ListEventHome(props) {
                 <View
                   style={{
                     flexDirection: "row",
-
                     alignItems: "center",
                     paddingHorizontal: 10,
                     paddingVertical: 10,

@@ -40,6 +40,7 @@ export default function CardItinerary({
   // setting,
   dataFrom,
 }) {
+  console.log("~ data", data);
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
@@ -201,7 +202,7 @@ export default function CardItinerary({
               <Pressable
                 onPress={() =>
                   token
-                    ? props.route.params?.Position
+                    ? props.route.params && props.route.params.Position
                       ? props.navigation.dispatch(
                           StackActions.replace("ItineraryStack", {
                             screen: "ItineraryChooseday",
@@ -238,7 +239,7 @@ export default function CardItinerary({
                 <Pressable
                   onPress={() => {
                     token
-                      ? props.route.params.Position
+                      ? props.route.params && props.route.params.Position
                         ? props.navigation.dispatch(
                             StackActions.replace("ItineraryStack", {
                               screen: "ItineraryChooseday",
