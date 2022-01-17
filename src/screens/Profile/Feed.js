@@ -52,6 +52,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import RemoveAlbums from "../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
+import PostCursorBased from "../../graphQL/Query/Profile/postCursorBased";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -66,6 +67,7 @@ const deletepost = gql`
 export default function myfeed(props) {
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
+  const setting = useSelector((data) => data.setting);
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -125,17 +127,17 @@ export default function myfeed(props) {
 
   const isFocused = useIsFocused();
   const ref = useRef(null);
-  let [datauser] = useState(props.route.params.datauser);
+  let [datauser] = useState(setting.user);
   let index = props.route.params.index;
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
-  let [users, setuser] = useState(null);
+  let [users, setuser] = useState(setting.user);
   let [selectedOption, SetOption] = useState({});
   let [play, setPlay] = useState(null);
   let [muted, setMuted] = useState(true);
   let [activelike, setactivelike] = useState(true);
-  let [setting, setSetting] = useState();
+  // let [setting, setSetting] = useState();
   let [datas, setDatas] = useState(props.route.params.dataPost);
   let [indekScrollto, setIndeksScrollto] = useState(0);
   let [showLoading, setShowLoading] = useState(false);
@@ -188,6 +190,36 @@ export default function myfeed(props) {
     },
   });
 
+  // refetch feed
+  const {
+    loading: loadingFeed,
+    data: dataFeed,
+    error: errorFeed,
+    fetchMore: fetchMoreFeed,
+    refetch: refetchFeed,
+    networkStatus: networkStatusFeed,
+  } = useQuery(PostCursorBased, {
+    variables: {
+      user_id: props?.route?.params?.idUser,
+      first: 18,
+      after: "",
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: tokenApps,
+      },
+    },
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setDatas(dataFeed?.user_post_cursor_based?.edges);
+    },
+  });
+
   const onViewRef = React.useRef(({ viewableItems, changed }) => {
     if (viewableItems) {
       setPlay(viewableItems[0]?.key);
@@ -211,11 +243,11 @@ export default function myfeed(props) {
   });
 
   const loadasync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-    let user = await AsyncStorage.getItem("setting");
-    user = JSON.parse(user);
-    await setuser(user.user);
+    // let setsetting = await AsyncStorage.getItem("setting");
+    // setSetting(JSON.parse(setsetting));
+    // let user = await AsyncStorage.getItem("setting");
+    // user = JSON.parse(user);
+    // await setuser(user.user);
     await LoadFollowing();
   };
 
@@ -306,6 +338,7 @@ export default function myfeed(props) {
     props.route.params.post_id,
     props.route.params.dataPost,
     play,
+    props.navigation,
   ]);
 
   const [
@@ -476,6 +509,7 @@ export default function myfeed(props) {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
+        from: "feedProfileComment",
         data: data,
         token: tokenApps,
         ref: ref,
@@ -1389,7 +1423,7 @@ export default function myfeed(props) {
                     params: {
                       datapost: selectedOption,
                       time: duration(selectedOption?.created_at),
-                      fromProfile: true,
+                      from: "feedProfil",
                     },
                   });
               }}
