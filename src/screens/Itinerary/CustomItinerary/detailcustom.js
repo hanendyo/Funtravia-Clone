@@ -947,15 +947,40 @@ export default function detailCustomItinerary(props) {
                   borderBottomWidth: 0.5,
                 }}
               >
-                {item.icon ? (
-                  <FunIcon
-                    icon={item.icon}
-                    height={30}
-                    width={30}
-                    style={{
-                      borderRadius: 15,
-                    }}
-                  />
+                {item.detail_accomodation || item.detail_flight ? (
+                  item.detail_flight ? (
+                    <View
+                      style={{
+                        backgroundColor: "#f6f6f6",
+                        width: 47,
+                        height: 47,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        borderRadius: 40,
+                        borderWidth: 0.5,
+                        borderColor: "#d1d1d1",
+                      }}
+                    >
+                      <Flights height={35} width={35} />
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        backgroundColor: "#f6f6f6",
+                        width: 47,
+                        height: 47,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        borderRadius: 40,
+                        borderWidth: 0.5,
+                        borderColor: "#d1d1d1",
+                      }}
+                    >
+                      <Stay height={35} width={35} />
+                    </View>
+                  )
                 ) : (
                   <FunIcon
                     icon={"i-tour"}
@@ -966,6 +991,7 @@ export default function detailCustomItinerary(props) {
                     }}
                   />
                 )}
+
                 <TouchableOpacity
                   style={{ flex: 1, paddingHorizontal: 10 }}
                   // onLongPress={status !== "saved" ? drag : null}
@@ -1127,12 +1153,12 @@ export default function detailCustomItinerary(props) {
                                 borderBottomColor: "#d1d1d1",
                               }}
                             >
-                              <Text style={{ width: 30 }}>{index + 1}.</Text>
                               <FunDocument
                                 filename={data.file_name}
                                 filepath={data.filepath}
                                 format={data.extention}
                                 progressBar
+                                icon
                               />
                               <TouchableOpacity
                                 onPress={() => {

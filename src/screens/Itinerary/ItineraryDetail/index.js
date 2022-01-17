@@ -2423,7 +2423,7 @@ export default function ItineraryDetail(props) {
                   >
                     <Stay height={25} width={25} />
                   </View>
-                ) : item.icon ? (
+                ) : item?.icon ? (
                   <View
                     style={{
                       height: 30,
@@ -2431,7 +2431,7 @@ export default function ItineraryDetail(props) {
                     }}
                   >
                     <FunIcon
-                      icon={item.icon}
+                      icon={"gb-tour"}
                       height={30}
                       width={30}
                       style={{
@@ -6702,7 +6702,9 @@ export default function ItineraryDetail(props) {
                   padding: 20,
                 }}
               >
-                <Text size="label">{t("dayEmptyTrip")}</Text>
+                <Text size="label" style={{ textAlign: "center" }}>
+                  {t("dayEmptyTrip")}
+                </Text>
               </View>
               <TouchableOpacity
                 onPress={() => {

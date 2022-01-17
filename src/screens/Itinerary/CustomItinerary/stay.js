@@ -201,10 +201,10 @@ export default function detailCustomItinerary(props) {
       ? props.route.params.detail_accomodation?.booking_ref
       : "", //wajib
     checkin: props.route.params?.detail_accomodation?.checkin
-      ? props.route.params?.detail_accomodation?.checkin.split(" ").join("T")
+      ? props.route.params?.detail_accomodation?.checkin?.split(" ").join("T")
       : "", //wajib
     checkout: props.route.params?.detail_accomodation?.checkout
-      ? props.route.params?.detail_accomodation?.checkout.split(" ").join("T")
+      ? props.route.params?.detail_accomodation?.checkout?.split(" ").join("T")
       : "", //wajib
     fileCustom: props.route.params?.attachment
       ? props.route.params.attachment
@@ -238,8 +238,8 @@ export default function detailCustomItinerary(props) {
     file: true, //wajib
   });
 
-  let startDate = props.route.params.startDate.split(" ").join("T");
-  let endDate = props.route.params.endDate.split(" ").join("T");
+  let startDate = props.route.params?.startDate?.split(" ").join("T");
+  let endDate = props.route.params?.endDate?.split(" ").join("T");
 
   const validation = (name, value) => {
     if (!value || value === "" || value == null) {
@@ -504,9 +504,10 @@ export default function detailCustomItinerary(props) {
   ] = useMutation(UpdateCustomStay, {
     context: {
       headers: {
-        "Content-Type": !dataState.file.length
-          ? `application/json`
-          : `multipart/form-data`,
+        "Content-Type":
+          !dataState.file?.length || !dataState.fileCustomEdit?.length
+            ? `application/json`
+            : `multipart/form-data`,
         Authorization: token,
       },
     },
@@ -682,6 +683,7 @@ export default function detailCustomItinerary(props) {
       }}
     >
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           padding: 15,
         }}
@@ -1424,7 +1426,7 @@ export default function detailCustomItinerary(props) {
               enablePoweredByContainer={false}
               renderRow={(data) => {
                 if (data.description) {
-                  var x = data.description.split(",");
+                  var x = data.description?.split(",");
                 }
                 return (
                   <View

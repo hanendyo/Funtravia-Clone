@@ -261,7 +261,7 @@ export default function Follower(props) {
             >
               <Image
                 source={
-                  item.picture
+                  item?.picture
                     ? {
                         uri: item.picture,
                       }
@@ -277,21 +277,21 @@ export default function Follower(props) {
               <View
                 style={{
                   marginLeft: 10,
-                  justifyContent: item.bio ? "space-around" : "center",
+                  justifyContent: item?.bio ? "space-around" : "center",
                   flex: 1,
                 }}
               >
-                {item.last_name !== null ? (
+                {item?.last_name !== null ? (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {`${item.first_name} ${item.last_name}`}
+                    {`${item?.first_name} ${item?.last_name}`}
                   </Text>
                 ) : (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {item.first_name}
+                    {item?.first_name}
                   </Text>
                 )}
                 <Text size="description" type="regular">
-                  {`@${item.username}`}
+                  {`@${item?.username}`}
                 </Text>
                 {item?.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
@@ -300,7 +300,7 @@ export default function Follower(props) {
                 ) : null}
               </View>
             </TouchableOpacity>
-            {item.id !== setting?.user?.id ? (
+            {item?.id !== setting?.user?.id ? (
               <View style={{ width: "25%", marginLeft: 15 }}>
                 {item.status_following === false ? (
                   <Pressable

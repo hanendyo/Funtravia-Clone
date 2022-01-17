@@ -1127,18 +1127,20 @@ export default function DetailJournal(props) {
                           size={"label"}
                           type={"bold"}
                           onPress={() => {
-                            item && item.user && item.user.id !== null
-                              ? item.user.id !== setting?.user?.id
-                                ? props.navigation.push("ProfileStack", {
-                                    screen: "otherprofile",
-                                    params: {
-                                      idUser: item.user.id,
-                                    },
-                                  })
-                                : props.navigation.push("ProfileStack", {
-                                    screen: "ProfileTab",
-                                  })
-                              : Alert.alert("User has been deleted");
+                            tokenApps
+                              ? item && item.user && item.user.id !== null
+                                ? item.user.id !== setting?.user?.id
+                                  ? props.navigation.push("ProfileStack", {
+                                      screen: "otherprofile",
+                                      params: {
+                                        idUser: item.user.id,
+                                      },
+                                    })
+                                  : props.navigation.push("ProfileStack", {
+                                      screen: "ProfileTab",
+                                    })
+                                : Alert.alert("User has been deleted")
+                              : setModalLogin(true);
                           }}
                         >
                           {item && item.user && item.user.first_name
