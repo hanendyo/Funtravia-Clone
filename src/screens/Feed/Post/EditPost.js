@@ -44,6 +44,7 @@ const PostEdit = gql`
 `;
 
 export default function EditPost(props) {
+  const from = props.route.params.from;
   const { t, i18n } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
   const tokenApps = useSelector((data) => data.token);
@@ -199,7 +200,7 @@ export default function EditPost(props) {
               marginVertical: 10,
             }}
           >
-            SAVE
+            {t("save")}
           </Text>
           <CheckWhite width={20} height={20} />
         </TouchableOpacity>
@@ -269,11 +270,11 @@ export default function EditPost(props) {
       if (response.data) {
         if (response.data.edit_post.code === 200) {
           setLoading(false);
-          if (props.route.params.fromFeedList) {
+          if (from == "funFeed") {
             props.navigation.navigate("FeedScreen", {
               post_id: dataPost.id,
             });
-          } else if (props.route.params.fromProfile) {
+          } else if (from == "feedProfil") {
             props.navigation.dispatch(
               CommonActions.navigate({
                 name: "ProfileStack",
@@ -285,23 +286,45 @@ export default function EditPost(props) {
                 },
               })
             );
-          } else if (props.route.params.fromCommentPost) {
-            // props.navigation.dispatch(
-            //   CommonActions.navigate({
-            //     name: "FeedStack",
-            //     params: {
-            //       screen: "CommentPost",
-            //       params: {
-            //         post_id: dataPost.id,
-            //       },
-            //     },
-            //   })
-            // );
-
-            // SEMENTARA
-            props.navigation.navigate("FeedScreen", {
-              post_id: dataPost.id,
-            });
+          } else if (from == "notificationComment") {
+            props.navigation.dispatch(
+              CommonActions.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
+                  params: {
+                    post_id: dataPost.id,
+                    from: "notificationComment",
+                  },
+                },
+              })
+            );
+          } else if (from == "funFeedComment") {
+            props.navigation.dispatch(
+              CommonActions.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
+                  params: {
+                    post_id: dataPost.id,
+                    from: "funFeedComment",
+                  },
+                },
+              })
+            );
+          } else if (from == "feedProfileComment") {
+            props.navigation.dispatch(
+              CommonActions.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
+                  params: {
+                    post_id: dataPost.id,
+                    from: "feedProfileComment",
+                  },
+                },
+              })
+            );
           }
         } else {
           setLoading(false);

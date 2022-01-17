@@ -96,7 +96,6 @@ const PostMut = gql`
 `;
 
 export default function FeedList({ props, token }) {
-  console.log("~ props", props);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
@@ -116,7 +115,6 @@ export default function FeedList({ props, token }) {
   let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
   let [activelike, setactivelike] = useState(true);
   let [durationTime, setDurationTime] = useState(false);
-  console.log("~ durationTime", durationTime);
 
   let { width, height } = Dimensions.get("screen");
   const [
@@ -574,6 +572,7 @@ export default function FeedList({ props, token }) {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
+        from: "funFeedComment",
         data: data,
         token: tokenApps,
         ref: ref,
@@ -1281,7 +1280,7 @@ export default function FeedList({ props, token }) {
                       params: {
                         datapost: selectedOption,
                         time: duration(selectedOption?.created_at),
-                        fromFeedList: "true",
+                        from: "funFeed",
                       },
                     });
                 }}

@@ -74,6 +74,7 @@ import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 
 export default function Comments(props) {
+  const from = props.route.params.from;
   const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
@@ -169,7 +170,22 @@ export default function Comments(props) {
         type="circle"
         variant="transparent"
         onPress={() => {
-          props.navigation.goBack();
+          if (from == "notificationComment") {
+            props.navigation.navigate("Notification");
+          } else if (from == "funFeedComment") {
+            props.navigation.navigate("FeedScreen", {
+              post_id: props.route.params.post_id,
+            });
+          } else if (from == "feedProfileComment") {
+            props.navigation.navigate("ProfileStack", {
+              screen: "myfeed",
+              params: {
+                post_id: props.route.params.post_id,
+              },
+            });
+          } else {
+            props.navigation.goBack();
+          }
         }}
         style={{
           height: 55,
@@ -705,10 +721,6 @@ export default function Comments(props) {
             }
           }
         } catch (error) {
-          console.log(
-            "🚀 ~ file: CommentsV2.js ~ line 708 ~ comment ~ error",
-            error
-          );
           tempData.splice(idx, 1);
           setDataComment(tempData);
           RNToasty.Show({
@@ -1164,7 +1176,18 @@ export default function Comments(props) {
                     params: {
                       datapost: selectedOption,
                       time: duration(selectedOption?.created_at),
-                      fromCommentPost: "true",
+                      from:
+                        props.route.params.from === "notificationComment"
+                          ? "notificationComment"
+                          : props.route.params.from === "funFeed"
+                          ? "funFeed"
+                          : props.route.params.from === "feedProfile"
+                          ? "feedProfile"
+                          : props.route.params.from === "funFeedComment"
+                          ? "funFeedComment"
+                          : props.route.params.from === "feedProfileComment"
+                          ? "feedProfileComment"
+                          : "none",
                     },
                   });
               }}
