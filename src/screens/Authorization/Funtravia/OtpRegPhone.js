@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useRef,
   MutableRefObject,
-  forwardRef,
 } from "react";
 import {
   View,

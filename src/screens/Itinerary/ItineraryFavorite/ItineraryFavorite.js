@@ -65,10 +65,10 @@ export default function ItineraryFavorite(props) {
     ),
   };
   const token = useSelector((data) => data.token);
+  console.log("~ token", token);
   let [setting, setSetting] = useState();
   let [textInput, setTextInput] = useState("");
   let [text, setText] = useState("");
-  let { width, height } = Dimensions.get("screen");
   let [dataFavorite, setDataFavorite] = useState([]);
 
   const cari = async (x) => {
