@@ -388,9 +388,10 @@ export default function TravelGoalList(props) {
             underlineColorAndroid="transparent"
             placeholder={t("search")}
             style={{
-              marginLeft: 5,
+              marginHorizontal: 8,
               padding: 0,
               flex: 1,
+              // borderWidth: 1,
             }}
             returnKeyType="search"
             placeholderTextColor="#464646"
@@ -437,9 +438,9 @@ export default function TravelGoalList(props) {
         keyExtractor={(item) => item.id}
         refreshing={refreshing}
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
+        // }
         // contentContainerStyle={{
         //   paddingBottom: 2,
         //   paddingHorizontal: 15,
@@ -651,7 +652,7 @@ export default function TravelGoalList(props) {
                 <TextInput
                   style={{
                     flex: 1,
-                    marginLeft: 5,
+                    marginHorizontal: 5,
                     padding: 0,
                     fontSize: normalize(14),
                   }}

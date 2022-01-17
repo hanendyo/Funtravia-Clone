@@ -2975,7 +2975,6 @@ export default function ItineraryDetail(props) {
                         <TouchableOpacity
                           onPress={() => {
                             setdataimagepost(item.posted, i);
-                            console.log("data", data);
                           }}
                         >
                           <FunImage

@@ -34,6 +34,7 @@ import {
   Capital,
   FunImage,
   FunDocument,
+  Loading,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -250,7 +251,11 @@ export default function detailCustomItinerary(props) {
 
       if (response.data) {
         if (response.data.update_timeline.code !== 200) {
-          throw new Error(response.data.update_timeline.message);
+          RNToasty.Show({
+            title: response.data.update_timeline.message,
+            position: "bottom",
+          });
+          // throw new Error(response.data.update_timeline.message);
         }
 
         // startRefreshAction();
@@ -290,12 +295,14 @@ export default function detailCustomItinerary(props) {
           type: "custom",
         },
       });
-      if (errordeleteactivity) {
-        throw new Error("Error Input");
-      }
+
       if (response.data) {
         if (response.data.delete_activity.code !== 200) {
-          throw new Error(response.data.delete_activity.message);
+          RNToasty.Show({
+            title: response.data.delete_activity.message,
+            position: "bottom",
+          });
+          // throw new Error(response.data.delete_activity.message);
         }
 
         var Xdata = [...props.route.params.data];
@@ -330,7 +337,11 @@ export default function detailCustomItinerary(props) {
 
               if (response.data) {
                 if (response.data.update_timeline.code !== 200) {
-                  throw new Error(response.data.update_timeline.message);
+                  RNToasty.Show({
+                    title: response.data.update_timeline.message,
+                    position: "bottom",
+                  });
+                  // throw new Error(response.data.update_timeline.message);
                 }
                 props.navigation.dispatch(
                   StackActions.replace("ItineraryStack", {
@@ -374,14 +385,14 @@ export default function detailCustomItinerary(props) {
   }, [props.navigation]);
 
   let [dataUpload, setdataUpload] = useState([]);
+  let [loadingUploadFile, setLoadingUploadFile] = useState(false);
 
   const pickFile = async (id, sumber) => {
-    console.log("masuk pick file");
     try {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      console.log("~ res", res);
+      await setLoadingUploadFile(true);
 
       let files = new ReactNativeFile({
         uri: res.uri,
@@ -392,11 +403,12 @@ export default function detailCustomItinerary(props) {
       tempe.push(files);
       // await setdataUpload(tempe);
       await handleUpload(tempe, id, sumber, res);
+      await setLoadingUploadFile(false);
     } catch (err) {
+      setLoadingUploadFile(false);
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
       } else {
-        console.log("err", err);
         throw err;
       }
     }
@@ -644,10 +656,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const handleUpload = async (files, id, sumber, res) => {
-    console.log("~ sumber", sumber);
-    console.log("~ id", id);
-    console.log("~ files", files);
-
     try {
       let response = await mutationUpload({
         variables: {
@@ -656,15 +664,12 @@ export default function detailCustomItinerary(props) {
         },
       });
 
-      if (errorSaved) {
-        throw new Error("Error Input");
-      }
       if (response.data) {
         if (response.data.upload_attach_custom.code !== 200) {
-          throw new Error(
-            "error 200",
-            response.data.upload_attach_custom.message
-          );
+          RNToasty.Show({
+            title: response.data.upload_attach_custom.message,
+            position: "bottom",
+          });
         } else {
           if (sumber === "parent") {
             let datan = { ...dataParent };
@@ -684,6 +689,7 @@ export default function detailCustomItinerary(props) {
             tempes.push(init);
             let datas = { ...dataParent };
             datas["attachment"] = tempes;
+
             setDataParent(datas);
           } else if (sumber !== "parent") {
             let datan = [...dataChild];
@@ -730,8 +736,11 @@ export default function detailCustomItinerary(props) {
     },
   });
 
+  let [loadingHapusFile, setLoadingHapusFile] = useState(false);
+
   const _handle_hapusParent = async (data, index, dataParents) => {
     try {
+      setLoadingHapusFile(true);
       let response = await mutationdelete({
         variables: {
           itinerary_custom_id: data.itinerary_custom_id,
@@ -739,22 +748,30 @@ export default function detailCustomItinerary(props) {
         },
       });
 
-      if (errordelete) {
-        throw new Error("Error Input");
-      }
       if (response.data) {
         if (response.data.delete_attach_custom.code !== 200) {
-          throw new Error(response.data.delete_attach_custom.message);
+          await setLoadingHapusFile(false);
+          await RNToasty.Show({
+            title: response.data.delete_attach_custom.message,
+            position: "bottom",
+          });
+          // throw new Error(response.data.delete_attach_custom.message);
         } else {
           let tempes = [...dataParents.attachment];
           tempes.splice(index, 1);
           let datas = { ...dataParents };
           datas["attachment"] = tempes;
           setDataParent(datas);
+          await setLoadingHapusFile(false);
+          await RNToasty.Show({
+            title: "Success Delete file",
+            position: "bottom",
+          });
         }
       }
     } catch (error) {
-      RNToasty.Show({
+      await setLoadingHapusFile(false);
+      await RNToasty.Show({
         title: error,
         position: "bottom",
       });
@@ -770,12 +787,13 @@ export default function detailCustomItinerary(props) {
         },
       });
 
-      if (errordelete) {
-        throw new Error("Error Input");
-      }
       if (response.data) {
         if (response.data.delete_attach_custom.code !== 200) {
-          throw new Error(response.data.delete_attach_custom.message);
+          RNToasty.Show({
+            title: response.data.delete_attach_custom.message,
+            position: "bottom",
+          });
+          // throw new Error(response.data.delete_attach_custom.message);
         } else {
           let tempes = [...item.attachment];
           tempes.splice(indah, 1);
@@ -803,9 +821,6 @@ export default function detailCustomItinerary(props) {
   const [modalDeleteActivity, setModalDeleteActivity] = useState(false);
 
   const ImagesSlider = async (index, data) => {
-    // console.log(index, data, "masuk paji masuk");
-    // return false;
-
     var tempdatas = [];
     var x = 0;
 
@@ -843,6 +858,9 @@ export default function detailCustomItinerary(props) {
         // backgroundColor: "#fff",
       }}
     >
+      <Loading show={loadingUploadFile} />
+      <Loading show={loadingHapusFile} />
+
       <ImageSlide
         index={indeks}
         show={modalss}
