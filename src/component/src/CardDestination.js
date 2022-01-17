@@ -200,7 +200,7 @@ export default function CardDestination({
       {data != "" ? (
         <FlatList
           data={data}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item?.id}
           contentContainerStyle={{
             paddingTop: 15,
             paddingBottom: 70,
@@ -211,6 +211,7 @@ export default function CardDestination({
             <>
               {props?.route?.name == "Detail_movie" ? (
                 <View
+                  key={index}
                   style={{
                     marginBottom: 10,
                     marginHorizontal: 5,
@@ -227,8 +228,8 @@ export default function CardDestination({
               <Pressable
                 onPress={() =>
                   props.navigation.push("DestinationUnescoDetail", {
-                    id: item.id,
-                    name: item.name,
+                    id: item?.id,
+                    name: item?.name,
                     token: token,
                   })
                 }
@@ -269,9 +270,9 @@ export default function CardDestination({
                       borderColor: "#209fae",
                     }}
                   >
-                    {item.liked === true ? (
+                    {item?.liked === true ? (
                       <Pressable
-                        onPress={() => _unlikedAnother(item.id, index)}
+                        onPress={() => _unlikedAnother(item?.id, index)}
                         style={{
                           backgroundColor: "#F3F3F3",
                           height: normalize(30),
@@ -285,7 +286,7 @@ export default function CardDestination({
                       </Pressable>
                     ) : (
                       <Pressable
-                        onPress={() => _likedAnother(item.id, index)}
+                        onPress={() => _likedAnother(item?.id, index)}
                         style={{
                           backgroundColor: "#F3F3F3",
                           height: normalize(30),
@@ -362,7 +363,7 @@ export default function CardDestination({
                               : 17,
                         }}
                       >
-                        {item.name}
+                        {item?.name}
                       </Text>
                     </View>
 
@@ -448,7 +449,7 @@ export default function CardDestination({
                                 return index < 3 ? (
                                   <FunIcon
                                     key={"grat" + index}
-                                    icon={item.icon}
+                                    icon={item?.icon}
                                     fill="#464646"
                                     height={37}
                                     width={37}

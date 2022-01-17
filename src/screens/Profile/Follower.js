@@ -267,7 +267,7 @@ export default function Follower(props) {
             >
               <Image
                 source={
-                  item.picture
+                  item?.picture
                     ? {
                         uri: item.picture,
                       }
@@ -287,17 +287,17 @@ export default function Follower(props) {
                   flex: 1,
                 }}
               >
-                {item.last_name !== null ? (
+                {item?.last_name !== null ? (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {`${item.first_name} ${item.last_name}`}
+                    {`${item?.first_name} ${item?.last_name}`}
                   </Text>
                 ) : (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {item.first_name}
+                    {item?.first_name}
                   </Text>
                 )}
                 <Text size="description" type="regular">
-                  {`@${item.username}`}
+                  {`@${item?.username}`}
                 </Text>
                 {item?.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
@@ -361,7 +361,7 @@ export default function Follower(props) {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item?.id}
         showsHorizontalScrollIndicator={false}
         extraData={selectedId}
       />

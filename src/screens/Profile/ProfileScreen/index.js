@@ -101,6 +101,7 @@ export default function OtherProfile(props) {
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
+  console.log("dataalbums", dataalbums);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
   let [heightbio, setHeightBio] = useState(0);
@@ -604,20 +605,22 @@ export default function OtherProfile(props) {
     let count = 1;
     let tmpArray = [];
     let grid = 1;
-    for (let val of data) {
-      if (count < 3) {
-        tmpArray.push(val);
-        count++;
-      } else {
-        tmpArray.push(val);
-        tmpArray.push({ grid: grid });
-        grid++;
-        if (grid == 4) {
-          grid = 1;
+    if (data) {
+      for (let val of data) {
+        if (count < 3) {
+          tmpArray.push(val);
+          count++;
+        } else {
+          tmpArray.push(val);
+          tmpArray.push({ grid: grid });
+          grid++;
+          if (grid == 4) {
+            grid = 1;
+          }
+          tmpData.push(tmpArray);
+          count = 1;
+          tmpArray = [];
         }
-        tmpData.push(tmpArray);
-        count = 1;
-        tmpArray = [];
       }
     }
     if (tmpArray?.length) {
@@ -653,8 +656,10 @@ export default function OtherProfile(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setdataFeedBased(spreadData(dataFeed?.user_post_cursor_based?.edges));
-      setdataPost(dataFeed?.user_post_cursor_based?.edges);
+      if (dataFeed) {
+        setdataFeedBased(spreadData(dataFeed?.user_post_cursor_based?.edges));
+        setdataPost(dataFeed?.user_post_cursor_based?.edges);
+      }
     },
   });
 
@@ -867,7 +872,7 @@ export default function OtherProfile(props) {
   const renderdataPost = (tabPost) => {
     if (tabPost === 0) {
       return dataFeedBased;
-    } else if (tabPost === 1) {
+    } else if (tabPost) {
       return dataalbums;
     } else {
       return dataFeedBased;
@@ -893,6 +898,7 @@ export default function OtherProfile(props) {
           props={e.props}
           token={tokenApps}
           user={props.route.params.idUser}
+          deletedAlbumId={props.route.params.deleted_album_id}
         />
       ); // return Albums(e);
     } else {
@@ -1215,7 +1221,6 @@ export default function OtherProfile(props) {
             <Text
               onTextLayout={(x) => {
                 let line = x.nativeEvent.lines.length;
-                console.log("line", line);
                 if (line == 0) {
                   Platform.select({
                     ios: Notch ? setHeightBio(0) : setHeightBio(0),

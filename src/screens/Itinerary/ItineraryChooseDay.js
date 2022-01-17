@@ -43,9 +43,9 @@ export default function ItineraryChooseday(props) {
       props.navigation.push("ItineraryStack", {
         screen: "itindest",
         params: {
-          IdItinerary: props.route.params.data_dest.IdItinerary,
+          IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
           token: props.route.params.token,
-          datadayaktif: props.route.params.data_dest.datadayaktif,
+          datadayaktif: props?.route?.params?.data_dest.datadayaktif,
           dataDes: props.route.params.data_dest.dataDes,
           lat: props.route.params.data_dest.lat,
           long: props.route.params.data_dest.long,

@@ -104,27 +104,12 @@ export default function ItineraryDestination(props) {
     ),
   };
 
-  let [show, setshow] = useState(false);
-  let [showCountry, setshowCountry] = useState(false);
-  let [showCity, setshowCity] = useState(false);
-  let [keyword, setkeyword] = useState("");
-  let [dataKota, setdataKota] = useState();
-  let [dataNegara, setdataNegara] = useState();
-
-  const {
-    data: datafilter,
-    loading: loadingfilter,
-    error: errorfilter,
-  } = useQuery(filterDestination, {
-    onCompleted: () => {
-      setdataFilterCategori(datafilter?.destination_filter?.type);
-      setdataFilterCategoris(datafilter?.destination_filter?.type);
-      setdataFilterFacility(datafilter?.destination_filter?.facility);
-      setdataFilterFacilitys(datafilter?.destination_filter?.facility);
-      setdataFilterCountry(datafilter?.destination_filter?.country);
-      setdataFilterCountrys(datafilter?.destination_filter?.country);
-    },
-  });
+  const [show, setshow] = useState(false);
+  const [showCountry, setshowCountry] = useState(false);
+  const [showCity, setshowCity] = useState(false);
+  const [keyword, setkeyword] = useState("");
+  const [dataKota, setdataKota] = useState();
+  const [dataNegara, setdataNegara] = useState();
 
   const {
     data: dataContinen,
@@ -168,29 +153,29 @@ export default function ItineraryDestination(props) {
   });
   console.log("negara", dataNegara);
 
-  let [token, setToken] = useState(props.route.params.token);
-  let [datadayaktif] = useState(props.route.params.datadayaktif);
-  let [dataDes] = useState(props.route.params.dataDes);
-  let [lat] = useState(props.route.params.lat);
-  let [long] = useState(props.route.params.long);
-  let [IdItinerary, setId] = useState(props.route.params.IdItinerary);
-  let [dataFilterCategori, setdataFilterCategori] = useState([]);
-  let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
-  let [dataFilterFacility, setdataFilterFacility] = useState([]);
-  let [dataFilterFacilitys, setdataFilterFacilitys] = useState([]);
-  let [dataFilterCountry, setdataFilterCountry] = useState([]);
-  let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
-  let [dataFilterCity, setdataFilterCity] = useState([]);
-  let [dataFilterCityfull, setdataFilterCityfull] = useState([]);
-  let [dataFilterCitys, setdataFilterCitys] = useState([]);
-  let [dataDestination, setdataDestination] = useState([]);
-  let [datafilterAll, setdatafilterAll] = useState([]);
-  let [dataContinent, setdataContinent] = useState([]);
-  let [dataCountrys, setdataCountrys] = useState([]);
+  const [token, setToken] = useState(props.route.params.token);
+  const [datadayaktif] = useState(props.route.params.datadayaktif);
+  const [dataDes] = useState(props.route.params.dataDes);
+  const [lat] = useState(props.route.params.lat);
+  const [long] = useState(props.route.params.long);
+  const [IdItinerary, setId] = useState(props.route.params.IdItinerary);
+  const [dataFilterCategori, setdataFilterCategori] = useState([]);
+  const [dataFilterCategoris, setdataFilterCategoris] = useState([]);
+  const [dataFilterFacility, setdataFilterFacility] = useState([]);
+  const [dataFilterFacilitys, setdataFilterFacilitys] = useState([]);
+  const [dataFilterCountry, setdataFilterCountry] = useState([]);
+  const [dataFilterCountrys, setdataFilterCountrys] = useState([]);
+  const [dataFilterCity, setdataFilterCity] = useState([]);
+  const [dataFilterCityfull, setdataFilterCityfull] = useState([]);
+  const [dataFilterCitys, setdataFilterCitys] = useState([]);
+  const [dataDestination, setdataDestination] = useState([]);
+  const [datafilterAll, setdatafilterAll] = useState([]);
+  const [dataContinent, setdataContinent] = useState([]);
+  const [dataCountrys, setdataCountrys] = useState([]);
 
-  let [aktif, setaktif] = useState("categories");
+  const [aktif, setaktif] = useState("categories");
 
-  let [search, setSearch] = useState({
+  const [search, setSearch] = useState({
     type:
       props.route.params && props.route.params.idtype
         ? [props.route.params.idtype]
@@ -209,7 +194,7 @@ export default function ItineraryDestination(props) {
     facilities: [],
   });
 
-  let [searcountry, setsearcountry] = useState(null);
+  const [searcountry, setsearcountry] = useState(null);
 
   const {
     data: datasearchlocation,
@@ -282,6 +267,21 @@ export default function ItineraryDestination(props) {
       },
     }
   );
+
+  const {
+    data: datafilter,
+    loading: loadingfilter,
+    error: errorfilter,
+  } = useQuery(filterDestination, {
+    onCompleted: () => {
+      setdataFilterCategori(datafilter?.destination_filter?.type);
+      setdataFilterCategoris(datafilter?.destination_filter?.type);
+      setdataFilterFacility(datafilter?.destination_filter?.facility);
+      setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+      setdataFilterCountry(datafilter?.destination_filter?.country);
+      setdataFilterCountrys(datafilter?.destination_filter?.country);
+    },
+  });
 
   const [
     mutationliked,
@@ -1115,7 +1115,7 @@ export default function ItineraryDestination(props) {
                     paddingHorizontal: 15,
                   }}
                 >
-                  {dataFilterCategoris.map((item, index) => (
+                  {dataFilterCategoris?.map((item, index) => (
                     <TouchableOpacity
                       onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
@@ -1183,7 +1183,7 @@ export default function ItineraryDestination(props) {
                     paddingHorizontal: 15,
                   }}
                 >
-                  {dataFilterFacilitys.map((item, index) => (
+                  {dataFilterFacilitys?.map((item, index) => (
                     <TouchableOpacity
                       onPress={() => _handleCheckf(item["id"], index, item)}
                       style={{
@@ -1246,7 +1246,7 @@ export default function ItineraryDestination(props) {
                     paddingHorizontal: 15,
                   }}
                 >
-                  {dataFilterCountrys.map((item, index) => (
+                  {dataFilterCountrys?.map((item, index) => (
                     <TouchableOpacity
                       onPress={() => _handleCheckC(item["id"], index, item)}
                       style={{
@@ -1307,7 +1307,7 @@ export default function ItineraryDestination(props) {
                     paddingHorizontal: 15,
                   }}
                 >
-                  {dataFilterCitys.map((item, index) => (
+                  {dataFilterCitys?.map((item, index) => (
                     <TouchableOpacity
                       onPress={() => _handleCheckCity(item["id"], index, item)}
                       style={{
@@ -1605,7 +1605,7 @@ export default function ItineraryDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {dataCountrys.map((item, index) => (
+                {dataCountrys?.map((item, index) => (
                   <TouchableOpacity
                     onPress={() => _handleCheckCountry(item["id"], index, item)}
                     style={{
@@ -1864,7 +1864,7 @@ export default function ItineraryDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {dataFilterCitys.map((item, index) => {
+                {dataFilterCitys?.map((item, index) => {
                   return item.head2 === dataNegara?.name ? (
                     <TouchableOpacity
                       onPress={() =>

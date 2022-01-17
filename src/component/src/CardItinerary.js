@@ -247,7 +247,7 @@ export default function CardItinerary({
                                 Kiriman: props.route.params.idkiriman,
                                 token: token,
                                 Position: props.route.params.Position,
-                                // datadayaktif: props.route.params.datadayaktif,
+                                data_from: dataFrom,
                               },
                             })
                           )

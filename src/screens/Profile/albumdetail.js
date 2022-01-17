@@ -34,7 +34,6 @@ import { useSelector } from "react-redux";
 const { width, height } = Dimensions.get("screen");
 
 export default function albumdetail(props) {
-  console.log("album detail :", props.route.params);
   const { t, i18n } = useTranslation();
   const settingApps = useSelector((data) => data.setting);
   const userID = settingApps?.user_id;
@@ -77,7 +76,7 @@ export default function albumdetail(props) {
     ),
 
     headerRight: () =>
-      user === userID ? (
+      user && user === userID ? (
         <TouchableOpacity
           style={{
             marginRight: 15,
@@ -120,9 +119,6 @@ export default function albumdetail(props) {
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDeleteAlbum, setModalDeleteAlbum] = useState(false);
   const [user, setUser] = useState(props?.route?.params?.user);
-
-  console.log("user : ", user, userID);
-  console.log("setting", settingApps);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -179,7 +175,10 @@ export default function albumdetail(props) {
           setModalDeleteAlbum(false);
           props.navigation.navigate("ProfileStack", {
             screen: "ProfileTab",
-            params: { token: props.route.params.token },
+            params: {
+              token: props.route.params.token,
+              deleted_album_id: props.route.params.id,
+            },
           });
         }
       }
@@ -237,7 +236,6 @@ export default function albumdetail(props) {
         if (response.data.rename_album_itinerary.code !== 200) {
           throw new Error(response.data.rename_album_itinerary.message);
         } else {
-          setModalEdit(false);
           props.navigation.navigate("ProfileStack", {
             screen: "ProfileTab",
             params: { token: props.route.params.token },
@@ -1531,6 +1529,7 @@ export default function albumdetail(props) {
           </Item>
           <Button
             onPress={() => {
+              setModalEdit(false);
               renameAlbum();
             }}
             color="primary"

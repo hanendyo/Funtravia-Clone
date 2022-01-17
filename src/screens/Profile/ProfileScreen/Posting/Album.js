@@ -14,54 +14,86 @@ import { useQuery } from "@apollo/client";
 const { width, height } = Dimensions.get("screen");
 import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
-export default function Album({ item, props, token, user }) {
-  // const { t } = useTranslation();
-  return (
-    <Pressable
-      // key={index}
-      onPress={() => {
-        props.navigation.push("albumdetail", {
-          id: item.id,
-          type: item.type,
-          token: token,
-          judul: item.title,
-          user: user,
-        });
-      }}
-      style={{
-        width: Dimensions.get("screen").width - 30,
-        height: width * 0.55,
-        marginBottom: 10,
-        marginHorizontal: 15,
-        // paddingHorizontal: 10,
-        marginTop: Platform.OS == "ios" ? (Notch ? 5 : 0) : 0,
-      }}
-    >
-      <View
+export default function Album({ item, props, token, user, deletedAlbumId }) {
+  if (item.id === deletedAlbumId) {
+    return null;
+  } else {
+    return (
+      <Pressable
+        // key={index}
+        onPress={() => {
+          props.navigation.push("albumdetail", {
+            id: item.id,
+            type: item.type,
+            token: token,
+            judul: item.title,
+            user: user,
+          });
+        }}
         style={{
-          borderRadius: 10,
-          flex: 1,
-          elevation: 1,
-          backgroundColor: "#fff",
+          width: Dimensions.get("screen").width - 30,
+          height: width * 0.55,
+          marginBottom: 10,
+          marginHorizontal: 15,
+          // paddingHorizontal: 10,
+          marginTop: Platform.OS == "ios" ? (Notch ? 5 : 0) : 0,
         }}
       >
-        {item.firstimg !== null ? (
-          item.firstimg.type == "video" ? (
-            <>
-              <FunVideo
-                poster={item.firstimg.filepath.replace(
-                  "output.m3u8",
-                  "thumbnail.png"
-                )}
-                posterResizeMode={"cover"}
-                paused={true}
-                // key={"posted" + index + item.id}
-                source={{
-                  uri: item.firstimg.filepath,
-                }}
-                muted={true}
-                // defaultSource={default_image}
-                resizeMode="cover"
+        <View
+          style={{
+            borderRadius: 10,
+            flex: 1,
+            elevation: 1,
+            backgroundColor: "#fff",
+          }}
+        >
+          {item.firstimg !== null ? (
+            item.firstimg.type == "video" ? (
+              <>
+                <FunVideo
+                  poster={item.firstimg.filepath.replace(
+                    "output.m3u8",
+                    "thumbnail.png"
+                  )}
+                  posterResizeMode={"cover"}
+                  paused={true}
+                  // key={"posted" + index + item.id}
+                  source={{
+                    uri: item.firstimg.filepath,
+                  }}
+                  muted={true}
+                  // defaultSource={default_image}
+                  resizeMode="cover"
+                  style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    // resizeMode: "cover",
+                    width: "100%",
+                    height: "80%",
+                    backgroundColor: "#fff",
+                  }}
+                  grid
+                />
+                <View
+                  style={{
+                    // flexDirection: "row",
+                    position: "absolute",
+                    width: "100%",
+                    height: "80%",
+                    backgroundColor: "rgba(0,0,0,0.4)",
+                    justifyContent: "flex-end",
+                    borderRadius: 5,
+
+                    // top: 5,
+                    // left: "35%",
+                  }}
+                >
+                  <PlayVideo width={15} height={15} style={{ margin: 10 }} />
+                </View>
+              </>
+            ) : (
+              <FunImage
+                source={{ uri: item.firstimg.filepath }}
                 style={{
                   borderTopLeftRadius: 10,
                   borderTopRightRadius: 10,
@@ -69,72 +101,43 @@ export default function Album({ item, props, token, user }) {
                   width: "100%",
                   height: "80%",
                   backgroundColor: "#fff",
-                }}
-                grid
-              />
-              <View
-                style={{
-                  // flexDirection: "row",
-                  position: "absolute",
-                  width: "100%",
-                  height: "80%",
-                  backgroundColor: "rgba(0,0,0,0.4)",
-                  justifyContent: "flex-end",
-                  borderRadius: 5,
 
-                  // top: 5,
-                  // left: "35%",
+                  // margin: 2,
+                  // borderRadius: 5,
+                  resizeMode: "cover",
                 }}
-              >
-                <PlayVideo width={15} height={15} style={{ margin: 10 }} />
-              </View>
-            </>
+              />
+            )
           ) : (
-            <FunImage
-              source={{ uri: item.firstimg.filepath }}
+            <Image
+              source={default_image}
               style={{
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
                 // resizeMode: "cover",
                 width: "100%",
                 height: "80%",
-                backgroundColor: "#fff",
-
-                // margin: 2,
-                // borderRadius: 5,
-                resizeMode: "cover",
               }}
             />
-          )
-        ) : (
-          <Image
-            source={default_image}
+          )}
+          <View
             style={{
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              // resizeMode: "cover",
-              width: "100%",
-              height: "80%",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              paddingHorizontal: 15,
             }}
-          />
-        )}
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            paddingHorizontal: 15,
-          }}
-        >
-          <Text size={"label"} type="bold">
-            {item.title}
-          </Text>
-          <Text size={"label"} type="regular">
-            {item.count_foto + " Foto"}
-          </Text>
+          >
+            <Text size={"label"} type="bold">
+              {item.title}
+            </Text>
+            <Text size={"label"} type="regular">
+              {item.count_foto + " Foto"}
+            </Text>
+          </View>
         </View>
-      </View>
-    </Pressable>
-  );
+      </Pressable>
+    );
+  }
 }

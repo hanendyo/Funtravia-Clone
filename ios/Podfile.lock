@@ -79,37 +79,37 @@ PODS:
     - AppAuth (~> 1.2)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - GoogleUtilities/AppDelegateSwizzler (7.6.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.5.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.6.0):
+  - GoogleUtilities/Environment (7.5.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.6.0):
+  - GoogleUtilities/Logger (7.5.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.6.0):
+  - GoogleUtilities/Network (7.5.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.6.0)"
-  - GoogleUtilities/Reachability (7.6.0):
+  - "GoogleUtilities/NSData+zlib (7.5.0)"
+  - GoogleUtilities/Reachability (7.5.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.6.0):
+  - GoogleUtilities/UserDefaults (7.5.0):
     - GoogleUtilities/Logger
   - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - GTMSessionFetcher/Core (1.7.0)
+  - GTMSessionFetcher/Core (1.6.1)
   - imglyKit (10.28.1)
-  - libwebp (1.2.1):
-    - libwebp/demux (= 1.2.1)
-    - libwebp/mux (= 1.2.1)
-    - libwebp/webp (= 1.2.1)
-  - libwebp/demux (1.2.1):
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
     - libwebp/webp
-  - libwebp/mux (1.2.1):
+  - libwebp/mux (1.2.0):
     - libwebp/demux
-  - libwebp/webp (1.2.1)
+  - libwebp/webp (1.2.0)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -340,7 +340,7 @@ PODS:
     - react-native-video/Video (= 5.2.0)
   - react-native-video/Video (5.2.0):
     - React-Core
-  - react-native-webview (11.15.0):
+  - react-native-webview (11.16.0):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -404,11 +404,11 @@ PODS:
     - React-jsi (= 0.63.4)
   - ReactNativeUiLib (3.0.4):
     - React
-  - RNCAsyncStorage (1.15.14):
+  - RNCAsyncStorage (1.15.15):
     - React-Core
   - RNCCheckbox (0.5.9):
     - React-Core
-  - RNCClipboard (1.9.0):
+  - RNCClipboard (1.8.5):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
@@ -745,11 +745,11 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   GoogleDataTransport: cd9db2180fcecd8da1b561aea31e3e56cf834aa7
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
-  GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
+  GoogleUtilities: eea970f4a389963963bffe8d8fabe43540678b9c
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
-  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   imglyKit: 06fec143eaef2981fa6401e4d5c2e22d8252a9c5
-  libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   NextLevelSessionExporter: 4d8aa5e617f1c709724f2453efe5d4628480f65a
   Permission-Camera: 53efcbb755b0e8bdf253dbb27cc7559ccfce8480
@@ -783,7 +783,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
-  react-native-webview: e89bf2dba26a04cda967814df3ed1be99f291233
+  react-native-webview: 28a8636d97ee641f2ee8f20492d7a6c269c1d703
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -795,9 +795,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   ReactNativeUiLib: cde7263a7d308b60161cd286f95c9433e79f2f7d
-  RNCAsyncStorage: ea6b5c280997b2b32a587793163b1f10e580c4f7
+  RNCAsyncStorage: 0bef6a21517c0254bd6bd59a3672963abfa0d18e
   RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
-  RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
+  RNCClipboard: cc054ad1e8a33d2a74cd13e565588b4ca928d8fd
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNConvertPhAsset: 9b366b8a1abc194b76572712c6f7dd89c9e4e37f
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
