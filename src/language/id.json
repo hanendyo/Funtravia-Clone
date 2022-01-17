@@ -877,5 +877,7 @@
   "addPlaceName": "Tambahkan tempat menginap anda",
   "public (shared)": "Publik (bagikan)",
   "canNotChangePrivacy": "Anda tidak bisa mengubah pengaturan privasi",
-  "thereAreNoTravelStories": "Tidak ada Travel Stories"
+  "thereAreNoTravelStories": "Tidak ada Travel Stories",
+  "titleSuspend": "Akun kamu tersuspend",
+  "descriptSuspend": "Kamu mungkin telah melakukan pelanggaran atas ketentuan kami, mohon hubungi customer service kami untuk mengaktifkan kembali akun kamu"
 }

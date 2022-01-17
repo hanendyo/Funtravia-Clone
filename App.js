@@ -57,6 +57,7 @@ function App() {
   const { t, i18n } = useTranslation();
   const { width } = Dimensions.get("screen");
   let [authStat, setAuthStat] = useState(null);
+  let [authBlocked, setAuthBlocked] = useState(false);
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState();
@@ -114,6 +115,7 @@ function App() {
     });
     let resultData = await result.json();
     if (resultData.status) {
+      await setAuthBlocked(resultData.data.is_blocked);
       await setAuthStat(true);
     } else {
       await AsyncStorage.removeItem("access_token");
@@ -202,6 +204,7 @@ function App() {
       <Provider store={storeState}>
         <MainStackNavigator
           authorizeStatus={authStat}
+          authBlocked={authBlocked}
           dNotify={dataNotifikasi}
           isFirst={firstScreen}
           token={appToken}

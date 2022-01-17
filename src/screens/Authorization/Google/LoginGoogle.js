@@ -98,6 +98,16 @@ export default function LoginGoogle({ navigation }) {
         setTimeout(() => {
           navigation.navigate("LoginScreen");
         }, 5000);
+      } else if (
+        response.data.login_google.code === 401 ||
+        response.data.login_google.code === "401"
+      ) {
+        // await GoogleSignin.revokeAccess();
+        setModalError(true);
+        setMessage(response.data.login_google.message);
+        setTimeout(() => {
+          navigation.navigate("LoginScreen");
+        }, 5000);
       } else {
         // await GoogleSignin.revokeAccess();
         setModalError(true);

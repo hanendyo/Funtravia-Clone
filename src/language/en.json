@@ -879,5 +879,7 @@
   "addPlaceName": "Add place name",
   "public (shared)": "Public (shared)",
   "canNotChangePrivacy": "You can not change privacy setting",
-  "thereAreNoTravelStories": "There are no Travel Stories"
+  "thereAreNoTravelStories": "There are no Travel Stories",
+  "titleSuspend": "Your account is suspended",
+  "descriptSuspend": "You may have violated our terms, please contact our customer service to reactivate your account"
 }

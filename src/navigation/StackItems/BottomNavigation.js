@@ -34,7 +34,11 @@ function HomeStack(props) {
   return (
     <Home.Navigator initialRouteName={"HomeScreen"}>
       <Home.Screen
-        initialParams={{ token: props.route.params.token, shareid: null }}
+        initialParams={{
+          token: props.route.params.token,
+          shareid: null,
+          authBlocked: props.route.params.authBlocked,
+        }}
         name="HomeScreen"
         component={HomeScreen}
         options={{
@@ -150,7 +154,10 @@ export default function BottomNavigationItems(props) {
       <MainNavigator.Screen
         name="HomeBottomScreen"
         component={HomeStack}
-        initialParams={{ token: props.route.params.token }}
+        initialParams={{
+          token: props.route.params.token,
+          authBlocked: props.route.params.authBlocked,
+        }}
         options={{
           tabBarLabel: t("home"),
           tabBarIcon: ({ focused }) =>

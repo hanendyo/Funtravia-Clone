@@ -39,6 +39,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createStackNavigator();
 export default function MainStackNavigator({
   authorizeStatus,
+  authBlocked,
   dNotify,
   isFirst,
   token,
@@ -84,7 +85,7 @@ export default function MainStackNavigator({
         <Tab.Screen
           name="BottomStack"
           component={BottomStack}
-          initialParams={{ token: token }}
+          initialParams={{ token: token, authBlocked: authBlocked }}
           options={{
             headerShown: false,
             headerBackTitleVisible: false,
