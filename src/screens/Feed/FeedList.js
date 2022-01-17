@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,

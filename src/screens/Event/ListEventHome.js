@@ -115,8 +115,8 @@ export default function ListEventHome(props) {
       deviceId == "LYA-L29"
         ? normalize(230) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
+        : normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
   let [heightview, setheight] = useState(0);
