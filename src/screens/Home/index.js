@@ -35,6 +35,7 @@ import {
   NotificationBlue,
   ArrowRightHome,
   SearchHome,
+  Errors,
   Xgray,
 } from "../../assets/svg";
 import { RNToasty } from "react-native-toasty";
@@ -44,6 +45,7 @@ import { setSettingUser, setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("propshome", props);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
@@ -54,6 +56,7 @@ export default function Home(props) {
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
+  let [modalBlocked, setModalBlocked] = useState(false);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -64,6 +67,10 @@ export default function Home(props) {
       await NotifCount();
       await LoadUserProfile();
       await LoadPost();
+    }
+
+    if (props?.route?.params?.authBlocked) {
+      setModalBlocked(true);
     }
   };
 
@@ -414,6 +421,103 @@ export default function Home(props) {
               </View>
             </View>
           </View>
+        </Modal>
+
+        {/* modal blocked */}
+        <Modal visible={modalBlocked} transparent={true}>
+          <Pressable
+            style={{
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "'rgba(0, 0, 0, 0.5)'",
+              // opacity: 0.7,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
+            }}
+          >
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                backgroundColor: "#F6F6F6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginTop: 13,
+                  marginBottom: 15,
+                }}
+              >
+                Oops
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                alignItems: "center",
+                alignContent: "center",
+                // height: 100,
+                width: Dimensions.get("screen").width - 100,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+                paddingVertical: 20,
+                paddingHorizontal: 15,
+              }}
+            >
+              <Errors height={80} width={80} />
+              <Text
+                type="b  // onPress={() => {
+                //   setmodalerrors(false);
+                // }}old"
+                size="title"
+                style={{
+                  marginTop: 20,
+                }}
+              >
+                {t("titleSuspend")}
+              </Text>
+
+              <View
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "#f3f3f3",
+                  padding: 20,
+                }}
+              >
+                <Text size="label">{t("descriptSuspend")}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalBlocked(false);
+                  props.navigation.navigate("AuthStack", {
+                    screen: "OnBoardScreen",
+                  });
+                }}
+                style={{
+                  paddingTop: 20,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="label"
+                  style={{
+                    color: "#209fae",
+                  }}
+                >
+                  {t("understand")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
         </Modal>
       </View>
     );

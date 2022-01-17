@@ -870,9 +870,8 @@ export default function SearchPg(props, { navigation, route }) {
                             }}
                           >
                             <Text size="label" type="bold" numberOfLines={2}>
-                              {item.first_name + " " + item.last_name
-                                ? item.last_name
-                                : ""}
+                              {item.first_name ? item.first_name : ""}{" "}
+                              {item.last_name ? item.last_name : ""}
                             </Text>
                             <Text size="label" type="regular">
                               {`@${item.username}`}test
@@ -1823,9 +1822,8 @@ export default function SearchPg(props, { navigation, route }) {
                             }}
                           >
                             <Text size="label" type="bold" numberOfLines={2}>
-                              {item.first_name + " " + item.last_name
-                                ? item.last_name
-                                : ""}
+                              {item.first_name ? item.first_name : ""}{" "}
+                              {item.last_name ? item.last_name : ""}
                             </Text>
                             <Text size="label" type="regular">
                               {`@${item.username}`}
