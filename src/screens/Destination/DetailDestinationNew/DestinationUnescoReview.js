@@ -55,20 +55,21 @@ export default function DestinationUnescoReview(props) {
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
-    headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("writeReview")}
       </Text>
     ),
-    headerMode: "screen",
+    // headerMode: "none",
     headerStyle: {
       backgroundColor: "#209FAE",
-      elevation: 0,
-      borderBottomWidth: 0,
+      elevation: 0, // remove shadow on Android
+      shadowOpacity: 0, // remove shadow on iOS
+      borderBottomWidth: 0, // Just in case.
     },
     headerLeftContainerStyle: {
       background: "#FFF",
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button
@@ -591,6 +592,7 @@ export default function DestinationUnescoReview(props) {
           marginTop: 15,
           width: Dimensions.get("screen").width,
           height: 40,
+
           paddingHorizontal: 15,
           marginBottom: 20,
           // opacity: toggleCheckBox ? 1 : 0.5,
@@ -609,21 +611,29 @@ export default function DestinationUnescoReview(props) {
             alignItems: "center",
           }}
         >
-          <Text
-            size="label"
-            type="bold"
+          <View
             style={{
-              color: toggleCheckBox ? "#FFF" : "#c7c7c7",
-              marginRight: 10,
+              flexDirection: "row",
             }}
           >
-            {`${t("Send")} ${t("review")}`}
-          </Text>
-          {toggleCheckBox ? (
-            <PanahPutih height={20} width={20} />
-          ) : (
-            <Submit height={20} width={20} />
-          )}
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                color: toggleCheckBox ? "#FFF" : "#c7c7c7",
+                marginRight: 10,
+
+                // borderWidth: 1,
+              }}
+            >
+              {`${t("Send")} ${t("review")}`}
+            </Text>
+            {toggleCheckBox ? (
+              <PanahPutih height={20} width={20} />
+            ) : (
+              <Submit height={20} width={20} />
+            )}
+          </View>
         </Pressable>
         {/* <Button
 		  disable={tombol}

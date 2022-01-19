@@ -105,7 +105,7 @@ export default function ListEventHome(props) {
   const [arrayYear, setArrayYear] = useState([]);
   let [loadingIndicator, setLoadingIndicator] = useState(true);
 
-  console.log("statusbar", StatusBar.currentHeight);
+  // console.log("statusbar", StatusBar.currentHeight);
   const HeaderHeight = Platform.select({
     ios: Notch
       ? normalize(205) + tambahanJudul + tambahan - 20
@@ -115,7 +115,7 @@ export default function ListEventHome(props) {
       deviceId == "LYA-L29"
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(235) + tambahanJudul + tambahan - StatusBar.currentHeight
         : normalize(205) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
@@ -2438,26 +2438,23 @@ export default function ListEventHome(props) {
     return dat.length;
   };
 
-  // loading sebelum tampil layout
-  if (loadingIndicator) {
-    return (
-      <View style={styles.container}>
-        <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            height: Dimensions.get("screen").height,
-          }}
-        >
-          <ActivityIndicator color="#209FAE" animating={true} />
-        </View>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
+      {loadingIndicator ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            backgroundColor: "#FFF",
+            zIndex: 1000000,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#209fae" />
+        </View>
+      ) : null}
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
 
       <Animated.View

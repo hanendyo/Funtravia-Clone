@@ -211,9 +211,9 @@ export default function CityDetail(props) {
 
   useEffect(() => {
     refreshData();
-    // setTimeout(() => {
-    //   setLoadings(false);
-    // }, 4000);
+    setTimeout(() => {
+      setLoadings(false);
+    }, 4000);
     const Journalitinerarydata = props.navigation.addListener("focus", () => {
       getJournalCity();
       getItineraryCity;
@@ -258,7 +258,6 @@ export default function CityDetail(props) {
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
-    await setLoadings(false);
   };
 
   let [listCity, setListCity] = useState([]);
@@ -2815,237 +2814,23 @@ export default function CityDetail(props) {
 
   let [loadings, setLoadings] = useState(true);
 
-  if (loadingCity) {
-    return (
-      <SkeletonPlaceholder>
+  return (
+    <View style={styles.container}>
+      {loadings ? (
         <View
           style={{
             width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            backgroundColor: "#FFF",
+            zIndex: 1000000,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <View
-            style={{
-              width: "100%",
-              height: 300,
-            }}
-          ></View>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              height: 50,
-              paddingHorizontal: 20,
-            }}
-          >
-            <View
-              style={{
-                width: 60,
-                height: 10,
-                marginTop: 20,
-              }}
-            ></View>
-            <View
-              style={{
-                width: 60,
-                height: 10,
-                marginLeft: 20,
-                marginTop: 20,
-              }}
-            ></View>
-            <View
-              style={{
-                width: 60,
-                height: 10,
-                marginLeft: 20,
-                marginTop: 20,
-              }}
-            ></View>
-            <View
-              style={{
-                width: 60,
-                height: 10,
-                marginLeft: 20,
-                marginTop: 20,
-              }}
-            ></View>
-            <View
-              style={{
-                width: 60,
-                height: 10,
-                marginLeft: 20,
-                marginTop: 20,
-              }}
-            ></View>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              height: 2,
-            }}
-          ></View>
-          <View
-            style={{
-              width: "100%",
-              // height:20,
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-            }}
-          >
-            <View
-              style={{
-                width: 120,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 10,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 5,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 5,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: 120,
-                marginTop: 10,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 5,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                height: 130,
-                marginTop: 10,
-                borderRadius: 5,
-                borderWidth: 0.5,
-                borderColor: "#dedede",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  paddingVertical: 10,
-                  justifyContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    padding: 10,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  paddingVertical: 10,
-                  justifyContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    padding: 10,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 30,
-                  }}
-                ></View>
-              </View>
-            </View>
-            <View
-              style={{
-                width: 120,
-                marginTop: 10,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                marginTop: 5,
-                height: 10,
-              }}
-            ></View>
-            <View
-              style={{
-                width: "100%",
-                height: 200,
-                marginTop: 10,
-                borderRadius: 5,
-              }}
-            ></View>
-          </View>
+          <ActivityIndicator size="large" color="#209fae" />
         </View>
-      </SkeletonPlaceholder>
-    );
-  }
-  return (
-    <View style={styles.container}>
+      ) : null}
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
       {/* modal login */}
       <ModalRN
