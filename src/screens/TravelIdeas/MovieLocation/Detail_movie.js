@@ -279,7 +279,7 @@ export default function Detail_movie(props) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE + 5],
     extrapolate: "clamp",
   });
   const shareTranslateY = scrollY.interpolate({

@@ -114,7 +114,7 @@ const Index = (props) => {
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(230) +
+        ? normalize(235) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -178,7 +178,7 @@ const Index = (props) => {
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   const layoutText = (e) => {
-    setMore(e.nativeEvent.lines.length > 3 && lines !== 0);
+    setMore(e.nativeEvent.lines.length > 3 && lines == 0);
   };
 
   const [fetchData, { data, loading, error }] = useLazyQuery(DestinationById, {
@@ -785,8 +785,8 @@ const Index = (props) => {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataDestination?.images[0] && dataDestination?.images[0].image
-              ? { uri: dataDestination?.images[0].image }
+            dataDestination?.cover
+              ? { uri: dataDestination?.cover }
               : default_image
           }
         />
@@ -802,7 +802,7 @@ const Index = (props) => {
           <View
             onLayout={(event) => {
               let { x, y, width, height } = event.nativeEvent.layout;
-              console.log("heightjudul", height);
+
               setHeightJudul(height);
             }}
             style={{
@@ -1960,8 +1960,6 @@ const Index = (props) => {
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "white",
-            borderBottomWidth: 1,
-            borderColor: "#d1d1d1",
           }}
           renderItem={({ item, index }) => (
             <Ripple
@@ -1976,9 +1974,10 @@ const Index = (props) => {
             >
               <View
                 style={{
-                  borderBottomWidth: index == tabIndex ? 2 : 2,
-                  borderBottomColor: index == tabIndex ? "#209fae" : "#ffffff",
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
+
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -1989,6 +1988,7 @@ const Index = (props) => {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "center",
+                  paddingHorizontal: Platform.OS === "ios" ? 15 : null,
                 }}
               >
                 <Text
@@ -1997,7 +1997,8 @@ const Index = (props) => {
                     {
                       opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
-
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
                       borderBottomColor:
                         index == tabIndex &&
                         props.navigationState.routes.length > 1
@@ -2007,7 +2008,10 @@ const Index = (props) => {
                     },
                   ]}
                 >
-                  <Truncate text={item?.key ? item.key : ""} length={15} />
+                  <Truncate
+                    text={item?.key ? item.key : ""}
+                    length={Platform.OS === "ios" ? 13 : 15}
+                  />
                 </Text>
               </View>
             </Ripple>
@@ -2016,7 +2020,6 @@ const Index = (props) => {
       </Animated.View>
     );
   };
-
   const renderTabView = () => {
     return (
       <TabView
@@ -2097,18 +2100,33 @@ const Index = (props) => {
   useEffect(() => {
     setTimeout(() => {
       setLoadings(false);
-    }, 3000);
+    }, 4000);
   }),
     [];
 
   let [loadings, setLoadings] = useState(true);
 
-  if (loading || loadings) {
-    return <IndexSkeleton />;
-  }
+  // if (loadings) {
+  //   return <IndexSkeleton />;
+  // }
 
   return (
     <View style={styles.container}>
+      {loadings ? (
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            position: "absolute",
+            backgroundColor: "#FFF",
+            zIndex: 1000000,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#209fae" />
+        </View>
+      ) : null}
       <Satbar backgroundColor="#14646E" />
       <ModalLogin
         modalLogin={modalLogin}
@@ -2206,20 +2224,20 @@ const Index = (props) => {
             )}
           </Animated.View>
         </Button>
-        <Animated.Text
-          // size="header"
-          // type="bold"
+        <Text
+          size="header"
+          type="bold"
           style={{
             flex: 1,
-            opacity: hide.current,
+            // opacity: hide.current,
             color: "#fff",
             marginLeft: 10,
-            fontSize: 20,
-            fontFamily: "Lato-Bold",
+            // fontSize: 20,
+            // fontFamily: "Lato-Bold",
           }}
         >
           {dataDestination?.name}
-        </Animated.Text>
+        </Text>
       </Animated.View>
       {/* Button Like and Share*/}
       <Animated.View
@@ -2311,7 +2329,7 @@ const Index = (props) => {
               200 +
               HeightJudul +
               Heightunesco +
-              HeightAddress / 1.3,
+              HeightAddress / 10,
             zIndex: 100,
             transform: [{ translateY: yButtonLikeShare }],
             opacity: hides.current,
@@ -2327,6 +2345,7 @@ const Index = (props) => {
                   height: layoutsAddress,
                   justifyContent: "flex-end",
                   alignItems: "flex-end",
+                  height: "100%",
                 }}
                 onPress={() => {
                   Linking.openURL(
@@ -2453,14 +2472,15 @@ const Index = (props) => {
       {renderHeader()}
       {renderCustomRefresh()}
       {/* BottomButton */}
-
-      <BottomButton
-        routed={tabIndex}
-        props={props}
-        data={data?.destinationById}
-        token={tokenApps}
-        addTo={addToPlan}
-      />
+      {!loadings ? (
+        <BottomButton
+          routed={tabIndex}
+          props={props}
+          data={data?.destinationById}
+          token={tokenApps}
+          addTo={addToPlan}
+        />
+      ) : null}
 
       {/* Modal Activiy */}
       <ActivityModal

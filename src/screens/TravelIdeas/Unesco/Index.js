@@ -534,6 +534,7 @@ export default function Unesco({ navigation, route }) {
               {Banner?.title}
             </Text>
           </View>
+
           <View
             onLayout={(event) => {
               let { x, y, width, height } = event.nativeEvent.layout;
@@ -548,9 +549,7 @@ export default function Unesco({ navigation, route }) {
               type="regular"
               style={{
                 textAlign: "left",
-
                 paddingBottom: 8,
-                flexShrink: 0,
               }}
             >
               {Banner?.description}
