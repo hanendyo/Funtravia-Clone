@@ -461,7 +461,7 @@ export default function Invitation({
         post_id: data.comment_feed.post_id,
         comment_id: data.comment_feed.id,
         countKoment: null,
-        from: "notificationComment",
+        from: "notification",
       },
     });
     if (data.isread == false) {
@@ -475,7 +475,7 @@ export default function Invitation({
       screen: "CommentPost",
       params: {
         post_id: data.like_feed.post_id,
-        from: "notificationComment",
+        from: "notification",
       },
     });
     if (data.isread == false) {

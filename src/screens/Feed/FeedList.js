@@ -97,6 +97,7 @@ const PostMut = gql`
 
 export default function FeedList({ props, token }) {
   const { t, i18n } = useTranslation();
+  const from = props.route.params.from;
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const ref = React.useRef(null);
@@ -115,8 +116,22 @@ export default function FeedList({ props, token }) {
   let [modalConfUnFollow, setmodalConfUnFollow] = useState(false);
   let [activelike, setactivelike] = useState(true);
   let [durationTime, setDurationTime] = useState(false);
+  let [indekScrollto, setIndeksScrollto] = useState(0);
 
   let { width, height } = Dimensions.get("screen");
+
+  const Scroll_to = async (index) => {
+    index = index ? index : indekScrollto;
+    setTimeout(() => {
+      if (ref && ref?.current) {
+        ref?.current?.scrollToIndex({
+          animation: false,
+          index: index,
+        });
+      }
+    }, 200);
+  };
+
   const [
     MutationLike,
     { loading: loadingLike, data: dataLike, error: errorLike },
@@ -198,6 +213,71 @@ export default function FeedList({ props, token }) {
     props.route.params.updateDataPost,
     props.route.params.allTime,
     timeMiliSecond,
+  ]);
+
+  //! kesini
+  useEffect(() => {
+    if (props.route.params) {
+      if (props.route.params.post_id) {
+        let tempdata = [...dataPost.post_cursor_based.edges];
+
+        if (tempdata) {
+          let indeks = tempdata.findIndex(
+            (k) => k.node["id"] == props.route.params.post_id
+          );
+
+          let tempdataIndeks = { ...tempdata[indeks] };
+
+          let tempdatas = { ...tempdata[indeks].node };
+
+          if (from == "funFeedEdit") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count =
+              props?.route?.params?.data_post?.response_count;
+            tempdatas.comment_count =
+              props?.route?.params?.data_post?.comment_count;
+            tempdatas.liked = props?.route?.params?.data_post?.liked;
+          } else if (from == "funFeedComment") {
+            //! dalam perbaikan
+            tempdatas.caption = props?.route?.params?.caption;
+            // tempdatas.response_count =
+            //   props?.route?.params?.funFeedComment_response_count;
+            // tempdatas.liked = props?.route?.params?.funFeedComment_liked;
+            // tempdatas.comment_count = props?.route?.params?.comment_count
+          } else if (from == "funFeedCommentEdit") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count =
+              props?.route?.params?.data_post?.response_count;
+            tempdatas.comment_count =
+              props?.route?.params?.data_post?.comment_count;
+            tempdatas.liked = props?.route?.params?.data_post?.liked;
+          } else if (from == "funFeedAlbum") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count = props?.route?.params?.response_count;
+            tempdatas.comment_count = props?.route?.params?.comment_count;
+            tempdatas.liked = props?.route?.params?.liked;
+          } else if (from == "funFeedCommentAlbum") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count = props?.route?.params?.response_count;
+            tempdatas.comment_count = props?.route?.params?.comment_count;
+            tempdatas.liked = props?.route?.params?.liked;
+          }
+          tempdataIndeks.node = tempdatas;
+
+          tempdata.splice(indeks, 1, tempdataIndeks);
+          setDataFeed(tempdata);
+          setIndeksScrollto(indeks);
+          Scroll_to(indeks);
+        }
+      }
+      // if (play == props.route.params.post_id) {
+      //   setShowLoading(true);
+      // }
+    }
+  }, [
+    props.route.params.post_id,
+    props.route.params,
+    props.route.params.liked,
   ]);
 
   const SubmitData = async () => {
@@ -393,13 +473,6 @@ export default function FeedList({ props, token }) {
     },
   });
 
-  // useEffect(() => {
-  //   const unsubscribe = props.navigation.addListener("focus", () => {
-  //     refetch();
-  //   });
-  //   return unsubscribe;
-  // }, [props.navigation]);
-
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
   const Refresh = React.useCallback(() => {
@@ -545,13 +618,17 @@ export default function FeedList({ props, token }) {
         let tempdataIndex = { ...tempdata[indeks] };
         let tempdataNode = { ...tempdataIndex.node };
         tempdataNode = props.route.params.updateDataPost;
+        tempdataNode.comment_count = props.route.params.comment_count;
+        tempdataNode.response_count = props.route.params.response_count;
+        tempdataNode.liked = props.route.params.liked;
+
         tempdataIndex.node = tempdataNode;
         tempdata.splice(indeks, 1, tempdataIndex);
         setDataFeed(tempdata);
       }
     }
     const unsubscribe = props.navigation.addListener("focus", () => {
-      refetch();
+      // refetch();
       loadAsync();
     });
     return unsubscribe;
@@ -572,7 +649,7 @@ export default function FeedList({ props, token }) {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
-        from: "funFeedComment",
+        from: "funFeed",
         data: data,
         token: tokenApps,
         ref: ref,
@@ -1885,6 +1962,11 @@ export default function FeedList({ props, token }) {
         data={dataFeed}
         onViewableItemsChanged={onViewRef?.current}
         viewabilityConfig={viewConfigRef?.current}
+        showsVerticalScrollIndicator={false}
+        scrollToIndex={indekScrollto}
+        onScrollToIndexFailed={(e) => {
+          scrollToIndexFailed(e);
+        }}
         renderItem={({ item, index }) => (
           <View
             style={{
@@ -2237,6 +2319,7 @@ export default function FeedList({ props, token }) {
                   <Send_to height={17} width={17} />
                 </Button>
               </View>
+              {/* album */}
               <View
                 style={{
                   width: "100%",
@@ -2292,7 +2375,7 @@ export default function FeedList({ props, token }) {
                               marginVertical: 3,
                             }}
                           >
-                            Trip
+                            {t("trip")}
                           </Text>
                         </Ripple>
                       </Pressable>

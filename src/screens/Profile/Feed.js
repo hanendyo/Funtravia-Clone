@@ -53,6 +53,8 @@ import { RNToasty } from "react-native-toasty";
 import RemoveAlbums from "../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 import PostCursorBased from "../../graphQL/Query/Profile/postCursorBased";
+import Ripple from "react-native-material-ripple";
+import ViewMoreText from "react-native-view-more-text";
 
 const deletepost = gql`
   mutation($post_id: ID!) {
@@ -65,9 +67,11 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
+  const from = props.route.params.from;
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
+  let [indekScrollto, setIndeksScrollto] = useState(0);
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -139,8 +143,8 @@ export default function myfeed(props) {
   let [activelike, setactivelike] = useState(true);
   // let [setting, setSetting] = useState();
   let [datas, setDatas] = useState(props.route.params.dataPost);
-  let [indekScrollto, setIndeksScrollto] = useState(0);
   let [showLoading, setShowLoading] = useState(false);
+
   const Scroll_to = async (index) => {
     index = index ? index : indekScrollto;
     setTimeout(() => {
@@ -298,6 +302,25 @@ export default function myfeed(props) {
     props.navigation.setOptions(HeaderComponent);
     loadasync();
     if (props.route.params) {
+      if (props.route.params.isItinerary === true) {
+        Refresh();
+      }
+
+      if (props.route.params.isComment === true) {
+        // Refresh();
+        if (ref) {
+          // ref?.current.scrollToIndex({ animated: true, index: 0 });
+          props.route.params.isComment = false;
+        }
+      }
+      if (props.route.params.isTag === true) {
+        refetch();
+        // if (ref) {
+        // ref?.current.scrollToIndex({ animated: true, index: 0 });
+        // }
+      }
+    }
+    if (props.route.params) {
       if (props.route.params.updateDataPost) {
         let tempdata = [...datas];
         if (tempdata) {
@@ -307,12 +330,15 @@ export default function myfeed(props) {
           let tempdataIndeks = { ...tempdata[indeks] };
           let tempdatas = { ...tempdata[indeks].node };
           tempdatas = props.route.params.updateDataPost;
+          tempdatas.comment_count = props.route.params.comment_count;
+          tempdatas.response_count = props.route.params.response_count;
+          tempdatas.liked = props.route.params.liked;
+
           tempdataIndeks.node = tempdatas;
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDatas(tempdata);
           setIndeksScrollto(indeks);
           Scroll_to(indeks);
-          props.route.params.updateDataPost = null;
         }
       }
       if (props.route.params.isProfil) {
@@ -340,6 +366,63 @@ export default function myfeed(props) {
     play,
     props.navigation,
   ]);
+
+  // after edit post
+  useEffect(() => {
+    if (props.route.params) {
+      if (props.route.params.post_id) {
+        let tempdata = [...datas];
+        if (tempdata) {
+          let indeks = tempdata.findIndex(
+            (k) => k.node["id"] == props.route.params.post_id
+          );
+          let tempdataIndeks = { ...tempdata[indeks] };
+          let tempdatas = { ...tempdata[indeks].node };
+
+          if (from == "feedProfilEdit") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count =
+              props?.route?.params?.data_post?.response_count;
+            tempdatas.comment_count =
+              props?.route?.params?.data_post?.comment_count;
+            tempdatas.liked = props?.route?.params?.data_post?.liked;
+          } else if (from == "feedProfilCommentEdit") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count =
+              props?.route?.params?.data_post?.response_count;
+            tempdatas.comment_count =
+              props?.route?.params?.data_post?.comment_count;
+            tempdatas.liked = props?.route?.params?.data_post?.liked;
+          } else if (from == "feedProfilAlbum") {
+            tempdatas.caption = props?.route?.params?.caption;
+            tempdatas.response_count = props?.route?.params?.response_count;
+            tempdatas.comment_count = props?.route?.params?.comment_count;
+            tempdatas.liked = props?.route?.params?.liked;
+            tempdatas.album = props?.route?.params?.updateDataPost.album;
+            tempdatas.assets = props?.route?.params?.updateDataPost.assets;
+          } else if (from == "feedProfilCommentAlbum") {
+            tempdatas.caption = props?.route?.params?.data_post?.caption;
+            tempdatas.response_count =
+              props?.route?.params?.data_post?.response_count;
+            tempdatas.comment_count =
+              props?.route?.params?.data_post?.comment_count;
+            tempdatas.liked = props?.route?.params?.data_post?.liked;
+            tempdatas.album = props?.route?.params?.updateDataPost.album;
+            tempdatas.assets = props?.route?.params?.updateDataPost.assets;
+          }
+
+          tempdataIndeks.node = tempdatas;
+          tempdata.splice(indeks, 1, tempdataIndeks);
+          setDatas(tempdata);
+          setIndeksScrollto(indeks);
+          Scroll_to(indeks);
+        }
+      }
+      // if (play == props.route.params.post_id) {
+      //   setShowLoading(true);
+      // }
+    }
+  }, [props.route.params, props.route.params.post_id]);
 
   const [
     MutationLike,
@@ -509,7 +592,7 @@ export default function myfeed(props) {
     props.navigation.navigate("FeedStack", {
       screen: "CommentPost",
       params: {
-        from: "feedProfileComment",
+        from: "feedProfil",
         data: data,
         token: tokenApps,
         ref: ref,
@@ -549,6 +632,27 @@ export default function myfeed(props) {
 
   const ReadLesshendle = (handlePress) => {
     return <View />;
+  };
+
+  const renderViewMore = (onPress) => {
+    return (
+      <Text
+        size="description"
+        type="bold"
+        onPress={onPress}
+        style={{
+          color: "#209fae",
+          marginTop: 2,
+          marginBottom: 5,
+        }}
+      >
+        {t("readMoreCaption")}
+      </Text>
+    );
+  };
+
+  const renderViewLess = (onPress) => {
+    return <Text></Text>;
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -986,7 +1090,7 @@ export default function myfeed(props) {
                   }}
                   size="title"
                   style={{
-                    maxWidth: "85%",
+                    maxWidth: "86%",
                   }}
                   numberOfLines={1}
                 >
@@ -1025,9 +1129,12 @@ export default function myfeed(props) {
                       style={{
                         fontFamily: "Lato-Regular",
                         // marginTop: 7,
+                        maxWidth: "55%",
                       }}
+                      numberOfLines={1}
                     >
-                      <Truncate text={item.node.location_name} length={40} />
+                      {/* <Truncate text={item.node.location_name} length={40} /> */}
+                      {item.node.location_name}
                     </Text>
                   ) : null}
                 </View>
@@ -1218,43 +1325,73 @@ export default function myfeed(props) {
                   <Send_to height={17} width={17} />
                 </Button>
               </View>
+              {/* album */}
               <View
                 style={{
                   width: "100%",
                   padding: 10,
                   flexDirection: "row",
                 }}
-                More
               >
-                {item.node?.album && item.node?.album?.itinerary !== null ? (
+                {item?.node?.album && item?.node?.album?.itinerary !== null ? (
                   <View>
-                    <Pressable
-                      onPress={() => goToItinerary(item.node)}
+                    <View
                       style={{
                         flexDirection: "row",
                         marginBottom: 10,
+                        width: Dimensions.get("screen").width - 40,
                       }}
                     >
                       <View
                         style={{
                           backgroundColor: "#209fae",
-                          height: 23,
+                          // height: 23,
                           width: 7,
                           borderRadius: 4,
                           marginRight: 10,
                           marginLeft: 2,
                         }}
                       />
-                      <Text type="bold" size="title">
-                        {item.node.album.itinerary.name}
-                      </Text>
-                    </Pressable>
+                      <Pressable
+                        onPress={() => goToItinerary(item.node)}
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text size="label" type="bold" style>
+                          {item.node.album.itinerary.name}
+                        </Text>
+                        <Ripple
+                          onPress={() => goToItinerary(item.node)}
+                          style={{
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            borderColor: "#209FAE",
+                            marginLeft: 5,
+                          }}
+                        >
+                          <Text
+                            size="small"
+                            type="regular"
+                            style={{
+                              marginHorizontal: 10,
+                              marginVertical: 3,
+                            }}
+                          >
+                            {t("trip")}
+                          </Text>
+                        </Ripple>
+                      </Pressable>
+                    </View>
                     {item.node.caption ? (
-                      <ReadMore
+                      <ViewMoreText
                         numberOfLines={3}
-                        renderTruncatedFooter={ReadMorehendle}
-                        renderRevealedFooter={ReadLesshendle}
-                        // onReady={this._handleTextReady}
+                        renderViewMore={renderViewMore}
+                        renderViewLess={renderViewLess}
+                        // textStyle={{ color: "#209fae" }}
                       >
                         <Text
                           size="label"
@@ -1265,36 +1402,46 @@ export default function myfeed(props) {
                         >
                           {item.node.caption}
                         </Text>
-                      </ReadMore>
+                      </ViewMoreText>
                     ) : null}
                   </View>
-                ) : item.node.caption ? (
-                  <ReadMore
-                    numberOfLines={3}
-                    renderTruncatedFooter={ReadMorehendle}
-                    renderRevealedFooter={ReadLesshendle}
-                    // onReady={this._handleTextReady}
+                ) : item.node?.caption ? (
+                  <View
+                    style={
+                      {
+                        // marginBottom: 8,
+                      }
+                    }
                   >
-                    <Text
-                      size="label"
-                      style={{
-                        textAlign: "left",
-                        lineHeight: 20,
-                      }}
+                    <ViewMoreText
+                      numberOfLines={3}
+                      renderViewMore={renderViewMore}
+                      renderViewLess={renderViewLess}
                     >
                       <Text
-                        type="bold"
                         size="label"
                         style={{
-                          marginRight: 5,
+                          textAlign: "left",
+                          lineHeight: 20,
+                          marginBottom: 10,
                         }}
                       >
-                        {datauser.first_name}{" "}
-                        {datauser.first_name ? datauser.last_name : null}{" "}
+                        <Text
+                          type="bold"
+                          size="label"
+                          style={{
+                            marginRight: 5,
+                          }}
+                        >
+                          {item.node.user.first_name}{" "}
+                          {item.node.user.first_name
+                            ? item.node.user.last_name
+                            : null}{" "}
+                        </Text>
+                        {item.node?.caption}
                       </Text>
-                      {item.node.caption}
-                    </Text>
-                  </ReadMore>
+                    </ViewMoreText>
+                  </View>
                 ) : null}
               </View>
             </View>
@@ -1472,6 +1619,7 @@ export default function myfeed(props) {
                             isAlbum: true,
                             post_id: selectedOption?.id,
                             from: "feedProfil",
+                            data_post: selectedOption,
                           },
                         })
                       : setModalLogin(true);

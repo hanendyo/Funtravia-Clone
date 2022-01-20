@@ -589,7 +589,7 @@ export default function Trip(props) {
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
                 isVisible={modalcountry}
-                // avoidKeyboard={true}
+                avoidKeyboard={true}
                 style={{
                   marginBottom: -10,
                   justifyContent: "flex-end",
@@ -598,7 +598,7 @@ export default function Trip(props) {
                 }}
               >
                 <KeyboardAvoidingView
-                  // behavior={Platform.OS === "ios" ? "padding" : "position"}
+                  // behavior={Platform.OS === "ios" ? "padding" : "padding"}
                   style={{
                     flex: 1,
                     flexDirection: "column",
@@ -671,7 +671,7 @@ export default function Trip(props) {
                       alignItems: "center",
                       // paddingHorizontal: 10,
                       // marginVertical: 5,
-                      maxHeight: 40,
+                      maxHeight: 45,
                       width: "90%",
                     }}
                   >
@@ -1536,7 +1536,7 @@ export default function Trip(props) {
                 isVisible={modaltravel}
                 style={{
                   margin: 0,
-                  // backgroundColor: "rgba(0, 0, 0, 0.25)",
+                  backgroundColor: "#fff",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "center",

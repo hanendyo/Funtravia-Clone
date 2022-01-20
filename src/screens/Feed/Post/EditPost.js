@@ -273,58 +273,72 @@ export default function EditPost(props) {
           if (from == "funFeed") {
             props.navigation.navigate("FeedScreen", {
               post_id: dataPost.id,
+              caption: caption,
+              data_post: dataPost,
+              from: "funFeedEdit",
+            });
+          } else if (from == "funFeedComment") {
+            props.navigation.navigate({
+              name: "FeedStack",
+              params: {
+                screen: "CommentPost",
+                params: {
+                  post_id: dataPost.id,
+                  caption: caption,
+                  data_post: dataPost,
+                  from: "funFeedCommentEdit",
+                },
+              },
             });
           } else if (from == "feedProfil") {
-            props.navigation.dispatch(
-              CommonActions.navigate({
-                name: "ProfileStack",
+            props.navigation.navigate({
+              name: "ProfileStack",
+              params: {
+                screen: "myfeed",
                 params: {
-                  screen: "myfeed",
-                  params: {
-                    post_id: dataPost.id,
-                  },
+                  post_id: dataPost.id,
+                  caption: caption,
+                  data_post: dataPost,
+                  from: "feedProfilEdit",
                 },
-              })
-            );
+              },
+            });
+          } else if (from == "feedProfilComment") {
+            console.log(`CAPTION FROM EDIT: `, caption);
+            console.log(`POST_ID FROM EDIT: `, dataPost.id);
+            console.log(`DATA_POST FROM EDIT: `, dataPost);
+            props.navigation.navigate({
+              name: "FeedStack",
+              params: {
+                screen: "CommentPost",
+                params: {
+                  post_id: dataPost.id,
+                  caption: caption,
+                  data_post: dataPost,
+                  from: "feedProfilCommentEdit",
+                },
+              },
+            });
           } else if (from == "notificationComment") {
-            props.navigation.dispatch(
-              CommonActions.navigate({
-                name: "FeedStack",
+            props.navigation.navigate({
+              name: "FeedStack",
+              params: {
+                screen: "CommentPost",
                 params: {
-                  screen: "CommentPost",
-                  params: {
-                    post_id: dataPost.id,
-                    from: "notificationComment",
-                  },
+                  post_id: dataPost.id,
+                  edit_fromNotifComment_caption: caption,
+                  edit_fromNotifComment_response_count:
+                    props.route.params.datapost.response_count,
+                  edit_fromNotifComment_comment_count:
+                    props.route.params.datapost.comment_count,
+                  edit_fromNotifComment_liked:
+                    props.route.params.datapost.liked,
+                  from: "notificationCommentEdit",
                 },
-              })
-            );
-          } else if (from == "funFeedComment") {
-            props.navigation.dispatch(
-              CommonActions.navigate({
-                name: "FeedStack",
-                params: {
-                  screen: "CommentPost",
-                  params: {
-                    post_id: dataPost.id,
-                    from: "funFeedComment",
-                  },
-                },
-              })
-            );
-          } else if (from == "feedProfileComment") {
-            props.navigation.dispatch(
-              CommonActions.navigate({
-                name: "FeedStack",
-                params: {
-                  screen: "CommentPost",
-                  params: {
-                    post_id: dataPost.id,
-                    from: "feedProfileComment",
-                  },
-                },
-              })
-            );
+              },
+            });
+          } else {
+            props.navigation.goBack();
           }
         } else {
           setLoading(false);
@@ -450,6 +464,7 @@ export default function EditPost(props) {
                 style={{
                   justifyContent: "center",
                   marginHorizontal: 10,
+                  maxWidth: "80%",
                 }}
               >
                 <Text
@@ -458,6 +473,7 @@ export default function EditPost(props) {
                     fontSize: 14,
                     // marginTop: 7,
                   }}
+                  numberOfLines={1}
                 >
                   {dataPost && dataPost.user ? dataPost.user.first_name : null}{" "}
                   {dataPost.user.last_name ? dataPost.user.last_name : null}
@@ -566,6 +582,7 @@ export default function EditPost(props) {
               }}
             >
               <TextInput
+                autoCorrect={false}
                 multiline
                 placeholder={"Write a caption.."}
                 maxLength={255}
