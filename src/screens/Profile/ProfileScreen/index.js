@@ -101,7 +101,6 @@ export default function OtherProfile(props) {
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
-  console.log("dataalbums", dataalbums);
   const [dataReview, setdataReview] = useState([]);
   const [dataTrip, setdataTrip] = useState([]);
   let [heightbio, setHeightBio] = useState(0);
@@ -696,7 +695,15 @@ export default function OtherProfile(props) {
       headerScrollY.removeAllListeners();
       unsubscribe;
     };
-  }, [routes, tabIndex, props.navigation, tokenApps, heightbio, HeaderHeight]);
+  }, [
+    routes,
+    tabIndex,
+    props.navigation,
+    tokenApps,
+    heightbio,
+    HeaderHeight,
+    props.route.params,
+  ]);
 
   // load data review
   const [

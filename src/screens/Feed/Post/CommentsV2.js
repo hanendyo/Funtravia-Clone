@@ -74,7 +74,7 @@ import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 
 export default function Comments(props) {
-  const from = props.route.params.from;
+  const from = props?.route?.params?.from;
   const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
@@ -88,6 +88,10 @@ export default function Comments(props) {
   const [datasFollow, setDatasFollow] = useState();
   const [modalLogin, setModalLogin] = useState(false);
   const [soon, setSoon] = useState(false);
+  const [tempResponseCount, setTempResponseCount] = useState(
+    props.route.params.response_count
+  );
+  const [tempLiked, setTempLiked] = useState(props.route.params.liked);
 
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
@@ -170,17 +174,66 @@ export default function Comments(props) {
         type="circle"
         variant="transparent"
         onPress={() => {
-          if (from == "notificationComment") {
-            props.navigation.navigate("Notification");
-          } else if (from == "funFeedComment") {
+          if (from == "funFeed") {
             props.navigation.navigate("FeedScreen", {
-              post_id: props.route.params.post_id,
+              post_id: props?.route?.params?.data?.id,
+              caption: props?.route?.params?.data?.caption,
+              response_count: tempResponseCount,
+              liked: tempLiked,
+              from: "funFeedComment",
             });
-          } else if (from == "feedProfileComment") {
-            props.navigation.navigate("ProfileStack", {
-              screen: "myfeed",
+          } else if (from == "funFeedCommentEdit") {
+            props.navigation.navigate("FeedScreen", {
+              post_id: props?.route?.params?.post_id,
+              caption: props?.route?.params?.caption,
+              data_post: props?.route?.params?.data_post,
+              from: "funFeedCommentEdit",
+            });
+          } else if (from == "funFeedCommentAlbum") {
+            props.navigation.navigate("FeedScreen", {
+              post_id: props?.route?.params?.data?.id,
+              caption: props?.route?.params?.data?.caption,
+              response_count: props?.route?.params?.data?.response_count,
+              comment_count: props?.route?.params?.data?.comment_count,
+              liked: props?.route?.params?.data?.liked,
+              from: "funFeedCommentAlbum",
+            });
+          } else if (from == "notificationComment") {
+            props.navigation.navigate("Notification");
+          } else if (from == "notificationCommentEdit") {
+            props.navigation.navigate("Notification");
+          } else if (from == "feedProfilCommentEdit") {
+            console.log(`FEED PROF KOMEN: `, props?.route?.params);
+            props.navigation.navigate({
+              name: "ProfileStack",
               params: {
-                post_id: props.route.params.post_id,
+                screen: "myfeed",
+                params: {
+                  post_id: props?.route?.params?.post_id,
+                  caption: props?.route?.params?.caption,
+                  response_count:
+                    props?.route?.params?.data_post?.response_count,
+                  comment_count: props?.route?.params?.data_post?.comment_count,
+                  liked: props?.route?.params?.data_post?.liked,
+                  from: "feedProfilCommentEdit",
+                },
+              },
+            });
+          } else if (from == "feedProfilCommentAlbum") {
+            props.navigation.navigate({
+              name: "ProfileStack",
+              params: {
+                screen: "myfeed",
+                params: {
+                  post_id: props?.route?.params?.post_id,
+                  caption: props?.route?.params?.data_post?.caption,
+                  response_count:
+                    props?.route?.params?.data_post?.response_count,
+                  comment_count: props?.route?.params?.data_post?.comment_count,
+                  liked: props?.route?.params?.data_post?.liked,
+                  data_post: props?.route?.params?.data_post,
+                  from: "feedProfilCommentAlbum",
+                },
               },
             });
           } else {
@@ -201,8 +254,21 @@ export default function Comments(props) {
     ),
   };
 
+  const checkFrom = (from) => {
+    console.log(`FROM?: `, from);
+    if (from == "funFeed") {
+      return "funFeedComment";
+    } else if (from == "notification") {
+      return "notificationComment";
+    } else if (from == "feedProfil") {
+      return "feedProfilComment";
+    } else {
+      return "none";
+    }
+  };
+
   const loadAsync = async () => {
-    if (!props.route.params.data) {
+    if (!props?.route?.params?.data) {
       await GetPost();
     }
     await GetCommentList();
@@ -242,7 +308,7 @@ export default function Comments(props) {
     });
     // viewcomment;
     return unsubscribe;
-  }, []);
+  }, [props.route.params]);
 
   const [
     GetCommentList,
@@ -479,6 +545,9 @@ export default function Comments(props) {
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
     GetPost();
+    GetCommentList();
+    LoadFollowing();
+    scroll_to_index();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -578,8 +647,10 @@ export default function Comments(props) {
       let tmpData = { ...dataPost };
       tmpData.liked = true;
       tmpData.response_count = tmpData.response_count + 1;
+      setTempResponseCount(tmpData.response_count);
+      setTempLiked(tmpData.liked);
       setDataPost(tmpData);
-      if (!props.route.params._liked) {
+      if (!props?.route?.params?._liked) {
         try {
           let response = await MutationLike({
             variables: {
@@ -603,7 +674,10 @@ export default function Comments(props) {
           setDataPost(tmpData);
         }
       } else {
-        props.route.params._liked(dataPost?.id, props.route.params.indeks);
+        props?.route?.params?._liked(
+          dataPost?.id,
+          props?.route?.params?.indeks
+        );
       }
     }
   };
@@ -616,7 +690,7 @@ export default function Comments(props) {
       tmpData.liked = false;
       tmpData.response_count = tmpData.response_count - 1;
       setDataPost(tmpData);
-      if (!props.route.params._unliked) {
+      if (!props?.route?.params?._unliked) {
         try {
           let response = await MutationunLike({
             variables: {
@@ -636,10 +710,15 @@ export default function Comments(props) {
         } catch (error) {
           tmpData.liked = true;
           tmpData.response_count = tmpData.response_count + 1;
+          setTempResponseCount(tmpData.response_count);
+          setTempLiked(tmpData.liked);
           setDataPost(tmpData);
         }
       } else {
-        props.route.params._unliked(dataPost?.id, props.route.params.indeks);
+        props?.route?.params?._unliked(
+          dataPost?.id,
+          props?.route?.params?.indeks
+        );
       }
     }
   };
@@ -1176,18 +1255,7 @@ export default function Comments(props) {
                     params: {
                       datapost: selectedOption,
                       time: duration(selectedOption?.created_at),
-                      from:
-                        props.route.params.from === "notificationComment"
-                          ? "notificationComment"
-                          : props.route.params.from === "funFeed"
-                          ? "funFeed"
-                          : props.route.params.from === "feedProfile"
-                          ? "feedProfile"
-                          : props.route.params.from === "funFeedComment"
-                          ? "funFeedComment"
-                          : props.route.params.from === "feedProfileComment"
-                          ? "feedProfileComment"
-                          : "none",
+                      from: checkFrom(props.route.params.from),
                     },
                   });
               }}
@@ -1223,23 +1291,85 @@ export default function Comments(props) {
                   borderColor: "#d1d1d1",
                 }}
                 onPress={() => {
-                  setModalMenu(false),
-                    tokenApps
-                      ? props.navigation.push("FeedStack", {
-                          screen: "CreateListAlbum",
-                          params: {
-                            user_id: setting?.user_id,
-                            token: tokenApps,
-                            file: "",
-                            type: "",
-                            location: "",
-                            isAlbum: true,
-                            post_id: selectedOption?.id,
-                            from: "comment",
-                            data_post: selectedOption,
-                          },
-                        })
-                      : setModalLogin(true);
+                  setModalMenu(false);
+                  if (from == "notification") {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "CreateListAlbum",
+                      params: {
+                        user_id: setting?.user_id,
+                        token: tokenApps,
+                        file: "",
+                        type: "",
+                        location: "",
+                        isAlbum: true,
+                        post_id: selectedOption?.id,
+                        from: "notificationComment",
+                        data_post: selectedOption,
+                      },
+                    });
+                  } else if (from == "funFeed") {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "CreateListAlbum",
+                      params: {
+                        user_id: setting?.user_id,
+                        token: tokenApps,
+                        file: "",
+                        type: "",
+                        location: "",
+                        isAlbum: true,
+                        post_id: selectedOption?.id,
+                        from: "funFeedComment",
+                        data_post: selectedOption,
+                      },
+                    });
+                  } else if (from == "funFeedCommentAlbum") {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "CreateListAlbum",
+                      params: {
+                        user_id: setting?.user_id,
+                        token: tokenApps,
+                        file: "",
+                        type: "",
+                        location: "",
+                        isAlbum: true,
+                        post_id: selectedOption?.id,
+                        from: "funFeedComment",
+                        data_post: selectedOption,
+                      },
+                    });
+                  } else if (from == "feedProfil") {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "CreateListAlbum",
+                      params: {
+                        user_id: setting?.user_id,
+                        token: tokenApps,
+                        file: "",
+                        type: "",
+                        location: "",
+                        isAlbum: true,
+                        post_id: selectedOption?.id,
+                        from: "feedProfilComment",
+                        data_post: selectedOption,
+                      },
+                    });
+                  } else if (from == "feedProfilComment") {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "CreateListAlbum",
+                      params: {
+                        user_id: setting?.user_id,
+                        token: tokenApps,
+                        file: "",
+                        type: "",
+                        location: "",
+                        isAlbum: true,
+                        post_id: selectedOption?.id,
+                        from: "feedProfilComment",
+                        data_post: selectedOption,
+                      },
+                    });
+                  } else {
+                    props.navigation.goBack();
+                  }
                 }}
               >
                 <Text
@@ -2043,6 +2173,7 @@ export default function Comments(props) {
               </View>
             ) : null}
             <TextInput
+              autoCorrect={false}
               allowFontScaling={false}
               multiline
               maxLength={1000}
