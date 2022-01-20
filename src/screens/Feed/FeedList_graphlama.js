@@ -517,8 +517,6 @@ export default function FeedList({ props, token }) {
     return unsubscribe;
   }, [props.route.params?.isPost, count]);
 
-  // console.log("async storage : ", AsyncStorage.getItem("userUpload"));
-
   const createPost = () => {
     if (token && token !== null && token !== "") {
       props.navigation.navigate("FeedStack", {

@@ -120,7 +120,6 @@ export default function ListFotoAlbums(props) {
   });
 
   const SubmitAdd = async () => {
-    console.log("submit album");
     try {
       let response = await MutationAddAlbumFeed({
         variables: {
@@ -219,7 +218,6 @@ export default function ListFotoAlbums(props) {
                 })
               );
             } else {
-              console.log("comment");
               props.navigation.dispatch(
                 CommonActions.reset({
                   routes: [

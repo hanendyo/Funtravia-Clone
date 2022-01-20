@@ -304,9 +304,6 @@ export default function EditPost(props) {
               },
             });
           } else if (from == "feedProfilComment") {
-            console.log(`CAPTION FROM EDIT: `, caption);
-            console.log(`POST_ID FROM EDIT: `, dataPost.id);
-            console.log(`DATA_POST FROM EDIT: `, dataPost);
             props.navigation.navigate({
               name: "FeedStack",
               params: {

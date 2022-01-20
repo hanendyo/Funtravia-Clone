@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import {
   Arrowbackblack,
+  Arrowbackiosblack,
   Arrowbackwhite,
   Comboboxup,
   Comboboxdown,
@@ -22,6 +23,7 @@ import {
   CameraBlue,
   Mute,
   Unmute,
+  Arrowbackios,
 } from "../../../assets/svg";
 import {
   Text,
@@ -271,7 +273,6 @@ export default function Post(props) {
       //     const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
       //       .toString(36)
       //       .substring(7)}.${extension}`;
-      //     console.log("~ dest", dest);
       //     let absolutePath = await RNFS.copyAssetsFileIOS(
       //       i.node.image.uri,
       //       dest,
@@ -565,7 +566,11 @@ export default function Post(props) {
                 justifyContent: "flex-start",
               }}
             >
-              <Arrowbackblack height={20} width={20}></Arrowbackblack>
+              {Platform.OS == "ios" ? (
+                <Arrowbackiosblack height={15} width={15}></Arrowbackiosblack>
+              ) : (
+                <Arrowbackblack height={20} width={20}></Arrowbackblack>
+              )}
               <Text
                 type="bold"
                 size="label"
@@ -690,7 +695,11 @@ export default function Post(props) {
             type="circle"
             variant="transparent"
           >
-            <Arrowbackwhite height={20} width={20} />
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
           </Button>
           <Button
             type="icon"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   SafeAreaView,
+  Keyboard,
 } from "react-native";
 import { useLazyQuery } from "@apollo/client";
 import {
@@ -498,6 +499,29 @@ export default function CreateAlbum(props) {
     }
   };
 
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const onKeyboardShow = (event) => {
+    setKeyboardOffset(event.endCoordinates.height);
+  };
+  const onKeyboardHide = () => setKeyboardOffset(0);
+  const keyboardDidShowListener = useRef();
+  const keyboardDidHideListener = useRef();
+  useEffect(() => {
+    keyboardDidShowListener.current = Keyboard.addListener(
+      "keyboardWillShow",
+      onKeyboardShow
+    );
+    keyboardDidHideListener.current = Keyboard.addListener(
+      "keyboardWillHide",
+      onKeyboardHide
+    );
+
+    return () => {
+      keyboardDidShowListener.current.remove();
+      keyboardDidHideListener.current.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -579,13 +603,18 @@ export default function CreateAlbum(props) {
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
+          // scrollEnabled={false}
           style={{
             width: Dimensions.get("screen").width - 100,
-            top: Dimensions.get("screen").height / 3,
+            top:
+              Platform.OS == "ios"
+                ? Dimensions.get("screen").height / 3
+                : Dimensions.get("screen").height / 4.4,
             position: "absolute",
             zIndex: 15,
             alignSelf: "center",
           }}
+          enabled
         >
           <View
             style={{
@@ -597,6 +626,7 @@ export default function CreateAlbum(props) {
             }}
           >
             <View
+              scrollEnabled={false}
               style={{
                 width: "100%",
                 paddingHorizontal: 20,
@@ -643,7 +673,7 @@ export default function CreateAlbum(props) {
                 placeholderStyle={{ fontSize: 50 }}
                 placeholderTextColor="#6C6C6C"
                 style={{
-                  height: Platform.OS === "ios" ? 30 : 50,
+                  height: Platform.OS === "ios" ? 30 : 40,
                   borderRadius: 5,
                   paddingHorizontal: 10,
                   fontSize: 14,

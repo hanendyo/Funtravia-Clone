@@ -677,74 +677,78 @@ export default function TravelGoalList(props) {
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 50, marginTop: 10 }}
               >
-                {datacategory && datacategory.length > 0
-                  ? datacategory.map((item, index) => {
-                      return (
-                        <View
+                {datacategory && datacategory.length > 0 ? (
+                  datacategory.map((item, index) => {
+                    return (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginBottom: 15,
+                          height: 30,
+                        }}
+                        key={index}
+                      >
+                        <CheckBox
+                          onCheckColor="#FFF"
+                          animationDuration={0}
+                          lineWidth={4}
+                          onFillColor="#209FAE"
+                          onTintColor="#209FAE"
+                          boxType={"square"}
                           style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginBottom: 15,
-                            height: 30,
+                            alignSelf: "center",
+                            width: Platform.select({
+                              ios: 30,
+                              android: 35,
+                            }),
+                            transform: Platform.select({
+                              ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                              android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                            }),
                           }}
-                          key={index}
+                          // value={item.idtoogle}
+                          // onValueChange={(newValue) =>
+                          //   Platform.OS == "ios" ? null : setToogle(newValue)
+                          // }
+                          value={item["checked"]}
+                          onValueChange={(newValue) =>
+                            _handleCheck(item["id"], index, item)
+                          }
+                        />
+                        <Pressable
+                          onPress={() => _handleCheck(item["id"], index, item)}
+                          style={{
+                            // borderWidth: 1,
+                            width: "80%",
+                            height: "100%",
+                            justifyContent: "center",
+                          }}
                         >
-                          <CheckBox
-                            onCheckColor="#FFF"
-                            animationDuration={0}
-                            lineWidth={4}
-                            onFillColor="#209FAE"
-                            onTintColor="#209FAE"
-                            boxType={"square"}
+                          <Text
+                            size="label"
+                            type="regular"
                             style={{
-                              alignSelf: "center",
-                              width: Platform.select({
-                                ios: 30,
-                                android: 35,
-                              }),
-                              transform: Platform.select({
-                                ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                                android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                              }),
-                            }}
-                            // value={item.idtoogle}
-                            // onValueChange={(newValue) =>
-                            //   Platform.OS == "ios" ? null : setToogle(newValue)
-                            // }
-                            value={item["checked"]}
-                            onValueChange={(newValue) =>
-                              _handleCheck(item["id"], index, item)
-                            }
-                          />
-                          <Pressable
-                            onPress={() =>
-                              _handleCheck(item["id"], index, item)
-                            }
-                            style={{
-                              // borderWidth: 1,
-                              width: "80%",
-                              height: "100%",
-                              justifyContent: "center",
+                              marginLeft: 0,
+                              marginRight: -10,
+                              color: "#464646",
+                              marginTop: Platform.OS == "ios" ? -5 : -2,
+                              // borderWidth: 5,
                             }}
                           >
-                            <Text
-                              size="label"
-                              type="regular"
-                              style={{
-                                marginLeft: 0,
-                                marginRight: -10,
-                                color: "#464646",
-                                marginTop: Platform.OS == "ios" ? -5 : -2,
-                                // borderWidth: 5,
-                              }}
-                            >
-                              {item["name"]}
-                            </Text>
-                          </Pressable>
-                        </View>
-                      );
-                    })
-                  : null}
+                            {item["name"]}
+                          </Text>
+                        </Pressable>
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={{ alignItems: "center" }}>
+                    <Text size="description" type="regular">
+                      {t("noData")}
+                    </Text>
+                  </View>
+                )}
               </ScrollView>
             </View>
           </View>
