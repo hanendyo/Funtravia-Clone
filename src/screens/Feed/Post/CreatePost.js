@@ -219,8 +219,9 @@ export default function CreatePost(props) {
         let typeExt = item?.node?.image?.filename.split(".");
         if (typeMedia[0] === "video") {
           const data = new ReactNativeFile({
-            // uri: item?.node?.image?.uri,
-            uri: item?.node?.image?.path,
+            uri: item?.node?.image?.uri,
+            // uri: item?.node?.image?.originalPath,
+            // uri: item?.node?.image?.path,
             type: `video/${typeExt[typeExt.length - 1]}`,
             name: item?.node?.image?.filename,
           });
@@ -380,7 +381,6 @@ export default function CreatePost(props) {
   const [time, setTime] = useState(false);
 
   const durationTime = (data) => {
-    console.log(data);
     data.currentTime < 60.0 ? setTime(false) : setTime(true);
   };
 
