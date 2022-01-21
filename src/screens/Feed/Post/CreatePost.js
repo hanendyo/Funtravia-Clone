@@ -32,6 +32,7 @@ import {
   Arrowbackwhite,
   Xgrey,
   AlbumFeedBiru,
+  Arrowbackios,
 } from "../../../assets/svg";
 import Ripple from "react-native-material-ripple";
 import { ScrollView } from "react-native-gesture-handler";
@@ -83,7 +84,6 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
-  console.log("~Create Post props", props);
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const isFocused = useIsFocused();
@@ -590,7 +590,11 @@ export default function CreatePost(props) {
               type="circle"
               variant="transparent"
             >
-              <Arrowbackwhite height={20} width={20} />
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
             </Button>
             <View
               style={{

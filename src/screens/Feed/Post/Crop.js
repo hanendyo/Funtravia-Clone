@@ -126,7 +126,6 @@ export default function Crop(props) {
     for (var i in tempData) {
       if (tempData[i].node.type.substr(0, 5) == "video") {
         if (Platform.OS == "ios") {
-          console.log("masuk ios");
           let extension = tempData[i].node.image.filename.split(".").pop();
           const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
             .toString(36)
@@ -234,7 +233,6 @@ export default function Crop(props) {
       }
     }
 
-    console.log("data di function necxt", data);
     props.navigation.dispatch(
       StackActions.replace("FeedStack", {
         screen: "CreatePostScreen",

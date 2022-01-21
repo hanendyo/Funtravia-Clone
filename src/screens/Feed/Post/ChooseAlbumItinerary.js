@@ -289,7 +289,6 @@ export default function ChooseAlbumItinerary(props) {
                 marginTop: 20,
               }}
             >
-              {console.log(item)}
               <View
                 style={{
                   width: Dimensions.get("screen").width / 3 - 20,
@@ -342,7 +341,10 @@ export default function ChooseAlbumItinerary(props) {
               Platform.OS == "ios"
                 ? Dimensions.get("screen").width - 70
                 : Dimensions.get("screen").width - 100,
-            top: Dimensions.get("screen").height / 3,
+            top:
+              Platform.OS == "android"
+                ? Dimensions.get("screen").height / 5
+                : Dimensions.get("screen").height / 3,
             position: "absolute",
             zIndex: 15,
             alignSelf: "center",
@@ -401,7 +403,7 @@ export default function ChooseAlbumItinerary(props) {
                 placeholderStyle={{ fontSize: 50 }}
                 placeholderTextColor="#6C6C6C"
                 style={{
-                  height: 50,
+                  height: Platform.OS === "ios" ? 30 : 40,
                   borderRadius: 5,
                   paddingHorizontal: 10,
                   fontSize: 14,

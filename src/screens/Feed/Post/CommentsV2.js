@@ -203,7 +203,6 @@ export default function Comments(props) {
           } else if (from == "notificationCommentEdit") {
             props.navigation.navigate("Notification");
           } else if (from == "feedProfilCommentEdit") {
-            console.log(`FEED PROF KOMEN: `, props?.route?.params);
             props.navigation.navigate({
               name: "ProfileStack",
               params: {
@@ -255,7 +254,6 @@ export default function Comments(props) {
   };
 
   const checkFrom = (from) => {
-    console.log(`FROM?: `, from);
     if (from == "funFeed") {
       return "funFeedComment";
     } else if (from == "notification") {
