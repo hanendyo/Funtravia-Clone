@@ -156,6 +156,8 @@ export default function detailCustomItinerary(props) {
     await setDataChild(dataX);
   };
 
+  console.log("datacurrent", dataParent);
+
   const OpenModaldate = (starts, duration) => {
     setModaldate(true);
 
@@ -2227,9 +2229,9 @@ export default function detailCustomItinerary(props) {
                   }
                 >
                   {hour.map((item, index) => {
-                    return (
+                    return item >= hourFrom ? (
                       <Picker.Item key={index} label={item} value={item} />
-                    );
+                    ) : null;
                   })}
                 </Picker>
               </View>
@@ -2285,9 +2287,11 @@ export default function detailCustomItinerary(props) {
                   }
                 >
                   {minute.map((item, index) => {
-                    return (
-                      <Picker.Item key={index} label={item} value={item} />
-                    );
+                    return hourFrom === hourTo && item > minuteFrom ? (
+                      <Picker.Item key={""} label={item + ""} value={item} />
+                    ) : hourTo > hourFrom ? (
+                      <Picker.Item key={""} label={item + ""} value={item} />
+                    ) : null;
                   })}
                 </Picker>
               </View>
