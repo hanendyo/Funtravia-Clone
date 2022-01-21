@@ -5813,8 +5813,11 @@ export default function ItineraryDetail(props) {
                       color: "#209fae",
                       fontFamily: "Lato-Regular",
                     }}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setjamstart(itemValue)
+                    onValueChange={
+                      (itemValue, itemIndex) => (
+                        setjamstart(itemValue), setjamend(itemValue)
+                      )
+                      // setjamend(itemValue))
                     }
                   >
                     {jams.map((item, index) => {
@@ -5926,9 +5929,9 @@ export default function ItineraryDetail(props) {
                     }
                   >
                     {jams.map((item, index) => {
-                      return (
+                      return item >= jamstart ? (
                         <Picker.Item key={item} label={item} value={item} />
-                      );
+                      ) : null;
                     })}
                   </Picker>
                 </View>
@@ -5978,9 +5981,11 @@ export default function ItineraryDetail(props) {
                     }
                   >
                     {menits.map((item, index) => {
-                      return (
+                      return jamstart === jamend && item > menitstart ? (
                         <Picker.Item key={""} label={item + ""} value={item} />
-                      );
+                      ) : jamend > jamstart ? (
+                        <Picker.Item key={""} label={item + ""} value={item} />
+                      ) : null;
                     })}
                   </Picker>
                 </View>
