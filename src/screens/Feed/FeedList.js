@@ -213,6 +213,7 @@ export default function FeedList({ props, token }) {
     props.route.params.updateDataPost,
     props.route.params.allTime,
     timeMiliSecond,
+    props.route.params,
   ]);
 
   //! kesini
@@ -237,13 +238,6 @@ export default function FeedList({ props, token }) {
             tempdatas.comment_count =
               props?.route?.params?.data_post?.comment_count;
             tempdatas.liked = props?.route?.params?.data_post?.liked;
-          } else if (from == "funFeedComment") {
-            //! dalam perbaikan
-            tempdatas.caption = props?.route?.params?.caption;
-            // tempdatas.response_count =
-            //   props?.route?.params?.funFeedComment_response_count;
-            // tempdatas.liked = props?.route?.params?.funFeedComment_liked;
-            // tempdatas.comment_count = props?.route?.params?.comment_count
           } else if (from == "funFeedCommentEdit") {
             tempdatas.caption = props?.route?.params?.caption;
             tempdatas.response_count =
@@ -263,7 +257,6 @@ export default function FeedList({ props, token }) {
             tempdatas.liked = props?.route?.params?.liked;
           }
           tempdataIndeks.node = tempdatas;
-
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDataFeed(tempdata);
           setIndeksScrollto(indeks);
@@ -347,7 +340,6 @@ export default function FeedList({ props, token }) {
   const _liked = async (id, index) => {
     let tempData = [...dataFeed];
     index = tempData.findIndex((k) => k["node"]["id"] === id);
-
     if (index !== -1) {
       if (activelike) {
         if (tokenApps) {
@@ -358,7 +350,6 @@ export default function FeedList({ props, token }) {
           tempDatas.liked = true;
           tempDatas.response_count = tempDatas.response_count + 1;
           tempData_all.node = tempDatas;
-
           tempData.splice(index, 1, tempData_all);
           setDataFeed(tempData);
           try {
@@ -383,7 +374,6 @@ export default function FeedList({ props, token }) {
             tempDatas.liked = false;
             tempDatas.response_count = tempDatas.response_count - 1;
             tempData_all.node = tempDatas;
-
             tempData.splice(index, 1, tempData_all);
             setDataFeed(tempData);
           }
@@ -396,6 +386,7 @@ export default function FeedList({ props, token }) {
 
   const _unliked = async (id, index) => {
     let tempData = [...dataFeed];
+    index = tempData.findIndex((k) => k.node["id"] === id);
     if (index !== -1) {
       if (activelike) {
         if (tokenApps) {
@@ -406,7 +397,6 @@ export default function FeedList({ props, token }) {
           tempDatas.liked = false;
           tempDatas.response_count = tempDatas.response_count - 1;
           tempData_all.node = tempDatas;
-
           tempData.splice(index, 1, tempData_all);
           setDataFeed(tempData);
           try {
@@ -422,8 +412,6 @@ export default function FeedList({ props, token }) {
               } else {
                 throw new Error(response.data.unlike_post.message);
               }
-
-              // Alert.alert('Succes');
             }
           } catch (error) {
             setactivelike(true);
@@ -433,7 +421,6 @@ export default function FeedList({ props, token }) {
             tempDatas.liked = true;
             tempDatas.response_count = tempDatas.response_count + 1;
             tempData_all.node = tempDatas;
-
             tempData.splice(index, 1, tempData_all);
             setDataFeed(tempData);
           }
@@ -582,8 +569,9 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const loadAsync = async () => {
-    await LoadFollowing();
+  const loadAsync = () => {
+    LoadFollowing();
+    refetch();
   };
 
   useEffect(() => {

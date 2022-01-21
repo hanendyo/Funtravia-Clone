@@ -67,6 +67,7 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
+  console.log("🚀 ~ file: Feed.js ~ line 70 ~ myfeed ~ MYFEED---> ", props);
   const from = props.route.params.from;
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
@@ -142,7 +143,11 @@ export default function myfeed(props) {
   let [muted, setMuted] = useState(true);
   let [activelike, setactivelike] = useState(true);
   // let [setting, setSetting] = useState();
-  let [datas, setDatas] = useState(props.route.params.dataPost);
+  let [datas, setDatas] = useState(
+    props.route.params.data_post
+      ? props.route.params.data_post
+      : props.route.params.dataPost
+  );
   let [showLoading, setShowLoading] = useState(false);
 
   const Scroll_to = async (index) => {
@@ -156,44 +161,6 @@ export default function myfeed(props) {
       }
     }, 200);
   };
-
-  const {
-    data: datapost,
-    loading: loadingpost,
-    error: errorpost,
-    fetchMore,
-    refetch,
-    networkStatus,
-  } = useQuery(User_Post, {
-    options: {
-      fetchPolicy: "network-only",
-      errorPolicy: "ignore",
-    },
-    variables: {
-      user_id: datauser?.id,
-      limit: 15,
-      offset: 0,
-    },
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: tokenApps,
-      },
-    },
-    notifyOnNetworkStatusChange: true,
-    onCompleted: async () => {
-      // await setDatas(datapost?.user_post_paging?.datas);
-      // const tempData = [...datapost?.user_post_paging?.datas];
-      // const indeks = tempData.findIndex(
-      //   (k) => k["id"] == props.route.params.post_id
-      // );
-      // if (indeks != -1) {
-      //   await setIndeksScrollto(indeks);
-      //   await Scroll_to(indeks);
-      // }
-    },
-  });
-
   // refetch feed
   const {
     loading: loadingFeed,
@@ -204,8 +171,8 @@ export default function myfeed(props) {
     networkStatus: networkStatusFeed,
   } = useQuery(PostCursorBased, {
     variables: {
-      user_id: props?.route?.params?.idUser,
-      first: 18,
+      user_id: datauser?.id,
+      first: 20,
       after: "",
     },
     context: {
@@ -220,7 +187,9 @@ export default function myfeed(props) {
     },
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      setDatas(dataFeed?.user_post_cursor_based?.edges);
+      if (dataFeed) {
+        setDatas(dataFeed?.user_post_cursor_based?.edges);
+      }
     },
   });
 
@@ -246,13 +215,9 @@ export default function myfeed(props) {
     },
   });
 
-  const loadasync = async () => {
-    // let setsetting = await AsyncStorage.getItem("setting");
-    // setSetting(JSON.parse(setsetting));
-    // let user = await AsyncStorage.getItem("setting");
-    // user = JSON.parse(user);
-    // await setuser(user.user);
-    await LoadFollowing();
+  const loadasync = () => {
+    LoadFollowing();
+    refetchFeed();
   };
 
   const [
@@ -302,25 +267,6 @@ export default function myfeed(props) {
     props.navigation.setOptions(HeaderComponent);
     loadasync();
     if (props.route.params) {
-      if (props.route.params.isItinerary === true) {
-        Refresh();
-      }
-
-      if (props.route.params.isComment === true) {
-        // Refresh();
-        if (ref) {
-          // ref?.current.scrollToIndex({ animated: true, index: 0 });
-          props.route.params.isComment = false;
-        }
-      }
-      if (props.route.params.isTag === true) {
-        refetch();
-        // if (ref) {
-        // ref?.current.scrollToIndex({ animated: true, index: 0 });
-        // }
-      }
-    }
-    if (props.route.params) {
       if (props.route.params.updateDataPost) {
         let tempdata = [...datas];
         if (tempdata) {
@@ -333,7 +279,6 @@ export default function myfeed(props) {
           tempdatas.comment_count = props.route.params.comment_count;
           tempdatas.response_count = props.route.params.response_count;
           tempdatas.liked = props.route.params.liked;
-
           tempdataIndeks.node = tempdatas;
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDatas(tempdata);
@@ -342,7 +287,9 @@ export default function myfeed(props) {
         }
       }
       if (props.route.params.isProfil) {
-        let tempdata = [...props.route.params.dataPost];
+        let tempdata = props.route.params.data_post
+          ? [...props.route.params.data_post]
+          : [...props.route.params.dataPost];
         if (tempdata) {
           let indeks = tempdata.findIndex(
             (k) => k.node["id"] == props.route.params.post_id
@@ -363,8 +310,10 @@ export default function myfeed(props) {
     props.route.params.isProfil,
     props.route.params.post_id,
     props.route.params.dataPost,
+    props.route.params.data_post,
     play,
     props.navigation,
+    props.route.params,
   ]);
 
   // after edit post
@@ -422,7 +371,7 @@ export default function myfeed(props) {
       //   setShowLoading(true);
       // }
     }
-  }, [props.route.params, props.route.params.post_id]);
+  }, [props.route.params]);
 
   const [
     MutationLike,
@@ -658,7 +607,7 @@ export default function myfeed(props) {
   const [refreshing, setRefreshing] = useState(false);
   const Refresh = React.useCallback(() => {
     setRefreshing(true);
-    refetch();
+    refetchFeed();
     wait(1000).then(() => {
       setRefreshing(false);
     });
@@ -705,21 +654,21 @@ export default function myfeed(props) {
 
   const [datasFollow, setDatasFollow] = useState();
 
-  const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
-    FollowingQuery,
-    {
-      fetchPolicy: "network-only",
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: tokenApps,
-        },
+  const [
+    LoadFollowing,
+    { data: dataFollow, loading, error, refetch: refetchFollowing },
+  ] = useLazyQuery(FollowingQuery, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: tokenApps,
       },
-      onCompleted: () => {
-        setDatasFollow(dataFollow?.user_following);
-      },
-    }
-  );
+    },
+    onCompleted: () => {
+      setDatasFollow(dataFollow?.user_following);
+    },
+  });
 
   const [
     UnfollowMutation,
@@ -1110,7 +1059,7 @@ export default function myfeed(props) {
                       // marginTop: 7,
                     }}
                   >
-                    {duration(item.node.created_at)}
+                    {duration(item?.node?.created_at)}
                   </Text>
                   {item.node.location_name ? (
                     <View
@@ -1272,7 +1221,7 @@ export default function myfeed(props) {
                       viewcomment(
                         item.node,
                         index,
-                        duration(item.node.created_at)
+                        duration(item?.node?.created_at)
                       )
                     }
                     type="icon"

@@ -83,7 +83,7 @@ export default function ImageSlide({ aler, setClose }) {
                 alignItems: "center",
               }}
             >
-              <Errors width={70} height={70} style={{ marginBottom: 15 }} />
+              <Errors width={70} height={70} style={{ marginBottom: 20 }} />
               <Text
                 size="label"
                 type="bold"
