@@ -74,6 +74,7 @@ import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 
 export default function Comments(props) {
+  const updateDataPost = props?.route?.params?.updateDataPost;
   const from = props?.route?.params?.from;
   const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
@@ -88,10 +89,6 @@ export default function Comments(props) {
   const [datasFollow, setDatasFollow] = useState();
   const [modalLogin, setModalLogin] = useState(false);
   const [soon, setSoon] = useState(false);
-  const [tempResponseCount, setTempResponseCount] = useState(
-    props.route.params.response_count
-  );
-  const [tempLiked, setTempLiked] = useState(props.route.params.liked);
 
   let [selectedOption, SetOption] = useState({});
   let slider = useRef();
@@ -178,8 +175,9 @@ export default function Comments(props) {
             props.navigation.navigate("FeedScreen", {
               post_id: props?.route?.params?.data?.id,
               caption: props?.route?.params?.data?.caption,
-              response_count: tempResponseCount,
-              liked: tempLiked,
+              response_count: props?.route?.params?.data?.response_count,
+              comment_count: props?.route?.params?.data?.comment_count,
+              liked: props?.route?.params?.data?.liked,
               from: "funFeedComment",
             });
           } else if (from == "funFeedCommentEdit") {
@@ -203,7 +201,6 @@ export default function Comments(props) {
           } else if (from == "notificationCommentEdit") {
             props.navigation.navigate("Notification");
           } else if (from == "feedProfilCommentEdit") {
-            console.log(`FEED PROF KOMEN: `, props?.route?.params);
             props.navigation.navigate({
               name: "ProfileStack",
               params: {
@@ -255,7 +252,6 @@ export default function Comments(props) {
   };
 
   const checkFrom = (from) => {
-    console.log(`FROM?: `, from);
     if (from == "funFeed") {
       return "funFeedComment";
     } else if (from == "notification") {
@@ -267,48 +263,52 @@ export default function Comments(props) {
     }
   };
 
-  const loadAsync = async () => {
+  const loadAsync = () => {
     if (!props?.route?.params?.data) {
-      await GetPost();
     }
-    await GetCommentList();
-    await LoadFollowing();
-    await scroll_to_index();
+    GetPost();
+    GetCommentList();
+    LoadFollowing();
+    scroll_to_index();
   };
 
-  // const backAction = () => {
-  //   props.navigation.goBack();
-  //   return true;
-  // };
+  const backAction = () => {
+    props.navigation.goBack();
+    return true;
+  };
 
-  // useEffect(() => {
-  //   BackHandler.addEventListener("hardwareBackPress", backAction);
-  //   return () =>
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  // }, [backAction]);
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
 
-  // useEffect(() => {
-  //   props.navigation.addListener("blur", () => {
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  //   });
-  // }, [backAction]);
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     if (props?.route?.params?.data) {
-      setDataPost({ ...props?.route?.params?.data });
+      // setDataPost({ ...props?.route?.params?.data });
       setIdPost(props?.route?.params?.data?.id);
     } else {
       setIdComment(props?.route?.params?.comment_id);
       setIdPost(props?.route?.params?.post_id);
     }
-    const unsubscribe = props.navigation.addListener("focus", async () => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
       // Refresh();
     });
     // viewcomment;
     return unsubscribe;
-  }, [props.route.params]);
+  }, [props.route.params, props.navigation]);
 
   const [
     GetCommentList,
@@ -337,7 +337,12 @@ export default function Comments(props) {
 
   const [
     GetPost,
-    { data: queryDataPost, loading: queryLoadingPost, error: queryErrorPost },
+    {
+      data: queryDataPost,
+      loading: queryLoadingPost,
+      error: queryErrorPost,
+      refetch,
+    },
   ] = useLazyQuery(FeedByID, {
     fetchPolicy: "network-only",
     variables: { post_id: idPost },
@@ -347,7 +352,7 @@ export default function Comments(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: async () => {
+    onCompleted: () => {
       setDataPost(queryDataPost?.feed_post_byid);
     },
   });
@@ -647,8 +652,6 @@ export default function Comments(props) {
       let tmpData = { ...dataPost };
       tmpData.liked = true;
       tmpData.response_count = tmpData.response_count + 1;
-      setTempResponseCount(tmpData.response_count);
-      setTempLiked(tmpData.liked);
       setDataPost(tmpData);
       if (!props?.route?.params?._liked) {
         try {
@@ -668,7 +671,6 @@ export default function Comments(props) {
           }
         } catch (error) {
           let tmpData = { ...dataPost };
-
           tmpData.liked = false;
           tmpData.response_count = tmpData.response_count - 1;
           setDataPost(tmpData);
@@ -710,8 +712,6 @@ export default function Comments(props) {
         } catch (error) {
           tmpData.liked = true;
           tmpData.response_count = tmpData.response_count + 1;
-          setTempResponseCount(tmpData.response_count);
-          setTempLiked(tmpData.liked);
           setDataPost(tmpData);
         }
       } else {
@@ -947,6 +947,8 @@ export default function Comments(props) {
       if (response.data.remove_albums_post.code == 200) {
         setModalMenu(false);
         GetPost();
+        // loadAsync();
+        updateDataPost = null;
       } else {
         RNToasty({
           title: t("failRemoveTagAlbum"),
@@ -1353,6 +1355,7 @@ export default function Comments(props) {
                       },
                     });
                   } else if (from == "feedProfilComment") {
+                    //kalo gajadi tag album, abis itu mau ngetag lagi
                     props.navigation.navigate("FeedStack", {
                       screen: "CreateListAlbum",
                       params: {
@@ -1895,12 +1898,6 @@ export default function Comments(props) {
 
                   <Button
                     onPress={() =>
-                      // props.navigation.push("FeedStack", {
-                      //   screen: "SendPost",
-                      //   params: {
-                      //     post: dataPost,
-                      //   },
-                      // })
                       tokenApps
                         ? props.navigation.navigate("ChatStack", {
                             screen: "SendToChat",
@@ -2005,7 +2002,7 @@ export default function Comments(props) {
                       </Text>
                     </ReadMore>
                   ) : null} */}
-                  {dataPost?.album && dataPost?.album?.itinerary !== null ? (
+                  {dataPost?.album && dataPost?.album?.itinerary ? (
                     <View>
                       <View
                         style={{
@@ -2053,7 +2050,7 @@ export default function Comments(props) {
                                 marginVertical: 3,
                               }}
                             >
-                              Trip
+                              {t("trip")}
                             </Text>
                           </Ripple>
                         </Pressable>

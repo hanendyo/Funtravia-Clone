@@ -18,7 +18,7 @@ export default function ListFotoAlbums(props) {
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const [show, setShow] = useState(true);
-  // const from = props.route.params.from;
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -120,7 +120,6 @@ export default function ListFotoAlbums(props) {
   });
 
   const SubmitAdd = async () => {
-    console.log("submit album");
     try {
       let response = await MutationAddAlbumFeed({
         variables: {
@@ -151,75 +150,64 @@ export default function ListFotoAlbums(props) {
                 comment_count: props.route.params.data_post.comment_count,
                 liked: props.route.params.data_post.liked,
                 from: "funFeedAlbum",
-                test: "test",
               });
             } else if (from == "funFeedComment") {
-              props.navigation.dispatch(
-                CommonActions.navigate({
-                  name: "FeedStack",
+              props.navigation.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
                   params: {
-                    screen: "CommentPost",
-                    params: {
-                      updateDataPost: response.data.link_post_to_album.data,
-                      from: "funFeedCommentAlbum",
-                    },
+                    updateDataPost: response.data.link_post_to_album.data,
+                    from: "funFeedCommentAlbum",
                   },
-                })
-              );
+                },
+              });
             } else if (from == "feedProfil") {
-              props.navigation.dispatch(
-                CommonActions.navigate({
-                  name: "ProfileStack",
+              props.navigation.navigate({
+                name: "ProfileStack",
+                params: {
+                  screen: "myfeed",
                   params: {
-                    screen: "myfeed",
-                    params: {
-                      datauser: setting?.user,
-                      updateDataPost: response.data.link_post_to_album.data,
-                      caption: props.route.params.data_post.caption,
-                      response_count:
-                        props.route.params.data_post.response_count,
-                      comment_count: props.route.params.data_post.comment_count,
-                      liked: props.route.params.data_post.liked,
-                      from: "feedProfilAlbum",
-                    },
+                    datauser: setting?.user,
+                    updateDataPost: response.data.link_post_to_album.data,
+                    caption: props.route.params.data_post.caption,
+                    response_count: props.route.params.data_post.response_count,
+                    comment_count: props.route.params.data_post.comment_count,
+                    liked: props.route.params.data_post.liked,
+                    from: "feedProfilAlbum",
                   },
-                })
-              );
+                },
+              });
             } else if (from == "feedProfilComment") {
-              props.navigation.dispatch(
-                CommonActions.navigate({
-                  name: "FeedStack",
+              props.navigation.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
                   params: {
-                    screen: "CommentPost",
-                    params: {
-                      datauser: setting?.user,
-                      updateDataPost: response.data.link_post_to_album.data,
-                      data_post: props.route.params.data_post,
-                      // caption: props.route.params.data_post.caption,
-                      // response_count:
-                      //   props.route.params.data_post.response_count,
-                      // comment_count: props.route.params.data_post.comment_count,
-                      // liked: props.route.params.data_post.liked,
-                      from: "feedProfilCommentAlbum",
-                    },
+                    datauser: setting?.user,
+                    updateDataPost: response.data.link_post_to_album.data,
+                    data_post: props.route.params.data_post,
+                    // caption: props.route.params.data_post.caption,
+                    // response_count:
+                    //   props.route.params.data_post.response_count,
+                    // comment_count: props.route.params.data_post.comment_count,
+                    // liked: props.route.params.data_post.liked,
+                    from: "feedProfilCommentAlbum",
                   },
-                })
-              );
+                },
+              });
             } else if (from == "notificationComment") {
-              props.navigation.dispatch(
-                CommonActions.navigate({
-                  name: "FeedStack",
+              props.navigation.navigate({
+                name: "FeedStack",
+                params: {
+                  screen: "CommentPost",
                   params: {
-                    screen: "CommentPost",
-                    params: {
-                      updateDataPost: response.data.link_post_to_album.data,
-                      from: "notificationCommentAlbum",
-                    },
+                    updateDataPost: response.data.link_post_to_album.data,
+                    from: "notificationCommentAlbum",
                   },
-                })
-              );
+                },
+              });
             } else {
-              console.log("comment");
               props.navigation.dispatch(
                 CommonActions.reset({
                   routes: [
