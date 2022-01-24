@@ -2,10 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   StyleSheet,
-  ImageBackground,
   Dimensions,
   FlatList,
-  Alert,
   TextInput,
   ScrollView,
   TouchableOpacity,
@@ -29,24 +27,22 @@ import RegionList_v2 from "../../graphQL/Query/Countries/PopularDestination";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/react-hooks";
 import CheckBox from "@react-native-community/checkbox";
-import Fillter from "./Fillter/index";
-import { Arrowbackwhite, OptionsVertWhite } from "../../assets/svg";
+import { Arrowbackwhite } from "../../assets/svg";
 import FastImage from "react-native-fast-image";
-import {
-  Button,
-  Text,
-  Truncate,
-  Capital,
-  FunImageBackground,
-  FunImage,
-} from "../../component";
+import { Button, Text, Truncate, Capital, FunImage } from "../../component";
 import { useSelector } from "react-redux";
-import normalize from "react-native-normalize";
 
 export default function AllDestination(props) {
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   const scrollY = useRef(new Animated.Value(1));
+  const [filterRegion, setFilterRegion] = useState([]);
+  console.log("~ filterRegion", filterRegion);
+  const [regionName, setRegionName] = useState([]);
+  const [region, setRegion] = useState("");
+  let [select_region, setRegionSelecteds] = useState([]);
+  let [tempDataSelected, setTempDataSelected] = useState([]);
+  console.log("~ tempDataSelected", tempDataSelected);
 
   const HeaderComponent = {
     headerShown: true,
@@ -95,7 +91,7 @@ export default function AllDestination(props) {
 
   const [dataResult, setDataResult] = useState([]);
   const [show, setShow] = useState(false);
-  const [totalCity, setTotalCity] = useState(null);
+  const [totalCity, setTotalCity] = useState(0);
 
   const _getAllData = (data) => {
     let tempData = [...data?.populer_city_destination_v2];
@@ -104,7 +100,7 @@ export default function AllDestination(props) {
     for (let i = 0; i < tempData.length; i++) {
       temp.push(tempData[i].city.length);
     }
-    setTotalCity(temp.reduce((a, b) => a + b));
+    setTotalCity(temp.reduce((a, b) => a + b, 0));
   };
 
   const [GetRegionList, { data, loading, error }] = useLazyQuery(
@@ -113,7 +109,7 @@ export default function AllDestination(props) {
       fetchPolicy: "network-only",
       variables: {
         keyword: search.keyword ? search.keyword : "",
-        type: search.type ? search.type : null,
+        type: select_region ? select_region : null,
       },
       headers: {
         "Content-Type": "application/json",
@@ -127,12 +123,11 @@ export default function AllDestination(props) {
   );
 
   //Filter Region
-  const [filterRegion, setFilterRegion] = useState([]);
 
   const searchRegion = async (input) => {
     let search = new RegExp(input, "i");
-    let result = filterRegion.filter((item) => search.test(item.name));
-    setRegionName(result);
+    let result = regionName.filter((item) => search.test(item.name));
+    setFilterRegion(result);
   };
 
   const clearSearchRegion = async (input) => {
@@ -150,30 +145,27 @@ export default function AllDestination(props) {
     _getAllData(dataResult);
   };
 
-  const [regionName, setRegionName] = useState([]);
-  const [region, setRegion] = useState("");
-
-  const ClearAllFilter = () => {
-    let temp = [...regionName];
+  const ClearAllFilter = async () => {
+    let temp = [...filterRegion];
     let tempData = [];
     for (var x of temp) {
       let data = { ...x };
-      data.checked = false;
+      if (data.checked == true) {
+        data.checked = false;
+      }
       tempData.push(data);
     }
-    setRegionName(tempData);
-
-    let dataSearch = {
-      type: null,
-      keyword: "",
-    };
-    setSearch(dataSearch);
-    setShow(false);
+    await setRegionName(tempData);
+    await setFilterRegion(tempData);
+    await setTempDataSelected(tempData);
+    await setRegionSelecteds([]);
+    await setShow(false);
+    await setRegion("");
   };
 
   //Handle Checkbox
   const handleCheck = (id, item, index) => {
-    let temp = [...filterRegion];
+    let temp = [...regionName];
     let selected = { ...item };
     selected.checked = !selected.checked;
     let idx = temp.findIndex((key) => key.id === id);
@@ -184,19 +176,19 @@ export default function AllDestination(props) {
 
   //Handle Update Filter
   const UpdateFilter = async () => {
-    let result = [];
-    for (let data of regionName) {
-      if (data.checked === true) {
-        result.push(data.id);
+    let idselected = [];
+    let tempDataSelecteds = [];
+    let tempData = [...regionName];
+    for (var i in tempData) {
+      if (tempData[i].checked == true) {
+        idselected.push(tempData[i].id);
+        tempDataSelecteds.push(tempData);
       }
     }
-
-    let filterResult = { ...search };
-    filterResult["type"] = result;
-
-    await setSearch(filterResult);
+    await setTempDataSelected(tempData);
+    await setRegionSelecteds(idselected);
+    await setRegion("");
     await setShow(false);
-    await GetRegionList();
   };
 
   const [
@@ -204,9 +196,18 @@ export default function AllDestination(props) {
     { data: dataFillter, loading: loadingcat, error: errorcat },
   ] = useLazyQuery(Continent, {
     fetchPolicy: "network-only",
-    onCompleted: () => {
-      setRegionName(dataFillter?.continent_type);
-      setFilterRegion(dataFillter?.continent_type);
+    onCompleted: async () => {
+      if (dataFillter?.continent_type) {
+        let tempDataRegion = [];
+        let tempData = [...dataFillter?.continent_type];
+        for (var i of tempData) {
+          delete i.checked;
+          tempDataRegion.push(i);
+        }
+        await setRegionName(tempDataRegion);
+        await setFilterRegion(tempDataRegion);
+        await setTempDataSelected(tempDataRegion);
+      }
     },
   });
 
@@ -225,7 +226,8 @@ export default function AllDestination(props) {
   };
 
   const cekData = () => {
-    return search["type"]?.length;
+    return select_region.length;
+    // return search["type"]?.length;
   };
 
   useEffect(() => {
@@ -235,11 +237,17 @@ export default function AllDestination(props) {
   }, []);
   let [showcity, setShowCity] = useState(null);
 
+  useEffect(() => {
+    if (!show && tempDataSelected.length != 0) {
+      setRegionName(tempDataSelected);
+      setFilterRegion(tempDataSelected);
+      setRegion("");
+    }
+  }, [show]);
+
   // render list
   const RenderList = ({ item }) => {
     let sumdestination = item.count_destination;
-
-    console.log("item", item);
     return item && item.city.length > 0 ? (
       <View
         style={{
@@ -776,7 +784,11 @@ export default function AllDestination(props) {
                     borderColor: "#e8e8e8",
                   }}
                 >
-                  <Search width={15} height={15} style={{ marginRight: 5 }} />
+                  <Search
+                    width={15}
+                    height={15}
+                    // style={{ marginRight: 5, borderWidth: 1 }}
+                  />
 
                   <TextInput
                     underlineColorAndroid="transparent"
@@ -785,8 +797,7 @@ export default function AllDestination(props) {
                     enablesReturnKeyAutomatically={true}
                     underlineColorAndroid="transparent"
                     style={{
-                      width: "85%",
-                      marginLeft: 5,
+                      marginHorizontal: 10,
                       padding: 0,
                       flex: 1,
                     }}
@@ -827,62 +838,74 @@ export default function AllDestination(props) {
                   paddingHorizontal: 15,
                 }}
               >
-                {regionName.map((item, index) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    onPress={() => handleCheck(item["id"], item, index)}
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      width: "49%",
-                      marginRight: 3,
-                      marginBottom: 20,
-                      justifyContent: "flex-start",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CheckBox
-                      onCheckColor="#FFF"
-                      lineWidth={1}
-                      onFillColor="#209FAE"
-                      onTintColor="#209FAE"
-                      boxType={"square"}
+                {loadingcat ? (
+                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                    <ActivityIndicator color={"#209fae"} size={"small"} />
+                  </View>
+                ) : filterRegion && filterRegion.length == 0 ? (
+                  <View style={{ alignItems: "center", marginTop: 10 }}>
+                    <Text size="label" type="regular">
+                      {t("noData")}
+                    </Text>
+                  </View>
+                ) : null}
+                {filterRegion &&
+                  filterRegion.map((item, index) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => handleCheck(item["id"], item, index)}
                       style={{
-                        alignSelf: "center",
-                        width: Platform.select({
-                          ios: 30,
-                          android: 35,
-                        }),
-                        transform: Platform.select({
-                          ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                          android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                        }),
-                      }}
-                      // onValueChange={() => handleCheck(item["id"], item)}
-                      onValueChange={() =>
-                        Platform.OS == "ios"
-                          ? null
-                          : handleCheck(item["id"], item, index)
-                      }
-                      value={item["checked"]}
-                    />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 0,
-                        marginRight: -10,
-                        color: "#464646",
-                        marginTop: Platform.OS == "ios" ? -5 : -2,
-                        // borderWidth: 5,
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        width: "49%",
+                        marginRight: 3,
+                        marginBottom: 20,
+                        justifyContent: "flex-start",
+                        alignContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      {item["name"]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                      <CheckBox
+                        onCheckColor="#FFF"
+                        lineWidth={1}
+                        onFillColor="#209FAE"
+                        onTintColor="#209FAE"
+                        boxType={"square"}
+                        style={{
+                          alignSelf: "center",
+                          width: Platform.select({
+                            ios: 30,
+                            android: 35,
+                          }),
+                          transform: Platform.select({
+                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                          }),
+                        }}
+                        // onValueChange={() => handleCheck(item["id"], item)}
+                        onValueChange={() =>
+                          Platform.OS == "ios"
+                            ? null
+                            : handleCheck(item["id"], item, index)
+                        }
+                        value={item["checked"]}
+                      />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 0,
+                          marginRight: -10,
+                          color: "#464646",
+                          marginTop: Platform.OS == "ios" ? -5 : -2,
+                          // borderWidth: 5,
+                        }}
+                      >
+                        {item["name"]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
               </ScrollView>
             </View>
           </View>
@@ -938,26 +961,29 @@ export default function AllDestination(props) {
         data={dataResult ? dataResult?.populer_city_destination_v2 : null}
         renderItem={({ item }) => <RenderList item={item} />}
         ListEmptyComponent={
-          <View style={{ marginTop: 15 }}>
-            <ActivityIndicator size="small" color="#209FAE" />
-          </View>
+          loading ? (
+            <View style={{ marginTop: 15 }}>
+              <ActivityIndicator size="small" color="#209FAE" />
+            </View>
+          ) : (
+            totalCity === 0 && (
+              <View
+                style={{
+                  alignSelf: "center",
+                  marginTop: 10,
+                }}
+              >
+                <Text size="description" type="bold">
+                  {t("noData")}
+                </Text>
+              </View>
+            )
+          )
         }
         ListFooterComponent={<View>{}</View>}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
       />
-      {totalCity === 0 && (
-        <View
-          style={{
-            alignSelf: "center",
-            marginTop: 10,
-            position: "absolute",
-            top: 80,
-          }}
-        >
-          <Text>{t("noData")}</Text>
-        </View>
-      )}
     </View>
   );
 }

@@ -743,8 +743,8 @@ export default function TravelGoalList(props) {
                     );
                   })
                 ) : (
-                  <View style={{ alignItems: "center" }}>
-                    <Text size="description" type="regular">
+                  <View style={{ alignItems: "center", marginTop: 10 }}>
+                    <Text size="description" type="bold">
                       {t("noData")}
                     </Text>
                   </View>

@@ -39,11 +39,11 @@ export default function CountrySrc({
 }) {
   const { t } = useTranslation();
   const [continent, setContinent] = useState("");
-  let [select_continents, setContinentSelecteds] = useState([]);
   let [keyword, setKeyword] = useState("");
   let slider = useRef();
   let [continent_list, setDatacontinent] = useState([]);
   let [continent_listfilter, setDatacontinentfilter] = useState([]);
+  let [select_continents, setContinentSelecteds] = useState([]);
   let [tempDataSelected, setTempDataSelected] = useState([]);
   let [show, setshow] = useState(false);
   const Notch = deviceInfoModule.hasNotch();
@@ -61,6 +61,7 @@ export default function CountrySrc({
     onCompleted: async () => {
       await setDatacontinent(datacontinent?.continent_list);
       await setDatacontinentfilter(datacontinent?.continent_list);
+      await setTempDataSelected(datacontinent?.continent_list);
     },
   });
 
@@ -137,15 +138,12 @@ export default function CountrySrc({
 
   const ClearAllFilter = async () => {
     let tempData = [...continent_listfilter];
-    console.log("~ tempData", tempData);
     let tempDataResult = [];
     for (var x of tempData) {
-      console.log("~ x", x);
       let data = { ...x };
       if (data.checked == true) {
         data.checked = false;
       }
-      console.log("~ data", data);
       tempDataResult.push(data);
     }
     await setDatacontinentfilter(tempDataResult);
@@ -155,6 +153,7 @@ export default function CountrySrc({
     await setshow(false);
     await setContinent("");
   };
+
   return (
     <Modal
       onRequestClose={() => {
@@ -665,8 +664,8 @@ export default function CountrySrc({
                   <View style={{ alignItems: "center", marginTop: 20 }}>
                     <ActivityIndicator color={"#209fae"} size={"small"} />
                   </View>
-                ) : continent_list && continent_list.length == 0 ? (
-                  <View style={{ alignItems: "center", marginTop: 20 }}>
+                ) : continent_listfilter && continent_listfilter.length == 0 ? (
+                  <View style={{ alignItems: "center", marginTop: 10 }}>
                     <Text size="label" type="regular">
                       {t("noData")}
                     </Text>

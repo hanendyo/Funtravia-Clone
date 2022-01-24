@@ -60,3 +60,6 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+#personal setting vscode
+.vscode/setting.json
