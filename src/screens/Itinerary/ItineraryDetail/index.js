@@ -18,6 +18,7 @@ import {
   Modal as Modalss,
   Picker,
   BackHandler,
+  FlatList,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
@@ -4035,6 +4036,8 @@ export default function ItineraryDetail(props) {
     );
   };
 
+  let scrollRef = useRef();
+
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
@@ -4042,6 +4045,7 @@ export default function ItineraryDetail(props) {
       // extrapolate: 'clamp',
       extrapolateRight: "clamp",
     });
+
     return (
       <Animated.View
         style={{
@@ -4052,7 +4056,81 @@ export default function ItineraryDetail(props) {
           width: "100%",
         }}
       >
-        <TabBar
+        <FlatList
+          key={"listtabbar"}
+          ref={scrollRef}
+          data={props.navigationState.routes}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            backgroundColor: "white",
+          }}
+          renderItem={({ item, index }) => (
+            console.log("item", item.active),
+            (
+              <Ripple
+                key={"tabx" + index}
+                onPress={() => {
+                  status === "edit" && index !== 0
+                    ? setmodalTrip(true)
+                    : item.active === false
+                    ? setSoon(true)
+                    : null;
+                  setIndex(index);
+                  scrollRef.current?.scrollToIndex({
+                    index: index,
+                    animated: true,
+                  });
+                }}
+              >
+                <View
+                  style={{
+                    borderBottomWidth: index == tabIndex ? 2 : 1,
+                    borderBottomColor:
+                      index == tabIndex ? "#209fae" : "#d1d1d1",
+                    alignContent: "center",
+
+                    width:
+                      props.navigationState.routes.length <= 2
+                        ? Dimensions.get("screen").width * 0.5
+                        : props.navigationState.routes.length > 2
+                        ? Dimensions.get("screen").width * 0.333
+                        : null,
+                    height: TabBarHeight,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    paddingHorizontal: Platform.OS === "ios" ? 15 : null,
+                  }}
+                >
+                  <Text
+                    style={[
+                      index == tabIndex ? styles.labelActive : styles.label,
+                      {
+                        opacity: index == tabIndex ? 1 : 1,
+                        borderBottomWidth: 0,
+                        // borderWidth: 1,
+                        marginBottom: index == tabIndex ? 0 : 1,
+                        borderBottomColor:
+                          index == tabIndex &&
+                          props.navigationState.routes.length > 1
+                            ? "#FFFFFF"
+                            : "#209fae",
+                        textTransform: "capitalize",
+                      },
+                    ]}
+                  >
+                    <Truncate
+                      text={item?.title ? item.title : ""}
+                      length={Platform.OS === "ios" ? 13 : 15}
+                    />
+                  </Text>
+                </View>
+              </Ripple>
+            )
+          )}
+        />
+        {/* <TabBar
           {...props}
           onTabPress={({ route, preventDefault }) => {
             status === "edit"
@@ -4069,14 +4147,14 @@ export default function ItineraryDetail(props) {
             shadowOpacity: 0,
             backgroundColor: "white",
             borderBottomWidth: 1,
-            borderBottomColor: "#d1d1d1",
+            borderBottomColor: route.active == tabIndex ? "#209FAE" : "#d1d1d1",
             height: TabBarHeight,
           }}
           renderLabel={renderLabel}
           indicatorStyle={{
-            backgroundColor: "#209fae",
+            backgroundColor: "#FFFFFF",
           }}
-        />
+        /> */}
         <View
           style={{
             backgroundColor: "white",
@@ -7497,168 +7575,30 @@ export default function ItineraryDetail(props) {
             }}
           ></Pressable>
         ) : null}
-        {/* <Sidebar
-          props={props}
-          show={showside}
-          Data={() => {
-            return (
-              <View
-                style={{
-                  padding: 10,
-                  width: "100%",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {Anggota === "true" && statusUsers == true ? (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                      marginVertical: 5,
-                    }}
-                    onPress={() => {
-                      props.navigation.push("SettingItin", {
-                        token: token,
-                        iditin: itineraryId,
-                        isPrivate:
-                          datadetail && datadetail.itinerary_detail
-                            ? datadetail.itinerary_detail.isprivate
-                            : false,
-                      }),
-                        setshowside(false);
-                    }}
-                  >
-                    <Settings height={15} width={15} />
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("setting")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
-
-                {Anggota === "true" && status !== "finish" ? (
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setmodalcover(true), setshowside(false);
-                    }}
-                  >
-                    <Create height={15} width={15} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("EditCover")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
-
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 2,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    setshowside(false);
-                    props.navigation.navigate("detailItinerary", {
-                      data: datadetail,
-                    });
-                  }}
-                >
-                  <Help height={20} width={20} style={{ marginLeft: -5 }} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("Tripdetail")}
-                  </Text>
-                </TouchableOpacity>
-
-                {Anggota === "true" ? (
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setModalLeaveTrip(true), setshowside(false);
-                    }}
-                  >
-                    <LeaveTrips height={15} width={15} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("leave")} {t("trip")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
-
-                {Anggota === "true" && statusUsers == true ? (
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 2,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setModalDeleteTrip(true), setshowside(false);
-                    }}
-                  >
-                    <Delete height={15} width={15} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("delete")} {t("trip")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
-              </View>
-            );
-          }}
-          setClose={(e) => setshowside(false)}
-        /> */}
       </View>
     );
   }
 
   return <View></View>;
 }
+const styles = StyleSheet.create({
+  label: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelActive: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#209FAE",
+    fontFamily: "Lato-Bold",
+  },
+  tab: {
+    elevation: 0,
+    shadowOpacity: 0,
+    backgroundColor: "#FFCC80",
+    height: TabBarHeight,
+  },
+
+  indicatormax: { backgroundColor: "#209FAE", height: 0 },
+  indicatormin: { backgroundColor: "#209FAE", height: 2 },
+});
