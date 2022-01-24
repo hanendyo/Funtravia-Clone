@@ -4,6 +4,7 @@ import { SHARE_LINK } from "../../config";
 
 export default async function NavigateAction(navigation, shareId) {
   let response = await fetch(`${SHARE_LINK}/getdata/${shareId}`);
+  console.log("~ response Notification stack", response);
   let token = await AsyncStorage.getItem("access_token");
 
   response = await response.json();

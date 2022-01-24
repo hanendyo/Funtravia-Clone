@@ -346,6 +346,7 @@ export default function SendToChat({ navigation, route }) {
         time: dateTime,
         from: from,
       };
+      console.log("~ chatData", chatData);
       // await fetch(`${CHATSERVER}/api/group/send`, {
       //   method: "POST",
       //   headers: {
