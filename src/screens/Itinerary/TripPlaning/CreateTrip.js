@@ -723,121 +723,90 @@ export default function Trip(props) {
                       ) : null}
                     </View>
                   </View>
-                  <View
-                    style={{
-                      width: Dimensions.get("screen").width,
-                      minHeight: Dimensions.get("screen").height * 0.4,
-                      backgroundColor: "white",
-                      paddingHorizontal: 20,
-                      paddingBottom: 10,
-                    }}
-                  >
-                    {/* <Item floatingLabel style={{ marginTop: 10 }}>
-                      <Label
-                        style={{
-                          fontFamily: "Lato-Regular",
-                          fontSize: 14,
-                        }}
-                      >
-                        {t("SearchCountry")}
-                      </Label>
-                      <Search width={15} height={15} />
-                      <Input
-                        style={{
-                          fontFamily: "Lato-Regular",
-                          fontSize: 16,
-                        }}
-                        autoCorrect={false}
-                        value={countrys}
-                        onChangeText={(text) => Searchcountry(text)}
-                        returnKeyType="search"
-                        keyboardType="default"
-                      />
-                    </Item> */}
-                    {datacountry && datacountry?.country_search.length > 0 ? (
-                      <FlatList
-                        // ref={slider}
-                        // getItemLayout={(data, index) => ({
-                        //   length: Platform.OS == "ios" ? rippleHeight : 46,
-                        //   offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
-                        //   index,
-                        // })}
-                        showsVerticalScrollIndicator={false}
-                        data={countryData}
-                        renderItem={({ item, index }) => (
-                          <Ripple
-                            // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-                            onPress={() => setcount(item.id, item.name)}
+                  {datacountry && datacountry?.country_search.length > 0 ? (
+                    <FlatList
+                      // ref={slider}
+                      // getItemLayout={(data, index) => ({
+                      //   length: Platform.OS == "ios" ? rippleHeight : 46,
+                      //   offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
+                      //   index,
+                      // })}
+                      showsVerticalScrollIndicator={false}
+                      data={countryData}
+                      renderItem={({ item, index }) => (
+                        <Ripple
+                          // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+                          onPress={() => setcount(item.id, item.name)}
+                          style={{
+                            marginLeft: 20,
+                            paddingVertical: 15,
+                            paddingLeft: 0,
+                            borderBottomWidth: 0.5,
+                            borderBottomColor: "#d1d1d1",
+                            flexDirection: "row",
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "90%",
+                          }}
+                        >
+                          <View
                             style={{
-                              paddingVertical: 15,
-                              paddingLeft: 0,
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: "#d1d1d1",
+                              marginRight: 15,
                               flexDirection: "row",
-                              alignContent: "center",
-                              alignItems: "center",
-                              justifyContent: "space-between",
+                              justifyContent: "center",
+                              elevation: 1,
                             }}
                           >
                             <View
                               style={{
-                                marginRight: 15,
-                                flexDirection: "row",
-                                justifyContent: "center",
+                                borderWidth: 1,
+                                borderColor: "#d1d1d1",
+                                backgroundColor: "black",
+                                alignSelf: "center",
+                                alignContent: "center",
                                 alignItems: "center",
-                                elevation: 1,
+                                justifyContent: "center",
+                                overflow: "hidden",
+                                // width: 35,
+                                // height: 25,
+                                // paddingTop: 0,
                               }}
                             >
-                              <View
-                                style={{
-                                  borderWidth: 1,
-                                  borderColor: "#d1d1d1",
-                                  backgroundColor: "black",
-                                  alignSelf: "center",
-                                  alignContent: "center",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  overflow: "hidden",
-                                  // width: 35,
-                                  // height: 25,
-                                  // paddingTop: 0,
-                                }}
-                              >
-                                <FunIcon
-                                  icon={item.flag}
-                                  width={37}
-                                  height={25}
-                                />
-                              </View>
+                              <FunIcon
+                                icon={item.flag}
+                                width={37}
+                                height={25}
+                              />
+                            </View>
 
-                              <Text
-                                size="description"
-                                type="regular"
-                                style={{
-                                  paddingLeft: 15,
-                                  color:
-                                    item.id == idCountry ? "#209fae" : "#000",
-                                }}
-                              >
-                                {item.name
-                                  .toString()
-                                  .toLowerCase()
-                                  .replace(/\b[a-z]/g, function(letter) {
-                                    return letter.toUpperCase();
-                                  })}
-                              </Text>
-                            </View>
-                            <View>
-                              {item.id == idCountry ? (
-                                <Check width={20} height={15} />
-                              ) : null}
-                            </View>
-                          </Ripple>
-                        )}
-                        keyExtractor={(item) => item.id}
-                      />
-                    ) : null}
-                  </View>
+                            <Text
+                              size="description"
+                              type="regular"
+                              style={{
+                                paddingLeft: 15,
+                                color:
+                                  item.id == idCountry ? "#209fae" : "#000",
+                              }}
+                            >
+                              {item.name
+                                .toString()
+                                .toLowerCase()
+                                .replace(/\b[a-z]/g, function(letter) {
+                                  return letter.toUpperCase();
+                                })}
+                            </Text>
+                          </View>
+                          <View>
+                            {item.id == idCountry ? (
+                              <Check width={20} height={15} />
+                            ) : null}
+                          </View>
+                        </Ripple>
+                      )}
+                      keyExtractor={(item) => item.id}
+                    />
+                  ) : null}
                 </KeyboardAvoidingView>
               </Modal>
 

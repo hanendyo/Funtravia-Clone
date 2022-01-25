@@ -40,7 +40,6 @@ export default function CardItinerary({
   // setting,
   dataFrom,
 }) {
-  console.log("~ data", data);
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);

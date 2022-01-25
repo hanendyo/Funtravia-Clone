@@ -141,8 +141,10 @@ export default function Albumheader({
       });
 
       if (response?.data) {
-        if (response.data.delete_albums_with_post?.code !== 200) {
-          throw new Error(response.data.detele_albums_with_post?.message);
+        if (response.data.delete_albums_from_itinerary_v2?.code !== 200) {
+          throw new Error(
+            response.data.delete_albums_from_itinerary_v2?.message
+          );
         } else {
           if (dataAlbum.length === 1) {
             setdataalbumaktif(null);
@@ -187,7 +189,7 @@ export default function Albumheader({
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        Alert.alert("token:" + error);
       }
     } else {
       Alert.alert("pleaseinsertalbumtitle");
