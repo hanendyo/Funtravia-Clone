@@ -177,6 +177,8 @@ export default function DetailJournal(props) {
     },
   });
 
+  console.log("data journal", data);
+
   const afterComment = async () => {
     await refetch();
     await scroll_to();
@@ -580,9 +582,18 @@ export default function DetailJournal(props) {
               }}
               onPress={() => {
                 setModalShare(false);
-                props.navigation.navigate("JournalStackNavigation", {
-                  screen: "SendJournal",
-                  params: { dataJournal: data?.journal_byid },
+                props.navigation.navigate("ChatStack", {
+                  screen: "SendToChat",
+                  params: {
+                    dataSend: {
+                      id: data?.journal_byid?.id,
+                      name: data?.journal_byid?.title,
+                      cover: data?.journal_byid?.firstimg,
+                      description: data?.journal_byid?.firsttxt,
+                    },
+                    title: "Journal",
+                    tag_type: "tag_journal",
+                  },
                 });
               }}
             >

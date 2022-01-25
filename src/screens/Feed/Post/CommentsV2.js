@@ -462,17 +462,19 @@ export default function Comments(props) {
           backgroundColor: "#FFFFFF",
           borderTopWidth: 1,
           borderTopColor: "#EEEEEE",
-          paddingHorizontal: 15,
+          // paddingHorizontal: 15,
           paddingVertical: 10,
-          // borderRadius: 50,
           bottom: 3,
+          width: "100%",
         }}
       >
         <View
           style={{
-            width: "100%",
+            // width: "100%",
             flexDirection: "row",
             alignContent: "center",
+            flex: 1,
+            paddingHorizontal: 10,
           }}
         >
           <Pressable
@@ -493,6 +495,8 @@ export default function Comments(props) {
             }}
             style={{
               flexDirection: "row",
+              flex: 1,
+              // width: Dimensions.get("screen").width,
             }}
           >
             <FunImage
@@ -510,10 +514,11 @@ export default function Comments(props) {
             <View
               style={{
                 justifyContent: "center",
-                marginHorizontal: 10,
+                marginLeft: 10,
+                flex: 1,
               }}
             >
-              <Text size="label" type="bold">
+              <Text size="label" type="bold" numberOfLines={2}>
                 {dataComment?.user?.first_name} {dataComment?.user?.last_name}
               </Text>
               {dataComment?.is_send == false ? (
@@ -530,12 +535,15 @@ export default function Comments(props) {
         </View>
         <View
           style={{
-            width: "85%",
+            flex: 1,
             marginVertical: 5,
-            marginLeft: 45,
+            marginLeft: 55,
+            paddingRight: 10,
           }}
         >
           <Text
+            size="description"
+            type="regular"
             style={{
               textAlign: "left",
             }}
