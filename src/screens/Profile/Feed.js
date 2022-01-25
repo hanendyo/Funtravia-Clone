@@ -305,6 +305,11 @@ export default function myfeed(props) {
         setShowLoading(true);
       }
     }
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      // refetch();
+      loadasync();
+    });
+    return unsubscribe;
   }, [
     props.route.params.updateDataPost,
     props.route.params.isProfil,

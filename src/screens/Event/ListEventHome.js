@@ -989,6 +989,21 @@ export default function ListEventHome(props) {
           backgroundColor: "#F6F6F6",
           paddingBottom: 100,
         }}
+        ListHeaderComponent={() =>
+          (dataEvent.length == 0 && route.key == "tab1") ||
+          (dataEventPublic.length == 0 && route.key == "tab2") ? (
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: "40%",
+              }}
+            >
+              <Text size="label" type="bold">
+                {t("noData")}
+              </Text>
+            </View>
+          ) : null
+        }
         showsHorizontalScrollIndicator={false}
         data={data}
         renderItem={renderItem}
