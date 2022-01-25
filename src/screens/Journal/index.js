@@ -123,7 +123,7 @@ export default function Journal(props) {
     variables: {
       category_id: null,
       order_by: null,
-      limit: 14,
+      limit: 100,
       offset: 0,
       keyword: null,
     },
