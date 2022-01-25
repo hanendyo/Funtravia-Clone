@@ -148,6 +148,7 @@ export default function AllDestination(props) {
   const ClearAllFilter = async () => {
     let temp = [...filterRegion];
     let tempData = [];
+
     for (var x of temp) {
       let data = { ...x };
       if (data.checked == true) {

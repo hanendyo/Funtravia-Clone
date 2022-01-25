@@ -2619,8 +2619,9 @@ export default function ItineraryDetail(props) {
                         }}
                       >
                         <Text style={{ marginBottom: 5 }}>
-                          {t("bookingRef")} :{" "}
+                          {t("bookingRef")}
                         </Text>
+                        <Text> : </Text>
                         <Text type="bold">
                           {item?.detail_flight?.booking_ref}
                         </Text>
@@ -2652,12 +2653,13 @@ export default function ItineraryDetail(props) {
                       <View
                         style={{
                           flexDirection: "row",
-                          width: normalize(100),
+                          width: normalize(70),
                         }}
                       >
                         <Text style={{ marginBottom: 5, flexWrap: "wrap" }}>
-                          {t("bookingRef")} :{" "}
+                          {t("bookingRef")}
                         </Text>
+                        <Text> : </Text>
                         <Text type="bold">
                           {item?.detail_accomodation?.booking_ref}
                         </Text>
@@ -4066,68 +4068,64 @@ export default function ItineraryDetail(props) {
             backgroundColor: "white",
           }}
           renderItem={({ item, index }) => (
-            console.log("item", item.active),
-            (
-              <Ripple
-                key={"tabx" + index}
-                onPress={() => {
-                  status === "edit" && index !== 0
-                    ? setmodalTrip(true)
-                    : item.active === false
-                    ? setSoon(true)
-                    : null;
-                  setIndex(index);
-                  scrollRef.current?.scrollToIndex({
-                    index: index,
-                    animated: true,
-                  });
+            <Ripple
+              key={"tabx" + index}
+              onPress={() => {
+                status === "edit" && index !== 0
+                  ? setmodalTrip(true)
+                  : item.active === false
+                  ? setSoon(true)
+                  : null;
+                setIndex(index);
+                scrollRef.current?.scrollToIndex({
+                  index: index,
+                  animated: true,
+                });
+              }}
+            >
+              <View
+                style={{
+                  borderBottomWidth: index == tabIndex ? 2 : 1,
+                  borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
+                  alignContent: "center",
+
+                  width:
+                    props.navigationState.routes.length <= 2
+                      ? Dimensions.get("screen").width * 0.5
+                      : props.navigationState.routes.length > 2
+                      ? Dimensions.get("screen").width * 0.333
+                      : null,
+                  height: TabBarHeight,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  paddingHorizontal: Platform.OS === "ios" ? 15 : null,
                 }}
               >
-                <View
-                  style={{
-                    borderBottomWidth: index == tabIndex ? 2 : 1,
-                    borderBottomColor:
-                      index == tabIndex ? "#209fae" : "#d1d1d1",
-                    alignContent: "center",
-
-                    width:
-                      props.navigationState.routes.length <= 2
-                        ? Dimensions.get("screen").width * 0.5
-                        : props.navigationState.routes.length > 2
-                        ? Dimensions.get("screen").width * 0.333
-                        : null,
-                    height: TabBarHeight,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    paddingHorizontal: Platform.OS === "ios" ? 15 : null,
-                  }}
+                <Text
+                  style={[
+                    index == tabIndex ? styles.labelActive : styles.label,
+                    {
+                      opacity: index == tabIndex ? 1 : 1,
+                      borderBottomWidth: 0,
+                      // borderWidth: 1,
+                      marginBottom: index == tabIndex ? 0 : 1,
+                      borderBottomColor:
+                        index == tabIndex &&
+                        props.navigationState.routes.length > 1
+                          ? "#FFFFFF"
+                          : "#209fae",
+                      textTransform: "capitalize",
+                    },
+                  ]}
                 >
-                  <Text
-                    style={[
-                      index == tabIndex ? styles.labelActive : styles.label,
-                      {
-                        opacity: index == tabIndex ? 1 : 1,
-                        borderBottomWidth: 0,
-                        // borderWidth: 1,
-                        marginBottom: index == tabIndex ? 0 : 1,
-                        borderBottomColor:
-                          index == tabIndex &&
-                          props.navigationState.routes.length > 1
-                            ? "#FFFFFF"
-                            : "#209fae",
-                        textTransform: "capitalize",
-                      },
-                    ]}
-                  >
-                    <Truncate
-                      text={item?.title ? item.title : ""}
-                      length={Platform.OS === "ios" ? 13 : 15}
-                    />
-                  </Text>
-                </View>
-              </Ripple>
-            )
+                  <Truncate
+                    text={item?.title ? item.title : ""}
+                    length={Platform.OS === "ios" ? 13 : 15}
+                  />
+                </Text>
+              </View>
+            </Ripple>
           )}
         />
         {/* <TabBar

@@ -33,6 +33,12 @@ const ItineraryFavorite = gql`
         last_name
         picture
       }
+      categori {
+        id
+        name
+        slug
+        icon
+      }
     }
   }
 `;
