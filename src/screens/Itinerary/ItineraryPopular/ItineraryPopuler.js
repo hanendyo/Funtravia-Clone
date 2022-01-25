@@ -379,7 +379,9 @@ export default function ItineraryPopuler(props) {
           props={props}
           token={token}
           setting={setting}
-          setData={(e) => setlist_populer(e)}
+          setData={(e) => {
+            setlist_populer(e);
+          }}
         />
       ) : (
         <View

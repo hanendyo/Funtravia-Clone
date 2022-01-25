@@ -35,12 +35,13 @@ import { useSelector } from "react-redux";
 export default function CardItinerary({
   data,
   props,
-  setData,
+  // setData,
   // token,
   // setting,
   dataFrom,
 }) {
   const { t } = useTranslation();
+  const [datas, setDatas] = useState(data);
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const token = useSelector((data) => data.token);
@@ -154,11 +155,11 @@ export default function CardItinerary({
             response.data.setItineraryFavorit.code === 200 ||
             response.data.setItineraryFavorit.code === "200"
           ) {
-            const tempData = [...data];
+            const tempData = [...datas];
             const tempDataDetail = { ...tempData[index] };
             tempDataDetail.liked = true;
             tempData.splice(index, 1, tempDataDetail);
-            setData(tempData);
+            setDatas(tempData);
           } else {
             RNToasty.Show({
               title: t("FailedLikeItinerary"),
@@ -191,11 +192,11 @@ export default function CardItinerary({
             response.data.unsetItineraryFavorit.code === 200 ||
             response.data.unsetItineraryFavorit.code === "200"
           ) {
-            const tempData = [...data];
+            const tempData = [...datas];
             const tempDataDetail = { ...tempData[index] };
             tempDataDetail.liked = false;
             tempData.splice(index, 1, tempDataDetail);
-            setData(tempData);
+            setDatas(tempData);
           } else {
             RNToasty.Show({
               title: t("somethingwrong"),
@@ -222,7 +223,7 @@ export default function CardItinerary({
         props={props}
       />
       <FlatList
-        data={data}
+        data={datas}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{
           marginBottom: 10,
