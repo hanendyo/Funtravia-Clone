@@ -41,31 +41,80 @@ export default function CardItinerary({
   dataFrom,
 }) {
   console.log("~ data", data);
+
   const { t } = useTranslation();
   const [soon, setSoon] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
 
-  const getDN = (start, end) => {
+  const getDN = (start, end, person, from) => {
     start = start.split(" ");
     end = end.split(" ");
     var date1 = new Date(start[0]);
     var date2 = new Date(end[0]);
     var Difference_In_Time = date2.getTime() - date1.getTime();
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-    return (
-      <View style={{ flexDirection: "row" }}>
-        <Text size="description" type="regular" numberOfLines={1}>
-          {Difference_In_Days + 1 > 1
-            ? Difference_In_Days + 1 + " " + t("days")
-            : Difference_In_Days + 1 + " " + t("day")}{" "}
-          {Difference_In_Days > 1
-            ? Difference_In_Days + " " + t("nights")
-            : Difference_In_Days + " " + t("night")}
-        </Text>
-      </View>
-    );
+    if (from == "date") {
+      return (
+        <View style={{ flexDirection: "row" }}>
+          <Text size="description" type="regular" numberOfLines={1}>
+            {Difference_In_Days + 1 > 1
+              ? Difference_In_Days + 1 + " " + t("days")
+              : Difference_In_Days + 1 + " " + t("day")}{" "}
+            {Difference_In_Days > 1
+              ? Difference_In_Days + " " + t("nights")
+              : Difference_In_Days + " " + t("night")}
+          </Text>
+        </View>
+      );
+    } else if (from == "person") {
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-start",
+            marginLeft: 7,
+            width: normalize(
+              Difference_In_Days < 10
+                ? 100
+                : Difference_In_Days < 100
+                ? 70
+                : Difference_In_Days < 1000
+                ? 50
+                : null
+            ),
+          }}
+        >
+          <Text
+            size="description"
+            type="regular"
+            numberOfLines={1}
+            style={{ overflow: "hidden" }}
+          >
+            <PeopleItinerary
+              width={14}
+              height={14}
+              style={{ marginRight: 5 }}
+            />
+            {person > 1 ? (
+              <Text
+                size="description"
+                type="regular"
+                numberOfLines={1}
+                // style={{ width: normalize(20) }}
+              >
+                {(person ? person : "0") + " " + t("persons")}
+              </Text>
+            ) : (
+              <Text size="description" type="regular" numberOfLines={1}>
+                {(person ? person : null) + " " + t("person")}
+              </Text>
+            )}
+          </Text>
+        </View>
+      );
+    }
   };
 
   const [
@@ -353,10 +402,9 @@ export default function CardItinerary({
                     flex: 1,
                     paddingHorizontal: 10,
                     backgroundColor: "#FFFFFF",
-                    overflow: "hidden",
+                    // overflow: "hidden",
                     borderTopRightRadius: 3,
                     justifyContent: "space-between",
-                    borderBottomWidth: 1,
                     borderBottomColor: "#d1d1d1",
                   }}
                 >
@@ -469,7 +517,7 @@ export default function CardItinerary({
                       flexDirection: "row",
                       justifyContent: "flex-start",
                       marginBottom: 8,
-                      overflow: "hidden",
+                      // overflow: "hidden",
                     }}
                   >
                     <View
@@ -487,42 +535,18 @@ export default function CardItinerary({
                         }}
                       />
                       {item.start_date && item.end_date
-                        ? getDN(item.start_date, item.end_date)
+                        ? getDN(item.start_date, item.end_date, null, "date")
                         : null}
                     </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "flex-start",
-                        marginLeft: 7,
-                      }}
-                    >
-                      <PeopleItinerary
-                        width={14}
-                        height={14}
-                        style={{ marginRight: 5 }}
-                      />
-                      {item.buddy_count > 1 ? (
-                        <Text
-                          size="description"
-                          type="regular"
-                          numberOfLines={1}
-                          style={{ overflow: "hidden" }}
-                        >
-                          {(item && item.buddy_count ? item.buddy_count : "0") +
-                            " " +
-                            t("persons")}
-                        </Text>
-                      ) : (
-                        <Text size="description" type="regular">
-                          {(item && item.buddy_count
-                            ? item.buddy_count
-                            : null) +
-                            " " +
-                            t("person")}
-                        </Text>
-                      )}
-                    </View>
+                    {/* RENDER PERSON */}
+                    {item && item.buddy_count
+                      ? getDN(
+                          item.start_date,
+                          item.end_date,
+                          item.buddy_count,
+                          "person"
+                        )
+                      : "0"}
                   </View>
                 </View>
               </Pressable>

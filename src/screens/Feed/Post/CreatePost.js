@@ -693,6 +693,7 @@ export default function CreatePost(props) {
                   }}
                 >
                   <TextInput
+                    autoCorrect={false}
                     multiline
                     placeholder={`${t("writeACaption")}...`}
                     maxLength={1000}

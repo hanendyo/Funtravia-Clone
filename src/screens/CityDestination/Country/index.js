@@ -2309,11 +2309,13 @@ export default function Country(props) {
                       textTransform: "capitalize",
                     },
                   ]}
+                  numberOfLines={1}
                 >
-                  <Truncate
+                  {/* <Truncate
                     text={item?.key ? item.key : ""}
                     length={Platform.OS === "ios" ? 15 : 15}
-                  />
+                  /> */}
+                  {item?.key ? item.key : ""}
                 </Text>
               </View>
             </Ripple>

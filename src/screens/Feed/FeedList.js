@@ -213,7 +213,7 @@ export default function FeedList({ props, token }) {
     props.route.params.updateDataPost,
     props.route.params.allTime,
     timeMiliSecond,
-    props.route.params,
+    // props.route.params,
   ]);
 
   //! kesini
@@ -267,11 +267,7 @@ export default function FeedList({ props, token }) {
       //   setShowLoading(true);
       // }
     }
-  }, [
-    props.route.params.post_id,
-    props.route.params,
-    props.route.params.liked,
-  ]);
+  }, [props.route.params, props.route.params.caption]);
 
   const SubmitData = async () => {
     setLoaded(true);
@@ -569,9 +565,9 @@ export default function FeedList({ props, token }) {
     }
   };
 
-  const loadAsync = () => {
-    LoadFollowing();
-    refetch();
+  const loadAsync = async () => {
+    await LoadFollowing();
+    await refetch();
   };
 
   useEffect(() => {
@@ -616,8 +612,8 @@ export default function FeedList({ props, token }) {
       }
     }
     const unsubscribe = props.navigation.addListener("focus", () => {
-      // refetch();
       loadAsync();
+      // refetch();
     });
     return unsubscribe;
   }, [
