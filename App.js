@@ -26,6 +26,23 @@ if (Platform.OS === "ios") {
   PushNotification.cancelAllLocalNotifications();
 }
 
+messaging()
+  .getInitialNotification()
+  .then(async (remoteMessage) => {
+    //remoteMessage --> always null
+    // console.log("getInitialNotification", remoteMessage);
+  })
+  .catch((err) => console.log("err", err));
+
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  // console.log("BG_NF", remoteMessage);
+  // await AsyncStorage.setItem("dataNotification", remoteMessage);
+  await AsyncStorage.setItem("dataNotification", JSON.stringify(remoteMessage));
+
+  // recieveNotification(remoteMessage);
+  // setDataNotifikasi(remoteMessage);
+});
+
 PushNotification.configure({
   onRegister: function(token) {
     // console.log("TOKEN:", token);
@@ -39,7 +56,7 @@ PushNotification.configure({
     // console.log("NOTIFICATION:", notification);
   },
   onRegistrationError: function(err) {
-    // console.error(err.message, err);
+    console.error(err.message, err);
   },
   permissions: {
     alert: true,
@@ -53,6 +70,10 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
+// PushNotification.popInitialNotification((notification) => {
+//   console.log("Initial Notification", notification);
+// });
+
 function App() {
   const { t, i18n } = useTranslation();
   const { width } = Dimensions.get("screen");
@@ -61,6 +82,7 @@ function App() {
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState();
+
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
     if (enabled && enabled !== -1) {
@@ -131,10 +153,16 @@ function App() {
   };
 
   useEffect(() => {
+    astor();
     checkPermission();
     initializeFunction();
+
+    //Start When Application on Running
     messaging().onMessage((dNotify) => {
+      // console.log("~ dNotify", dNotify);
       let { notification, data } = dNotify;
+      setDataNotifikasi(dNotify);
+
       PushNotification.localNotification({
         channelId: "default",
         id: 0,
@@ -148,20 +176,34 @@ function App() {
         number: 1,
       });
     });
+    // End When Application on Running
+
+    //Start When Application Close
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      // console.log(
+      //   "[FCMService] OnNotificationOpenedApp getInitialNotification",
+      //   remoteMessage
+      // );
+      if (remoteMessage) {
+        await AsyncStorage.setItem(
+          "dataNotification",
+          JSON.stringify(remoteMessage)
+        );
+      }
+    });
+    //End When Application Close
+
+    //When Application Running on Background/minimize
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       // console.log("BG_NF", remoteMessage);
-      setDataNotifikasi(remoteMessage);
+      await AsyncStorage.setItem(
+        "dataNotification",
+        JSON.stringify(remoteMessage)
+      );
+      // setDataNotifikasi(remoteMessage);
     });
+    //End When Application Running on Background/minimize
     SplashScreen.hide();
-  }, []);
-
-  useEffect(() => {
-    astor();
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      // console.log("foregroundmsg", remoteMessage);
-    });
-
-    return unsubscribe;
   }, []);
 
   if (appLoading) {

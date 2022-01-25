@@ -45,6 +45,7 @@ import { setSettingUser, setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("~ props Home", props);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
@@ -130,10 +131,6 @@ export default function Home(props) {
       },
     },
   });
-  // useEffect(() => {
-  //     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  //     });
-  // }, []);
 
   const searchPage = () => {
     props.navigation.navigate("SearchPg", {
@@ -147,6 +144,34 @@ export default function Home(props) {
     });
     return unsubscribe;
   }, [props.navigation]);
+
+  const loadNavigate = async () => {
+    let dataNotif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
+    if (dataNotif) {
+      switch (dataNotif.data.name) {
+        case "feed":
+          props.navigation.navigate("FeedStack", {
+            screen: "CommentPost",
+            params: {
+              post_id: dataNotif.data.name_id,
+              token: tokenApps,
+            },
+          });
+          AsyncStorage.setItem("dataNotification", "");
+          break;
+        case y:
+          // code block
+          break;
+        default:
+        // code block
+      }
+    }
+    console.log("~ dataNotif", dataNotif);
+  };
+
+  useEffect(() => {
+    loadNavigate();
+  }, []);
 
   useEffect(() => {
     if (
