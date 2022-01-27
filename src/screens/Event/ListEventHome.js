@@ -105,7 +105,6 @@ export default function ListEventHome(props) {
   const [arrayYear, setArrayYear] = useState([]);
   let [loadingIndicator, setLoadingIndicator] = useState(true);
 
-  // console.log("statusbar", StatusBar.currentHeight);
   const HeaderHeight = Platform.select({
     ios: Notch
       ? normalize(205) + tambahanJudul + tambahan - 20
@@ -1660,7 +1659,8 @@ export default function ListEventHome(props) {
                   <TouchableOpacity
                     style={{ marginLeft: -20 }}
                     onPress={() => {
-                      setFilterCountry("");
+                      // setFilterCountry("");
+                      searchCountry("");
                       setRenderCountry("");
                     }}
                   >
@@ -1669,136 +1669,137 @@ export default function ListEventHome(props) {
                 ) : null}
               </View>
             </View>
-            {filterCountry.length > 0
-              ? filterCountry.map((item, index) => (
-                  <Pressable
-                    key={index.toString()}
-                    onPress={() => handlecountry(item, index)}
+            {datacountrys?.map((item, index) => (
+              <Pressable
+                key={index.toString()}
+                onPress={() => handlecountry(item, index)}
+                style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
+                  flexDirection: "row",
+                  alignContent: "center",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    marginRight: 15,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    elevation: 1,
+                  }}
+                >
+                  <View
                     style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 20,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: item.checked ? "#209FAE" : "#D1D1D1",
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "space-between",
+                      borderWidth: 1,
+                      borderColor: "#d1d1d1",
+                      overflow: "hidden",
                     }}
                   >
-                    <View
+                    <FunIcon
+                      icon={item.flag}
+                      height={25}
+                      width={37}
+                      variant="f"
+                      style={
+                        {
+                          // elevation: 1,
+                        }
+                      }
+                    />
+                  </View>
+                  <View style={{ paddingLeft: 15 }}>
+                    <Text
+                      size="description"
                       style={{
-                        marginRight: 15,
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        elevation: 1,
+                        color: item.checked ? "#209FAE" : "#000",
                       }}
                     >
-                      <View
-                        style={{
-                          borderWidth: 1,
-                          borderColor: "#d1d1d1",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <FunIcon
-                          icon={item.flag}
-                          height={25}
-                          width={37}
-                          variant="f"
-                          style={
-                            {
-                              // elevation: 1,
-                            }
-                          }
-                        />
-                      </View>
-                      <View style={{ paddingLeft: 15 }}>
-                        <Text
-                          size="description"
-                          style={{
-                            color: item.checked ? "#209FAE" : "#000",
-                          }}
-                        >
-                          {item.name}
-                        </Text>
-                      </View>
-                    </View>
-                    <View>
-                      {item.checked && item.checked === true ? (
-                        <Check width={20} height={15} />
-                      ) : null}
-                    </View>
-                  </Pressable>
-                ))
-              : datacountry.map((item, index) => (
-                  <Pressable
-                    key={"country" + index}
-                    onPress={() => handlecountry(item, index)}
-                    style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 20,
-                      borderBottomWidth: 0.5,
-                      borderBottomColor:
-                        item.id === country.id || item.checked
-                          ? "#209FAE"
-                          : "#D1D1D1",
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                      }}
-                    >
-                      <View
-                        style={{
-                          marginRight: 15,
-                          elevation: 1,
-                          height: 30,
-                          width: 42,
-                          backgroundColor: "#fff",
-                          // borderWidth: 1,
-                        }}
-                      >
-                        <FunIcon
-                          icon={item.flag}
-                          height={30}
-                          x
-                          width={42}
-                          variant="f"
-                          style={
-                            {
-                              // elevation: 1,
-                            }
-                          }
-                        />
-                      </View>
-                      <View style={{ paddingTop: 5 }}>
-                        <Text
-                          size="description"
-                          style={{
-                            color:
-                              item.id === country.id || item.checked
-                                ? "#209FAE"
-                                : "#000",
-                          }}
-                        >
-                          {item.name}
-                        </Text>
-                      </View>
-                    </View>
-                    <View>
-                      {item.id === country.id ||
-                      (item.checked && item.checked === true) ? (
-                        <Check width={20} height={15} />
-                      ) : null}
-                    </View>
-                  </Pressable>
-                ))}
+                      {item.name}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  {item.checked && item.checked === true ? (
+                    <Check width={20} height={15} />
+                  ) : null}
+                </View>
+              </Pressable>
+            ))
+            // :
+            // datacountry.map((item, index) => (
+            //     <Pressable
+            //       key={"country" + index}
+            //       onPress={() => handlecountry(item, index)}
+            //       style={{
+            //         paddingVertical: 15,
+            //         paddingHorizontal: 20,
+            //         borderBottomWidth: 0.5,
+            //         borderBottomColor:
+            //           item.id === country.id || item.checked
+            //             ? "#209FAE"
+            //             : "#D1D1D1",
+            //         flexDirection: "row",
+            //         alignContent: "center",
+            //         alignItems: "center",
+            //         justifyContent: "space-between",
+            //       }}
+            //     >
+            //       <View
+            //         style={{
+            //           flexDirection: "row",
+            //         }}
+            //       >
+            //         <View
+            //           style={{
+            //             marginRight: 15,
+            //             elevation: 1,
+            //             height: 30,
+            //             width: 42,
+            //             backgroundColor: "#fff",
+            //             // borderWidth: 1,
+            //           }}
+            //         >
+            //           <FunIcon
+            //             icon={item.flag}
+            //             height={30}
+            //             x
+            //             width={42}
+            //             variant="f"
+            //             style={
+            //               {
+            //                 // elevation: 1,
+            //               }
+            //             }
+            //           />
+            //         </View>
+            //         <View style={{ paddingTop: 5 }}>
+            //           <Text
+            //             size="description"
+            //             style={{
+            //               color:
+            //                 item.id === country.id || item.checked
+            //                   ? "#209FAE"
+            //                   : "#000",
+            //             }}
+            //           >
+            //             {item.name}
+            //           </Text>
+            //         </View>
+            //       </View>
+            //       <View>
+            //         {item.id === country.id ||
+            //         (item.checked && item.checked === true) ? (
+            //           <Check width={20} height={15} />
+            //         ) : null}
+            //       </View>
+            //     </Pressable>
+            //   ))
+            }
           </View>
         </View>
       </Modal>
@@ -1887,6 +1888,7 @@ export default function ListEventHome(props) {
           >
             {arrayYear.map((item, index) => (
               <Pressable
+                key={index.toString()}
                 onPress={() => {
                   FlatlistSet(item);
                 }}
@@ -2020,6 +2022,7 @@ export default function ListEventHome(props) {
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   let [datacountry, setdatacountry] = useState([]);
+  let [datacountrys, setdatacountrys] = useState([]);
   let [search, setSearch] = useState({
     type: null,
     tag: null,
@@ -2105,17 +2108,20 @@ export default function ListEventHome(props) {
     },
   });
 
-  const { data: dataFillter, loading: loadingcat, error: errorcat } = useQuery(
-    CategoryEvent,
-    {
-      fetchPolicy: "network-only",
-      onCompleted: () => {
-        setdataFilterCategori(dataFillter?.event_filter?.type);
-        setdataFilterCategoris(dataFillter?.event_filter?.type);
-        setdatacountry(dataFillter?.event_filter?.country);
-      },
-    }
-  );
+  const {
+    data: dataFillter,
+    loading: loadingcat,
+    error: errorcat,
+    refetch,
+  } = useQuery(CategoryEvent, {
+    fetchPolicy: "network-only",
+    onCompleted: () => {
+      setdataFilterCategori(dataFillter?.event_filter?.type);
+      setdataFilterCategoris(dataFillter?.event_filter?.type);
+      setdatacountry(dataFillter?.event_filter?.country);
+      setdatacountrys(dataFillter?.event_filter?.country);
+    },
+  });
 
   const [Banner, SetDataBanner] = useState();
   const {
@@ -2320,31 +2326,63 @@ export default function ListEventHome(props) {
     await setdataFilterCategoris(tempe);
   };
 
-  const handlecountry = async (item) => {
-    let hasil = [];
+  // const handlecountry = async (item) => {
+  //   let hasil = [];
 
-    let tempe = [...datacountry];
-    let tempes = [];
-    for (var x of tempe) {
+  //   let tempe = [...datacountry];
+  //   let tempes = [];
+  //   for (var x of tempe) {
+  //     let data = { ...x };
+  //     if (x !== item) {
+  //       data.checked = false;
+  //     } else {
+  //       data.checked = true;
+  //       hasil.push(item.id);
+  //     }
+  //     await tempes.push(data);
+  //   }
+  //   await setdatacountry(tempes);
+  //   await setFilterCountry(tempes);
+
+  //   let data = { ...search };
+  //   data["country"] = hasil;
+  //   await setSearch(data);
+
+  //   // await setModelSetNegara(false);
+  //   await setcountry(item);
+  //   await setRenderCountry("");
+  // };
+
+  const handlecountry = async (id) => {
+    let hasil = [];
+    for (var x of datacountry) {
       let data = { ...x };
-      if (x !== item) {
-        data.checked = false;
+      if (data.id === id) {
+        data["checked"] = true;
       } else {
-        data.checked = true;
-        hasil.push(item.id);
+        data["checked"] = false;
       }
-      await tempes.push(data);
+      await hasil.push(data);
     }
-    await setdatacountry(tempes);
+
+    await setdatacountrys(tempes);
     await setFilterCountry(tempes);
 
-    let data = { ...search };
-    data["country"] = hasil;
-    await setSearch(data);
+    // let data = { ...search };
+    // data["country"] = hasil;
+    // await setSearch(data);
 
-    // await setModelSetNegara(false);
-    await setcountry(item);
-    await setRenderCountry("");
+    // // await setModelSetNegara(false);
+    // await setcountry(item);
+    // await setRenderCountry("");
+
+    // let data = { ...search };
+    // data["country"] = hasil;
+    // await setSearch(data);
+
+    // // await setModelSetNegara(false);
+    // await setcountry(item);
+    // await setRenderCountry("");
   };
 
   const UpdateFilter = async () => {
@@ -2410,7 +2448,15 @@ export default function ListEventHome(props) {
     }
     await setdataFilterCategori(tempes);
     await setdataFilterCategoris(tempes);
-
+    let temp = [...datacountrys];
+    let tempor = [];
+    for (var x of temp) {
+      let data = { ...x };
+      data.checked = false;
+      await tempor.push(data);
+    }
+    await setdatacountrys(tempor);
+    await setdatacountry(tempor);
     await setSearch({
       type: null,
       tag: null,
@@ -2438,14 +2484,15 @@ export default function ListEventHome(props) {
     let searching = new RegExp(teks, "i");
     let b = datacountry.filter((item) => searching.test(item.name));
 
-    setFilterCountry(b);
+    // setFilterCountry(b);
+    setdatacountrys(b);
   };
 
-  const [findCountry, setFindCountry] = useState("");
-  const clearSearchCountry = async (teks) => {
-    let searching = new RegExp(teks, "i");
-    let b = datacountry.filter((item) => searching.test(item.name));
-  };
+  // const [findCountry, setFindCountry] = useState("");
+  // const clearSearchCountry = async (teks) => {
+  //   let searching = new RegExp(teks, "i");
+  //   let b = datacountry.filter((item) => searching.test(item.name));
+  // };
 
   const cekData = (data) => {
     let dat = dataFilterCategori.filter((k) => k.checked === true);
