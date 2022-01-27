@@ -197,7 +197,7 @@ export default function LocationSelector({
                   <View
                     style={{
                       width: 20,
-                      paddingTop: 3,
+                      paddingTop: 4,
                     }}
                   >
                     <Pointmapblack />
