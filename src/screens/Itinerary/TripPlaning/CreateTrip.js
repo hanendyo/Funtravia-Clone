@@ -25,6 +25,7 @@ import {
   Pressable,
   TextInput,
   Animated,
+  ActivityIndicator,
 } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,6 +47,7 @@ import {
   Text,
   FunIcon,
   Peringatan,
+  StatusBar,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -55,6 +57,7 @@ import { gql } from "apollo-boost";
 import Ripple from "react-native-material-ripple";
 import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
+import CityCursorBased from "../../../graphQL/Query/Itinerary/CityCursorBased";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
@@ -209,15 +212,48 @@ export default function Trip(props) {
     },
   });
 
-  const [
-    querycity,
-    { loading: loadingcity, data: datacity, error: errorcity },
-  ] = useLazyQuery(City, {
+  // const [
+  //   querycity,
+  //   { loading: loadingcity, data: datacity, error: errorcity },
+  // ] = useLazyQuery(CityCursorBased, {
+  //   variables: {
+  //     fetchPolicy: "network-only",
+  //     keyword: citys,
+  //     countries_id: idCountry,
+  //   },
+  //   onCompleted: (e) => {
+  //     console.log(`CITY E: --> `, e);
+  //     console.log(`DATACITY: ---> `, datacity);
+  //     console.log(`ERROR: --->  `, errorcity);
+  //   },
+  // });
+
+  const {
+    loading: loadingcity,
+    data: datacity,
+    error: errorcity,
+    fetchMore,
+    refetch,
+    networkStatus,
+  } = useQuery(CityCursorBased, {
     variables: {
-      fetchPolicy: "network-only",
       keyword: citys,
       countries_id: idCountry,
+      first: 20,
+      after: "",
     },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    // pollInterval: 5500,
+    notifyOnNetworkStatusChange: true,
     onCompleted: (e) => {},
   });
 
@@ -243,7 +279,8 @@ export default function Trip(props) {
       query();
       querywith();
       getkategori();
-      querycity();
+      // querycity();
+      refetch();
     }
   };
   const [isFocusedTitle, setIsFocusedTitle] = useState(false);
@@ -450,6 +487,37 @@ export default function Trip(props) {
     // setModalAlert(true);
   };
 
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.city_search_cursor_based;
+    const edges = [
+      ...prev.city_search_cursor_based.edges,
+      ...fetchMoreResult.city_search_cursor_based.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      city_search_cursor_based: {
+        __typename: prev.city_search_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
+  };
+  const handleOnEndReached = () => {
+    if (
+      datacity?.city_search_cursor_based?.pageInfo.hasNextPage &&
+      !loadingcity
+    ) {
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          first: 20,
+          after: datacity?.city_search_cursor_based.pageInfo?.endCursor,
+        },
+      });
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : null}
@@ -585,6 +653,7 @@ export default function Trip(props) {
                 onRequestClose={() => setModalcountry(false)}
                 onBackdropPress={() => setModalcountry(false)}
                 onSwipeComplete={() => setModalcountry(false)}
+                propagateSwipe={true}
                 swipeDirection="down"
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
@@ -724,88 +793,93 @@ export default function Trip(props) {
                     </View>
                   </View>
                   {datacountry && datacountry?.country_search.length > 0 ? (
-                    <FlatList
-                      // ref={slider}
-                      // getItemLayout={(data, index) => ({
-                      //   length: Platform.OS == "ios" ? rippleHeight : 46,
-                      //   offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
-                      //   index,
-                      // })}
-                      showsVerticalScrollIndicator={false}
-                      data={countryData}
-                      renderItem={({ item, index }) => (
-                        <Ripple
-                          // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-                          onPress={() => setcount(item.id, item.name)}
-                          style={{
-                            marginLeft: 20,
-                            paddingVertical: 15,
-                            paddingLeft: 0,
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "#d1d1d1",
-                            flexDirection: "row",
-                            alignContent: "center",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "90%",
-                          }}
-                        >
-                          <View
+                    <>
+                      <FlatList
+                        // ref={slider}
+                        // getItemLayout={(data, index) => ({
+                        //   length: Platform.OS == "ios" ? rippleHeight : 46,
+                        //   offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
+                        //   index,
+                        // })}
+
+                        showsVerticalScrollIndicator={false}
+                        data={countryData}
+                        renderItem={({ item, index }) => (
+                          <Ripple
+                            // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+                            onPress={() => setcount(item.id, item.name)}
                             style={{
-                              marginRight: 15,
+                              marginLeft: 20,
+                              paddingVertical: 15,
+                              paddingLeft: 0,
+                              borderBottomWidth: 0.5,
+                              borderBottomColor: "#d1d1d1",
                               flexDirection: "row",
-                              justifyContent: "center",
-                              elevation: 1,
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              width: "90%",
                             }}
                           >
                             <View
                               style={{
-                                borderWidth: 1,
-                                borderColor: "#d1d1d1",
-                                backgroundColor: "black",
-                                alignSelf: "center",
-                                alignContent: "center",
-                                alignItems: "center",
+                                marginRight: 15,
+                                flexDirection: "row",
                                 justifyContent: "center",
-                                overflow: "hidden",
-                                // width: 35,
-                                // height: 25,
-                                // paddingTop: 0,
+                                elevation: 1,
                               }}
                             >
-                              <FunIcon
-                                icon={item.flag}
-                                width={37}
-                                height={25}
-                              />
-                            </View>
+                              <View
+                                style={{
+                                  borderWidth: 1,
+                                  borderColor: "#d1d1d1",
+                                  backgroundColor: "black",
+                                  alignSelf: "center",
+                                  alignContent: "center",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  overflow: "hidden",
+                                  // width: 35,
+                                  // height: 25,
+                                  // paddingTop: 0,
+                                }}
+                              >
+                                <FunIcon
+                                  icon={item.flag}
+                                  width={37}
+                                  height={25}
+                                />
+                              </View>
 
-                            <Text
-                              size="description"
-                              type="regular"
-                              style={{
-                                paddingLeft: 15,
-                                color:
-                                  item.id == idCountry ? "#209fae" : "#000",
-                              }}
-                            >
-                              {item.name
-                                .toString()
-                                .toLowerCase()
-                                .replace(/\b[a-z]/g, function(letter) {
-                                  return letter.toUpperCase();
-                                })}
-                            </Text>
-                          </View>
-                          <View>
-                            {item.id == idCountry ? (
-                              <Check width={20} height={15} />
-                            ) : null}
-                          </View>
-                        </Ripple>
-                      )}
-                      keyExtractor={(item) => item.id}
-                    />
+                              <Text
+                                size="description"
+                                type="regular"
+                                style={{
+                                  paddingLeft: 15,
+                                  color:
+                                    item.id == idCountry ? "#209fae" : "#000",
+                                }}
+                              >
+                                {item.name
+                                  .toString()
+                                  .toLowerCase()
+                                  .replace(/\b[a-z]/g, function(letter) {
+                                    return letter.toUpperCase();
+                                  })}
+                              </Text>
+                            </View>
+                            <View>
+                              {item.id == idCountry ? (
+                                <Check width={20} height={15} />
+                              ) : null}
+                            </View>
+                          </Ripple>
+                        )}
+                        keyExtractor={(item) => item.id}
+                      />
+                      {/* biar bisa scroll ampe bawah */}
+                      <View style={{ marginTop: 100 }}></View>
+                    </>
                   ) : null}
                 </KeyboardAvoidingView>
               </Modal>
@@ -878,6 +952,7 @@ export default function Trip(props) {
                 onRequestClose={() => setModalcity(false)}
                 onBackdropPress={() => setModalcity(false)}
                 onSwipeComplete={() => setModalcity(false)}
+                propagateSwipe={true}
                 swipeDirection="down"
                 animationIn="slideInUp"
                 animationOut="slideOutDown"
@@ -943,7 +1018,7 @@ export default function Trip(props) {
                       <Xhitam height={15} width={15} />
                     </TouchableOpacity>
                   </View>
-                  {/* garis bottom */}
+
                   <View
                     style={{
                       borderBottomColor: "#D1D1D1",
@@ -1017,65 +1092,97 @@ export default function Trip(props) {
                       ) : null}
                     </View>
                   </View>
-                  {datacity && datacity.cities_search.length > 0 ? (
-                    <FlatList
-                      // ref={slider}
-                      // getItemLayout={(data, index) => ({
-                      //   length: Platform.OS == "ios" ? rippleHeight : 46,
-                      //   offset: Platform.OS == "ios" ? rippleHeight * index : 46 * index,
-                      //   index,
-                      // })}
-                      showsVerticalScrollIndicator={false}
-                      data={datacity.cities_search}
-                      renderItem={({ item, index }) => (
-                        <Ripple
-                          // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
-                          onPress={() => setcity(item.id, item.name)}
-                          style={{
-                            marginLeft: 20,
-                            paddingVertical: 15,
-                            paddingLeft: 0,
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "#d1d1d1",
-                            flexDirection: "row",
-                            alignContent: "center",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "90%",
-                          }}
-                        >
-                          <View
+                  {datacity &&
+                  datacity.city_search_cursor_based.edges.length > 0 ? (
+                    <>
+                      <FlatList
+                        // ref={slider}
+                        // getItemLayout={(data, index) => ({
+                        //   length: normalize(50),
+                        //   offset: normalize(50),
+                        //   index,
+                        // })}
+                        showsVerticalScrollIndicator={false}
+                        data={datacity.city_search_cursor_based.edges}
+                        renderItem={({ item, index }) => (
+                          <Ripple
+                            // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+                            onPress={() =>
+                              setcity(item.node.id, item.node.name)
+                            }
                             style={{
-                              marginRight: 15,
+                              marginLeft: 20,
+                              paddingVertical: 15,
+                              paddingLeft: 0,
+                              borderBottomWidth: 0.5,
+                              borderBottomColor: "#d1d1d1",
                               flexDirection: "row",
-                              elevation: 1,
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              width: "90%",
                             }}
                           >
-                            <Text
-                              size="description"
-                              type="regular"
+                            <View
                               style={{
-                                paddingLeft: 15,
-                                color: item.id == idCity ? "#209fae" : "#000",
+                                marginRight: 15,
+                                flexDirection: "row",
+                                elevation: 1,
                               }}
                             >
-                              {item.name
-                                .toString()
-                                .toLowerCase()
-                                .replace(/\b[a-z]/g, function(letter) {
-                                  return letter.toUpperCase();
-                                })}
-                            </Text>
-                          </View>
-                          <View>
-                            {item.id == idCity ? (
-                              <Check width={20} height={15} />
-                            ) : null}
-                          </View>
-                        </Ripple>
-                      )}
-                      keyExtractor={(item) => item.id}
-                    />
+                              <Text
+                                size="description"
+                                type="regular"
+                                style={{
+                                  paddingLeft: 15,
+                                  color:
+                                    item.node.id == idCity ? "#209fae" : "#000",
+                                }}
+                              >
+                                {item.node.name
+                                  .toString()
+                                  .toLowerCase()
+                                  .replace(/\b[a-z]/g, function(letter) {
+                                    return letter.toUpperCase();
+                                  })}
+                              </Text>
+                            </View>
+                            <View>
+                              {item.node.id == idCity ? (
+                                <Check width={20} height={15} />
+                              ) : null}
+                            </View>
+                          </Ripple>
+                        )}
+                        keyExtractor={(item) => item.node.id}
+                        initialNumToRender={19}
+                        onEndReachedThreshold={1}
+                        onEndReached={handleOnEndReached}
+                        ListFooterComponent={
+                          loadingcity ? (
+                            <View
+                              style={{
+                                // position: "absolute",
+                                // bottom: 0,
+                                // height: 20,
+                                width: Dimensions.get("screen").width,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginBottom: 30,
+                              }}
+                            >
+                              <ActivityIndicator
+                                animating={loadingcity}
+                                size="large"
+                                color="#209fae"
+                              />
+                            </View>
+                          ) : null
+                        }
+                      />
+                      {/* biar bisa scroll ampe bawah */}
+                      <View style={{ marginTop: 100 }}></View>
+                    </>
                   ) : null}
                 </KeyboardAvoidingView>
               </Modal>
@@ -1504,8 +1611,9 @@ export default function Trip(props) {
                 animationOut="slideOutRight"
                 isVisible={modaltravel}
                 style={{
-                  margin: 0,
-                  backgroundColor: "#fff",
+                  marginTop: 0,
+                  marginBottom: -35,
+                  backgroundColor: "#14646e",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "center",
@@ -1517,8 +1625,8 @@ export default function Trip(props) {
                     style={{
                       flex: 1,
                       width: Dimensions.get("screen").width,
-                      // height: '100%',
                       height: Dimensions.get("screen").height,
+                      // borderWidth: 10,
                     }}
                     enabled
                   >
@@ -1551,7 +1659,7 @@ export default function Trip(props) {
                             setModaltravel(false);
                           }}
                         >
-                          <Arrowbackwhite width={20} height={20} />
+                          <Arrowbackios width={20} height={20} />
                         </TouchableOpacity>
                         <Text
                           type={"bold"}
@@ -1679,7 +1787,7 @@ export default function Trip(props) {
                           paddingHorizontal: 10,
                           // marginVertical: 0,
                           width: "90%",
-                          height: 30,
+                          height: 40,
                         }}
                       >
                         <Search width={15} height={15} />

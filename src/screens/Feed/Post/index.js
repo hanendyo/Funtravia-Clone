@@ -384,11 +384,11 @@ export default function Post(props) {
             let array_album = [
               {
                 count: 0,
-                title: "Recent Photos",
+                title: t("recentPhotos"),
               },
               {
                 count: 0,
-                title: "Recent Videos",
+                title: t("recentVideos"),
               },
             ];
 
@@ -675,7 +675,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: 55,
+          height: 44,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",

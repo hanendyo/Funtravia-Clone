@@ -61,7 +61,7 @@ export default function detailCustomItinerary(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      height: 108,
+      height: 100,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -78,6 +78,7 @@ export default function detailCustomItinerary(props) {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          marginBottom: 20,
         }}
       >
         <Button
@@ -573,7 +574,6 @@ export default function detailCustomItinerary(props) {
         }
       }
     } catch (error) {
-      console.log("error", error);
       setAlertPopUp({
         ...alertPopUp,
         show: true,
@@ -1278,304 +1278,307 @@ export default function detailCustomItinerary(props) {
         animationOut="slideOutRight"
         isVisible={modalHotelName}
         style={{
-          backgroundColor: "#209fae",
-
-          // backgroundColor: 'rgba(0, 0, 0, 0.25)',
+          backgroundColor: "#14646e",
           justifyContent: "flex-end",
           alignItems: "center",
           alignSelf: "center",
           alignContent: "center",
+          margin: 0,
         }}
       >
-        <KeyboardAvoidingView
-          style={{
-            flex: 1,
-            backgroundColor: "#209fae",
+        <SafeAreaView>
+          <KeyboardAvoidingView
+            style={{
+              flex: 1,
+              // backgroundColor: "#209fae",
 
-            width: Dimensions.get("screen").width,
-            // height: '100%',
-            height: Dimensions.get("screen").height,
-          }}
-          // behavior={Platform.OS === 'ios' ? 'position' : null}
-          // keyboardVerticalOffset={30}
-          enabled
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignSelf: "flex-start",
-              alignItems: "center",
-              alignContent: "center",
-              backgroundColor: "#209fae",
-              height: 50,
               width: Dimensions.get("screen").width,
-              // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                // borderWidth: 1,
-                height: 70,
-                width: 50,
-                position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
-                paddingTop: 20,
-                // top: 20,
-                // left: 20,
-              }}
-              onPress={() => {
-                setModalHotelName(false);
-              }}
-            >
-              <Arrowbackwhite width={20} height={40} style={{ left: 5 }} />
-            </TouchableOpacity>
-            <Text
-              style={{
-                top: 20,
-                left: 60,
-                fontFamily: "Lato-Bold",
-                fontSize: 15,
-                color: "white",
-                height: 50,
-                position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
-              }}
-            >
-              {t("HotelName")}
-            </Text>
-          </View>
-          <View
-            style={{
-              width: Dimensions.get("screen").width,
+              // height: '100%',
               height: Dimensions.get("screen").height,
-              backgroundColor: "white",
-              paddingTop: 20,
-              paddingHorizontal: 20,
-              paddingBottom: 10,
             }}
+            // behavior={Platform.OS === 'ios' ? 'position' : null}
+            // keyboardVerticalOffset={30}
+            enabled
           >
-            <GooglePlacesAutocomplete
-              query={{
-                key: API_KEY,
-                language: "id", // language of the results
+            <View
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-start",
+                alignItems: "center",
+                alignContent: "center",
+                backgroundColor: "#209fae",
+                height: 50,
+                width: Dimensions.get("screen").width,
+                // marginBottom: 20,
+                marginTop: Platform.OS === "ios" ? 0 : 0,
               }}
-              fetchDetails={true}
-              onPress={async (data, details) => {
-                // 'details' is provided when fetchDetails = true
-                if (modalHotelName) {
-                  setdataState((prevName) => {
-                    return {
-                      ...prevName,
-                      title: data.structured_formatting.main_text,
-                      hotel_name: data.structured_formatting.main_text,
-                      address: data.structured_formatting.secondary_text,
-                      latitude: details.geometry.location.lat,
-                      longitude: details.geometry.location.lng,
-                    };
-                  });
-                }
-                setModalHotelName(false);
-              }}
-              query={{
-                key: API_KEY,
-                language: "en",
-                fields: "formatted_address, name, geometry",
-              }}
-              ref={GooglePlacesRef}
-              textInputProps={{
-                onChangeText: (text) => setText(text),
-                value: text,
-              }}
-              autoFocus={true}
-              listViewDisplayed="auto"
-              currentLocation={true}
-              placeholder={t("SearchForHotel")}
-              // currentLocationLabel="Nearby location"
-              renderLeftButton={() => {
-                return (
-                  <View style={{ justifyContent: "center" }}>
-                    <Magnifying />
-                  </View>
-                );
-              }}
-              renderRightButton={() => {
-                return (
-                  Platform.OS === "android" &&
-                  (text.length ? (
-                    <Pressable
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        width: 50,
-                        marginRight: -10,
-                      }}
-                      onPress={() => {
-                        setText("");
-                        GooglePlacesRef.current.setAddressText("");
-                      }}
-                    >
-                      <Xblue width={20} height={20} />
-                    </Pressable>
-                  ) : null)
-                );
-              }}
-              GooglePlacesSearchQuery={{ rankby: "distance" }}
-              enablePoweredByContainer={false}
-              renderRow={(data) => {
-                if (data.description) {
-                  var x = data.description?.split(",");
-                }
-                return (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignContent: "flex-start",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 20,
-                        paddingTop: 3,
-                      }}
-                    >
-                      <Pointmapblack />
-                    </View>
-                    <View
-                      style={{ width: Dimensions.get("screen").width - 60 }}
-                    >
-                      <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
-                        {/* {x[0]} */}
-                        {x ? x[0] : data.name}
-                      </Text>
-                      <Text
-                        style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
-                      >
-                        <Truncate
-                          text={
-                            data.description ? data.description : data.vicinity
-                          }
-                          length={65}
-                        />
-                      </Text>
-                    </View>
-                  </View>
-                );
-              }}
-              styles={{
-                textInputContainer: {
-                  height: 40,
-                  backgroundColor: "#f4f4f4",
-                  borderWidth: 0.5,
-                  borderColor: "#6c6c6c",
-                  borderRadius: 5,
-                  margin: 0,
-                  paddingHorizontal: 10,
-                },
-                textInput: {
-                  marginLeft: 0,
-                  marginRight: 0,
-                  padding: 0,
-                  height: 38,
-                  color: "#5d5d5d",
-                  fontSize: 14,
-                  fontFamily: "Lato-Regular",
-                  // borderWidth: 1,
-                  backgroundColor: "#f4f4f4",
-                  borderColor: "#eaeaea",
-                },
-                predefinedPlacesDescription: {
-                  color: "#646464",
-                },
-                listView: {},
-                row: {
-                  height: 48,
-                },
-              }}
-            />
-            {dataNearby && dataNearby.length && !text.length ? (
-              <View
-                showsVerticalScrollIndicator={false}
+            >
+              <TouchableOpacity
                 style={{
+                  // borderWidth: 1,
+                  height: 70,
+                  width: 50,
                   position: "absolute",
-                  top: 60,
-                  right: 0,
-                  left: 0,
-                  marginHorizontal: 20,
+                  alignItems: "center",
+                  alignContent: "center",
+                  paddingTop: 20,
+                  // top: 20,
+                  // left: 20,
+                }}
+                onPress={() => {
+                  setModalHotelName(false);
                 }}
               >
-                {dataNearby.map((item, index) => {
-                  return index < 10 ? (
-                    <Pressable
-                      onPress={() => {
-                        if (modalHotelName && !text.length) {
-                          setdataState((prevName) => {
-                            return {
-                              ...prevName,
-                              title: item.address,
-                              hotel_name: item.name,
-                              address: item.address,
-                              latitude: item.latitude,
-                              longitude: item.longitude,
-                            };
-                          });
-                        }
-                        setModalHotelName(false);
-                      }}
-                      key={index}
+                <Arrowbackios width={20} height={30} style={{ left: 5 }} />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  top: 15,
+                  left: 60,
+                  fontFamily: "Lato-Bold",
+                  fontSize: 15,
+                  color: "white",
+                  // height: 50,
+                  position: "absolute",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                {t("HotelName")}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                backgroundColor: "white",
+                paddingTop: 20,
+                paddingHorizontal: 20,
+                paddingBottom: 10,
+              }}
+            >
+              <GooglePlacesAutocomplete
+                query={{
+                  key: API_KEY,
+                  language: "id", // language of the results
+                }}
+                fetchDetails={true}
+                onPress={async (data, details) => {
+                  // 'details' is provided when fetchDetails = true
+                  if (modalHotelName) {
+                    setdataState((prevName) => {
+                      return {
+                        ...prevName,
+                        title: data.structured_formatting.main_text,
+                        hotel_name: data.structured_formatting.main_text,
+                        address: data.structured_formatting.secondary_text,
+                        latitude: details.geometry.location.lat,
+                        longitude: details.geometry.location.lng,
+                      };
+                    });
+                  }
+                  setModalHotelName(false);
+                }}
+                query={{
+                  key: API_KEY,
+                  language: "en",
+                  fields: "formatted_address, name, geometry",
+                }}
+                ref={GooglePlacesRef}
+                textInputProps={{
+                  onChangeText: (text) => setText(text),
+                  value: text,
+                }}
+                autoFocus={true}
+                listViewDisplayed="auto"
+                currentLocation={true}
+                placeholder={t("SearchForHotel")}
+                // currentLocationLabel="Nearby location"
+                renderLeftButton={() => {
+                  return (
+                    <View style={{ justifyContent: "center" }}>
+                      <Magnifying />
+                    </View>
+                  );
+                }}
+                renderRightButton={() => {
+                  return (
+                    Platform.OS === "android" &&
+                    (text.length ? (
+                      <Pressable
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: 50,
+                          marginRight: -10,
+                        }}
+                        onPress={() => {
+                          setText("");
+                          GooglePlacesRef.current.setAddressText("");
+                        }}
+                      >
+                        <Xblue width={20} height={20} />
+                      </Pressable>
+                    ) : null)
+                  );
+                }}
+                GooglePlacesSearchQuery={{ rankby: "distance" }}
+                enablePoweredByContainer={false}
+                renderRow={(data) => {
+                  if (data.description) {
+                    var x = data.description?.split(",");
+                  }
+                  return (
+                    <View
                       style={{
                         flexDirection: "row",
                         alignContent: "flex-start",
                         alignItems: "flex-start",
-                        borderBottomWidth: 0.5,
-                        borderBottomColor: "#d1d1d1",
                       }}
                     >
                       <View
                         style={{
                           width: 20,
-                          paddingTop: 4,
-                          marginLeft: 12,
-                          marginTop: 10,
+                          paddingTop: 3,
                         }}
                       >
                         <Pointmapblack />
                       </View>
                       <View
+                        style={{ width: Dimensions.get("screen").width - 60 }}
+                      >
+                        <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
+                          {/* {x[0]} */}
+                          {x ? x[0] : data.name}
+                        </Text>
+                        <Text
+                          style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
+                        >
+                          <Truncate
+                            text={
+                              data.description
+                                ? data.description
+                                : data.vicinity
+                            }
+                            length={65}
+                          />
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                }}
+                styles={{
+                  textInputContainer: {
+                    height: 40,
+                    backgroundColor: "#f4f4f4",
+                    borderWidth: 0.5,
+                    borderColor: "#6c6c6c",
+                    borderRadius: 5,
+                    margin: 0,
+                    paddingHorizontal: 10,
+                  },
+                  textInput: {
+                    marginLeft: 0,
+                    marginRight: 0,
+                    padding: 0,
+                    height: 38,
+                    color: "#5d5d5d",
+                    fontSize: 14,
+                    fontFamily: "Lato-Regular",
+                    // borderWidth: 1,
+                    backgroundColor: "#f4f4f4",
+                    borderColor: "#eaeaea",
+                  },
+                  predefinedPlacesDescription: {
+                    color: "#646464",
+                  },
+                  listView: {},
+                  row: {
+                    height: 48,
+                  },
+                }}
+              />
+              {dataNearby && dataNearby.length && !text.length ? (
+                <View
+                  showsVerticalScrollIndicator={false}
+                  style={{
+                    position: "absolute",
+                    top: 60,
+                    right: 0,
+                    left: 0,
+                    marginHorizontal: 20,
+                  }}
+                >
+                  {dataNearby.map((item, index) => {
+                    return index < 10 ? (
+                      <Pressable
+                        onPress={() => {
+                          if (modalHotelName && !text.length) {
+                            setdataState((prevName) => {
+                              return {
+                                ...prevName,
+                                title: item.address,
+                                hotel_name: item.name,
+                                address: item.address,
+                                latitude: item.latitude,
+                                longitude: item.longitude,
+                              };
+                            });
+                          }
+                          setModalHotelName(false);
+                        }}
+                        key={index}
                         style={{
-                          width: Dimensions.get("screen").width - 60,
-                          paddingRight: 10,
+                          flexDirection: "row",
+                          alignContent: "flex-start",
+                          alignItems: "flex-start",
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: "#d1d1d1",
                         }}
                       >
-                        <Text
+                        <View
                           style={{
-                            fontFamily: "Lato-Bold",
-                            fontSize: 12,
+                            width: 20,
+                            paddingTop: 4,
+                            marginLeft: 12,
                             marginTop: 10,
                           }}
                         >
-                          {item.name}
-                        </Text>
-                        <Text
+                          <Pointmapblack />
+                        </View>
+                        <View
                           style={{
-                            fontFamily: "Lato-Regular",
-                            fontSize: 12,
-                            marginBottom: 5,
+                            width: Dimensions.get("screen").width - 60,
+                            paddingRight: 10,
                           }}
                         >
-                          {item.address}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  ) : null;
-                })}
-              </View>
-            ) : null}
-          </View>
-        </KeyboardAvoidingView>
+                          <Text
+                            style={{
+                              fontFamily: "Lato-Bold",
+                              fontSize: 12,
+                              marginTop: 10,
+                            }}
+                          >
+                            {item.name}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: "Lato-Regular",
+                              fontSize: 12,
+                              marginBottom: 5,
+                            }}
+                          >
+                            {item.address}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    ) : null;
+                  })}
+                </View>
+              ) : null}
+            </View>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </Modal>
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
