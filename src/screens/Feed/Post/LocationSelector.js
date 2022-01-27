@@ -9,6 +9,8 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import {
   Arrowbackios,
@@ -18,7 +20,7 @@ import {
   Xblue,
 } from "../../../assets/svg";
 import Modal from "react-native-modal";
-import { StatusBar, Truncate, Text } from "../../../component";
+import { Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
@@ -62,27 +64,18 @@ export default function LocationSelector({
         setModellocation(false);
       }}
       style={{
-        justifyContent: "flex-end",
-        alignItems: "center",
-        alignSelf: "center",
-        alignContent: "center",
-        marginTop: Platform.select({
-          ios: Notch ? -25 : -40,
-          android: 0,
-        }),
+        margin: 0,
       }}
     >
-      {/* <StatusBar backgroundColor="#14646E" /> */}
-      <KeyboardAvoidingView
+      <SafeAreaView
         style={{
           flex: 1,
-          width: Dimensions.get("screen").width,
-          // height: Dimensions.get("screen").height,
+          backgroundColor: "#14646e",
         }}
-        // behavior={Platform.OS === 'ios' ? 'position' : null}
-        // keyboardVerticalOffset={30}
-        enabled
       >
+        {/* <StatusBar backgroundColor="#14646E" /> */}
+        <StatusBar backgroundColor="#14646e" barStyle="light-content" />
+
         <View
           style={{
             flexDirection: "row",
@@ -92,7 +85,7 @@ export default function LocationSelector({
             backgroundColor: "#209fae",
             height: 55,
             width: Dimensions.get("screen").width,
-            marginTop: Platform.OS === "ios" ? 70 : -10,
+            // marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
           }}
         >
           <TouchableOpacity
@@ -126,6 +119,8 @@ export default function LocationSelector({
             backgroundColor: "white",
             paddingHorizontal: 15,
             paddingTop: 15,
+            // alignItems: "center",
+            // paddingHorizontal: 20,
           }}
         >
           <GooglePlacesAutocomplete
@@ -140,7 +135,7 @@ export default function LocationSelector({
               hasil(details);
             }}
             autoFocus={true}
-            onFail={(error) => alert(error)}
+            onFail={(error) => console.warn(error)}
             placeholder={t("findLocation")}
             renderLeftButton={() => {
               return (
@@ -179,6 +174,7 @@ export default function LocationSelector({
                 setText(text);
               },
               value: text,
+              clearButonMode: "never",
             }}
             GooglePlacesSearchQuery={{
               rankby: "distance",
@@ -223,24 +219,16 @@ export default function LocationSelector({
               );
             }}
             styles={{
-              borderWidth: 1,
               textInputContainer: {
-                backgroundColor: "#f6f6f6",
-                borderTopWidth: 0,
-                borderTopColor: "#FFFFFF",
-                borderRadius: 5,
+                backgroundColor: "#f1f1f1",
+                height: 45,
                 paddingHorizontal: 10,
+                borderRadius: 5,
               },
               textInput: {
-                // marginTop: 5,
-                paddingTop: 10,
-                marginLeft: 0,
-                marginRight: 0,
-                height: 35,
-                color: "#464646",
-                fontSize: 14,
+                backgroundColor: "#f1f1f1",
                 fontFamily: "Lato-Regular",
-                backgroundColor: "#f6f6f6",
+                fontSize: 14,
               },
             }}
           />
@@ -306,7 +294,7 @@ export default function LocationSelector({
             })}
           </ScrollView>
         ) : null}
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     </Modal>
   );
 }
