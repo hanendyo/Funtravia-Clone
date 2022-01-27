@@ -13,6 +13,7 @@ import {
   FlatList,
   Pressable,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import {
@@ -53,6 +54,7 @@ const HeaderHeight = Platform.select({
 import { useSelector } from "react-redux";
 
 export default function MovieLocation({ navigation, route }) {
+  const NotchAndro = StatusBar.currentHeight > 24;
   let [destinationMovie, setDestinationMovie] = useState();
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
@@ -203,7 +205,7 @@ export default function MovieLocation({ navigation, route }) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE + 5],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE],
     extrapolate: "clamp",
   });
   const shareTranslateY = scrollY.interpolate({
@@ -251,9 +253,10 @@ export default function MovieLocation({ navigation, route }) {
   });
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
+        backgroundColor: "#14646e",
       }}
     >
       <Satbar backgroundColor="#14646E" />
@@ -261,7 +264,8 @@ export default function MovieLocation({ navigation, route }) {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          marginTop: HEADER_MAX_HEIGHT + normalize(30),
+          marginTop: HEADER_MAX_HEIGHT - normalize(15),
+          // marginTop: HEADER_MAX_HEIGHT + normalize(30),
           backgroundColor: "#fff",
           paddingBottom: normalize(230),
         }}
@@ -283,6 +287,7 @@ export default function MovieLocation({ navigation, route }) {
             paddingBottom: 20,
             paddingHorizontal: 20,
             backgroundColor: "#f6f6f6",
+            paddingTop: 40,
           }}
         >
           <Text
@@ -539,11 +544,13 @@ export default function MovieLocation({ navigation, route }) {
           marginTop:
             Platform.OS == "ios"
               ? Notch
-                ? HEADER_MAX_HEIGHT + normalize(20)
-                : HEADER_MAX_HEIGHT - normalize(5)
+                ? HEADER_MAX_HEIGHT + normalize(15)
+                : HEADER_MAX_HEIGHT - normalize(10)
               : deviceId == "LYA-L29"
               ? HEADER_MAX_HEIGHT - normalize(8)
-              : HEADER_MAX_HEIGHT,
+              : NotchAndro
+              ? HEADER_MAX_HEIGHT + normalize(15)
+              : HEADER_MAX_HEIGHT + normalize(10),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}
@@ -638,9 +645,12 @@ export default function MovieLocation({ navigation, route }) {
           position: "absolute",
           left: 0,
           right: 0,
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
           overflow: "hidden",
-          height: HEADER_MAX_HEIGHT - 5,
+          height:
+            Platform.OS == "ios"
+              ? HEADER_MAX_HEIGHT - 10
+              : HEADER_MAX_HEIGHT - 5,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -679,11 +689,19 @@ export default function MovieLocation({ navigation, route }) {
           alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
-          left: 60,
-          right: 20,
+          left: 0,
+          right: -10,
+          bottom: 0,
           zIndex: 999,
+          paddingLeft: 60,
+          backgroundColor: "#209fae",
           opacity: titleOpacity,
-          top: SafeStatusBar + 5,
+          top:
+            Platform.OS == "ios"
+              ? SafeStatusBar + 5
+              : NotchAndro
+              ? SafeStatusBar + 8
+              : SafeStatusBar + 10,
         }}
       >
         <Text
@@ -691,6 +709,7 @@ export default function MovieLocation({ navigation, route }) {
           type="bold"
           style={{
             color: "#fff",
+            marginBottom: NotchAndro ? 5 : 0,
           }}
           numberOfLines={1}
         >
@@ -709,7 +728,12 @@ export default function MovieLocation({ navigation, route }) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          top:
+            Platform.OS == "ios"
+              ? SafeStatusBar
+              : NotchAndro
+              ? SafeStatusBar + 3
+              : SafeStatusBar,
           opacity: backOpacity,
         }}
       >
@@ -745,7 +769,12 @@ export default function MovieLocation({ navigation, route }) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          top:
+            Platform.OS == "ios"
+              ? SafeStatusBar
+              : NotchAndro
+              ? SafeStatusBar + 3
+              : SafeStatusBar,
         }}
       >
         <Pressable
@@ -769,7 +798,7 @@ export default function MovieLocation({ navigation, route }) {
       </Animated.View>
 
       {/* End Back Arrow Two */}
-    </View>
+    </SafeAreaView>
   );
 }
 

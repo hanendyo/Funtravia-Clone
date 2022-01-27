@@ -565,20 +565,15 @@ export default function CreatePost(props) {
             backgroundColor: "#209FAE",
             height: 55,
             flexDirection: "row",
-            justifyContent: "space-between",
             alignItems: "center",
             alignContent: "center",
-            paddingLeft: 5,
+            justifyContent: "space-between",
           }}
         >
           <View
             style={{
-              flexDirection: "row",
-              // borderWidth: 2,
               alignItems: "center",
-              justifyContent:
-                Platform.OS == "ios" ? "space-between" : "flex-start",
-              width: Dimensions.get("screen").width / 1.8,
+              marginLeft: 10,
             }}
           >
             <Button
@@ -596,20 +591,24 @@ export default function CreatePost(props) {
                 <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
               )}
             </Button>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+          </View>
+          <View
+            style={{
+              // flexDirection: "row",
+              // alignItems: "center",
+              marginLeft:
+                Platform.OS == "android"
+                  ? -Dimensions.get("screen").width / 2.3
+                  : 0,
+            }}
+          >
+            <Text
+              size="header"
+              type="bold"
+              style={{ color: "#fff", marginLeft: 10 }}
             >
-              <Text
-                size="header"
-                type="bold"
-                style={{ color: "#fff", marginLeft: 10 }}
-              >
-                {t("newPost")}
-              </Text>
-            </View>
+              {t("newPost")}
+            </Text>
           </View>
           <View
             style={{
