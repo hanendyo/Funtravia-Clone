@@ -27,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 
 export default function AddBuddy(props) {
-  console.log("props token", props.route.params.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -483,15 +482,15 @@ export default function AddBuddy(props) {
             alignContent: "center",
             alignItems: "center",
             justifyContent: "space-between",
-            // paddingHorizontal: 15,
-            paddingRight: 15,
-            paddingLeft: 5,
+            paddingHorizontal: 15,
+            paddingBottom: 5,
 
             // borderWidth: 1,
-            height: 50,
+            height: 40,
+            marginTop: 10,
             zIndex: 5,
             flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            width: "98%",
           }}
         >
           <View
@@ -500,13 +499,14 @@ export default function AddBuddy(props) {
               borderRadius: 2,
               flex: 1,
               paddingHorizontal: 10,
+              // paddingBottom:
               marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
-              height: 35,
-              borderWidth: 1,
               borderColor: "#e8e8e8",
+              borderWidth: 1,
+              height: 40,
             }}
           >
             <View>

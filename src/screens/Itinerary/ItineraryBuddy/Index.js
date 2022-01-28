@@ -40,7 +40,6 @@ import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 
 export default function ItineraryBuddy(props) {
-  console.log("props", props);
   const { t, i18n } = useTranslation();
 
   const HeaderComponent = {
@@ -1020,12 +1019,14 @@ export default function ItineraryBuddy(props) {
             alignItems: "center",
             justifyContent: "space-between",
             paddingHorizontal: 15,
+            paddingBottom: 5,
 
             // borderWidth: 1,
-            height: 50,
+            height: 40,
+            marginTop: 10,
             zIndex: 5,
             flexDirection: "row",
-            width: Dimensions.get("screen").width,
+            width: "98%",
           }}
         >
           <View
@@ -1034,12 +1035,11 @@ export default function ItineraryBuddy(props) {
               borderRadius: 2,
               flex: 1,
               paddingHorizontal: 10,
+              // paddingBottom:
               marginLeft: 7,
               flexDirection: "row",
               alignItems: "center",
               alignContent: "center",
-              height: 35,
-              borderWidth: 1,
               borderColor: "#e8e8e8",
             }}
           >
@@ -1048,8 +1048,8 @@ export default function ItineraryBuddy(props) {
             <Input
               // editable={false}
               style={{
-                width: "85%",
-                marginLeft: 10,
+                width: "80%",
+                marginLeft: 0,
                 padding: 0,
               }}
               placeholder={t("search")}

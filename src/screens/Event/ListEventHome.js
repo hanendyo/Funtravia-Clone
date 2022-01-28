@@ -114,7 +114,7 @@ export default function ListEventHome(props) {
       deviceId == "LYA-L29"
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(235) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(217) + tambahanJudul + tambahan - StatusBar.currentHeight
         : normalize(205) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
@@ -2353,24 +2353,29 @@ export default function ListEventHome(props) {
   //   await setRenderCountry("");
   // };
 
-  const handlecountry = async (id) => {
+  const handlecountry = async (item) => {
     let hasil = [];
-    for (var x of datacountry) {
+    let tempe = [...datacountry];
+    let tempes = [];
+    for (var x of tempe) {
       let data = { ...x };
-      if (data.id === id) {
-        data["checked"] = true;
+      if (x !== item) {
+        data.checked = false;
       } else {
-        data["checked"] = false;
+        data.checked = true;
+        hasil.push(item.id);
       }
-      await hasil.push(data);
+      await tempes.push(data);
     }
-
+    await setdatacountry(tempes);
     await setdatacountrys(tempes);
     await setFilterCountry(tempes);
 
-    // let data = { ...search };
-    // data["country"] = hasil;
-    // await setSearch(data);
+    let data = { ...search };
+    data["country"] = hasil;
+    await setSearch(data);
+    await setcountry(item);
+    await setRenderCountry("");
 
     // // await setModelSetNegara(false);
     // await setcountry(item);
@@ -2518,7 +2523,6 @@ export default function ListEventHome(props) {
         </View>
       ) : null}
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
-
       <Animated.View
         style={{
           position: "absolute",
@@ -2597,7 +2601,6 @@ export default function ListEventHome(props) {
           </Animated.View>
         </Button>
       </Animated.View>
-
       {/* jika scrollheader, animated show */}
       <Animated.View
         style={{
@@ -2699,7 +2702,6 @@ export default function ListEventHome(props) {
           </Animated.View>
         </Button>
       </Animated.View>
-
       {renderTabView()}
       {renderHeader()}
       {renderCustomRefresh()}
@@ -2707,7 +2709,6 @@ export default function ListEventHome(props) {
       {/* {renderFilterCategory()} */}
       {renderCountryFilter()}
       {renderYearFilter()}
-
       {/* modal share */}
     </View>
   );

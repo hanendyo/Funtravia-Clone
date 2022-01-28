@@ -50,27 +50,30 @@ export default function SearchListEventHome(props) {
   let [index, setindex] = useState(0);
   let [show, setShow] = useState(false);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
-  let [datacountry, setdatacountry] = useState([]);
-  let [datacountrys, setdatacountrys] = useState([]);
+  let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
+  let [dataCountryGetOnly, setDataCountryGetOnly] = useState([]);
+  let [dataCountryMain, setDataCountryMain] = useState([]);
+  let [tempDataCountry, setTempDataCountry] = useState("");
   let [selectedCountry, setSelectedCountry] = useState(
     props.route.params.idcountries ? props.route.params.idcountries : null
   );
+  let [tempSelectedCountry, setTempSelectedCountry] = useState("");
+
   let [selectedCity, setSelectedCity] = useState(
     props.route.params.idcity ? props.route.params.idcity : null
   );
-
   let [selectedProvince, setSelectedProvince] = useState(
     props.route.params.idprovince ? props.route.params.idprovince : null
   );
-  let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
-  const [categoryName, setCategoryName] = useState("");
   const [countryName, setCountryName] = useState("");
+  const [categoryName, setCategoryName] = useState("");
   const [timeModalStartDate, setTimeModalStartDate] = useState("");
   const [timeModalEndDate, setTimeModalEndDate] = useState("");
   const [isValidDate, setIsValidDate] = useState(true);
   const [isValidPrice, setIsValidPrice] = useState(true);
   const [keyboardIsUp, setKeyboardIsUp] = useState(false);
   const Notch = DeviceInfo.hasNotch();
+  const [hasApply, setHasApply] = useState(false);
 
   useEffect(() => {
     dateUseEffect();
@@ -153,15 +156,16 @@ export default function SearchListEventHome(props) {
       onCompleted: () => {
         setdataFilterCategori(dataFillter?.event_filter?.type);
         setdataFilterCategoris(dataFillter?.event_filter?.type);
-        setdatacountry(dataFillter?.event_filter?.country);
-        setdatacountrys(dataFillter?.event_filter?.country);
+        setDataCountryGetOnly(dataFillter?.event_filter?.country);
+        setDataCountryMain(dataFillter?.event_filter?.country);
+        setTempDataCountry(dataFillter?.event_filter?.country);
       },
     }
   );
 
   const _handleCheckCountry = async (id, index, item) => {
     let xc = [];
-    for (var datx of datacountry) {
+    for (var datx of dataCountryGetOnly) {
       let item = { ...datx };
       if (item.id === id) {
         item["checked"] = true;
@@ -171,8 +175,10 @@ export default function SearchListEventHome(props) {
       await xc.push(item);
     }
 
-    await setdatacountrys(xc);
+    // await setDataCountryMain(xc);
+    await setDataCountryGetOnly(xc);
     await setSelectedCountry(id);
+    // await setTempSelectedCountry(id);
   };
 
   const _handleCheck = async (id, index, item) => {
@@ -315,6 +321,7 @@ export default function SearchListEventHome(props) {
         >
           {currentArray.map((item, index) => (
             <Pressable
+              key={index.toString()}
               onPress={() => {
                 _handleYear(item);
               }}
@@ -372,8 +379,10 @@ export default function SearchListEventHome(props) {
   const searchCountry = (text) => {
     setKeywordCountry(text);
     let searching = new RegExp(text, "i");
-    let countries = datacountry.filter((item) => searching.test(item.name));
-    setdatacountrys(countries);
+    let countries = dataCountryGetOnly.filter((item) =>
+      searching.test(item.name)
+    );
+    setDataCountryMain(countries);
   };
   //!Filter country
   const countryFilter = () => {
@@ -440,41 +449,55 @@ export default function SearchListEventHome(props) {
             paddingHorizontal: 15,
           }}
         >
-          {datacountrys.map((item, index) => (
-            <TouchableOpacity
-              onPress={() => _handleCheckCountry(item["id"], index, item)}
-              style={{
-                flexDirection: "row",
-                backgroundColor:
-                  item.checked === true
-                    ? "#daf0f2"
-                    : selectedCountry == item.id
-                    ? "#daf0f2"
-                    : "#fff",
-                // borderColor: "#464646",
-                width: "100%",
-                marginRight: 3,
-                // marginBottom: 20,
-                justifyContent: "flex-start",
-                alignContent: "center",
-                alignItems: "center",
-                // borderWidth: 1,
-                paddingHorizontal: 10,
-                paddingVertical: 10,
-              }}
-            >
-              <Text
-                size="label"
-                type={item.checked === true ? "bold" : "regular"}
+          {dataCountryMain.length > 0 ? (
+            dataCountryMain?.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => _handleCheckCountry(item["id"], index, item)}
                 style={{
-                  marginLeft: 0,
-                  color: "#464646",
+                  flexDirection: "row",
+                  backgroundColor:
+                    item.checked === true
+                      ? "#daf0f2"
+                      : selectedCountry == item.id
+                      ? "#daf0f2"
+                      : "#fff",
+                  // borderColor: "#464646",
+                  width: "100%",
+                  marginRight: 3,
+                  // marginBottom: 20,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
+                  // borderWidth: 1,
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
                 }}
               >
-                {Capital({ text: item?.name })}
+                <Text
+                  size="label"
+                  type={item.checked === true ? "bold" : "regular"}
+                  style={{
+                    marginLeft: 0,
+                    color: "#464646",
+                  }}
+                >
+                  {Capital({ text: item?.name })}
+                </Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: Dimensions.get("screen").height / 10,
+              }}
+            >
+              <Text size="label" type="bold">
+                {t("noData")}
               </Text>
-            </TouchableOpacity>
-          ))}
+            </View>
+          )}
         </ScrollView>
       </View>
     );
@@ -1031,7 +1054,6 @@ export default function SearchListEventHome(props) {
     }
     await setdataFilterCategori(tempes);
     await setdataFilterCategoris(tempes);
-
     await setDateData({
       start_date: "",
       end_date: "",
@@ -1068,15 +1090,18 @@ export default function SearchListEventHome(props) {
     ) {
       await setIsValidPrice(true);
     }
-    let tempCountry = [...datacountrys];
+    let tempCountry = [...dataCountryMain];
     let temp = [];
     for (var x of tempCountry) {
       let data = { ...x };
-      data["checked"] = false;
+      if (data.checked == true) {
+        data.checked = false;
+      }
       await temp.push(data);
     }
-    await setdatacountrys(temp);
-    await setdatacountry(temp);
+    await setDataCountryMain(temp);
+    await setDataCountryGetOnly(temp);
+    await setTempDataCountry(temp);
     await setSelectedCountry(null);
     await setSelectedCity(null);
     await setSelectedProvince(null);
@@ -1104,7 +1129,7 @@ export default function SearchListEventHome(props) {
     let hasil = [];
 
     if (isValidDate == true && isValidPrice == true) {
-      for (var x of dataFilterCategori) {
+      for (var x of dataCountryMain) {
         if (x.checked === true) {
           hasil.push(x.id);
         }
@@ -1121,11 +1146,11 @@ export default function SearchListEventHome(props) {
         data["price_start"] = 0;
         data["price_end"] = 0;
       }
-
       data["year"] = oldYear;
       data["countries"] = selectedCountry;
       await setSearch(data);
       await setShow(false);
+      setTempSelectedCountry(data.countries);
       GetDataEventsAll();
       GetDataEventsPublic();
     } else {
@@ -1340,6 +1365,27 @@ export default function SearchListEventHome(props) {
 
     return array?.length;
   };
+  useEffect(() => {
+    // Country
+    if (!show && tempDataCountry.length != 0) {
+      setDataCountryMain(tempDataCountry);
+      setDataCountryGetOnly(tempDataCountry);
+      if (!hasApply) {
+        if (props.route.params.idcountries !== selectedCountry) {
+          setSelectedCountry(props.route.params.idcountries);
+        } else {
+          setSelectedCountry(tempSelectedCountry);
+        }
+      } else {
+        if (tempSelectedCountry !== props.route.params.idcountries) {
+          setSelectedCountry(tempSelectedCountry);
+        } else {
+          setSelectedCountry(tempSelectedCountry);
+        }
+      }
+      setCountryName("");
+    }
+  }, [show, tempSelectedCountry]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -1826,7 +1872,10 @@ export default function SearchListEventHome(props) {
               text={t("clearAll")}
             ></Button>
             <Button
-              onPress={() => UpdateFilter()}
+              onPress={() => {
+                setHasApply(true);
+                UpdateFilter();
+              }}
               style={{ width: "65%" }}
               text={t("apply")}
             ></Button>

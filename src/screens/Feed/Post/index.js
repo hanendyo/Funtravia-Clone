@@ -384,11 +384,11 @@ export default function Post(props) {
             let array_album = [
               {
                 count: 0,
-                title: t("recentPhotos"),
+                title: "Recent Photos",
               },
               {
                 count: 0,
-                title: t("recentVideos"),
+                title: "Recent Videos",
               },
             ];
 
