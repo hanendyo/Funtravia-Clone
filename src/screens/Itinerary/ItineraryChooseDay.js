@@ -297,7 +297,8 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-
+        console.log("datas", datas);
+        console.log("kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let response = await mutationSave({

@@ -523,6 +523,7 @@ export default function ItineraryDetail(props) {
       lon2: lon2,
       unit: unit,
     });
+    // console.log("jarak", jarak);
     let hasil = jarak / kecepatan;
     let hasils = hasil + "";
 
@@ -534,6 +535,8 @@ export default function ItineraryDetail(props) {
       (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
       (jam > 0 && jam < 60
         ? " " + jam + " " + t("min")
+        : hasil > 0.6
+        ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
         : " " + (jam - 60) + " " + t("min"))
     );
   };
@@ -2214,6 +2217,7 @@ export default function ItineraryDetail(props) {
                     paddingVertical: 5,
                     paddingHorizontal: 5,
                     backgroundColor: "#daf0f2",
+
                     borderRadius: 5,
                     alignContent: "center",
                     alignItems: "center",
@@ -2272,6 +2276,7 @@ export default function ItineraryDetail(props) {
                   style={{
                     width: 10,
                     height: 10,
+
                     marginLeft: 5,
                   }}
                 ></View>
@@ -2285,6 +2290,7 @@ export default function ItineraryDetail(props) {
                     marginTop: item.detail_accomodation ? 20 : 0,
                     borderRadius: 10,
                     backgroundColor: "#209fae",
+
                     elevation: 3,
                     shadowColor: "#d3d3d3",
                     shadowOffset: { width: 2, height: 2 },
@@ -2347,6 +2353,7 @@ export default function ItineraryDetail(props) {
                     zIndex: 99,
                     height: 10,
                     width: 10,
+
                     left: -5,
                     borderRadius: 10,
                     backgroundColor: "#209fae",
@@ -2402,6 +2409,7 @@ export default function ItineraryDetail(props) {
                     style={{
                       height: 30,
                       width: 30,
+
                       resizeMode: "cover",
                       borderRadius: 15,
                     }}
@@ -2802,6 +2810,7 @@ export default function ItineraryDetail(props) {
                     borderRadius: 5,
                     marginVertical: 2,
                     marginLeft: 1,
+                    // borderWidth: 5,
                     backgroundColor: "#fff",
                     flexDirection: "row",
                     paddingHorizontal: 10,
@@ -5829,6 +5838,7 @@ export default function ItineraryDetail(props) {
               backgroundColor: "white",
               paddingVertical: Platform.OS === "ios" ? 10 : 30,
               paddingHorizontal: 20,
+
               alignContent: "center",
               alignItems: "center",
               borderRadius: 5,
@@ -6001,7 +6011,7 @@ export default function ItineraryDetail(props) {
                       fontFamily: "Lato-Regular",
                     }}
                     onValueChange={(itemValue, itemIndex) =>
-                      setjamend(itemValue)
+                      setjamend(itemValue > jamstart ? item : jamstart)
                     }
                   >
                     {jams.map((item, index) => {
