@@ -71,7 +71,7 @@ export default function Unesco({ navigation, route }) {
       deviceId == "LYA-L29"
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(220) + tambahanJudul + tambahan - StatusBar.currentHeight
         : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
@@ -1005,7 +1005,7 @@ export default function Unesco({ navigation, route }) {
   useEffect(() => {
     setTimeout(() => {
       setLoadingPage(false);
-    }, 2000);
+    }, 1500);
   }, []);
 
   return (

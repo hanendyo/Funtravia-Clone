@@ -92,6 +92,7 @@ export default function AllDestination(props) {
   const [dataResult, setDataResult] = useState([]);
   const [show, setShow] = useState(false);
   const [totalCity, setTotalCity] = useState(0);
+  console.log("~ totalCity", totalCity);
 
   const _getAllData = (data) => {
     let tempData = [...data?.populer_city_destination_v2];
@@ -248,6 +249,7 @@ export default function AllDestination(props) {
 
   // render list
   const RenderList = ({ item }) => {
+    console.log("~ item", item.length);
     let sumdestination = item.count_destination;
     return item && item.city.length > 0 ? (
       <View
@@ -950,6 +952,18 @@ export default function AllDestination(props) {
           </View>
         </View>
       </Modal>
+      {totalCity === 0 && (
+        <View
+          style={{
+            alignSelf: "center",
+            marginTop: 10,
+          }}
+        >
+          <Text size="description" type="bold">
+            {t("noData")}
+          </Text>
+        </View>
+      )}
 
       <FlatList
         contentContainerStyle={{
@@ -981,7 +995,6 @@ export default function AllDestination(props) {
             )
           )
         }
-        ListFooterComponent={<View>{}</View>}
         showsHorizontalScrollIndicator={false}
         extraData={selected}
       />

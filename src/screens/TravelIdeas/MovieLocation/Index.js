@@ -253,14 +253,12 @@ export default function MovieLocation({ navigation, route }) {
   });
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
-        backgroundColor: "#14646e",
       }}
     >
       <Satbar backgroundColor="#14646E" />
-
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -530,7 +528,6 @@ export default function MovieLocation({ navigation, route }) {
             })}
         </View>
       </Animated.ScrollView>
-
       {/* Button Country */}
       <Animated.View
         style={{
@@ -603,7 +600,6 @@ export default function MovieLocation({ navigation, route }) {
           <Select height={10} width={10} style={{ marginRight: 20 }} />
         </TouchableOpacity>
       </Animated.View>
-
       {/* End Button Country */}
       {/* Title Middle */}
       <Animated.View
@@ -634,11 +630,8 @@ export default function MovieLocation({ navigation, route }) {
           {t("getVacation")}
         </Text>
       </Animated.View>
-
       {/* End Title Middle */}
-
       {/* Image Background */}
-
       <Animated.View
         pointerEvents="none"
         style={{
@@ -676,11 +669,8 @@ export default function MovieLocation({ navigation, route }) {
           }
         />
       </Animated.View>
-
       {/*End Image Background */}
-
       {/* Title Header */}
-
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
@@ -716,11 +706,8 @@ export default function MovieLocation({ navigation, route }) {
           {t("filmLocation")}
         </Text>
       </Animated.View>
-
       {/*End Title Header */}
-
       {/* Back Arrow One */}
-
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
@@ -757,11 +744,8 @@ export default function MovieLocation({ navigation, route }) {
           )}
         </Pressable>
       </Animated.View>
-
       {/* End Back Arrow One */}
-
       {/* Back Arrow Two */}
-
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
@@ -796,9 +780,8 @@ export default function MovieLocation({ navigation, route }) {
           )}
         </Pressable>
       </Animated.View>
-
       {/* End Back Arrow Two */}
-    </SafeAreaView>
+    </View>
   );
 }
 

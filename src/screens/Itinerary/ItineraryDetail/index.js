@@ -163,11 +163,13 @@ export default function ItineraryDetail(props) {
   const [tab3Data] = useState([]);
   let itineraryId = props.route.params.country;
   const token = useSelector((data) => data.token);
+  console.log("~ token", token);
   let [statusKiriman, setStatusKiriman] = useState(
     props.route.params.status ? props.route.params.status : "kosong"
   );
   let [status, setStatus] = useState("edit");
   let [idDay, setidDay] = useState(null);
+  console.log("~ idDay", idDay);
   let [dataAkhir, setDataAkhir] = useState();
   let [indexnya, setIndexnya] = useState(0);
   const [textLayoutLength, settextLayoutLength] = useState(false);
@@ -459,14 +461,18 @@ export default function ItineraryDetail(props) {
     },
     variables: { id: idDay },
     onCompleted: (res) => {
-      setDataListItem(res?.day_timeline);
-
-      spreadtimeline(res?.day_timeline);
+      if (res) {
+        setDataListItem(res?.day_timeline);
+        spreadtimeline(res?.day_timeline);
+      }
     },
   });
-  if (datatimeline && datatimeline.day_timeline.length) {
-    dataList = datatimeline.day_timeline;
-  }
+
+  console.log("datatimeline", datatimeline);
+  console.log("errortimeline", errortimeline);
+  // if (datatimeline && datatimeline?.day_timeline.length) {
+  //   dataList = datatimeline.day_timeline;
+  // }
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
@@ -2154,7 +2160,7 @@ export default function ItineraryDetail(props) {
   };
 
   const renderItinerary = ({ item, index }) => {
-    const x = dataList.length - 1;
+    const x = dataList && dataList.length - 1;
     return (
       <View
         style={{
@@ -3702,7 +3708,7 @@ export default function ItineraryDetail(props) {
                 ) : (
                   <View></View>
                 )
-              ) : dataList.length == 0 && tabIndex == 0 ? (
+              ) : dataList && dataList.length == 0 && tabIndex == 0 ? (
                 <Text></Text>
               ) : (
                 <View
@@ -3775,7 +3781,7 @@ export default function ItineraryDetail(props) {
                     </Text>
                   </View>
                   <Text>
-                    {dataList.length > 0 ? (
+                    {dataList && dataList.length > 0 ? (
                       <Truncate
                         text={getcity(
                           dataList,
@@ -4012,6 +4018,7 @@ export default function ItineraryDetail(props) {
         {route.key === "tab1" &&
         status === "edit" &&
         Anggota === "true" &&
+        dataList &&
         dataList.length > 0 ? (
           <Animated.View
             style={{
@@ -4519,6 +4526,7 @@ export default function ItineraryDetail(props) {
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
                         idcity:
+                          dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
@@ -4537,6 +4545,7 @@ export default function ItineraryDetail(props) {
                         lat: datadetail.itinerary_detail.city.latitude,
                         long: datadetail.itinerary_detail.city.longitude,
                         idcity:
+                          dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
@@ -5551,6 +5560,7 @@ export default function ItineraryDetail(props) {
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
                       idcity:
+                        dataList &&
                         dataList?.length > 0 &&
                         dataList[dataList.length - 1].id_city
                           ? dataList[dataList.length - 1].id_city
@@ -5569,6 +5579,7 @@ export default function ItineraryDetail(props) {
                       lat: datadetail.itinerary_detail.city.latitude,
                       long: datadetail.itinerary_detail.city.longitude,
                       idcity:
+                        dataList &&
                         dataList?.length > 0 &&
                         dataList[dataList.length - 1].id_city
                           ? dataList[dataList.length - 1].id_city
@@ -5838,7 +5849,6 @@ export default function ItineraryDetail(props) {
               backgroundColor: "white",
               paddingVertical: Platform.OS === "ios" ? 10 : 30,
               paddingHorizontal: 20,
-
               alignContent: "center",
               alignItems: "center",
               borderRadius: 5,
@@ -5846,7 +5856,7 @@ export default function ItineraryDetail(props) {
           >
             <Text size="label">{t("setTimeForActivity")}</Text>
             <Text size="title" type="bold">
-              "{dataList[indexinput]?.name}"
+              {dataList[indexinput]?.name}
             </Text>
 
             <View

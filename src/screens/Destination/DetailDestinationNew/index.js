@@ -104,7 +104,7 @@ const Index = (props) => {
         HeightTime +
         HeightWeb -
         20
-      : normalize(225) +
+      : normalize(215) +
         HeightJudul +
         Heightunesco +
         HeightAddress +
@@ -122,7 +122,7 @@ const Index = (props) => {
           HeightWeb -
           StatusBar.currentHeight
         : NotchAndro
-        ? normalize(224) +
+        ? normalize(210) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -2100,7 +2100,7 @@ const Index = (props) => {
   useEffect(() => {
     setTimeout(() => {
       setLoadings(false);
-    }, 4000);
+    }, 2900);
   }),
     [];
 

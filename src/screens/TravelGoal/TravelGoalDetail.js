@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import {
   Button,
@@ -44,57 +45,14 @@ const deviceId = DeviceInfo.getModel();
 import { useSelector } from "react-redux";
 
 export default function TravelGoalDetail(props) {
+  const NotchAndro = StatusBar.currentHeight > 24;
+
   const { t, i18n } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   let [datadetail, setdatadetail] = useState({});
   let [modalShare, setModalShare] = useState(false);
   let [datarelated, setdatarelated] = useState([]);
   let [modalLogin, setModalLogin] = useState(false);
-
-  // const HeaderComponent = {
-  //   headerShown: true,
-  //   headerTransparent: false,
-  //   headerTintColor: "white",
-  //   headerTitle: (
-  //     <Text size="header" type="bold" style={{ color: "#fff" }}>
-  //       {t("travelgoals")}
-  //     </Text>
-  //   ),
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //   },
-  //   headerTitleStyle: {
-  //     fontFamily: "Lato-Bold",
-  //     fontSize: 18,
-  //     color: "white",
-  //   },
-  //   headerLeftContainerStyle: {
-  //     background: "#FFF",
-
-  //     marginLeft: 10,
-  //   },
-  //   headerLeft: () => (
-  //     <Button
-  //       text={""}
-  //       size="medium"
-  //       type="circle"
-  //       variant="transparent"
-  //       onPress={() => props.navigation.goBack()}
-  //       style={{
-  //         height: 55,
-  //       }}
-  //     >
-  //       {Platform.OS == "ios" ? (
-  //         <Arrowbackios height={15} width={15}></Arrowbackios>
-  //       ) : (
-  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //       )}
-  //     </Button>
-  //   ),
-  // };
 
   const [
     Traveldetail,
@@ -217,7 +175,7 @@ export default function TravelGoalDetail(props) {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFF" }}>
+    <View style={{ flex: 1 }}>
       <Satbar backgroundColor="#14646E" />
       <View
         style={{
@@ -724,7 +682,7 @@ export default function TravelGoalDetail(props) {
           // top: 0,
           left: 0,
           right: 0,
-          backgroundColor: "#209FAE",
+          backgroundColor: "#14646e",
           overflow: "hidden",
           height:
             Platform.OS === "ios"
@@ -769,12 +727,19 @@ export default function TravelGoalDetail(props) {
           alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
-          left: 60,
+          left: 0,
           bottom: 0,
-          right: 20,
+          right: 0,
+          paddingLeft: 60,
+          backgroundColor: "#209fae",
           zIndex: 999,
           opacity: titleOpacity,
-          top: Platform.OS === "ios" ? SafeStatusBar - 3 : SafeStatusBar - 3,
+          top:
+            Platform.OS === "ios"
+              ? SafeStatusBar - 3
+              : NotchAndro
+              ? SafeStatusBar + 5
+              : SafeStatusBar - 6,
         }}
       >
         <Text
@@ -782,6 +747,7 @@ export default function TravelGoalDetail(props) {
           type="bold"
           style={{
             color: "#fff",
+            marginBottom: NotchAndro ? 0 : 5,
           }}
           numberOfLines={1}
         >
@@ -800,7 +766,14 @@ export default function TravelGoalDetail(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar - 13,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar - 13
+                : SafeStatusBar - 18
+              : NotchAndro
+              ? SafeStatusBar - 3
+              : SafeStatusBar - 17,
           opacity: backOpacity,
         }}
       >
@@ -836,7 +809,14 @@ export default function TravelGoalDetail(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar - 13,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar - 13
+                : SafeStatusBar - 18
+              : NotchAndro
+              ? SafeStatusBar - 3
+              : SafeStatusBar - 17,
           opacity: titleOpacity,
         }}
       >
