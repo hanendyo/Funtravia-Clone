@@ -131,7 +131,7 @@ export default function ListFotoAlbums(props) {
         if (
           response &&
           response.data &&
-          response.data.link_post_to_album.code === 200
+          response?.data?.link_post_to_album?.code === 200
         ) {
           await QueryFotoAlbum();
           await setShow(false);
@@ -144,11 +144,11 @@ export default function ListFotoAlbums(props) {
             if (from == "funFeed") {
               props.navigation.navigate("FeedScreen", {
                 token: tokenApps,
-                updateDataPost: response.data.link_post_to_album.data,
-                caption: props.route.params.data_post.caption,
-                response_count: props.route.params.data_post.response_count,
-                comment_count: props.route.params.data_post.comment_count,
-                liked: props.route.params.data_post.liked,
+                updateDataPost: response?.data?.link_post_to_album?.data,
+                caption: props?.route?.params?.data_post?.caption,
+                response_count: props?.route?.params?.data_post?.response_count,
+                comment_count: props?.route?.params?.data_post?.comment_count,
+                liked: props?.route?.params?.data_post?.liked,
                 from: "funFeedAlbum",
               });
             } else if (from == "funFeedComment") {
@@ -157,7 +157,7 @@ export default function ListFotoAlbums(props) {
                 params: {
                   screen: "CommentPost",
                   params: {
-                    updateDataPost: response.data.link_post_to_album.data,
+                    updateDataPost: response?.data?.link_post_to_album?.data,
                     from: "funFeedCommentAlbum",
                   },
                 },
@@ -169,11 +169,13 @@ export default function ListFotoAlbums(props) {
                   screen: "myfeed",
                   params: {
                     datauser: setting?.user,
-                    updateDataPost: response.data.link_post_to_album.data,
-                    caption: props.route.params.data_post.caption,
-                    response_count: props.route.params.data_post.response_count,
-                    comment_count: props.route.params.data_post.comment_count,
-                    liked: props.route.params.data_post.liked,
+                    updateDataPost: response?.data?.link_post_to_album?.data,
+                    caption: props?.route?.params?.data_post?.caption,
+                    response_count:
+                      props?.route?.params?.data_post?.response_count,
+                    comment_count:
+                      props?.route?.params?.data_post?.comment_count,
+                    liked: props?.route?.params?.data_post?.liked,
                     from: "feedProfilAlbum",
                   },
                 },
@@ -185,13 +187,13 @@ export default function ListFotoAlbums(props) {
                   screen: "CommentPost",
                   params: {
                     datauser: setting?.user,
-                    updateDataPost: response.data.link_post_to_album.data,
-                    data_post: props.route.params.data_post,
-                    // caption: props.route.params.data_post.caption,
+                    updateDataPost: response?.data?.link_post_to_album?.data,
+                    data_post: props?.route?.params?.data_post,
+                    // caption: props?.route?.params?.data_post?.caption,
                     // response_count:
-                    //   props.route.params.data_post.response_count,
-                    // comment_count: props.route.params.data_post.comment_count,
-                    // liked: props.route.params.data_post.liked,
+                    //   props?.route?.params?.data_post?.response_count,
+                    // comment_count: props?.route?.params?.data_post?.comment_count,
+                    // liked: props?.route?.params?.data_post?.liked,
                     from: "feedProfilCommentAlbum",
                   },
                 },
@@ -202,7 +204,7 @@ export default function ListFotoAlbums(props) {
                 params: {
                   screen: "CommentPost",
                   params: {
-                    updateDataPost: response.data.link_post_to_album.data,
+                    updateDataPost: response?.data?.link_post_to_album?.data,
                     from: "notificationCommentAlbum",
                   },
                 },
@@ -215,8 +217,8 @@ export default function ListFotoAlbums(props) {
                     {
                       name: "CommentPost",
                       params: {
-                        post_id: response.data.link_post_to_album.data.id,
-                        data: response.data.link_post_to_album.data,
+                        post_id: response?.data?.link_post_to_album?.data.id,
+                        data: response?.data?.link_post_to_album?.data,
                         token: tokenApps,
                       },
                     },
@@ -231,8 +233,8 @@ export default function ListFotoAlbums(props) {
               //     {
               //       name: "CommentPost",
               //       params: {
-              //         post_id: response.data.link_post_to_album.data.id,
-              //         data: response.data.link_post_to_album.data,
+              //         post_id: response?.data?.link_post_to_album?.data.id,
+              //         data: response?.data?.link_post_to_album?.data,
               //         token: token,
               //       },
               //     },
@@ -242,8 +244,8 @@ export default function ListFotoAlbums(props) {
               // props.navigation.push("FeedStack", {
               //   screen: "CommentPost",
               //   params: {
-              //     post_id: response.data.link_post_to_album.data.id,
-              //     data: response.data.link_post_to_album.data,
+              //     post_id: response?.data?.link_post_to_album?.data.id,
+              //     data: response?.data?.link_post_to_album?.data,
               //   },
               // });
             }
