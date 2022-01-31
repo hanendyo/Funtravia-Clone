@@ -40,11 +40,13 @@ import { StackActions } from "@react-navigation/native";
 import _ from "lodash";
 import Modal from "react-native-modal";
 import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
 export default function ReoderDetail({ navigation, route }) {
   const { t } = useTranslation();
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
+  const token = useSelector((data) => data.token);
   // console.log(`LISTDATACUI: `, listData);
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
@@ -56,7 +58,7 @@ export default function ReoderDetail({ navigation, route }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: route.params.token,
+        Authorization: token,
       },
     },
   });
@@ -256,8 +258,22 @@ export default function ReoderDetail({ navigation, route }) {
       lon2: lon2,
       unit: unit,
     });
+    // console.log("jarak", jarak);
     let hasil = jarak / kecepatan;
-    return hasil.toFixed(0) > 0 ? hasil.toFixed(0) : 1;
+    let hasils = hasil + "";
+
+    let bahan = hasils.split(".");
+
+    let jam = parseFloat(bahan[1]);
+
+    return (
+      (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
+      (jam > 0 && jam < 60
+        ? " " + jam + " " + t("min")
+        : hasil > 0.6
+        ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
+        : " " + (jam - 60) + " " + t("min"))
+    );
   };
 
   const renderItem = ({ item, index, drag, isActive }) => {
@@ -668,7 +684,7 @@ export default function ReoderDetail({ navigation, route }) {
                       kecepatan={50}
                     />
                   </Text>
-                  <Text>{t("hours")}</Text>
+                  {/* <Text>{t("hours")}</Text> */}
                   {/* <Text>{" in "}</Text>
                   <Text type="bold">{"50"}</Text>
                   <Text>{"km/h"}</Text> */}
@@ -682,16 +698,64 @@ export default function ReoderDetail({ navigation, route }) {
   };
 
   const handleDrag = async (data) => {
-    let tmpData = JSON.parse(JSON.stringify(data));
-    tmpData[0].time = startTime;
+    let tempdata = JSON.parse(JSON.stringify(data));
+
+    tempdata[0].time = startTime;
     let x = 0;
     let order = 1;
-    for (let i in tmpData) {
-      tmpData[i].order = order;
-      if (tmpData[i - 1]) {
-        tmpData[i].time = hitungDuration({
-          start: tmpData[i - 1].time,
-          duration: tmpData[i - 1].duration,
+    for (let y in tempdata) {
+      tempdata[y].order = order;
+      if (tempdata[y - 1]) {
+        // longitude & latitude index sebelum custom
+        let LongBefore = tempdata[y - 1].longitude;
+        let LatBefore = tempdata[y - 1].latitude;
+        // longitude & latitude index custom
+        let LongCurrent = tempdata[y].longitude;
+        let LatCurrent = tempdata[y].latitude;
+        // rumus hitung jarak
+        let jarak = Distance({
+          lat1: LatBefore,
+          lon1: LongBefore,
+          lat2: LatCurrent,
+          lon2: LongCurrent,
+          unit: "km",
+        });
+        // rumus hitung waktu
+        let waktutemp = jarak / 50;
+        let waktu = waktutemp + "";
+        // pecah hasil waktu
+        let split = waktu.split(".");
+
+        let jamtemp = "";
+        let menittemp = "";
+
+        if (split[0] > 1) {
+          jamtemp = split[1];
+          if (split[1] > 0 && split[1] < 60) {
+            menittemp = split[1];
+          } else {
+            jamtemp = split[0] + 1;
+            menittemp = split[1] - 60;
+          }
+        } else {
+          if (waktu > 0.6) {
+            jamtemp = 1;
+            menittemp = split[1] - 60;
+          } else {
+            jamtemp = 0;
+            menittemp = split[1];
+          }
+        }
+        let time = tempdata[y - 1].time;
+        let splittime = time.split(":");
+        // let durasitemp = `${jamtemp}:${menittemp}`;
+        let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+        let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+        let newtime = `${newjam}:${newmenit}`;
+
+        tempdata[y].time = hitungDuration({
+          start: newtime,
+          duration: tempdata[y - 1].duration,
         });
         // tmpData.push(order);
       }
@@ -700,7 +764,7 @@ export default function ReoderDetail({ navigation, route }) {
     }
     isEdited = true;
     // if (x == tmpData.length) {
-    setListData(tmpData);
+    setListData(tempdata);
     // }
     // saveTimeLine();
   };

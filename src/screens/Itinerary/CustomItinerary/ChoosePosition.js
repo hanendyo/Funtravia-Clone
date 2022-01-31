@@ -22,7 +22,7 @@ import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustomNew";
 import SaveCustom2 from "../../../graphQL/Mutation/Itinerary/AddCustom";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import Swipeout from "react-native-swipeout";
-import { Button, Text, Loading, FunIcon } from "../../../component";
+import { Button, Text, Loading, FunIcon, Distance } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
 
@@ -530,8 +530,54 @@ export default function ChoosePosition(props) {
         }
 
         if (tempdata[y - 1]) {
+          // longitude & latitude index sebelum custom
+          let LongBefore = tempdata[y - 1].longitude;
+          let LatBefore = tempdata[y - 1].latitude;
+          // longitude & latitude index custom
+          let LongCurrent = tempdata[y].longitude;
+          let LatCurrent = tempdata[y].latitude;
+          // rumus hitung jarak
+          let jarak = Distance({
+            lat1: LatBefore,
+            lon1: LongBefore,
+            lat2: LatCurrent,
+            lon2: LongCurrent,
+            unit: "km",
+          });
+          // rumus hitung waktu
+          let waktutemp = jarak / 50;
+          let waktu = waktutemp + "";
+          // pecah hasil waktu
+          let split = waktu.split(".");
+
+          let jamtemp = "";
+          let menittemp = "";
+
+          if (split[0] > 1) {
+            jamtemp = split[1];
+            if (split[1] > 0 && split[1] < 60) {
+              menittemp = split[1];
+            } else {
+              jamtemp = split[0] + 1;
+              menittemp = split[1] - 60;
+            }
+          } else {
+            if (waktu > 0.6) {
+              jamtemp = 1;
+              menittemp = split[1] - 60;
+            } else {
+              jamtemp = 0;
+              menittemp = split[1];
+            }
+          }
+          let time = tempdata[y - 1].time;
+          let splittime = time.split(":");
+          // let durasitemp = `${jamtemp}:${menittemp}`;
+          let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+          let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+          let newtime = `${newjam}:${newmenit}`;
           tempdata[y].time = hitungDuration({
-            startt: tempdata[y - 1].time,
+            startt: newtime,
             dur: tempdata[y - 1].duration,
           });
         }
