@@ -51,6 +51,7 @@ const SafeStatusBar = Platform.select({
 });
 
 export default function Detail_movie(props) {
+  const NotchAndro = StatusBar.currentHeight > 24;
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   let movie_id = props?.route?.params?.movie_id;
@@ -347,15 +348,15 @@ export default function Detail_movie(props) {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#fff",
       }}
     >
+      <Satbar backgroundColor="#14646E" />
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
         props={props}
       />
-      <Satbar backgroundColor="#14646E" />
+
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -413,7 +414,7 @@ export default function Detail_movie(props) {
             size="label"
             style={{
               textAlign: "left",
-              lineHeight: 20,
+              lineHeight: 21,
             }}
           >
             {movie_byid?.description}
@@ -653,55 +654,6 @@ export default function Detail_movie(props) {
         </View>
       </Modal>
 
-      {/* Button Share */}
-      {/*       
-      <Animated.View
-        style={{
-          width: "100%",
-          height: 50,
-          justifyContent: "center",
-          alignContent: "center",
-          position: "absolute",
-          zIndex: 2,
-          position: "absolute",
-          marginTop:
-            Platform.OS == "ios"
-              ? Notch
-                ? HEADER_MAX_HEIGHT + normalize(50)
-                : HEADER_MAX_HEIGHT + normalize(30)
-              : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT + normalize(30)
-              : HEADER_MAX_HEIGHT + normalize(30),
-          opacity: backOpacity,
-          transform: [{ translateY: shareTranslateY }],
-        }}
-      >
-        <TouchableOpacity
-          type="circle"
-          color="secondary"
-          style={{
-            position: "absolute",
-            right: 20,
-            zIndex: 20,
-            alignSelf: "flex-end",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            backgroundColor: "#F6F6F6",
-            height: 30,
-            width: 30,
-            borderRadius: 17,
-          }}
-          onPress={() => {
-            token ? setModalShare(true) : setModalLogin(true);
-          }}
-        >
-          <ShareBlack height={20} width={20} />
-        </TouchableOpacity>
-      </Animated.View> */}
-
-      {/* End Button Share */}
-
       {/* Image Background */}
 
       <Animated.View
@@ -710,7 +662,7 @@ export default function Detail_movie(props) {
           position: "absolute",
           left: 0,
           right: 0,
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
           overflow: "hidden",
           height: HEADER_MAX_HEIGHT,
           transform: [{ translateY: headerTranslateY }],
@@ -744,22 +696,34 @@ export default function Detail_movie(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: 50,
+          height: normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
-          left: 60,
-          right: 20,
+          left: 0,
+          right: 0,
+          paddingLeft: 60,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 8,
+          // top: SafeStatusBar + 8,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar + 7
+                : SafeStatusBar + 8
+              : NotchAndro
+              ? SafeStatusBar + 10
+              : SafeStatusBar,
+          backgroundColor: "#209fae",
         }}
       >
         <Text
           size="title"
           style={{
             color: "#fff",
+            marginBottom:
+              Platform.OS == "android" ? (NotchAndro ? 5 : 0) : Notch ? 0 : 5,
           }}
           type="bold"
           numberOfLines={1}
@@ -771,6 +735,7 @@ export default function Detail_movie(props) {
       {/*End Title Header */}
 
       {/* Back Arrow One */}
+      {/* before scroll */}
 
       <Animated.View
         style={{
@@ -779,7 +744,15 @@ export default function Detail_movie(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          // top: SafeStatusBar,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar + 5
+                : SafeStatusBar
+              : NotchAndro
+              ? SafeStatusBar + 5
+              : SafeStatusBar + 0,
           opacity: backOpacity,
         }}
       >
@@ -807,6 +780,7 @@ export default function Detail_movie(props) {
       {/* End Back Arrow One */}
 
       {/* Back Arrow Two */}
+      {/* after scroll */}
 
       <Animated.View
         style={{
@@ -815,7 +789,15 @@ export default function Detail_movie(props) {
           width: 100,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          // top: SafeStatusBar,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar + 5
+                : SafeStatusBar
+              : NotchAndro
+              ? SafeStatusBar + 5
+              : SafeStatusBar,
         }}
       >
         <Pressable

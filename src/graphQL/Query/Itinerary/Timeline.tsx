@@ -1,6 +1,6 @@
 import { gql } from "apollo-boost";
 const Timeline = gql`
-  query($id: ID!) {
+  query($id: ID) {
     day_timeline(day_id: $id) {
       id
       destination_id

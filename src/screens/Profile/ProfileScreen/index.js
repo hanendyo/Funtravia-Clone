@@ -118,7 +118,7 @@ export default function OtherProfile(props) {
   const HeaderHeight = Platform.select({
     ios: Notch
       ? normalize(301) + heightname + heightbio - 20
-      : normalize(320) + heightname + heightbio - 20,
+      : normalize(335) + heightname + heightbio - 20,
 
     android:
       deviceId == "LYA-L29"
@@ -1855,7 +1855,7 @@ export default function OtherProfile(props) {
               marginLeft: 10,
               width: "70%",
               textAlign: "left",
-              fontSize: 16,
+              fontSize: 20,
               fontFamily: "Lato-Bold",
             }}
           >
@@ -1927,7 +1927,7 @@ export default function OtherProfile(props) {
             style={{
               height: 50,
               marginRight: 10,
-              marginLeft: 20,
+              marginLeft: Platform.OS == "ios" ? (Notch ? 28 : 27) : 29,
             }}
           >
             <Animated.View
@@ -2038,11 +2038,13 @@ const styles = StyleSheet.create({
     fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
     fontFamily: "Lato-Bold",
+    marginTop: Platform.OS == "ios" ? (Notch ? 0 : 7) : 0,
   },
   labelActive: {
     fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#209FAE",
     fontFamily: "Lato-Bold",
+    marginTop: Platform.OS == "ios" ? (Notch ? 0 : 7) : 0,
   },
   tab: {
     elevation: 0,
