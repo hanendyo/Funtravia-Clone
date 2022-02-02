@@ -1701,7 +1701,7 @@ export default function Comments(props) {
                           })
                         : props.navigation.push("ProfileStack", {
                             screen: "ProfileTab",
-                            // params: { idUser: dataPost?.user?.id },
+                            params: { idUser: dataPost?.user?.id },
                           })
                       : setModalLogin(true);
                   }}

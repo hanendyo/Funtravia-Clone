@@ -1329,7 +1329,11 @@ export default function detailCustomItinerary(props) {
                   setModalHotelName(false);
                 }}
               >
-                <Arrowbackios width={20} height={30} style={{ left: 5 }} />
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
               </TouchableOpacity>
               <Text
                 style={{
