@@ -24,7 +24,7 @@ import Modal from "react-native-modal";
 import { Text, Button, StatusBar as StaBar } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 // import setCountry from "../../graphQL/Mutation/Setting/setCountry";
 import { FunIcon } from "../../component";
 import CityMutation from "../../graphQL/Mutation/Setting/citySettingAkun";
@@ -34,6 +34,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { useDispatch, useSelector } from "react-redux";
 import { setSettingUser } from "../../redux/action";
+import CityCursorBased from "../../graphQL/Query/Itinerary/CityCursorBased";
 import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
 const deviceId = DeviceInfo.getModel();
@@ -148,20 +149,36 @@ export default function SettingCity(props) {
     viewAreaCoveragePercentThreshold: 50,
   });
 
-  const [
-    querycity,
-    { loading: loadingKota, data: dataKota, error: errorKota },
-  ] = useLazyQuery(City, {
-    fetchPolicy: "network-only",
+  const {
+    loading: loadingKota,
+    data: dataKota,
+    error: errorKota,
+    refetch: refetchCity,
+    fetchMore,
+  } = useQuery(CityCursorBased, {
     variables: {
       keyword: city,
       countries_id: setting?.countries?.id,
+      first: 600,
+      after: "",
     },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    // pollInterval: 5500,
+    notifyOnNetworkStatusChange: true,
     onCompleted: async () => {
-      setData(dataKota?.cities_search);
-      const tempData = [...dataKota?.cities_search];
+      setData(dataKota?.city_search_cursor_based?.edges);
+      const tempData = [...dataKota?.city_search_cursor_based?.edges];
       const indeks = await tempData.findIndex(
-        (k) => k["id"] === setting?.cities?.id
+        (k) => k?.node?.id === setting?.cities?.id
       );
 
       if (indeks != -1) {
@@ -184,7 +201,8 @@ export default function SettingCity(props) {
     }, 2000);
 
     const unsubscribe = props.navigation.addListener("focus", () => {
-      querycity();
+      // querycity();
+      refetchCity();
     });
     return unsubscribe;
 
@@ -220,19 +238,50 @@ export default function SettingCity(props) {
     );
   };
 
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.city_search_cursor_based;
+    const edges = [
+      ...prev.city_search_cursor_based.edges,
+      ...fetchMoreResult.city_search_cursor_based.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      city_search_cursor_based: {
+        __typename: prev.city_search_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
+  };
+  const handleOnEndReached = () => {
+    if (
+      dataKota?.city_search_cursor_based?.pageInfo.hasNextPage &&
+      !loadingKota
+    ) {
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          first: 20,
+          after: dataKota?.city_search_cursor_based.pageInfo?.endCursor,
+        },
+      });
+    }
+  };
+
   const hasil = async (detail) => {
     if (token || token !== "") {
       try {
         let response = await mutationCity({
           variables: {
-            id: detail.id,
+            id: detail?.node?.id,
           },
         });
 
         if (response.data) {
           if (response.data.update_city_settings.code === 200) {
             let newstorage = { ...setting };
-            newstorage["cities"] = detail;
+            newstorage["cities"] = detail?.node;
             // await props.route.params.setSetting(storage);
             await AsyncStorage.setItem("setting", JSON.stringify(newstorage));
             dispatch(setSettingUser(newstorage));
@@ -240,7 +289,7 @@ export default function SettingCity(props) {
             for (var i of tempData) {
               ({ ...i, selected: false });
             }
-            var index = tempData.findIndex((k) => k["id"] === detail.id);
+            var index = tempData.findIndex((k) => k["id"] === detail?.node?.id);
             if (index >= 0) {
               ({ ...tempData[index], selected: true });
               setIndexSend(index);
@@ -353,7 +402,6 @@ export default function SettingCity(props) {
           onScrollToIndexFailed={(e) => {
             scrollToIndexFailed(e);
           }}
-          onEndReachedThreshold={1}
           showsVerticalScrollIndicator={false}
           pinchGestureEnabled={false}
           // focusable={true}
@@ -376,6 +424,30 @@ export default function SettingCity(props) {
           // contentContainerStyle={{
           //   paddingBottom: 50,
           // }}
+          initialNumToRender={599}
+          onEndReachedThreshold={1}
+          onEndReached={handleOnEndReached}
+          ListFooterComponent={
+            loadingKota ? (
+              <View
+                style={{
+                  // position: "absolute",
+                  // bottom: 0,
+                  // height: 20,
+                  width: Dimensions.get("screen").width,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 30,
+                }}
+              >
+                <ActivityIndicator
+                  animating={loadingKota}
+                  size="large"
+                  color="#209fae"
+                />
+              </View>
+            ) : null
+          }
           renderItem={({ item, index }) => (
             <Pressable
               // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
@@ -387,7 +459,7 @@ export default function SettingCity(props) {
                 paddingHorizontal: 20,
                 borderBottomWidth: 0.5,
                 borderBottomColor:
-                  setting.cities?.id == item.id ? "#209fae" : "#d0d0d0",
+                  setting.cities?.id == item?.node?.id ? "#209fae" : "#d0d0d0",
                 flexDirection: "row",
                 alignContent: "center",
                 alignItems: "center",
@@ -404,10 +476,13 @@ export default function SettingCity(props) {
                   size="description"
                   type="regular"
                   style={{
-                    color: setting?.cities?.id == item?.id ? "#209fae" : "#000",
+                    color:
+                      setting?.cities?.id == item?.node?.id
+                        ? "#209fae"
+                        : "#000",
                   }}
                 >
-                  {item.name
+                  {item?.node?.name
                     .toString()
                     .toLowerCase()
                     .replace(/\b[a-z]/g, function(letter) {
@@ -416,7 +491,7 @@ export default function SettingCity(props) {
                 </Text>
               </View>
               <View>
-                {setting?.cities?.id == item?.id ? (
+                {setting?.cities?.id == item?.node?.id ? (
                   <Check width={20} height={15} />
                 ) : null}
               </View>

@@ -42,6 +42,10 @@ export default function SearchListEventHome(props) {
   let [oldYear, setOldYear] = useState(
     props.route.params.year ? props.route.params.year : null
   );
+  let [tempYear, setTempYear] = useState(
+    props.route.params.year ? props.route.params.year : null
+  );
+  let [tempSelectedYear, setTempSelectedYear] = useState(0);
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
@@ -49,8 +53,10 @@ export default function SearchListEventHome(props) {
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
   let [show, setShow] = useState(false);
-  let [dataFilterCategori, setdataFilterCategori] = useState([]);
-  let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
+  let [dataCategoryGetOnly, setDataCategoryGetOnly] = useState([]);
+  let [dataCategoryMain, setDataCategoryMain] = useState([]);
+  let [tempSelectedCategory, setTempSelectedCategory] = useState([]);
+  let [tempDataCategory, setTempDataCategory] = useState([]);
   let [dataCountryGetOnly, setDataCountryGetOnly] = useState([]);
   let [dataCountryMain, setDataCountryMain] = useState([]);
   let [tempDataCountry, setTempDataCountry] = useState("");
@@ -154,8 +160,9 @@ export default function SearchListEventHome(props) {
     {
       fetchPolicy: "network-only",
       onCompleted: () => {
-        setdataFilterCategori(dataFillter?.event_filter?.type);
-        setdataFilterCategoris(dataFillter?.event_filter?.type);
+        setDataCategoryGetOnly(dataFillter?.event_filter?.type);
+        setDataCategoryMain(dataFillter?.event_filter?.type);
+        setTempDataCategory(dataFillter?.event_filter?.type);
         setDataCountryGetOnly(dataFillter?.event_filter?.country);
         setDataCountryMain(dataFillter?.event_filter?.country);
         setTempDataCountry(dataFillter?.event_filter?.country);
@@ -182,20 +189,21 @@ export default function SearchListEventHome(props) {
   };
 
   const _handleCheck = async (id, index, item) => {
-    let tempe = [...dataFilterCategori];
+    let tempe = [...dataCategoryGetOnly];
     let items = { ...item };
     items.checked = !items.checked;
     let inde = tempe.findIndex((key) => key.id === id);
     tempe.splice(inde, 1, items);
-    await setdataFilterCategori(tempe);
-    await setdataFilterCategoris(tempe);
+    await setDataCategoryGetOnly(tempe);
+    await setDataCategoryMain(tempe);
+    // await setTempSelectedCategory(tempe);
   };
 
   const searchkategori = async (teks) => {
     let searching = new RegExp(teks, "i");
 
-    let b = dataFilterCategori.filter((item) => searching.test(item.name));
-    setdataFilterCategoris(b);
+    let b = dataCategoryGetOnly.filter((item) => searching.test(item.name));
+    setDataCategoryMain(b);
   };
 
   const timeConverter = (date) => {
@@ -543,7 +551,7 @@ export default function SearchListEventHome(props) {
               }}
               onSubmitEditing={(x) => searchkategori(x)}
             />
-            {dataFilterCategori.length !== dataFilterCategoris.length ? (
+            {dataCategoryGetOnly.length !== dataCategoryMain.length ? (
               <TouchableOpacity
                 onPress={() => {
                   searchkategori("");
@@ -568,61 +576,75 @@ export default function SearchListEventHome(props) {
             paddingHorizontal: 15,
           }}
         >
-          {dataFilterCategoris.map((item, index) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => _handleCheck(item["id"], index, item)}
-              style={{
-                flexDirection: "row",
-                backgroundColor: "white",
-                width: "49%",
-                marginRight: 3,
-                marginBottom: 20,
-                justifyContent: "flex-start",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CheckBox
-                onCheckColor="#FFF"
-                lineWidth={4}
-                onFillColor="#209FAE"
-                onTintColor="#209FAE"
-                boxType={"square"}
+          {dataCategoryMain.length > 0 ? (
+            dataCategoryMain.map((item, index) => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => _handleCheck(item["id"], index, item)}
                 style={{
-                  alignSelf: "center",
-                  width: Platform.select({
-                    ios: 30,
-                    android: 35,
-                  }),
-                  transform: Platform.select({
-                    ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                    android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                  }),
-                }}
-                onValueChange={() =>
-                  Platform.OS == "ios"
-                    ? null
-                    : _handleCheck(item["id"], index, item)
-                }
-                value={item["checked"]}
-              />
-
-              <Text
-                size="label"
-                type="regular"
-                style={{
-                  marginLeft: 0,
-                  marginRight: -10,
-                  color: "#464646",
-                  marginTop: Platform.OS == "ios" ? -5 : -2,
-                  // borderWidth: 5,
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  width: "49%",
+                  marginRight: 3,
+                  marginBottom: 20,
+                  justifyContent: "flex-start",
+                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
-                {item["name"]}
+                <CheckBox
+                  onCheckColor="#FFF"
+                  lineWidth={4}
+                  onFillColor="#209FAE"
+                  onTintColor="#209FAE"
+                  boxType={"square"}
+                  style={{
+                    alignSelf: "center",
+                    width: Platform.select({
+                      ios: 30,
+                      android: 35,
+                    }),
+                    transform: Platform.select({
+                      ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                      android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                    }),
+                  }}
+                  onValueChange={() =>
+                    Platform.OS == "ios"
+                      ? null
+                      : _handleCheck(item["id"], index, item)
+                  }
+                  value={item["checked"]}
+                />
+
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginLeft: 0,
+                    marginRight: -10,
+                    color: "#464646",
+                    marginTop: Platform.OS == "ios" ? -5 : -2,
+                    // borderWidth: 5,
+                  }}
+                >
+                  {item["name"]}
+                </Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: Dimensions.get("screen").height / 10,
+              }}
+            >
+              <Text size="title" type="bold">
+                {t("noData")}
               </Text>
-            </TouchableOpacity>
-          ))}
+            </View>
+          )}
         </ScrollView>
       </View>
     );
@@ -1045,15 +1067,16 @@ export default function SearchListEventHome(props) {
   //! FUNCTION CLEAR FILTER
 
   const ClearAllFilter = async () => {
-    let tempe = [...dataFilterCategori];
+    let tempe = [...dataCategoryGetOnly];
     let tempes = [];
     for (var x of tempe) {
       let data = { ...x };
       data.checked = false;
       await tempes.push(data);
     }
-    await setdataFilterCategori(tempes);
-    await setdataFilterCategoris(tempes);
+    await setDataCategoryGetOnly(tempes);
+    await setDataCategoryMain(tempes);
+    await setTempSelectedCategory(tempes);
     await setDateData({
       start_date: "",
       end_date: "",
@@ -1063,6 +1086,8 @@ export default function SearchListEventHome(props) {
       render_end_date: "",
     });
     await setOldYear(null);
+    await setTempYear(null);
+    await setTempSelectedYear(null);
     await setPriceValue({ min: 0, max: 0 });
     await setCustomPriceValues({ ...customPriceValues, max: "any" });
     // await setshow(false);
@@ -1102,6 +1127,7 @@ export default function SearchListEventHome(props) {
     await setDataCountryMain(temp);
     await setDataCountryGetOnly(temp);
     await setTempDataCountry(temp);
+    await setTempDataCategory(temp);
     await setSelectedCountry(null);
     await setSelectedCity(null);
     await setSelectedProvince(null);
@@ -1126,17 +1152,29 @@ export default function SearchListEventHome(props) {
   //! FUNCTION UPDATE FILTER
 
   const UpdateFilter = async () => {
-    let hasil = [];
+    let hasilCountry = [];
+    let hasilCategory = [];
+    let tempHasilCategory = [];
 
     if (isValidDate == true && isValidPrice == true) {
       for (var x of dataCountryMain) {
         if (x.checked === true) {
-          hasil.push(x.id);
+          hasilCountry.push(x.id);
         }
       }
 
+      for (var x of dataCategoryMain) {
+        if (x.checked === true) {
+          hasilCategory.push(x.id);
+        }
+      }
+
+      for (var x of dataCategoryMain) {
+        tempHasilCategory.push(x);
+      }
+
       let data = { ...search };
-      data["type"] = hasil;
+      data["type"] = hasilCategory;
       data["date_from"] = dateData.start_date;
       data["date_until"] = dateData.end_date;
       if (customPriceValues.max !== "any") {
@@ -1151,6 +1189,8 @@ export default function SearchListEventHome(props) {
       await setSearch(data);
       await setShow(false);
       setTempSelectedCountry(data.countries);
+      setTempSelectedYear(data.year);
+      setTempDataCategory(tempHasilCategory);
       GetDataEventsAll();
       GetDataEventsPublic();
     } else {
@@ -1365,6 +1405,8 @@ export default function SearchListEventHome(props) {
 
     return array?.length;
   };
+
+  // tutup modal tanpa apply
   useEffect(() => {
     // Country
     if (!show && tempDataCountry.length != 0) {
@@ -1384,8 +1426,55 @@ export default function SearchListEventHome(props) {
         }
       }
       setCountryName("");
+
+      // year
+      if (!show && tempYear != null) {
+        if (!hasApply) {
+          if (oldYear !== tempYear) {
+            setOldYear(props.route.params.year);
+          } else {
+            setOldYear(tempYear);
+          }
+        } else {
+          if (oldYear !== tempSelectedYear) {
+            setOldYear(tempSelectedYear);
+          } else {
+            setOldYear(tempSelectedYear);
+          }
+        }
+      }
+
+      // categories
+      if (!show && tempDataCategory.length != 0) {
+        setDataCategoryMain(tempDataCategory);
+        setDataCategoryGetOnly(tempDataCategory);
+        if (!hasApply) {
+          if (tempSelectedCategory !== tempDataCategory) {
+            setDataCategoryMain(tempDataCategory);
+            setDataCategoryGetOnly(tempDataCategory);
+          } else {
+            setDataCategoryMain(tempDataCategory);
+            setDataCategoryGetOnly(tempDataCategory);
+          }
+        } else {
+          if (tempDataCategory !== tempSelectedCategory) {
+            setDataCategoryMain(tempDataCategory);
+            setDataCategoryGetOnly(tempDataCategory);
+          } else {
+            setDataCategoryMain(tempDataCategory);
+            setDataCategoryGetOnly(tempDataCategory);
+          }
+        }
+        setCategoryName("");
+      }
     }
-  }, [show, tempSelectedCountry]);
+  }, [
+    show,
+    tempSelectedCountry,
+    tempSelectedYear,
+    // tempSelectedCategory,
+    tempDataCategory,
+  ]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -1437,7 +1526,7 @@ export default function SearchListEventHome(props) {
                   color: "#fff",
                 }}
               >
-                {cekData(dataFilterCategori)}
+                {cekData(dataCategoryMain)}
               </Text>
             </View>
           ) : null}
