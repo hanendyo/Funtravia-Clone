@@ -102,6 +102,7 @@ export default function ChoosePosition(props) {
   };
 
   const GetStartTime = ({ startt }) => {
+    console.log("start", startt);
     var starttime = startt.split(":");
 
     return (
@@ -130,12 +131,14 @@ export default function ChoosePosition(props) {
     var starttime = startt.split(":");
 
     var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
+
     // if (jam > 23) {
     // 	jam = 24 - jam;
     // }
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-    if (menit > 59) {
-      menit = 60 - menit;
+    console.log("menit", menit);
+    if (menit >= 60) {
+      menit = menit - 60;
     }
 
     return (
@@ -575,7 +578,13 @@ export default function ChoosePosition(props) {
           // let durasitemp = `${jamtemp}:${menittemp}`;
           let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
           let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-          let newtime = `${newjam}:${newmenit}`;
+          console.log("newmenit", newmenit);
+          let newtime =
+            newmenit > 60
+              ? `${newjam + 1}:${newmenit - 60}`
+              : `${newjam}:${newmenit}`;
+          console.log("newtime", newtime);
+          console.log("newww", tempdata[y].time);
           tempdata[y].time = hitungDuration({
             startt: newtime,
             dur: tempdata[y - 1].duration,
@@ -603,7 +612,7 @@ export default function ChoosePosition(props) {
     // }
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
     if (menit > 59) {
-      menit = 60 - menit;
+      menit = menit - 60;
     }
 
     return (
@@ -1043,7 +1052,7 @@ export default function ChoosePosition(props) {
         <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
           {datatimeline.length > 0 ? (
             datatimeline.map((item, index) => {
-              // console.log(item);
+              console.log(item);
               if (props.route.params.dataParent) {
                 return props.route.params.dataParent.id === item.id ||
                   props.route.params.dataParent.id === item.parent_id ||
