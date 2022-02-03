@@ -67,8 +67,7 @@ const deletepost = gql`
   }
 `;
 export default function myfeed(props) {
-  console.log("🚀 ~ file: Feed.js ~ line 70 ~ myfeed ~ MYFEED---> ", props);
-  const from = props.route.params.from;
+  const from = props?.route?.params?.from;
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
@@ -132,8 +131,8 @@ export default function myfeed(props) {
 
   const isFocused = useIsFocused();
   const ref = useRef(null);
-  let [datauser] = useState(setting.user);
-  let index = props.route.params.index;
+  let datauser = props?.route?.params?.datauser;
+  let index = props?.route?.params?.index;
   let [modalmenu, setModalmenu] = useState(false);
   let [modalmenuother, setModalmenuother] = useState(false);
   let [modalhapus, setModalhapus] = useState(false);
@@ -144,9 +143,9 @@ export default function myfeed(props) {
   let [activelike, setactivelike] = useState(true);
   // let [setting, setSetting] = useState();
   let [datas, setDatas] = useState(
-    props.route.params.data_post
-      ? props.route.params.data_post
-      : props.route.params.dataPost
+    props?.route?.params?.data_post
+      ? props?.route?.params?.data_post
+      : props?.route?.params?.dataPost
   );
   let [showLoading, setShowLoading] = useState(false);
 
@@ -267,18 +266,18 @@ export default function myfeed(props) {
     props.navigation.setOptions(HeaderComponent);
     loadasync();
     if (props.route.params) {
-      if (props.route.params.updateDataPost) {
+      if (props?.route?.params?.updateDataPost) {
         let tempdata = [...datas];
         if (tempdata) {
           let indeks = tempdata.findIndex(
-            (k) => k.node["id"] == props.route.params.updateDataPost.id
+            (k) => k.node["id"] == props?.route?.params?.updateDataPost.id
           );
           let tempdataIndeks = { ...tempdata[indeks] };
           let tempdatas = { ...tempdata[indeks].node };
-          tempdatas = props.route.params.updateDataPost;
-          tempdatas.comment_count = props.route.params.comment_count;
-          tempdatas.response_count = props.route.params.response_count;
-          tempdatas.liked = props.route.params.liked;
+          tempdatas = props?.route?.params?.updateDataPost;
+          tempdatas.comment_count = props?.route?.params?.comment_count;
+          tempdatas.response_count = props?.route?.params?.response_count;
+          tempdatas.liked = props?.route?.params?.liked;
           tempdataIndeks.node = tempdatas;
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDatas(tempdata);
@@ -286,13 +285,13 @@ export default function myfeed(props) {
           Scroll_to(indeks);
         }
       }
-      if (props.route.params.isProfil) {
-        let tempdata = props.route.params.data_post
-          ? [...props.route.params.data_post]
-          : [...props.route.params.dataPost];
+      if (props?.route?.params?.isProfil) {
+        let tempdata = props?.route?.params?.data_post
+          ? [...props?.route?.params?.data_post]
+          : [...props?.route?.params?.dataPost];
         if (tempdata) {
           let indeks = tempdata.findIndex(
-            (k) => k.node["id"] == props.route.params.post_id
+            (k) => k.node["id"] == props?.route?.params?.post_id
           );
           if (indeks) {
             setIndeksScrollto(indeks);
@@ -301,7 +300,7 @@ export default function myfeed(props) {
           }
         }
       }
-      if (play == props.route.params.post_id) {
+      if (play == props?.route?.params?.post_id) {
         setShowLoading(true);
       }
     }
@@ -311,11 +310,11 @@ export default function myfeed(props) {
     });
     return unsubscribe;
   }, [
-    props.route.params.updateDataPost,
-    props.route.params.isProfil,
-    props.route.params.post_id,
-    props.route.params.dataPost,
-    props.route.params.data_post,
+    props?.route?.params?.updateDataPost,
+    props?.route?.params?.isProfil,
+    props?.route?.params?.post_id,
+    props?.route?.params?.dataPost,
+    props?.route?.params?.data_post,
     play,
     props.navigation,
     props.route.params,
@@ -324,11 +323,11 @@ export default function myfeed(props) {
   // after edit post
   useEffect(() => {
     if (props.route.params) {
-      if (props.route.params.post_id) {
+      if (props?.route?.params?.post_id) {
         let tempdata = [...datas];
         if (tempdata) {
           let indeks = tempdata.findIndex(
-            (k) => k.node["id"] == props.route.params.post_id
+            (k) => k.node["id"] == props?.route?.params?.post_id
           );
           let tempdataIndeks = { ...tempdata[indeks] };
           let tempdatas = { ...tempdata[indeks].node };
@@ -372,7 +371,7 @@ export default function myfeed(props) {
           Scroll_to(indeks);
         }
       }
-      // if (play == props.route.params.post_id) {
+      // if (play == props?.route?.params?.post_id) {
       //   setShowLoading(true);
       // }
     }
@@ -562,7 +561,7 @@ export default function myfeed(props) {
   const OptionOpen = (data) => {
     // data.user = { ...datauser };
     SetOption(data);
-    if (datauser.id == users?.id) {
+    if (datauser?.id == users?.id) {
       setModalmenu(true);
     } else {
       setModalmenuother(true);
@@ -993,11 +992,11 @@ export default function myfeed(props) {
               <CustomImage
                 isTouchable
                 onPress={() => {
-                  datauser.id !== users?.id
+                  datauser?.id !== users?.id
                     ? props.navigation.push("ProfileStack", {
                         screen: "otherprofile",
                         params: {
-                          idUser: datauser.id,
+                          idUser: datauser?.id,
                         },
                       })
                     : props.navigation.push("ProfileStack", {
@@ -1018,7 +1017,7 @@ export default function myfeed(props) {
                   resizeMode: "cover",
                   borderRadius: 50,
                 }}
-                source={{ uri: datauser.picture }}
+                source={{ uri: datauser?.picture }}
               />
               <View
                 style={{
@@ -1028,11 +1027,11 @@ export default function myfeed(props) {
               >
                 <Text
                   onPress={() => {
-                    datauser.id !== users?.id
+                    datauser?.id !== users?.id
                       ? props.navigation.push("ProfileStack", {
                           screen: "otherprofile",
                           params: {
-                            idUser: datauser.id,
+                            idUser: datauser?.id,
                           },
                         })
                       : props.navigation.push("ProfileStack", {
@@ -1048,8 +1047,8 @@ export default function myfeed(props) {
                   }}
                   numberOfLines={1}
                 >
-                  {datauser.first_name}{" "}
-                  {datauser.first_name ? datauser.last_name : null}
+                  {datauser?.first_name}{" "}
+                  {datauser?.first_name ? datauser?.last_name : null}
                 </Text>
                 <View
                   style={{
