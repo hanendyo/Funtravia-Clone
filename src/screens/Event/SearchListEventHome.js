@@ -494,17 +494,7 @@ export default function SearchListEventHome(props) {
               </TouchableOpacity>
             ))
           ) : (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: Dimensions.get("screen").height / 10,
-              }}
-            >
-              <Text size="label" type="bold">
-                {t("noData")}
-              </Text>
-            </View>
+            <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
           )}
         </ScrollView>
       </View>
@@ -633,17 +623,7 @@ export default function SearchListEventHome(props) {
               </TouchableOpacity>
             ))
           ) : (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: Dimensions.get("screen").height / 10,
-              }}
-            >
-              <Text size="title" type="bold">
-                {t("noData")}
-              </Text>
-            </View>
+            <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
           )}
         </ScrollView>
       </View>
