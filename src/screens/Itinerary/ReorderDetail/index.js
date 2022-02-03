@@ -47,6 +47,8 @@ export default function ReoderDetail({ navigation, route }) {
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
   const token = useSelector((data) => data.token);
+
+  console.log("listdata", listData);
   // console.log(`LISTDATACUI: `, listData);
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
@@ -277,6 +279,8 @@ export default function ReoderDetail({ navigation, route }) {
   };
 
   const renderItem = ({ item, index, drag, isActive }) => {
+    console.log("isActive", isActive);
+    console.log("drag", drag);
     const x = listData.length - 1;
     return (
       <Pressable
@@ -286,6 +290,7 @@ export default function ReoderDetail({ navigation, route }) {
           marginTop: -1,
           width: "100%",
           flexDirection: "row",
+
           alignItems: "flex-start",
           justifyContent: "flex-start",
         }}
@@ -751,7 +756,10 @@ export default function ReoderDetail({ navigation, route }) {
         // let durasitemp = `${jamtemp}:${menittemp}`;
         let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
         let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-        let newtime = `${newjam}:${newmenit}`;
+        let newtime =
+          newmenit > 59
+            ? `${newjam + 1}:${newmenit - 60}`
+            : `${newjam}:${newmenit}`;
 
         tempdata[y].time = hitungDuration({
           start: newtime,
