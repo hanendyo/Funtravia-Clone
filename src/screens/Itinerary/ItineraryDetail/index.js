@@ -938,7 +938,8 @@ export default function ItineraryDetail(props) {
     menitstarts,
     jamends,
     menitends,
-    dataLists
+    dataLists,
+    ordercurrent
   ) => {
     await setModaldate(false);
 
@@ -1049,16 +1050,29 @@ export default function ItineraryDetail(props) {
             menittemp = split[1];
           }
         }
+
         let time = datax[y - 1].time;
+        console.log("time", time);
         let splittime = time.split(":");
+
+        let durationold = datax[y - 1].duration;
+        let splitdurations = durationold.split(":");
+
+        //menit total untuk mendapatkan menit yang lebih dari 59
+        let menitotal =
+          parseFloat(splittime[1]) +
+          parseFloat(splitdurations[1]) +
+          parseFloat(menittemp);
+
         // let durasitemp = `${jamtemp}:${menittemp}`;
         let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
         let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+
         let newtime =
-          newmenit >= 60
+          menitotal > 59
             ? `${newjam + 1}:${newmenit - 60}`
             : `${newjam}:${newmenit}`;
-
+        console.log("new", newtime);
         let datareplace = { ...datax[y] };
         datareplace.order = order;
 
@@ -6224,7 +6238,14 @@ export default function ItineraryDetail(props) {
 
             <TouchableOpacity
               onPress={() =>
-                setTime(jamstart, menitstart, jamend, menitend, dataList)
+                setTime(
+                  jamstart,
+                  menitstart,
+                  jamend,
+                  menitend,
+                  dataList,
+                  dataList[indexinput]?.order
+                )
               }
               style={{
                 marginTop: 20,

@@ -48,7 +48,6 @@ export default function ReoderDetail({ navigation, route }) {
   let [listData, setListData] = useState([...route.params.child]);
   const token = useSelector((data) => data.token);
 
-  console.log("listdata", listData);
   // console.log(`LISTDATACUI: `, listData);
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
@@ -159,12 +158,11 @@ export default function ReoderDetail({ navigation, route }) {
     );
   };
 
-  // console.log(`DAY--DATA: `, dayData.id);
-  // console.log(`LIST--DATA: `, listData);
-  // console.log(`CHILD: `, route.params.child);
-  // console.log(`ACTIVE: `, route.params.active);
-
   const saveTimeLine = async () => {
+    if (spliceDataStay.length > 0) {
+      listData.splice(0, 0, spliceDataStay[0]);
+    }
+
     try {
       let response = await timeLine({
         variables: {
@@ -279,8 +277,6 @@ export default function ReoderDetail({ navigation, route }) {
   };
 
   const renderItem = ({ item, index, drag, isActive }) => {
-    console.log("isActive", isActive);
-    console.log("drag", drag);
     const x = listData.length - 1;
     return (
       <Pressable
@@ -708,6 +704,10 @@ export default function ReoderDetail({ navigation, route }) {
     tempdata[0].time = startTime;
     let x = 0;
     let order = 1;
+    if (spliceDataStay.length > 0) {
+      order = 2;
+    }
+
     for (let y in tempdata) {
       tempdata[y].order = order;
       if (tempdata[y - 1]) {
@@ -754,10 +754,19 @@ export default function ReoderDetail({ navigation, route }) {
         let time = tempdata[y - 1].time;
         let splittime = time.split(":");
         // let durasitemp = `${jamtemp}:${menittemp}`;
+        let durationold = tempdata[y - 1].duration;
+        let splitdurations = durationold.split(":");
+
+        //menit total untuk mendapatkan menit yang lebih dari 59
+        let menitotal =
+          parseFloat(splittime[1]) +
+          parseFloat(splitdurations[1]) +
+          parseFloat(menittemp);
+
         let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
         let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
         let newtime =
-          newmenit > 59
+          menitotal > 59
             ? `${newjam + 1}:${newmenit - 60}`
             : `${newjam}:${newmenit}`;
 
@@ -887,8 +896,15 @@ export default function ReoderDetail({ navigation, route }) {
       </Pressable>
     ),
   };
+  let [spliceDataStay, setSpliceDataStay] = useState([]);
   useEffect(() => {
     navigation.setOptions(HeaderComponent);
+    if (listData[0].detail_accomodation) {
+      let data = listData.splice(0, 1);
+      console.log(data);
+      spliceDataStay.push(data[0]);
+    }
+    console.log("a", spliceDataStay);
   }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
