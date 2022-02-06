@@ -133,7 +133,6 @@ function MyAccountStackScreen() {
 const MainNavigator = createBottomTabNavigator();
 export default function BottomNavigationItems(props) {
   const { t, i18n } = useTranslation();
-
   return (
     <MainNavigator.Navigator
       initialRouteName="HomeBottomScreen"
@@ -157,6 +156,7 @@ export default function BottomNavigationItems(props) {
         initialParams={{
           token: props.route.params.token,
           authBlocked: props.route.params.authBlocked,
+          notif: props.route.params.notif,
         }}
         options={{
           tabBarLabel: t("home"),

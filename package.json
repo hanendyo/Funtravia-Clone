@@ -83,6 +83,7 @@
     "react-native-read-more-text": "^1.1.2",
     "react-native-reanimated": "1.13.0",
     "react-native-responsive-dimensions": "^3.1.1",
+    "react-native-restart": "^0.0.24",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.16.1",
     "react-native-simple-image-cropper": "^3.2.1",

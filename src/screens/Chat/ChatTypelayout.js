@@ -767,10 +767,12 @@ export default function ChatTypelayout({
       return (
         <Pressable
           onPress={() => {
-            navigation.push("FeedStack", {
+            navigation.navigate("FeedStack", {
               screen: "CommentPost",
               params: {
                 post_id: data.id,
+                updateDataPost: null,
+                from: "chat",
                 //   comment_id: data.comment_feed.id,
               },
             });

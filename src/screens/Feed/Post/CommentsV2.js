@@ -30,7 +30,7 @@ import {
   // PagenotFound,
   ModalLogin,
 } from "../../../component";
-import { PagenotFound } from "../../../component/src/PagenotFound";
+import PagenotFound from "../../../component/src/PagenotFound";
 import {
   LikeRed,
   Send_to,
@@ -300,6 +300,9 @@ export default function Comments(props) {
       setIdPost(props?.route?.params?.data?.id);
     } else {
       setIdComment(props?.route?.params?.comment_id);
+      setIdPost(props?.route?.params?.post_id);
+    }
+    if (props?.route?.params?.from == "chat") {
       setIdPost(props?.route?.params?.post_id);
     }
     const unsubscribe = props.navigation.addListener("focus", () => {
