@@ -45,7 +45,6 @@ import { setSettingUser, setTokenApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
-  console.log("~ props Home", props);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
@@ -60,7 +59,6 @@ export default function Home(props) {
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
-    console.log("token", tkn);
     let sttng = await AsyncStorage.getItem("setting");
     if (tkn) {
       dispatch(setTokenApps(`Bearer ${tkn}`));
@@ -148,6 +146,7 @@ export default function Home(props) {
 
   const loadNavigate = async () => {
     let dataNotif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
+    console.log("~ dataNotif", dataNotif);
     if (dataNotif) {
       switch (dataNotif.data.name) {
         case "feed":
@@ -160,14 +159,16 @@ export default function Home(props) {
           });
           AsyncStorage.setItem("dataNotification", "");
           break;
-        case y:
-          // code block
+        case "notification":
+          props.navigation.navigate("Notification", {
+            token: tokenApps,
+          });
+          AsyncStorage.setItem("dataNotification", "");
           break;
         default:
         // code block
       }
     }
-    console.log("~ dataNotif", dataNotif);
   };
 
   useEffect(() => {

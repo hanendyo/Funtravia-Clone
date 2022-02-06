@@ -12,13 +12,12 @@ import "./src/i18n";
 import { useTranslation } from "react-i18next";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 import { createUploadLink } from "apollo-upload-client";
-import DeviceInfo from "react-native-device-info";
-import { Text } from "./src/component";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { storeState } from "./src/redux";
+import RNRestart from "react-native-restart";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
@@ -26,34 +25,25 @@ if (Platform.OS === "ios") {
   PushNotification.cancelAllLocalNotifications();
 }
 
-messaging()
-  .getInitialNotification()
-  .then(async (remoteMessage) => {
-    //remoteMessage --> always null
-    // console.log("getInitialNotification", remoteMessage);
-  })
-  .catch((err) => console.log("err", err));
-
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  // console.log("BG_NF", remoteMessage);
-  // await AsyncStorage.setItem("dataNotification", remoteMessage);
-  await AsyncStorage.setItem("dataNotification", JSON.stringify(remoteMessage));
-
-  // recieveNotification(remoteMessage);
-  // setDataNotifikasi(remoteMessage);
-});
-
 PushNotification.configure({
   onRegister: function(token) {
     // console.log("TOKEN:", token);
   },
-  onNotification: function(notification) {
-    // console.log("NOTIFICATION:", notification);
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
+  onNotification: async function(notification) {
+    console.log("NOTIFICATION:", notification);
+    if (notification.userInteraction == true) {
+      await AsyncStorage.setItem(
+        "dataNotification",
+        JSON.stringify(notification)
+      );
+      if (notification.foreground == true) {
+        await RNRestart.Restart();
+      }
+    }
+    // notification.finish(PushNotificationIOS.FetchResult.NoData);
   },
   onAction: function(notification) {
-    // console.log("ACTION:", notification.action);
-    // console.log("NOTIFICATION:", notification);
+    console.log("ONACTION:", notification);
   },
   onRegistrationError: function(err) {
     console.error(err.message, err);
@@ -64,15 +54,11 @@ PushNotification.configure({
     sound: true,
   },
   onMessage: function(notification) {
-    // console.log("onmessage:", notification);
+    console.log("onmessage:", notification);
   },
   popInitialNotification: true,
   requestPermissions: true,
 });
-
-// PushNotification.popInitialNotification((notification) => {
-//   console.log("Initial Notification", notification);
-// });
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -81,7 +67,7 @@ function App() {
   let [authBlocked, setAuthBlocked] = useState(false);
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
-  let [dataNotifikasi, setDataNotifikasi] = useState();
+  let [dataNotifikasi, setDataNotifikasi] = useState(null);
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
@@ -156,54 +142,38 @@ function App() {
     astor();
     checkPermission();
     initializeFunction();
-
-    //Start When Application on Running
-    messaging().onMessage((dNotify) => {
-      // console.log("~ dNotify", dNotify);
-      let { notification, data } = dNotify;
-      setDataNotifikasi(dNotify);
-
-      PushNotification.localNotification({
-        channelId: "default",
-        id: 0,
-        title: notification.title,
-        message: notification.body,
-        smallIcon: "ic_notification",
-        largeIcon: "ic_notification",
-        color: "red",
-        playSound: true,
-        soundName: "default",
-        number: 1,
-      });
-    });
-    // End When Application on Running
-
-    //Start When Application Close
-    messaging().onNotificationOpenedApp(async (remoteMessage) => {
-      // console.log(
-      //   "[FCMService] OnNotificationOpenedApp getInitialNotification",
-      //   remoteMessage
-      // );
-      if (remoteMessage) {
-        await AsyncStorage.setItem(
-          "dataNotification",
-          JSON.stringify(remoteMessage)
-        );
-      }
-    });
-    //End When Application Close
-
-    //When Application Running on Background/minimize
-    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-      // console.log("BG_NF", remoteMessage);
-      await AsyncStorage.setItem(
-        "dataNotification",
-        JSON.stringify(remoteMessage)
-      );
-      // setDataNotifikasi(remoteMessage);
-    });
-    //End When Application Running on Background/minimize
     SplashScreen.hide();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      console.log("A new FCM message arrived! Foreground", remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      console.log(
+        "Notification caused app to open from background state:",
+        remoteMessage
+      );
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          console.log(
+            "Notification caused app to open from quit state:",
+            remoteMessage
+          );
+        }
+      });
   }, []);
 
   if (appLoading) {

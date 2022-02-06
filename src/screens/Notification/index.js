@@ -1,171 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Animated,
-  Platform,
-  StatusBar,
-  SafeAreaView,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Platform, SafeAreaView } from "react-native";
 import { Text, Button } from "../../component";
-import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import Information from "./DetailNotification/Information";
 import Invitation from "./DetailNotification/Invitation";
 import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import DeviceInfo from "react-native-device-info";
-import { useDispatch } from "react-redux";
-import { setTokenApps } from "../../redux/action";
-
-const ListNotifikasi_ = gql`
-  query {
-    list_notification {
-      ids
-      notification_type
-      isread
-      itinerary_buddy {
-        id
-        itinerary_id
-        user_id
-        isadmin
-        isconfrim
-        myuser {
-          id
-          username
-          first_name
-          last_name
-          picture
-        }
-        userinvite {
-          id
-          username
-          first_name
-          last_name
-          picture
-        }
-        accepted_at
-        rejected_at
-      }
-      comment_feed {
-        id
-        post_id
-        text
-        user {
-          id
-          username
-          first_name
-          last_name
-          picture
-        }
-        post {
-          assets {
-            filepath
-          }
-        }
-        post_asset {
-          type
-          filepath
-        }
-        created_at
-        updated_at
-      }
-      like_feed {
-        id
-        post_id
-        response
-        user {
-          id
-          username
-          first_name
-          last_name
-          picture
-        }
-        post_asset {
-          type
-          filepath
-        }
-      }
-
-      follow_user {
-        user_req
-        user_follow
-        status
-        user {
-          id
-          username
-          first_name
-          last_name
-          picture
-          status_following
-          status_follower
-        }
-      }
-      tgl_buat
-      created_by {
-        id
-        username
-        first_name
-        last_name
-        picture
-      }
-      created_at
-      updated_at
-    }
-  }
-`;
+import { useSelector } from "react-redux";
 
 export default function Notification(props) {
-  let dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+  const tokenApps = useSelector((data) => data.token);
+  const { t } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
-  let [datanotif, SetDataNotif] = useState([]);
   let [readall, setreadall] = useState(true);
-  const [canScroll, setCanScroll] = useState(true);
-  const _tabIndex = useRef(0);
-  const [tabIndex, setTabIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: t("notification") },
     { key: "tab2", title: t("information") },
   ]);
   const [index, setIndex] = useState(0);
-  const isListGliding = useRef(false);
-  const TabBarHeight = 45;
-  const headerScrollY = useRef(new Animated.Value(0)).current;
-  const listRefArr = useRef([]);
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const { width, height } = Dimensions.get("screen");
-  const SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
-  });
-  const refreshStatusRef = useRef(false);
-  const PullToRefreshDist = 150;
-  const Notch = DeviceInfo.hasNotch();
-  const listOffset = useRef({});
-
-  const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    refetchnotif();
-    // dispatch(setTokenApps(`Bearer ${tkn}`));
-    // GetListInvitation();
-  };
-
-  const refresh = async () => {
-    refreshStatusRef.current = true;
-    await loadAsync();
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("done");
-      }, 2000);
-    }).then((value) => {
-      refreshStatusRef.current = false;
-    });
-  };
 
   const HeaderComponent = {
     headerShown: true,
@@ -173,7 +26,7 @@ export default function Notification(props) {
     tabBarVisble: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("inbox")}
       </Text>
     ),
@@ -189,12 +42,11 @@ export default function Notification(props) {
     },
     headerLeft: () => (
       <Button
-        text={""}
         size="medium"
         type="circle"
         variant="transparent"
         onPress={() => {
-          props.navigation.goBack(null);
+          props.navigation.goBack();
         }}
         style={{
           height: 55,
@@ -210,52 +62,9 @@ export default function Notification(props) {
     ),
   };
 
-  const funcSetIndex = (e) => {
-    setIndex(() => {
-      return (token = e);
-    });
-  };
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    loadAsync();
-    // GetListNotif();
-  }, [props.navigation]);
-
-  const {
-    data: datasnotif,
-    loading: loadingnotif,
-    error: errornotif,
-    refetch: refetchnotif,
-  } = useQuery(ListNotifikasi_, {
-    options: {
-      fetchPolicy: "network-only",
-      errorPolicy: "ignore",
-    },
-    notifyOnNetworkStatusChange: true,
-    pollInterval: 5000,
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-    },
-    onCompleted: async () => {
-      SetDataNotif(datasnotif?.list_notification);
-      let status = 0;
-      for (var x of datasnotif?.list_notification) {
-        if (x.isread === false) {
-          status = 1;
-          break;
-        }
-      }
-      if (status === 1) {
-        setreadall(true);
-      } else {
-        setreadall(false);
-      }
-    },
-  });
+  }, []);
 
   const renderScene = ({ route }) => {
     if (route.key == "tab1") {
@@ -265,13 +74,10 @@ export default function Notification(props) {
           token={token}
           readall={readall}
           setreadall={(e) => setreadall(e)}
-          datanotif={datanotif}
-          SetDataNotif={(e) => SetDataNotif(e)}
-          // GetListInvitation={() => GetListInvitation()}
         />
       );
     } else if (route.key == "tab2") {
-      return <Invitation navigation={props.navigation} token={token} />;
+      return null;
     }
   };
 
@@ -304,9 +110,6 @@ export default function Notification(props) {
                 backgroundColor: "white",
                 height: 42,
                 justifyContent: "center",
-                // alignItems: "center",
-                // borderTopLeftRadius: searchAktif ? 0 : 15,
-                // borderTopRightRadius: searchAktif ? 0 : 15,
               }}
               renderLabel={renderLabel}
               indicatorStyle={styles.indicator}

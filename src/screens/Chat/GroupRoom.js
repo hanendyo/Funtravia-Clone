@@ -14,6 +14,7 @@ import {
   BackHandler,
   Modal as ModalRN,
   Keyboard as onKeyboard,
+  ActivityIndicator,
 } from "react-native";
 import io from "socket.io-client";
 import {
@@ -56,6 +57,7 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [token, setToken] = useState("");
+  const [loadingGroup, setLoadingGroup] = useState(true);
 
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
@@ -427,12 +429,10 @@ export default function Room({ navigation, route }) {
     updateReadMassage();
     clearPushNotification();
     socket.current.on("connect", () => {
-      console.log("isConnect");
       setSocketConnect(true);
     });
 
     socket.current.on("disconnect", () => {
-      console.log("isDisConnect");
       setSocketConnect(false);
     });
     if (init) {
@@ -504,9 +504,11 @@ export default function Room({ navigation, route }) {
       }
       setMessage(recent);
       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
+      await setLoadingGroup(false);
     } else {
       await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
       setMessage([data]);
+      await setLoadingGroup(false);
     }
   };
 
@@ -566,6 +568,7 @@ export default function Room({ navigation, route }) {
       let new_array = [];
 
       setMessage(filteredList);
+      setLoadingGroup(false);
     }
   };
 
@@ -801,7 +804,6 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
-    // console.log("item render", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();
@@ -913,6 +915,7 @@ export default function Room({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+
       <ModalRN
         onBackdropPress={() => {
           setmodalCamera(false);
@@ -1019,6 +1022,19 @@ export default function Room({ navigation, route }) {
           padding: 5,
         }}
       >
+        {loadingGroup ? (
+          <View
+            style={{
+              position: "absolute",
+              zIndex: 2,
+              width: Dimensions.get("screen").width,
+              height: 55,
+              paddingTop: 10,
+            }}
+          >
+            <ActivityIndicator size="small" color="#209fae" />
+          </View>
+        ) : null}
         <FlatList
           ref={flatListRef}
           data={message}

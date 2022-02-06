@@ -882,5 +882,7 @@
   "thereAreNoTravelStories": "There are no Travel Stories",
   "titleSuspend": "Your account is suspended",
   "descriptSuspend": "You may have violated our terms, please contact our customer service to reactivate your account",
-  "tagTo": "Tag to "
+  "tagTo": "Tag to ",
+  "failFollow": "failed to follow ",
+  "notRespondInvit": "you have not responded to this invitation"
 }

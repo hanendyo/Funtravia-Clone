@@ -157,10 +157,6 @@ export default function Message({ navigation, route }) {
       },
     });
     let dataResponse = await response.json();
-    console.log(
-      "🚀 ~ file: index.js ~ line 156 ~ getRoom ~ dataResponse",
-      dataResponse
-    );
     for (let i of dataResponse) {
       socket.emit("join", i.id);
     }
@@ -179,10 +175,6 @@ export default function Message({ navigation, route }) {
       },
     });
     let dataResponse = await response.json();
-    console.log(
-      "🚀 ~ file: index.js ~ line 178 ~ getRoomGroup ~ dataResponse",
-      dataResponse
-    );
     for (let i of dataResponse) {
       socket.emit("join", i.group);
     }
@@ -254,7 +246,6 @@ export default function Message({ navigation, route }) {
       });
       setDataGroupRes(newDataGroup);
     } else {
-      // console.log("res");
       setDataRes(data);
       setDataGroupRes(dataGroup);
     }

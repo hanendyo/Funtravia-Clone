@@ -14,6 +14,7 @@ import {
   FlatList,
   Keyboard as onKeyboard,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
@@ -87,6 +88,7 @@ export default function Room({ navigation, route }) {
   const [button, setButton] = useState(true);
   const [token, setToken] = useState("");
   const [socket_connect, setSocketConnect] = useState(false);
+  const [loadingPersonal, setLoadingPersonal] = useState(true);
   // const socket = io(CHATSERVER, {
   //   withCredentials: true,
   //   extraHeaders: {
@@ -588,6 +590,7 @@ export default function Room({ navigation, route }) {
   };
 
   const setChatHistory = async (data) => {
+    setLoadingPersonal(true);
     let history = await AsyncStorage.getItem("history_" + room);
     let recent = JSON.parse(history);
     if (recent) {
@@ -602,9 +605,11 @@ export default function Room({ navigation, route }) {
       }
       setMessage(recent);
       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
+      setLoadingPersonal(false);
     } else {
       await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
       setMessage([data]);
+      setLoadingPersonal(false);
     }
   };
 
@@ -620,6 +625,7 @@ export default function Room({ navigation, route }) {
 
   const initialHistory = async (access_token) => {
     try {
+      setLoadingPersonal(true);
       let response = await fetch(
         `${CHATSERVER}/api/personal/history?receiver_id=${receiver}`,
         {
@@ -654,11 +660,13 @@ export default function Room({ navigation, route }) {
         let new_array = [];
         setMessage(filteredList);
         setBankMessage(new_array);
+        setLoadingPersonal(false);
       }
     } catch (error) {
       let history = await AsyncStorage.getItem("history_" + room);
       let init_local = await JSON.parse(history);
       setMessage(init_local);
+      setLoadingPersonal(false);
     }
   };
   const handleOnStartReached = () => {
@@ -807,6 +815,8 @@ export default function Room({ navigation, route }) {
     } else {
       tmpRChat = true;
     }
+
+    // let [loads, setLoads] = useState(true);
     return (
       <View>
         {date ? (
@@ -878,18 +888,24 @@ export default function Room({ navigation, route }) {
     );
   };
 
-  const [messages, setMessages] = useState("");
-  // const [modalError, setmodalCameraError] = useState(false);
-  const [_stickerModal, setStickerModal] = useState(false);
-
-  // const modals = () => {
-  //   setmodalCameraError(true);
-  //   setMessages("Sticker Coming Soon");
-  // };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <Toast ref={toastRef} />
+      {loadingPersonal ? (
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 2,
+            width: width,
+            height: 50,
+            paddingTop: 20,
+          }}
+        >
+          <ActivityIndicator size="small" color="#209fae" />
+        </View>
+      ) : null}
+
       {/* <Errors
         modals={modalError}
         setmodalCameras={(e) => setmodalCameraError(e)}
@@ -983,7 +999,6 @@ export default function Room({ navigation, route }) {
                                         style={{ width: 35, height: 35 }}
                                         // onPress={() => Alert.alert("Sticker Cooming Soon")}
                                         // onPress={() => modals()}
-                                        // onPress={() => setStickerModal(!_stickerModal)}
                                         onPress={() => {
                                             resetKeyboardView();
                                             refInput.current.focus();

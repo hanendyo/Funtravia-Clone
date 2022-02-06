@@ -35,6 +35,8 @@ import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
 import SearchListEventHome from "../screens/Event/SearchListEventHome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Linking } from "react-native";
+import messaging from "@react-native-firebase/messaging";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({
@@ -85,7 +87,10 @@ export default function MainStackNavigator({
         <Tab.Screen
           name="BottomStack"
           component={BottomStack}
-          initialParams={{ token: token, authBlocked: authBlocked }}
+          initialParams={{
+            token: token,
+            authBlocked: authBlocked,
+          }}
           options={{
             headerShown: false,
             headerBackTitleVisible: false,
@@ -194,6 +199,7 @@ export default function MainStackNavigator({
         <Tab.Screen
           name="Notification"
           component={Notification}
+          initialParams={{ token: token }}
           options={{
             headerShown: false,
             headerBackTitleVisible: false,
