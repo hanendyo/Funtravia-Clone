@@ -444,52 +444,30 @@ export default function CreatePost(props) {
       return (
         <>
           {chosenFile[indexAktif].node.type.substr(0, 5) === "video" ? (
-            <Video
-              // source={{
-              //   uri: Img,
-              // }}
+            <FunVideo
               source={{
-                uri:
-                  Platform.OS === "ios"
-                    ? `assets-library://asset/asset.${chosenFile[
-                        indexAktif
-                      ].node.image.filename.substring(
-                        chosenFile[indexAktif].node.image.filename.length - 3
-                      )}?id=${chosenFile[
-                        indexAktif
-                      ].node.image.originalPath.substring(
-                        5,
-                        41
-                      )}&ext=${chosenFile[
-                        indexAktif
-                      ].node.image.filename.substring(
-                        chosenFile[indexAktif].node.image.filename.length - 3
-                      )}`
-                    : chosenFile[indexAktif].node.image.uri,
+                uri: chosenFile[indexAktif].node.image.uri,
               }}
               ref={(ref) => {
                 videoView = ref;
               }}
-              poster={chosenFile[indexAktif].node.image.uri.replace(
-                "output.m3u8",
-                "thumbnail.png"
-              )}
               posterResizeMode={"cover"}
               onProgress={durationTime}
               paused={isFocused ? false : true}
-              paused={false}
               repeat={time ? true : false}
               onBuffer={videoView?.current?.onBuffer}
               onError={videoView?.current?.videoError}
               style={{
-                width: width,
+                marginVertical: 10,
+                borderRadius: 10,
+                marginHorizontal: 10,
+                width: Dimensions.get("screen").width - 20,
                 height:
                   props?.route?.params?.ratio?.label == "L"
                     ? L
                     : props?.route?.params?.ratio?.label == "P"
                     ? P
                     : S,
-                marginBottom: 10,
               }}
               resizeMode="cover"
             />
@@ -517,32 +495,59 @@ export default function CreatePost(props) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              paddingHorizontal: 10,
+              marginHorizontal: 10,
             }}
             renderItem={(item, index) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setImg(item.item.node.image.uri);
-                  setIndexAktive(item.index);
-                }}
-              >
-                <AutoHeightImage
-                  width={Dimensions.get("screen").width / 5}
-                  style={{
-                    marginRight: 5,
-                    borderRadius: 5,
-                    height: 80,
-                    width: Dimensions.get("screen").width / 5,
+              <>
+                {console.log("item", item, index)}
+                <Pressable
+                  onPress={() => {
+                    setImg(item.item.node.image.uri);
+                    setIndexAktive(item.index);
                   }}
-                  source={
-                    item.item.node.image.uri && item.item.node.image.uri
-                      ? {
-                          uri: item.item.node.image.uri,
-                        }
-                      : default_image
-                  }
-                />
-              </TouchableOpacity>
+                  style={{
+                    marginRight: 8,
+                  }}
+                >
+                  {item.item.node.type === "video" ? (
+                    <FunVideo
+                      poster={item.item.node.image.uri.replace(
+                        "output.m3u8",
+                        "thumbnail.png"
+                      )}
+                      posterResizeMode={"cover"}
+                      source={{
+                        uri: item.item.node.image.uri,
+                      }}
+                      paused={true}
+                      style={{
+                        width: 70,
+                        height: 70,
+                        borderRadius: 8,
+                        opacity: item.index == indexAktif ? 1 : 0.5,
+                        borderWidth: item.index == indexAktif ? 3 : 0,
+                        borderColor:
+                          item.index == indexAktif ? "#209fae" : null,
+                      }}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <Image
+                      resizeMode="cover"
+                      source={{ uri: item?.item.node?.image.uri }}
+                      style={{
+                        width: 70,
+                        height: 70,
+                        borderRadius: 8,
+                        opacity: item.index == indexAktif ? 1 : 0.5,
+                        borderWidth: item.index == indexAktif ? 3 : 0,
+                        borderColor:
+                          item.index == indexAktif ? "#209fae" : null,
+                      }}
+                    />
+                  )}
+                </Pressable>
+              </>
             )}
           />
         </>

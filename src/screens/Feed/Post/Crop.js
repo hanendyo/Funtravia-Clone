@@ -130,7 +130,7 @@ export default function Crop(props) {
           const dest = `${RNFS.TemporaryDirectoryPath}${Math.random()
             .toString(36)
             .substring(7)}.${extension}`;
-          let absolutePath = await RNFS.copyAssetsFileIOS(
+          let absolutePath = await RNFS.copyAssetsVideoIOS(
             tempData[i].node.image.uri,
             dest,
             0,
