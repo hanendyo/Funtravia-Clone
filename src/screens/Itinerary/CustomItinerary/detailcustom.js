@@ -107,6 +107,7 @@ export default function detailCustomItinerary(props) {
           style={{
             marginLeft: 10,
             marginBottom: 5,
+            width: "45%",
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
@@ -116,6 +117,7 @@ export default function detailCustomItinerary(props) {
             style={{
               color: "#fff",
             }}
+            numberOfLines={1}
           >
             {props.route.params.nameitin}
           </Text>

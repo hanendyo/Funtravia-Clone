@@ -689,7 +689,9 @@ export default function Journal(props) {
       <View
         style={{
           height: 50,
-          marginVertical: 5,
+          marginLeft: 10,
+          marginTop: 10,
+          marginBottom: 9,
           backgroundColor: "white",
         }}
       >
@@ -698,7 +700,7 @@ export default function Journal(props) {
           contentContainerStyle={{
             flexDirection: "row",
             paddingRight: 15,
-            marginTop: 5,
+            marginVertical: 5,
           }}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -713,15 +715,21 @@ export default function Journal(props) {
                 setIndexCategory(index);
                 setIdCategory(item?.id);
               }}
+              style={{
+                paddingVertical: 8,
+                paddingHorizontal: 15,
+                backgroundColor: "#f6f6f6",
+                marginHorizontal: 3,
+                borderRadius: 5,
+              }}
             >
               <Text
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 15,
-                  backgroundColor: "#F6F6F6",
-                  marginLeft: 15,
-                  borderRadius: 5,
-                }}
+                // style={{
+                //   paddingVertical: 10,
+                //   paddingHorizontal: 15,
+                //   backgroundColor: "red",
+                //   marginHorizontal: 5,
+                // }}
                 size={"label"}
                 type={"bold"}
               >
