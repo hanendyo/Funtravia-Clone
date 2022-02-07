@@ -469,7 +469,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
   };
 
   const RenderTrans = ({ item }) => {
-    console.log("~ item", item);
     if (item.notification_type == "itinerary_buddy") {
       return (
         <Pressable
