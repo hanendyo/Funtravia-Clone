@@ -880,7 +880,11 @@ export default function Trip(props) {
                       {/* biar bisa scroll ampe bawah */}
                       <View style={{ marginTop: 100 }}></View>
                     </>
-                  ) : null}
+                  ) : (
+                    <View style={{ alignSelf: "center" }}>
+                      <Text>{t("noData")}</Text>
+                    </View>
+                  )}
                 </KeyboardAvoidingView>
               </Modal>
 
@@ -1183,7 +1187,11 @@ export default function Trip(props) {
                       {/* biar bisa scroll ampe bawah */}
                       <View style={{ marginTop: 100 }}></View>
                     </>
-                  ) : null}
+                  ) : (
+                    <View style={{ alignSelf: "center" }}>
+                      <Text>{t("noData")}</Text>
+                    </View>
+                  )}
                 </KeyboardAvoidingView>
               </Modal>
 
@@ -1613,7 +1621,7 @@ export default function Trip(props) {
                 style={{
                   marginTop: 0,
                   marginBottom: -35,
-                  backgroundColor: "#14646e",
+                  backgroundColor: "white",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "center",
@@ -1659,7 +1667,14 @@ export default function Trip(props) {
                             setModaltravel(false);
                           }}
                         >
-                          <Arrowbackios width={20} height={20} />
+                          {Platform.OS == "ios" ? (
+                            <Arrowbackios height={15} width={15}></Arrowbackios>
+                          ) : (
+                            <Arrowbackwhite
+                              height={20}
+                              width={20}
+                            ></Arrowbackwhite>
+                          )}
                         </TouchableOpacity>
                         <Text
                           type={"bold"}
@@ -1759,15 +1774,6 @@ export default function Trip(props) {
                                   >
                                     <Truncate text={item.name} length={8} />
                                   </Text>
-                                  <View
-                                    style={{
-                                      height: 15,
-                                      width: 15,
-                                      marginLeft: 10,
-                                    }}
-                                  >
-                                    <Xblue height={15} width={15} />
-                                  </View>
                                 </TouchableOpacity>
                               );
                             })}
@@ -1812,7 +1818,7 @@ export default function Trip(props) {
                           <TouchableOpacity
                             onPress={() => {
                               // _setSearch(null);
-                              SearchWith("");
+                              setTravelWiths("");
                             }}
                           >
                             <Xblue
@@ -1985,58 +1991,66 @@ export default function Trip(props) {
                       </View> */}
 
                       {/* </list> */}
-                      {datawith && datawith.search_travelwith.length > 0 ? (
-                        <FlatList
-                          style={{
-                            // position: 'absolute',
-                            // top: 65,
-                            width: "100%",
-                            height: "100%",
-                          }}
-                          showsVerticalScrollIndicator={false}
-                          keyExtractor={(item, index) => `${index}`}
-                          data={datawith.search_travelwith}
-                          renderItem={({ item }) => (
-                            <TouchableOpacity
-                              style={{
-                                backgroundColor: "white",
-                                width: "100%",
-                                padding: 10,
-                                paddingHorizontal: 20,
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                              onPress={() => settravel(item)}
-                            >
-                              <Image
-                                source={
-                                  item.picture
-                                    ? { uri: item.picture }
-                                    : default_image
-                                }
+                      {datawith && datawith?.search_travelwith?.length > 0 ? (
+                        <>
+                          <FlatList
+                            style={{
+                              // position: 'absolute',
+                              // top: 65,
+                              width: "100%",
+                              height: "100%",
+                            }}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item, index) => `${index}`}
+                            data={datawith.search_travelwith}
+                            renderItem={({ item }) => (
+                              <TouchableOpacity
                                 style={{
-                                  marginRight: 10,
-                                  resizeMode: "cover",
-                                  height: normalize(50),
-                                  width: normalize(50),
-                                  borderRadius: normalize(50),
+                                  backgroundColor: "white",
+                                  width: "100%",
+                                  padding: 10,
+                                  paddingHorizontal: 20,
+                                  flexDirection: "row",
+                                  alignItems: "center",
                                 }}
-                              ></Image>
-                              <Text
-                                type="black"
-                                size="description"
-                                style={{
-                                  width: Dimensions.get("screen").width / 1.5,
-                                }}
-                                // numberOfLines={1}
+                                onPress={() => settravel(item)}
                               >
-                                {item.first_name}{" "}
-                                {item.last_name ? item.last_name : ""}
-                              </Text>
-                            </TouchableOpacity>
-                          )}
-                        />
-                      ) : null}
+                                <Image
+                                  source={
+                                    item.picture
+                                      ? { uri: item.picture }
+                                      : default_image
+                                  }
+                                  style={{
+                                    marginRight: 10,
+                                    resizeMode: "cover",
+                                    height: normalize(50),
+                                    width: normalize(50),
+                                    borderRadius: normalize(50),
+                                  }}
+                                ></Image>
+                                <Text
+                                  type="black"
+                                  size="description"
+                                  style={{
+                                    width: Dimensions.get("screen").width / 1.5,
+                                  }}
+                                  // numberOfLines={1}
+                                >
+                                  {item.first_name}{" "}
+                                  {item.last_name ? item.last_name : ""}
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                          />
+                          {/* biar bisa scroll ampe bawah */}
+                          <View style={{ marginTop: 100 }}></View>
+                        </>
+                      ) : (
+                        <View style={{ alignSelf: "center" }}>
+                          <Text>{t("noData")}</Text>
+                        </View>
+                      )}
                     </ScrollView>
                   </KeyboardAvoidingView>
                 </SafeAreaView>

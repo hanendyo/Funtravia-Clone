@@ -884,5 +884,7 @@
   "descriptSuspend": "You may have violated our terms, please contact our customer service to reactivate your account",
   "tagTo": "Tag to ",
   "failFollow": "failed to follow ",
-  "notRespondInvit": "you have not responded to this invitation"
+  "notRespondInvit": "you have not responded to this invitation",
+  "from": "From",
+  "to": "To"
 }

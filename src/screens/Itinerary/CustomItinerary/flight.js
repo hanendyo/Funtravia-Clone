@@ -975,7 +975,7 @@ export default function detailCustomItinerary(props) {
                 alignContent: "center",
               }}
             >
-              {modalFrom ? "Dari" : "Ke"}
+              {modalFrom ? t("from") : t("to")}
             </Text>
           </View>
           <View
@@ -1220,7 +1220,9 @@ export default function detailCustomItinerary(props) {
         <View
           style={{
             backgroundColor: "#fff",
-            padding: 15,
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+            marginBottom: 20,
           }}
         >
           <Button

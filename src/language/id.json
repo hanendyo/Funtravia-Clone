@@ -882,5 +882,7 @@
   "descriptSuspend": "Kamu mungkin telah melakukan pelanggaran atas ketentuan kami, mohon hubungi customer service kami untuk mengaktifkan kembali akun kamu",
   "tagTo": "Hubungkan ke ",
   "failFollow": "Gagal mengikuti ",
-  "notRespondInvit": "kamu belum menanggapi undangan ini"
+  "notRespondInvit": "kamu belum menanggapi undangan ini",
+  "from": "Dari",
+  "to": "Ke"
 }
