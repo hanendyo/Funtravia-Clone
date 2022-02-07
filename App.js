@@ -46,7 +46,7 @@ PushNotification.configure({
     console.log("ONACTION:", notification);
   },
   onRegistrationError: function(err) {
-    console.error(err.message, err);
+    console.log(err.message, err);
   },
   permissions: {
     alert: true,
@@ -157,6 +157,7 @@ function App() {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
     messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      await RNRestart.Restart();
       console.log(
         "Notification caused app to open from background state:",
         remoteMessage
