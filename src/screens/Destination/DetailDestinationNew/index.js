@@ -119,8 +119,16 @@ const Index = (props) => {
           HeightTime +
           HeightWeb -
           StatusBar.currentHeight
+        : deviceId == "CPH2127"
+        ? normalize(215) +
+          HeightJudul +
+          Heightunesco +
+          HeightAddress +
+          HeightTime +
+          HeightWeb -
+          StatusBar.currentHeight
         : NotchAndro
-        ? normalize(210) +
+        ? normalize(223) +
           HeightJudul +
           Heightunesco +
           HeightAddress +

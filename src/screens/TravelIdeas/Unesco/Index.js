@@ -71,7 +71,7 @@ export default function Unesco({ navigation, route }) {
       deviceId == "LYA-L29"
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(220) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
         : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 

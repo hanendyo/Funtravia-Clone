@@ -288,10 +288,6 @@ export default function ItineraryDetail(props) {
     await _Refresh();
   };
   let [Anggota, setAnggota] = useState(null);
-  console.log(
-    "🚀 ~ file: index.js ~ line 288 ~ ItineraryDetail ~ Anggota",
-    Anggota
-  );
 
   let [loading, setloading] = useState(false);
   let [statusUsers, setStatusUsers] = useState("");
@@ -962,7 +958,14 @@ export default function ItineraryDetail(props) {
     let menitakhirs = menits < 10 ? "0" + menits : menits;
     let durations = jamakhirs + ":" + menitakhirs + ":00";
 
+    if (dataLists[0].detail_accomodation) {
+      var datahotel = dataLists.splice(0, 1);
+    } else {
+      var datahotel = [];
+    }
     let datax = [...dataLists];
+
+    console.log("datax", datax);
     let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
@@ -995,11 +998,16 @@ export default function ItineraryDetail(props) {
       let jamsesesudah = parseFloat(bandingan[0]);
 
       if (jamsesesudah > timestartsebelum) {
-        let a = caridurasi(datax[parseFloat(indexinput) - 1].time, starttimes);
+        dataganti.time = hitungDuration({
+          startt: datax[parseFloat(indexinput) - 1].time,
+          dur: datax[parseFloat(indexinput) - 1].duration,
+        });
+        // let a = caridurasi(datax[parseFloat(indexinput) - 1].time, starttimes);
 
-        let dataset = { ...datax[parseFloat(indexinput) - 1] };
-        dataset.duration = a;
-        datax.splice(parseFloat(indexinput) - 1, 1, dataset);
+        // let dataset = { ...datax[parseFloat(indexinput) - 1] };
+        // dataset.duration = a;
+        // datax.splice(parseFloat(indexinput) - 1, 1, dataset);
+        // console.log("dataxy", datax);
       } else {
         dataganti.time = hitungDuration({
           startt: datax[parseFloat(indexinput) - 1].time,
@@ -1012,8 +1020,13 @@ export default function ItineraryDetail(props) {
 
     var x = 0;
     var order = 1;
+    if (datahotel.length > 0) {
+      var order = 1;
+    }
 
     for (var y in datax) {
+      let datareplace = { ...datax[y] };
+      datareplace.order = order;
       if (datax[y - 1]) {
         // longitude & latitude index sebelum custom
         let LongBefore = datax[y - 1].longitude;
@@ -1021,65 +1034,60 @@ export default function ItineraryDetail(props) {
         // longitude & latitude index custom
         let LongCurrent = datax[y].longitude;
         let LatCurrent = datax[y].latitude;
-        // rumus hitung jarak
-        let jarak = Distance({
-          lat1: LatBefore,
-          lon1: LongBefore,
-          lat2: LatCurrent,
-          lon2: LongCurrent,
-          unit: "km",
-        });
-        // rumus hitung waktu
-        let waktutemp = jarak / 50;
-        let waktu = waktutemp + "";
-        // pecah hasil waktu
-        let split = waktu.split(".");
-
-        let jamtemp = "";
-        let menittemp = "";
-
-        if (split[0] > 1) {
-          jamtemp = split[1];
-          if (split[1] > 0 && split[1] < 60) {
-            menittemp = split[1];
-          } else {
-            jamtemp = split[0] + 1;
-            menittemp = split[1] - 60;
-          }
+        // kondisi jika lokasi yang sama dan aktivitas berbeda
+        if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+          var newtime = datax[y - 1].time;
         } else {
-          if (waktu > 0.6) {
-            jamtemp = 1;
-            menittemp = split[1] - 60;
+          // rumus hitung jarak
+          let jarak = Distance({
+            lat1: LatBefore,
+            lon1: LongBefore,
+            lat2: LatCurrent,
+            lon2: LongCurrent,
+            unit: "km",
+          });
+          // rumus hitung waktu
+          let waktutemp = jarak / 50;
+          let waktu = waktutemp + "";
+          // pecah hasil waktu
+          let split = waktu.split(".");
+          let jamtemp = "";
+          let menittemp = "";
+          if (split[0] > 1) {
+            jamtemp = split[1];
+            if (split[1] > 0 && split[1] < 60) {
+              menittemp = split[1];
+            } else {
+              jamtemp = split[0] + 1;
+              menittemp = split[1] - 60;
+            }
           } else {
-            jamtemp = 0;
-            menittemp = split[1];
+            if (waktu > 0.6) {
+              jamtemp = 1;
+              menittemp = split[1] - 60;
+            } else {
+              jamtemp = 0;
+              menittemp = split[1];
+            }
           }
+          let time = datax[y - 1].time;
+          let splittime = time.split(":");
+          let durationold = datax[y - 1].duration;
+          let splitdurations = durationold.split(":");
+          //menit total untuk mendapatkan menit yang lebih dari 59
+          let menitotal =
+            parseFloat(splittime[1]) +
+            parseFloat(splitdurations[1]) +
+            parseFloat(menittemp);
+          // let durasitemp = `${jamtemp}:${menittemp}`;
+          let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+          let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+          var newtime =
+            menitotal > 59
+              ? `${newjam + 1}:${newmenit - 60}`
+              : `${newjam}:${newmenit}`;
         }
-
-        let time = datax[y - 1].time;
-        console.log("time", time);
-        let splittime = time.split(":");
-
-        let durationold = datax[y - 1].duration;
-        let splitdurations = durationold.split(":");
-
-        //menit total untuk mendapatkan menit yang lebih dari 59
-        let menitotal =
-          parseFloat(splittime[1]) +
-          parseFloat(splitdurations[1]) +
-          parseFloat(menittemp);
-
-        // let durasitemp = `${jamtemp}:${menittemp}`;
-        let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
-        let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-
-        let newtime =
-          menitotal > 59
-            ? `${newjam + 1}:${newmenit - 60}`
-            : `${newjam}:${newmenit}`;
         console.log("new", newtime);
-        let datareplace = { ...datax[y] };
-        datareplace.order = order;
 
         datareplace.time = await hitungDuration({
           startt: newtime,
@@ -1087,9 +1095,14 @@ export default function ItineraryDetail(props) {
         });
         await datax.splice(y, 1, datareplace);
       }
+
       x++;
       order++;
     }
+    if (datahotel.length > 0) {
+      datax.splice(0, 0, datahotel[0]);
+    }
+    console.log("datax", datax);
 
     let sum = datax.reduce(
       (itinerary, item) => itinerary.add(moment.duration(item.duration)),
@@ -1130,6 +1143,8 @@ export default function ItineraryDetail(props) {
     var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
 
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
+
+    console.log("jams", jam, "menits", menit);
     if (menit > 59) {
       menit = menit - 60;
     }
@@ -1154,7 +1169,10 @@ export default function ItineraryDetail(props) {
     },
   });
 
+  console.log("error", errorSave);
+
   const savetimeline = async (datakiriman) => {
+    console.log("datakiriman", datakiriman);
     try {
       let response = await mutationSaveTimeline({
         variables: {
@@ -1958,13 +1976,7 @@ export default function ItineraryDetail(props) {
         {/* image animated */}
 
         <Animated.Image
-          source={
-            rD.cover
-              ? { uri: rD.cover }
-              : dataList?.length && dataList[0]?.images !== null
-              ? { uri: dataList[0].images }
-              : ItineraryKosong
-          }
+          source={rD.cover ? { uri: rD.cover } : ItineraryKosong}
           style={{
             opacity: imageOpacity,
             width: "100%",
@@ -5288,7 +5300,7 @@ export default function ItineraryDetail(props) {
           // {...props}
           show={modalss}
           dataImage={dataImage}
-          setClose={() => setModalss(!modalss)}
+          setClose={() => setModalss(false)}
         />
 
         <ImageSliders
@@ -5300,7 +5312,7 @@ export default function ItineraryDetail(props) {
           dataImage={dataImage}
           props={props}
           token={token}
-          setClose={() => setModalsss(!modalsss)}
+          setClose={() => setModalsss(false)}
         />
 
         <Modal
@@ -6206,13 +6218,13 @@ export default function ItineraryDetail(props) {
                       fontFamily: "Lato-Regular",
                     }}
                     onValueChange={(itemValue, itemIndex) =>
-                      setjamend(itemValue > jamstart ? itemValue : jamstart)
+                      setjamend(itemValue)
                     }
                   >
                     {jams.map((item, index) => {
-                      return item >= jamstart ? (
+                      return (
                         <Picker.Item key={item} label={item} value={item} />
-                      ) : null;
+                      );
                     })}
                   </Picker>
                 </View>
@@ -6262,11 +6274,9 @@ export default function ItineraryDetail(props) {
                     }
                   >
                     {menits.map((item, index) => {
-                      return jamstart === jamend && item > menitstart ? (
+                      return (
                         <Picker.Item key={""} label={item + ""} value={item} />
-                      ) : jamend > jamstart ? (
-                        <Picker.Item key={""} label={item + ""} value={item} />
-                      ) : null;
+                      );
                     })}
                   </Picker>
                 </View>
@@ -6911,7 +6921,8 @@ export default function ItineraryDetail(props) {
         {/* modal alert trip belum aktif */}
         <Modalss
           onBackdropPress={() => {
-            setmodalerrors(false);
+            setIndex(0);
+            setmodalTrip(false);
           }}
           onRequestClose={() => setmodalTrip(false)}
           onDismiss={() => setmodalTrip(false)}
@@ -6920,6 +6931,7 @@ export default function ItineraryDetail(props) {
         >
           <Pressable
             onPress={() => {
+              setIndex(0);
               setmodalTrip(false);
             }}
             style={{
@@ -7002,7 +7014,8 @@ export default function ItineraryDetail(props) {
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  setmodalerrors(false);
+                  setIndex(0);
+                  setmodalTrip(false);
                 }}
                 style={{
                   paddingTop: 20,

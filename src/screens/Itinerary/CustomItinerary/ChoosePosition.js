@@ -539,50 +539,55 @@ export default function ChoosePosition(props) {
           // longitude & latitude index custom
           let LongCurrent = tempdata[y].longitude;
           let LatCurrent = tempdata[y].latitude;
-          // rumus hitung jarak
-          let jarak = Distance({
-            lat1: LatBefore,
-            lon1: LongBefore,
-            lat2: LatCurrent,
-            lon2: LongCurrent,
-            unit: "km",
-          });
-          // rumus hitung waktu
-          let waktutemp = jarak / 50;
-          let waktu = waktutemp + "";
-          // pecah hasil waktu
-          let split = waktu.split(".");
 
-          let jamtemp = "";
-          let menittemp = "";
-
-          if (split[0] > 1) {
-            jamtemp = split[1];
-            if (split[1] > 0 && split[1] < 60) {
-              menittemp = split[1];
-            } else {
-              jamtemp = split[0] + 1;
-              menittemp = split[1] - 60;
-            }
+          // kondisi jika lokasi yang sama dan aktivitas berbeda
+          if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+            var newtime = tempdata[y - 1].time;
           } else {
-            if (waktu > 0.6) {
-              jamtemp = 1;
-              menittemp = split[1] - 60;
+            let jarak = Distance({
+              lat1: LatBefore,
+              lon1: LongBefore,
+              lat2: LatCurrent,
+              lon2: LongCurrent,
+              unit: "km",
+            });
+            // rumus hitung waktu
+            let waktutemp = jarak / 50;
+            let waktu = waktutemp + "";
+            // pecah hasil waktu
+            let split = waktu.split(".");
+
+            let jamtemp = "";
+            let menittemp = "";
+
+            if (split[0] > 1) {
+              jamtemp = split[1];
+              if (split[1] > 0 && split[1] < 60) {
+                menittemp = split[1];
+              } else {
+                jamtemp = split[0] + 1;
+                menittemp = split[1] - 60;
+              }
             } else {
-              jamtemp = 0;
-              menittemp = split[1];
+              if (waktu > 0.6) {
+                jamtemp = 1;
+                menittemp = split[1] - 60;
+              } else {
+                jamtemp = 0;
+                menittemp = split[1];
+              }
             }
+            let time = tempdata[y - 1].time;
+            let splittime = time.split(":");
+            // let durasitemp = `${jamtemp}:${menittemp}`;
+            let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+            let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+            console.log("newmenit", newmenit);
+            var newtime =
+              newmenit > 60
+                ? `${newjam + 1}:${newmenit - 60}`
+                : `${newjam}:${newmenit}`;
           }
-          let time = tempdata[y - 1].time;
-          let splittime = time.split(":");
-          // let durasitemp = `${jamtemp}:${menittemp}`;
-          let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
-          let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-          console.log("newmenit", newmenit);
-          let newtime =
-            newmenit > 60
-              ? `${newjam + 1}:${newmenit - 60}`
-              : `${newjam}:${newmenit}`;
           console.log("newtime", newtime);
           console.log("newww", tempdata[y].time);
           tempdata[y].time = hitungDuration({
