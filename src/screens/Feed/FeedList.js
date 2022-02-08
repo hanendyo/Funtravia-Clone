@@ -460,6 +460,8 @@ export default function FeedList({ props, token }) {
     },
   });
 
+  console.log("datafeed", dataFeed, loadingPost);
+
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
   const Refresh = React.useCallback(() => {

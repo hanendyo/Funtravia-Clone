@@ -69,6 +69,7 @@ import {
   Complete,
   ChatItinerary,
   Home,
+  OptionsVertBlack,
 } from "../../../assets/svg";
 import {
   Button,
@@ -150,6 +151,7 @@ export default function ItineraryDetail(props) {
    */
 
   let [Cover, setCover] = useState(null);
+  const [optionModal, setOptionModal] = useState(false);
 
   const [tabIndex, setIndex] = useState(
     props.route.params.index ? props.route.params.index : 0
@@ -285,7 +287,12 @@ export default function ItineraryDetail(props) {
   const loadasync = async () => {
     await _Refresh();
   };
-  let [Anggota, setAnggota] = useState();
+  let [Anggota, setAnggota] = useState(null);
+  console.log(
+    "🚀 ~ file: index.js ~ line 288 ~ ItineraryDetail ~ Anggota",
+    Anggota
+  );
+
   let [loading, setloading] = useState(false);
   let [statusUsers, setStatusUsers] = useState("");
   let [backStatus, setBackStatus] = useState(true);
@@ -3025,10 +3032,28 @@ export default function ItineraryDetail(props) {
             <View
               style={{
                 flexDirection: "row",
+                justifyContent: "space-between",
+                paddingTop: 10,
+                paddingRight: 10,
+              }}
+            >
+              <Text type="bold">
+                {item.count} {item.count > 1 ? "photos" : "photo"}
+              </Text>
+              {Anggota ? (
+                <TouchableOpacity onPress={() => setOptionModal(true)}>
+                  <OptionsVertBlack width={15} height={15} />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
                 flexWrap: "wrap",
                 width: "102%",
                 paddingBottom: 10,
-                marginTop: 40,
+                marginTop: 10,
               }}
             >
               <TouchableOpacity
@@ -3153,9 +3178,20 @@ export default function ItineraryDetail(props) {
           width: "100%",
         }}
       >
-        <Text type="bold" style={{ paddingVertical: 10 }}>
-          {item.title}
-        </Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text type="bold" style={{ paddingVertical: 10 }}>
+            {item.title}
+          </Text>
+          <Text type="bold" style={{ paddingVertical: 10, marginRight: 5 }}>
+            {item.count} {item.count > 1 ? "photos" : "photo"}
+          </Text>
+        </View>
 
         <View
           style={{
@@ -3433,7 +3469,6 @@ export default function ItineraryDetail(props) {
       </Pressable>
     );
   };
-
   let [grid, setgrid] = useState(4);
 
   const spreadData = (rData) => {
@@ -3445,6 +3480,7 @@ export default function ItineraryDetail(props) {
         album: [{ id: "camera" }],
         day: "",
         id: "",
+        count: 0,
       };
       tempdata["title"] = dataS.title;
       tempdata["id"] = dataS.id;
@@ -3452,6 +3488,7 @@ export default function ItineraryDetail(props) {
         dataS.media.map((item, ind) => {
           if (item.is_posted === true) {
             tempdata["posted"].push(item);
+            tempdata["count"] += 1;
           } else {
             tempdata["unposted"].push(item);
           }
@@ -4326,6 +4363,8 @@ export default function ItineraryDetail(props) {
               startRefreshAction={(e) => startRefreshAction(e)}
               dataalbumaktif={dataalbumaktif}
               setdataalbumaktif={(e) => setdataalbumaktif(e)}
+              optionModal={optionModal}
+              setOptionModal={() => setOptionModal(!optionModal)}
             />
           ) : (
             <ItineraryDay

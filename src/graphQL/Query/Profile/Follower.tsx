@@ -1,15 +1,31 @@
 import { gql } from "apollo-boost";
 const FollowerQuery = gql`
-    query {
-        user_followers {
-            id
-            username
-            first_name
-            last_name
-            picture
-            bio
-            status_following
+  query($first: Int!, $after: String) {
+    user_followers_cursor_based(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+        total
+        count
+        currentPage
+        lastPage
+      }
+      edges {
+        node {
+          id
+          username
+          first_name
+          last_name
+          picture
+          bio
+          status_following
+          status_follower
         }
+        cursor
+      }
     }
+  }
 `;
 export default FollowerQuery;

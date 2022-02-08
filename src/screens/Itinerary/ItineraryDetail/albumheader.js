@@ -8,7 +8,7 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import { Text } from "../../../component";
+import { Peringatan, Text } from "../../../component";
 import { Button } from "../../../component";
 import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ import normalize from "react-native-normalize";
 import DeleteAlbumItinerary from "../../../graphQL/Mutation/Album/DeleteAlbumItinerary";
 import RenameAlbumTitle from "../../../graphQL/Mutation/Album/RenameAlbumTitle";
 import Delete from "../../../component/src/AlertModal/Delete";
+import { indexOf } from "lodash";
 
 export default function Albumheader({
   dataAlbum,
@@ -45,17 +46,27 @@ export default function Albumheader({
   startRefreshAction,
   dataalbumaktif,
   setdataalbumaktif,
+  optionModal,
+  setOptionModal,
 }) {
   const { t, i18n } = useTranslation();
   let slider = useRef();
   let focusRef = useRef();
   let [modalcreate, setModalcreate] = useState(false);
   let [name, setname] = useState(dataAlbum[0]?.title ? dataAlbum[0].title : "");
+  const [count, setCount] = useState(0);
   const [modalDeleteAlbum, setmodalDeleteAlbum] = useState(false);
-  const [modalOptions, setmodalOptions] = useState(false);
   const [itemName, setitemName] = useState("");
   const [albumId, setalbumId] = useState("");
   const [editStatus, setEditStatus] = useState(false);
+
+  console.log("dataalbum", dataAlbum);
+
+  let [alertPopUp, setAlertPopUp] = useState({
+    show: false,
+    judul: "",
+    detail: "",
+  });
 
   useEffect(() => {
     dataAlbum ? setdataalbumaktif(dataAlbum[0]) : null;
@@ -104,6 +115,12 @@ export default function Albumheader({
       }
     } catch (error) {
       console.log(error);
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Error",
+        detail: error,
+      });
       setModalcreate(false);
     }
   };
@@ -142,24 +159,34 @@ export default function Albumheader({
 
       if (response?.data) {
         if (response.data.delete_albums_from_itinerary_v2?.code !== 200) {
+          setAlertPopUp({
+            ...alertPopUp,
+            show: true,
+            judul: "Error",
+            detail: response.data.delete_albums_from_itinerary_v2.message,
+          });
           throw new Error(
             response.data.delete_albums_from_itinerary_v2?.message
           );
         } else {
           if (dataAlbum.length === 1) {
             setdataalbumaktif(null);
-            setname("");
+            // setname("");
           } else {
-            setname(dataAlbum[0]);
+            // setname(dataAlbum[0]);
             setdataalbumaktif(dataAlbum[0]);
           }
         }
       }
     } catch (error) {
-      console.log(error);
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Error",
+        detail: error,
+      });
     }
   };
-  // console.log("dataalbumaktif", dataalbumaktif);
 
   const savecreatealbum = async () => {
     if (name) {
@@ -183,9 +210,7 @@ export default function Albumheader({
               title: name,
             });
             await setModalcreate(false);
-            // await setname("");
             await startRefreshAction();
-            // console.log(response);
           }
         }
       } catch (error) {
@@ -203,9 +228,6 @@ export default function Albumheader({
         style={{}}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        // stickyHeaderIndices={[0]}
-        // initialScrollIndex={indexnya}
-        // scrollToIndex={indexnya}
         horizontal={true}
         keyExtractor={(item, index) => index + ""}
         data={dataAlbum}
@@ -243,14 +265,18 @@ export default function Albumheader({
             <MenuOptions>
               <MenuOption
                 style={{ flexDirection: "row" }}
-                onSelect={() => setgrid(4)}
+                onSelect={() => {
+                  setgrid(4);
+                }}
               >
                 <GridAll width={15} height={15} />
                 <Text style={{ marginLeft: 5 }}>View per Album</Text>
               </MenuOption>
               <MenuOption
                 style={{ flexDirection: "row" }}
-                onSelect={() => setgrid(1)}
+                onSelect={() => {
+                  setgrid(1);
+                }}
               >
                 <GridDay width={15} height={15} />
                 <Text style={{ marginLeft: 5 }}>View all Album</Text>
@@ -262,7 +288,8 @@ export default function Albumheader({
           Anggota === "true" ? (
             <Pressable
               onPress={() => {
-                setname(""), setModalcreate(true);
+                setModalcreate(true);
+                setname("");
               }}
               style={{
                 paddingVertical: 10,
@@ -330,7 +357,9 @@ export default function Albumheader({
             ) : null
           ) : (
             <Button
-              onPress={() => setdataalbumaktif(item)}
+              onPress={() => {
+                setdataalbumaktif(item);
+              }}
               text={item?.title}
               size="small"
               color={item.id !== dataalbumaktif?.id ? "green" : "primary"}
@@ -345,7 +374,7 @@ export default function Albumheader({
           );
         }}
       />
-      {grid !== 1 && (
+      {/* {grid !== 1 && (
         <View style={{ backgroundColor: "#f6f6f6" }}>
           <View
             style={{
@@ -355,9 +384,7 @@ export default function Albumheader({
               marginVertical: 10,
             }}
           >
-            <Text type="bold">
-              {dataalbumaktif?.title ? dataalbumaktif.title : null}
-            </Text>
+            <Text type="bold">{countPhoto} photo</Text>
             {Anggota === "true" && dataalbumaktif?.id && (
               <TouchableOpacity onPress={() => setmodalOptions(true)}>
                 <OptionsVertBlack width={15} height={15} />
@@ -365,7 +392,7 @@ export default function Albumheader({
             )}
           </View>
         </View>
-      )}
+      )} */}
 
       <Modal
         onBackdropPress={() => {
@@ -439,18 +466,27 @@ export default function Albumheader({
           setmodalDeleteAlbum(false);
         }}
       />
+      <Peringatan
+        aler={alertPopUp}
+        setClose={() =>
+          setAlertPopUp({
+            ...alertPopUp,
+            show: false,
+          })
+        }
+      />
 
       {/* Modal Option */}
       <Modal
         // useNativeDriver={true}
         animationType="fade"
-        visible={modalOptions}
-        onBackdropPress={() => setmodalOptions(false)}
-        onRequestClose={() => setmodalOptions(false)}
+        visible={optionModal}
+        onBackdropPress={() => setOptionModal()}
+        onRequestClose={() => setOptionModal()}
         transparent={true}
       >
         <Pressable
-          onPress={() => setmodalOptions(false)}
+          onPress={() => setOptionModal(false)}
           style={{
             width: Dimensions.get("screen").width + 25,
             height: Dimensions.get("screen").height,
@@ -498,7 +534,7 @@ export default function Albumheader({
               </Text>
             </View>
             <Pressable
-              onPress={() => setmodalOptions(false)}
+              onPress={() => setOptionModal(false)}
               style={{
                 position: "absolute",
                 right: 0,
@@ -517,7 +553,7 @@ export default function Albumheader({
                 borderBottomWidth: 1,
               }}
               onPress={() => {
-                setmodalOptions(false);
+                setOptionModal(false);
                 setEditStatus(true);
                 setname(dataalbumaktif?.title);
                 setModalcreate(true);
@@ -535,7 +571,7 @@ export default function Albumheader({
                 borderBottomWidth: 1,
               }}
               onPress={() => {
-                setmodalOptions(false);
+                setOptionModal(false);
                 LongPressAlbum(dataalbumaktif);
               }}
             >

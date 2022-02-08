@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Alert,
@@ -8,23 +8,21 @@ import {
   Text as Teks,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
 import { Text, Button, Truncate } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import { Loading } from "../../component/index";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
-import { setTokenApps } from "../../redux/action";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { RNToasty } from "react-native-toasty";
 
 export default function Following(props) {
-  let dispatch = useDispatch();
   const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
@@ -88,32 +86,70 @@ export default function Following(props) {
 
   const loadAsync = async () => {
     setLoading(true);
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    // dispatch(setTokenApps(`Bearer ${tkn}`));
-    await LoadFollowing();
-    await setLoading(false);
+
+    await refetch();
+    // LoadFollowing();
+    setLoading(false);
   };
 
-  const [LoadFollowing, { data: dataFollow, loading, error }] = useLazyQuery(
+  const { data: dataFollow, loading, error, fetchMore, refetch } = useQuery(
     FollowingQuery,
     {
-      fetchPolicy: "network-only",
+      variables: {
+        first: 10,
+        after: "",
+      },
       context: {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
       },
+      options: {
+        fetchPolicy: "network-only",
+        errorPolicy: "ignore",
+      },
+      // pollInterval: 5500,
+      notifyOnNetworkStatusChange: true,
       onCompleted: async () => {
-        setdata(dataFollow?.user_following);
+        if (dataFollow) {
+          setdata(dataFollow?.user_following_cursor_based.edges);
+        }
       },
     }
   );
 
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.user_following_cursor_based;
+    const edges = [
+      ...prev.user_following_cursor_based.edges,
+      ...fetchMoreResult.user_following_cursor_based.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      user_following_cursor_based: {
+        __typename: prev.user_following_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
+  };
+
+  const handleOnEndReached = () => {
+    if (dataFollow?.user_following_cursor_based?.pageInfo.hasNextPage) {
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          first: 10,
+          after: dataFollow?.user_following_cursor_based.pageInfo?.endCursor,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-
     loadAsync();
   }, []);
 
@@ -144,9 +180,14 @@ export default function Following(props) {
   const _unfollow = async (id, index) => {
     if (token) {
       let tempUser = [...data];
-      let _temStatus = { ...tempUser[index] };
+      let _temStatus = { ...tempUser[index].node };
       _temStatus.status_following = false;
-      tempUser.splice(index, 1, _temStatus);
+      let _temData = {
+        __typename: "FollowingEdge",
+        cursor: "MQ==",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
         let response = await UnfollowMutation({
@@ -163,7 +204,6 @@ export default function Following(props) {
             response.data.unfollow_user.code === 200 ||
             response.data.unfollow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.unfollow_user.message);
           }
@@ -174,9 +214,14 @@ export default function Following(props) {
           position: "bottom",
         });
         let tempUser = [...data];
-        let _temStatus = { ...tempUser[index] };
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = true;
-        tempUser.splice(index, 1, _temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          cursor: "MQ==",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
         setdata(tempUser);
       }
     } else {
@@ -191,9 +236,13 @@ export default function Following(props) {
     // setLoading(true);
     if (token) {
       let tempUser = [...data];
-      let _temStatus = { ...tempUser[index] };
+      let _temStatus = { ...tempUser[index].node };
       _temStatus.status_following = true;
-      tempUser.splice(index, 1, _temStatus);
+      let _temData = {
+        __typename: "FollowingEdge",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
         let response = await FollowMutation({
@@ -202,6 +251,7 @@ export default function Following(props) {
           },
         });
         console.log(response);
+
         if (errorFollowMut) {
           throw new Error("Error Input");
         }
@@ -211,7 +261,6 @@ export default function Following(props) {
             response.data.follow_user.code === 200 ||
             response.data.follow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.follow_user.message);
           }
@@ -222,9 +271,13 @@ export default function Following(props) {
           position: "bottom",
         });
         let tempUser = [...data];
-        let _temStatus = { ...tempUser[index] };
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = false;
-        tempUser.splice(index, 1, _temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
         setdata(tempUser);
       }
     } else {
@@ -250,6 +303,9 @@ export default function Following(props) {
           justifyContent: "space-evenly",
         }}
         showsVerticalScrollIndicator={false}
+        onEndReached={handleOnEndReached}
+        onEndReachedThreshold={1}
+        initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -269,7 +325,7 @@ export default function Following(props) {
                 props.navigation.push("ProfileStack", {
                   screen: "otherprofile",
                   params: {
-                    idUser: item.id,
+                    idUser: item.node.id,
                     token: token,
                   },
                 });
@@ -278,9 +334,9 @@ export default function Following(props) {
             >
               <Image
                 source={
-                  item?.picture
+                  item?.node.picture
                     ? {
-                        uri: item.picture,
+                        uri: item.node.picture,
                       }
                     : DefaultProfile
                 }
@@ -298,27 +354,27 @@ export default function Following(props) {
                   flex: 1,
                 }}
               >
-                {item?.last_name !== null ? (
+                {item?.node.last_name !== null ? (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {`${item?.first_name} ${item?.last_name}`}
+                    {`${item?.node.first_name} ${item?.node.last_name}`}
                   </Text>
                 ) : (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {item?.first_name}
+                    {item?.node.first_name}
                   </Text>
                 )}
                 <Text size="description" type="regular">
-                  {`@${item?.username}`}
+                  {`@${item?.node.username}`}
                 </Text>
-                {item?.bio ? (
+                {item?.node.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
-                    {item?.bio ? item.bio : ""}
+                    {item?.node.bio ? item.node.bio : ""}
                   </Text>
                 ) : null}
               </View>
             </TouchableOpacity>
             <View style={{ width: "25%", marginLeft: 15 }}>
-              {item.status_following === false ? (
+              {item.node.status_following === false ? (
                 <Pressable
                   style={{
                     borderRadius: 20,
@@ -330,7 +386,7 @@ export default function Following(props) {
                     height: 30,
                   }}
                   onPress={() => {
-                    _follow(item.id, index);
+                    _follow(item.node.id, index);
                   }}
                 >
                   <Text
@@ -354,7 +410,7 @@ export default function Following(props) {
                     height: 30,
                   }}
                   onPress={() => {
-                    _unfollow(item.id, index);
+                    _unfollow(item.node.id, index);
                   }}
                 >
                   <Text
@@ -371,9 +427,27 @@ export default function Following(props) {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
         extraData={selectedId}
+        listFooterComponent={
+          loading ? (
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 30,
+              }}
+            >
+              <ActivityIndicator
+                animating={loading}
+                size="large"
+                color="#209FAE"
+              />
+            </View>
+          ) : null
+        }
       />
     </View>
   );
