@@ -21,6 +21,7 @@ export default function({ lat1, lon1, lat2, lon2, unit }) {
     if (unit == "m") {
       dist = dist * 1609.339999;
     }
+
     return dist.toFixed(0);
   }
 }

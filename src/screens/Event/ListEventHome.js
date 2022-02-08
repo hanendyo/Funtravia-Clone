@@ -114,7 +114,7 @@ export default function ListEventHome(props) {
       deviceId == "LYA-L29"
         ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
         : NotchAndro
-        ? normalize(217) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(228) + tambahanJudul + tambahan - StatusBar.currentHeight
         : normalize(205) + tambahanJudul + tambahan - StatusBar.currentHeight,
   });
 
