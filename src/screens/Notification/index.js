@@ -71,7 +71,7 @@ export default function Notification(props) {
       return (
         <Invitation
           navigation={props.navigation}
-          token={token}
+          token={tokenApps}
           readall={readall}
           setreadall={(e) => setreadall(e)}
         />

@@ -30,9 +30,11 @@ import { useQuery } from "@apollo/react-hooks";
 import { useSelector } from "react-redux";
 
 export default function Invitation({ navigation, token, readall, setreadall }) {
+  console.log("~ readall", readall);
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const tokenApps = useSelector((data) => data.token);
+  console.log("~ tokenApps", tokenApps);
   let [datanotif, SetDataNotif] = useState([]);
   let [dataNotifFailed, setDataNotifFailed] = useState([]);
 
@@ -55,7 +57,8 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: tokenApps,
+        Authorization: token,
+        // Authorization: tokenApps,
       },
     },
     onCompleted: (datasnotif) => {
@@ -75,6 +78,9 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       }
     },
   });
+
+  console.log("errornotif", errornotif);
+  console.log("datasnotif", datasnotif);
 
   const [mutationAllIsRead] = useMutation(IsReadAll, {
     context: {
@@ -256,6 +262,8 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
   };
 
   const accept = async (data) => {
+    console.log("~ data", data);
+    console.log("accept");
     try {
       updateisread(data.ids);
       var dt = new Date();
@@ -289,16 +297,19 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       tempDataIndex.node = tempDataNode;
       tempDataNotif.splice(index, 1, tempDataIndex);
       SetDataNotif(tempDataNotif);
+      console.log("cariables", data.itinerary_buddy.id);
       let response = await mutationAcceptInvitation({
         variables: {
           buddy_id: data.itinerary_buddy.id,
         },
       });
+      console.log("~ response", response);
 
       if (response.data.confrim_buddy.code != 200) {
         throw new Error(response.data.confrim_buddy.message);
       }
     } catch (error) {
+      console.log("~ error", error);
       let tempDataNotif = [...datanotif];
       let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
       let tempDataIndex = { ...tempDataNotif[index] };
@@ -429,6 +440,15 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
 
   useEffect(() => {
     loadAsync();
+    let tempDataRead = [];
+    let tempdata = [...datanotif];
+    for (var i of tempdata) {
+      tempDataRead.push(i.node.isread == false);
+    }
+    if (tempDataRead.length == 0) {
+      setreadall(false);
+    }
+    console.log("tempDataRead", tempDataRead.length);
     const unsubscribe = navigation.addListener("blur", () => {
       refetchnotif();
     });
@@ -504,7 +524,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
                 navigation.push("ProfileStack", {
                   screen: "otherprofile",
                   params: {
-                    idUser: item?.itinerary_buddy.userinvite?.id,
+                    idUser: item?.itinerary_buddy?.userinvite?.id,
                   },
                 });
               }}
@@ -520,8 +540,8 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
                 source={
                   item &&
                   item.itinerary_buddy &&
-                  item.itinerary_buddy.userinvite &&
-                  item.itinerary_buddy.userinvite.picture
+                  item?.itinerary_buddy?.userinvite &&
+                  item?.itinerary_buddy?.userinvite?.picture
                     ? {
                         uri: item?.itinerary_buddy?.userinvite?.picture,
                       }
@@ -569,7 +589,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
                     marginRight: 5,
                   }}
                 >
-                  {item.itinerary_buddy.userinvite.first_name}{" "}
+                  {item?.itinerary_buddy?.userinvite?.first_name}{" "}
                   {t("inviteToTrip")}
                 </Text>
                 <Text
