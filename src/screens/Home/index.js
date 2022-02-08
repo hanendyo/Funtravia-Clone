@@ -145,8 +145,10 @@ export default function Home(props) {
   }, [props.navigation]);
 
   const loadNavigate = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    dispatch(setTokenApps(`Bearer ${tkn}`));
     let dataNotif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
-    console.log("~ dataNotif", dataNotif);
+    console.log("~ dataNotif home", dataNotif);
     if (dataNotif) {
       switch (dataNotif.data.name) {
         case "feed":
@@ -160,8 +162,20 @@ export default function Home(props) {
           AsyncStorage.setItem("dataNotification", "");
           break;
         case "notification":
-          props.navigation.navigate("Notification", {
-            token: tokenApps,
+          if (tkn) {
+            props.navigation.navigate("Notification", {
+              token: tkn,
+            });
+            await AsyncStorage.setItem("dataNotification", "");
+          }
+          break;
+        case "profile":
+          props.navigation.navigate("ProfileStack", {
+            screen: "otherprofile",
+            params: {
+              token: tokenApps,
+              idUser: dataNotif.data.name_id,
+            },
           });
           AsyncStorage.setItem("dataNotification", "");
           break;
