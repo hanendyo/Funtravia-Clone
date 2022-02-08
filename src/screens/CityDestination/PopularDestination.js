@@ -674,6 +674,7 @@ export default function AllDestination(props) {
         onBackdropPress={() => {
           setShow(false);
         }}
+        avoidKeyboard={true}
         onRequestClose={() => setShow(false)}
         onDismiss={() => setShow(false)}
         style={{
@@ -684,7 +685,7 @@ export default function AllDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height: Dimensions.get("screen").height * 0.49,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopWidth: 1,

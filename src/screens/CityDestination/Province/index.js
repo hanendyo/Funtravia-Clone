@@ -862,6 +862,7 @@ export default function ProvinceDetail(props) {
                             props.navigation.push("DestinationList", {
                               groupid: item.id,
                               idprovince: render.id,
+                              idCountry: render.countries.id,
                               token: token,
                             });
                           }}

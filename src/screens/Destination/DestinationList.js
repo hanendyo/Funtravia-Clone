@@ -31,11 +31,11 @@ import Searching from "../../graphQL/Query/Itinerary/SearchDestination";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import deviceInfoModule from "react-native-device-info";
+import CityCursorBased from "../../graphQL/Query/Itinerary/CityCursorBased";
 
 const deviceId = DeviceInfo.getModel();
 
 export default function ItineraryDestination(props) {
-  console.log("props", props);
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
@@ -83,16 +83,20 @@ export default function ItineraryDestination(props) {
   };
 
   let [show, setshow] = useState(false);
-
+  let [hasApply, setHasApply] = useState(1);
   let [token, setToken] = useState(props.route.params.token);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
+  let [tempDataCategory, setTempDataCategory] = useState([]);
   let [dataFilterFacility, setdataFilterFacility] = useState([]);
   let [dataFilterFacilitys, setdataFilterFacilitys] = useState([]);
-  let [dataFilterCountry, setdataFilterCountry] = useState([]);
-  let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
+  let [tempDataFacility, setTempDataFacility] = useState([]);
+  // let [dataFilterCountry, setdataFilterCountry] = useState([]);
+  // let [dataFilterCountrys, setdataFilterCountrys] = useState([]);
+  // let [tempDataCountry, setTempDataCountry] = useState([]);
   let [dataFilterCity, setdataFilterCity] = useState([]);
   let [dataFilterCitys, setdataFilterCitys] = useState([]);
+  let [tempDataCity, setTempDataCity] = useState([]);
   let [dataDes, setdataDes] = useState([]);
   const Notch = deviceInfoModule.hasNotch();
 
@@ -124,7 +128,6 @@ export default function ItineraryDestination(props) {
     facilities: [],
   });
 
-  console.log("search :", search);
   let [keyword, setkeyword] = useState("");
   let [searcountry, setsearcountry] = useState(null);
 
@@ -152,10 +155,13 @@ export default function ItineraryDestination(props) {
 
       await setdataFilterCategori(datloop);
       await setdataFilterCategoris(datloop);
+      await setTempDataCategory(datloop);
       await setdataFilterFacility(datafilter?.destination_filter?.facility);
       await setdataFilterFacilitys(datafilter?.destination_filter?.facility);
-      await setdataFilterCountry(datafilter?.destination_filter?.country);
-      await setdataFilterCountrys(datafilter?.destination_filter?.country);
+      await setTempDataFacility(datafilter?.destination_filter?.facility);
+      // await setdataFilterCountry(datafilter?.destination_filter?.country);
+      // await setdataFilterCountrys(datafilter?.destination_filter?.country);
+      // await setTempDataCountry(datafilter?.destination_filter?.country);
 
       let dtat = datloop.filter((item) => item.sugestion === true);
 
@@ -192,32 +198,94 @@ export default function ItineraryDestination(props) {
     },
   });
 
+  // const {
+  //   data: datasearchlocation,
+  //   loading: loadingsearchlocation,
+  //   error: errorsearchlocation,
+  //   refetch: refetchLocation,
+  // } = useQuery(Searching, {
+  //   variables: {
+  //     keyword: keyword,
+  //     cities_id: props?.route?.params?.idcity
+  //       ? props?.route?.params?.idcity
+  //       : null,
+  //     province_id: props?.route?.params?.idprovince
+  //       ? props?.route?.params?.idprovince
+  //       : null,
+  //     countries_id: searcountry ? searcountry : null,
+  //   },
+  //   onCompleted: async () => {
+  //     let datloop = [...datasearchlocation?.searchlocation_populer];
+  //     let hasil = [...filtershowcity];
+  //     let wle = [];
+
+  //     for (var ix in datloop) {
+  //       if (
+  //         datloop[ix].id === props?.route?.params?.idcity ||
+  //         datloop[ix].id === props?.route?.params?.idcountries ||
+  //         datloop[ix].id === props?.route?.params?.idprovince
+  //       ) {
+  //         let dat = { ...datloop[ix] };
+  //         dat.checked = true;
+  //         await datloop.splice(ix, 1, dat);
+  //         await wle.push(dat);
+  //       }
+  //     }
+  //     hasil = hasil.concat(wle);
+
+  //     await setfiltershowcity(hasil);
+
+  //     await setdataFilterCity(datloop);
+  //     await setdataFilterCitys(datloop);
+  //     await setTempDataCity(datloop);
+  //     // await UpdateFilter();
+  //   },
+  // });
   const {
     data: datasearchlocation,
     loading: loadingsearchlocation,
     error: errorsearchlocation,
     refetch: refetchLocation,
-  } = useQuery(Searching, {
+  } = useQuery(CityCursorBased, {
+    // variables: {
+    //   keyword: keyword,
+    //   cities_id: props?.route?.params?.idcity
+    //     ? props?.route?.params?.idcity
+    //     : null,
+    //   province_id: props?.route?.params?.idprovince
+    //     ? props?.route?.params?.idprovince
+    //     : null,
+    //   countries_id: searcountry ? searcountry : null,
+    // },
     variables: {
-      keyword: keyword,
-      cities_id: props?.route?.params?.idcity
-        ? props?.route?.params?.idcity
-        : null,
-      province_id: props?.route?.params?.idprovince
-        ? props?.route?.params?.idprovince
-        : null,
-      countries_id: searcountry ? searcountry : null,
+      keyword: search.keyword ? search.keyword : null,
+      countries_id: props?.route?.params?.idCountry,
+      first: 520,
+      after: "",
     },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
+    // pollInterval: 5500,
+    notifyOnNetworkStatusChange: true,
     onCompleted: async () => {
-      let datloop = [...datasearchlocation?.searchlocation_populer];
+      let datloop = [...datasearchlocation?.city_search_cursor_based.edges];
       let hasil = [...filtershowcity];
       let wle = [];
 
       for (var ix in datloop) {
         if (
-          datloop[ix].id === props?.route?.params?.idcity ||
-          datloop[ix].id === props?.route?.params?.idcountries ||
-          datloop[ix].id === props?.route?.params?.idprovince
+          datloop[ix].node.id === props?.route?.params?.idcity
+          // ||
+          // datloop[ix].id === props?.route?.params?.idcountries ||
+          // datloop[ix].id === props?.route?.params?.idprovince
         ) {
           let dat = { ...datloop[ix] };
           dat.checked = true;
@@ -231,7 +299,7 @@ export default function ItineraryDestination(props) {
 
       await setdataFilterCity(datloop);
       await setdataFilterCitys(datloop);
-
+      await setTempDataCity(datloop);
       // await UpdateFilter();
     },
   });
@@ -289,6 +357,43 @@ export default function ItineraryDestination(props) {
       },
     },
   });
+
+  const [filterResults, setfilterResults] = useState(null);
+  // const [tempTotal, setTempTotal] = useState([]);
+
+  // Count data filter checked//
+  const cekData = async (data) => {
+    let dat = dataFilterCategori.filter((k) => k.checked === true);
+    let datF = dataFilterFacility.filter((k) => k.checked === true);
+    let datL = dataFilterCity.filter((k) => k.checked === true);
+    // let datC = dataFilterCountry.filter((k) => k.checked === true);
+
+    if (hasApply == 1) {
+      let countallFil = dat.length + datF.length + datL.length;
+      setfilterResults(countallFil);
+      setTimeout(() => {
+        setHasApply(0);
+      }, 1000);
+    } else if (hasApply == 2) {
+      let countallFil = dat.length + datF.length + datL.length;
+      setfilterResults(countallFil);
+      await setHasApply(0);
+    } else if (hasApply == 3) {
+      let countallFil = dat.length + datF.length + datL.length;
+      setfilterResults(countallFil);
+      await setHasApply(0);
+    }
+    // + datC.length;
+  };
+
+  useEffect(() => {
+    cekData();
+  }, [
+    dataFilterCategori,
+    dataFilterFacility,
+    dataFilterCity,
+    // dataFilterCountry,
+  ]);
 
   const _liked = async (id) => {
     if (token && token !== "" && token !== null) {
@@ -371,6 +476,35 @@ export default function ItineraryDestination(props) {
     }
   };
 
+  // close modal tanpa apply
+  useEffect(() => {
+    if (!show && dataFilterCategoris.length != 0) {
+      setdataFilterCategori(tempDataCategory);
+      setdataFilterCategoris(tempDataCategory);
+    }
+    searchCategory("");
+    setSearchTextCategory("");
+
+    if (!show && dataFilterFacilitys.length != 0) {
+      setdataFilterFacility(tempDataFacility);
+      setdataFilterFacilitys(tempDataFacility);
+    }
+    searchFacility("");
+    setSearchTextFacility("");
+
+    if (!show && dataFilterCitys.length != 0) {
+      setdataFilterCity(tempDataCity);
+      setdataFilterCitys(tempDataCity);
+    }
+    searchLocation("");
+    setSearchTextLocation("");
+
+    // if (!show && dataFilterCountrys.length != 0) {
+    //   setdataFilterCountry(tempDataCountry);
+    //   setdataFilterCountrys(tempDataCountry);
+    // }
+  }, [show]);
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -382,69 +516,103 @@ export default function ItineraryDestination(props) {
   }, [props.navigation]);
 
   const [searchText, setSearchText] = useState("");
-  const [searchTextModal, setSearchTextModal] = useState("");
+  const [searchTextCategory, setSearchTextCategory] = useState("");
+  const [searchTextFacility, setSearchTextFacility] = useState("");
+  const [searchTextLocation, setSearchTextLocation] = useState("");
 
-  const searchs = async (teks) => {
+  const searchCategory = async (teks) => {
     setkeyword(teks);
     let searching = new RegExp(teks, "i");
+    if (searching != `/(?:)/i`) {
+      let categori = dataFilterCategori.filter((item) =>
+        searching.test(item.name)
+      );
+      await setdataFilterCategoris(categori);
+    } else {
+      await setdataFilterCategoris(dataFilterCategori);
+    }
+  };
 
-    let Categori = dataFilterCategori.filter((item) =>
-      searching.test(item.name)
-    );
-    setdataFilterCategoris(Categori);
+  const searchFacility = async (teks) => {
+    setkeyword(teks);
+    let searching = new RegExp(teks, "i");
+    if (searching != `/(?:)/i`) {
+      let facility = dataFilterFacility.filter((item) =>
+        searching.test(item.name)
+      );
+      setdataFilterFacilitys(facility);
+    } else {
+      setdataFilterFacilitys(dataFilterFacility);
+    }
+  };
 
-    let Facility = dataFilterFacility.filter((item) =>
-      searching.test(item.name)
-    );
-    setdataFilterFacilitys(Facility);
+  const searchLocation = async (teks) => {
+    setkeyword(teks);
+    let searching = new RegExp(teks, "i");
+    if (searching != `/(?:)/i`) {
+      let cities = dataFilterCity.filter((item) =>
+        searching.test(item.node.name)
+      );
+      await setdataFilterCitys(cities);
+    } else {
+      await setdataFilterCitys(dataFilterCity);
+    }
 
-    let countries = dataFilterCountry.filter((item) =>
-      searching.test(item.name)
-    );
-    setdataFilterCountrys(countries);
+    // let countries = dataFilterCountry.filter((item) =>
+    //   searching.test(item.name)
+    // );
+    // setdataFilterCountrys(countries);
   };
 
   const _handleCheck = async (id, index, item) => {
-    let tempe = [...dataFilterCategori];
+    let tempCategori = [...dataFilterCategori];
+    let tempCategoris = [...dataFilterCategoris];
     let items = { ...item };
     items.checked = !items.checked;
-    let inde = tempe.findIndex((key) => key.id === id);
-    tempe.splice(inde, 1, items);
-    await setdataFilterCategori(tempe);
-    await setdataFilterCategoris(tempe);
+    let indexCategori = tempCategori.findIndex((key) => key.id === id);
+    let indexCategoris = tempCategoris.findIndex((key) => key.id === id);
+    tempCategori.splice(indexCategori, 1, items);
+    tempCategoris.splice(indexCategoris, 1, items);
+    await setdataFilterCategori(tempCategori);
+    await setdataFilterCategoris(tempCategoris);
   };
 
   const _handleCheckf = async (id, index, item) => {
-    let tempe = [...dataFilterFacility];
+    let tempFacility = [...dataFilterFacility];
+    let tempFacilitys = [...dataFilterFacilitys];
     let items = { ...item };
     items.checked = !items.checked;
-    let inde = tempe.findIndex((key) => key.id === id);
-    tempe.splice(inde, 1, items);
-    await setdataFilterFacility(tempe);
-    await setdataFilterFacilitys(tempe);
+    let indexFacility = tempFacility.findIndex((key) => key.id === id);
+    let indexFacilitys = tempFacilitys.findIndex((key) => key.id === id);
+    tempFacility.splice(indexFacility, 1, items);
+    tempFacilitys.splice(indexFacilitys, 1, items);
+    await setdataFilterFacility(tempFacility);
+    await setdataFilterFacilitys(tempFacilitys);
   };
 
-  const _handleCheckC = async (id, index, item) => {
-    let tempe = [...datafilter?.destination_filter?.country];
-    let items = { ...item };
-    items.checked = true;
+  // const _handleCheckC = async (id, index, item) => {
+  //   let tempe = [...datafilter?.destination_filter?.country];
+  //   let items = { ...item };
+  //   items.checked = true;
 
-    let inde = tempe.findIndex((key) => key.id === id);
-    tempe.splice(inde, 1, items);
-    setsearcountry(items.id);
-    await setdataFilterCountry(tempe);
-    await setdataFilterCountrys(tempe);
-  };
+  //   let inde = tempe.findIndex((key) => key.id === id);
+  //   tempe.splice(inde, 1, items);
+  //   setsearcountry(items.id);
+  //   await setdataFilterCountry(tempe);
+  //   await setdataFilterCountrys(tempe);
+  // };
 
   const _handleCheckCity = async (id, index, item) => {
-    let tempe = [...dataFilterCity];
-
+    let tempCitys = [...dataFilterCitys];
+    let tempCity = [...dataFilterCity];
     let items = { ...item };
     items.checked = !items.checked;
-    let inde = tempe.findIndex((key) => key.id === id);
-    tempe.splice(inde, 1, items);
-    await setdataFilterCity(tempe);
-    await setdataFilterCitys(tempe);
+    let indexCitys = tempCitys.findIndex((key) => key.node.id === id);
+    let indexCity = tempCity.findIndex((key) => key.node.id === id);
+    tempCity.splice(indexCity, 1, items);
+    tempCitys.splice(indexCitys, 1, items);
+    setdataFilterCity(tempCity);
+    setdataFilterCitys(tempCitys);
   };
 
   const UpdateFilter = async () => {
@@ -452,9 +620,13 @@ export default function ItineraryDestination(props) {
     let filterz = [];
     let filterd = [];
     let Categori = [];
+    let tempCategory = [];
     let fasilitas = [];
+    let tempFasilitas = [];
     let Countryss = [];
+    let tempCountry = [];
     let cityss = [];
+    let tempCity = [];
     let province = [];
 
     for (var x of dataFilterCategori) {
@@ -463,38 +635,53 @@ export default function ItineraryDestination(props) {
         filterz.push(x);
       }
     }
+    for (var x of dataFilterCategori) {
+      tempCategory.push(x);
+    }
+
     for (var y of dataFilterFacility) {
       if (y.checked === true) {
         fasilitas.push(y.id);
         filterz.push(y);
       }
     }
-
-    for (var c of dataFilterCity) {
-      if (c.checked === true && c.type == "Country") {
-        Countryss.push(c.id);
-        filterz.push(c);
-      }
+    for (var y of dataFilterFacility) {
+      tempFasilitas.push(y);
     }
 
+    // for (var c of dataFilterCity) {
+    //   if (c.checked === true && c.type == "Country") {
+    //     Countryss.push(c.id);
+    //     filterz.push(c);
+    //   }
+    // }
+
+    // for (var c of dataFilterCity) {
+    //   tempCountry.push(c);
+    // }
+
     for (var ci of dataFilterCity) {
-      if (ci.checked === true && ci.type == "City") {
-        cityss.push(ci.id);
+      if (ci.checked === true && ci.__typename == "CitiesEdge") {
+        cityss.push(ci.node.id);
         filterz.push(ci);
       }
     }
 
+    for (var ci of dataFilterCity) {
+      tempCity.push(ci);
+    }
+
     // filterd = await filterd.concat(Countryss);
     // let cityss = dataFilterCity.filter(
-    //   (fasc) => fasc.type === "City" && fasc.checked === true
+    //   (fasc) => fasc.type === "location" && fasc.checked === true
     // );
 
-    for (var pr of dataFilterCity) {
-      if (pr.checked === true && pr.type == "Province") {
-        province.push(pr.id);
-        filterz.push(pr);
-      }
-    }
+    // for (var pr of dataFilterCity) {
+    //   if (pr.checked === true && pr.type == "Province") {
+    //     province.push(pr.id);
+    //     filterz.push(pr);
+    //   }
+    // }
 
     // filterd = await filterd.concat(cityss);
     // let province = dataFilterCity.filter(
@@ -509,8 +696,12 @@ export default function ItineraryDestination(props) {
     data["cities"] = await cityss;
     data["provinces"] = await province;
 
+    await setTempDataCategory(tempCategory);
+    await setTempDataFacility(tempFasilitas);
+    // await setTempDataCountry(tempCountry);
+    await setTempDataCity(tempCity);
     await setfiltershow(filterz);
-    await setfiltershowcity(filterd);
+    await setfiltershowcity(filterz);
     await cekData();
     await setSearch(data);
     await setshow(false);
@@ -531,12 +722,25 @@ export default function ItineraryDestination(props) {
     });
     setdataFilterCategori(datafilter?.destination_filter?.type);
     setdataFilterCategoris(datafilter?.destination_filter?.type);
+    setTempDataCategory(datafilter?.destination_filter?.type);
     setdataFilterFacility(datafilter?.destination_filter?.facility);
     setdataFilterFacilitys(datafilter?.destination_filter?.facility);
-    setdataFilterCountry(datafilter?.destination_filter?.country);
-    setdataFilterCountrys(datafilter?.destination_filter?.country);
-    setdataFilterCity(datasearchlocation?.searchlocation_populer);
-    setdataFilterCitys(datasearchlocation?.searchlocation_populer);
+    setTempDataFacility(datafilter?.destination_filter?.facility);
+    //  setdataFilterCountry(datafilter?.destination_filter?.country);
+    //  setdataFilterCountrys(datafilter?.destination_filter?.country);
+    //  setTempDataCountry(datafilter?.destination_filter?.country);
+
+    let tempe = [...dataFilterCity];
+    let tempes = [];
+    for (var x of tempe) {
+      let data = { ...x };
+      data.checked = false;
+      tempes.push(data);
+    }
+
+    setdataFilterCity(tempes);
+    setdataFilterCitys(tempes);
+    setTempDataCity(tempes);
 
     let hasil = [];
 
@@ -562,156 +766,135 @@ export default function ItineraryDestination(props) {
     await setSearch(data);
   };
 
-  const _renderFilter = ({ item, index }) => {
-    if (item.checked == true) {
-      return (
-        <Button
-          type="box"
-          size="small"
-          color="primary"
-          text={Capital({ text: item.name })}
-          onPress={() => onSelectFilter(item.checked, item.id, item)}
-          style={{
-            marginRight: 3,
-            flexDirection: "row",
-          }}
-        ></Button>
-      );
-    } else if (item.sugestion == true || item.show == true) {
-      return (
-        <Button
-          type="box"
-          size="small"
-          color="primary"
-          variant="bordered"
-          text={Capital({ text: item.name })}
-          onPress={() => onSelectFilter(item.checked, item.id, item)}
-          style={{
-            marginRight: 3,
-            flexDirection: "row",
-          }}
-        ></Button>
-      );
-    }
-  };
+  // const _renderFilter = ({ item, index }) => {
+  //   if (item.checked == true) {
+  //     return (
+  //       <Button
+  //         type="box"
+  //         size="small"
+  //         color="primary"
+  //         text={Capital({ text: item.name })}
+  //         onPress={() => onSelectFilter(item.checked, item.id, item)}
+  //         style={{
+  //           marginRight: 3,
+  //           flexDirection: "row",
+  //         }}
+  //       ></Button>
+  //     );
+  //   } else if (item.sugestion == true || item.show == true) {
+  //     return (
+  //       <Button
+  //         type="box"
+  //         size="small"
+  //         color="primary"
+  //         variant="bordered"
+  //         text={Capital({ text: item.name })}
+  //         onPress={() => onSelectFilter(item.checked, item.id, item)}
+  //         style={{
+  //           marginRight: 3,
+  //           flexDirection: "row",
+  //         }}
+  //       ></Button>
+  //     );
+  //   }
+  // };
 
-  const [filterResults, setfilterResults] = useState(null);
-  // Count data filter checked//
-  const cekData = (data) => {
-    let dat = dataFilterCategori.filter((k) => k.checked === true);
-    let datF = dataFilterFacility.filter((k) => k.checked === true);
-    let datL = dataFilterCity.filter((k) => k.checked === true);
-    let datC = dataFilterCountry.filter((k) => k.checked === true);
+  // const onSelectFilter = async (ceked, id, item) => {
+  //   // let dat = filtershow.concat(filtershowcity);
+  //   let showq = [...filtershow];
+  //   let showc = [...filtershowcity];
+  //   let items = { ...item };
+  //   items["checked"] = !ceked;
 
-    let countallFil = dat.length + datF.length + datL.length + datC.length;
-    setfilterResults(countallFil);
-  };
+  //   if (item.__typename === "SearchLocation") {
+  //     let indek = showc.findIndex((key) => key.id === id);
+  //     if (indek !== -1) {
+  //       await showc.splice(indek, 1, items);
+  //       await setfiltershowcity(showc);
+  //     }
+  //   } else {
+  //     let inde = showq.findIndex((key) => key.id === id);
+  //     if (inde !== -1) {
+  //       await showq.splice(inde, 1, items);
+  //       await setfiltershow(showq);
+  //     }
+  //   }
 
-  useEffect(() => {
-    cekData();
-  }, [
-    dataFilterCategori,
-    dataFilterFacility,
-    dataFilterCity,
-    dataFilterCountry,
-  ]);
+  //   let sear = { ...search };
 
-  const onSelectFilter = async (ceked, id, item) => {
-    // let dat = filtershow.concat(filtershowcity);
-    let showq = [...filtershow];
-    let showc = [...filtershowcity];
-    let items = { ...item };
-    items["checked"] = !ceked;
+  //   if (ceked === true) {
+  //     if (item.__typename === "DestinationTypeResponse") {
+  //       let indexs = sear.type.findIndex((key) => key === id);
+  //       await sear.type.splice(indexs, 1);
 
-    if (item.__typename === "SearchLocation") {
-      let indek = showc.findIndex((key) => key.id === id);
-      if (indek !== -1) {
-        await showc.splice(indek, 1, items);
-        await setfiltershowcity(showc);
-      }
-    } else {
-      let inde = showq.findIndex((key) => key.id === id);
-      if (inde !== -1) {
-        await showq.splice(inde, 1, items);
-        await setfiltershow(showq);
-      }
-    }
+  //       let tempe = [...dataFilterCategori];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterCategori(tempe);
+  //       await setdataFilterCategoris(tempe);
+  //     } else if (item.__typename === "DestinationFacilityResponse") {
+  //       let indexs = sear.facilities.findIndex((key) => key === id);
+  //       await sear.facilities.splice(indexs, 1);
 
-    let sear = { ...search };
+  //       let tempe = [...dataFilterFacility];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterFacility(tempe);
+  //       await setdataFilterFacilitys(tempe);
+  //     } else if (item.__typename === "SearchLocation") {
+  //       let indexs = sear.cities.findIndex((key) => key === id);
 
-    if (ceked === true) {
-      if (item.__typename === "DestinationTypeResponse") {
-        let indexs = sear.type.findIndex((key) => key === id);
-        await sear.type.splice(indexs, 1);
+  //       if (item.type === "Country") {
+  //         await sear.countries.splice(indexs, 1);
+  //       } else if (item.type === "Province") {
+  //         await sear.provinces.splice(indexs, 1);
+  //       } else if (item.type === "location") {
+  //         await sear.cities.splice(indexs, 1);
+  //       }
 
-        let tempe = [...dataFilterCategori];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterCategori(tempe);
-        await setdataFilterCategoris(tempe);
-      } else if (item.__typename === "DestinationFacilityResponse") {
-        let indexs = sear.facilities.findIndex((key) => key === id);
-        await sear.facilities.splice(indexs, 1);
+  //       let tempe = [...dataFilterCity];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterCity(tempe);
+  //       await setdataFilterCitys(tempe);
+  //     }
+  //   } else {
+  //     if (item.__typename === "DestinationTypeResponse") {
+  //       await sear.type.push(id);
 
-        let tempe = [...dataFilterFacility];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterFacility(tempe);
-        await setdataFilterFacilitys(tempe);
-      } else if (item.__typename === "SearchLocation") {
-        let indexs = sear.cities.findIndex((key) => key === id);
+  //       let tempe = [...dataFilterCategori];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterCategori(tempe);
+  //       await setdataFilterCategoris(tempe);
+  //     } else if (item.__typename === "DestinationFacilityResponse") {
+  //       await sear.facilities.push(id);
 
-        if (item.type === "Country") {
-          await sear.countries.splice(indexs, 1);
-        } else if (item.type === "Province") {
-          await sear.provinces.splice(indexs, 1);
-        } else if (item.type === "City") {
-          await sear.cities.splice(indexs, 1);
-        }
+  //       let tempe = [...dataFilterFacility];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterFacility(tempe);
+  //       await setdataFilterFacilitys(tempe);
+  //     } else if (item.__typename === "SearchLocation") {
+  //       if (item.type === "Country") {
+  //         await sear.countries.push(id);
+  //       } else if (item.type === "Province") {
+  //         await sear.provinces.push(id);
+  //       } else if (item.type === "location") {
+  //         await sear.cities.push(id);
+  //       }
 
-        let tempe = [...dataFilterCity];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterCity(tempe);
-        await setdataFilterCitys(tempe);
-      }
-    } else {
-      if (item.__typename === "DestinationTypeResponse") {
-        await sear.type.push(id);
+  //       let tempe = [...dataFilterCity];
+  //       let inde = tempe.findIndex((key) => key.id === id);
+  //       tempe.splice(inde, 1, items);
+  //       await setdataFilterCity(tempe);
+  //       await setdataFilterCitys(tempe);
+  //     }
+  //   }
 
-        let tempe = [...dataFilterCategori];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterCategori(tempe);
-        await setdataFilterCategoris(tempe);
-      } else if (item.__typename === "DestinationFacilityResponse") {
-        await sear.facilities.push(id);
-
-        let tempe = [...dataFilterFacility];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterFacility(tempe);
-        await setdataFilterFacilitys(tempe);
-      } else if (item.__typename === "SearchLocation") {
-        if (item.type === "Country") {
-          await sear.countries.push(id);
-        } else if (item.type === "Province") {
-          await sear.provinces.push(id);
-        } else if (item.type === "City") {
-          await sear.cities.push(id);
-        }
-
-        let tempe = [...dataFilterCity];
-        let inde = tempe.findIndex((key) => key.id === id);
-        tempe.splice(inde, 1, items);
-        await setdataFilterCity(tempe);
-        await setdataFilterCitys(tempe);
-      }
-    }
-
-    await setSearch(sear);
-    await GetListDestination();
-  };
+  //   await setSearch(sear);
+  //   await GetListDestination();
+  // };
 
   return (
     <View
@@ -1018,7 +1201,7 @@ export default function ItineraryDestination(props) {
 
               <Pressable
                 onPress={() => {
-                  setaktif("City");
+                  setaktif("location");
                 }}
                 style={{
                   backgroundColor: "#f6f6f6",
@@ -1027,13 +1210,14 @@ export default function ItineraryDestination(props) {
               >
                 <View
                   style={{
-                    borderLeftColor: aktif === "City" ? "#209fae" : "#f6f6f6",
-                    borderLeftWidth: aktif === "City" ? 5 : 0,
-                    marginLeft: aktif === "City" ? 5 : 10,
+                    borderLeftColor:
+                      aktif === "location" ? "#209fae" : "#f6f6f6",
+                    borderLeftWidth: aktif === "location" ? 5 : 0,
+                    marginLeft: aktif === "location" ? 5 : 10,
                     justifyContent: "center",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
-                    backgroundColor: aktif === "City" ? "#ffff" : "#f6f6f6",
+                    backgroundColor: aktif === "location" ? "#ffff" : "#f6f6f6",
                   }}
                 >
                   <Text
@@ -1050,7 +1234,7 @@ export default function ItineraryDestination(props) {
             </View>
             {/* kanan................................................................ */}
             <View style={{ flex: 1 }}>
-              <View
+              {/* <View
                 style={{
                   padding: 15,
                 }}
@@ -1081,21 +1265,70 @@ export default function ItineraryDestination(props) {
                       padding: 0,
                     }}
                     // returnKeyType="search"
-                    value={searchTextModal}
+                    value={
+                      aktif == "categories"
+                        ? searchTextCategory
+                        : aktif == "fasilities"
+                        ? searchTextFacility
+                        : aktif == "location"
+                        ? searchTextLocation
+                        : null
+                    }
                     placeholderTextColor="#464646"
                     onChangeText={(x) => {
-                      searchs(x);
-                      setSearchTextModal(x);
+                      aktif == "categories"
+                        ? searchCategory(x)
+                        : aktif == "fasilities"
+                        ? searchFacility(x)
+                        : aktif == "location"
+                        ? searchLocation(x)
+                        : null;
+
+                      aktif == "categories"
+                        ? setSearchTextCategory(x)
+                        : aktif == "fasilities"
+                        ? setSearchTextFacility(x)
+                        : aktif == "location"
+                        ? setSearchTextLocation(x)
+                        : null;
                     }}
                     onSubmitEditing={(x) => {
-                      searchs(x), setSearchTextModal(x);
+                      aktif == "categories"
+                        ? searchCategory(x)
+                        : aktif == "fasilities"
+                        ? searchFacility(x)
+                        : aktif == "location"
+                        ? searchLocation(x)
+                        : null;
+
+                      aktif == "categories"
+                        ? setSearchTextCategory(x)
+                        : aktif == "fasilities"
+                        ? setSearchTextFacility(x)
+                        : aktif == "location"
+                        ? setSearchTextLocation(x)
+                        : null;
                     }}
                   />
 
-                  {searchTextModal.length ? (
+                  {searchTextLocation.length ? (
                     <TouchableOpacity
                       onPress={() => {
-                        searchs(""), setSearchTextModal("");
+                        aktif == "categories"
+                          ? searchCategory("")
+                          : aktif == "fasilities"
+                          ? searchFacility("")
+                          : aktif == "location"
+                          ? searchLocation("")
+                          : null;
+
+                        aktif == "categories"
+                          ? setSearchTextCategory("")
+                          : aktif == "fasilities"
+                          ? setSearchTextFacility("")
+                          : aktif == "location"
+                          ? setSearchTextLocation("")
+                          : null;
                       }}
                     >
                       <Xblue
@@ -1108,291 +1341,510 @@ export default function ItineraryDestination(props) {
                     </TouchableOpacity>
                   ) : null}
                 </View>
-              </View>
+              </View> */}
 
-              {aktif === "categories" && !dataFilterCategoris.length ? (
+              {/* : aktif === "facilities" && !dataFilterFacilitys.length ? (
                 <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
-              ) : aktif === "facilities" && !dataFilterFacilitys.length ? (
+              ) : // : aktif === "country" && !dataFilterCountrys.length ? (
+              //   <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
+              // )
+              aktif === "location" && !dataFilterCitys.length ? (
                 <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
-              ) : aktif === "country" && !dataFilterCountrys.length ? (
-                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
-              ) : aktif === "city" && !dataFilterCitys.length ? (
-                <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
-              ) : null}
+              ) : null} */}
 
               {aktif === "categories" ? (
-                <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  {dataFilterCategoris.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => _handleCheck(item["id"], index, item)}
+                <>
+                  <View
+                    style={{
+                      padding: 15,
+                    }}
+                  >
+                    <View
                       style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
+                        height: 35,
+                        width: "100%",
+                        backgroundColor: "#f6f6f6",
+                        borderRadius: 2,
                         alignItems: "center",
+                        flexDirection: "row",
+                        paddingHorizontal: 10,
+                        borderWidth: 1,
+                        borderColor: "#e8e8e8",
                       }}
                     >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        animationDuration={0}
-                        lineWidth={1}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35,
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                          }),
-                        }}
-                        onValueChange={() =>
-                          Platform.OS == "ios"
-                            ? null
-                            : _handleCheck(item["id"], index, item)
-                        }
-                        value={item["checked"]}
+                      <Search
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 5 }}
                       />
 
-                      <Text
-                        size="label"
-                        type="regular"
+                      <TextInput
+                        underlineColorAndroid="transparent"
+                        placeholder={t("search")}
+                        autoCorrect={false}
+                        Text={keyword}
                         style={{
-                          marginLeft: 0,
-                          color: "#464646",
-                          // borderWidth: 5,
+                          width: "80%",
+                          // borderWidth: 1,
+                          marginLeft: 5,
+                          padding: 0,
+                        }}
+                        // returnKeyType="search"
+                        value={searchTextCategory}
+                        placeholderTextColor="#464646"
+                        onChangeText={(x) => {
+                          searchCategory(x);
+                          setSearchTextCategory(x);
+                        }}
+                        onSubmitEditing={(x) => {
+                          searchCategory(x);
+                          setSearchTextCategory(x);
+                        }}
+                      />
+                      {searchTextCategory.length ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            searchCategory("");
+                            setSearchTextCategory("");
+                          }}
+                        >
+                          <Xblue
+                            width="20"
+                            height="20"
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                  </View>
+                  <ScrollView
+                    // style={{ borderWidth: 1, height: 100 }}
+                    nestedScrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    {dataFilterCategoris.map((item, index) => (
+                      <TouchableOpacity
+                        key={index + `bruh`}
+                        onPress={() => _handleCheck(item["id"], index, item)}
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "white",
+                          // borderColor: "#464646",
+                          width: "49%",
+                          marginRight: 3,
+                          marginBottom: 20,
+                          justifyContent: "flex-start",
+                          alignContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {Capital({ text: item.name })}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                        <CheckBox
+                          onCheckColor="#FFF"
+                          animationDuration={0}
+                          lineWidth={4}
+                          onFillColor="#209FAE"
+                          onTintColor="#209FAE"
+                          boxType={"square"}
+                          style={{
+                            alignSelf: "center",
+                            width: Platform.select({
+                              ios: 30,
+                              android: 35,
+                            }),
+                            transform: Platform.select({
+                              ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                              android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                            }),
+                          }}
+                          // onValueChange={() =>
+                          //   Platform.OS == "ios"
+                          //     ? null
+                          //     : _handleCheck(item["id"], index, item)
+                          // }
+                          value={item["checked"]}
+                        />
 
-                  {/* <View
+                        <Text
+                          size="label"
+                          type="regular"
+                          style={{
+                            marginLeft: 0,
+                            color: "#464646",
+                            // borderWidth: 5,
+                          }}
+                        >
+                          {Capital({ text: item.name })}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                    {aktif === "categories" && !dataFilterCategoris.length ? (
+                      <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
+                    ) : null}
+
+                    {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
             ></View> */}
-                </ScrollView>
+                  </ScrollView>
+                </>
               ) : aktif === "facilities" ? (
-                <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  {dataFilterFacilitys.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => _handleCheckf(item["id"], index, item)}
+                <>
+                  <View
+                    style={{
+                      padding: 15,
+                    }}
+                  >
+                    <View
                       style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
+                        height: 35,
+                        width: "100%",
+                        backgroundColor: "#f6f6f6",
+                        borderRadius: 2,
                         alignItems: "center",
+                        flexDirection: "row",
+                        paddingHorizontal: 10,
+                        borderWidth: 1,
+                        borderColor: "#e8e8e8",
                       }}
                     >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        animationDuration={0}
-                        offAnimationType="flat"
-                        lineWidth={1}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35,
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                          }),
-                        }}
-                        onValueChange={() =>
-                          Platform.OS == "ios"
-                            ? null
-                            : _handleCheckf(item["id"], index, item)
-                        }
-                        value={item["checked"]}
+                      <Search
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 5 }}
                       />
 
-                      <Text
-                        size="label"
-                        type="regular"
+                      <TextInput
+                        underlineColorAndroid="transparent"
+                        placeholder={t("search")}
+                        autoCorrect={false}
+                        Text={keyword}
                         style={{
-                          marginLeft: 0,
-                          color: "#464646",
-                          // borderWidth: 5,
+                          width: "80%",
+                          // borderWidth: 1,
+                          marginLeft: 5,
+                          padding: 0,
+                        }}
+                        // returnKeyType="search"
+                        value={searchTextFacility}
+                        placeholderTextColor="#464646"
+                        onChangeText={(x) => {
+                          searchFacility(x);
+                          setSearchTextFacility(x);
+                        }}
+                        onSubmitEditing={(x) => {
+                          searchFacility(x);
+                          setSearchTextFacility(x);
+                        }}
+                      />
+                      {searchTextFacility.length ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            searchFacility("");
+                            setSearchTextFacility("");
+                          }}
+                        >
+                          <Xblue
+                            width="20"
+                            height="20"
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                  </View>
+                  <ScrollView
+                    // style={{ borderWidth: 1, height: 100 }}
+                    nestedScrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    {dataFilterFacilitys.map((item, index) => (
+                      <TouchableOpacity
+                        key={item.id}
+                        onPress={() => _handleCheckf(item["id"], index, item)}
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "white",
+                          // borderColor: "#464646",
+                          width: "49%",
+                          marginRight: 3,
+                          marginBottom: 20,
+                          justifyContent: "flex-start",
+                          alignContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {Capital({ text: item.name })}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                        <CheckBox
+                          onCheckColor="#FFF"
+                          animationDuration={0}
+                          offAnimationType="flat"
+                          lineWidth={4}
+                          onFillColor="#209FAE"
+                          onTintColor="#209FAE"
+                          boxType={"square"}
+                          style={{
+                            alignSelf: "center",
+                            width: Platform.select({
+                              ios: 30,
+                              android: 35,
+                            }),
+                            transform: Platform.select({
+                              ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                              android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                            }),
+                          }}
+                          // onValueChange={() =>
+                          //   Platform.OS == "ios"
+                          //     ? null
+                          //     : _handleCheckf(item["id"], index, item)
+                          // }
+                          value={item["checked"]}
+                        />
 
-                  {/* <View
+                        <Text
+                          size="label"
+                          type="regular"
+                          style={{
+                            marginLeft: 0,
+                            color: "#464646",
+                            // borderWidth: 5,
+                          }}
+                        >
+                          {Capital({ text: item.name })}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                    {aktif === "facilities" && !dataFilterFacilitys.length ? (
+                      <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
+                    ) : null}
+                    {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
             ></View> */}
-                </ScrollView>
-              ) : aktif === "country" ? (
-                <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  {dataFilterCountrys.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => _handleCheckC(item["id"], index, item)}
+                  </ScrollView>
+                </>
+              ) : //   : aktif === "country" ? (
+              //     <ScrollView
+              //       // style={{ borderWidth: 1, height: 100 }}
+              //       nestedScrollEnabled={true}
+              //       showsVerticalScrollIndicator={false}
+              //       contentContainerStyle={{
+              //         paddingHorizontal: 15,
+              //       }}
+              //     >
+              //       {dataFilterCountrys.map((item, index) => (
+              //         <TouchableOpacity
+              //           onPress={() => _handleCheckC(item["id"], index, item)}
+              //           style={{
+              //             flexDirection: "row",
+              //             backgroundColor: "white",
+              //             // borderColor: "#464646",
+              //             width: "49%",
+              //             marginRight: 3,
+              //             marginBottom: 20,
+              //             justifyContent: "flex-start",
+              //             alignContent: "center",
+              //             alignItems: "center",
+              //           }}
+              //         >
+              //           <CheckBox
+              //             onCheckColor="#FFF"
+              //             animationDuration={0}
+              //             lineWidth={4}
+              //             onFillColor="#209FAE"
+              //             onTintColor="#209FAE"
+              //             boxType={"square"}
+              //             style={{
+              //               alignSelf: "center",
+              //               width: Platform.select({
+              //                 ios: 30,
+              //                 android: 35,
+              //               }),
+              //               transform: Platform.select({
+              //                 ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+              //                 android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+              //               }),
+              //             }}
+              //             onValueChange={() =>
+              //               Platform.OS == "ios"
+              //                 ? null
+              //                 : _handleCheckC(item["id"], index, item)
+              //             }
+              //             value={item["checked"]}
+              //           />
+
+              //           <Text
+              //             size="label"
+              //             type="regular"
+              //             style={{
+              //               marginLeft: 0,
+              //               color: "#464646",
+              //               // borderWidth: 5,
+              //             }}
+              //           >
+              //             {Capital({ text: item.name })}
+              //           </Text>
+              //         </TouchableOpacity>
+              //       ))}
+
+              //       {/* <View
+              //   style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
+              // ></View> */}
+              //     </ScrollView>
+              //   )
+              aktif === "location" ? (
+                <>
+                  <View
+                    style={{
+                      padding: 15,
+                    }}
+                  >
+                    <View
                       style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
+                        height: 35,
+                        width: "100%",
+                        backgroundColor: "#f6f6f6",
+                        borderRadius: 2,
                         alignItems: "center",
+                        flexDirection: "row",
+                        paddingHorizontal: 10,
+                        borderWidth: 1,
+                        borderColor: "#e8e8e8",
                       }}
                     >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        animationDuration={0}
-                        lineWidth={1}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35,
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                          }),
-                        }}
-                        onValueChange={() =>
-                          Platform.OS == "ios"
-                            ? null
-                            : _handleCheckC(item["id"], index, item)
-                        }
-                        value={item["checked"]}
+                      <Search
+                        width={15}
+                        height={15}
+                        style={{ marginRight: 5 }}
                       />
 
-                      <Text
-                        size="label"
-                        type="regular"
+                      <TextInput
+                        underlineColorAndroid="transparent"
+                        placeholder={t("search")}
+                        autoCorrect={false}
+                        Text={keyword}
                         style={{
-                          marginLeft: 0,
-                          color: "#464646",
-                          // borderWidth: 5,
+                          width: "80%",
+                          // borderWidth: 1,
+                          marginLeft: 5,
+                          padding: 0,
                         }}
-                      >
-                        {Capital({ text: item.name })}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-
-                  {/* <View
-              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-            ></View> */}
-                </ScrollView>
-              ) : aktif === "City" ? (
-                <ScrollView
-                  // style={{ borderWidth: 1, height: 100 }}
-                  nestedScrollEnabled={true}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{
-                    paddingHorizontal: 15,
-                  }}
-                >
-                  {dataFilterCitys.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => _handleCheckCity(item["id"], index, item)}
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "white",
-                        // borderColor: "#464646",
-                        width: "49%",
-                        marginRight: 3,
-                        marginBottom: 20,
-                        justifyContent: "flex-start",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <CheckBox
-                        onCheckColor="#FFF"
-                        lineWidth={1}
-                        animationDuration={0}
-                        onFillColor="#209FAE"
-                        onTintColor="#209FAE"
-                        boxType={"square"}
-                        style={{
-                          alignSelf: "center",
-                          width: Platform.select({
-                            ios: 30,
-                            android: 35,
-                          }),
-                          transform: Platform.select({
-                            ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                            android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                          }),
+                        // returnKeyType="search"
+                        value={searchTextLocation}
+                        placeholderTextColor="#464646"
+                        onChangeText={(x) => {
+                          searchLocation(x);
+                          setSearchTextLocation(x);
                         }}
-                        onValueChange={() =>
-                          Platform.OS == "ios"
-                            ? null
-                            : _handleCheck(item["id"], index, item)
-                        }
-                        value={item["checked"]}
+                        onSubmitEditing={(x) => {
+                          searchLocation(x);
+                          // setSearchTextLocation(x);
+                        }}
                       />
-
-                      <Text
-                        size="label"
-                        type="regular"
+                      {searchTextLocation.length ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            searchLocation("");
+                            setSearchTextLocation("");
+                          }}
+                        >
+                          <Xblue
+                            width="15"
+                            height="15"
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          />
+                        </TouchableOpacity>
+                      ) : null}
+                    </View>
+                  </View>
+                  <ScrollView
+                    // style={{ borderWidth: 1, height: 100 }}
+                    nestedScrollEnabled={true}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    {dataFilterCitys.map((item, index) => (
+                      <TouchableOpacity
+                        key={index + "bruh"}
+                        onPress={() =>
+                          _handleCheckCity(item.node.id, index, item)
+                        }
                         style={{
-                          marginLeft: 0,
-                          color: "#464646",
-                          // borderWidth: 5,
+                          flexDirection: "row",
+                          backgroundColor: "white",
+                          // borderColor: "#464646",
+                          width: "49%",
+                          marginRight: 3,
+                          marginBottom: 20,
+                          justifyContent: "flex-start",
+                          alignContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {Capital({ text: item.name })}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                        <CheckBox
+                          onCheckColor="#FFF"
+                          lineWidth={4}
+                          animationDuration={0}
+                          onFillColor="#209FAE"
+                          onTintColor="#209FAE"
+                          boxType={"square"}
+                          style={{
+                            alignSelf: "center",
+                            width: Platform.select({
+                              ios: 30,
+                              android: 35,
+                            }),
+                            transform: Platform.select({
+                              ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                              android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                            }),
+                          }}
+                          // onValueChange={() =>
+                          //   Platform.OS == "ios"
+                          //     ? null
+                          //     : _handleCheckCity(item.node.id, index, item.node)
+                          // }
+                          // onValueChange={() =>
+                          //   _handleCheckCity(item.node.id, index, item)
+                          // }
+                          // onSubmitEditing={() =>
+                          //   _handleCheckCity(item.node.id, index, item)
+                          // }
+                          value={item?.checked}
+                        />
 
-                  {/* <View
+                        <Text
+                          size="label"
+                          type="regular"
+                          style={{
+                            marginLeft: 0,
+                            color: "#464646",
+                            // borderWidth: 5,
+                          }}
+                        >
+                          {Capital({ text: item.node.name })}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                    {aktif === "location" && !dataFilterCitys.length ? (
+                      <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
+                    ) : null}
+                    {/* <View
               style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
             ></View> */}
-                </ScrollView>
+                  </ScrollView>
+                </>
               ) : null}
             </View>
           </View>
@@ -1426,12 +1878,18 @@ export default function ItineraryDestination(props) {
             <Button
               variant="bordered"
               color="secondary"
-              onPress={() => ClearAllFilter()}
+              onPress={() => {
+                setHasApply(3);
+                ClearAllFilter();
+              }}
               style={{ width: "30%", borderColor: "#ffff" }}
               text={t("clearAll")}
             ></Button>
             <Button
-              onPress={() => UpdateFilter()}
+              onPress={() => {
+                UpdateFilter();
+                setHasApply(2);
+              }}
               style={{ width: "65%" }}
               text={t("apply")}
             ></Button>

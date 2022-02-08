@@ -847,6 +847,7 @@ export default function CityDetail(props) {
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id_type,
+                              idCountry: render?.countries?.id,
                               idcity: render?.id,
                               token: tokenApps,
                             });

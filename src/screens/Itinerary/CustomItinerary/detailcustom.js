@@ -35,6 +35,7 @@ import {
   FunImage,
   FunDocument,
   Loading,
+  Truncate,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -107,19 +108,20 @@ export default function detailCustomItinerary(props) {
           style={{
             marginLeft: 10,
             marginBottom: 5,
-            width: "45%",
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>
             {t("activityDetails")}
           </Text>
+
           <Text
             style={{
               color: "#fff",
+              width: "100%",
             }}
             numberOfLines={1}
           >
-            {props.route.params.nameitin}
+            <Truncate text={props.route.params.nameitin} length={27} />
           </Text>
         </View>
       </View>
