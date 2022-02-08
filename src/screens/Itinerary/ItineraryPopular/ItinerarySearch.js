@@ -59,7 +59,6 @@ export default function ItinerarySearchCategory(props) {
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
   let dispatch = useDispatch();
-  // let [setting, setSetting] = useState();
   let [soon, setSoon] = useState(false);
   let [idDataCategory, setidDataCategory] = useState(null);
   let [list_populer, setlist_populer] = useState([]);
@@ -366,14 +365,6 @@ export default function ItinerarySearchCategory(props) {
     );
   };
 
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    // await setSetting(JSON.parse(setsetting));
-    dispatch(setSettingUser(setsetting));
-    // await fetchCategory();
-    // await fetchDataListPopuler();
-  };
-
   let [dataAlbums, setDataAlbums] = useState(null);
 
   useEffect(() => {
@@ -381,7 +372,6 @@ export default function ItinerarySearchCategory(props) {
     const unsubscribe = props.navigation.addListener("focus", () => {
       refetch();
       refetchAlbum();
-      loadAsync();
     });
     return unsubscribe;
   }, [props.navigation]);

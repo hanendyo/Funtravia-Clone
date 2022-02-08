@@ -65,8 +65,7 @@ export default function ItineraryFavorite(props) {
     ),
   };
   const token = useSelector((data) => data.token);
-  console.log("~ token", token);
-  let [setting, setSetting] = useState();
+  const setting = useSelector((data) => data.setting);
   let [textInput, setTextInput] = useState("");
   let [text, setText] = useState("");
   let [dataFavorite, setDataFavorite] = useState([]);
@@ -77,8 +76,6 @@ export default function ItineraryFavorite(props) {
   };
 
   const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
     await fetchDataListFavorite();
   };
 

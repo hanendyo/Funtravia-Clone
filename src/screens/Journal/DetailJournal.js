@@ -255,29 +255,8 @@ export default function DetailJournal(props) {
   };
 
   const loadAsync = async () => {
-    // let setsetting = await AsyncStorage.getItem("setting");
-    // await setSetting(JSON.parse(setsetting));
-    // dispatch(setSettingUser(JSON.parse(setsetting)));
     await fetchData();
-    // await fetchDataComment();
   };
-
-  // const backAction = () => {
-  //   props.navigation.goBack();
-  //   return true;
-  // };
-
-  // useEffect(() => {
-  //   BackHandler.addEventListener("hardwareBackPress", backAction);
-  //   return () =>
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  // }, [backAction]);
-
-  // useEffect(() => {
-  //   props.navigation.addListener("blur", () => {
-  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
-  //   });
-  // }, [backAction]);
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);

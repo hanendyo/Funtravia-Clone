@@ -48,15 +48,15 @@ import PushNotification from "react-native-push-notification";
 
 export default function Room({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const Notch = DeviceInfo.hasNotch();
   const { width, height } = Dimensions.get("screen");
   const [modal_camera, setmodalCamera] = useState(false);
   const [room, setRoom] = useState(route.params.room_id);
   const [from, setfrom] = useState(route.params.from);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(settingApps.user);
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
-  const [token, setToken] = useState("");
   const [loadingGroup, setLoadingGroup] = useState(true);
 
   let [chat, setChat] = useState(null);
@@ -443,7 +443,7 @@ export default function Room({ navigation, route }) {
     });
 
     return () => socket.current.disconnect();
-  }, [connected, token]);
+  }, [connected, tokenApps]);
 
   const setConnection = () => {
     socket.emit("join", room);
@@ -461,13 +461,9 @@ export default function Room({ navigation, route }) {
   };
 
   const getUserToken = async () => {
-    let data = await AsyncStorage.getItem("setting");
-    setUser(JSON.parse(data).user);
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await getDetailGroup(token);
-      await setToken(token);
-      await initialHistory(token);
+    if (tokenApps) {
+      await getDetailGroup(tokenApps);
+      await initialHistory(tokenApps);
     }
   };
 
@@ -889,7 +885,7 @@ export default function Room({ navigation, route }) {
             navigation={navigation}
             dataMember={dataDetail}
             index={index}
-            token={token}
+            token={tokenApps}
             datas={message}
             socket={socket}
             _uploadimage={(image, id) => _uploadimage(image, id)}

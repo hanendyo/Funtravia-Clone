@@ -28,20 +28,20 @@ import { useSelector } from "react-redux";
 
 export default function SendToChat({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
-  const [token, setToken] = useState("");
   const socket = useRef();
   useEffect(() => {
     socket.current = io(CHATSERVER, {
       withCredentials: true,
       extraHeaders: {
-        Authorization: token,
+        Authorization: tokenApps,
       },
     });
-  }, [token]);
+  }, [tokenApps]);
 
   let [search, setSearch] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(settingApps.user);
   let [loading, setloading] = useState(false);
   const [data_buddy, SetDatBuddy] = useState([]);
   const [
@@ -159,28 +159,16 @@ export default function SendToChat({ navigation, route }) {
   };
 
   const getUserAndToken = async () => {
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
+    if (tokenApps) {
       await _setSearch(null);
       await querywith();
     }
-
-    let data = await AsyncStorage.getItem("setting");
-    if (data) {
-      await setUser(JSON.parse(data).user);
-    }
-  };
-
-  const _searchHandle = (text) => {
-    // }
   };
 
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
   const getRoomGroup = async () => {
     setloading(true);
-    let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
       method: "GET",
       headers: {

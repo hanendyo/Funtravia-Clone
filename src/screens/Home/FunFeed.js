@@ -54,11 +54,7 @@ export default function SearchFeed({ props }) {
   });
 
   const loadAsync = async () => {
-    let tkn = await AsyncStorage.getItem("access_token");
-
     let user = await AsyncStorage.getItem("setting");
-    // user = JSON.parse(user);
-    // setuser(user?.user);
     dispatch(setSettingUser(user));
   };
   useEffect(() => {

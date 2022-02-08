@@ -52,7 +52,6 @@ import { useSelector } from "react-redux";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { useMutation } from "@apollo/client";
 
-
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
@@ -62,6 +61,7 @@ let { width, height } = Dimensions.get("screen");
 
 export default function GroupDetail(props) {
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const { t } = useTranslation();
   const [room, setRoom] = useState(props.route.params.room_id);
   const [from, setfrom] = useState(props.route.params.from);
@@ -156,15 +156,9 @@ export default function GroupDetail(props) {
     }
   };
 
-  let [setting, setSetting] = useState();
-
   const getUserAndToken = async () => {
-    // let token = await AsyncStorage.getItem("access_token");
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
-    let data_setting = JSON.parse(setsetting);
-    if (data_setting) {
-      await getDetailGroup(tokenApps, data_setting);
+    if (settingApps) {
+      await getDetailGroup(tokenApps, settingApps);
     }
     initialHistoryMedia();
   };

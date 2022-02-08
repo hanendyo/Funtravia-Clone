@@ -24,24 +24,12 @@ import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
 
 export default function Reviews({ props, id, HeaderHeight, token }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
-  const [setting, setSetting] = useState("");
+  let settingApps = useSelector((data) => data.setting);
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
-
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
-  };
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      loadAsync();
-    });
-    return unsubscribe;
-  }, [props.navigation]);
 
   const { data, loading, error } = useQuery(DestinationById, {
     variables: { id: id },
@@ -127,7 +115,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
                   onPress={() => {
                     tokenApps
                       ? item && item.user && item.user.id !== null
-                        ? item?.user?.id !== setting?.user?.id
+                        ? item?.user?.id !== settingApps?.user?.id
                           ? props.navigation.push("ProfileStack", {
                               screen: "otherprofile",
                               params: {

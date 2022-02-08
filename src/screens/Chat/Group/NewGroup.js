@@ -40,11 +40,8 @@ import { useSelector } from "react-redux";
 export default function NewGroup({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
-  const { t, i18n } = useTranslation();
-  const [token, setToken] = useState(null);
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState({});
-  let [loading, setloading] = useState(false);
   let [DataBuddy, setDataBuddy] = useState([]);
 
   const [
@@ -120,16 +117,9 @@ export default function NewGroup({ navigation, route }) {
   }, []);
 
   const getUserAndToken = async () => {
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
+    if (tokenApps) {
       await _setSearch(null);
       await querywith();
-    }
-
-    let data = await AsyncStorage.getItem("setting");
-    if (data) {
-      await setUser(JSON.parse(data).user);
     }
   };
 

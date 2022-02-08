@@ -108,6 +108,7 @@ export default function ProvinceDetail(props) {
   const { t, i18n } = useTranslation();
   // let [token, setToken] = useState("");
   const token = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const [modalLogin, setModalLogin] = useState(false);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
@@ -122,7 +123,6 @@ export default function ProvinceDetail(props) {
   let scrollRef = useRef();
   const [sharemodal, SetShareModal] = useState(false);
   let [full, setFull] = useState(false);
-  let [setting, setSetting] = useState("");
   /**
    * ref
    */
@@ -253,8 +253,6 @@ export default function ProvinceDetail(props) {
   }, [routes, tabIndex]);
 
   const refreshData = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();

@@ -88,8 +88,6 @@ export default function Wishlist(props) {
       getEvent();
       getDes();
     }
-    // let setsetting = await AsyncStorage.getItem("setting");
-    // await setSetting(JSON.parse(setsetting));
   };
 
   const [getEvent, { loading, data: dataEven, error }] = useLazyQuery(Events, {

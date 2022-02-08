@@ -18,9 +18,12 @@ import SettingCurrency from "../Settings/SettingCurrency";
 import CurrencyList from "../../graphQL/Query/Countries/CurrencyList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
+import { useSelector } from "react-redux";
 
 export default function SettingItin(props) {
   const { t, i18n } = useTranslation();
+  const settingApps = useSelector((data) => data.setting);
+  const tokenApps = useSelector((data) => data.token);
   let [index, setIndex] = useState(0);
   const HeaderComponent = {
     headerShown: true,
@@ -65,15 +68,13 @@ export default function SettingItin(props) {
 
   const loadAsync = async () => {
     GetCurrencyList();
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
   };
 
   let [token, setToken] = useState(props.route.params.token);
   let [iditin, setId] = useState(props.route.params.iditin);
   let [isPrivate, setPrivate] = useState(props.route.params.isPrivate);
   const [modalSetCurrency, setModalSetCurrency] = useState(false);
-  const [setting, setSetting] = useState("");
+  const [setting, setSetting] = useState(settingApps);
 
   useEffect(() => {
     props.navigation?.setOptions(HeaderComponent);

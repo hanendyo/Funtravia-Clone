@@ -72,8 +72,6 @@ export default function TripPlaning(props) {
     ),
   };
 
-  // let [token, setToken] = useState("");
-  // let [setting, setSetting] = useState("");
   let [loading, setloading] = useState(false);
   let [rData, setData] = useState([]);
   let [AData, setDataActive] = useState([]);
@@ -156,11 +154,6 @@ export default function TripPlaning(props) {
   const loadAsync = async () => {
     setloading(true);
     let tkn = await AsyncStorage.getItem("access_token");
-    let setsetting = await AsyncStorage.getItem("setting");
-    // dispatch(setSettingUser(setsetting));
-    // setSetting(JSON.parse(setsetting));
-    // setToken(tkn);
-    // dispatch(setTokenApps(`Bearer ${tkn}`));
     if (tkn === null) {
       setModalLogin(true);
       // props.navigation.navigate("HomeScreen");

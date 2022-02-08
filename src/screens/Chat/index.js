@@ -57,9 +57,11 @@ const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 
 export default function Message({ navigation, route }) {
   const _tabIndex = useRef(0);
+  const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(settingApps.user);
   const [data, setData] = useState([]);
   const [dataRes, setDataRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
@@ -69,7 +71,6 @@ export default function Message({ navigation, route }) {
   const [searchtext, SetSearchtext] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   //TRY SOCKET
-  const tokenApps = useSelector((data) => data.token);
 
   const socket = io(CHATSERVER);
 
@@ -183,10 +184,6 @@ export default function Message({ navigation, route }) {
   };
 
   const getUserAndToken = async () => {
-    let setting = JSON.parse(await AsyncStorage.getItem("setting"));
-    if (setting) {
-      await setUser(setting.user);
-    }
     if (tokenApps) {
       await getRoom();
       await getRoomGroup();

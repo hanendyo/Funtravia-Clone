@@ -39,8 +39,8 @@ export default function CraetePostAlbum(props) {
   let itinerary_id = props.route.params.itinerary_id;
   let selectedPhoto = props.route.params.selectedPhoto;
   let album_id = props.route.params.album_id;
-  let token = props.route.params.token;
-
+  const setting = useSelector((data) => data.setting);
+  const token = useSelector((data) => data.token);
   const [indexAktif, setIndexAktive] = useState(0);
   let [statusText, setStatusText] = useState("");
   let [loadingok, setLoading] = useState(false);
@@ -49,11 +49,7 @@ export default function CraetePostAlbum(props) {
     latitude: "",
     longitude: "",
   });
-  let [setting, setSetting] = useState();
-  const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
-  };
+
   const HeaderComponent = {
     headerTintColor: "white",
     headerTitle: (
@@ -141,7 +137,6 @@ export default function CraetePostAlbum(props) {
     });
   };
   useEffect(() => {
-    loadAsync();
     props.navigation.setOptions(HeaderComponent);
   }, [props.navigation]);
 
