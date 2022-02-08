@@ -23,7 +23,6 @@ import {
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RESTFULL_CHAT } from "../../../config";
 import ImagePicker from "react-native-image-crop-picker";
 import { StackActions } from "@react-navigation/routers";
@@ -34,10 +33,8 @@ import { useSelector } from "react-redux";
 export default function NewGroup(props) {
   const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
-  const { t, i18n } = useTranslation();
-  const [token, setToken] = useState(null);
+  const { t } = useTranslation();
   let [title, settitle] = useState("");
-  const [user, setUser] = useState({});
   let [loading, setloading] = useState(false);
   const [modals, setmodal] = useState(false);
   const [dataImagepatch, setdataImagepatch] = useState("");
@@ -113,15 +110,8 @@ export default function NewGroup(props) {
   }, []);
 
   const getUserAndToken = async () => {
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
+    if (tokenApps) {
       await querywith();
-    }
-
-    let data = await AsyncStorage.getItem("setting");
-    if (data) {
-      await setUser(JSON.parse(data).user);
     }
   };
 

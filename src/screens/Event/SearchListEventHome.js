@@ -49,7 +49,6 @@ export default function SearchListEventHome(props) {
   let [dataEventAll, setDataEventAll] = useState([]);
   let [dataEventPublic, setDataEventPublic] = useState([]);
   let [dataDes, setdataDes] = useState([]);
-  // let [setting, setSetting] = useState("");
   let [texts, setText] = useState("");
   let [index, setindex] = useState(0);
   let [show, setShow] = useState(false);
@@ -1228,10 +1227,6 @@ export default function SearchListEventHome(props) {
   const loadAsync = async () => {
     await GetDataEventsAll();
     await GetDataEventsPublic();
-
-    // let setsetting = await AsyncStorage.getItem("setting");
-    // await setSetting(JSON.parse(setsetting));
-    // dispatch(setSettingUser(JSON.parse(setsetting)));
   };
 
   const [

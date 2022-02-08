@@ -87,10 +87,10 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function CityDetail(props) {
   // console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
+  const settingApps = useSelector((data) => data.setting);
   const tokenApps = useSelector((data) => data.token);
   // console.log("tokenCity", tokenApps);
 
-  let [setting, setSetting] = useState("");
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
   let [dataevent, setdataevent] = useState({ event: [], month: "" });
@@ -253,8 +253,6 @@ export default function CityDetail(props) {
   }, [routes, tabIndex]);
 
   const refreshData = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    setSetting(JSON.parse(setsetting));
     await getPackageDetail();
     await getJournalCity();
     await getItineraryCity();
@@ -2049,7 +2047,7 @@ export default function CityDetail(props) {
                 data={list_populer}
                 props={props}
                 token={tokenApps}
-                setting={setting}
+                setting={settingApps}
                 setData={(e) => setList_populer(e)}
               />
             ) : null}

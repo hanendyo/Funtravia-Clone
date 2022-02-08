@@ -74,10 +74,8 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
-  // untuk hp yang layar camera dan sound misah dari layar utama
   const NotchAndro = StatusBar.currentHeight > 24;
-
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -168,7 +166,6 @@ const Index = (props) => {
   const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
-  const [setting, setSetting] = useState("");
   // let [dataDestination, setDataDestination] = useState(data);
   let [dataDestination, setDataDestination] = useState();
 
@@ -474,9 +471,6 @@ const Index = (props) => {
   const loadAsync = async () => {
     await fetchData();
     await fetchDataAnotherDes();
-
-    let setsetting = await AsyncStorage.getItem("setting");
-    await setSetting(JSON.parse(setsetting));
   };
 
   useEffect(() => {

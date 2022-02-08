@@ -140,6 +140,7 @@ const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
   let { t, i18n } = useTranslation();
+  const setting = useSelector((data) => data.setting);
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
@@ -280,11 +281,8 @@ export default function ItineraryDetail(props) {
   let [modalDeleteTrip, setModalDeleteTrip] = useState(false);
   let [soon, setSoon] = useState(false);
 
-  let [users, setuser] = useState(null);
+  let [users, setuser] = useState(setting.user);
   const loadasync = async () => {
-    let user = await AsyncStorage.getItem("setting");
-    user = JSON.parse(user);
-    await setuser(user.user);
     await _Refresh();
   };
   let [Anggota, setAnggota] = useState();

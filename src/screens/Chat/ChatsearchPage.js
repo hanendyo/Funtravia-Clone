@@ -56,10 +56,10 @@ const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 export default function ChatsearchPage({ navigation, route }) {
   const _tabIndex = useRef(0);
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
-  const [user, setUser] = useState({});
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(settingApps.user);
   const [data, setData] = useState([]);
   // console.log(
   //   "🚀 ~ file: ChatsearchPage.js ~ line 57 ~ ChatsearchPage ~ data",
@@ -142,7 +142,6 @@ export default function ChatsearchPage({ navigation, route }) {
   }, []);
 
   const getRoom = async () => {
-    let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/personal/list`, {
       method: "GET",
       headers: {
@@ -162,8 +161,6 @@ export default function ChatsearchPage({ navigation, route }) {
   };
 
   const getRoomGroup = async () => {
-    // console.log("EXEC");
-    let token = await AsyncStorage.getItem("access_token");
     let response = await fetch(`${CHATSERVER}/api/group/list`, {
       method: "GET",
       headers: {
@@ -181,13 +178,7 @@ export default function ChatsearchPage({ navigation, route }) {
   };
 
   const getUserAndToken = async () => {
-    let setting = JSON.parse(await AsyncStorage.getItem("setting"));
-    if (setting) {
-      await setUser(setting.user);
-    }
-    // let token = await AsyncStorage.getItem("access_token");
     if (tokenApps) {
-      await setToken(token);
       await getRoom();
       await getRoomGroup();
     }
@@ -197,9 +188,6 @@ export default function ChatsearchPage({ navigation, route }) {
       // navigation.navigate("HomeScreen");
     }
   };
-
-  const [messages, setMessages] = useState("");
-  const [modalError, setModalError] = useState(false);
 
   const LongPressFunc = (item, room_id) => {
     Alert.alert(
@@ -552,11 +540,6 @@ export default function ChatsearchPage({ navigation, route }) {
           </View>
         </View>
       </Modal>
-      <Errors
-        modals={modalError}
-        setModals={(e) => setModalError(e)}
-        message={messages}
-      />
       <View
         style={{
           backgroundColor: "#FFFFFF",

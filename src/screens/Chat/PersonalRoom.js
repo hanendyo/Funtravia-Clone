@@ -74,6 +74,7 @@ const keyboards = [
 
 export default function Room({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -83,10 +84,9 @@ export default function Room({ navigation, route }) {
   const { width, height } = Dimensions.get("screen");
   const [room, setRoom] = useState(route.params.room_id);
   const [receiver, setReceiver] = useState(route.params.receiver);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(settingApps.user);
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
-  const [token, setToken] = useState("");
   const [socket_connect, setSocketConnect] = useState(false);
   const [loadingPersonal, setLoadingPersonal] = useState(true);
   // const socket = io(CHATSERVER, {
@@ -571,12 +571,8 @@ export default function Room({ navigation, route }) {
   }, []);
 
   const getUserToken = async () => {
-    let data = await AsyncStorage.getItem("setting");
-    setUser(JSON.parse(data).user);
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
-      await initialHistory(token);
+    if (tokenApps) {
+      await initialHistory(tokenApps);
     }
   };
 
@@ -869,7 +865,7 @@ export default function Room({ navigation, route }) {
             user_id={user.id}
             tmpRChat={tmpRChat}
             navigation={navigation}
-            token={token}
+            token={tokenApps}
             socket={socket}
             connected={connected}
             socket_connect={socket_connect}

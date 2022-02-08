@@ -29,16 +29,15 @@ import {
 } from "../../assets/svg";
 import TravelWith from "../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 import { useSelector } from "react-redux";
 
 export default function NewChat({ navigation }) {
   const tokenApps = useSelector((data) => data.token);
+  const settingApps = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
-  const [token, setToken] = useState(null);
   let [search, setSearch] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(settingApps.user);
   let [loading, setloading] = useState(false);
   const [
     querywith,
@@ -110,16 +109,9 @@ export default function NewChat({ navigation }) {
   }, []);
 
   const getUserAndToken = async () => {
-    let token = await AsyncStorage.getItem("access_token");
-    if (token) {
-      await setToken(token);
+    if (tokenApps) {
       await _setSearch(null);
       await querywith();
-    }
-
-    let data = await AsyncStorage.getItem("setting");
-    if (data) {
-      await setUser(JSON.parse(data).user);
     }
   };
 

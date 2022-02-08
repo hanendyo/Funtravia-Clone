@@ -104,9 +104,6 @@ export default function JournalComment(props) {
   });
 
   const loadAsync = async () => {
-    // let setsetting = await AsyncStorage.getItem("setting");
-    // await setSetting(JSON.parse(setsetting));
-    // dispatch(setSettingUser(JSON.parse(setsetting)));
     await fetchData();
   };
 
