@@ -111,12 +111,19 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const loadAsync = async () => {
-    let setsetting = await AsyncStorage.getItem("setting");
-    // setSetting(JSON.parse(setsetting));
-    // dispatch(setSettingUser(setsetting));
-    let recent_src = await AsyncStorage.getItem("recent_src");
-    if (recent_src) {
-      setRecent(JSON.parse(recent_src));
+    try {
+      let setsetting = await AsyncStorage.getItem("setting");
+      if (searchtext) {
+        await refetchSrcuser();
+      }
+      // setSetting(JSON.parse(setsetting));
+      // dispatch(setSettingUser(setsetting));
+      let recent_src = await AsyncStorage.getItem("recent_src");
+      if (recent_src) {
+        setRecent(JSON.parse(recent_src));
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -153,7 +160,6 @@ export default function SearchPg(props, { navigation, route }) {
     SetSearchtext(text);
     myStateRef.current = true;
     setAktifSearch(true);
-    Ò;
   };
 
   const gotoLocation = (data) => {
@@ -237,14 +243,20 @@ export default function SearchPg(props, { navigation, route }) {
     data: dataSrcuser,
     error: errorSrcuser,
     refetch: refetchSrcuser,
+    fetchMore: fetchMoreSrcuser,
     networkStatus: networkStatusSrcuser,
   } = useQuery(SearchUserQueryNew, {
     variables: {
       keyword: searchtext,
       cities_id: cities_id,
       countries_id: countries_id,
+      first: 10,
+      after: "",
     },
-    fetchPolicy: "network-only",
+    options: {
+      fetchPolicy: "network-only",
+      errorPolicy: "ignore",
+    },
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -252,10 +264,48 @@ export default function SearchPg(props, { navigation, route }) {
       },
     },
     notifyOnNetworkStatusChange: true,
-    onCompleted: (dataSrcuser) => {
-      Setuser_search(dataSrcuser?.user_searchv2);
+    onCompleted: () => {
+      Setuser_search(dataSrcuser?.user_searchv2_cursor_based?.edges);
     },
   });
+
+  console.log("loaduser", loadingSrcuser);
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    console.log("onUpdate");
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.user_searchv2_cursor_based;
+
+    const edges = [
+      ...prev?.user_searchv2_cursor_based?.edges,
+      ...fetchMoreResult?.user_searchv2_cursor_based?.edges,
+    ];
+    console.log("edges", edges);
+    const feedback = Object.assign({}, prev, {
+      user_searchv2_cursor_based: {
+        __typename: prev.user_searchv2_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
+  };
+
+  const handleOnEndReached = () => {
+    if (
+      dataSrcuser?.user_searchv2_cursor_based?.pageInfo.hasNextPage &&
+      !loadingSrcuser
+    ) {
+      return fetchMoreSrcuser({
+        updateQuery: onUpdate,
+        variables: {
+          first: 10,
+          after: dataSrcuser?.user_searchv2_cursor_based.pageInfo?.endCursor,
+          // limit: dataSrcuser?.user_searchv2_cursor_based.node?.length,
+        },
+      });
+    }
+  };
 
   let [destinationSearch, SetdestinationSearch] = useState([]);
 
@@ -361,6 +411,10 @@ export default function SearchPg(props, { navigation, route }) {
     loadAsync();
   }, []);
 
+  useEffect(() => {
+    refetchSrcuser();
+  }, [searchtext]);
+
   const [
     FollowMutation,
     { loading: loadFollowMut, data: dataFollowMut, error: errorFollowMut },
@@ -389,9 +443,14 @@ export default function SearchPg(props, { navigation, route }) {
   const _unfollow = async (id, index) => {
     if (tokenApps) {
       let tempUser = [...user_search];
-      let _temStatus = { ...tempUser[index] };
+      let _temStatus = { ...tempUser[index].node };
       _temStatus.status_following = false;
-      tempUser.splice(index, 1, _temStatus);
+      let _temData = {
+        __typename: "FollowingEdge",
+        cursor: "MQ==",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       Setuser_search(tempUser);
       try {
         let response = await UnfollowMutation({
@@ -412,11 +471,16 @@ export default function SearchPg(props, { navigation, route }) {
           // Alert.alert('Succes');
         }
       } catch (error) {
-        let temStatus = [...user_search];
-        let _temStatus = { ...temStatus[index] };
+        let tempUser = [...user_search];
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = true;
-        temStatus.splice(index, 1, _temStatus);
-        Setuser_search(_temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          cursor: "MQ==",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
+        Setuser_search(tempUser);
         RNToasty.Show({
           title: "Failed To unFollow This User!",
           position: "bottom",
@@ -436,9 +500,14 @@ export default function SearchPg(props, { navigation, route }) {
   const _follow = async (id, index) => {
     if (tokenApps) {
       let tempUser = [...user_search];
-      let _temStatus = { ...tempUser[index] };
-      _temStatus.status_following = true;
-      tempUser.splice(index, 1, _temStatus);
+      let _temStatus = { ...tempUser[index].node };
+      _temStatus.status_following = false;
+      let _temData = {
+        __typename: "FollowingEdge",
+        cursor: "MQ==",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       Setuser_search(tempUser);
       try {
         let response = await FollowMutation({
@@ -456,11 +525,16 @@ export default function SearchPg(props, { navigation, route }) {
           }
         }
       } catch (error) {
-        let temStatus = [...user_search];
-        let _temStatus = { ...temStatus[index] };
+        let tempUser = [...user_search];
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = false;
-        temStatus.splice(index, 1, _temStatus);
-        Setuser_search(_temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          cursor: "MQ==",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
+        Setuser_search(tempUser);
         RNToasty.Show({
           title: "Failed To Follow This User!",
           position: "bottom",
@@ -777,33 +851,21 @@ export default function SearchPg(props, { navigation, route }) {
                 </TouchableOpacity>
               </View>
               {active_src === "people" ? (
-                loadingSrcuser ? (
-                  <View
-                    style={{
-                      // position: 'absolute',
-                      // bottom:0,
-                      flex: 1,
-                      width: width,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginHorizontal: 15,
-                    }}
-                  >
-                    <ActivityIndicator
-                      animating={loadingSrcuser}
-                      size="large"
-                      color="#209fae"
-                    />
-                  </View>
-                ) : (
-                  // <FriendList
-                  //   props={props}
-                  //   datanya={user_search}
-                  //   token={token}
-                  //   onBackPress={() => onBackPress()}
-                  //   recent_save={(searchtext) => recent_save(searchtext)}
-                  // />
-
+                loadingSrcuser ? //     // bottom:0, //     // position: 'absolute', //   style={{ // <View
+                //     flex: 1,
+                //     width: width,
+                //     justifyContent: "center",
+                //     alignItems: "center",
+                //     marginHorizontal: 15,
+                //   }}
+                // >
+                //   <ActivityIndicator
+                //     animating={loadingSrcuser}
+                //     size="large"
+                //     color="#209fae"
+                //   />
+                // </View>
+                null : (
                   <FlatList
                     key={"search"}
                     contentContainerStyle={{
@@ -812,6 +874,9 @@ export default function SearchPg(props, { navigation, route }) {
                       marginHorizontal: 15,
                     }}
                     data={user_search}
+                    onEndReached={handleOnEndReached}
+                    onEndReachedThreshold={1}
+                    initialNumToRender={10}
                     renderItem={({ item, index }) => (
                       <View
                         style={{
@@ -834,7 +899,7 @@ export default function SearchPg(props, { navigation, route }) {
                               props.navigation.push("ProfileStack", {
                                 screen: "otherprofile",
                                 params: {
-                                  idUser: item.id,
+                                  idUser: item.node.id,
                                   token: tokenApps,
                                 },
                               });
@@ -849,9 +914,9 @@ export default function SearchPg(props, { navigation, route }) {
                         >
                           <Image
                             source={
-                              item.picture
+                              item.node.picture
                                 ? {
-                                    uri: item.picture,
+                                    uri: item.node.picture,
                                   }
                                 : DefaultProfile
                             }
@@ -870,17 +935,17 @@ export default function SearchPg(props, { navigation, route }) {
                             }}
                           >
                             <Text size="label" type="bold" numberOfLines={2}>
-                              {item.first_name ? item.first_name : ""}{" "}
-                              {item.last_name ? item.last_name : ""}
+                              {item.node.first_name ? item.node.first_name : ""}{" "}
+                              {item.node.last_name ? item.node.last_name : ""}
                             </Text>
                             <Text size="label" type="regular">
-                              {`@${item.username}`}test
+                              {`@${item.node.username}`}test
                             </Text>
                           </View>
                         </TouchableOpacity>
 
                         <View style={{}}>
-                          {item.status_following === false ? (
+                          {item.node.status_following === false ? (
                             <Button
                               size="small"
                               type="circle"
@@ -888,7 +953,7 @@ export default function SearchPg(props, { navigation, route }) {
                               style={{ width: 100 }}
                               text={t("follow")}
                               onPress={() => {
-                                _follow(item.id, index);
+                                _follow(item.node.id, index);
                               }}
                             ></Button>
                           ) : (
@@ -897,7 +962,7 @@ export default function SearchPg(props, { navigation, route }) {
                               type="circle"
                               style={{ width: 100 }}
                               onPress={() => {
-                                _unfollow(item.id, index);
+                                _unfollow(item.node.id, index);
                               }}
                               text={t("following")}
                             ></Button>
@@ -905,10 +970,10 @@ export default function SearchPg(props, { navigation, route }) {
                         </View>
                       </View>
                     )}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.node.id}
                     showsVerticalScrollIndicator={false}
                     ListFooterComponent={
-                      searchtext !== "" && user_search.length <= 0 ? (
+                      searchtext !== "" && user_search?.length <= 0 ? (
                         <View
                           style={{
                             alignItems: "center",
@@ -918,6 +983,21 @@ export default function SearchPg(props, { navigation, route }) {
                           <Text size="label" type="regular">
                             {t("noData")}
                           </Text>
+                        </View>
+                      ) : loadingSrcuser ? (
+                        <View
+                          style={{
+                            width: Dimensions.get("screen").width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: 30,
+                          }}
+                        >
+                          <ActivityIndicator
+                            animateing={loadingSrcuser}
+                            size="large"
+                            color="#209FAE"
+                          />
                         </View>
                       ) : null
                     }
@@ -1180,25 +1260,22 @@ export default function SearchPg(props, { navigation, route }) {
                 </TouchableOpacity>
               </View>
               {active_src === "people" ? (
-                loadingSrcuser ? (
-                  <View
-                    style={{
-                      // position: 'absolute',
-                      // bottom:0,
-                      flex: 1,
-                      width: width,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginHorizontal: 15,
-                    }}
-                  >
-                    <ActivityIndicator
-                      animating={loadingSrcuser}
-                      size="large"
-                      color="#209fae"
-                    />
-                  </View>
-                ) : (
+                loadingSrcuser ? //     // position: 'absolute', //   style={{ // <View
+                //     // bottom:0,
+                //     flex: 1,
+                //     width: width,
+                //     justifyContent: "center",
+                //     alignItems: "center",
+                //     marginHorizontal: 15,
+                //   }}
+                // >
+                //   <ActivityIndicator
+                //     animating={loadingSrcuser}
+                //     size="large"
+                //     color="#209fae"
+                //   />
+                // </View>
+                null : (
                   // <FriendList
                   //   props={props}
                   //   datanya={user_search}
@@ -1332,6 +1409,21 @@ export default function SearchPg(props, { navigation, route }) {
                           <Text size="label" type="regular">
                             {t("noData")}
                           </Text>
+                        </View>
+                      ) : loadingSrcuser ? (
+                        <View
+                          style={{
+                            width: Dimensions.get("screen").width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: 30,
+                          }}
+                        >
+                          <ActivityIndicator
+                            animateing={loadingSrcuser}
+                            size="large"
+                            color="#209FAE"
+                          />
                         </View>
                       ) : null
                     }

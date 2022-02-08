@@ -6,9 +6,10 @@ import {
   Image,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import FollowerQuery from "../../graphQL/Query/Profile/Follower";
 import FollowMut from "../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../graphQL/Mutation/Profile/UnfollowMut";
@@ -18,11 +19,10 @@ import { Loading } from "../../component";
 import { useTranslation } from "react-i18next";
 import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
-import { useDispatch, useSelector } from "react-redux";
-import { setApps } from "../../redux/action";
+import { useSelector } from "react-redux";
+import { RNToasty } from "react-native-toasty";
 
 export default function Follower(props) {
-  let dispatch = useDispatch();
   const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
@@ -72,32 +72,70 @@ export default function Follower(props) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   let [data, setdata] = useState([]);
+  console.log(data);
 
   const loadAsync = async () => {
     setLoading(true);
-    let tkn = await AsyncStorage.getItem("access_token");
-    // setToken(tkn);
-    // dispatch(setTokenApps(`Bearer ${tkn}`));
-    await LoadFollower();
+    await refetch();
     await setLoading(false);
   };
 
-  const [LoadFollower, { data: dataFollow, loading, error }] = useLazyQuery(
+  const { data: dataFollow, loading, error, fetchMore, refetch } = useQuery(
     FollowerQuery,
     {
-      fetchPolicy: "network-only",
+      options: {
+        fetchPolicy: "network-only",
+        errorPolicy: "ignore",
+      },
+      variables: {
+        first: 10,
+        after: "",
+      },
       context: {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
       },
-      onCompleted: async () => {
-        setdata(dataFollow?.user_followers);
+      onCompleted: () => {
+        if (dataFollow) {
+          setdata(dataFollow.user_followers_cursor_based.edges);
+        }
       },
     }
   );
-  // console.log(dataFollow);
+
+  console.log("dfol", dataFollow?.user_followers_cursor_based.edges);
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    console.log("onUpdate");
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.user_followers_cursor_based;
+    const edges = [
+      ...prev.user_followers_cursor_based.edges,
+      ...fetchMoreResult.user_followers_cursor_based.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      user_followers_cursor_based: {
+        __typename: prev.user_followers_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
+  };
+
+  const handleOnEndReached = () => {
+    if (dataFollow?.user_followers_cursor_based?.pageInfo.hasNextPage) {
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          first: 10,
+          after: dataFollow?.user_followers_cursor_based.pageInfo?.endCursor,
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
@@ -131,9 +169,14 @@ export default function Follower(props) {
   const _unfollow = async (id, index) => {
     if (token) {
       let tempUser = [...data];
-      let _temStatus = { ...tempUser[index] };
+      let _temStatus = { ...tempUser[index].node };
       _temStatus.status_following = false;
-      tempUser.splice(index, 1, _temStatus);
+      let _temData = {
+        __typename: "FollowingEdge",
+        cursor: "MQ==",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
         let response = await UnfollowMutation({
@@ -160,9 +203,14 @@ export default function Follower(props) {
           position: "bottom",
         });
         let tempUser = [...data];
-        let _temStatus = { ...tempUser[index] };
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = true;
-        tempUser.splice(index, 1, _temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          cursor: "MQ==",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
         setdata(tempUser);
       }
     } else {
@@ -177,9 +225,13 @@ export default function Follower(props) {
     // setLoading(true);
     if (token) {
       let tempUser = [...data];
-      let _temStatus = { ...tempUser[index] };
+      let _temStatus = { ...tempUser[index].node };
       _temStatus.status_following = true;
-      tempUser.splice(index, 1, _temStatus);
+      let _temData = {
+        __typename: "FollowingEdge",
+        node: _temStatus,
+      };
+      tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
         let response = await FollowMutation({
@@ -207,9 +259,13 @@ export default function Follower(props) {
           position: "bottom",
         });
         let tempUser = [...data];
-        let _temStatus = { ...tempUser[index] };
+        let _temStatus = { ...tempUser[index].node };
         _temStatus.status_following = false;
-        tempUser.splice(index, 1, _temStatus);
+        let _temData = {
+          __typename: "FollowingEdge",
+          node: _temStatus,
+        };
+        tempUser.splice(index, 1, _temData);
         setdata(tempUser);
       }
     } else {
@@ -235,6 +291,9 @@ export default function Follower(props) {
           marginTop: 5,
         }}
         showsVerticalScrollIndicator={false}
+        onEndReached={handleOnEndReached}
+        onEndReachedThreshold={1}
+        initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -254,7 +313,7 @@ export default function Follower(props) {
                 props.navigation.push("ProfileStack", {
                   screen: "otherprofile",
                   params: {
-                    idUser: item.id,
+                    idUser: item.node.id,
                     token: token,
                   },
                 });
@@ -267,9 +326,9 @@ export default function Follower(props) {
             >
               <Image
                 source={
-                  item?.picture
+                  item?.node.picture
                     ? {
-                        uri: item.picture,
+                        uri: item.node.picture,
                       }
                     : DefaultProfile
                 }
@@ -287,28 +346,28 @@ export default function Follower(props) {
                   flex: 1,
                 }}
               >
-                {item?.last_name !== null ? (
+                {item?.node.last_name !== null ? (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {`${item?.first_name} ${item?.last_name}`}
+                    {`${item?.node.first_name} ${item?.node.last_name}`}
                   </Text>
                 ) : (
                   <Text size="description" type="black" numberOfLines={2}>
-                    {item?.first_name}
+                    {item?.node.first_name}
                   </Text>
                 )}
                 <Text size="description" type="regular">
-                  {`@${item?.username}`}
+                  {`@${item?.node.username}`}
                 </Text>
-                {item?.bio ? (
+                {item?.node.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
-                    {item?.bio ? item.bio : ""}
+                    {item?.node.bio ? item.node.bio : ""}
                   </Text>
                 ) : null}
               </View>
             </TouchableOpacity>
 
             <View style={{ width: "25%", marginLeft: 15 }}>
-              {item.status_following === false ? (
+              {item.node.status_following === false ? (
                 <Pressable
                   style={{
                     borderRadius: 20,
@@ -320,7 +379,7 @@ export default function Follower(props) {
                     height: 30,
                   }}
                   onPress={() => {
-                    _follow(item.id, index);
+                    _follow(item.node.id, index);
                   }}
                 >
                   <Text
@@ -344,7 +403,7 @@ export default function Follower(props) {
                     height: 30,
                   }}
                   onPress={() => {
-                    _unfollow(item.id, index);
+                    _unfollow(item.node.id, index);
                   }}
                 >
                   <Text
@@ -361,9 +420,27 @@ export default function Follower(props) {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item?.id}
+        keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
         extraData={selectedId}
+        listFooterComponent={
+          loading ? (
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 30,
+              }}
+            >
+              <ActivityIndicator
+                animating={loading}
+                size="large"
+                color="#209FAE"
+              />
+            </View>
+          ) : null
+        }
       />
     </View>
   );
