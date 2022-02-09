@@ -706,24 +706,24 @@ export default function Detail_movie(props) {
           paddingLeft: 60,
           zIndex: 999,
           opacity: titleOpacity,
-          // top: SafeStatusBar + 8,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 7
-                : SafeStatusBar + 8
-              : NotchAndro
-              ? SafeStatusBar + 10
-              : SafeStatusBar,
-          backgroundColor: "#209fae",
+          top: SafeStatusBar + 10,
+          // Platform.OS == "ios"
+          //   ? Notch
+          //     ? SafeStatusBar + 10
+          //     : SafeStatusBar + 11
+          //   : NotchAndro
+          //   ? SafeStatusBar + 13
+          //   : SafeStatusBar + 2,
+          backgroundColor: "#209FAE",
         }}
       >
         <Text
           size="title"
           style={{
             color: "#fff",
-            marginBottom:
-              Platform.OS == "android" ? (NotchAndro ? 5 : 0) : Notch ? 0 : 5,
+
+            // marginBottom:
+            //   Platform.OS == "android" ? (NotchAndro ? 5 : 0) : Notch ? 0 : 5,
           }}
           type="bold"
           numberOfLines={1}

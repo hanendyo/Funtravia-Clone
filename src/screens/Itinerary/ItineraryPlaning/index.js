@@ -119,6 +119,17 @@ export default function listItinPlaning(props) {
         idcity: props.route.params.idkiriman,
       },
     ],
+    itinerary: [
+      "itindetail",
+      {
+        country: props.route.params.IdItinerary,
+        index: 0,
+        Kiriman: props.route.params.idkiriman,
+        token: props.route.params.token,
+        Position: props.route.params.Position,
+        onbackhandler: "chooseDay",
+      },
+    ],
   };
 
   const _handleBack = () => {

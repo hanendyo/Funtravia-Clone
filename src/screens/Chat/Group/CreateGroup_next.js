@@ -190,14 +190,6 @@ export default function NewGroup(props) {
     for (const user of userSelected) {
       partisipant.push(user.id);
     }
-    // console.log(
-    //   JSON.stringify({
-    //     title: title,
-    //     description: "",
-    //     member: partisipant,
-    //     picture: dataImage,
-    //   })
-    // );
     let data_kirim;
     if (dataImage !== null) {
       data_kirim = JSON.stringify({
@@ -243,7 +235,10 @@ export default function NewGroup(props) {
       }
     } catch (error) {
       setloading(false);
-      console.error(error);
+      RNToasty.Show({
+        title: `${error}`,
+        position: "bottom",
+      });
     }
   };
 
@@ -488,40 +483,76 @@ export default function NewGroup(props) {
           }}
         >
           <FlatList
-            numColumns={5}
+            // numColumns={5}
             data={userSelected}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
-              <Pressable
+              <TouchableOpacity
                 key={index}
                 // onPress={() => selectUser(item)}
                 style={{
-                  alignItems: "center",
-                  alignContent: "center",
-                  // justifyContent: "center",
-                  // borderWidth: 1,
-                  // width: Dimensions.get("screen").width - 20 / 5,
+                  flexDirection: "row",
+                  width: Dimensions.get("screen").width - 30,
+                  paddingVertical: 5,
+                  // justifyContent: "space-between",
+                  // alignItems: "center",
+                  // alignContent: "center",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#F6F6F6",
                 }}
               >
-                <FunImage
-                  Pressable={true}
-                  // onPress={() => selectUser(item)}
-                  source={
-                    item && item.picture ? { uri: item.picture } : default_image
-                  }
+                <View
                   style={{
-                    resizeMode: "cover",
-                    height: (Dimensions.get("screen").width - 40) / 5 - 20,
-                    width: (Dimensions.get("screen").width - 40) / 5 - 20,
-                    borderRadius: (Dimensions.get("screen").width - 40) / 5,
-                    marginVertical: 10,
-                    marginHorizontal: 10,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                    width: "100%",
                   }}
-                />
-                <Text>
-                  <Truncate text={item.first_name} length={15} />
-                  {/* {item.first_name} */}
-                </Text>
-              </Pressable>
+                >
+                  <FunImage
+                    Pressable={true}
+                    // onPress={() => selectUser(item)}
+                    source={
+                      item && item.picture
+                        ? { uri: item.picture }
+                        : default_image
+                    }
+                    style={{
+                      resizeMode: "cover",
+                      height: (Dimensions.get("screen").width - 40) / 5 - 20,
+                      width: (Dimensions.get("screen").width - 40) / 5 - 20,
+                      borderRadius: (Dimensions.get("screen").width - 40) / 5,
+                      marginVertical: 10,
+                      marginHorizontal: 10,
+                    }}
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      size="label"
+                      type="bold"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                      numberOfLines={2}
+                    >
+                      {item.first_name} {item.last_name ? item.last_name : ""}
+                    </Text>
+
+                    <Text
+                      numberOfLines={1}
+                      size="description"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 3,
+                      }}
+                    >
+                      @{item.username}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
             )}
           />
 

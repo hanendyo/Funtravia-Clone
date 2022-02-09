@@ -194,7 +194,7 @@ export default function NewGroup({ navigation, route }) {
                 borderRadius: 2,
                 flex: 1,
                 paddingHorizontal: 10,
-                marginHorizontal: 10,
+                marginHorizontal: 15,
                 flexDirection: "row",
                 alignItems: "center",
                 alignContent: "center",
@@ -241,18 +241,15 @@ export default function NewGroup({ navigation, route }) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
                 paddingVertical: 10,
-                paddingHorizontal: 20,
+                paddingHorizontal: 0,
               }}
               style={{ borderBottomColor: "#F6F6F6", borderBottomWidth: 1 }}
               renderItem={({ item, index }) => (
                 <Pressable
                   onPress={() => selectUser(item)}
                   style={{
-                    // borderRadius: 15,
-                    // margin: 10,
-                    // justifyContent: "center",
                     alignItems: "center",
-                    marginRight: 20,
+                    marginHorizontal: 5,
                   }}
                 >
                   <FunImageBackground
@@ -291,7 +288,11 @@ export default function NewGroup({ navigation, route }) {
                       <Xgray width={10} height={10} />
                     </View>
                   </FunImageBackground>
-                  <Text>{item.first_name}</Text>
+                  <View style={{ width: 85 }}>
+                    <Text numberOfLines={1} style={{ textAlign: "center" }}>
+                      {item.first_name}
+                    </Text>
+                  </View>
                 </Pressable>
               )}
             />

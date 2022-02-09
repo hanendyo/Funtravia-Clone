@@ -221,7 +221,7 @@ export default function MovieLocation({ navigation, route }) {
   });
   const titleTranslateX = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 20, 45],
+    outputRange: [0, 20, 50],
     extrapolate: "clamp",
   });
   const titleTranslateY = scrollY.interpolate({
@@ -642,8 +642,8 @@ export default function MovieLocation({ navigation, route }) {
           overflow: "hidden",
           height:
             Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT - 10
-              : HEADER_MAX_HEIGHT - 5,
+              ? HEADER_MAX_HEIGHT - 8
+              : HEADER_MAX_HEIGHT - 1,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -684,14 +684,14 @@ export default function MovieLocation({ navigation, route }) {
           bottom: 0,
           zIndex: 999,
           paddingLeft: 60,
-          backgroundColor: "#209fae",
+          backgroundColor: "#209FAE",
           opacity: titleOpacity,
           top:
             Platform.OS == "ios"
               ? SafeStatusBar + 5
               : NotchAndro
-              ? SafeStatusBar + 8
-              : SafeStatusBar + 10,
+              ? SafeStatusBar + 10
+              : SafeStatusBar,
         }}
       >
         <Text

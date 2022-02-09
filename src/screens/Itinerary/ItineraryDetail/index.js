@@ -6592,6 +6592,7 @@ export default function ItineraryDetail(props) {
                       params: {
                         idkiriman: idTarget,
                         Position: types,
+                        data_from: "itinerary",
                       },
                     });
                   }}

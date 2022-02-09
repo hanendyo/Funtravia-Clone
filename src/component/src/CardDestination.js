@@ -190,6 +190,7 @@ export default function CardDestination({
     <View
       style={{
         paddingTop: dataFrom === "wishlist" ? 40 : 0,
+        paddingBottom: dataFrom === "wishlist" ? 0 : 40,
       }}
     >
       <ModalLogin
