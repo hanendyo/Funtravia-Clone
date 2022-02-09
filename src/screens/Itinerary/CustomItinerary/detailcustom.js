@@ -36,6 +36,7 @@ import {
   FunDocument,
   Loading,
   Truncate,
+  Distance,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
 import MapView, { Marker } from "react-native-maps";
@@ -52,6 +53,7 @@ import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 
 export default function detailCustomItinerary(props) {
+  console.log("dataprops", props);
   const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
@@ -160,8 +162,6 @@ export default function detailCustomItinerary(props) {
     await setDataChild(dataX);
   };
 
-  console.log("datacurrent", dataParent);
-
   const OpenModaldate = (starts, duration) => {
     setModaldate(true);
 
@@ -247,6 +247,7 @@ export default function detailCustomItinerary(props) {
   });
 
   const savetimeline = async (datakiriman) => {
+    console.log("a", JSON.stringify(datakiriman));
     try {
       let response = await mutationSaveTimeline({
         variables: {
@@ -264,8 +265,6 @@ export default function detailCustomItinerary(props) {
           // throw new Error(response.data.update_timeline.message);
         }
 
-        // startRefreshAction();
-        // GetTimelin();
         props.navigation.goBack();
       }
     } catch (error) {
@@ -384,6 +383,7 @@ export default function detailCustomItinerary(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+
     const unsubscribe = props.navigation.addListener("focus", () => {
       pecahData(props.route.params.data, props.route.params.id);
     });
@@ -470,19 +470,20 @@ export default function detailCustomItinerary(props) {
     .map((y) => (y.length === 1 ? `0${y}` : y));
 
   const SetTimeline = async (
-    hourStart,
-    minStart,
-    hourEnd,
-    minEnd,
-    dataLists
+    jamstarts,
+    menitstarts,
+    jamends,
+    menitends,
+    dataLists,
+    ordercurrent
   ) => {
-    setModaldate(false);
+    await setModaldate(false);
 
-    let starttimes = hourStart + ":" + minStart + ":00";
+    let starttimes = jamstarts + ":" + menitstarts + ":00";
 
-    let jams = parseFloat(hourEnd) - parseFloat(hourStart);
+    let jams = parseFloat(jamends) - parseFloat(jamstarts);
 
-    let menits = parseFloat(minEnd) + 60 - parseFloat(minStart);
+    let menits = parseFloat(menitends) + 60 - parseFloat(menitstarts);
 
     if (menits > 59) {
       menits = menits - 60;
@@ -492,7 +493,15 @@ export default function detailCustomItinerary(props) {
     let menitakhirs = menits < 10 ? "0" + menits : menits;
     let durations = jamakhirs + ":" + menitakhirs + ":00";
 
-    let dataganti = { ...dataLists[indexinput] };
+    if (dataLists[0].detail_accomodation) {
+      var datahotel = dataLists.splice(0, 1);
+    } else {
+      var datahotel = [];
+    }
+    let datax = [...dataLists];
+
+    console.log("datax", datax);
+    let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
     dataganti.duration = durations;
@@ -500,7 +509,7 @@ export default function detailCustomItinerary(props) {
     if (dataganti.detail_flight) {
       let dateArr = dataganti.detail_flight.arrival.split(" ")[0];
       let timeArr = dataganti.detail_flight.arrival.split(" ")[1];
-      let timeFinal = `${dateArr} ${hourEnd}:${minEnd}:00`;
+      let timeFinal = `${dateArr} ${jamends}:${menitends}:00`;
 
       dataganti.detail_flight = {
         ...dataganti.detail_flight,
@@ -508,15 +517,13 @@ export default function detailCustomItinerary(props) {
       };
     }
 
-    if (dataLists[parseFloat(indexinput) - 1]) {
+    if (datax[parseFloat(indexinput) - 1]) {
       let timesebelum = hitungDuration({
-        startt: dataLists[parseFloat(indexinput) - 1].time,
-        dur: dataLists[parseFloat(indexinput) - 1].duration,
+        startt: datax[parseFloat(indexinput) - 1].time,
+        dur: datax[parseFloat(indexinput) - 1].duration,
       });
 
-      let timestartsebelum = dataLists[parseFloat(indexinput) - 1].time.split(
-        ":"
-      );
+      let timestartsebelum = datax[parseFloat(indexinput) - 1].time.split(":");
 
       timesebelum = timesebelum.split(":");
       let bandingan = starttimes.split(":");
@@ -526,47 +533,118 @@ export default function detailCustomItinerary(props) {
       let jamsesesudah = parseFloat(bandingan[0]);
 
       if (jamsesesudah > timestartsebelum) {
-        let a = caridurasi(
-          dataLists[parseFloat(indexinput) - 1].time,
-          starttimes
-        );
+        dataganti.time = hitungDuration({
+          startt: datax[parseFloat(indexinput) - 1].time,
+          dur: datax[parseFloat(indexinput) - 1].duration,
+        });
+        // let a = caridurasi(datax[parseFloat(indexinput) - 1].time, starttimes);
 
-        let dataset = { ...dataLists[parseFloat(indexinput) - 1] };
-        dataset.duration = a;
-        dataLists.splice(parseFloat(indexinput) - 1, 1, dataset);
+        // let dataset = { ...datax[parseFloat(indexinput) - 1] };
+        // dataset.duration = a;
+        // datax.splice(parseFloat(indexinput) - 1, 1, dataset);
+        // console.log("dataxy", datax);
       } else {
         dataganti.time = hitungDuration({
-          startt: dataLists[parseFloat(indexinput) - 1].time,
-          dur: dataLists[parseFloat(indexinput) - 1].duration,
+          startt: datax[parseFloat(indexinput) - 1].time,
+          dur: datax[parseFloat(indexinput) - 1].duration,
         });
       }
     }
 
-    dataLists.splice(indexinput, 1, dataganti);
+    datax.splice(indexinput, 1, dataganti);
 
     var x = 0;
     var order = 1;
+    if (datahotel.length > 0) {
+      var order = 1;
+    }
 
-    for (var y in dataLists) {
-      if (dataLists[y - 1]) {
-        let datareplace = { ...dataLists[y] };
-        datareplace.order = order;
+    for (var y in datax) {
+      let datareplace = { ...datax[y] };
+      datareplace.order = order;
+      if (datax[y - 1]) {
+        // longitude & latitude index sebelum custom
+        let LongBefore = datax[y - 1].longitude;
+        let LatBefore = datax[y - 1].latitude;
+        // longitude & latitude index custom
+        let LongCurrent = datax[y].longitude;
+        let LatCurrent = datax[y].latitude;
+        // kondisi jika lokasi yang sama dan aktivitas berbeda
+        if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+          var newtime = datax[y - 1].time;
+        } else {
+          // rumus hitung jarak
+          let jarak = Distance({
+            lat1: LatBefore,
+            lon1: LongBefore,
+            lat2: LatCurrent,
+            lon2: LongCurrent,
+            unit: "km",
+          });
+          // rumus hitung waktu
+          let waktutemp = jarak / 50;
+          let waktu = waktutemp + "";
+          // pecah hasil waktu
+          let split = waktu.split(".");
+          let jamtemp = "";
+          let menittemp = "";
+          if (split[0] > 1) {
+            jamtemp = split[1];
+            if (split[1] > 0 && split[1] < 60) {
+              menittemp = split[1];
+            } else {
+              jamtemp = split[0] + 1;
+              menittemp = split[1] - 60;
+            }
+          } else {
+            if (waktu > 0.6) {
+              jamtemp = 1;
+              menittemp = split[1] - 60;
+            } else {
+              jamtemp = 0;
+              menittemp = split[1];
+            }
+          }
+          let time = datax[y - 1].time;
+          let splittime = time.split(":");
+          let durationold = datax[y - 1].duration;
+          let splitdurations = durationold.split(":");
+          //menit total untuk mendapatkan menit yang lebih dari 59
+          let menitotal =
+            parseFloat(splittime[1]) +
+            parseFloat(splitdurations[1]) +
+            parseFloat(menittemp);
+          // let durasitemp = `${jamtemp}:${menittemp}`;
+          let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+          let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+          var newtime =
+            menitotal > 59
+              ? `${newjam + 1}:${newmenit - 60}`
+              : `${newjam}:${newmenit}`;
+        }
+        console.log("new", newtime);
+
         datareplace.time = await hitungDuration({
-          startt: dataLists[y - 1].time,
-          dur: dataLists[y - 1].duration,
+          startt: newtime,
+          dur: datax[y - 1].duration,
         });
-        await dataLists.splice(y, 1, datareplace);
+        await datax.splice(y, 1, datareplace);
       }
+
       x++;
       order++;
     }
+    if (datahotel.length > 0) {
+      datax.splice(0, 0, datahotel[0]);
+    }
+    console.log("datax", datax);
 
-    let sum = dataLists.reduce(
+    let sum = datax.reduce(
       (itinerary, item) => itinerary.add(moment.duration(item.duration)),
       moment.duration()
     );
 
-    let jampert = dataLists[0].time.split(":");
+    let jampert = datax[0].time.split(":");
     let jampertama = parseFloat(jampert[0]);
     let menitpertama = parseFloat(jampert[1]);
     let durjam = Math.floor(sum.asHours());
@@ -578,26 +656,156 @@ export default function detailCustomItinerary(props) {
       let dataday = { ...datadayaktif };
 
       if (hasiljam === 23 && hasilmenit <= 59) {
-        savetimeline(dataLists);
+        savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else if (hasiljam < 23) {
-        savetimeline(dataLists);
+        savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else {
-        RNToasty.Show({
-          title: "Waktu sudah melewati batas maksimal",
-          position: "bottom",
-        });
+        Alert.alert("Waktu sudah melewati batas maksimal");
       }
     } else {
-      RNToasty.Show({
-        title: "Waktu sudah melewati batas maksimal",
-        position: "bottom",
-      });
+      Alert.alert("Waktu sudah melewati batas maksimal");
     }
   };
+  // const SetTimeline = async (
+  //   hourStart,
+  //   minStart,
+  //   hourEnd,
+  //   minEnd,
+  //   dataLists
+  // ) => {
+  //   setModaldate(false);
+  //   console.log("dataListBefore", dataLists);
+
+  //   let starttimes = hourStart + ":" + minStart + ":00";
+
+  //   let jams = parseFloat(hourEnd) - parseFloat(hourStart);
+
+  //   let menits = parseFloat(minEnd) + 60 - parseFloat(minStart);
+
+  //   if (menits > 59) {
+  //     menits = menits - 60;
+  //   }
+
+  //   let jamakhirs = jams < 10 ? "0" + (jams < 0 ? 0 : jams) : jams;
+  //   let menitakhirs = menits < 10 ? "0" + menits : menits;
+  //   let durations = jamakhirs + ":" + menitakhirs + ":00";
+
+  //   let dataganti = { ...dataLists[indexinput] };
+
+  //   dataganti.time = starttimes;
+  //   dataganti.duration = durations;
+
+  //   if (dataganti.detail_flight) {
+  //     let dateArr = dataganti.detail_flight.arrival.split(" ")[0];
+  //     let timeArr = dataganti.detail_flight.arrival.split(" ")[1];
+  //     let timeFinal = `${dateArr} ${hourEnd}:${minEnd}:00`;
+
+  //     dataganti.detail_flight = {
+  //       ...dataganti.detail_flight,
+  //       arrival: timeFinal,
+  //     };
+  //   }
+
+  //   if (dataLists[parseFloat(indexinput) - 1]) {
+  //     let timesebelum = hitungDuration({
+  //       startt: dataLists[parseFloat(indexinput) - 1].time,
+  //       dur: dataLists[parseFloat(indexinput) - 1].duration,
+  //     });
+
+  //     let timestartsebelum = dataLists[parseFloat(indexinput) - 1].time.split(
+  //       ":"
+  //     );
+
+  //     timesebelum = timesebelum.split(":");
+  //     let bandingan = starttimes.split(":");
+
+  //     timestartsebelum = parseFloat(timestartsebelum[0]);
+  //     let jamsebelum = parseFloat(timesebelum[0]);
+  //     let jamsesesudah = parseFloat(bandingan[0]);
+
+  //     if (jamsesesudah > timestartsebelum) {
+  //       dataganti.time = hitungDuration({
+  //         startt: dataLists[parseFloat(indexinput) - 1].time,
+  //         dur: dataLists[parseFloat(indexinput) - 1].duration,
+  //       });
+  //       // let a = caridurasi(
+  //       //   dataLists[parseFloat(indexinput) - 1].time,
+  //       //   starttimes
+  //       // );
+
+  //       // let dataset = { ...dataLists[parseFloat(indexinput) - 1] };
+  //       // dataset.duration = a;
+  //       // dataLists.splice(parseFloat(indexinput) - 1, 1, dataset);
+  //     } else {
+  //       dataganti.time = hitungDuration({
+  //         startt: dataLists[parseFloat(indexinput) - 1].time,
+  //         dur: dataLists[parseFloat(indexinput) - 1].duration,
+  //       });
+  //     }
+  //   }
+
+  //   dataLists.splice(indexinput, 1, dataganti);
+
+  //   var x = 0;
+  //   var order = 1;
+
+  //   for (var y in dataLists) {
+  //     if (dataLists[y - 1]) {
+  //       let datareplace = { ...dataLists[y] };
+  //       datareplace.order = order;
+  //       datareplace.time = await hitungDuration({
+  //         startt: dataLists[y - 1].time,
+  //         dur: dataLists[y - 1].duration,
+  //       });
+  //       await dataLists.splice(y, 1, datareplace);
+  //     }
+  //     x++;
+  //     order++;
+  //   }
+
+  //   let sum = dataLists.reduce(
+  //     (itinerary, item) => itinerary.add(moment.duration(item.duration)),
+  //     moment.duration()
+  //   );
+
+  //   console.log("datalist", dataLists);
+
+  //   let jampert = dataLists[0].time.split(":");
+  //   let jampertama = parseFloat(jampert[0]);
+  //   let menitpertama = parseFloat(jampert[1]);
+  //   let durjam = Math.floor(sum.asHours());
+  //   let durmin = sum.minutes();
+  //   let hasiljam = jampertama + durjam;
+  //   let hasilmenit = menitpertama + durmin;
+
+  //   // if (hasiljam <= 23) {
+  //   //   let dataday = { ...datadayaktif };
+
+  //   //   if (hasiljam === 23 && hasilmenit <= 59) {
+  //   //     savetimeline(dataLists);
+  //   //     dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+  //   //     await setdatadayaktif(dataday);
+  //   //   } else if (hasiljam < 23) {
+  //   //     savetimeline(dataLists);
+  //   //     dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+  //   //     await setdatadayaktif(dataday);
+  //   //   } else {
+  //   //     RNToasty.Show({
+  //   //       title: "Waktu sudah melewati batas maksimal",
+  //   //       position: "bottom",
+  //   //     });
+  //   //   }
+  //   // } else {
+  //   //   RNToasty.Show({
+  //   //     title: "Waktu sudah melewati batas maksimal",
+  //   //     position: "bottom",
+  //   //   });
+  //   // }
+  // };
 
   const [
     mutationUpload,
