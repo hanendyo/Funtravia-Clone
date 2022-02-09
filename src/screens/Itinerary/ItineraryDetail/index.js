@@ -430,6 +430,7 @@ export default function ItineraryDetail(props) {
 
   let [dataSpreadtimeline, setDataSpread] = useState([]);
   const spreadtimeline = async (req) => {
+    console.log("req", req);
     let xdata = [];
     let parent_id = null;
 
@@ -448,10 +449,13 @@ export default function ItineraryDetail(props) {
         datas["parent_id"] = null;
         parent_id = req[index].id;
       }
+
       xdata.push(datas);
     }
     await setDataSpread(xdata);
   };
+
+  console.log("spread", dataSpreadtimeline);
 
   const [
     GetTimelin,
@@ -467,6 +471,7 @@ export default function ItineraryDetail(props) {
     variables: { id: idDay },
     onCompleted: (res) => {
       if (res) {
+        console.log("res", res?.day_timeline);
         setDataListItem(res?.day_timeline);
         spreadtimeline(res?.day_timeline);
       }
@@ -2617,6 +2622,7 @@ export default function ItineraryDetail(props) {
                 <View
                   style={{
                     flex: 1,
+
                     // borderWidth: 1,
                     // borderColor: "red",
                   }}
@@ -2859,8 +2865,14 @@ export default function ItineraryDetail(props) {
                         token: token,
                         idItin: itineraryId,
                         id: item.id,
+                        idDay: idDay,
                         nameitin: datadetail.itinerary_detail.name,
+                        startDate: datadetail?.itinerary_detail?.start_date,
+                        endDate: EndTimeConverter(
+                          datadetail?.itinerary_detail?.end_date
+                        ),
                         datadayaktif: datadayaktif,
+                        indexdata: index,
                       });
                     }}
                   >
