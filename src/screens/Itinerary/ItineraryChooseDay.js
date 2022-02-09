@@ -37,6 +37,7 @@ export default function ItineraryChooseday(props) {
           data_from: props.route.params.data_from,
           token: props.route.params.token,
           onbackhandler: "chooseDay",
+          IdItinerary: props.route.params.Iditinerary,
         },
       });
     } else {

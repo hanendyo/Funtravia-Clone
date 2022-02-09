@@ -301,11 +301,12 @@ export default function Following(props) {
         contentContainerStyle={{
           marginTop: 5,
           justifyContent: "space-evenly",
+          paddingBottom: 30,
         }}
         showsVerticalScrollIndicator={false}
         onEndReached={handleOnEndReached}
         onEndReachedThreshold={1}
-        initialNumToRender={10}
+        initialNumToRender={20}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -429,8 +430,7 @@ export default function Following(props) {
         )}
         keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
-        extraData={selectedId}
-        listFooterComponent={
+        ListFooterComponent={
           loading ? (
             <View
               style={{
