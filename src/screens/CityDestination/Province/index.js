@@ -716,9 +716,7 @@ export default function ProvinceDetail(props) {
 
     let renderjournal = [];
     renderjournal = list_journal;
-
     let renderItinerary = list_populer;
-
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [0, 55],

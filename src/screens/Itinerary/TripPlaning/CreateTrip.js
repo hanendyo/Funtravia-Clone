@@ -239,7 +239,7 @@ export default function Trip(props) {
     variables: {
       keyword: citys,
       countries_id: idCountry,
-      first: 20,
+      first: 10,
       after: "",
     },
     context: {
@@ -354,7 +354,6 @@ export default function Trip(props) {
     }
   };
 
-  // const [search, setsearch] = useState([]);
   const [searchcity, setsearchcity] = useState([]);
   const [searchtravel, setsearchtravel] = useState([]);
   const [titleFocused, setTitleFocused] = useState(false);
@@ -377,7 +376,6 @@ export default function Trip(props) {
     await setIdCountry(id);
     await setModalcountry(false);
     await setCountry(name);
-    await setsearch([]);
   };
 
   const setcity = async (id, name) => {
@@ -511,7 +509,7 @@ export default function Trip(props) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
-          first: 20,
+          first: 9,
           after: datacity?.city_search_cursor_based.pageInfo?.endCursor,
         },
       });
@@ -806,6 +804,7 @@ export default function Trip(props) {
                         data={countryData}
                         renderItem={({ item, index }) => (
                           <Ripple
+                            key={index + "bruh"}
                             // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
                             onPress={() => setcount(item.id, item.name)}
                             style={{
@@ -1110,6 +1109,7 @@ export default function Trip(props) {
                         data={datacity.city_search_cursor_based.edges}
                         renderItem={({ item, index }) => (
                           <Ripple
+                            key={index + Math.floor(Math.random() * 1.2)}
                             // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
                             onPress={() =>
                               setcity(item.node.id, item.node.name)
@@ -1159,7 +1159,7 @@ export default function Trip(props) {
                           </Ripple>
                         )}
                         keyExtractor={(item) => item.node.id}
-                        initialNumToRender={19}
+                        initialNumToRender={9}
                         onEndReachedThreshold={1}
                         onEndReached={handleOnEndReached}
                         ListFooterComponent={

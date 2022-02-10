@@ -748,6 +748,7 @@ export default function TravelGoalDetail(props) {
           style={{
             color: "#fff",
             marginBottom: NotchAndro ? 0 : 5,
+            marginTop: Platform.OS === "ios" ? 5 : 7,
           }}
           numberOfLines={1}
         >
@@ -780,7 +781,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 20 : 20,
+            marginTop: Platform.OS === "ios" ? 20 : 23,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 40,
@@ -823,7 +824,7 @@ export default function TravelGoalDetail(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 20 : 20,
+            marginTop: Platform.OS === "ios" ? 20 : 23,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

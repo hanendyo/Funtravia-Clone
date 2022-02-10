@@ -991,7 +991,7 @@ export default function detailCustomItinerary(props) {
             <GooglePlacesAutocomplete
               query={{
                 key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
-                language: "id", // language of the results
+                language: t("googleLocationLang"), // language of the results
               }}
               fetchDetails={true}
               onPress={(data, details = null) => {

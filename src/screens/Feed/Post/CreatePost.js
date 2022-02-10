@@ -47,6 +47,7 @@ import DashedLine from "react-native-dashed-line";
 import { useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setSettingUser } from "../../../redux/action";
+import DeviceInfo from "react-native-device-info";
 
 const PostMut = gql`
   mutation(
@@ -84,6 +85,7 @@ const PostMut = gql`
 const { width, height } = Dimensions.get("screen");
 
 export default function CreatePost(props) {
+  const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
   let setting = useSelector((data) => data.setting);
   const isFocused = useIsFocused();
@@ -568,7 +570,7 @@ export default function CreatePost(props) {
         <View
           style={{
             backgroundColor: "#209FAE",
-            height: 55,
+            height: Platform.OS === "ios" ? (Notch ? 44 : 44) : 55,
             flexDirection: "row",
             alignItems: "center",
             alignContent: "center",
@@ -610,7 +612,10 @@ export default function CreatePost(props) {
             <Text
               size="header"
               type="bold"
-              style={{ color: "#fff", marginLeft: 10 }}
+              style={{
+                color: "#fff",
+                marginLeft: Platform.OS == "ios" ? 20 : 50,
+              }}
             >
               {t("newPost")}
             </Text>

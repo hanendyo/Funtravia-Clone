@@ -45,8 +45,10 @@ import { hash, stat } from "react-native-fs";
 import { useSelector } from "react-redux";
 import { Video, Image as ImageCompress } from "react-native-compressor";
 import RNFS from "react-native-fs";
+import DeviceInfo from "react-native-device-info";
 
 export default function Post(props) {
+  const Notch = DeviceInfo.hasNotch();
   const tokenApps = useSelector((data) => data.token);
   const isFocused = useIsFocused();
   const [time, setTime] = useState(false);
@@ -675,7 +677,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: 44,
+          height: Platform.OS === "ios" ? (Notch ? 44 : 44) : 55,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
