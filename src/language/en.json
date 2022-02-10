@@ -886,5 +886,6 @@
   "failFollow": "failed to follow ",
   "notRespondInvit": "you have not responded to this invitation",
   "from": "From",
-  "to": "To"
+  "to": "To",
+  "googleLocationLang": "en"
 }

@@ -104,24 +104,24 @@ export default function ItineraryDestination(props) {
 
   let [search, setSearch] = useState({
     type:
-      props.route.params && props.route.params.idtype
+      props?.route?.params && props?.route?.params?.idtype
         ? [props.route.params.idtype]
         : [],
     keyword: null,
     grouptype:
-      props.route.params && props.route.params?.groupid
+      props?.route?.params && props?.route?.params?.groupid
         ? [props.route.params?.groupid]
         : [],
     countries:
-      props.route.params && props.route.params.idcountries
+      props?.route?.params && props?.route?.params?.idcountries
         ? [props.route.params.idcountries]
         : [],
     provinces:
-      props.route.params && props.route.params.idprovince
+      props?.route?.params && props?.route?.params?.idprovince
         ? [props.route.params.idprovince]
         : [],
     cities:
-      props.route.params && props.route.params.idcity
+      props?.route?.params && props?.route?.params?.idcity
         ? [props.route.params.idcity]
         : [],
     goodfor: [],
@@ -163,7 +163,7 @@ export default function ItineraryDestination(props) {
       // await setdataFilterCountrys(datafilter?.destination_filter?.country);
       // await setTempDataCountry(datafilter?.destination_filter?.country);
 
-      let dtat = datloop.filter((item) => item.sugestion === true);
+      let dtat = datloop?.filter((item) => item?.sugestion === true);
 
       for (var datan of dtat) {
         let indx = hasil.findIndex((key) => key.id === datan.id);
@@ -363,9 +363,9 @@ export default function ItineraryDestination(props) {
 
   // Count data filter checked//
   const cekData = async (data) => {
-    let dat = dataFilterCategori.filter((k) => k.checked === true);
-    let datF = dataFilterFacility.filter((k) => k.checked === true);
-    let datL = dataFilterCity.filter((k) => k.checked === true);
+    let dat = dataFilterCategori?.filter((k) => k.checked === true);
+    let datF = dataFilterFacility?.filter((k) => k.checked === true);
+    let datL = dataFilterCity?.filter((k) => k.checked === true);
     // let datC = dataFilterCountry.filter((k) => k.checked === true);
 
     if (hasApply == 1) {
@@ -478,21 +478,21 @@ export default function ItineraryDestination(props) {
 
   // close modal tanpa apply
   useEffect(() => {
-    if (!show && dataFilterCategoris.length != 0) {
+    if (!show && dataFilterCategoris?.length != 0) {
       setdataFilterCategori(tempDataCategory);
       setdataFilterCategoris(tempDataCategory);
     }
     searchCategory("");
     setSearchTextCategory("");
 
-    if (!show && dataFilterFacilitys.length != 0) {
+    if (!show && dataFilterFacilitys?.length != 0) {
       setdataFilterFacility(tempDataFacility);
       setdataFilterFacilitys(tempDataFacility);
     }
     searchFacility("");
     setSearchTextFacility("");
 
-    if (!show && dataFilterCitys.length != 0) {
+    if (!show && dataFilterCitys?.length != 0) {
       setdataFilterCity(tempDataCity);
       setdataFilterCitys(tempDataCity);
     }
@@ -524,7 +524,7 @@ export default function ItineraryDestination(props) {
     setkeyword(teks);
     let searching = new RegExp(teks, "i");
     if (searching != `/(?:)/i`) {
-      let categori = dataFilterCategori.filter((item) =>
+      let categori = dataFilterCategori?.filter((item) =>
         searching.test(item.name)
       );
       await setdataFilterCategoris(categori);
@@ -537,7 +537,7 @@ export default function ItineraryDestination(props) {
     setkeyword(teks);
     let searching = new RegExp(teks, "i");
     if (searching != `/(?:)/i`) {
-      let facility = dataFilterFacility.filter((item) =>
+      let facility = dataFilterFacility?.filter((item) =>
         searching.test(item.name)
       );
       setdataFilterFacilitys(facility);
@@ -550,7 +550,7 @@ export default function ItineraryDestination(props) {
     setkeyword(teks);
     let searching = new RegExp(teks, "i");
     if (searching != `/(?:)/i`) {
-      let cities = dataFilterCity.filter((item) =>
+      let cities = dataFilterCity?.filter((item) =>
         searching.test(item.node.name)
       );
       await setdataFilterCitys(cities);
@@ -1427,7 +1427,7 @@ export default function ItineraryDestination(props) {
                       paddingHorizontal: 15,
                     }}
                   >
-                    {dataFilterCategoris.map((item, index) => (
+                    {dataFilterCategoris?.map((item, index) => (
                       <TouchableOpacity
                         key={index + `bruh`}
                         onPress={() => _handleCheck(item["id"], index, item)}
@@ -1482,7 +1482,7 @@ export default function ItineraryDestination(props) {
                         </Text>
                       </TouchableOpacity>
                     ))}
-                    {aktif === "categories" && !dataFilterCategoris.length ? (
+                    {aktif === "categories" && !dataFilterCategoris?.length ? (
                       <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
                     ) : null}
 
@@ -1566,7 +1566,7 @@ export default function ItineraryDestination(props) {
                       paddingHorizontal: 15,
                     }}
                   >
-                    {dataFilterFacilitys.map((item, index) => (
+                    {dataFilterFacilitys?.map((item, index) => (
                       <TouchableOpacity
                         key={item.id}
                         onPress={() => _handleCheckf(item["id"], index, item)}
@@ -1622,7 +1622,7 @@ export default function ItineraryDestination(props) {
                         </Text>
                       </TouchableOpacity>
                     ))}
-                    {aktif === "facilities" && !dataFilterFacilitys.length ? (
+                    {aktif === "facilities" && !dataFilterFacilitys?.length ? (
                       <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
                     ) : null}
                     {/* <View
@@ -1774,7 +1774,7 @@ export default function ItineraryDestination(props) {
                       paddingHorizontal: 15,
                     }}
                   >
-                    {dataFilterCitys.map((item, index) => (
+                    {dataFilterCitys?.map((item, index) => (
                       <TouchableOpacity
                         key={index + "bruh"}
                         onPress={() =>
@@ -1837,7 +1837,7 @@ export default function ItineraryDestination(props) {
                         </Text>
                       </TouchableOpacity>
                     ))}
-                    {aktif === "location" && !dataFilterCitys.length ? (
+                    {aktif === "location" && !dataFilterCitys?.length ? (
                       <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
                     ) : null}
                     {/* <View

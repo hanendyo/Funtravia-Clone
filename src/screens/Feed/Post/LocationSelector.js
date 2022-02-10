@@ -83,7 +83,7 @@ export default function LocationSelector({
             alignItems: "center",
             alignContent: "center",
             backgroundColor: "#209fae",
-            height: 55,
+            height: Platform.OS === "ios" ? (Notch ? 44 : 44) : 55,
             width: Dimensions.get("screen").width,
             // marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
           }}
@@ -126,7 +126,7 @@ export default function LocationSelector({
           <GooglePlacesAutocomplete
             query={{
               key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
-              language: "id", // language of the results
+              language: t("googleLocationLang"), // language of the results
               // components: "country:id",
             }}
             fetchDetails={true}
@@ -186,7 +186,7 @@ export default function LocationSelector({
             renderRow={(data) => {
               data = data ? data : datanearby;
               var x = data?.description.split(",");
-              return (
+              return data && datanearby ? (
                 <View
                   style={{
                     flexDirection: "row",
@@ -216,6 +216,10 @@ export default function LocationSelector({
                     </Text>
                   </View>
                 </View>
+              ) : (
+                <View style={{ alignSelf: "center" }}>
+                  <Text>{t("noData")}</Text>
+                </View>
               );
             }}
             styles={{
@@ -224,6 +228,7 @@ export default function LocationSelector({
                 height: 45,
                 paddingHorizontal: 10,
                 borderRadius: 5,
+                paddingTop: 1,
               },
               textInput: {
                 backgroundColor: "#f1f1f1",

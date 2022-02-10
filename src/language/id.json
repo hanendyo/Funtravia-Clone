@@ -884,5 +884,6 @@
   "failFollow": "Gagal mengikuti ",
   "notRespondInvit": "kamu belum menanggapi undangan ini",
   "from": "Dari",
-  "to": "Ke"
+  "to": "Ke",
+  "googleLocationLang": "id"
 }

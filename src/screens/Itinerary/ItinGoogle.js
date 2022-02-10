@@ -417,7 +417,7 @@ export default function ItinGoogle(props) {
               style={{}}
               query={{
                 key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
-                language: "id", // language of the results
+                language: t("googleLocationLang"), // language of the results
                 // components: 'country:id',
               }}
               fetchDetails={true}
