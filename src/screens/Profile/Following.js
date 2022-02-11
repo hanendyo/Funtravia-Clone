@@ -109,8 +109,6 @@ export default function Following(props) {
         fetchPolicy: "network-only",
         errorPolicy: "ignore",
       },
-      // pollInterval: 5500,
-      notifyOnNetworkStatusChange: true,
       onCompleted: async () => {
         if (dataFollow) {
           setdata(dataFollow?.user_following_cursor_based.edges);
@@ -137,7 +135,10 @@ export default function Following(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataFollow?.user_following_cursor_based?.pageInfo.hasNextPage) {
+    if (
+      dataFollow?.user_following_cursor_based?.pageInfo.hasNextPage &&
+      !loading
+    ) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
@@ -181,12 +182,14 @@ export default function Following(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
+
       tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
@@ -198,7 +201,6 @@ export default function Following(props) {
         if (errorUnfolMut) {
           throw new Error("Error Input");
         }
-        console.log(response);
         if (response.data) {
           if (
             response.data.unfollow_user.code === 200 ||
@@ -215,10 +217,11 @@ export default function Following(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = true;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -237,9 +240,11 @@ export default function Following(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = true;
       let _temData = {
         __typename: "FollowingEdge",
+        curspr: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -250,7 +255,6 @@ export default function Following(props) {
             id: id,
           },
         });
-        console.log(response);
 
         if (errorFollowMut) {
           throw new Error("Error Input");
@@ -272,9 +276,11 @@ export default function Following(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = false;
         let _temData = {
           __typename: "FollowingEdge",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -301,12 +307,11 @@ export default function Following(props) {
         contentContainerStyle={{
           marginTop: 5,
           justifyContent: "space-evenly",
-          paddingBottom: 30,
         }}
         showsVerticalScrollIndicator={false}
         onEndReached={handleOnEndReached}
-        onEndReachedThreshold={1}
-        initialNumToRender={20}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -437,7 +442,8 @@ export default function Following(props) {
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 30,
+                marginTop: 5,
+                marginBottom: 20,
               }}
             >
               <ActivityIndicator
