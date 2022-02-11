@@ -603,10 +603,9 @@ export default function CreatePost(props) {
             style={{
               // flexDirection: "row",
               // alignItems: "center",
-              marginLeft:
-                Platform.OS == "android"
-                  ? -Dimensions.get("screen").width / 2.3
-                  : 0,
+              width: Platform.OS == "android" ? "50%" : null,
+              // borderWidth: 2,
+              marginRight: Platform.OS == "android" ? 70 : 0,
             }}
           >
             <Text
@@ -614,7 +613,7 @@ export default function CreatePost(props) {
               type="bold"
               style={{
                 color: "#fff",
-                marginLeft: Platform.OS == "ios" ? 20 : 50,
+                marginLeft: Platform.OS == "ios" ? 20 : 0,
               }}
             >
               {t("newPost")}
