@@ -135,7 +135,7 @@ export default function TravelGoalList(props) {
   } = useQuery(TravelLists, {
     fetchPolicy: "network-only",
     variables: {
-      limit: 5,
+      limit: 6,
       offset: 0,
       // category_id: filtercategory,
       category_id: idFilterCategory,
@@ -415,24 +415,6 @@ export default function TravelGoalList(props) {
         </View>
       </View>
 
-      {loadingList ? (
-        <View style={{ marginTop: 20, alignItems: "center" }}>
-          <ActivityIndicator color="#209fae" size={"large"} />
-        </View>
-      ) : dataList.length == 0 ? (
-        <View
-          style={{
-            marginTop: 20,
-            alignItems: "center",
-            width: Dimensions.get("screen").width,
-          }}
-        >
-          <Text size="label" type="bold">
-            {t("noData")}
-          </Text>
-        </View>
-      ) : null}
-
       <FlatList
         data={dataList}
         keyExtractor={(item) => item.id}
@@ -529,6 +511,37 @@ export default function TravelGoalList(props) {
             </View>
           </Pressable>
         )}
+        ListFooterComponent={
+          loadingList ? (
+            <View
+              style={{
+                width: Dimensions.get("screen").width,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 10,
+                marginBottom: 20,
+              }}
+            >
+              <ActivityIndicator
+                animating={loadingList}
+                size="large"
+                color="#209FAE"
+              />
+            </View>
+          ) : dataList.length === 0 ? (
+            <View
+              style={{
+                marginTop: 20,
+                alignItems: "center",
+                width: Dimensions.get("screen").width,
+              }}
+            >
+              <Text size="label" type="bold">
+                {t("noData")}
+              </Text>
+            </View>
+          ) : null
+        }
       />
 
       <Modal

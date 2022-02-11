@@ -115,6 +115,7 @@ export default function SearchPg(props, { navigation, route }) {
       let setsetting = await AsyncStorage.getItem("setting");
       if (searchtext) {
         await refetchSrcuser();
+        await refetchSrcLocation();
       }
       // setSetting(JSON.parse(setsetting));
       // dispatch(setSettingUser(setsetting));
@@ -269,10 +270,7 @@ export default function SearchPg(props, { navigation, route }) {
     },
   });
 
-  console.log("loaduser", loadingSrcuser);
-
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("onUpdate");
     if (!fetchMoreResult) return prev;
     const { pageInfo } = fetchMoreResult.user_searchv2_cursor_based;
 
@@ -280,7 +278,7 @@ export default function SearchPg(props, { navigation, route }) {
       ...prev?.user_searchv2_cursor_based?.edges,
       ...fetchMoreResult?.user_searchv2_cursor_based?.edges,
     ];
-    console.log("edges", edges);
+
     const feedback = Object.assign({}, prev, {
       user_searchv2_cursor_based: {
         __typename: prev.user_searchv2_cursor_based.__typename,
@@ -305,6 +303,37 @@ export default function SearchPg(props, { navigation, route }) {
         },
       });
     }
+  };
+
+  const handleOnEndReachedLocation = () => {
+    if (
+      dataLocation?.search_location_cursor_based.page_info.hasNextPage &&
+      !loadingLocation
+    ) {
+      return fetchMoreLocation({
+        updateQuery: onUpdateLocation,
+        variables: {
+          limit: 10,
+          offset: dataLocation.search_location_cursor_based.page_info.offset,
+        },
+      });
+    }
+  };
+  const onUpdateLocation = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { page_info } = fetchMoreResult.search_location_cursor_based;
+    const datas = [
+      ...prev.search_location_cursor_based.datas,
+      ...fetchMoreResult.search_location_cursor_based.datas,
+    ];
+
+    return Object.assign({}, prev, {
+      search_location_cursor_based: {
+        __typename: prev.search_location_cursor_based.__typename,
+        page_info,
+        datas,
+      },
+    });
   };
 
   let [destinationSearch, SetdestinationSearch] = useState([]);
@@ -370,18 +399,22 @@ export default function SearchPg(props, { navigation, route }) {
     },
   });
 
+  let [search_location, setSearch_location] = useState([]);
+
   const {
     loading: loadingLocation,
     data: dataLocation,
     error: errorLocation,
     refetch: refetchSrcLocation,
-    networkStatus: networkStatusSrcLocation,
+    fetchMore: fetchMoreLocation,
   } = useQuery(SearchLocationQuery, {
     variables: {
       keyword: searchtext,
       cities_id: cities_id,
       province_id: province_id,
       countries_id: countries_id,
+      limit: 10,
+      offset: 0,
     },
     fetchPolicy: "network-only",
     context: {
@@ -390,13 +423,11 @@ export default function SearchPg(props, { navigation, route }) {
         Authorization: tokenApps,
       },
     },
-    notifyOnNetworkStatusChange: true,
+    onCompleted: () => {
+      setSearch_location(dataLocation.search_location_cursor_based.datas);
+    },
   });
 
-  let search_location = [];
-  if (dataLocation && dataLocation.search_location) {
-    search_location = dataLocation.search_location;
-  }
   const {
     data: dataCityPopuler,
     loading: loadingCityPopuler,
@@ -444,10 +475,11 @@ export default function SearchPg(props, { navigation, route }) {
     if (tokenApps) {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -473,10 +505,11 @@ export default function SearchPg(props, { navigation, route }) {
       } catch (error) {
         let tempUser = [...user_search];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = true;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -501,10 +534,11 @@ export default function SearchPg(props, { navigation, route }) {
     if (tokenApps) {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -527,10 +561,11 @@ export default function SearchPg(props, { navigation, route }) {
       } catch (error) {
         let tempUser = [...user_search];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = false;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -850,256 +885,239 @@ export default function SearchPg(props, { navigation, route }) {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {active_src === "people" ? (
-                loadingSrcuser ? //     // bottom:0, //     // position: 'absolute', //   style={{ // <View
-                //     flex: 1,
-                //     width: width,
-                //     justifyContent: "center",
-                //     alignItems: "center",
-                //     marginHorizontal: 15,
-                //   }}
-                // >
-                //   <ActivityIndicator
-                //     animating={loadingSrcuser}
-                //     size="large"
-                //     color="#209fae"
-                //   />
-                // </View>
-                null : (
-                  <FlatList
-                    key={"search"}
-                    contentContainerStyle={{
-                      marginTop: 5,
-                      justifyContent: "space-evenly",
-                      marginHorizontal: 15,
-                    }}
-                    data={user_search}
-                    onEndReached={handleOnEndReached}
-                    onEndReachedThreshold={1}
-                    initialNumToRender={10}
-                    renderItem={({ item, index }) => (
-                      <View
-                        style={{
-                          width: "100%",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          alignContent: "center",
-                          paddingVertical: 15,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={
-                            () => {
-                              BackHandler.removeEventListener(
-                                "hardwareBackPress",
-                                onBackPress
-                              );
-                              recent_save(searchtext);
-                              props.navigation.push("ProfileStack", {
-                                screen: "otherprofile",
-                                params: {
-                                  idUser: item.node.id,
-                                  token: tokenApps,
-                                },
-                              });
-                            }
-                            // props.navigation.push("otherprofile", { idUser: item.id })
+              {active_src === "people" && (
+                <FlatList
+                  key={"search"}
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    justifyContent: "space-evenly",
+                    marginHorizontal: 15,
+                  }}
+                  data={user_search}
+                  onEndReached={handleOnEndReached}
+                  onEndReachedThreshold={0.5}
+                  initialNumToRender={10}
+                  renderItem={({ item, index }) => (
+                    <View
+                      style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignContent: "center",
+                        paddingVertical: 15,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={
+                          () => {
+                            BackHandler.removeEventListener(
+                              "hardwareBackPress",
+                              onBackPress
+                            );
+                            recent_save(searchtext);
+                            props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.node.id,
+                                token: tokenApps,
+                              },
+                            });
                           }
-                          style={{
-                            flexDirection: "row",
-                            flex: 1,
-                            alignItems: "center",
-                          }}
-                        >
-                          <Image
-                            source={
-                              item.node.picture
-                                ? {
-                                    uri: item.node.picture,
-                                  }
-                                : DefaultProfile
-                            }
-                            style={{
-                              resizeMode: "cover",
-                              height: 50,
-                              width: 50,
-                              borderRadius: 25,
-                            }}
-                          />
-                          <View
-                            style={{
-                              marginHorizontal: 15,
-                              justifyContent: "center",
-                              flex: 1,
-                            }}
-                          >
-                            <Text size="label" type="bold" numberOfLines={2}>
-                              {item.node.first_name ? item.node.first_name : ""}{" "}
-                              {item.node.last_name ? item.node.last_name : ""}
-                            </Text>
-                            <Text size="label" type="regular">
-                              {`@${item.node.username}`}test
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-
-                        <View style={{}}>
-                          {item.node.status_following === false ? (
-                            <Button
-                              size="small"
-                              type="circle"
-                              variant="bordered"
-                              style={{ width: 100 }}
-                              text={t("follow")}
-                              onPress={() => {
-                                _follow(item.node.id, index);
-                              }}
-                            ></Button>
-                          ) : (
-                            <Button
-                              size="small"
-                              type="circle"
-                              style={{ width: 100 }}
-                              onPress={() => {
-                                _unfollow(item.node.id, index);
-                              }}
-                              text={t("following")}
-                            ></Button>
-                          )}
-                        </View>
-                      </View>
-                    )}
-                    keyExtractor={(item) => item.node.id}
-                    showsVerticalScrollIndicator={false}
-                    ListFooterComponent={
-                      searchtext !== "" && user_search?.length <= 0 ? (
-                        <View
-                          style={{
-                            alignItems: "center",
-                            marginTop: 30,
-                          }}
-                        >
-                          <Text size="label" type="regular">
-                            {t("noData")}
-                          </Text>
-                        </View>
-                      ) : loadingSrcuser ? (
-                        <View
-                          style={{
-                            width: Dimensions.get("screen").width,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginBottom: 30,
-                          }}
-                        >
-                          <ActivityIndicator
-                            animateing={loadingSrcuser}
-                            size="large"
-                            color="#209FAE"
-                          />
-                        </View>
-                      ) : null
-                    }
-                  />
-                )
-              ) : null}
-              {active_src === "location" && searchtext ? (
-                loadingLocation ? (
-                  <View
-                    style={{
-                      // position: 'absolute',
-                      // bottom:0,
-                      flex: 1,
-                      width: width,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginHorizontal: 15,
-                    }}
-                  >
-                    <ActivityIndicator
-                      animating={loadingLocation}
-                      size="large"
-                      color="#209fae"
-                    />
-                  </View>
-                ) : (
-                  <FlatList
-                    data={search_location}
-                    contentContainerStyle={{
-                      marginTop: 5,
-                      justifyContent: "space-evenly",
-                      paddingStart: 10,
-                      paddingEnd: 10,
-                      paddingBottom: 120,
-                    }}
-                    horizontal={false}
-                    renderItem={({ item, index }) => (
-                      <Pressable
-                        onPress={() => gotoLocation(item)}
+                          // props.navigation.push("otherprofile", { idUser: item.id })
+                        }
                         style={{
                           flexDirection: "row",
+                          flex: 1,
                           alignItems: "center",
-                          marginBottom: 15,
                         }}
                       >
-                        <FunImage
+                        <Image
                           source={
-                            item.cover ? { uri: item.cover } : default_image
+                            item.node.picture
+                              ? {
+                                  uri: item.node.picture,
+                                }
+                              : DefaultProfile
                           }
                           style={{
-                            width: width / 3,
-                            height: 85,
-                            borderRadius: 7,
+                            resizeMode: "cover",
+                            height: 50,
+                            width: 50,
+                            borderRadius: 25,
                           }}
                         />
                         <View
                           style={{
-                            width: width / 2,
-                            marginLeft: 20,
-                          }}
-                        >
-                          <Text
-                            size="bold"
-                            style={{
-                              marginBottom: 5,
-                            }}
-                          >
-                            {prepercase(item.name)}
-                          </Text>
-                          <Text>
-                            {item.type}{" "}
-                            {item.head1 ? "of " + prepercase(item.head1) : null}
-                            {item.head2 ? ", " + prepercase(item.head2) : null}
-                          </Text>
-                        </View>
-                      </Pressable>
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                    ListFooterComponent={
-                      searchtext !== "" && search_location.length <= 0 ? (
-                        <View
-                          style={{
-                            // position: 'absolute',
-                            // bottom:0,
-                            width: width,
+                            marginHorizontal: 15,
                             justifyContent: "center",
-                            alignItems: "center",
-                            marginTop: 30,
-                            marginLeft: -15,
-                            // borderWidth: 1,
+                            flex: 1,
                           }}
                         >
+                          <Text size="label" type="bold" numberOfLines={2}>
+                            {item.node.first_name ? item.node.first_name : ""}{" "}
+                            {item.node.last_name ? item.node.last_name : ""}
+                          </Text>
                           <Text size="label" type="regular">
-                            {t("noData")}
+                            {`@${item.node.username}`}test
                           </Text>
                         </View>
-                      ) : null
-                    }
-                    // extraData={selected}
-                  />
-                )
-              ) : null}
+                      </TouchableOpacity>
+
+                      <View style={{}}>
+                        {item.node.status_following === false ? (
+                          <Button
+                            size="small"
+                            type="circle"
+                            variant="bordered"
+                            style={{ width: 100 }}
+                            text={t("follow")}
+                            onPress={() => {
+                              _follow(item.node.id, index);
+                            }}
+                          ></Button>
+                        ) : (
+                          <Button
+                            size="small"
+                            type="circle"
+                            style={{ width: 100 }}
+                            onPress={() => {
+                              _unfollow(item.node.id, index);
+                            }}
+                            text={t("following")}
+                          ></Button>
+                        )}
+                      </View>
+                    </View>
+                  )}
+                  keyExtractor={(item) => item.node.id}
+                  showsVerticalScrollIndicator={false}
+                  ListFooterComponent={
+                    searchtext !== "" && user_search?.length <= 0 ? (
+                      <View
+                        style={{
+                          alignItems: "center",
+                          marginTop: 30,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
+                      </View>
+                    ) : loadingSrcuser ? (
+                      <View
+                        style={{
+                          width: Dimensions.get("screen").width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginBottom: 30,
+                        }}
+                      >
+                        <ActivityIndicator
+                          animateing={loadingSrcuser}
+                          size="large"
+                          color="#209FAE"
+                        />
+                      </View>
+                    ) : null
+                  }
+                />
+              )}
+              {active_src === "location" && (
+                <FlatList
+                  data={search_location}
+                  contentContainerStyle={{
+                    marginTop: 5,
+                    justifyContent: "space-evenly",
+                    paddingStart: 10,
+                    paddingEnd: 10,
+                    paddingBottom: 120,
+                  }}
+                  horizontal={false}
+                  onEndReachedThreshold={0.7}
+                  onEndReached={handleOnEndReachedLocation}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => gotoLocation(item)}
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginBottom: 15,
+                      }}
+                    >
+                      <FunImage
+                        source={
+                          item.cover ? { uri: item.cover } : default_image
+                        }
+                        style={{
+                          width: width / 3,
+                          height: 85,
+                          borderRadius: 7,
+                        }}
+                      />
+                      <View
+                        style={{
+                          width: width / 2,
+                          marginLeft: 20,
+                        }}
+                      >
+                        <Text
+                          size="bold"
+                          style={{
+                            marginBottom: 5,
+                          }}
+                        >
+                          {prepercase(item.name)}
+                        </Text>
+                        <Text>
+                          {item.type}{" "}
+                          {item.head1 ? "of " + prepercase(item.head1) : null}
+                          {item.head2 ? ", " + prepercase(item.head2) : null}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                  ListFooterComponent={
+                    searchtext !== "" && search_location?.length <= 0 ? (
+                      <View
+                        style={{
+                          // position: 'absolute',
+                          // bottom:0,
+                          width: width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 30,
+                          marginLeft: -15,
+                          // borderWidth: 1,
+                        }}
+                      >
+                        <Text size="label" type="regular">
+                          {t("noData")}
+                        </Text>
+                      </View>
+                    ) : loadingLocation ? (
+                      <View
+                        style={{
+                          // position: 'absolute',
+                          // bottom:0,
+                          flex: 1,
+                          width: width,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginHorizontal: 15,
+                        }}
+                      >
+                        <ActivityIndicator
+                          animating={loadingLocation}
+                          size="large"
+                          color="#209fae"
+                        />
+                      </View>
+                    ) : null
+                  }
+                />
+              )}
               {active_src === "destination" && searchtext ? (
                 loadingDestination == true ? (
                   <View
@@ -1260,22 +1278,7 @@ export default function SearchPg(props, { navigation, route }) {
                 </TouchableOpacity>
               </View>
               {active_src === "people" ? (
-                loadingSrcuser ? //     // position: 'absolute', //   style={{ // <View
-                //     // bottom:0,
-                //     flex: 1,
-                //     width: width,
-                //     justifyContent: "center",
-                //     alignItems: "center",
-                //     marginHorizontal: 15,
-                //   }}
-                // >
-                //   <ActivityIndicator
-                //     animating={loadingSrcuser}
-                //     size="large"
-                //     color="#209fae"
-                //   />
-                // </View>
-                null : (
+                loadingSrcuser ? null : ( // </View> //   /> //     color="#209fae" //     size="large" //     animating={loadingSrcuser} //   <ActivityIndicator // > //   }} //     marginHorizontal: 15, //     alignItems: "center", //     justifyContent: "center", //     width: width, //     flex: 1, //     // bottom:0, //     // position: 'absolute', //   style={{ // <View
                   // <FriendList
                   //   props={props}
                   //   datanya={user_search}

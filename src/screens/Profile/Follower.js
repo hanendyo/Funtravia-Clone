@@ -72,7 +72,6 @@ export default function Follower(props) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   let [data, setdata] = useState([]);
-  console.log(data);
 
   const loadAsync = async () => {
     setLoading(true);
@@ -105,10 +104,7 @@ export default function Follower(props) {
     }
   );
 
-  console.log("dfol", dataFollow?.user_followers_cursor_based.edges);
-
   const onUpdate = (prev, { fetchMoreResult }) => {
-    console.log("onUpdate");
     if (!fetchMoreResult) return prev;
     const { pageInfo } = fetchMoreResult.user_followers_cursor_based;
     const edges = [
@@ -126,7 +122,10 @@ export default function Follower(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataFollow?.user_followers_cursor_based?.pageInfo.hasNextPage) {
+    if (
+      dataFollow?.user_followers_cursor_based?.pageInfo.hasNextPage &&
+      !loading
+    ) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
@@ -170,10 +169,11 @@ export default function Follower(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -192,7 +192,6 @@ export default function Follower(props) {
             response.data.unfollow_user.code === 200 ||
             response.data.unfollow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.unfollow_user.message);
           }
@@ -204,10 +203,11 @@ export default function Follower(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = true;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -226,9 +226,11 @@ export default function Follower(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = true;
       let _temData = {
         __typename: "FollowingEdge",
+        cursor: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -248,7 +250,6 @@ export default function Follower(props) {
             response.data.follow_user.code === 200 ||
             response.data.follow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.follow_user.message);
           }
@@ -260,9 +261,11 @@ export default function Follower(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = false;
         let _temData = {
           __typename: "FollowingEdge",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -287,12 +290,12 @@ export default function Follower(props) {
       {/* <Loading show={loadin} /> */}
       <FlatList
         contentContainerStyle={{
-          justifyContent: "space-evenly",
           marginTop: 5,
+          justifyContent: "space-evenly",
         }}
         showsVerticalScrollIndicator={false}
         onEndReached={handleOnEndReached}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
@@ -318,11 +321,7 @@ export default function Follower(props) {
                   },
                 });
               }}
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                alignItems: "center",
-              }}
+              style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
             >
               <Image
                 source={
@@ -365,7 +364,6 @@ export default function Follower(props) {
                 ) : null}
               </View>
             </TouchableOpacity>
-
             <View style={{ width: "25%", marginLeft: 15 }}>
               {item.node.status_following === false ? (
                 <Pressable
@@ -422,15 +420,15 @@ export default function Follower(props) {
         )}
         keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
-        extraData={selectedId}
-        listFooterComponent={
+        ListFooterComponent={
           loading ? (
             <View
               style={{
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 30,
+                marginTop: 5,
+                marginBottom: 20,
               }}
             >
               <ActivityIndicator

@@ -122,7 +122,10 @@ export default function Follower(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataFollow?.user_followersbyid_cursor_based?.pageInfo.hasNextPage) {
+    if (
+      dataFollow?.user_followersbyid_cursor_based?.pageInfo.hasNextPage &&
+      !loading
+    ) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
@@ -133,8 +136,6 @@ export default function Follower(props) {
       });
     }
   };
-
-  console.log("data", data);
 
   const loadAsync = async () => {
     setLoading(true);
@@ -176,12 +177,14 @@ export default function Follower(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
+
       tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
@@ -198,23 +201,22 @@ export default function Follower(props) {
             response.data.unfollow_user.code === 200 ||
             response.data.unfollow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.unfollow_user.message);
           }
         }
       } catch (error) {
-        console.log(error);
         RNToasty.Show({
-          title: `${error}`,
+          title: error,
           position: "bottom",
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = true;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -233,9 +235,11 @@ export default function Follower(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = true;
       let _temData = {
         __typename: "FollowingEdge",
+        curspr: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -246,6 +250,7 @@ export default function Follower(props) {
             id: id,
           },
         });
+
         if (errorFollowMut) {
           throw new Error("Error Input");
         }
@@ -255,7 +260,6 @@ export default function Follower(props) {
             response.data.follow_user.code === 200 ||
             response.data.follow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.follow_user.message);
           }
@@ -267,9 +271,11 @@ export default function Follower(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = false;
         let _temData = {
           __typename: "FollowingEdge",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -293,14 +299,14 @@ export default function Follower(props) {
     >
       {/* <Loading show={loadin} /> */}
       <FlatList
-        showsVerticalScrollIndicator={false}
-        onEndReached={handleOnEndReached}
-        onEndReachedThreshold={1}
-        initialNumToRender={10}
         contentContainerStyle={{
-          paddingVertical: 5,
+          marginTop: 5,
           justifyContent: "space-evenly",
         }}
+        showsVerticalScrollIndicator={false}
+        onEndReached={handleOnEndReached}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -345,7 +351,7 @@ export default function Follower(props) {
               <View
                 style={{
                   marginLeft: 10,
-                  justifyContent: item?.node.bio ? "space-around" : "center",
+                  justifyContent: "space-around",
                   flex: 1,
                 }}
               >
@@ -368,73 +374,71 @@ export default function Follower(props) {
                 ) : null}
               </View>
             </TouchableOpacity>
-            {item?.node.id !== setting?.user?.id ? (
-              <View style={{ width: "25%", marginLeft: 15 }}>
-                {item.node.status_following === false ? (
-                  <Pressable
+            <View style={{ width: "25%", marginLeft: 15 }}>
+              {item.node.status_following === false ? (
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#209fae",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
+                  onPress={() => {
+                    _follow(item.node.id, index);
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
                     style={{
-                      borderRadius: 20,
-                      borderWidth: 1,
-                      borderColor: "#209fae",
-                      width: "100%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: 30,
-                    }}
-                    onPress={() => {
-                      _follow(item.node.id, index);
+                      color: "#209fae",
                     }}
                   >
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{
-                        color: "#209fae",
-                      }}
-                    >
-                      {t("follow")}
-                    </Text>
-                  </Pressable>
-                ) : (
-                  <Pressable
+                    {t("follow")}
+                  </Text>
+                </Pressable>
+              ) : (
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    width: "100%",
+                    backgroundColor: "#209fae",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
+                  onPress={() => {
+                    _unfollow(item.node.id, index);
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
                     style={{
-                      borderRadius: 20,
-                      width: "100%",
-                      backgroundColor: "#209fae",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: 30,
-                    }}
-                    onPress={() => {
-                      _unfollow(item.node.id, index);
+                      color: "#fff",
                     }}
                   >
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{
-                        color: "#fff",
-                      }}
-                    >
-                      {t("following")}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            ) : null}
+                    {t("following")}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
           </View>
         )}
-        keyExtractor={(item) => item.node.id}
+        keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
-        extraData={selectedId}
-        listFooterComponent={
+        ListFooterComponent={
           loading ? (
             <View
               style={{
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 30,
+                marginTop: 5,
+                marginBottom: 20,
               }}
             >
               <ActivityIndicator

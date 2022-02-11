@@ -106,8 +106,6 @@ export default function Following(props) {
     }
   );
 
-  console.log("data", data);
-
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
     const { pageInfo } = fetchMoreResult.user_followingbyid_cursor_based;
@@ -126,7 +124,10 @@ export default function Following(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataFollow?.user_followingbyid_cursor_based?.pageInfo.hasNextPage) {
+    if (
+      dataFollow?.user_followingbyid_cursor_based?.pageInfo.hasNextPage &&
+      !loading
+    ) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
@@ -178,12 +179,14 @@ export default function Following(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = false;
       let _temData = {
         __typename: "FollowingEdge",
-        cursor: "MQ==",
+        cursor: _cursor,
         node: _temStatus,
       };
+
       tempUser.splice(index, 1, _temData);
       setdata(tempUser);
       try {
@@ -200,23 +203,22 @@ export default function Following(props) {
             response.data.unfollow_user.code === 200 ||
             response.data.unfollow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.unfollow_user.message);
           }
         }
       } catch (error) {
-        console.log("err", error);
         RNToasty.Show({
-          title: `${error}`,
+          title: error,
           position: "bottom",
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = true;
         let _temData = {
           __typename: "FollowingEdge",
-          cursor: "MQ==",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -235,9 +237,11 @@ export default function Following(props) {
     if (token) {
       let tempUser = [...data];
       let _temStatus = { ...tempUser[index].node };
+      let _cursor = tempUser[index].cursor;
       _temStatus.status_following = true;
       let _temData = {
         __typename: "FollowingEdge",
+        curspr: _cursor,
         node: _temStatus,
       };
       tempUser.splice(index, 1, _temData);
@@ -248,6 +252,7 @@ export default function Following(props) {
             id: id,
           },
         });
+
         if (errorFollowMut) {
           throw new Error("Error Input");
         }
@@ -257,7 +262,6 @@ export default function Following(props) {
             response.data.follow_user.code === 200 ||
             response.data.follow_user.code === "200"
           ) {
-            console.log("berhasil");
           } else {
             throw new Error(response.data.follow_user.message);
           }
@@ -269,9 +273,11 @@ export default function Following(props) {
         });
         let tempUser = [...data];
         let _temStatus = { ...tempUser[index].node };
+        let _cursor = tempUser[index].cursor;
         _temStatus.status_following = false;
         let _temData = {
           __typename: "FollowingEdge",
+          cursor: _cursor,
           node: _temStatus,
         };
         tempUser.splice(index, 1, _temData);
@@ -286,123 +292,6 @@ export default function Following(props) {
     }
   };
 
-  const RenderNameList = ({
-    idUser,
-    first_name,
-    last_name,
-    picture,
-    username,
-    bio,
-    status,
-  }) => {
-    return (
-      <View
-        style={{
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          alignContent: "center",
-          // paddingHorizontal: 15,
-          paddingLeft: 20,
-          paddingRight: "8%",
-          paddingVertical: 15,
-          borderBottomWidth: 1,
-          borderBottomColor: "#F6F6F6",
-        }}
-      >
-        <TouchableOpacity
-          onPress={
-            () => {
-              props.navigation.push("ProfileStack", {
-                screen: "otherprofile",
-                params: {
-                  idUser: item.node.id,
-                  token: token,
-                },
-              });
-            }
-            // props.navigation.push("otherprofile", { idUser: item.id })
-          }
-          style={{ flexDirection: "row" }}
-        >
-          <Image
-            source={
-              item?.node.picture
-                ? {
-                    uri: item.picture,
-                  }
-                : DefaultProfile
-            }
-            style={{
-              resizeMode: "cover",
-              height: 55,
-              width: 55,
-              borderRadius: 40,
-            }}
-          />
-          <View
-            style={{
-              marginLeft: 20,
-              justifyContent: "center",
-              paddingVertical: 1,
-            }}
-          >
-            {item?.node.last_name !== null ? (
-              <Text size="small" type="bold" style={{ marginBottom: 5 }}>
-                {item?.node.first_name + " " + item?.node.last_name}
-              </Text>
-            ) : (
-              <Text size="small" type="bold" style={{ marginBottom: 5 }}>
-                {item?.node.first_name}
-              </Text>
-            )}
-            <Text type="regular" size="small" style={{ marginBottom: 5 }}>
-              {`@${item?.node.username}`}
-            </Text>
-            {item?.node.bio ? (
-              <Text type="regular" size="small">
-                <Truncate
-                  text={item?.node.bio ? item.node.bio : ""}
-                  length={40}
-                />
-              </Text>
-            ) : null}
-          </View>
-        </TouchableOpacity>
-
-        <View style={{}}>
-          {status == false ? (
-            <Button
-              size="small"
-              type="circle"
-              style={{ width: 100 }}
-              text="Follow"
-              onPress={() => {
-                _follow(idUser, status),
-                  setSelectedStatus(status),
-                  setSelectedId(idUser);
-              }}
-            ></Button>
-          ) : (
-            <Button
-              size="small"
-              type="circle"
-              variant="bordered"
-              style={{ width: 100 }}
-              onPress={() => {
-                _unfollow(idUser, status),
-                  setSelectedStatus(status),
-                  setSelectedId(idUser);
-              }}
-              text="Unfollow"
-            ></Button>
-          )}
-        </View>
-      </View>
-    );
-  };
-
   return (
     <View
       style={{
@@ -412,14 +301,14 @@ export default function Following(props) {
     >
       {/* <Loading show={loadin} /> */}
       <FlatList
-        showsVerticalScrollIndicator={false}
-        onEndReached={handleOnEndReached}
-        onEndReachedThreshold={1}
-        initialNumToRender={10}
         contentContainerStyle={{
-          paddingVertical: 5,
+          marginTop: 5,
           justifyContent: "space-evenly",
         }}
+        showsVerticalScrollIndicator={false}
+        onEndReached={handleOnEndReached}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={10}
         data={data}
         renderItem={({ item, index }) => (
           <View
@@ -435,18 +324,15 @@ export default function Following(props) {
             }}
           >
             <TouchableOpacity
-              onPress={
-                () => {
-                  props.navigation.push("ProfileStack", {
-                    screen: "otherprofile",
-                    params: {
-                      idUser: item.node.id,
-                      token: token,
-                    },
-                  });
-                }
-                // props.navigation.push("otherprofile", { idUser: item.id })
-              }
+              onPress={() => {
+                props.navigation.push("ProfileStack", {
+                  screen: "otherprofile",
+                  params: {
+                    idUser: item.node.id,
+                    token: token,
+                  },
+                });
+              }}
               style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
             >
               <Image
@@ -467,7 +353,7 @@ export default function Following(props) {
               <View
                 style={{
                   marginLeft: 10,
-                  justifyContent: item?.bio ? "space-around" : "center",
+                  justifyContent: "space-around",
                   flex: 1,
                 }}
               >
@@ -483,80 +369,78 @@ export default function Following(props) {
                 <Text size="description" type="regular">
                   {`@${item?.node.username}`}
                 </Text>
-                {item?.bio ? (
+                {item?.node.bio ? (
                   <Text type="regular" size="description" numberOfLines={1}>
                     {item?.node.bio ? item.node.bio : ""}
                   </Text>
                 ) : null}
               </View>
             </TouchableOpacity>
-            {item?.node.id !== setting?.user?.id ? (
-              <View style={{ width: "25%", marginLeft: 15 }}>
-                {item?.node.status_following === false ? (
-                  <Pressable
+            <View style={{ width: "25%", marginLeft: 15 }}>
+              {item.node.status_following === false ? (
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#209fae",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
+                  onPress={() => {
+                    _follow(item.node.id, index);
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
                     style={{
-                      borderRadius: 20,
-                      borderWidth: 1,
-                      borderColor: "#209fae",
-                      width: "100%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: 30,
-                    }}
-                    onPress={() => {
-                      _follow(item.node.id, index);
+                      color: "#209fae",
                     }}
                   >
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{
-                        color: "#209fae",
-                      }}
-                    >
-                      {t("follow")}
-                    </Text>
-                  </Pressable>
-                ) : (
-                  <Pressable
+                    {t("follow")}
+                  </Text>
+                </Pressable>
+              ) : (
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    width: "100%",
+                    backgroundColor: "#209fae",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 30,
+                  }}
+                  onPress={() => {
+                    _unfollow(item.node.id, index);
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
                     style={{
-                      borderRadius: 20,
-                      width: "100%",
-                      backgroundColor: "#209fae",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: 30,
-                    }}
-                    onPress={() => {
-                      _unfollow(item.node.id, index);
+                      color: "#fff",
                     }}
                   >
-                    <Text
-                      size="description"
-                      type="regular"
-                      style={{
-                        color: "#fff",
-                      }}
-                    >
-                      {t("following")}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            ) : null}
+                    {t("following")}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
           </View>
         )}
-        keyExtractor={(item) => item.node.id}
+        keyExtractor={(item) => item?.node.id}
         showsHorizontalScrollIndicator={false}
-        extraData={selectedId}
-        listFooterComponent={
+        ListFooterComponent={
           loading ? (
             <View
               style={{
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 30,
+                marginTop: 5,
+                marginBottom: 20,
               }}
             >
               <ActivityIndicator
