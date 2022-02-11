@@ -18,6 +18,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { Provider } from "react-redux";
 import { storeState } from "./src/redux";
 import RNRestart from "react-native-restart";
+import { useDispatch, useSelector } from "react-redux";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
@@ -153,7 +154,49 @@ function App() {
     return unsubscribe;
   }, []);
 
+  const loadAsync = async () => {
+    let notif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
+    console.log("~ notif", notif);
+    await setDataNotifikasi(notif);
+    // await AsyncStorage.setItem("dataNotification", "");
+  };
+
   useEffect(() => {
+    PushNotification.configure({
+      onRegister: function(token) {
+        // console.log("TOKEN:", token);
+      },
+      onNotification: async function(notification) {
+        console.log("NOTIFICATION:", notification);
+        if (notification.userInteraction == true) {
+          await setDataNotifikasi(notification);
+          await AsyncStorage.setItem(
+            "dataNotification",
+            JSON.stringify(notification)
+          );
+          if (notification.foreground == true) {
+            await RNRestart.Restart();
+          }
+        }
+        // notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+      onAction: function(notification) {
+        console.log("ONACTION:", notification);
+      },
+      onRegistrationError: function(err) {
+        console.log(err.message, err);
+      },
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      onMessage: function(notification) {
+        console.log("onmessage:", notification);
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
     messaging().onNotificationOpenedApp(async (remoteMessage) => {
@@ -175,6 +218,8 @@ function App() {
           );
         }
       });
+
+    loadAsync();
   }, []);
 
   if (appLoading) {

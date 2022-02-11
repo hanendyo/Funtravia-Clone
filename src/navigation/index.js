@@ -34,9 +34,9 @@ import DestinationMaps from "../screens/Maps";
 import DestinationUnescoDetail from "../screens/Destination/DetailDestinationNew/index";
 import DestinationUnescoReview from "../screens/Destination/DetailDestinationNew/DestinationUnescoReview";
 import SearchListEventHome from "../screens/Event/SearchListEventHome";
+import { useDispatch } from "react-redux";
+import { setTokenApps, setNotifApps } from "../redux/action";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Linking } from "react-native";
-import messaging from "@react-native-firebase/messaging";
 
 const Tab = createStackNavigator();
 export default function MainStackNavigator({
@@ -46,6 +46,9 @@ export default function MainStackNavigator({
   isFirst,
   token,
 }) {
+  const dispatch = useDispatch();
+  dispatch(setTokenApps(`Bearer ${token}`));
+  dispatch(setNotifApps(dNotify));
   const config = {
     screens: {
       BottomStack: {
@@ -66,13 +69,14 @@ export default function MainStackNavigator({
   return (
     <NavigationContainer linking={linking}>
       <Tab.Navigator
-        initialRouteName={
-          !authorizeStatus
-            ? "AuthStack"
-            : dNotify
-            ? "Notification"
-            : "BottomStack"
-        }
+        initialRouteName={!authorizeStatus ? "AuthStack" : "BottomStack"}
+        // initialRouteName={
+        //   !authorizeStatus
+        //     ? "AuthStack"
+        //     : dNotify
+        //     ? "Notification"
+        //     : "BottomStack"
+        // }
       >
         <Tab.Screen
           name="AuthStack"

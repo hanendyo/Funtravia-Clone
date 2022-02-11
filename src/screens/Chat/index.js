@@ -374,6 +374,8 @@ export default function Message({ navigation, route }) {
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>
+                {tabIndex == 0 ? <Text>3</Text> : null}
+                {console.log(tabIndex == 1)}
               </View>
             </Ripple>
           )}
