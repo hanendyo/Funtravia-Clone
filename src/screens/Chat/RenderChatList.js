@@ -18,7 +18,6 @@ export default function ChatList({
   LongPressFunc,
   param,
 }) {
-  // console.log(dataRes);
   const change = (item) => {
     let change = item.sender_id === user.id ? item.receiver : item.sender;
     return change;

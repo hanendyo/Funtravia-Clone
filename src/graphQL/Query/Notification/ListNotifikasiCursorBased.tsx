@@ -97,6 +97,19 @@ const NotificationCursorBased = gql`
               status_follower
             }
           }
+          like_itinerary {
+            id
+            itinerary {
+              id
+              name
+            }
+            user_like {
+              id
+              first_name
+              last_name
+              picture
+            }
+          }
           tgl_buat
           created_at
           updated_at

@@ -41,13 +41,15 @@ import {
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useDispatch, useSelector } from "react-redux";
-import { setSettingUser, setTokenApps } from "../../redux/action";
+import { setSettingUser, setTokenApps, setNotifApps } from "../../redux/action";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
+  const notifApps = useSelector((data) => data.notif);
+  console.log("~ notifApps", notifApps);
   const settingApps = useSelector((data) => data.setting);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
@@ -147,38 +149,70 @@ export default function Home(props) {
   const loadNavigate = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     dispatch(setTokenApps(`Bearer ${tkn}`));
-    let dataNotif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
-    console.log("~ dataNotif home", dataNotif);
-    if (dataNotif) {
-      switch (dataNotif.data.name) {
-        case "feed":
-          props.navigation.navigate("FeedStack", {
+    if (notifApps) {
+      console.log("masuk notif apps");
+      switch (notifApps.data.page) {
+        case "comment":
+          await AsyncStorage.setItem("dataNotification", "");
+          await props.navigation.navigate("FeedStack", {
             screen: "CommentPost",
             params: {
-              post_id: dataNotif.data.name_id,
+              post_id: notifApps.data.post_id,
               token: tokenApps,
             },
           });
-          AsyncStorage.setItem("dataNotification", "");
+          await dispatch(setNotifApps(""));
           break;
         case "notification":
-          if (tkn) {
-            props.navigation.navigate("Notification", {
-              token: tkn,
-            });
-            await AsyncStorage.setItem("dataNotification", "");
-          }
+          await AsyncStorage.setItem("dataNotification", "");
+          await props.navigation.navigate("Notification", {
+            token: tkn,
+          });
+          await dispatch(setNotifApps(""));
           break;
-        case "profile":
-          props.navigation.navigate("ProfileStack", {
-            screen: "otherprofile",
+        case "chatPersonal":
+          await AsyncStorage.setItem("dataNotification", "");
+          await props.navigation.navigate("ChatStack", {
+            screen: "RoomChat",
             params: {
-              token: tokenApps,
-              idUser: dataNotif.data.name_id,
+              room_id: dataNotif.data.Room,
+              receiver: dataNotif.data.Receiver,
+              name: dataNotif.data.Name,
+              picture: dataNotif.data.Picture,
             },
           });
-          AsyncStorage.setItem("dataNotification", "");
+          await dispatch(setNotifApps(""));
           break;
+        // case "profile":
+        //   props.navigation.navigate("ProfileStack", {
+        //     screen: "otherprofile",
+        //     params: {
+        //       token: tokenApps,
+        //       idUser: dataNotif.data.name_id,
+        //     },
+        //   });
+        //   await AsyncStorage.setItem("dataNotification", "");
+        //   break;
+        // case "chatGroup":
+        //   props.navigation.navigate("ProfileStack", {
+        //     screen: "otherprofile",
+        //     params: {
+        //       token: tokenApps,
+        //       idUser: dataNotif.data.name_id,
+        //     },
+        //   });
+        //   await AsyncStorage.setItem("dataNotification", "");
+        //   break;
+        // case "chat":
+        //   props.navigation.navigate("ProfileStack", {
+        //     screen: "otherprofile",
+        //     params: {
+        //       token: tokenApps,
+        //       idUser: dataNotif.data.name_id,
+        //     },
+        //   });
+        //   await AsyncStorage.setItem("dataNotification", "");
+        //   break;
         default:
         // code block
       }
@@ -590,6 +624,23 @@ export default function Home(props) {
   if (loadingModal) {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="#209FAE" />
+      </View>
+    );
+  }
+
+  if (notifApps) {
+    return (
+      <View
+        style={{
+          position: "absolute",
+          height: Dimensions.get("screen").height,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#fff",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color="#209FAE" />
       </View>
     );

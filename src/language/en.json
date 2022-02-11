@@ -887,5 +887,6 @@
   "notRespondInvit": "you have not responded to this invitation",
   "from": "From",
   "to": "To",
-  "googleLocationLang": "en"
+  "googleLocationLang": "en",
+  "likeYourItinerary": "Like your trip "
 }

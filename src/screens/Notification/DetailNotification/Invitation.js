@@ -30,11 +30,9 @@ import { useQuery } from "@apollo/react-hooks";
 import { useSelector } from "react-redux";
 
 export default function Invitation({ navigation, token, readall, setreadall }) {
-  console.log("~ readall", readall);
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const tokenApps = useSelector((data) => data.token);
-  console.log("~ tokenApps", tokenApps);
   let [datanotif, SetDataNotif] = useState([]);
   let [dataNotifFailed, setDataNotifFailed] = useState([]);
 
@@ -53,12 +51,13 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       first: 10,
       after: "",
     },
+    pollInterval: 100,
     notifyOnNetworkStatusChange: true,
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
-        // Authorization: tokenApps,
+        // Authorization: token,
+        Authorization: tokenApps,
       },
     },
     onCompleted: (datasnotif) => {
@@ -262,8 +261,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
   };
 
   const accept = async (data) => {
-    console.log("~ data", data);
-    console.log("accept");
     try {
       updateisread(data.ids);
       var dt = new Date();
@@ -297,19 +294,16 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       tempDataIndex.node = tempDataNode;
       tempDataNotif.splice(index, 1, tempDataIndex);
       SetDataNotif(tempDataNotif);
-      console.log("cariables", data.itinerary_buddy.id);
       let response = await mutationAcceptInvitation({
         variables: {
           buddy_id: data.itinerary_buddy.id,
         },
       });
-      console.log("~ response", response);
 
       if (response.data.confrim_buddy.code != 200) {
         throw new Error(response.data.confrim_buddy.message);
       }
     } catch (error) {
-      console.log("~ error", error);
       let tempDataNotif = [...datanotif];
       let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
       let tempDataIndex = { ...tempDataNotif[index] };
@@ -375,6 +369,34 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     if (data.isread == false) {
       updateisread(data.ids);
     }
+  };
+  const handle_areaklik_like_itinerary = (data) => {
+    console.log("~ data", data);
+    navigation.navigate("ItineraryStack", {
+      screen: "itindetail",
+      params: {
+        itintitle: data.like_itinerary.itinerary.name,
+        country: data.like_itinerary.itinerary.id,
+        token: token,
+        status: "favorite",
+        index: 0,
+        data_from: "setting",
+      },
+    });
+    if (data.isread == false) {
+      updateisread(data.ids);
+    }
+    // navigation.navigate("FeedStack", {
+    //   // screen: "CommentsById",
+    //   screen: "CommentPost",
+    //   params: {
+    //     post_id: data.like_feed.post_id,
+    //     from: "notification",
+    //   },
+    // });
+    // if (data.isread == false) {
+    //   updateisread(data.ids);
+    // }
   };
 
   const handle_areaklik_follow = (data) => {
@@ -448,7 +470,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     if (tempDataRead.length == 0) {
       setreadall(false);
     }
-    console.log("tempDataRead", tempDataRead.length);
     const unsubscribe = navigation.addListener("blur", () => {
       refetchnotif();
     });
@@ -908,7 +929,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           onPress={() => handle_areaklik_like(item)}
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
-
             width: Dimensions.get("screen").width,
             borderBottomWidth: 0.5,
             borderBottomColor: "#D1D1D1",
@@ -1258,6 +1278,94 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           </View>
         </Pressable>
       );
+    } else if (
+      item.notification_type == "like_itinerary" &&
+      item.like_itinerary
+    ) {
+      return (
+        <Pressable
+          onPress={() => handle_areaklik_like_itinerary(item)}
+          style={{
+            backgroundColor: item?.isread == false ? "#EDF5F5" : "white",
+            borderBottomWidth: 0.5,
+            borderBottomColor: "#D1D1D1",
+          }}
+        >
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              paddingVertical: normalize(20),
+              paddingHorizontal: normalize(20),
+              flexDirection: "row",
+            }}
+          >
+            <Pressable
+              onPress={() => {
+                item?.like_itinerary?.user_like?.id !== setting?.user?.id
+                  ? navigation.push("ProfileStack", {
+                      screen: "otherprofile",
+                      params: {
+                        idUser: item?.like_itinerary?.user_like?.id,
+                      },
+                    })
+                  : null;
+              }}
+              style={{
+                marginLeft: Platform.select({
+                  ios: Notch ? -3 : 5,
+                  android: deviceId == "LYA-L29" ? -2 : 0,
+                }),
+              }}
+            >
+              <FunImage
+                style={{
+                  height: 45,
+                  width: 45,
+                  alignSelf: "center",
+                  borderRadius: 25,
+                  resizeMode: "cover",
+                  borderRadius: 25,
+                }}
+                source={
+                  item.like_itinerary.user_like?.picture
+                    ? { uri: item.like_itinerary.user_like?.picture }
+                    : default_image
+                }
+              />
+            </Pressable>
+            <Pressable
+              style={{ flex: 1, marginLeft: 10 }}
+              onPress={() => handle_areaklik_like_itinerary(item)}
+            >
+              <Text size="label" type="bold" numberOfLines={2}>
+                {`${item.like_itinerary.user_like?.first_name} ${
+                  item.like_itinerary.user_like?.last_name != null
+                    ? item.like_itinerary.user_like?.last_name
+                    : ""
+                }`}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flex: 1,
+                  flexWrap: "wrap",
+                }}
+              >
+                <Text size="description" type="regular">
+                  {t("likeYourItinerary")}
+                </Text>
+                <Text type="bold" size="description">
+                  {` "${item.like_itinerary.itinerary.name}"`}
+                </Text>
+                <Text type="regular" size="description">
+                  {`   ${duration(item.tgl_buat)}`}
+                </Text>
+              </View>
+              <View></View>
+            </Pressable>
+          </View>
+        </Pressable>
+      );
     }
     return null;
   };
@@ -1280,7 +1388,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           data={datanotif}
           renderItem={({ item }) => <RenderTrans item={item.node} />}
           keyExtractor={(item) => item.cursor}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
