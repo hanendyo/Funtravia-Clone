@@ -685,7 +685,7 @@ export default function AllDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.49,
+            height: Dimensions.get("screen").height * 0.6,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopWidth: 1,
