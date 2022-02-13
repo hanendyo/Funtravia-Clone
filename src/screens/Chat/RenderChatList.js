@@ -274,7 +274,7 @@ export default function ChatList({
                 <FunImage
                   source={{
                     uri:
-                      item.sender_id !== user.id
+                      item.sender_id !== user?.id
                         ? item.sender?.picture
                         : item.receiver?.picture,
                   }}

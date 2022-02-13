@@ -51,7 +51,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       first: 10,
       after: "",
     },
-    pollInterval: 100,
+    // pollInterval: 100,
     notifyOnNetworkStatusChange: true,
     context: {
       headers: {
