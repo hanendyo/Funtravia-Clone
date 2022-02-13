@@ -131,8 +131,68 @@ function MyAccountStackScreen() {
 }
 
 const MainNavigator = createBottomTabNavigator();
+import { CHATSERVER } from "../../config";
+import { useSelector, useDispatch } from "react-redux";
+import { setCountMessage, setCountMessageGroup } from "../../redux/action";
+
 export default function BottomNavigationItems(props) {
+  const dispatch = useDispatch();
+  const countPesan = useSelector((data) => data.countMessage);
+  const countPesanGroup = useSelector((data) => data.countMessageGroup);
+
   const { t, i18n } = useTranslation();
+  const getRoom = async () => {
+    let response = await fetch(`${CHATSERVER}/api/personal/list`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${props.route.params.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    let dataResponse = await response.json();
+    let sum = await dataResponse.reduce(
+      (a, { count_newmassage }) => a + count_newmassage,
+      0
+    );
+    dispatch(setCountMessage(sum));
+  };
+
+  const getRoomGroup = async () => {
+    let response = await fetch(`${CHATSERVER}/api/group/list`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${props.route.params.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    let dataResponse = await response.json();
+    let dataCount = [];
+    for (var i of dataResponse) {
+      let data = { ...i };
+      if (!data.count_newmassage) {
+        data.count_newmassage = 0;
+        dataCount.push(data);
+      } else {
+        dataCount.push(data);
+      }
+    }
+    let sum = await dataCount.reduce(
+      (a, { count_newmassage }) => a + count_newmassage,
+      0
+    );
+    dispatch(setCountMessageGroup(sum));
+  };
+
+  useEffect(() => {
+    // const unsubscribe = props.navigation.addListener("focus", () => {
+    getRoom();
+    getRoomGroup();
+    // });
+    // return unsubscribe;
+  }, []);
+
   return (
     <MainNavigator.Navigator
       initialRouteName="HomeBottomScreen"
@@ -221,9 +281,59 @@ export default function BottomNavigationItems(props) {
           tabBarLabel: t("Message"),
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <ChatOn width="20" height="22" />
+              <View>
+                {countPesan || countPesanGroup > 0 ? (
+                  <Text
+                    type="bold"
+                    style={{
+                      color: "#fff",
+                      backgroundColor: "red",
+                      paddingTop: 2,
+                      paddingBottom: 1,
+                      paddingRight: 4,
+                      paddingLeft: 6,
+                      position: "absolute",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: "#fff",
+                      zIndex: 1,
+                      fontSize: 8,
+                      left: 10,
+                      top: -5,
+                    }}
+                  >
+                    {countPesan + countPesanGroup}
+                  </Text>
+                ) : null}
+                <ChatOn width="20" height="22" />
+              </View>
             ) : (
-              <ChatOff width="20" height="22" />
+              <View>
+                {countPesan || countPesanGroup > 0 ? (
+                  <Text
+                    type="bold"
+                    style={{
+                      color: "#fff",
+                      backgroundColor: "red",
+                      paddingTop: 2,
+                      paddingBottom: 1,
+                      paddingRight: 4,
+                      paddingLeft: 6,
+                      position: "absolute",
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: "#fff",
+                      zIndex: 1,
+                      fontSize: 8,
+                      left: 10,
+                      top: -5,
+                    }}
+                  >
+                    {countPesan + countPesanGroup}
+                  </Text>
+                ) : null}
+                <ChatOff width="20" height="22" />
+              </View>
             ),
         }}
       />

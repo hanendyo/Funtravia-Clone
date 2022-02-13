@@ -36,18 +36,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import { useTranslation } from "react-i18next";
 import { CHATSERVER } from "../../config";
-import { TabBar, SceneMap, TabView } from "react-native-tab-view";
+import { TabView } from "react-native-tab-view";
 import ChatGroupList from "./RenderChatGroupList";
 import ChatList from "./RenderChatList";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { useSelector } from "react-redux";
 
 //TRY SOCKET
 import io from "socket.io-client";
 import Delete from "../../component/src/AlertModal/Delete";
 const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
-//TRY SOCKET
+import { useDispatch, useSelector } from "react-redux";
+import { setCountMessage, setCountMessageGroup } from "../../redux/action";
 // import DeviceInfo from "react-native-device-info";
 // const Notch = DeviceInfo.hasNotch();
 // const SafeStatusBar = Platform.select({
@@ -57,6 +57,7 @@ const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 
 export default function Message({ navigation, route }) {
   const _tabIndex = useRef(0);
+  const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
   const { width, height } = Dimensions.get("screen");
@@ -161,6 +162,13 @@ export default function Message({ navigation, route }) {
     for (let i of dataResponse) {
       socket.emit("join", i.id);
     }
+    let sum = await dataResponse.reduce(
+      (a, { count_newmassage }) => a + count_newmassage,
+      0
+    );
+
+    dispatch(setCountMessage(sum));
+
     await setData(dataResponse);
     await setDataRes(dataResponse);
     await setLoading(false);
@@ -176,11 +184,30 @@ export default function Message({ navigation, route }) {
       },
     });
     let dataResponse = await response.json();
+
     for (let i of dataResponse) {
-      socket.emit("join", i.group);
+      socket.emit("join", i.group_id);
     }
-    await setDataGroup(dataResponse);
-    await setDataGroupRes(dataResponse);
+    let dataCount = [];
+    for (var i of dataResponse) {
+      let data = { ...i };
+      if (!data.count_newmassage) {
+        data.count_newmassage = 0;
+        dataCount.push(data);
+      } else {
+        dataCount.push(data);
+      }
+    }
+    let sum = await dataCount.reduce(
+      (a, { count_newmassage }) => a + count_newmassage,
+      0
+    );
+    dispatch(setCountMessageGroup(sum));
+
+    // await setDataGroup(dataResponse);
+    // await setDataGroupRes(dataResponse);
+    await setDataGroup(dataCount);
+    await setDataGroupRes(dataCount);
   };
 
   const getUserAndToken = async () => {
@@ -374,8 +401,6 @@ export default function Message({ navigation, route }) {
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>
-                {tabIndex == 0 ? <Text>3</Text> : null}
-                {console.log(tabIndex == 1)}
               </View>
             </Ripple>
           )}

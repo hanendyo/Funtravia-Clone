@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Dimensions,
@@ -21,9 +21,9 @@ import {
   ModalLogin,
   Button,
 } from "../../component";
-import {DefaultProfileSquare} from "../../assets/png";
-import {useLazyQuery} from "@apollo/react-hooks";
-import {useTranslation} from "react-i18next";
+import { DefaultProfileSquare } from "../../assets/png";
+import { useLazyQuery } from "@apollo/react-hooks";
+import { useTranslation } from "react-i18next";
 import PopularDestination from "./PopularDestination";
 import Account from "../../graphQL/Query/Home/Account";
 import MenuNew from "./MenuNew";
@@ -38,18 +38,24 @@ import {
   Errors,
   Xgray,
 } from "../../assets/svg";
-import {RNToasty} from "react-native-toasty";
+import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
-import {useDispatch, useSelector} from "react-redux";
-import {setSettingUser, setTokenApps, setNotifApps} from "../../redux/action";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSettingUser,
+  setTokenApps,
+  setNotifApps,
+  setCountMessage,
+} from "../../redux/action";
+import { CHATSERVER } from "../../config";
 
-const {width, height} = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
   const notifApps = useSelector((data) => data.notif);
-  console.log("~ notifApps", notifApps);
+  const countPesan = useSelector((data) => data.countMessage);
   const settingApps = useSelector((data) => data.setting);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
@@ -58,6 +64,27 @@ export default function Home(props) {
   let [loadingModal, setLoadingModal] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
   let [modalBlocked, setModalBlocked] = useState(false);
+
+  const getRoom = async () => {
+    let response = await fetch(`${CHATSERVER}/api/personal/list`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${props.route.params.token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    let dataResponse = await response.json();
+    let sum = await dataResponse.reduce(
+      (a, { count_newmassage }) => a + count_newmassage,
+      0
+    );
+    dispatch(setCountMessage(sum));
+  };
+
+  useEffect(() => {
+    getRoom();
+  }, []);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -77,7 +104,7 @@ export default function Home(props) {
 
   const [
     LoadUserProfile,
-    {data: dataProfiles, loading: loadingProfiles},
+    { data: dataProfiles, loading: loadingProfiles },
   ] = useLazyQuery(Account, {
     fetchPolicy: "network-only",
     context: {
@@ -92,7 +119,7 @@ export default function Home(props) {
   });
   const [
     LoadPost,
-    {data: datapost, loading: loadingpost, error: errorpost},
+    { data: datapost, loading: loadingpost, error: errorpost },
   ] = useLazyQuery(User_Post, {
     fetchPolicy: "network-only",
     context: {
@@ -104,17 +131,17 @@ export default function Home(props) {
   });
 
   const login = () => {
-    props.navigation.navigate("AuthStack", {screen: "LoginScreen"});
+    props.navigation.navigate("AuthStack", { screen: "LoginScreen" });
   };
 
   const signUp = () => {
-    props.navigation.navigate("AuthStack", {screen: "RegisterScreen"});
+    props.navigation.navigate("AuthStack", { screen: "RegisterScreen" });
   };
 
   const goToProfile = (target) => {
     props.navigation.navigate("ProfileStack", {
       screen: "ProfileTab",
-      params: {token: tokenApps},
+      params: { token: tokenApps },
     });
   };
 
@@ -122,7 +149,7 @@ export default function Home(props) {
 
   const [
     NotifCount,
-    {data: datanotif, loading: loadingnotif, error: errornotif},
+    { data: datanotif, loading: loadingnotif, error: errornotif },
   ] = useLazyQuery(CountNotif, {
     fetchPolicy: "network-only",
     context: {
@@ -148,9 +175,10 @@ export default function Home(props) {
 
   const loadNavigate = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
+    let setting = await AsyncStorage.getItem("setting");
+    dispatch(setSettingUser(JSON.parse(setting)));
     dispatch(setTokenApps(`Bearer ${tkn}`));
     if (notifApps) {
-      console.log("masuk notif apps");
       switch (notifApps.data.page) {
         case "comment":
           await AsyncStorage.setItem("dataNotification", "");
@@ -175,10 +203,26 @@ export default function Home(props) {
           await props.navigation.navigate("ChatStack", {
             screen: "RoomChat",
             params: {
-              room_id: dataNotif.data.Room,
-              receiver: dataNotif.data.Receiver,
-              name: dataNotif.data.Name,
-              picture: dataNotif.data.Picture,
+              room_id: notifApps.data.Room,
+              receiver: notifApps.data.Receiver,
+              name: notifApps.data.Name,
+              picture: notifApps.data.Picture,
+            },
+          });
+          await dispatch(setNotifApps(""));
+          break;
+        case "chatGroup":
+          await AsyncStorage.setItem("dataNotification", "");
+          await props.navigation.navigate("ChatStack", {
+            screen: "GroupRoom",
+            params: {
+              room_id: notifApps.data.Room,
+              name: notifApps.data.Name,
+              picture: notifApps.data.Picture,
+              from:
+                notifApps.data.Picture.substr(0, 9) == "itinerary"
+                  ? "itinerary"
+                  : "group",
             },
           });
           await dispatch(setNotifApps(""));
@@ -277,7 +321,7 @@ export default function Home(props) {
     wait(1000).then(() => setRefresh(false));
   }, []);
 
-  function HomeTitle({title, label, seeAll}) {
+  function HomeTitle({ title, label, seeAll }) {
     return (
       <View
         style={{
@@ -289,7 +333,7 @@ export default function Home(props) {
           alignItems: "flex-end",
         }}
       >
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               flexDirection: "row",
@@ -338,7 +382,7 @@ export default function Home(props) {
             }
             type="bold"
             size="description"
-            style={{color: "#209FAE"}}
+            style={{ color: "#209FAE" }}
           >
             {t("viewAll")}
           </Text>
@@ -425,20 +469,20 @@ export default function Home(props) {
                   marginTop: 12,
                 }}
               >
-                <Text style={{marginBottom: 5}} size="title" type="bold">
+                <Text style={{ marginBottom: 5 }} size="title" type="bold">
                   {t("nextLogin")}
                 </Text>
                 <Text
-                  style={{textAlign: "center", lineHeight: 18}}
+                  style={{ textAlign: "center", lineHeight: 18 }}
                   size="label"
                   type="regular"
                 >
                   {t("textLogin")}
                 </Text>
               </View>
-              <View style={{marginHorizontal: 30, marginBottom: 30}}>
+              <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
                 <Button
-                  style={{marginBottom: 5}}
+                  style={{ marginBottom: 5 }}
                   onPress={() => {
                     setModalLogin(false);
                     props.navigation.push("AuthStack", {
@@ -465,7 +509,7 @@ export default function Home(props) {
                       marginHorizontal: 10,
                     }}
                   ></View>
-                  <Text style={{alignSelf: "flex-end", marginVertical: 10}}>
+                  <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
                     {t("or")}
                   </Text>
                   <View
@@ -477,11 +521,11 @@ export default function Home(props) {
                     }}
                   ></View>
                 </View>
-                <View style={{alignItems: "center"}}>
+                <View style={{ alignItems: "center" }}>
                   <Text
                     size="label"
                     type="bold"
-                    style={{color: "#209FAE"}}
+                    style={{ color: "#209FAE" }}
                     onPress={() => {
                       setModalLogin(false);
                       props.navigation.push("AuthStack", {
@@ -623,13 +667,20 @@ export default function Home(props) {
 
   if (loadingModal) {
     return (
-      <View style={{flex: 1, justifyContent: "center"}}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         <ActivityIndicator size="large" color="#209FAE" />
       </View>
     );
   }
 
-  if (notifApps) {
+  let [timeNotification, setTimeNotification] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTimeNotification(false);
+    }, 1000);
+  }, []);
+  if (timeNotification) {
     return (
       <View
         style={{
@@ -647,7 +698,7 @@ export default function Home(props) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: "#fff"}}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
 
       <Animated.ScrollView
@@ -657,11 +708,11 @@ export default function Home(props) {
           [
             {
               nativeEvent: {
-                contentOffset: {y: scrollY},
+                contentOffset: { y: scrollY },
               },
             },
           ],
-          {useNativeDriver: false}
+          { useNativeDriver: false }
         )}
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
@@ -683,7 +734,7 @@ export default function Home(props) {
               paddingBottom: 10,
               backgroundColor: colorBG,
               shadowColor: "#464646",
-              shadowOffset: {width: 1, height: 1},
+              shadowOffset: { width: 1, height: 1 },
               shadowOpacity: shadowBG,
               elevation: elevationBG,
               // borderWidth: 3,
@@ -720,7 +771,7 @@ export default function Home(props) {
                 >
                   <SearchHome height={20} width={20} />
                 </View>
-                <View style={{width: "90%"}}>
+                <View style={{ width: "90%" }}>
                   <Text
                     type="bold"
                     numberOfLines={1}
@@ -947,7 +998,7 @@ export default function Home(props) {
                               <ArrowRightHome
                                 width={6}
                                 height={8}
-                                style={{marginTop: 2}}
+                                style={{ marginTop: 2 }}
                               />
                             </>
                           ) : null}
@@ -1047,7 +1098,7 @@ export default function Home(props) {
                           tokenApps
                             ? props.navigation.navigate("BottomStack", {
                                 screen: "TripBottomPlaning",
-                                params: {screen: "TripPlaning"},
+                                params: { screen: "TripPlaning" },
                               })
                             : setModalLogin(true);
                         }}
@@ -1073,7 +1124,7 @@ export default function Home(props) {
                           tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowerPage",
-                                params: {token: tokenApps},
+                                params: { token: tokenApps },
                               })
                             : setModalLogin(true);
                         }}
@@ -1099,7 +1150,7 @@ export default function Home(props) {
                           tokenApps
                             ? props.navigation.navigate("ProfileStack", {
                                 screen: "FollowingPage",
-                                params: {token: tokenApps},
+                                params: { token: tokenApps },
                               })
                             : setModalLogin(true);
                         }}
