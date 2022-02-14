@@ -8,10 +8,11 @@ import {
   RefreshControl,
   Image,
   TextInput,
-  TouchableOpacity,
+  // TouchableOpacity,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import {
@@ -84,17 +85,23 @@ export default function TravelGoalList(props) {
 
   let [idCategory, setIdCategory] = useState([]);
   let [idFilterCategory, setIdFilterCategory] = useState([]);
+  let [tempIdCategory, setTempIdCategory] = useState([]);
   let [datacategory, setdatacategory] = useState([]);
   let [datacategoryFilter, setdatacategoryFilter] = useState([]);
+  let [tempDataCategory, setTempDataCategory] = useState([]);
+  let [hasApply, setHasApply] = useState(1);
 
   const _handleModalSearch = async (text) => {
     setTextCategory(text);
-
     let searchData = new RegExp(text, "i");
-    let categoryData = datacategoryFilter.filter((item) =>
-      searchData.test(item.name)
-    );
-    setdatacategory(categoryData);
+    if (searchData != `/(?:)/i`) {
+      let categoryData = datacategory.filter((item) =>
+        searchData.test(item.name)
+      );
+      await setdatacategoryFilter(categoryData);
+    } else {
+      await setdatacategoryFilter(datacategory);
+    }
   };
 
   const [keyword, setKeyword] = useState("");
@@ -113,18 +120,35 @@ export default function TravelGoalList(props) {
     onCompleted: async () => {
       await setdatacategory(datacategorys?.category_travelgoal);
       await setdatacategoryFilter(datacategorys?.category_travelgoal);
+      await setTempDataCategory(datacategorys?.category_travelgoal);
     },
   });
 
-  // const cekData = () => {
-  //   let dataLength = [];
-  //   for (var x of datacategory) {
-  //     if (x.checked === true) {
-  //       dataLength.push(x);
-  //     }
-  //   }
-  //   return dataLength.length;
-  // };
+  const [filterResult, setfilterResults] = useState(null);
+
+  const cekData = async (status) => {
+    // let data = [];
+    // for (var x of datacategory) {
+    //   if (x.checked === true) {
+    //     data.push(x);
+    //   }
+    // }
+    if (status == "clear") {
+      await setfilterResults(0);
+    } else {
+      let data = datacategory?.filter((x) => x.checked === true);
+      let dataLength = data?.length ? data?.length : 0;
+      await setfilterResults(dataLength);
+    }
+  };
+
+  useEffect(() => {
+    if (!modal && datacategoryFilter?.length != 0) {
+      setdatacategory(tempDataCategory);
+      setdatacategoryFilter(tempDataCategory);
+    }
+    setTextCategory("");
+  }, [modal]);
 
   const {
     loading: loadingList,
@@ -239,56 +263,60 @@ export default function TravelGoalList(props) {
     }
   };
 
-  const _handleCheck = async (item, index, datas) => {
+  const _handleCheck = async (id, index, datas) => {
     let dataCheck = [...datacategory];
+    let dataFilter = [...datacategoryFilter];
     let temp_idCategory = [...idCategory];
-    let indexCategory = temp_idCategory.findIndex((k) => k == item);
+
+    let indexCategory = temp_idCategory.findIndex((k) => k == id);
     if (indexCategory == -1) {
-      temp_idCategory.push(item);
+      temp_idCategory.push(id);
       await setIdCategory(temp_idCategory);
     } else {
       temp_idCategory.splice(indexCategory, 1);
       await setIdCategory(temp_idCategory);
     }
-    for (var x of dataCheck) {
-      let data = { ...x };
-      if (data.id == item) {
-        if (data.checked == true) {
-          data.checked = false;
-          await dataCheck.splice(index, 1, data);
-          await setdatacategory(dataCheck);
-          setdatacategoryFilter(dataCheck);
-        } else {
-          data.checked = true;
-          await dataCheck.splice(index, 1, data);
-          await setdatacategory(dataCheck);
-          setdatacategoryFilter(dataCheck);
-        }
-      }
-    }
+    let items = { ...datas };
+    items.checked = !items.checked;
+    let indexFilter = dataFilter.findIndex((key) => key.id === id);
+    let indexCheck = dataCheck.findIndex((key) => key.id === id);
+    dataCheck.splice(indexCheck, 1, items);
+    dataFilter.splice(indexFilter, 1, items);
+    await setdatacategoryFilter(dataFilter);
+    await setdatacategory(dataCheck);
   };
 
   const UpdateFilter = async () => {
     await setIdFilterCategory(idCategory);
-    await setdatacategoryFilter(datacategory);
+    // await setdatacategoryFilter(datacategory);
+    await setTempDataCategory(datacategory);
     await setModal(false);
     await setTextCategory("");
-    setKeyword(textCategory);
+    await cekData();
+    await refetch();
+    // setKeyword(textCategory);
   };
 
   const ClearAllFilter = async () => {
-    let temp_category = [...datacategory];
-    let temp_category_push = [];
-    for (var y of temp_category) {
-      let data = { ...y };
-      data.checked = false;
-      temp_category_push.push(data);
-    }
-    setdatacategory(temp_category_push);
-    setdatacategoryFilter(temp_category_push);
-    setIdCategory([]);
-    setIdFilterCategory([]);
-    setModal(false);
+    // let temp_category = [...datacategory];
+    // let temp_category_push = [];
+    // for (var y of temp_category) {
+    //   let data = { ...y };
+    //   data.checked = false;
+    //   temp_category_push.push(data);
+    // }
+    // await setdatacategory(temp_category_push);
+    // await setdatacategoryFilter(temp_category_push);
+    // await setTempDataCategory(temp_category_push);
+    let clear = "clear";
+    await setdatacategory(datacategorys?.category_travelgoal);
+    await setdatacategoryFilter(datacategorys?.category_travelgoal);
+    await setTempDataCategory(datacategorys?.category_travelgoal);
+    await setIdCategory([]);
+    await setIdFilterCategory([]);
+    await setModal(false);
+    await cekData(clear);
+    await refetch();
   };
 
   useEffect(() => {
@@ -346,7 +374,7 @@ export default function TravelGoalList(props) {
             height={18}
             style={{ marginHorizontal: 7 }}
           />
-          {idCategory.length > 0 ? (
+          {filterResult > 0 ? (
             <View
               style={{
                 backgroundColor: "#209fae",
@@ -362,7 +390,7 @@ export default function TravelGoalList(props) {
                   color: "#fff",
                 }}
               >
-                {idCategory.length}
+                {filterResult}
               </Text>
             </View>
           ) : null}
@@ -548,15 +576,15 @@ export default function TravelGoalList(props) {
         keyboardShouldPersistTaps={"always"}
         avoidKeyboard={true}
         onBackdropPress={async () => {
-          await setTextCategory("");
+          // await setTextCategory("");
           await setModal(false);
         }}
         onRequestClose={async () => {
-          await setTextCategory("");
+          // await setTextCategory("");
           await setModal(false);
         }}
         onDismiss={async () => {
-          await setTextCategory("");
+          // await setTextCategory("");
           await setModal(false);
         }}
         isVisible={modal}
@@ -690,10 +718,12 @@ export default function TravelGoalList(props) {
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 50, marginTop: 10 }}
               >
-                {datacategory && datacategory.length > 0 ? (
-                  datacategory.map((item, index) => {
+                {datacategoryFilter && datacategoryFilter.length > 0 ? (
+                  datacategoryFilter.map((item, index) => {
                     return (
-                      <View
+                      <TouchableOpacity
+                        key={index + "bruh"}
+                        onPress={() => _handleCheck(item["id"], index, item)}
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
@@ -725,12 +755,12 @@ export default function TravelGoalList(props) {
                           //   Platform.OS == "ios" ? null : setToogle(newValue)
                           // }
                           value={item["checked"]}
-                          onValueChange={(newValue) =>
+                          onValueChange={() =>
                             _handleCheck(item["id"], index, item)
                           }
                         />
-                        <Pressable
-                          onPress={() => _handleCheck(item["id"], index, item)}
+                        <View
+                          // onPress={() => _handleCheck(item["id"], index, item)}
                           style={{
                             // borderWidth: 1,
                             width: "80%",
@@ -751,8 +781,8 @@ export default function TravelGoalList(props) {
                           >
                             {item["name"]}
                           </Text>
-                        </Pressable>
-                      </View>
+                        </View>
+                      </TouchableOpacity>
                     );
                   })
                 ) : (
@@ -784,12 +814,18 @@ export default function TravelGoalList(props) {
           <Button
             variant="bordered"
             color="secondary"
-            onPress={() => ClearAllFilter()}
+            onPress={() => {
+              ClearAllFilter();
+              // setHasApply(2);
+            }}
             style={{ width: "30%", borderColor: "#ffff" }}
             text={t("clearAll")}
           ></Button>
           <Button
-            onPress={() => UpdateFilter()}
+            onPress={() => {
+              UpdateFilter();
+              // setHasApply(3);
+            }}
             style={{ width: "65%", marginBottom: 10 }}
             text={t("apply")}
           ></Button>

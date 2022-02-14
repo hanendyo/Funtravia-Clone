@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Dimensions,
-  TouchableOpacity,
+  // TouchableOpacity,
   Alert,
   Pressable,
   TextInput,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Capital, CardDestination } from "../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
@@ -32,6 +33,7 @@ import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import deviceInfoModule from "react-native-device-info";
 import CityCursorBased from "../../graphQL/Query/Itinerary/CityCursorBased";
+import Ripple from "react-native-material-ripple";
 
 const deviceId = DeviceInfo.getModel();
 
@@ -137,64 +139,66 @@ export default function ItineraryDestination(props) {
     error: errorfilter,
     refetch: refetchFilterDestination,
   } = useQuery(filterDestination, {
-    onCompleted: async () => {
-      let datloop = [...datafilter?.destination_filter?.type];
-      let hasil = [...filtershow];
-      let des = [];
+    onCompleted: (datafilter) => {
+      if (datafilter) {
+        let datloop = [...datafilter?.destination_filter?.type];
+        let hasil = [...filtershow];
+        let des = [];
 
-      for (var ix in datloop) {
-        if (datloop[ix].id === props?.route?.params?.idtype) {
-          let dat = { ...datloop[ix] };
-          dat.checked = true;
-          await datloop.splice(ix, 1, dat);
-          await des.push(dat);
+        for (var ix in datloop) {
+          if (datloop[ix].id === props?.route?.params?.idtype) {
+            let dat = { ...datloop[ix] };
+            dat.checked = true;
+            datloop.splice(ix, 1, dat);
+            des.push(dat);
+          }
         }
-      }
 
-      hasil = await hasil.concat(des);
+        hasil = hasil.concat(des);
 
-      await setdataFilterCategori(datloop);
-      await setdataFilterCategoris(datloop);
-      await setTempDataCategory(datloop);
-      await setdataFilterFacility(datafilter?.destination_filter?.facility);
-      await setdataFilterFacilitys(datafilter?.destination_filter?.facility);
-      await setTempDataFacility(datafilter?.destination_filter?.facility);
-      // await setdataFilterCountry(datafilter?.destination_filter?.country);
-      // await setdataFilterCountrys(datafilter?.destination_filter?.country);
-      // await setTempDataCountry(datafilter?.destination_filter?.country);
+        setdataFilterCategori(datloop);
+        setdataFilterCategoris(datloop);
+        setTempDataCategory(datloop);
+        setdataFilterFacility(datafilter?.destination_filter?.facility);
+        setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+        setTempDataFacility(datafilter?.destination_filter?.facility);
+        //  setdataFilterCountry(datafilter?.destination_filter?.country);
+        //  setdataFilterCountrys(datafilter?.destination_filter?.country);
+        //  setTempDataCountry(datafilter?.destination_filter?.country);
 
-      let dtat = datloop?.filter((item) => item?.sugestion === true);
+        let dtat = datloop?.filter((item) => item?.sugestion === true);
 
-      for (var datan of dtat) {
-        let indx = hasil.findIndex((key) => key.id === datan.id);
+        for (var datan of dtat) {
+          let indx = hasil.findIndex((key) => key.id === datan.id);
 
-        if (indx !== -1) {
-          let dd = { ...datan };
-          dd.checked = true;
-          await hasil.splice(indx, 1, dd);
-        } else {
-          await hasil.push(datan);
+          if (indx !== -1) {
+            let dd = { ...datan };
+            dd.checked = true;
+            hasil.splice(indx, 1, dd);
+          } else {
+            hasil.push(datan);
+          }
         }
-      }
 
-      let dtf = datafilter?.destination_filter?.facility.filter(
-        (item) => item.sugestion === true
-      );
+        let dtf = datafilter?.destination_filter?.facility.filter(
+          (item) => item.sugestion === true
+        );
 
-      for (var dataf of dtf) {
-        let indxs = hasil.findIndex((key) => key.id === dataf.id);
+        for (var dataf of dtf) {
+          let indxs = hasil.findIndex((key) => key.id === dataf.id);
 
-        if (indxs !== -1) {
-          let dds = { ...dataf };
-          dds.checked = true;
-          await hasil.splice(indxs, 1, dds);
-        } else {
-          await hasil.push(dataf);
+          if (indxs !== -1) {
+            let dds = { ...dataf };
+            dds.checked = true;
+            hasil.splice(indxs, 1, dds);
+          } else {
+            hasil.push(dataf);
+          }
         }
-      }
 
-      await setfiltershow(hasil);
-      // await Getsearch();
+        setfiltershow(hasil);
+      }
+      //  Getsearch();
     },
   });
 
@@ -275,32 +279,34 @@ export default function ItineraryDestination(props) {
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
-    onCompleted: async () => {
-      let datloop = [...datasearchlocation?.city_search_cursor_based.edges];
-      let hasil = [...filtershowcity];
-      let wle = [];
+    onCompleted: (datasearchlocation) => {
+      if (datasearchlocation) {
+        let datloop = [...datasearchlocation?.city_search_cursor_based?.edges];
+        let hasil = [...filtershowcity];
+        let wle = [];
 
-      for (var ix in datloop) {
-        if (
-          datloop[ix].node.id === props?.route?.params?.idcity
-          // ||
-          // datloop[ix].id === props?.route?.params?.idcountries ||
-          // datloop[ix].id === props?.route?.params?.idprovince
-        ) {
-          let dat = { ...datloop[ix] };
-          dat.checked = true;
-          await datloop.splice(ix, 1, dat);
-          await wle.push(dat);
+        for (var ix in datloop) {
+          if (
+            datloop[ix].node.id === props?.route?.params?.idcity
+            // ||
+            // datloop[ix].id === props?.route?.params?.idcountries ||
+            // datloop[ix].id === props?.route?.params?.idprovince
+          ) {
+            let dat = { ...datloop[ix] };
+            dat.checked = true;
+            datloop.splice(ix, 1, dat);
+            wle.push(dat);
+          }
         }
+        hasil = hasil.concat(wle);
+
+        setfiltershowcity(hasil);
+
+        setdataFilterCity(datloop);
+        setdataFilterCitys(datloop);
+        setTempDataCity(datloop);
+        // await UpdateFilter();
       }
-      hasil = hasil.concat(wle);
-
-      await setfiltershowcity(hasil);
-
-      await setdataFilterCity(datloop);
-      await setdataFilterCitys(datloop);
-      await setTempDataCity(datloop);
-      // await UpdateFilter();
     },
   });
 
@@ -370,17 +376,17 @@ export default function ItineraryDestination(props) {
 
     if (hasApply == 1) {
       let countallFil = dat.length + datF.length + datL.length;
-      setfilterResults(countallFil);
+      await setfilterResults(countallFil);
       setTimeout(() => {
         setHasApply(0);
       }, 1000);
     } else if (hasApply == 2) {
       let countallFil = dat.length + datF.length + datL.length;
-      setfilterResults(countallFil);
+      await setfilterResults(countallFil);
       await setHasApply(0);
     } else if (hasApply == 3) {
       let countallFil = dat.length + datF.length + datL.length;
-      setfilterResults(countallFil);
+      await setfilterResults(countallFil);
       await setHasApply(0);
     }
     // + datC.length;
@@ -603,6 +609,8 @@ export default function ItineraryDestination(props) {
   // };
 
   const _handleCheckCity = async (id, index, item) => {
+    dataFilterCity = dataFilterCity ? dataFilterCity : [];
+    dataFilterCitys = dataFilterCitys ? dataFilterCitys : [];
     let tempCitys = [...dataFilterCitys];
     let tempCity = [...dataFilterCity];
     let items = { ...item };
@@ -730,6 +738,7 @@ export default function ItineraryDestination(props) {
     //  setdataFilterCountrys(datafilter?.destination_filter?.country);
     //  setTempDataCountry(datafilter?.destination_filter?.country);
 
+    dataFilterCity = dataFilterCity ? dataFilterCity : [];
     let tempe = [...dataFilterCity];
     let tempes = [];
     for (var x of tempe) {
@@ -1093,15 +1102,14 @@ export default function ItineraryDestination(props) {
             </Text>
             <TouchableOpacity
               style={{
-                position: "absolute",
-                backgroundColor: "with",
-                height: 35,
+                height: 20,
                 width: 32,
                 top: 0,
                 right: 0,
                 justifyContent: "flex-end",
                 alignContent: "flex-end",
                 alignItems: "flex-start",
+                zIndex: 999,
               }}
               onPress={() => setshow(false)}
             >
@@ -1467,6 +1475,9 @@ export default function ItineraryDestination(props) {
                           //     : _handleCheck(item["id"], index, item)
                           // }
                           value={item["checked"]}
+                          onValueChange={() =>
+                            _handleCheck(item["id"], index, item)
+                          }
                         />
 
                         <Text
@@ -1607,6 +1618,9 @@ export default function ItineraryDestination(props) {
                           //     : _handleCheckf(item["id"], index, item)
                           // }
                           value={item["checked"]}
+                          onValueChange={() =>
+                            _handleCheckf(item["id"], index, item)
+                          }
                         />
 
                         <Text
@@ -1766,7 +1780,7 @@ export default function ItineraryDestination(props) {
                       ) : null}
                     </View>
                   </View>
-                  <ScrollView
+                  {/* <ScrollView
                     // style={{ borderWidth: 1, height: 100 }}
                     nestedScrollEnabled={true}
                     showsVerticalScrollIndicator={false}
@@ -1822,6 +1836,9 @@ export default function ItineraryDestination(props) {
                           //   _handleCheckCity(item.node.id, index, item)
                           // }
                           value={item?.checked}
+                          onValueChange={() =>
+                            _handleCheckCity(item.node.id, index, item)
+                          }
                         />
 
                         <Text
@@ -1837,13 +1854,121 @@ export default function ItineraryDestination(props) {
                         </Text>
                       </TouchableOpacity>
                     ))}
-                    {aktif === "location" && !dataFilterCitys?.length ? (
+                    {aktif === "location" && !dataFilterCitys.length ? (
                       <Text style={{ alignSelf: "center" }}>{t("noData")}</Text>
                     ) : null}
-                    {/* <View
-              style={{ borderBottomWidth: 1, borderBottomColor: "#D1D1D1" }}
-            ></View> */}
-                  </ScrollView>
+                  </ScrollView> */}
+
+                  {/* FLATLIST */}
+                  {dataFilterCitys && dataFilterCitys.length > 0 ? (
+                    <>
+                      <FlatList
+                        // ref={slider}
+                        // getItemLayout={(data, index) => ({
+                        //   length: normalize(50),
+                        //   offset: normalize(50),
+                        //   index,
+                        // })}
+                        showsVerticalScrollIndicator={false}
+                        data={dataFilterCitys}
+                        renderItem={({ item, index }) => (
+                          <Ripple
+                            key={index + Math.floor(Math.random() * 1.2)}
+                            // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
+                            onPress={() =>
+                              _handleCheckCity(item.node.id, index, item)
+                            }
+                            style={{
+                              flexDirection: "row",
+                              backgroundColor: "white",
+                              // borderColor: "#464646",
+                              width: "49%",
+                              marginLeft: 15,
+                              marginBottom: 20,
+                              justifyContent: "flex-start",
+                              alignContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <CheckBox
+                              onCheckColor="#FFF"
+                              lineWidth={4}
+                              animationDuration={0}
+                              onFillColor="#209FAE"
+                              onTintColor="#209FAE"
+                              boxType={"square"}
+                              style={{
+                                alignSelf: "center",
+                                width: Platform.select({
+                                  ios: 30,
+                                  android: 35,
+                                }),
+                                transform: Platform.select({
+                                  ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                                  android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                                }),
+                              }}
+                              // onValueChange={() =>
+                              //   Platform.OS == "ios"
+                              //     ? null
+                              //     : _handleCheckCity(item.node.id, index, item.node)
+                              // }
+                              // onValueChange={() =>
+                              //   _handleCheckCity(item.node.id, index, item)
+                              // }
+                              // onSubmitEditing={() =>
+                              //   _handleCheckCity(item.node.id, index, item)
+                              // }
+                              value={item?.checked}
+                              onValueChange={() =>
+                                _handleCheckCity(item.node.id, index, item)
+                              }
+                            />
+                            <Text
+                              size="label"
+                              type="regular"
+                              style={{
+                                marginLeft: 0,
+                                color: "#464646",
+                                // borderWidth: 5,
+                              }}
+                            >
+                              {Capital({ text: item.node.name })}
+                            </Text>
+                          </Ripple>
+                        )}
+                        keyExtractor={(item) => item.node.id}
+                        // initialNumToRender={15}
+                        // onEndReachedThreshold={1}
+                        // onEndReached={handleOnEndReached}
+                        // ListFooterComponent={
+                        //   loadingcity ? (
+                        //     <View
+                        //       style={{
+                        //         // position: "absolute",
+                        //         // bottom: 0,
+                        //         // height: 20,
+                        //         width: Dimensions.get("screen").width,
+                        //         justifyContent: "center",
+                        //         alignItems: "center",
+                        //         marginTop: 30,
+                        //       }}
+                        //     >
+                        //       <ActivityIndicator
+                        //         animating={loadingcity}
+                        //         size="large"
+                        //         color="#209fae"
+                        //       />
+                        //     </View>
+                        //   ) : null
+                        // }
+                      />
+                    </>
+                  ) : (
+                    <View style={{ alignSelf: "center" }}>
+                      <Text>{t("noData")}</Text>
+                    </View>
+                  )}
                 </>
               ) : null}
             </View>
