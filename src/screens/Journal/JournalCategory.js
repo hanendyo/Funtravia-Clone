@@ -88,6 +88,18 @@ export default function JournalCategory(props) {
     ),
   };
 
+  const scrollToIndexFailed = (error) => {
+    const offset = error.averageItemLength * error.index;
+    ref.current.scrollToOffset({ offset });
+    setTimeout(
+      () =>
+        ref?.current?.scrollToIndex({
+          index: error.index,
+        }),
+      500
+    );
+  };
+
   const [fetchDataPopuler, { data, loading }] = useLazyQuery(PopularJournal, {
     fetchPolicy: "network-only",
     context: {

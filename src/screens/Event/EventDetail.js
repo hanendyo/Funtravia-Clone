@@ -24,7 +24,7 @@ import {
   ModalLogin,
 } from "../../component";
 import { dateFormatBetween } from "../../component/src/dateformatter";
-import { useMutation, useLazyQuery } from "@apollo/react-hooks";
+import { useMutation, useLazyQuery, useQuery } from "@apollo/react-hooks";
 import LinearGradient from "react-native-linear-gradient";
 import { rupiah } from "../../component/src/Rupiah";
 import { ScrollView, FlatList } from "react-native-gesture-handler";
@@ -171,8 +171,8 @@ export default function EventDetail(props) {
   };
 
   let [dataevent, setDataEvent] = useState({});
-  let event_id = props.route.params.event_id
-    ? props.route.params.event_id
+  let event_id = props?.route?.params?.event_id
+    ? props?.route?.params?.event_id
     : dataevent.id;
 
   const [selected, setSelected] = useState(new Map());
@@ -184,7 +184,7 @@ export default function EventDetail(props) {
   );
   let [Masking, setMasking] = useState(false);
 
-  const [GetDetailEvent, { data, loading, error }] = useLazyQuery(DetailEvent, {
+  const { data, loading, error, refetch } = useQuery(DetailEvent, {
     fetchPolicy: "network-only",
     variables: {
       event_id: event_id,
@@ -202,7 +202,7 @@ export default function EventDetail(props) {
 
   useEffect(() => {
     if (!props.route.params.data) {
-      GetDetailEvent();
+      refetch();
     } else {
       setDataEvent(props.route.params.data);
     }
@@ -661,18 +661,18 @@ export default function EventDetail(props) {
   };
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    t("January"),
+    t("February"),
+    t("March"),
+    t("April"),
+    t("May"),
+    t("June"),
+    t("July"),
+    t("August"),
+    t("September"),
+    t("October"),
+    t("November"),
+    t("December"),
   ];
 
   useEffect(() => {
@@ -755,8 +755,11 @@ export default function EventDetail(props) {
   }, [headerOpacity, props.navigation]);
 
   const handlerepeat = (date) => {
-    let dates = date.split("-");
-    return t("setiap") + " " + monthNames[parseFloat(dates[0]) - 1];
+    if (date != undefined) {
+      let dates = date;
+      let dateSplit = dates.split("-");
+      return t("setiap") + " " + monthNames[parseFloat(dateSplit[0]) - 1];
+    }
   };
 
   if (loading) {

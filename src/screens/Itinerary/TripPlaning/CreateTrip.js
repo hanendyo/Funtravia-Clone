@@ -239,7 +239,7 @@ export default function Trip(props) {
     variables: {
       keyword: citys,
       countries_id: idCountry,
-      first: 10,
+      first: 15,
       after: "",
     },
     context: {
@@ -509,7 +509,7 @@ export default function Trip(props) {
       return fetchMore({
         updateQuery: onUpdate,
         variables: {
-          first: 9,
+          first: 15,
           after: datacity?.city_search_cursor_based.pageInfo?.endCursor,
         },
       });
@@ -1159,7 +1159,7 @@ export default function Trip(props) {
                           </Ripple>
                         )}
                         keyExtractor={(item) => item.node.id}
-                        initialNumToRender={9}
+                        initialNumToRender={15}
                         onEndReachedThreshold={1}
                         onEndReached={handleOnEndReached}
                         ListFooterComponent={
@@ -1172,7 +1172,7 @@ export default function Trip(props) {
                                 width: Dimensions.get("screen").width,
                                 justifyContent: "center",
                                 alignItems: "center",
-                                marginBottom: 30,
+                                marginTop: 30,
                               }}
                             >
                               <ActivityIndicator

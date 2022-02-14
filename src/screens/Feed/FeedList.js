@@ -431,6 +431,18 @@ export default function FeedList({ props, token }) {
     }
   };
 
+  const scrollToIndexFailed = (error) => {
+    const offset = error.averageItemLength * error.index;
+    ref.current.scrollToOffset({ offset });
+    setTimeout(
+      () =>
+        ref?.current?.scrollToIndex({
+          index: error.index,
+        }),
+      500
+    );
+  };
+
   const {
     loading: loadingPost,
     data: dataPost,
