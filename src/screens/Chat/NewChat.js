@@ -166,6 +166,7 @@ export default function NewChat({ navigation }) {
           return (
             <TouchableOpacity
               onPress={() => _sendMessage(value.id)}
+              key={value.id}
               style={{
                 flexDirection: "row",
                 paddingHorizontal: 20,

@@ -12,7 +12,14 @@ import {
   Modal,
   KeyboardAvoidingView,
 } from "react-native";
-import { Button, Text, Truncate, Loading, FunImage } from "../../../component";
+import {
+  Button,
+  Text,
+  Truncate,
+  Loading,
+  FunImage,
+  Peringatan,
+} from "../../../component";
 import { default_image } from "../../../assets/png";
 import { useLazyQuery } from "@apollo/react-hooks";
 import {
@@ -38,6 +45,7 @@ export default function NewGroup(props) {
   let [loading, setloading] = useState(false);
   const [modals, setmodal] = useState(false);
   const [dataImagepatch, setdataImagepatch] = useState("");
+  console.log("~ dataImagepatch", dataImagepatch);
   let [dataImage, setdataImage] = useState(null);
   const [
     querywith,
@@ -185,6 +193,13 @@ export default function NewGroup(props) {
   };
 
   const _createGrup = async () => {
+    if (title == "" || dataImagepatch == "")
+      return setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: t("createGroupRequired"),
+        detail: "",
+      });
     setloading(true);
     let partisipant = [];
     for (const user of userSelected) {
@@ -241,6 +256,12 @@ export default function NewGroup(props) {
       });
     }
   };
+
+  let [alertPopUp, setAlertPopUp] = useState({
+    show: false,
+    judul: "",
+    detail: "",
+  });
 
   return (
     <SafeAreaView
@@ -555,57 +576,64 @@ export default function NewGroup(props) {
               </TouchableOpacity>
             )}
           />
+          <Peringatan
+            aler={alertPopUp}
+            setClose={() =>
+              setAlertPopUp({
+                ...alertPopUp,
+                show: false,
+              })
+            }
+          />
 
-          {title != "" ? (
-            !loading ? (
-              <Pressable
-                onPress={() => _createGrup()}
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 30,
-                  borderWidth: 1.5,
-                  borderColor: "#FFF",
-                  backgroundColor: "#209FAE",
-                  position: "relative",
-                  bottom: 90,
-                  marginBottom: -60,
-                  right: 15,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
-                  zIndex: 1,
-                }}
-              >
-                <CheckWhite width={20} height={20} />
-              </Pressable>
-            ) : (
-              <Pressable
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 30,
-                  borderWidth: 1.5,
-                  borderColor: "#FFF",
-                  backgroundColor: "#209FAE",
-                  position: "relative",
-                  bottom: 90,
-                  marginBottom: -60,
-                  right: 15,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignSelf: "flex-end",
-                  zIndex: 1,
-                }}
-              >
-                <ActivityIndicator
-                  animating={true}
-                  color="#FFFFFF"
-                  size="large"
-                />
-              </Pressable>
-            )
-          ) : null}
+          {!loading ? (
+            <Pressable
+              onPress={() => _createGrup()}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                backgroundColor: "#209FAE",
+                position: "relative",
+                bottom: 90,
+                marginBottom: -60,
+                right: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end",
+                zIndex: 1,
+              }}
+            >
+              <CheckWhite width={20} height={20} />
+            </Pressable>
+          ) : (
+            <Pressable
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                borderWidth: 1.5,
+                borderColor: "#FFF",
+                backgroundColor: "#209FAE",
+                position: "relative",
+                bottom: 90,
+                marginBottom: -60,
+                right: 15,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "flex-end",
+                zIndex: 1,
+              }}
+            >
+              <ActivityIndicator
+                animating={true}
+                color="#FFFFFF"
+                size="large"
+              />
+            </Pressable>
+          )}
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>

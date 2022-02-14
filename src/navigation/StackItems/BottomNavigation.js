@@ -132,10 +132,12 @@ function MyAccountStackScreen() {
 
 const MainNavigator = createBottomTabNavigator();
 import { CHATSERVER } from "../../config";
+import io from "socket.io-client";
 import { useSelector, useDispatch } from "react-redux";
 import { setCountMessage, setCountMessageGroup } from "../../redux/action";
 
 export default function BottomNavigationItems(props) {
+  const socket = io(CHATSERVER);
   const dispatch = useDispatch();
   const countPesan = useSelector((data) => data.countMessage);
   const countPesanGroup = useSelector((data) => data.countMessageGroup);
@@ -151,6 +153,9 @@ export default function BottomNavigationItems(props) {
       },
     });
     let dataResponse = await response.json();
+    for (let i of dataResponse) {
+      socket.emit("join", i.id);
+    }
     let sum = await dataResponse.reduce(
       (a, { count_newmassage }) => a + count_newmassage,
       0
@@ -168,14 +173,16 @@ export default function BottomNavigationItems(props) {
       },
     });
     let dataResponse = await response.json();
+    for (let i of dataResponse) {
+      socket.emit("join", i.group_id);
+    }
     let dataCount = [];
     for (var i of dataResponse) {
-      let data = { ...i };
-      if (!data.count_newmassage) {
-        data.count_newmassage = 0;
-        dataCount.push(data);
+      if (!i.count_newmassage) {
+        i.count_newmassage = 0;
+        dataCount.push(i);
       } else {
-        dataCount.push(data);
+        dataCount.push(i);
       }
     }
     let sum = await dataCount.reduce(

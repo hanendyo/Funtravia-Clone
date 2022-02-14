@@ -49,6 +49,7 @@ export default function MainStackNavigator({
   const dispatch = useDispatch();
   dispatch(setTokenApps(`Bearer ${token}`));
   dispatch(setNotifApps(dNotify));
+  console.log("main index navigation");
   const config = {
     screens: {
       BottomStack: {

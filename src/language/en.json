@@ -888,5 +888,6 @@
   "from": "From",
   "to": "To",
   "googleLocationLang": "en",
-  "likeYourItinerary": "Like your trip "
+  "likeYourItinerary": "Like your trip ",
+  "createGroupRequired": "Profile photo and group title are required"
 }

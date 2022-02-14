@@ -71,6 +71,12 @@ export default function Room({ navigation, route }) {
 
   const { t } = useTranslation();
 
+  // useEffect(() => {
+  //   if (message.length == 0) {
+  //     setLoadingGroup(false);
+  //   }
+  // }, []);
+
   const headerOptions = {
     headerShown: true,
     headerTitle: null,
@@ -543,6 +549,9 @@ export default function Room({ navigation, route }) {
       }
     );
     let responseJson = await response.json();
+    if (responseJson.data == null) {
+      setLoadingGroup(false);
+    }
     let history = await AsyncStorage.getItem("history_" + room);
     let init_local = await JSON.parse(history);
     let init_data = await responseJson.data;

@@ -886,5 +886,6 @@
   "from": "Dari",
   "to": "Ke",
   "googleLocationLang": "id",
-  "likeYourItinerary": "Menyukai perjalanan "
+  "likeYourItinerary": "Menyukai perjalanan ",
+  "createGroupRequired": "Foto profil dan judul grup wajib diisi"
 }
