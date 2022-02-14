@@ -227,36 +227,6 @@ export default function Home(props) {
           });
           await dispatch(setNotifApps(""));
           break;
-        // case "profile":
-        //   props.navigation.navigate("ProfileStack", {
-        //     screen: "otherprofile",
-        //     params: {
-        //       token: tokenApps,
-        //       idUser: dataNotif.data.name_id,
-        //     },
-        //   });
-        //   await AsyncStorage.setItem("dataNotification", "");
-        //   break;
-        // case "chatGroup":
-        //   props.navigation.navigate("ProfileStack", {
-        //     screen: "otherprofile",
-        //     params: {
-        //       token: tokenApps,
-        //       idUser: dataNotif.data.name_id,
-        //     },
-        //   });
-        //   await AsyncStorage.setItem("dataNotification", "");
-        //   break;
-        // case "chat":
-        //   props.navigation.navigate("ProfileStack", {
-        //     screen: "otherprofile",
-        //     params: {
-        //       token: tokenApps,
-        //       idUser: dataNotif.data.name_id,
-        //     },
-        //   });
-        //   await AsyncStorage.setItem("dataNotification", "");
-        //   break;
         default:
         // code block
       }
@@ -264,8 +234,9 @@ export default function Home(props) {
   };
 
   useEffect(() => {
+    console.log("load navigate");
     loadNavigate();
-  }, []);
+  }, [notifApps]);
 
   useEffect(() => {
     if (
@@ -680,7 +651,7 @@ export default function Home(props) {
       setTimeNotification(false);
     }, 1000);
   }, []);
-  if (timeNotification) {
+  if (notifApps && timeNotification) {
     return (
       <View
         style={{
