@@ -37,6 +37,7 @@ export default function CardDestination({
   setData,
   token,
   dataFrom,
+  movieId,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -156,6 +157,7 @@ export default function CardDestination({
                 idkiriman: kiriman.id,
                 Position: "destination",
                 data_from: dataFrom,
+                movieId: movieId,
               },
             });
       } else {
@@ -165,10 +167,10 @@ export default function CardDestination({
                 screen: "ItineraryChooseday",
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
-                  Kiriman: data?.destinationById.id,
+                  Kiriman: data?.destinationById?.id,
                   token: token,
                   Position: "destination",
-                  datadayaktif: props.route.params.datadayaktif,
+                  datadayaktif: props?.route?.params?.datadayaktif,
                 },
               })
             )

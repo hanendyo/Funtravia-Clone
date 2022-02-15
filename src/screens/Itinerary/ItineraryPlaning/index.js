@@ -47,6 +47,7 @@ const arrayShadow = {
 };
 
 export default function listItinPlaning(props) {
+  console.log("🚀 ~ file: index.js ~ line 50 ~ listItinPlaning ~ props", props);
   const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
@@ -512,6 +513,7 @@ export default function listItinPlaning(props) {
       );
     }
   };
+
   const wait = (timeout) => {
     return new Promise((resolve) => {
       setTimeout(resolve, timeout);
@@ -555,6 +557,7 @@ export default function listItinPlaning(props) {
           //  setting={setting}
           setData={(e) => setDatas(e)}
           dataFrom={props.route.params.data_from}
+          movieId={props.route.params.movieId}
         />
       ) : (
         <View style={{ marginTop: 15 }}>

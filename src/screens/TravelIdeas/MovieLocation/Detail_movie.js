@@ -329,8 +329,6 @@ export default function Detail_movie(props) {
 
   let indeks = useRef();
 
-  console.log("indeks", indeks);
-
   if (loadingmovie)
     return (
       <View
@@ -422,7 +420,6 @@ export default function Detail_movie(props) {
         </View>
         {movie_byid?.movie_destination?.map((item, index) => {
           indeks = index;
-          console.log("item", item);
           return (
             <View
               key={index}
@@ -513,6 +510,8 @@ export default function Detail_movie(props) {
             props={props}
             setData={(e) => setlistdestinasi_bymovie(e)}
             token={tokenApps}
+            dataFrom={"movie"}
+            movieId={movie_byid.id}
           />
         ) : null}
       </Animated.ScrollView>
@@ -757,7 +756,17 @@ export default function Detail_movie(props) {
         }}
       >
         <Pressable
-          onPress={() => props.navigation.goBack()}
+          onPress={() => {
+            props.route.params.from == "itin_detail"
+              ? props.navigation.navigate("TravelIdeaStack", {
+                  screen: "MovieLocation",
+                  params: {
+                    token: tokenApps,
+                    from: "movie_detail",
+                  },
+                })
+              : props.navigation.goBack();
+          }}
           style={{
             marginTop: 15,
             marginLeft: 15,
@@ -801,7 +810,17 @@ export default function Detail_movie(props) {
         }}
       >
         <Pressable
-          onPress={() => props.navigation.goBack()}
+          onPress={() =>
+            props.route.params.from == "itin_detail"
+              ? props.navigation.navigate("TravelIdeaStack", {
+                  screen: "MovieLocation",
+                  params: {
+                    token: tokenApps,
+                    from: "movie_detail",
+                  },
+                })
+              : props.navigation.goBack()
+          }
           style={{
             marginTop: 15,
             marginLeft: 15,
