@@ -725,7 +725,16 @@ export default function MovieLocation({ navigation, route }) {
         }}
       >
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            route.params.from == "movie_detail"
+              ? navigation.navigate("TravelIdeaStack", {
+                  screen: "TravelIdeas",
+                  params: {
+                    from: "movie_location",
+                  },
+                })
+              : navigation.goBack();
+          }}
           style={{
             marginTop: 10,
             marginLeft: 15,
@@ -762,7 +771,16 @@ export default function MovieLocation({ navigation, route }) {
         }}
       >
         <Pressable
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            route.params.from == "movie_detail"
+              ? navigation.navigate("TravelIdeaStack", {
+                  screen: "TravelIdeas",
+                  params: {
+                    from: "movie_location",
+                  },
+                })
+              : navigation.goBack();
+          }}
           style={{
             marginTop: 10,
             marginLeft: 15,

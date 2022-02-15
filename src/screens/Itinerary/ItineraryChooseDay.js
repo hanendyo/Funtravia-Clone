@@ -38,6 +38,7 @@ export default function ItineraryChooseday(props) {
           token: props.route.params.token,
           onbackhandler: "chooseDay",
           IdItinerary: props.route.params.Iditinerary,
+          movieId: props.route.params.movie_id,
         },
       });
     } else {
@@ -45,13 +46,13 @@ export default function ItineraryChooseday(props) {
         screen: "itindest",
         params: {
           IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
-          token: props.route.params.token,
-          datadayaktif: props?.route?.params?.data_dest.datadayaktif,
-          dataDes: props.route.params.data_dest.dataDes,
-          lat: props.route.params.data_dest.lat,
-          long: props.route.params.data_dest.long,
-          idcity: props.route.params.data_dest.idcity,
-          idcountries: props.route.params.data_dest.idcountries,
+          token: props?.route?.params?.token,
+          datadayaktif: props?.route?.params?.data_dest?.datadayaktif,
+          dataDes: props?.route?.params?.data_dest?.dataDes,
+          lat: props?.route?.params?.data_dest?.lat,
+          long: props?.route?.params?.data_dest?.long,
+          idcity: props?.route?.params?.data_dest?.idcity,
+          idcountries: props?.route?.params?.data_dest?.idcountries,
           onbackhandler: "chooseDay",
         },
       });
@@ -298,8 +299,6 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-        console.log("datas", datas);
-        console.log("kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let response = await mutationSave({
@@ -387,6 +386,9 @@ export default function ItineraryChooseday(props) {
                                     status: "edit",
                                     index: 0,
                                     onbackhandler: "list",
+                                    dataFrom: props?.route?.params?.data_from,
+                                    idKiriman: props?.route?.params?.Kiriman,
+                                    movieId: props?.route?.params?.movie_id,
                                   },
                                 },
                               ],
@@ -518,7 +520,6 @@ export default function ItineraryChooseday(props) {
             setLoading(false);
           } catch (error) {
             Alert.alert("error : " + error);
-            // console.log(error);
           }
         }
       } else if (Position === "Event" || Position === "event") {

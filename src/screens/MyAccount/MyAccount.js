@@ -148,8 +148,8 @@ export default function MyAccount(props) {
   return (
     <View style={{ zIndex: -1 }}>
       <Modal
-        useNativeDriver={true}
         visible={modalLogin}
+        useNativeDriver={true}
         onRequestClose={() => true}
         transparent={true}
         animationType="fade"
@@ -744,10 +744,6 @@ export default function MyAccount(props) {
                   });
                 }
               } catch (error) {
-                console.log(
-                  "🚀 ~ file: MyAccount.js ~ line 747 ~ onPress={ ~ error",
-                  error
-                );
                 RNToasty.Show({
                   title: error,
                   position: "bottom",

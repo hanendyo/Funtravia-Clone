@@ -42,7 +42,19 @@ export default function TravelIdeas(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          props?.route?.params?.from == "movie_location"
+            ? props.navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: "BottomStack",
+                    routes: [{ name: "HomeScreen" }],
+                  },
+                ],
+              })
+            : props.navigation.goBack();
+        }}
         style={{
           height: 55,
         }}
