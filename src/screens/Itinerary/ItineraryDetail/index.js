@@ -282,6 +282,7 @@ export default function ItineraryDetail(props) {
   let [modalLeaveTrip, setModalLeaveTrip] = useState(false);
   let [modalDeleteTrip, setModalDeleteTrip] = useState(false);
   let [soon, setSoon] = useState(false);
+  const ref = React.useRef(null);
 
   let [users, setuser] = useState(setting.user);
   const loadasync = async () => {
@@ -4233,6 +4234,18 @@ export default function ItineraryDetail(props) {
       extrapolateRight: "clamp",
     });
 
+    const scrollToIndexFailed = (error) => {
+      const offset = error.averageItemLength * error.index;
+      ref.current.scrollToOffset({ offset });
+      setTimeout(
+        () =>
+          ref?.current?.scrollToIndex({
+            index: error.index,
+          }),
+        500
+      );
+    };
+
     return (
       <Animated.View
         style={{
@@ -4252,6 +4265,9 @@ export default function ItineraryDetail(props) {
           style={{
             backgroundColor: "white",
           }}
+          onScrollToIndexFailed={(e) => {
+            scrollToIndexFailed(e);
+          }}
           renderItem={({ item, index }) => (
             <Ripple
               key={"tabx" + index}
@@ -4262,10 +4278,6 @@ export default function ItineraryDetail(props) {
                   ? setSoon(true)
                   : null;
                 setIndex(index);
-                scrollRef.current?.scrollToIndex({
-                  index: index,
-                  animated: true,
-                });
               }}
             >
               <View

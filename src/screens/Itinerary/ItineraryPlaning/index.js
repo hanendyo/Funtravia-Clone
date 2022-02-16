@@ -131,6 +131,12 @@ export default function listItinPlaning(props) {
         onbackhandler: "chooseDay",
       },
     ],
+    movie: [
+      "Detail_movie",
+      {
+        movie_id: props.route.params.movieId,
+      },
+    ],
   };
 
   const _handleBack = () => {
