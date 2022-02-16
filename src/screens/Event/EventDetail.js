@@ -869,6 +869,8 @@ export default function EventDetail(props) {
                       cover: dataevent?.cover,
                       name: dataevent?.name,
                       description: dataevent?.description,
+                      startDate: dataevent.start_date,
+                      endDate: dataevent.end_date,
                     },
                     title: t("event"),
                     tag_type: "tag_event",

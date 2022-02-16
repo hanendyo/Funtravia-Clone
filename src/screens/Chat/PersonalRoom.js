@@ -97,6 +97,7 @@ export default function Room({ navigation, route }) {
   // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
+  console.log("~ message", message);
 
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
@@ -634,6 +635,7 @@ export default function Room({ navigation, route }) {
         }
       );
       let responseJson = await response.json();
+      console.log("~ responseJson", responseJson);
       let history = await AsyncStorage.getItem("history_" + room);
       let init_local = await JSON.parse(history);
       let init_data = await responseJson.data;
@@ -653,6 +655,7 @@ export default function Room({ navigation, route }) {
           "history_" + room,
           JSON.stringify(filteredList)
         );
+        console.log("~ filteredList", filteredList);
         let new_array = [];
         setMessage(filteredList);
         setBankMessage(new_array);
@@ -780,6 +783,7 @@ export default function Room({ navigation, route }) {
 
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
+    console.log("~ item RenderChat", item);
     const timeState = new Date().toLocaleDateString();
     const timeStateChat = new Date(item.time).toLocaleDateString();
     let timeChat = new Date(item.time).toTimeString();

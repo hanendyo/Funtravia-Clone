@@ -655,7 +655,7 @@
   "seedetail": "Lainnya",
   "CategoryItin": "Kategori Itinerary",
   "LoginFirst": "Silahkan login dulu",
-  "reUpload": "Unggah Kembali",
+  "reUpload": "Kirim ulang",
   "AboutEvent": "Tentang Acara ini",
   "noItinerary": "Tidak ada itinerary",
   "understand": "Ok, saya mengerti",
@@ -887,5 +887,7 @@
   "to": "Ke",
   "googleLocationLang": "id",
   "likeYourItinerary": "Menyukai perjalanan ",
-  "createGroupRequired": "Foto profil dan judul grup wajib diisi"
+  "createGroupRequired": "Foto profil dan judul grup wajib diisi",
+  "sendAnEvent": "Kirim event : ",
+  "sendAMovie": "Kirim lokasi film : "
 }

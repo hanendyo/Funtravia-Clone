@@ -654,7 +654,7 @@
   "seedetail": "See details",
   "CategoryItin": "Category Itinerary",
   "LoginFirst": "Login First",
-  "reUpload": "Reupload",
+  "reUpload": "Resend",
   "AboutEvent": "About This Event",
   "noItinerary": "No itinerary",
   "canNotEmpty": "Some field can not be empty",
@@ -889,5 +889,7 @@
   "to": "To",
   "googleLocationLang": "en",
   "likeYourItinerary": "Like your trip ",
-  "createGroupRequired": "Profile photo and group title are required"
+  "createGroupRequired": "Profile photo and group title are required",
+  "sendAnEvent": "Send an event : ",
+  "sendAMovie": "Send a movie location : "
 }
