@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { Text } from "../../component";
+import { Text, Truncate } from "../../component";
 import { Tagdestination, Tagimage, Tagsticker, PinAbu } from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export default function RecentChat({ data, style, room }) {
   const [datas, setDatas] = useState(data);
+  const settingApps = useSelector((data) => data.setting);
+  console.log("~ settingApps", settingApps);
+  console.log("~ datas", datas);
+  const { t } = useTranslation();
 
   // const getlocal = async () => {
   AsyncStorage.getItem("history_" + room).then((datas) => {
@@ -155,13 +161,13 @@ export default function RecentChat({ data, style, room }) {
         }}
       >
         {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu
+        {/* <PinAbu
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
-        />
+        /> */}
         <Text style={style} size="description" type="regular" numberOfLines={2}>
-          {data_movie.name}
+          {t("sendAMovie") + data_movie.name}
         </Text>
       </View>
     );
@@ -176,19 +182,35 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu
-          width={11}
-          height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
-        />
         <Text style={style} size="description" type="regular" numberOfLines={2}>
-          {data_event.name}
+          {t("sendAnEvent") + data_event.name}
         </Text>
       </View>
     );
   }
   if (datas.type == "tag_travel_goal") {
+    let data_travel_goal = JSON.parse(datas.text);
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
+        {/* <PinAbu
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginVertical: 5 }}
+        /> */}
+        <Text style={style} size="description" type="regular" numberOfLines={2}>
+          {data_travel_goal.name}
+        </Text>
+      </View>
+    );
+  }
+  if (datas.type == "tag_journal") {
     let data_travel_goal = JSON.parse(datas.text);
     return (
       <View
@@ -230,7 +252,13 @@ export default function RecentChat({ data, style, room }) {
 
   return (
     <Text style={style} size="description" numberOfLines={1}>
-      {datas.text}
+      {datas.chat == "personal"
+        ? datas.user_id == settingApps.user_id
+          ? t("you") + " : " + datas.text
+          : datas.text
+        : datas.user_id == settingApps.user_id
+        ? t("you") + " : " + datas.text
+        : Truncate({ text: datas.name }, { length: 8 }) + " : " + datas.text}
     </Text>
   );
 }

@@ -71,6 +71,7 @@ export const FormatYMD = (date) => {
 };
 
 export const dateFormatMonthYears = (date) => {
+  console.log("date", date);
   let monthNames = [
     "January",
     "February",
@@ -316,5 +317,32 @@ export const dateFormatHari = (date) => {
   var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let formattedDate = new Date(date[0]);
   let newDate = days[formattedDate.getDay()];
+  return newDate;
+};
+
+// hasil 1 januari 2022 from 2022-01-01
+export const dateFormatDateMonthYears = (date) => {
+  let monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  let formattedDate = new Date(date);
+  let newDate =
+    formattedDate.getDate() +
+    " " +
+    monthNames[formattedDate.getMonth()] +
+    " " +
+    formattedDate.getFullYear().toString();
+
   return newDate;
 };

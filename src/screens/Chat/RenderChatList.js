@@ -84,6 +84,7 @@ export default function ChatList({
   // }
 
   const RecentView = ({ data, style, room }) => {
+    console.log("~ data", data);
     if (data.type == "sticker") {
       return (
         <View
@@ -168,6 +169,7 @@ export default function ChatList({
         </View>
       );
     }
+
     if (data.type == "tag_country") {
       let data_province = JSON.parse(data.text);
       return (
@@ -184,6 +186,23 @@ export default function ChatList({
         </View>
       );
     }
+    if (data.type == "tag_event") {
+      let data_province = JSON.parse(data.text);
+      return (
+        <View
+          style={{
+            flexDirection: "row",
+            alignContent: "center",
+          }}
+        >
+          {/* <PinAbu width={11} height={11} style={{ marginRight: 4 }} /> */}
+          <Text style={style} size="description" type="regular">
+            {data_province.name}
+          </Text>
+        </View>
+      );
+    }
+
     if (data.type == "tag_movie") {
       let data_movie = JSON.parse(data.text);
       return (

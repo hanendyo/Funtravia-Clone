@@ -28,6 +28,7 @@ import ImageView from "react-native-image-viewing";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
+import { dateFormatDateMonthYears } from "../../component/src/dateformatter";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -271,42 +272,37 @@ export default function ChatTypelayout({
         style={{
           borderWidth: 1,
           borderColor: "#209FAE",
-          borderRadius: 10,
+          borderRadius: 15,
           minHeight: 330,
-          marginVertical: 10,
-          width: 250,
+          width: Dimensions.get("screen").width - 120,
+          padding: 10,
+          marginBottom: 5,
           backgroundColor: "#F6F6F6",
         }}
       >
         <FunImage
           source={{ uri: data.cover }}
           style={{
-            width: 220,
+            width: "100%",
             height: 220,
-            alignSelf: "center",
-            margin: 15,
             borderRadius: 10,
           }}
         />
         <View
           style={{
             flex: 1,
-            marginHorizontal: 15,
+            marginTop: 10,
           }}
         >
           {/* Title */}
-          <Text
-            size="small"
-            // type="black"
-            // numberOfLines={1}
-          >
+          <Text size="small" type="regular" numberOfLines={2}>
             {t("checkDestination")}
           </Text>
           <Text
             size="title"
             type="black"
             style={{ marginTop: 2 }}
-            // numberOfLines={1}
+            numberOfLines={2}
           >
             {data.name}
           </Text>
@@ -335,21 +331,18 @@ export default function ChatTypelayout({
                 flexDirection: "row",
                 alignItems: "center",
                 paddingHorizontal: 5,
-                marginRight: 10,
-                marginBottom: 10,
                 marginTop: 5,
                 borderRadius: 5,
               }}
             >
               <Text
                 type="bold"
-                // size="label"
+                size="description"
                 style={{
                   color: "#209FAE",
                   margin: 5,
                 }}
               >
-                {" "}
                 {t("seedetail")}
               </Text>
             </View>
@@ -377,42 +370,37 @@ export default function ChatTypelayout({
         style={{
           borderWidth: 1,
           borderColor: "#209FAE",
-          borderRadius: 10,
-          minHeight: 330,
-          marginVertical: 10,
-          width: 250,
           backgroundColor: "#F6F6F6",
+          borderRadius: 15,
+          minHeight: 330,
+          padding: 10,
+          marginBottom: 5,
+          width: Dimensions.get("screen").width - 120,
         }}
       >
         <FunImage
           source={{ uri: data.cover }}
           style={{
-            width: 220,
+            width: "100%",
             height: 220,
-            alignSelf: "center",
-            margin: 15,
             borderRadius: 10,
           }}
         />
         <View
           style={{
             flex: 1,
-            marginHorizontal: 15,
+            marginTop: 10,
           }}
         >
           {/* Title */}
-          <Text
-            size="small"
-            // type="black"
-            // numberOfLines={1}
-          >
+          <Text size="small" type="regular" numberOfLines={2}>
             {t("checkDestination")}
           </Text>
           <Text
             size="title"
             type="black"
             style={{ marginTop: 2 }}
-            // numberOfLines={1}
+            numberOfLines={2}
           >
             {data.name}
           </Text>
@@ -441,21 +429,18 @@ export default function ChatTypelayout({
                 flexDirection: "row",
                 alignItems: "center",
                 paddingHorizontal: 5,
-                marginRight: 10,
-                marginBottom: 10,
                 marginTop: 5,
                 borderRadius: 5,
               }}
             >
               <Text
                 type="bold"
-                // size="label"
+                size="description"
                 style={{
                   color: "#209FAE",
                   margin: 5,
                 }}
               >
-                {" "}
                 {t("seedetail")}
               </Text>
             </View>
@@ -484,7 +469,7 @@ export default function ChatTypelayout({
         style={{
           borderWidth: 1,
           borderColor: "#209FAE",
-          borderRadius: 10,
+          borderRadius: 15,
           minHeight: 330,
           marginVertical: 10,
           width: 250,
@@ -587,48 +572,38 @@ export default function ChatTypelayout({
         style={{
           borderWidth: 1,
           borderColor: "#209FAE",
-          borderRadius: 10,
+          borderRadius: 15,
           minHeight: 330,
-
-          marginBottom: 10,
-          width: 250,
-
+          marginBottom: 5,
+          padding: 10,
+          width: Dimensions.get("screen").width - 120,
           backgroundColor: "#F6F6F6",
         }}
       >
         <FunImage
           source={{ uri: data.cover }}
           style={{
-            width: 220,
+            width: "100%",
             height: 220,
             alignSelf: "center",
-            margin: 15,
             borderRadius: 10,
           }}
         />
         <View
           style={{
             flex: 1,
-            marginHorizontal: 15,
-            // width: "100%",
-            // alignSelf: "center",
-            // borderBottomWidth: 1,
-            // borderBottomColor: "d75995",
+            marginTop: 10,
           }}
         >
           {/* Title */}
-          <Text
-            size="small"
-            // type="black"
-            // numberOfLines={1}
-          >
+          <Text size="small" type="regular" numberOfLines={2}>
             {t("checkDestination")}
           </Text>
           <Text
             size="title"
             type="black"
             style={{ marginTop: 2 }}
-            // numberOfLines={1}
+            numberOfLines={2}
           >
             {data.name}
           </Text>
@@ -717,8 +692,6 @@ export default function ChatTypelayout({
                 flexDirection: "row",
                 alignItems: "center",
                 paddingHorizontal: 5,
-                marginRight: 10,
-                marginBottom: 10,
                 marginTop: 5,
                 borderRadius: 5,
               }}
@@ -780,7 +753,7 @@ export default function ChatTypelayout({
           style={{
             borderWidth: 1,
             borderColor: "#209FAE",
-            borderRadius: 10,
+            borderRadius: 15,
             paddingVertical: 10,
             marginBottom: 10,
             width: 250,
@@ -900,7 +873,7 @@ export default function ChatTypelayout({
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
           borderColor: "#209fae",
-          borderRadius: 10,
+          borderRadius: 15,
           backgroundColor: "#fff",
           marginBottom: 5,
         }}
@@ -908,13 +881,13 @@ export default function ChatTypelayout({
         <View style={{ flexDirection: "row" }}>
           <FunImage
             source={{ uri: data.cover }}
-            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 15 }}
           ></FunImage>
           <View
             style={{
               flex: 1,
               backgroundColor: "#f6f6f6",
-              borderTopRightRadius: 10,
+              borderTopRightRadius: 15,
               // width: Dimensions.get("screen").width - 200,
               padding: 10,
               // justifyContent: "center",
@@ -981,7 +954,6 @@ export default function ChatTypelayout({
             style={{
               flex: 1,
               backgroundColor: "#f6f6f6",
-              borderTopRightRadius: 10,
               padding: 5,
             }}
           >
@@ -995,15 +967,69 @@ export default function ChatTypelayout({
             </Text>
           </View>
         </View>
-        <View>
+        <View style={{ marginHorizontal: 10 }}>
           <Text
             size="description"
             type="regular"
-            style={{ lineHeight: 16, padding: 10, textAlign: "left" }}
+            style={{ lineHeight: 16, paddingTop: 10, textAlign: "left" }}
             numberOfLines={2}
           >
             {data.description}
           </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginVertical: 10,
+            alignItems: "center",
+            marginHorizontal: 10,
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              marginRight: 5,
+            }}
+          >
+            <Text
+              size="description"
+              type="regular"
+              // style={{ lineHeight: 18, padding: 10 }}
+              numberOfLines={2}
+            >
+              {t("date") + " :"}
+            </Text>
+            <Text
+              size="description"
+              type="bold"
+              // style={{ lineHeight: 18, padding: 10 }}
+              numberOfLines={2}
+            >
+              {dateFormatDateMonthYears(data.startDate)}
+              {" - "}
+              {dateFormatDateMonthYears(data.endDate)}
+            </Text>
+          </View>
+          <Pressable
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#DAF0F2",
+              borderRadius: 5,
+              paddingHorizontal: 5,
+              height: 30,
+            }}
+          >
+            <AddHijau
+              width={10}
+              height={10}
+              style={{ backgroundColor: "#DAF0F2", marginRight: 5 }}
+            />
+            <Text type="bold" size="description" style={{ color: "#209fae" }}>
+              {t("seedetail")}
+            </Text>
+          </Pressable>
         </View>
       </Pressable>
     );
@@ -1023,7 +1049,7 @@ export default function ChatTypelayout({
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
           borderColor: "#209fae",
-          borderRadius: 10,
+          borderRadius: 15,
           backgroundColor: "#fff",
           marginBottom: 5,
         }}
@@ -1031,13 +1057,13 @@ export default function ChatTypelayout({
         <View style={{ flexDirection: "row" }}>
           <FunImage
             source={{ uri: data.cover }}
-            style={{ height: 100, width: 100, borderTopLeftRadius: 10 }}
+            style={{ height: 100, width: 100, borderTopLeftRadius: 15 }}
           ></FunImage>
           <View
             style={{
               flex: 1,
               backgroundColor: "#f6f6f6",
-              borderTopRightRadius: 10,
+              borderTopRightRadius: 15,
               // width: Dimensions.get("screen").width - 200,
               padding: 10,
               // justifyContent: "center",
@@ -1086,9 +1112,10 @@ export default function ChatTypelayout({
           width: Dimensions.get("screen").width - 100,
           borderWidth: 1,
           borderColor: "#209fae",
-          borderRadius: 10,
+          borderRadius: 15,
           backgroundColor: "#fff",
           marginBottom: 5,
+          // padding: 10,
         }}
       >
         <View style={{ flexDirection: "row" }}>
@@ -1100,10 +1127,8 @@ export default function ChatTypelayout({
             style={{
               flex: 1,
               backgroundColor: "#f6f6f6",
-              borderTopRightRadius: 10,
-              // width: Dimensions.get("screen").width - 200,
+              borderTopRightRadius: 15,
               padding: 10,
-              // justifyContent: "center",
             }}
           >
             <Text size="small" type="regular">
@@ -1119,11 +1144,16 @@ export default function ChatTypelayout({
             </Text>
           </View>
         </View>
-        <View>
+        <View
+          style={{
+            marginBottom: 10,
+            marginHorizontal: 10,
+          }}
+        >
           <Text
             size="description"
             type="regular"
-            style={{ lineHeight: 18, padding: 10 }}
+            style={{ lineHeight: 16, marginTop: 5 }}
             numberOfLines={2}
           >
             {data.description}
@@ -1142,15 +1172,18 @@ export default function ChatTypelayout({
           style={{
             borderWidth: 1,
             borderColor: "#209fae",
-            justifyContent: "center",
-            alignContent: "center",
-            borderRadius: 10,
-            borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-            borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-            width: moderateScale(201, 2),
+            borderRadius: 15,
+            width: moderateScale(235, 2),
             height: moderateScale(171, 2),
-            marginVertical: 5,
+            marginBottom: 5,
             backgroundColor: "#F6F6F6",
+            padding: 8,
+            // justifyContent: "center",
+            // alignContent: "center",
+            // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+            // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+            // width: moderateScale(201, 2),
+            // height: moderateScale(171, 2),
           }}
         >
           {item.is_send ? (
@@ -1158,11 +1191,12 @@ export default function ChatTypelayout({
               <FunImage
                 source={{ uri: item.text }}
                 style={{
-                  width: moderateScale(200, 2),
-                  height: moderateScale(170, 2),
-                  borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                  borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-                  // height: 200,
+                  width: "100%",
+                  height: "100%",
+                  // width: moderateScale(200, 2),
+                  // height: moderateScale(170, 2),
+                  // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                  // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
                   alignSelf: "center",
                   // marginVertical: 10,
                   borderRadius: 10,
@@ -1173,24 +1207,23 @@ export default function ChatTypelayout({
             <ImageBackground
               source={{ uri: JSON.parse(item.text).path }}
               style={{
-                width: moderateScale(200, 2),
-                height: moderateScale(170, 2),
-                // maxHeight: 400,
+                width: "100%",
+                height: "100%",
+                // width: moderateScale(200, 2),
+                // height: moderateScale(170, 2),
                 borderRadius: 10,
-                borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+                // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
                 alignSelf: "center",
                 flexDirection: "row",
-                // marginVertical: 10,
-                // borderRadius: 10,
                 justifyContent: "center",
                 alignItems: "center",
                 alignContent: "center",
               }}
               imageStyle={{
                 borderRadius: 10,
-                borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
+                // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
+                // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               }}
               blurRadius={3}
             >
@@ -1218,7 +1251,7 @@ export default function ChatTypelayout({
                       position: "absolute",
                       backgroundColor: "#000",
                       borderRadius: 5,
-                      opacity: 0.3,
+                      opacity: 0.7,
                     }}
                   ></View>
                   <View
