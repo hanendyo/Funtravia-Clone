@@ -21,6 +21,7 @@ import {
   Search,
   Xgray,
   Arrowbackios,
+  Xblue,
 } from "../../../assets/svg";
 import { Text, Button, Loading, FunImage } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -559,8 +560,25 @@ export default function CreateAlbum(props) {
               height: 40,
               // width: "70%",
               width: "77%",
+              marginLeft: Platform.OS == "ios" ? 10 : 5,
             }}
           />
+          {searchText.length > 0 ? (
+            <TouchableOpacity
+              onPress={() => {
+                _searchHandle("");
+              }}
+            >
+              <Xblue
+                width="20"
+                height="20"
+                style={{
+                  alignSelf: "center",
+                  marginLeft: 5,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
       <TabView

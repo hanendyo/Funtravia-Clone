@@ -627,9 +627,9 @@ export default function TravelGoalList(props) {
             </Text>
             <TouchableOpacity
               style={{
-                position: "absolute",
-                backgroundColor: "with",
-                height: 35,
+                // position: "absolute",
+                // backgroundColor: "with",
+                height: 20,
                 width: 32,
                 top: 0,
                 right: 0,
