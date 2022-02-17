@@ -289,55 +289,65 @@ export default function BottomNavigationItems(props) {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View>
-                {countPesan || countPesanGroup > 0 ? (
-                  <Text
-                    type="bold"
+                {countPesan > 0 || countPesanGroup > 0 ? (
+                  <View
                     style={{
-                      color: "#fff",
-                      backgroundColor: "red",
-                      paddingTop: 2,
-                      paddingBottom: 1,
-                      paddingRight: 4,
-                      paddingLeft: 6,
+                      backgroundColor: "#d75995",
                       position: "absolute",
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: "#fff",
                       zIndex: 1,
-                      fontSize: 8,
-                      left: 10,
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      left: 15,
                       top: -5,
                     }}
                   >
-                    {countPesan + countPesanGroup}
-                  </Text>
+                    <Text
+                      type="bold"
+                      style={{
+                        color: "#fff",
+                        fontSize: 8,
+                        marginBottom: 5,
+                        marginTop: 4,
+                        marginRight: 8,
+                        marginLeft: 7,
+                      }}
+                    >
+                      {countPesan + countPesanGroup}
+                    </Text>
+                  </View>
                 ) : null}
                 <ChatOn width="20" height="22" />
               </View>
             ) : (
               <View>
                 {countPesan || countPesanGroup > 0 ? (
-                  <Text
-                    type="bold"
+                  <View
                     style={{
-                      color: "#fff",
-                      backgroundColor: "red",
-                      paddingTop: 2,
-                      paddingBottom: 1,
-                      paddingRight: 4,
-                      paddingLeft: 6,
+                      backgroundColor: "#d75995",
                       position: "absolute",
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: "#fff",
                       zIndex: 1,
-                      fontSize: 8,
-                      left: 10,
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      left: 15,
                       top: -5,
                     }}
                   >
-                    {countPesan + countPesanGroup}
-                  </Text>
+                    <Text
+                      type="bold"
+                      style={{
+                        color: "#fff",
+                        fontSize: 8,
+                        marginBottom: 5,
+                        marginTop: 4,
+                        marginRight: 8,
+                        marginLeft: 7,
+                      }}
+                    >
+                      {countPesan + countPesanGroup}
+                    </Text>
+                  </View>
                 ) : null}
                 <ChatOff width="20" height="22" />
               </View>
