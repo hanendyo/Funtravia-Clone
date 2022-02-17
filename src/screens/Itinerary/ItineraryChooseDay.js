@@ -340,6 +340,8 @@ export default function ItineraryChooseday(props) {
                             datadayaktif: dataSelected[0],
                             status: "edit",
                             onbackhandler: "list",
+                            Kiriman: Kiriman,
+                            data_from: props.route.params.data_from,
                           },
                         })
                       )
@@ -462,6 +464,8 @@ export default function ItineraryChooseday(props) {
                             token: token,
                             datadayaktif: dataSelected[0],
                             status: "edit",
+                            Kiriman: Kiriman,
+                            data_from: props.route.params.data_from,
                           },
                         })
                       )
@@ -506,6 +510,8 @@ export default function ItineraryChooseday(props) {
                                     token: token,
                                     datadayaktif: dataSelected[0],
                                     status: "edit",
+                                    Kiriman: Kiriman,
+                                    data_from: props.route.params.data_from,
                                     index: 0,
                                   },
                                 },
@@ -571,6 +577,8 @@ export default function ItineraryChooseday(props) {
                             token: token,
                             datadayaktif: dataSelected[0],
                             status: "edit",
+                            Kiriman: Kiriman,
+                            data_from: props.route.params.data_from,
                           },
                         })
                       )
@@ -616,6 +624,8 @@ export default function ItineraryChooseday(props) {
                                     datadayaktif: dataSelected[0],
                                     status: "edit",
                                     index: 0,
+                                    Kiriman: Kiriman,
+                                    data_from: props.route.params.data_from,
                                   },
                                 },
                               ],

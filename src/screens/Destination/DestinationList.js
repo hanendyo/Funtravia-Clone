@@ -106,8 +106,8 @@ export default function ItineraryDestination(props) {
 
   let [search, setSearch] = useState({
     type:
-      props?.route?.params && props?.route?.params?.idtype
-        ? [props.route.params.idtype]
+      props?.route?.params && props?.route?.params?.type
+        ? props?.route?.params?.type
         : [],
     keyword: null,
     grouptype:
@@ -116,12 +116,11 @@ export default function ItineraryDestination(props) {
         : [],
     countries:
       props?.route?.params && props?.route?.params?.idcountries
-        ? [props.route.params.idcountries]
+        ? props.route.params.idcountries
         : [],
-    provinces:
-      props?.route?.params && props?.route?.params?.idprovince
-        ? [props.route.params.idprovince]
-        : [],
+    provinces: props.route.params.idprovince
+      ? [props.route.params.idprovince]
+      : [],
     cities:
       props?.route?.params && props?.route?.params?.idcity
         ? [props.route.params.idcity]
@@ -131,7 +130,6 @@ export default function ItineraryDestination(props) {
   });
 
   let [keyword, setkeyword] = useState("");
-  let [searcountry, setsearcountry] = useState(null);
 
   const {
     data: datafilter,
@@ -139,23 +137,21 @@ export default function ItineraryDestination(props) {
     error: errorfilter,
     refetch: refetchFilterDestination,
   } = useQuery(filterDestination, {
-    onCompleted: (datafilter) => {
+    onCompleted: () => {
       if (datafilter) {
         let datloop = [...datafilter?.destination_filter?.type];
         let hasil = [...filtershow];
         let des = [];
 
-        for (var ix in datloop) {
-          if (datloop[ix].id === props?.route?.params?.idtype) {
-            let dat = { ...datloop[ix] };
+        for (let idx in datloop) {
+          if (search.type.includes(datloop[idx].id)) {
+            let dat = { ...datloop[idx] };
             dat.checked = true;
-            datloop.splice(ix, 1, dat);
+            datloop.splice(idx, 1, dat);
             des.push(dat);
           }
         }
-
         hasil = hasil.concat(des);
-
         setdataFilterCategori(datloop);
         setdataFilterCategoris(datloop);
         setTempDataCategory(datloop);
@@ -198,72 +194,19 @@ export default function ItineraryDestination(props) {
 
         setfiltershow(hasil);
       }
-      //  Getsearch();
     },
+    //  Getsearch();
   });
 
-  // const {
-  //   data: datasearchlocation,
-  //   loading: loadingsearchlocation,
-  //   error: errorsearchlocation,
-  //   refetch: refetchLocation,
-  // } = useQuery(Searching, {
-  //   variables: {
-  //     keyword: keyword,
-  //     cities_id: props?.route?.params?.idcity
-  //       ? props?.route?.params?.idcity
-  //       : null,
-  //     province_id: props?.route?.params?.idprovince
-  //       ? props?.route?.params?.idprovince
-  //       : null,
-  //     countries_id: searcountry ? searcountry : null,
-  //   },
-  //   onCompleted: async () => {
-  //     let datloop = [...datasearchlocation?.searchlocation_populer];
-  //     let hasil = [...filtershowcity];
-  //     let wle = [];
-
-  //     for (var ix in datloop) {
-  //       if (
-  //         datloop[ix].id === props?.route?.params?.idcity ||
-  //         datloop[ix].id === props?.route?.params?.idcountries ||
-  //         datloop[ix].id === props?.route?.params?.idprovince
-  //       ) {
-  //         let dat = { ...datloop[ix] };
-  //         dat.checked = true;
-  //         await datloop.splice(ix, 1, dat);
-  //         await wle.push(dat);
-  //       }
-  //     }
-  //     hasil = hasil.concat(wle);
-
-  //     await setfiltershowcity(hasil);
-
-  //     await setdataFilterCity(datloop);
-  //     await setdataFilterCitys(datloop);
-  //     await setTempDataCity(datloop);
-  //     // await UpdateFilter();
-  //   },
-  // });
   const {
     data: datasearchlocation,
     loading: loadingsearchlocation,
     error: errorsearchlocation,
     refetch: refetchLocation,
   } = useQuery(CityCursorBased, {
-    // variables: {
-    //   keyword: keyword,
-    //   cities_id: props?.route?.params?.idcity
-    //     ? props?.route?.params?.idcity
-    //     : null,
-    //   province_id: props?.route?.params?.idprovince
-    //     ? props?.route?.params?.idprovince
-    //     : null,
-    //   countries_id: searcountry ? searcountry : null,
-    // },
     variables: {
-      keyword: search.keyword ? search.keyword : null,
-      countries_id: props?.route?.params?.idCountry,
+      keyword: search.keyword ? search.keyword : "",
+      countries_id: search.countries,
       first: 520,
       after: "",
     },
@@ -279,7 +222,7 @@ export default function ItineraryDestination(props) {
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
-    onCompleted: (datasearchlocation) => {
+    onCompleted: () => {
       if (datasearchlocation) {
         let datloop = [...datasearchlocation?.city_search_cursor_based?.edges];
         let hasil = [...filtershowcity];
@@ -317,10 +260,9 @@ export default function ItineraryDestination(props) {
     fetchPolicy: "network-only",
     variables: {
       keyword: search.keyword ? search.keyword : null,
-      // type: search.type ? search.type : null,
-      grouptype: props.route?.params?.idgroup
-        ? [props.route?.params?.idgroup]
-        : [],
+      type: search.type ? search.type : null,
+      grouptype:
+        search.grouptype && search.grouptype.length ? search.grouptype : null,
       type: search.type && search.type.length > 0 ? search.type : null,
       cities: search.cities && search.cities.length > 0 ? search.cities : null,
       countries:
@@ -335,8 +277,13 @@ export default function ItineraryDestination(props) {
       facilities: search.facilities ? search.facilities : null,
       rating: search.rating ? search.rating : null,
     },
-    onCompleted: () => {
+    onCompleted: async () => {
       setdataDes(data?.destinationList_v2);
+      let type = [];
+      for (let dataType of data.destinationList_v2) {
+        type = type.concat(dataType.destination_unique_type);
+      }
+      await setUniqueType([...new Set(type.map((x) => x.id))]);
     },
   });
 

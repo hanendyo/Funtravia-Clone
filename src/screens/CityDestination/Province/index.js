@@ -387,11 +387,6 @@ export default function ProvinceDetail(props) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
 
-  // useEffect(() => {
-  //   console.log("panggil");
-  //   getJournalCity();
-  // }, [token]);
-
   const headerPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
@@ -860,8 +855,11 @@ export default function ProvinceDetail(props) {
                             props.navigation.push("DestinationList", {
                               groupid: item.id,
                               idprovince: render.id,
-                              idCountry: render.countries.id,
+                              idcountries: render.countries.id,
                               token: token,
+                              type: [
+                                ...new Set(item.type.map((x) => x.type_id)),
+                              ],
                             });
                           }}
                           style={{

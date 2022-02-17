@@ -960,7 +960,6 @@ export default function ItineraryDetail(props) {
     let durations = jamakhirs + ":" + menitakhirs + ":00";
 
     let datax = [...dataLists];
-
     let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
@@ -1089,6 +1088,9 @@ export default function ItineraryDetail(props) {
 
       x++;
       order++;
+    }
+    if (datahotel.length > 0) {
+      datax.splice(0, 0, datahotel[0]);
     }
 
     let sum = datax.reduce(

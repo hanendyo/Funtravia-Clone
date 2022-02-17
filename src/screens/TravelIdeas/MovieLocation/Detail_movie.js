@@ -695,7 +695,7 @@ export default function Detail_movie(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: normalize(55),
+          height: normalize(58),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -705,14 +705,14 @@ export default function Detail_movie(props) {
           paddingLeft: 60,
           zIndex: 999,
           opacity: titleOpacity,
-          top: SafeStatusBar + 10,
-          // Platform.OS == "ios"
-          //   ? Notch
-          //     ? SafeStatusBar + 10
-          //     : SafeStatusBar + 11
-          //   : NotchAndro
-          //   ? SafeStatusBar + 13
-          //   : SafeStatusBar + 2,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar + 7
+                : SafeStatusBar + 8
+              : NotchAndro
+              ? SafeStatusBar + 10
+              : SafeStatusBar + 4,
           backgroundColor: "#209FAE",
         }}
       >
