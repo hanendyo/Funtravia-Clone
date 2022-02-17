@@ -14,6 +14,7 @@ import {
   Pressable,
   TouchableOpacity,
   SafeAreaView,
+  BackHandler,
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import {
@@ -251,6 +252,30 @@ export default function MovieLocation({ navigation, route }) {
     outputRange: [0, 0, 1],
     extrapolate: "clamp",
   });
+
+  const backAction = () => {
+    route.params.from == "movie_detail"
+      ? navigation.navigate("TravelIdeaStack", {
+          screen: "TravelIdeas",
+          params: {
+            from: "movie_location",
+          },
+        })
+      : navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   return (
     <View

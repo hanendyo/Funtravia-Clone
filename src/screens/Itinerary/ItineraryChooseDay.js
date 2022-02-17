@@ -59,6 +59,51 @@ export default function ItineraryChooseday(props) {
     }
   };
 
+  const backAction = () => {
+    if (props.route.params.data_from) {
+      props.navigation.push("ItineraryStack", {
+        screen: "ItineraryPlaning",
+        params: {
+          idkiriman: props.route.params.Kiriman,
+          Position: "destination",
+          data_from: props.route.params.data_from,
+          token: props.route.params.token,
+          onbackhandler: "chooseDay",
+          IdItinerary: props.route.params.Iditinerary,
+          movieId: props.route.params.movie_id,
+        },
+      });
+    } else {
+      props.navigation.push("ItineraryStack", {
+        screen: "itindest",
+        params: {
+          IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
+          token: props?.route?.params?.token,
+          datadayaktif: props?.route?.params?.data_dest?.datadayaktif,
+          dataDes: props?.route?.params?.data_dest?.dataDes,
+          lat: props?.route?.params?.data_dest?.lat,
+          long: props?.route?.params?.data_dest?.long,
+          idcity: props?.route?.params?.data_dest?.idcity,
+          idcountries: props?.route?.params?.data_dest?.idcountries,
+          onbackhandler: "chooseDay",
+        },
+      });
+    }
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
+
   //function hardwareBack
   const hardwareBack = useCallback(() => {
     handlerBack();

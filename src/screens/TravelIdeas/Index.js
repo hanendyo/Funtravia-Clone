@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
+  BackHandler,
   Pressable,
 } from "react-native";
 import { Button, Text } from "../../component";
@@ -71,6 +72,33 @@ export default function TravelIdeas(props) {
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
+
+  const backAction = () => {
+    props?.route?.params?.from == "movie_location"
+      ? props.navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "BottomStack",
+              routes: [{ name: "HomeScreen" }],
+            },
+          ],
+        })
+      : props.navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    props.navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
 
   return (
     <ScrollView
@@ -227,7 +255,7 @@ export default function TravelIdeas(props) {
             </View>
             <View style={{ flex: 1 }}>
               <Text type="bold" size="label" numberOfLines={1}>
-                Unesco World Heritage
+                {t("unescoWorldHeritage")}
               </Text>
               <Text type="regular" size="description" numberOfLines={2}>
                 {t("subUnescoIndex")}
