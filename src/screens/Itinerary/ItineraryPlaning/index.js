@@ -512,6 +512,7 @@ export default function listItinPlaning(props) {
             dateitin: getdate(data.start_date, data.end_date),
             token: token,
             Kiriman: idkiriman,
+            data_from: props.route.params.data_from,
             Position: props.route.params.Position,
             sebelum: true,
           },

@@ -22,6 +22,11 @@ const province_detail = gql`
         name
         description
         icon
+        icon
+        type {
+          type_id
+          name
+        }
       }
       article_header {
         id

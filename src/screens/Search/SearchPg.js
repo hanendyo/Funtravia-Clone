@@ -535,7 +535,7 @@ export default function SearchPg(props, { navigation, route }) {
       let tempUser = [...user_search];
       let _temStatus = { ...tempUser[index].node };
       let _cursor = tempUser[index].cursor;
-      _temStatus.status_following = false;
+      _temStatus.status_following = true;
       let _temData = {
         __typename: "FollowingEdge",
         cursor: _cursor,
@@ -1516,6 +1516,24 @@ export default function SearchPg(props, { navigation, route }) {
                           <Text size="label" type="regular">
                             {t("noData")}
                           </Text>
+                        </View>
+                      ) : loadingLocation ? (
+                        <View
+                          style={{
+                            // position: 'absolute',
+                            // bottom:0,
+                            flex: 1,
+                            width: width,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginHorizontal: 15,
+                          }}
+                        >
+                          <ActivityIndicator
+                            animating={loadingLocation}
+                            size="large"
+                            color="#209fae"
+                          />
                         </View>
                       ) : null
                     }

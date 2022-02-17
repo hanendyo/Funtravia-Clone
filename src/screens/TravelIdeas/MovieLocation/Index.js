@@ -674,7 +674,7 @@ export default function MovieLocation({ navigation, route }) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: 50,
+          height: normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -688,10 +688,10 @@ export default function MovieLocation({ navigation, route }) {
           opacity: titleOpacity,
           top:
             Platform.OS == "ios"
-              ? SafeStatusBar + 5
+              ? SafeStatusBar
               : NotchAndro
-              ? SafeStatusBar + 10
-              : SafeStatusBar,
+              ? SafeStatusBar + 5
+              : SafeStatusBar + 1,
         }}
       >
         <Text

@@ -133,6 +133,7 @@ export default function TravelGoalList(props) {
     //     data.push(x);
     //   }
     // }
+
     if (status == "clear") {
       await setfilterResults(0);
     } else {

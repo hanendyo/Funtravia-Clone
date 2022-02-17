@@ -31,6 +31,12 @@ const ListDestination = gql`
       cover
       count_review
       liked
+      destination_unique_type {
+        id
+        name
+        slug
+        icon
+      }
       cities {
         id
         name
