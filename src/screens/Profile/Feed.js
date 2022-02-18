@@ -1023,6 +1023,7 @@ export default function myfeed(props) {
                 style={{
                   justifyContent: "center",
                   marginHorizontal: 10,
+                  flex: 1,
                 }}
               >
                 <Text

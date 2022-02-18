@@ -452,7 +452,7 @@ export default function FeedList({ props, token }) {
     networkStatus,
   } = useQuery(FeedListCursorBased, {
     variables: {
-      first: 5,
+      first: 10,
       after: "",
     },
     context: {
@@ -471,8 +471,6 @@ export default function FeedList({ props, token }) {
       setDataFeed(dataPost?.post_cursor_based?.edges);
     },
   });
-
-  console.log("datafeed", dataFeed, loadingPost);
 
   const [refreshing, setRefreshing] = useState(false);
   const refresstatus = networkStatus === NetworkStatus.refetch;
@@ -511,7 +509,7 @@ export default function FeedList({ props, token }) {
         return fetchMore({
           updateQuery: onUpdate,
           variables: {
-            first: 5,
+            first: 10,
             after: dataPost?.post_cursor_based.pageInfo?.endCursor,
           },
         });
