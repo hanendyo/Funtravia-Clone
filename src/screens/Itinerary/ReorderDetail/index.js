@@ -324,39 +324,41 @@ export default function ReoderDetail({navigation, route}) {
                 zIndex: 99,
               }}
             >
-              <View
-                style={{
-                  width: "81%",
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                  backgroundColor: "#daf0f2",
-                  borderRadius: 5,
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <View>
-                  {item.time ? (
-                    <GetStartTime startt={item.time} />
-                  ) : (
-                    <Text size="description" type="bold">
-                      00:00
-                    </Text>
-                  )}
+              {item.detail_accomodation ? null : (
+                <View
+                  style={{
+                    width: "81%",
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
+                    backgroundColor: "#daf0f2",
+                    borderRadius: 5,
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <View>
+                    {item.time ? (
+                      <GetStartTime startt={item.time} />
+                    ) : (
+                      <Text size="description" type="bold">
+                        00:00
+                      </Text>
+                    )}
+                  </View>
+                  <View>
+                    {item.duration ? (
+                      <GetEndTime
+                        startt={item.time ? item.time : "00:00"}
+                        dur={item.duration ? item.duration : "00:00"}
+                      />
+                    ) : (
+                      <Text size="description" type="bold">
+                        00:00
+                      </Text>
+                    )}
+                  </View>
                 </View>
-                <View>
-                  {item.duration ? (
-                    <GetEndTime
-                      startt={item.time ? item.time : "00:00"}
-                      dur={item.duration ? item.duration : "00:00"}
-                    />
-                  ) : (
-                    <Text size="description" type="bold">
-                      00:00
-                    </Text>
-                  )}
-                </View>
-              </View>
+              )}
               {index > 0 &&
               listData[index - 1] &&
               listData[index].latitude == listData[index - 1].latitude &&

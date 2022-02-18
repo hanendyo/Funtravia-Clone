@@ -347,6 +347,7 @@ export default function ItineraryDetail(props) {
       },
     },
   });
+  console.log("aa", datadetail);
 
   const _handlehapus = async (id) => {
     setloading(true);
@@ -2632,6 +2633,7 @@ export default function ItineraryDetail(props) {
                             ),
                             datadayaktif: datadayaktif,
                             indexdata: index,
+                            time: item.time,
                           })
                         : null;
                     }}
@@ -2860,6 +2862,7 @@ export default function ItineraryDetail(props) {
                         ),
                         datadayaktif: datadayaktif,
                         indexdata: index,
+                        time: item.time,
                       });
                     }}
                   >
