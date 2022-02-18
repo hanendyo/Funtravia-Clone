@@ -193,11 +193,8 @@ export default function BottomNavigationItems(props) {
   };
 
   useEffect(() => {
-    // const unsubscribe = props.navigation.addListener("focus", () => {
     getRoom();
     getRoomGroup();
-    // });
-    // return unsubscribe;
   }, []);
 
   return (

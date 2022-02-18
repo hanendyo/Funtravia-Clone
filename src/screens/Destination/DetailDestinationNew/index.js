@@ -128,7 +128,7 @@ const Index = (props) => {
           HeightWeb -
           StatusBar.currentHeight
         : NotchAndro
-        ? normalize(223) +
+        ? normalize(210) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
