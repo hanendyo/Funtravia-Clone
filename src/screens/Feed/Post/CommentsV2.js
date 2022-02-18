@@ -171,16 +171,17 @@ export default function Comments(props) {
         type="circle"
         variant="transparent"
         onPress={() => {
-          if (from == "funFeed") {
-            props.navigation.navigate("FeedScreen", {
-              post_id: props?.route?.params?.data?.id,
-              caption: props?.route?.params?.data?.caption,
-              response_count: props?.route?.params?.data?.response_count,
-              comment_count: props?.route?.params?.data?.comment_count,
-              liked: props?.route?.params?.data?.liked,
-              from: "funFeedComment",
-            });
-          } else if (from == "funFeedCommentEdit") {
+          // if (from == "funFeed") {
+          //   props.navigation.navigate("FeedScreen", {
+          //     post_id: props?.route?.params?.data?.id,
+          //     caption: props?.route?.params?.data?.caption,
+          //     response_count: props?.route?.params?.data?.response_count,
+          //     comment_count: props?.route?.params?.data?.comment_count,
+          //     liked: props?.route?.params?.data?.liked,
+          //     from: "funFeedComment",
+          //   });
+          // } else
+          if (from == "funFeedCommentEdit") {
             props.navigation.navigate("FeedScreen", {
               post_id: props?.route?.params?.post_id,
               caption: props?.route?.params?.caption,

@@ -302,7 +302,7 @@ export default function Detail_movie(props) {
   });
   const titleTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, -8],
+    outputRange: [0, 0, 0],
     extrapolate: "clamp",
   });
 
@@ -322,6 +322,13 @@ export default function Detail_movie(props) {
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
+
+  const backOpacitySecond = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE - 100, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, 1],
+    extrapolate: "clamp",
+  });
+
   const titleOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE + 10],
     outputRange: [0, 0, 1],
@@ -721,7 +728,7 @@ export default function Detail_movie(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: normalize(58),
+          height: normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -733,12 +740,10 @@ export default function Detail_movie(props) {
           opacity: titleOpacity,
           top:
             Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 7
-                : SafeStatusBar + 8
+              ? SafeStatusBar
               : NotchAndro
-              ? SafeStatusBar + 10
-              : SafeStatusBar + 4,
+              ? SafeStatusBar + 5
+              : SafeStatusBar,
           backgroundColor: "#209FAE",
         }}
       >
@@ -773,11 +778,12 @@ export default function Detail_movie(props) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? SafeStatusBar + 5
-                : SafeStatusBar
+                ? SafeStatusBar + 3
+                : SafeStatusBar - 5
               : NotchAndro
-              ? SafeStatusBar + 5
-              : SafeStatusBar + 0,
+              ? SafeStatusBar + 3
+              : SafeStatusBar,
+          left: 2,
           opacity: backOpacity,
         }}
       >
@@ -797,9 +803,9 @@ export default function Detail_movie(props) {
             marginTop: 15,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
-            borderRadius: 40,
-            height: 40,
-            width: 40,
+            borderRadius: 35,
+            height: 35,
+            width: 35,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -828,11 +834,12 @@ export default function Detail_movie(props) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? SafeStatusBar + 5
-                : SafeStatusBar
+                ? SafeStatusBar + 1
+                : SafeStatusBar - 8
               : NotchAndro
-              ? SafeStatusBar + 5
-              : SafeStatusBar,
+              ? SafeStatusBar + 3
+              : SafeStatusBar - 3,
+          opacity: backOpacitySecond,
         }}
       >
         <Pressable

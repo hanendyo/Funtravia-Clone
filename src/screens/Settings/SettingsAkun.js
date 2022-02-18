@@ -471,7 +471,6 @@ export default function SettingsAkun(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       loadAsync();
-      // console.log(`INDEX AKUN: `, index);
     });
     return unsubscribe;
   }, [props.navigation, index, indexSend]);
@@ -1462,7 +1461,7 @@ export default function SettingsAkun(props) {
                       marginVertical: 5,
                     }}
                   >
-                    {setting.user.email}
+                    {setting.user.phone}
                   </Text>
                   <Text
                     type="regular"

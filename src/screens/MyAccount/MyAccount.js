@@ -72,6 +72,7 @@ export default function MyAccount(props) {
     //   </TouchableOpacity>
     // ),
   };
+
   const loadAsync = async () => {
     if (tokenApps === null) {
       setModalLogin(true);
@@ -118,14 +119,14 @@ export default function MyAccount(props) {
         },
       },
       onCompleted: () => {
-        // if (datas.setting_data.user) {
-        // setSetting(datas?.setting_data_user);
+        if (datas?.setting_data_user) {
+          // setSetting(datas?.setting_data_user);
 
-        AsyncStorage.setItem(
-          "setting",
-          JSON.stringify(datas?.setting_data_user)
-        );
-        // }
+          AsyncStorage.setItem(
+            "setting",
+            JSON.stringify(datas?.setting_data_user)
+          );
+        }
       },
     }
   );
@@ -734,7 +735,7 @@ export default function MyAccount(props) {
 
                 if (response) {
                   await AsyncStorage.setItem("access_token", "");
-                  await AsyncStorage.setItem("setting", "");
+                  await AsyncStorage.setItem("setting", JSON.stringify({}));
                   dispatch(setTokenApps(null));
                   dispatch(setSettingUser(null));
 
@@ -745,7 +746,7 @@ export default function MyAccount(props) {
                 }
               } catch (error) {
                 RNToasty.Show({
-                  title: error,
+                  title: t("somethingwrong"),
                   position: "bottom",
                 });
                 await AsyncStorage.setItem("access_token", "");
