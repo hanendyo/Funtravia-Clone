@@ -708,6 +708,10 @@ export default function ProvinceDetail(props) {
       dataProvince && dataProvince?.province_detail_v2
         ? dataProvince?.province_detail_v2
         : null;
+    console.log(
+      "🚀 ~ file: index.js ~ line 707 ~ RenderGeneral ~ render",
+      render
+    );
 
     let renderjournal = [];
     renderjournal = list_journal;
