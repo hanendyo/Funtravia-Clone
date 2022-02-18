@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Dimensions, Image, Pressable } from "react-native";
 import { default_image } from "../../../../assets/png";
-import User_Post from "../../../../graphQL/Query/Profile/post";
 import { Kosong, PlayVideo } from "../../../../assets/svg";
 import {
   Text,

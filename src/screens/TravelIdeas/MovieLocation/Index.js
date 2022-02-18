@@ -577,7 +577,7 @@ export default function MovieLocation({ navigation, route }) {
               ? HEADER_MAX_HEIGHT - normalize(8)
               : NotchAndro
               ? HEADER_MAX_HEIGHT + normalize(15)
-              : HEADER_MAX_HEIGHT + normalize(10),
+              : HEADER_MAX_HEIGHT + normalize(5),
           opacity: backOpacity,
           transform: [{ translateY: shareTranslateY }],
         }}

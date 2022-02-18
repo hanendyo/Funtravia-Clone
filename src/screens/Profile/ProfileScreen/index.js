@@ -35,27 +35,18 @@ import {
   DefaultProfileSquare,
 } from "../../../assets/png";
 import Account from "../../../graphQL/Query/Profile/Other";
-import User_Post from "../../../graphQL/Query/Profile/post";
 import PostCursorBased from "../../../graphQL/Query/Profile/postCursorBased";
-import album_post from "../../../graphQL/Query/Profile/albumPost";
 import Reviews from "../../../graphQL/Query/Profile/otherreview";
 import Itinerary from "../../../graphQL/Query/Profile/otheritinerary";
 import Itinerary2 from "../../../graphQL/Query/Profile/itinerary";
 import { useTranslation } from "react-i18next";
 import { Bg_soon } from "../../../assets/png";
 import {
-  Album,
-  Allpost,
-  Allpostgreen,
   Arrowbackios,
   Arrowbackwhite,
-  Google,
   Message,
-  OptionsVertWhite,
   PostGreen,
   PostGray,
-  SendMessage,
-  Sharegreen,
   Tag,
   Taggreen,
   AlbumGray,
@@ -65,20 +56,16 @@ import Post from "./Posting/Post";
 import Albums from "./Posting/Album";
 import Tags from "./Posting/Tag";
 import Review from "./Review";
-import CardItinerary from "../../../component/src/CardItinerary";
 import Trip from "./Trip";
-import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import FollowMut from "../../../graphQL/Mutation/Profile/FollowMut";
 import UnfollowMut from "../../../graphQL/Mutation/Profile/UnfollowMut";
 import DeviceInfo from "react-native-device-info";
 import { RNToasty } from "react-native-toasty";
-import ListFotoAlbum from "../../../graphQL/Query/Itinerary/ListAlbum";
 import ListFotoAlbumAll from "../../../graphQL/Query/Itinerary/ListAlbumAll";
 import Ripple from "react-native-material-ripple";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { useDispatch, useSelector } from "react-redux";
-import { setTokenApps } from "../../../redux/action";
 import normalize from "react-native-normalize";
 
 const deviceId = DeviceInfo.getModel();
@@ -640,7 +627,7 @@ export default function OtherProfile(props) {
   } = useQuery(PostCursorBased, {
     variables: {
       user_id: props?.route?.params?.idUser,
-      first: 18,
+      first: 100,
       after: "",
     },
     context: {
@@ -922,6 +909,7 @@ export default function OtherProfile(props) {
       outputRange: [0, -HeaderHeight + 55],
       extrapolateRight: "clamp",
     });
+    const NotchAndro = StatusBar.currentHeight > 24;
 
     return (
       <Animated.View
@@ -931,7 +919,15 @@ export default function OtherProfile(props) {
           top: SafeStatusBar,
           paddingTop: Platform.select({
             ios: Notch ? 10 : 20,
-            android: 20,
+            // android: 15,
+            android:
+              deviceId == "LYA-L29"
+                ? 25
+                : deviceId == "CPH2127"
+                ? 10
+                : NotchAndro
+                ? 18
+                : 20,
           }),
           paddingBottom: 3,
           // height: HeaderHeight,
@@ -939,7 +935,8 @@ export default function OtherProfile(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
+          opacity: imageOpacity,
         }}
       >
         <Animated.View

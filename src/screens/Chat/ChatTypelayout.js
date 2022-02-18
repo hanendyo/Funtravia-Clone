@@ -7,6 +7,12 @@ import {
   ActivityIndicator,
   ImageBackground,
   Modal,
+  StatusBar,
+  Platform,
+  Image,
+  Animated,
+  PanResponder,
+  useWindowDimensions,
 } from "react-native";
 import { Text, FunImage, FunImageAutoSize, FunVideo } from "../../component";
 import {
@@ -16,6 +22,8 @@ import {
   Xwhite,
   LikeBlack,
   CommentBlack,
+  Arrowbackios,
+  Arrowbackwhite,
 } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
@@ -30,6 +38,9 @@ import { useSelector } from "react-redux";
 import { dateFormatDateMonthYears } from "../../component/src/dateformatter";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import ImageTransformer from "react-native-image-transformer";
+import DeviceInfo from "react-native-device-info";
+import ImageRotate from "react-native-image-rotate";
+import { PinchGestureHandler } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -53,6 +64,7 @@ export default function ChatTypelayout({
 }) {
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
+  let Notch = DeviceInfo.hasNotch();
 
   const _uploadimages = async (image, id) => {
     try {
@@ -949,6 +961,7 @@ export default function ChatTypelayout({
               flex: 1,
               backgroundColor: "#f6f6f6",
               padding: 5,
+              marginLeft: 5,
             }}
           >
             <Text
@@ -1157,8 +1170,24 @@ export default function ChatTypelayout({
     );
   }
 
+  // att_image_layout
   if (item.type == "att_image") {
-    // att_image_layout
+    let SafeStatusBar = Platform.select({
+      ios: Notch ? 48 : 20,
+      android: 0,
+    });
+    let [img, setImg] = useState(item.text);
+    let [angel, setAngel] = useState(0);
+    console.log("~ angel", angel);
+
+    const rotate = (angles) => {
+      const nextAngle = angel + angles;
+      if (nextAngle == 360) {
+        setAngel(0);
+      } else {
+        setAngel(nextAngle);
+      }
+    };
 
     return (
       <>
@@ -1167,17 +1196,11 @@ export default function ChatTypelayout({
             borderWidth: 1,
             borderColor: "#209fae",
             borderRadius: 15,
-            width: moderateScale(235, 2),
+            width: moderateScale(225, 2),
             height: moderateScale(171, 2),
             marginBottom: 5,
             backgroundColor: "#F6F6F6",
             padding: 8,
-            // justifyContent: "center",
-            // alignContent: "center",
-            // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-            // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
-            // width: moderateScale(201, 2),
-            // height: moderateScale(171, 2),
           }}
         >
           {item.is_send ? (
@@ -1187,12 +1210,7 @@ export default function ChatTypelayout({
                 style={{
                   width: "100%",
                   height: "100%",
-                  // width: moderateScale(200, 2),
-                  // height: moderateScale(170, 2),
-                  // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                  // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
                   alignSelf: "center",
-                  // marginVertical: 10,
                   borderRadius: 10,
                 }}
               />
@@ -1203,11 +1221,7 @@ export default function ChatTypelayout({
               style={{
                 width: "100%",
                 height: "100%",
-                // width: moderateScale(200, 2),
-                // height: moderateScale(170, 2),
                 borderRadius: 10,
-                // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
                 alignSelf: "center",
                 flexDirection: "row",
                 justifyContent: "center",
@@ -1216,8 +1230,6 @@ export default function ChatTypelayout({
               }}
               imageStyle={{
                 borderRadius: 10,
-                // borderTopRightRadius: item.user_id == user_id ? 0 : 10,
-                // borderTopLeftRadius: item.user_id == user_id ? 10 : 0,
               }}
               blurRadius={3}
             >
@@ -1273,37 +1285,10 @@ export default function ChatTypelayout({
             </ImageBackground>
           )}
         </Pressable>
-        <Pressable
-          onPress={() => {
-            setShow(true);
-          }}
-          style={{
-            height: 20,
-            marginLeft: 10,
-            width: 40,
-            backgroundColor: "#209fae",
-          }}
-        >
-          <Text style={{ color: "#fff" }}>press</Text>
-        </Pressable>
-        {/* <ImageSlide
-        index={index}
-        name="Funtravia Chat Images"
-        location={""}
-        show={modalss}
-        dataImage={dataImage}
-        setClose={() => setModalss(!modalss)}
-      /> */}
-        {/* <ImageView
-          images={[{ uri: item.text }]}
-          imageIndex={0}
-          visible={modalss}
-          onRequestClose={() => setModalss(false)}
-          doubleTapToZoomEnabled={true}
-        
-        /> */}
 
-        <Modal
+        {/* Modal Image Viewer */}
+
+        {/* <Modal
           visible={modalss}
           transparent={true}
           onRequestClose={() => {
@@ -1315,8 +1300,8 @@ export default function ChatTypelayout({
             backgroundColor: "#000",
           }}
         >
-          {/* <ImageViewer
-            style={{ flex:   1 }}
+          <ImageViewer
+            style={{ flex: 1 }}
             imageUrls={[{ url: item.text }]}
             useNativeDriver={true}
             onSwipeDown={() => {
@@ -1348,25 +1333,102 @@ export default function ChatTypelayout({
                 </Text>
               </TouchableHighlight>
             )}
-          /> */}
-          <ImageTransformer
-            useNativeDriver={true}
-            resizeMode="contain"
-            style={{
-              flex: 1,
-              backgroundColor: "#000",
+          />
+        </Modal> */}
+
+        {/* End Modal Image Viewer */}
+
+        {/* New Image Viewer */}
+
+        <Modal
+          onBackdropPress={() => {
+            setModalss(false);
+          }}
+          onRequestClose={() => setModalss(false)}
+          onDismiss={() => setModalss(false)}
+          transparent={true}
+          visible={modalss}
+          onRequestClose={() => {
+            setModalss(false);
+          }}
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              setModalss(false);
             }}
-            image={{
-              uri: item.text,
+            style={{
+              height: Dimensions.get("screen").height,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "#000",
+              position: "absolute",
+              marginTop: SafeStatusBar,
+            }}
+          ></Pressable>
+          <View
+            style={{
+              marginTop: SafeStatusBar,
+              width: Dimensions.get("screen").width,
+              height: 45,
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              paddingRight: 20,
+            }}
+          >
+            <Pressable
+              onPress={() => setModalss(false)}
+              style={{
+                height: "100%",
+                justifyContent: "center",
+                paddingLeft: 20,
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Pressable>
+            <Pressable
+              onPress={() => rotate(90)}
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#fff", marginRight: 10 }}
+              >
+                Rotate Photo
+              </Text>
+              <Reupload height={20} width={20}></Reupload>
+            </Pressable>
+          </View>
+          <Image
+            source={{ uri: img }}
+            style={{
+              width: angel == 90 || angel == 270 ? "140%" : "100%",
+              height: "100%",
+              alignSelf: "center",
+              resizeMode: "contain",
+              transform: [{ rotate: `${angel}deg` }],
             }}
           />
         </Modal>
+        {/*End New Image Viewer */}
       </>
     );
   }
 
   return (
-    <View>
+    <View key={item.id}>
       {item.chat == "group" ? (
         item.user_id !== user_id && tmpRChat ? (
           <Text style={{ marginBottom: 5 }}>{item.name}</Text>

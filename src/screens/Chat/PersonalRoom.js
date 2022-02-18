@@ -814,7 +814,7 @@ export default function Room({ navigation, route }) {
 
     // let [loads, setLoads] = useState(true);
     return (
-      <View>
+      <View key={item.id}>
         {date ? (
           <View style={{ alignItems: "center", marginVertical: 5 }}>
             <Text
@@ -832,7 +832,7 @@ export default function Room({ navigation, route }) {
           </View>
         ) : null}
         <View
-          key={`chat_${index}`}
+          key={index}
           style={[
             styles.item,
             user.id == item.user_id ? styles.itemOut : styles.itemIn,
@@ -861,6 +861,7 @@ export default function Room({ navigation, route }) {
             </View>
           ) : null}
           <ChatTypelayout
+            key={index}
             item={item}
             user_id={user.id}
             tmpRChat={tmpRChat}
@@ -930,7 +931,7 @@ export default function Room({ navigation, route }) {
             // }}
             // initialScrollIndex={message.length - 1}
             renderItem={RenderChat}
-            keyExtractor={(item, index) => `render_${index}`}
+            keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{

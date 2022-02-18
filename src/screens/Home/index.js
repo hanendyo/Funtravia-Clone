@@ -30,7 +30,6 @@ import MenuNew from "./MenuNew";
 import DiscoverCard from "./DiscoverCard";
 import FunFeed from "./FunFeed";
 import CountNotif from "../../graphQL/Query/Notification/CountNotif";
-import User_Post from "../../graphQL/Query/Profile/post";
 import {
   NotificationBlue,
   ArrowRightHome,
@@ -94,7 +93,6 @@ export default function Home(props) {
       dispatch(setSettingUser(JSON.parse(sttng)));
       await NotifCount();
       await LoadUserProfile();
-      await LoadPost();
     }
 
     if (props?.route?.params?.authBlocked) {
@@ -115,18 +113,6 @@ export default function Home(props) {
     },
     onCompleted: () => {
       setdata(dataProfiles?.user_profile);
-    },
-  });
-  const [
-    LoadPost,
-    { data: datapost, loading: loadingpost, error: errorpost },
-  ] = useLazyQuery(User_Post, {
-    fetchPolicy: "network-only",
-    context: {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: tokenApps,
-      },
     },
   });
 

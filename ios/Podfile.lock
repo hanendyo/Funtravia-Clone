@@ -451,6 +451,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
+  - RNImageRotate (2.1.0):
+    - React
   - RNPermissions (3.2.0):
     - React-Core
   - RNReanimated (1.13.0):
@@ -547,6 +549,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNImageRotate (from `../node_modules/react-native-image-rotate`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -715,6 +718,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/google-signin"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNImageRotate:
+    :path: "../node_modules/react-native-image-rotate"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -817,6 +822,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNImageCropPicker: 08ba3a2e2f4f8833d606f01906c371e382c4dea9
+  RNImageRotate: 61c62c5a907405821e28dc8c0e04e4fdc909b1fa
   RNPermissions: f7ebe52db07c00901127966ca080b4ec6a6ceb0a
   RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
