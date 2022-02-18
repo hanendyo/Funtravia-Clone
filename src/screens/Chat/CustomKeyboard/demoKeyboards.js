@@ -24,7 +24,6 @@ function ImagesKeyboard() {
           return (
             <Pressable
               onPress={() => {
-                console.log(i);
                 let a = "aa";
                 KeyboardRegistry.onItemSelected("unicorn.ImagesKeyboard", {
                   message: "item selected from KeyboardView",

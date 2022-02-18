@@ -61,16 +61,8 @@ export default function ChatsearchPage({ navigation, route }) {
   const { t } = useTranslation();
   const [user, setUser] = useState(settingApps.user);
   const [data, setData] = useState([]);
-  // console.log(
-  //   "🚀 ~ file: ChatsearchPage.js ~ line 57 ~ ChatsearchPage ~ data",
-  //   data
-  // );
   const [dataRes, setDataRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
-  // console.log(
-  //   "🚀 ~ file: ChatsearchPage.js ~ line 60 ~ ChatsearchPage ~ dataGroup",
-  //   dataGroup
-  // );
   const [dataGroupRes, setDataGroupRes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchAktif, setSearchAktif] = useState(false);
@@ -223,7 +215,6 @@ export default function ChatsearchPage({ navigation, route }) {
 
   const _searchHandle = (text) => {
     // if (active == "personal") {
-    // console.log(text);
     SetSearchtext(text);
     if (text !== "") {
       let newData = data.filter(function(str) {
@@ -239,7 +230,6 @@ export default function ChatsearchPage({ navigation, route }) {
       });
       setDataGroupRes(newDataGroup);
     } else {
-      // console.log("res");
       setDataRes([]);
       setDataGroupRes([]);
     }

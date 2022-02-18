@@ -150,11 +150,15 @@ export default function SendToChat({ navigation, route }) {
       } else {
         recent.unshift(data);
       }
-      setMessage(recent);
-      await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
+      await AsyncStorage.setItem(
+        "history_" + data.room,
+        JSON.stringify(recent)
+      );
     } else {
-      await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
-      setMessage([data]);
+      await AsyncStorage.setItem(
+        "history_" + data.room,
+        JSON.stringify([data])
+      );
     }
   };
 
@@ -243,7 +247,6 @@ export default function SendToChat({ navigation, route }) {
         socket.current.emit("join", responseJson.id);
         socket.current.on("connection", (socket) => {});
         let dataSend = route.params.dataSend;
-        // console.log("constain", constain);
         let uuid = create_UUID();
         let chatData = {
           id: uuid,
@@ -334,7 +337,6 @@ export default function SendToChat({ navigation, route }) {
         time: dateTime,
         from: from,
       };
-      console.log("~ chatData", chatData);
       // await fetch(`${CHATSERVER}/api/group/send`, {
       //   method: "POST",
       //   headers: {

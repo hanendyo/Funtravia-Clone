@@ -24,11 +24,12 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER, RESTFULL_API } from "../../config";
 import normalize from "react-native-normalize";
-import ImageView from "react-native-image-viewing";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
 import { dateFormatDateMonthYears } from "../../component/src/dateformatter";
+import { TouchableHighlight } from "react-native-gesture-handler";
+import ImageTransformer from "react-native-image-transformer";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -53,13 +54,6 @@ export default function ChatTypelayout({
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
 
-  // useEffect(() => {
-  //   if (item.chat == "group") {
-  //     for (let i of dataMember.buddy) {
-  //       item.user_id == i.user_id ? (item.user = i) : null;
-  //     }
-  //   }
-  // }, []);
   const _uploadimages = async (image, id) => {
     try {
       setloading(true);
@@ -1279,6 +1273,19 @@ export default function ChatTypelayout({
             </ImageBackground>
           )}
         </Pressable>
+        <Pressable
+          onPress={() => {
+            setShow(true);
+          }}
+          style={{
+            height: 20,
+            marginLeft: 10,
+            width: 40,
+            backgroundColor: "#209fae",
+          }}
+        >
+          <Text style={{ color: "#fff" }}>press</Text>
+        </Pressable>
         {/* <ImageSlide
         index={index}
         name="Funtravia Chat Images"
@@ -1295,14 +1302,21 @@ export default function ChatTypelayout({
           doubleTapToZoomEnabled={true}
         
         /> */}
+
         <Modal
           visible={modalss}
           transparent={true}
           onRequestClose={() => {
             setModalss(false);
           }}
+          style={{
+            // flex: 1,
+            // margin: 0,
+            backgroundColor: "#000",
+          }}
         >
-          <ImageViewer
+          {/* <ImageViewer
+            style={{ flex:   1 }}
             imageUrls={[{ url: item.text }]}
             useNativeDriver={true}
             onSwipeDown={() => {
@@ -1310,17 +1324,41 @@ export default function ChatTypelayout({
             }}
             enableSwipeDown={true}
             renderHeader={() => (
-              <Pressable
+              <TouchableHighlight
                 onPress={() => {
                   setModalss(false);
                 }}
+                style={{
+                  marginTop: 35,
+                  marginRight: 10,
+                  alignSelf: "flex-end",
+                  borderWidth: 1,
+                  borderColor: "red",
+                }}
               >
-                {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
-                <Text size="h5" styles={{ color: "white" }}>
+                <Text
+                  size="h5"
+                  styles={{ color: "white" }}
+                  onPress={() => {
+                    // setModalss(false);
+                    alert("text");
+                  }}
+                >
                   {" X "}
                 </Text>
-              </Pressable>
+              </TouchableHighlight>
             )}
+          /> */}
+          <ImageTransformer
+            useNativeDriver={true}
+            resizeMode="contain"
+            style={{
+              flex: 1,
+              backgroundColor: "#000",
+            }}
+            image={{
+              uri: item.text,
+            }}
           />
         </Modal>
       </>

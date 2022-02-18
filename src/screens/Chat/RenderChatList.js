@@ -84,7 +84,6 @@ export default function ChatList({
   // }
 
   const RecentView = ({ data, style, room }) => {
-    console.log("~ data", data);
     if (data.type == "sticker") {
       return (
         <View
@@ -339,7 +338,7 @@ export default function ChatList({
                   {item.recent ? (
                     <View
                       style={{
-                        width: 70,
+                        width: 55,
                         alignItems: "flex-end",
                       }}
                     >

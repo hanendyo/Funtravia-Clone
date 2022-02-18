@@ -141,7 +141,6 @@ export default function AddBuddy(props) {
         }
         setloading(false);
       } catch (error) {
-        console.log(error);
         RNToasty.Show({
           duration: 1,
           title: "error : someting wrong!",

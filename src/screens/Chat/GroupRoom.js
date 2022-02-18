@@ -474,17 +474,14 @@ export default function Room({ navigation, route }) {
   };
 
   // const setChatHistory = async (data) => {
-  //   console.log("data hist", data);
   //   let history = await AsyncStorage.getItem("history_" + room);
   //   if (data) {
   //     if (history) {
-  //       console.log("ada");
   //       let recent = JSON.parse(history);
   //       recent.push(data);
   //       await AsyncStorage.setItem("history_" + room, JSON.stringify(recent));
   //       setMessage(recent);
   //     } else {
-  //       console.log("tidak ada");
   //       await AsyncStorage.setItem("history_" + room, JSON.stringify([data]));
   //       setMessage([data]);
   //     }

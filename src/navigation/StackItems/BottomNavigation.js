@@ -141,7 +141,7 @@ export default function BottomNavigationItems(props) {
   const dispatch = useDispatch();
   const countPesan = useSelector((data) => data.countMessage);
   const countPesanGroup = useSelector((data) => data.countMessageGroup);
-
+  let hasil = countPesan + countPesanGroup;
   const { t, i18n } = useTranslation();
   const getRoom = async () => {
     let response = await fetch(`${CHATSERVER}/api/personal/list`, {
@@ -289,7 +289,34 @@ export default function BottomNavigationItems(props) {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View>
-                {countPesan > 0 || countPesanGroup > 0 ? (
+                {hasil > 99 ? (
+                  <View
+                    style={{
+                      backgroundColor: "#d75995",
+                      position: "absolute",
+                      zIndex: 1,
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      left: 15,
+                      top: -5,
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      style={{
+                        color: "#fff",
+                        fontSize: 8,
+                        marginBottom: 5,
+                        marginTop: 4,
+                        marginRight: 8,
+                        marginLeft: 7,
+                      }}
+                    >
+                      99+
+                    </Text>
+                  </View>
+                ) : countPesan > 0 || countPesanGroup > 0 ? (
                   <View
                     style={{
                       backgroundColor: "#d75995",
@@ -321,7 +348,34 @@ export default function BottomNavigationItems(props) {
               </View>
             ) : (
               <View>
-                {countPesan || countPesanGroup > 0 ? (
+                {hasil > 99 ? (
+                  <View
+                    style={{
+                      backgroundColor: "#d75995",
+                      position: "absolute",
+                      zIndex: 1,
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      left: 15,
+                      top: -5,
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      style={{
+                        color: "#fff",
+                        fontSize: 8,
+                        marginBottom: 5,
+                        marginTop: 4,
+                        marginRight: 8,
+                        marginLeft: 7,
+                      }}
+                    >
+                      99+
+                    </Text>
+                  </View>
+                ) : countPesan > 0 || countPesanGroup > 0 ? (
                   <View
                     style={{
                       backgroundColor: "#d75995",
