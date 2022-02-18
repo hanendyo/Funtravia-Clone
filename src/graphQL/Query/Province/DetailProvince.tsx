@@ -16,6 +16,7 @@ const province_detail = gql`
         religion
       }
       cover
+      map
       destination_group {
         id
         province_id
