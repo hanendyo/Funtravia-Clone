@@ -138,6 +138,7 @@ export default function detailCustomItinerary(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
+
     const unsubscribe = props.navigation.addListener("focus", () => {
       addAttachmentCustom();
     });
@@ -153,8 +154,8 @@ export default function detailCustomItinerary(props) {
       });
       let files = new ReactNativeFile({
         uri: res.uri,
-        type: res.type,
         name: res.name,
+        type: res.type,
       });
 
       let tempData = [...dataState.file];
@@ -187,10 +188,10 @@ export default function detailCustomItinerary(props) {
     latitude: props.route.params?.latitude ? props.route.params.latitude : 0, //wajib
     longitude: props.route.params?.longitude ? props.route.params.longitude : 0, //wajib
     note: props.route.params?.note ? props.route.params.note : "", //ga wajib
-    time: "00:00:00", //hardcode
+    time: props.route.params.time, //hardcode
     duration: "01:00:00", //hardcode
     status: false, //
-    order: ["0"], //0
+    order: props.route.params.order ? props.route.params.order : ["0"], //0
     total_price: 0,
     hotel_name: props.route.params?.detail_accomodation
       ? props.route.params.detail_accomodation.hotel_name
@@ -217,10 +218,16 @@ export default function detailCustomItinerary(props) {
   const addAttachmentCustom = () => {
     let temp = [];
     for (let file of dataState.fileCustom) {
+      console.log("Filess", file);
       let files = new ReactNativeFile({
         uri: file.filepath,
         name: file.file_name,
-        type: file.extention,
+        type:
+          file.extention == "jpeg" ||
+          file.extention == "jpg" ||
+          file.extention == "png"
+            ? `image/${file.extention}`
+            : `application/${file.extention}`,
       });
       temp.push(files);
     }
@@ -388,6 +395,7 @@ export default function detailCustomItinerary(props) {
   };
 
   const submitDataEditAPI = async () => {
+    console.log("file", [...dataState.fileCustomEdit, ...dataState.file]);
     try {
       setLoadingApp(true);
       let response = await mutationUpdate({
@@ -533,6 +541,7 @@ export default function detailCustomItinerary(props) {
   };
 
   const submitDataAPI = async () => {
+    console.log("dataState", dataState);
     try {
       setLoadingApp(true);
       let response = await mutation({
