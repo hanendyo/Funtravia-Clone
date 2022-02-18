@@ -45,7 +45,6 @@ export default function NewGroup(props) {
   let [loading, setloading] = useState(false);
   const [modals, setmodal] = useState(false);
   const [dataImagepatch, setdataImagepatch] = useState("");
-  console.log("~ dataImagepatch", dataImagepatch);
   let [dataImage, setdataImage] = useState(null);
   const [
     querywith,
@@ -72,12 +71,6 @@ export default function NewGroup(props) {
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 18,
-    //   color: "white",
-    //   // marginLeft: -10,
-    // },
 
     headerLeft: () => (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -193,7 +186,7 @@ export default function NewGroup(props) {
   };
 
   const _createGrup = async () => {
-    if (title == "" || dataImagepatch == "")
+    if (title == "")
       return setAlertPopUp({
         ...alertPopUp,
         show: true,

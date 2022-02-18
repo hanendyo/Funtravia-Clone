@@ -195,12 +195,8 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
               {item.recent ? (
                 <View
                   style={{
-                    width: "20%",
+                    width: 55,
                     alignItems: "flex-end",
-                    // justifyContent: "center",
-                    // marginBottom: 10,
-                    // borderWidth: 1,
-                    // marginTop: 5,
                   }}
                 >
                   <Text size="small">

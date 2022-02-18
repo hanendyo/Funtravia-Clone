@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { Text, Truncate } from "../../component";
-import { Tagdestination, Tagimage, Tagsticker, PinAbu } from "../../assets/svg";
+import {
+  Tagdestination,
+  Tagimage,
+  Tagsticker,
+  PinAbu,
+  Tagdocument,
+} from "../../assets/svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -9,8 +15,6 @@ import { useSelector } from "react-redux";
 export default function RecentChat({ data, style, room }) {
   const [datas, setDatas] = useState(data);
   const settingApps = useSelector((data) => data.setting);
-  console.log("~ settingApps", settingApps);
-  console.log("~ datas", datas);
   const { t } = useTranslation();
 
   // const getlocal = async () => {
@@ -78,8 +82,17 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
+        <Text style={{}} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
         <Tagimage width={11} height={11} style={{ marginRight: 5 }} />
-        <Text style={style} size="description" type="regular">
+        <Text style={{ flex: 1 }} size="description" type="regular">
           Post
         </Text>
       </View>
@@ -96,12 +109,26 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
+        <Text style={{}} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
         <PinAbu
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
         />
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
+        <Text
+          style={{ flex: 1 }}
+          size="description"
+          type="regular"
+          numberOfLines={1}
+        >
           {data_city.name}
         </Text>
       </View>
@@ -118,19 +145,33 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
+        <Text style={{}} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
         <PinAbu
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
         />
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
+        <Text
+          style={{ flex: 1 }}
+          size="description"
+          type="regular"
+          numberOfLines={1}
+        >
           {data_province.name}
         </Text>
       </View>
     );
   }
   if (datas.type == "tag_country") {
-    let data_province = JSON.parse(datas.text);
+    let dataCountry = JSON.parse(datas.text);
     return (
       <View
         style={{
@@ -139,13 +180,27 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
+        <Text style={{}} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
         <PinAbu
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
         />
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
-          {data_province.name}
+        <Text
+          style={{ flex: 1 }}
+          size="description"
+          type="regular"
+          numberOfLines={1}
+        >
+          {dataCountry.name}
         </Text>
       </View>
     );
@@ -160,15 +215,22 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        {/* <PinAbu
-          width={11}
-          height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
-        /> */}
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
-          {t("sendAMovie") + data_movie.name}
+        <Text type="regular" size="description" numberOfLines={2}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " " + t("sendAMovie") + data_movie.name
+              : t("sendAMovie") + data_movie.name
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " " + t("sendAMovie") + data_movie.name
+            : Truncate({ text: datas.name }, { length: 8 }) +
+              " " +
+              t("sendAMovie") +
+              data_movie.name +
+              data_movie.name}
         </Text>
+        {/* <Text style={style} size="description" type="regular" numberOfLines={2}>
+          {t("sendAMovie") + data_movie.name}
+        </Text> */}
       </View>
     );
   }
@@ -182,8 +244,17 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
-          {t("sendAnEvent") + data_event.name}
+        <Text style={{}} size="description" numberOfLines={2}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " " + t("sendAnEvent") + data_event.name
+              : t("sendAnEvent") + data_event.name
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " " + t("sendAnEvent") + data_event.name
+            : Truncate({ text: datas.name }, { length: 8 }) +
+              " " +
+              t("sendAnEvent") +
+              data_event.name}
         </Text>
       </View>
     );
@@ -198,13 +269,26 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        {/* <PinAbu
+        <Text size="description" type="regular" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
+        <Tagdocument
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
-        /> */}
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
+        />
+        <Text
+          style={{ flex: 1 }}
+          size="description"
+          type="regular"
+          numberOfLines={1}
+        >
           {data_travel_goal.name}
         </Text>
       </View>
@@ -220,13 +304,26 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
-        {/* <Movie width={11} height={11} style={{ marginRight: 4 }} /> */}
-        <PinAbu
+        <Text style={{}} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
+        <Tagdocument
           width={11}
           height={11}
           style={{ marginRight: 5, marginVertical: 5 }}
         />
-        <Text style={style} size="description" type="regular" numberOfLines={2}>
+        <Text
+          style={{ flex: 1 }}
+          size="description"
+          type="regular"
+          numberOfLines={1}
+        >
           {data_travel_goal.name}
         </Text>
       </View>
@@ -242,6 +339,15 @@ export default function RecentChat({ data, style, room }) {
           alignItems: "center",
         }}
       >
+        <Text style={style} size="description" numberOfLines={1}>
+          {datas.chat == "personal"
+            ? datas.user_id == settingApps.user_id
+              ? t("you") + " : "
+              : ""
+            : datas.user_id == settingApps.user_id
+            ? t("you") + " : "
+            : Truncate({ text: datas.name }, { length: 8 }) + " : "}
+        </Text>
         <Tagimage width={11} height={11} style={{ marginRight: 5 }} />
         <Text style={style} size="description" type="regular">
           Image
@@ -251,7 +357,7 @@ export default function RecentChat({ data, style, room }) {
   }
 
   return (
-    <Text style={style} size="description" numberOfLines={1}>
+    <Text style={style} size="description" numberOfLines={2}>
       {datas.chat == "personal"
         ? datas.user_id == settingApps.user_id
           ? t("you") + " : " + datas.text

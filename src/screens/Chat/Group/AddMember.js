@@ -135,7 +135,6 @@ export default function AddMember(props) {
           }
         );
         let responseJson = await response.json();
-        console.log(responseJson);
         if (responseJson.status == true) {
           props.navigation.goBack();
           RNToasty.Show({
@@ -148,15 +147,12 @@ export default function AddMember(props) {
           throw new Error(responseJson.message);
         }
       } catch (error) {
-        console.log(error);
         RNToasty.Show({
           duration: 1,
           title: "error : someting wrong!",
           position: "bottom",
         });
         props.navigation.goBack();
-        // setloading(false);
-        console.log(error);
       }
       setloading(false);
     } else {

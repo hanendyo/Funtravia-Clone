@@ -16,7 +16,6 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CHATSERVER } from "../../config";
 import normalize from "react-native-normalize";
-import ImageView from "react-native-image-viewing";
 import ChatTypelayout from "./ChatTypelayout";
 
 export default function RenderChat({

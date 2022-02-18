@@ -234,7 +234,6 @@ export default function Home(props) {
   };
 
   useEffect(() => {
-    console.log("load navigate");
     loadNavigate();
   }, [notifApps]);
 
