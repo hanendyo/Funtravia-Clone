@@ -116,12 +116,12 @@ export default function SettingNegara(props) {
 
   useEffect(() => {
     clearFilter();
-    setTimeout(() => {
-      ref.current.scrollToIndex({
-        index: props.route.params.index,
-        animated: true,
-      });
-    }, 1000);
+    // setTimeout(() => {
+    //   ref.current.scrollToIndex({
+    //     index: props.route.params.index,
+    //     animated: true,
+    //   });
+    // }, 1000);
   }, []);
 
   const pushselected = async () => {
@@ -219,7 +219,7 @@ export default function SettingNegara(props) {
         }
       } catch (error) {
         RNToasty.Show({
-          title: "Failed To Select Country",
+          title: t("failedToSelectCountry"),
           position: "bottom",
         });
       }

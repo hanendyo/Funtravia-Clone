@@ -892,5 +892,10 @@
   "createGroupRequired": "Group title are required",
   "sendAnEvent": "Send an event : ",
   "sendAMovie": "Send a movie location : ",
-  "unescoWorldHeritage": "UNESCO World Heritage"
+  "unescoWorldHeritage": "UNESCO World Heritage",
+  "failedToSelectCountry": "Failed to select country",
+  "failedToSelectCity": "Failed to select city",
+  "failedToSelectCurrency": "Failed to select currency",
+  "itineraryAlbum": "Itinerary Album",
+  "feedAlbum": "Feed Album"
 }

@@ -890,5 +890,10 @@
   "createGroupRequired": "Judul group wajib diisi",
   "sendAnEvent": "Kirim event : ",
   "sendAMovie": "Kirim lokasi film : ",
-  "unescoWorldHeritage": "Warisan Dunia UNESCO"
+  "unescoWorldHeritage": "Warisan Dunia UNESCO",
+  "failedToSelectCountry": "Gagal memilih negara",
+  "failedToSelectCity": "Gagal memilih kota",
+  "failedToSelectCurrency": "Gagal memilih mata uang",
+  "itineraryAlbum": "Album Perjalanan",
+  "feedAlbum": "Album Feed"
 }

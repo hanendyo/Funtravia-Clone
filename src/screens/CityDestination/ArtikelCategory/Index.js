@@ -140,12 +140,12 @@ export default function ArtikelCategory(props) {
     });
 
     setRoutes(tab);
-    setTimeout(() => {
-      scrollRef.current?.scrollToIndex({
-        index: props.route.params.indexArc,
-        animated: true,
-      });
-    }, 3000);
+    // setTimeout(() => {
+    //   scrollRef.current?.scrollToIndex({
+    //     index: props.route.params.indexArc,
+    //     animated: true,
+    //   });
+    // }, 5000);
   }, []);
 
   // render Tab View
