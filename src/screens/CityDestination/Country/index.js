@@ -1455,7 +1455,7 @@ export default function Country(props) {
                   }}
                 >
                   <Text size="title" type="bold" style={{ color: "#464646" }}>
-                    Indonesian Facts
+                    {render?.name} Facts
                   </Text>
                 </View>
                 <View
@@ -2267,6 +2267,7 @@ export default function Country(props) {
             <Ripple
               key={"tabx" + index}
               onPress={() => {
+                _tabIndex.current = id;
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({
                   index: index,

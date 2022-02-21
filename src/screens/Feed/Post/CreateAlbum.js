@@ -236,8 +236,8 @@ export default function CreateAlbum(props) {
   };
 
   const [routes] = React.useState([
-    { key: "itinerary", title: "Itinerary Album" },
-    { key: "feed", title: "Feed Album" },
+    { key: "itinerary", title: t("itineraryAlbum") },
+    { key: "feed", title: t("feedAlbum") },
   ]);
 
   const renderScene = ({ route }) => {
@@ -780,5 +780,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     height: 50,
   },
-  indicator: { backgroundColor: "#209FAE", height: 3 },
+  indicator: { backgroundColor: "#209FAE", height: 2 },
 });

@@ -306,7 +306,7 @@ export default function SettingCity(props) {
         }
       } catch (error) {
         RNToasty.Show({
-          title: "Failed To Select City",
+          title: t("failedToSelectCity"),
           position: "bottom",
         });
       }

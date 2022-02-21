@@ -147,7 +147,7 @@ export default function SettingCurrency(props) {
         }
       } catch (error) {
         RNToasty.Show({
-          title: "Failed To Select Currency",
+          title: t("failedToSelectCurrency"),
           position: "bottom",
         });
       }
