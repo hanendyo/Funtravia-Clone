@@ -55,7 +55,7 @@ export default function Detail_movie(props) {
   const NotchAndro = StatusBar.currentHeight > 24;
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
-  let movie_id = props?.route?.params?.movie_id;
+  let movie_id = props.route.params?.movie_id;
   let [modalShare, setModalShare] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
   let [movie_byid, setMoviebyid] = useState({});
@@ -335,31 +335,6 @@ export default function Detail_movie(props) {
     extrapolate: "clamp",
   });
 
-  const backAction = () => {
-    props.route.params.from == "itin_detail"
-      ? props.navigation.navigate("TravelIdeaStack", {
-          screen: "MovieLocation",
-          params: {
-            token: tokenApps,
-            from: "movie_detail",
-          },
-        })
-      : props.navigation.goBack();
-    return true;
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [backAction]);
-
-  useEffect(() => {
-    props.navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-    });
-  }, [backAction]);
-
   let indeks = useRef();
 
   if (loadingmovie)
@@ -544,7 +519,7 @@ export default function Detail_movie(props) {
             setData={(e) => setlistdestinasi_bymovie(e)}
             token={tokenApps}
             dataFrom={"movie"}
-            movieId={movie_byid?.id}
+            dataFromId={movie_byid?.id}
           />
         ) : null}
       </Animated.ScrollView>
@@ -789,15 +764,7 @@ export default function Detail_movie(props) {
       >
         <Pressable
           onPress={() => {
-            props.route.params.from == "itin_detail"
-              ? props.navigation.navigate("TravelIdeaStack", {
-                  screen: "MovieLocation",
-                  params: {
-                    token: tokenApps,
-                    from: "movie_detail",
-                  },
-                })
-              : props.navigation.goBack();
+            props.navigation.goBack();
           }}
           style={{
             marginTop: 15,
@@ -843,17 +810,7 @@ export default function Detail_movie(props) {
         }}
       >
         <Pressable
-          onPress={() =>
-            props.route.params.from == "itin_detail"
-              ? props.navigation.navigate("TravelIdeaStack", {
-                  screen: "MovieLocation",
-                  params: {
-                    token: tokenApps,
-                    from: "movie_detail",
-                  },
-                })
-              : props.navigation.goBack()
-          }
+          onPress={() => props.navigation.goBack()}
           style={{
             marginTop: 15,
             marginLeft: 15,

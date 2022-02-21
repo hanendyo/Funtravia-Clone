@@ -258,30 +258,6 @@ export default function MovieLocation({ navigation, route }) {
     extrapolate: "clamp",
   });
 
-  const backAction = () => {
-    route.params.from == "movie_detail"
-      ? navigation.navigate("TravelIdeaStack", {
-          screen: "TravelIdeas",
-          params: {
-            from: "movie_location",
-          },
-        })
-      : navigation.goBack();
-    return true;
-  };
-
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [backAction]);
-
-  useEffect(() => {
-    navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-    });
-  }, [backAction]);
-
   return (
     <View
       style={{
@@ -759,14 +735,7 @@ export default function MovieLocation({ navigation, route }) {
       >
         <Pressable
           onPress={() => {
-            route.params.from == "movie_detail"
-              ? navigation.navigate("TravelIdeaStack", {
-                  screen: "TravelIdeas",
-                  params: {
-                    from: "movie_location",
-                  },
-                })
-              : navigation.goBack();
+            navigation.goBack();
           }}
           style={{
             marginTop: 10,
@@ -808,14 +777,7 @@ export default function MovieLocation({ navigation, route }) {
       >
         <Pressable
           onPress={() => {
-            route.params.from == "movie_detail"
-              ? navigation.navigate("TravelIdeaStack", {
-                  screen: "TravelIdeas",
-                  params: {
-                    from: "movie_location",
-                  },
-                })
-              : navigation.goBack();
+            navigation.goBack();
           }}
           style={{
             marginTop: 10,

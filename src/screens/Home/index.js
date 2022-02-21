@@ -45,6 +45,7 @@ import {
   setTokenApps,
   setNotifApps,
   setCountMessage,
+  setSearchInput,
 } from "../../redux/action";
 import { CHATSERVER } from "../../config";
 
@@ -56,6 +57,7 @@ export default function Home(props) {
   const notifApps = useSelector((data) => data.notif);
   const countPesan = useSelector((data) => data.countMessage);
   const settingApps = useSelector((data) => data.setting);
+  const searchInput = useSelector((data) => data.searchInput);
   let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
@@ -147,6 +149,9 @@ export default function Home(props) {
   });
 
   const searchPage = () => {
+    dispatch(
+      setSearchInput({ active_src: "", aktifsearch: false, search_input: "" })
+    );
     props.navigation.navigate("SearchPg", {
       token: tokenApps,
     });

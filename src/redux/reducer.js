@@ -4,6 +4,7 @@ import {
   SETNOTIF,
   SETCOUNTMESSAGE,
   SETCOUNTMESSAGEGROUP,
+  SET_SEARCH_INPUT,
 } from "./tipe";
 
 const initData = {
@@ -12,6 +13,7 @@ const initData = {
   notif: null,
   countMessage: null,
   countMessageGroup: null,
+  searchInput: null,
 };
 
 export const reducerApps = (state = initData, action) => {
@@ -26,6 +28,8 @@ export const reducerApps = (state = initData, action) => {
       return { ...state, countMessage: action.data };
     case SETCOUNTMESSAGEGROUP:
       return { ...state, countMessageGroup: action.data };
+    case SET_SEARCH_INPUT:
+      return { ...state, searchInput: action.data };
     default:
       return state;
   }

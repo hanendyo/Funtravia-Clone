@@ -4,6 +4,7 @@ import {
   SETNOTIF,
   SETCOUNTMESSAGE,
   SETCOUNTMESSAGEGROUP,
+  SET_SEARCH_INPUT,
 } from "./tipe";
 
 export const setTokenApps = (token) => ({
@@ -25,4 +26,9 @@ export const setCountMessage = (countMessage) => ({
 export const setCountMessageGroup = (countMessageGroup) => ({
   type: SETCOUNTMESSAGEGROUP,
   data: countMessageGroup,
+});
+
+export const setSearchInput = (input) => ({
+  type: SET_SEARCH_INPUT,
+  data: input,
 });
