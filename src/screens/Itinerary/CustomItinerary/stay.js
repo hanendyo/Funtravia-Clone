@@ -61,7 +61,7 @@ export default function detailCustomItinerary(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      height: 100,
+      height: 80,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -78,7 +78,7 @@ export default function detailCustomItinerary(props) {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 20,
+          // marginBottom: 20,
         }}
       >
         <Button
@@ -218,7 +218,6 @@ export default function detailCustomItinerary(props) {
   const addAttachmentCustom = () => {
     let temp = [];
     for (let file of dataState.fileCustom) {
-      console.log("Filess", file);
       let files = new ReactNativeFile({
         uri: file.filepath,
         name: file.file_name,
@@ -395,7 +394,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const submitDataEditAPI = async () => {
-    console.log("file", [...dataState.fileCustomEdit, ...dataState.file]);
     try {
       setLoadingApp(true);
       let response = await mutationUpdate({
@@ -475,8 +473,9 @@ export default function detailCustomItinerary(props) {
     let h = checkTime(date.getHours());
     let m = checkTime(date.getMinutes());
     let s = checkTime(date.getSeconds());
-    let formattedDate = `${year}-${months}-${day}T${h}:${m}:${s}`;
-    let formatForScreen = `${year}-${months}-${day} ${h}:${m}:${s}`;
+    let formattedDate = `${year}-${months}-${day}`;
+
+    let formatForScreen = `${year}-${months}-${day}`;
 
     if (timeModalCheckIn) {
       setdataState((prevCin) => {
@@ -541,7 +540,6 @@ export default function detailCustomItinerary(props) {
   };
 
   const submitDataAPI = async () => {
-    console.log("dataState", dataState);
     try {
       setLoadingApp(true);
       let response = await mutation({
@@ -757,13 +755,6 @@ export default function detailCustomItinerary(props) {
                 placeholder={t("HotelName")}
                 autoCorrect={false}
                 style={{
-                  // flex: 1,
-                  // fontFamily: "Lato-Regular",
-                  // borderBottomColor: "#d3d3d3",
-                  // borderBottomEndRadius: 10,
-                  // fontSize: 14,
-                  // paddingTop: 20,
-
                   color: "#464646",
                   paddingBottom: 5,
                 }}
@@ -898,188 +889,188 @@ export default function detailCustomItinerary(props) {
               </Text>
             ) : null}
           </View>
-
           <View
             style={{
+              // flex: 1,
               paddingTop: 10,
               flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d3d3d3",
+              borderBottomEndRadius: 10,
+            }}
+          >
+            {dataState.checkin == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 25,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("checkIn")}
+              </Text>
+            )}
+            <CalendarIcon height={15} width={15} />
+            <TextInput
+              placeholder={t("checkIn")}
+              autoCorrect={false}
+              style={{
+                flex: 1,
+                paddingBottom: 5,
+                fontFamily: "Lato-Regular",
+                borderBottomColor: "#d3d3d3",
+                borderBottomEndRadius: 10,
+                paddingVertical: 10,
+                marginLeft: 10,
+                fontSize: 14,
+              }}
+              value={renderDate.renderCheckIn.split(" ")[0]}
+            />
+
+            {dataState.checkin == "" ? (
+              itemValid.checkin === false ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    position: "absolute",
+                    bottom: -15,
+                    left: 0,
+                  }}
+                >
+                  {"*" + t("inputAlertCheckIn")}
+                </Text>
+              ) : null
+            ) : null}
+            <TouchableOpacity
+              onPress={() => setTimeModalCheckIn(true)}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
+              }}
+            />
+            <DateTimePickerModal
+              isVisible={timeModalCheckIn}
+              mode="date"
+              minimumDate={new Date(startDate)}
+              maximumDate={new Date(endDate)}
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalCheckIn(false);
+              }}
+              onCancel={() => setTimeModalCheckIn(false)}
+            />
+          </View>
+          <View
+            style={{
+              marginTop: 10,
+              paddingTop: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#d3d3d3",
+              // borderBottomEndRadius: 10,
+            }}
+          >
+            {dataState.checkout == "" ? null : (
+              <Text
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 25,
+                  fontFamily: "Lato-Regular",
+                  color: "#A0A0A0",
+                  fontSize: 14,
+                }}
+              >
+                {t("checkOut")}
+              </Text>
+            )}
+            <CalendarIcon height={15} width={15} />
+            <TextInput
+              placeholder={t("checkOut")}
+              autoCorrect={false}
+              disabled
+              style={{
+                flex: 1,
+                paddingBottom: 5,
+                paddingVertical: 10,
+                fontFamily: "Lato-Regular",
+                borderBottomColor: "#d3d3d3",
+                marginLeft: 10,
+                fontSize: 14,
+              }}
+              value={renderDate.renderCheckOut.split(" ")[0]}
+            />
+            {dataState.checkout == "" ? (
+              itemValid.checkout === false ? (
+                <Text
+                  type="regular"
+                  size="small"
+                  style={{
+                    color: "#D75995",
+                    position: "absolute",
+                    bottom: -15,
+                    left: 0,
+                  }}
+                >
+                  {"*" + t("inputAlertCheckOut")}
+                </Text>
+              ) : null
+            ) : null}
+            <TouchableOpacity
+              onPress={() => setTimeModalCheckOut(true)}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                align: "center",
+                width: "100%",
+                height: "100%",
+              }}
+            />
+            <DateTimePickerModal
+              isVisible={timeModalCheckOut}
+              mode="date"
+              minimumDate={new Date(startDate)}
+              maximumDate={new Date(endDate)}
+              // display="inline"
+              locale="en_id"
+              onConfirm={(date) => {
+                timeConverter(date);
+                setTimeModalCheckOut(false);
+              }}
+              onCancel={() => setTimeModalCheckOut(false)}
+            />
+          </View>
+
+          {/* <View
+            style={{
+              paddingTop: 10,
+              // flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
               marginBottom: 10,
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                paddingTop: 10,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                borderBottomEndRadius: 10,
-              }}
-            >
-              {dataState.checkin == "" ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 25,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14,
-                  }}
-                >
-                  {t("checkIn")}
-                </Text>
-              )}
-              <CalendarIcon height={15} width={15} />
-              <TextInput
-                placeholder={t("checkIn")}
-                autoCorrect={false}
-                style={{
-                  flex: 1,
-                  paddingBottom: 5,
-                  fontFamily: "Lato-Regular",
-                  borderBottomColor: "#d3d3d3",
-                  borderBottomEndRadius: 10,
-                  paddingVertical: 10,
-                  marginLeft: 10,
-                  fontSize: 14,
-                }}
-                value={renderDate.renderCheckIn}
-              />
-
-              {dataState.checkin == "" ? (
-                itemValid.checkin === false ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                      position: "absolute",
-                      bottom: -15,
-                      left: 0,
-                    }}
-                  >
-                    {"*" + t("inputAlertCheckIn")}
-                  </Text>
-                ) : null
-              ) : null}
-              <TouchableOpacity
-                onPress={() => setTimeModalCheckIn(true)}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  align: "center",
-                  width: "100%",
-                  height: "100%",
-                }}
-              />
-              <DateTimePickerModal
-                isVisible={timeModalCheckIn}
-                mode="datetime"
-                minimumDate={new Date(startDate)}
-                maximumDate={new Date(endDate)}
-                // display="inline"
-                locale="en_id"
-                onConfirm={(date) => {
-                  timeConverter(date);
-                  setTimeModalCheckIn(false);
-                }}
-                onCancel={() => setTimeModalCheckIn(false)}
-              />
-            </View>
-            <View
-              style={{
-                flex: 1,
-                paddingTop: 10,
-                flexDirection: "row",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d3d3d3",
-                // borderBottomEndRadius: 10,
-                marginLeft: 10,
-              }}
-            >
-              {dataState.checkout == "" ? null : (
-                <Text
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 25,
-                    fontFamily: "Lato-Regular",
-                    color: "#A0A0A0",
-                    fontSize: 14,
-                  }}
-                >
-                  {t("checkOut")}
-                </Text>
-              )}
-              <CalendarIcon height={15} width={15} />
-              <TextInput
-                placeholder={t("checkOut")}
-                autoCorrect={false}
-                disabled
-                style={{
-                  flex: 1,
-                  paddingBottom: 5,
-                  paddingVertical: 10,
-                  fontFamily: "Lato-Regular",
-                  borderBottomColor: "#d3d3d3",
-                  marginLeft: 10,
-                  fontSize: 14,
-                }}
-                value={renderDate.renderCheckOut}
-              />
-              {dataState.checkout == "" ? (
-                itemValid.checkout === false ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                      position: "absolute",
-                      bottom: -15,
-                      left: 0,
-                    }}
-                  >
-                    {"*" + t("inputAlertCheckOut")}
-                  </Text>
-                ) : null
-              ) : null}
-              <TouchableOpacity
-                onPress={() => setTimeModalCheckOut(true)}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  align: "center",
-                  width: "100%",
-                  height: "100%",
-                }}
-              />
-              <DateTimePickerModal
-                isVisible={timeModalCheckOut}
-                mode="datetime"
-                minimumDate={new Date(startDate)}
-                maximumDate={new Date(endDate)}
-                // display="inline"
-                locale="en_id"
-                onConfirm={(date) => {
-                  timeConverter(date);
-                  setTimeModalCheckOut(false);
-                }}
-                onCancel={() => setTimeModalCheckOut(false)}
-              />
-            </View>
-          </View>
+          
+          </View> */}
 
           <View style={{marginBottom: 20}}>
             <FloatingInput
