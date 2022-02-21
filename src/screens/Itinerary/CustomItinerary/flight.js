@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {
   View,
   Dimensions,
@@ -16,7 +16,7 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation } from "@apollo/react-hooks";
+import {useMutation} from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
   ArrowRight,
@@ -37,20 +37,20 @@ import {
   Peringatan,
   FunDocument,
 } from "../../../component";
-import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
-import { useTranslation } from "react-i18next";
-import MapView, { Marker } from "react-native-maps";
+import {Button, Text, Loading, FunIcon, Capital} from "../../../component";
+import {useTranslation} from "react-i18next";
+import MapView, {Marker} from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
-import { ReactNativeFile } from "apollo-upload-client";
+import {ReactNativeFile} from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 import Modal from "react-native-modal";
 import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
 import UpdateCustomFlight from "../../../graphQL/Mutation/Itinerary/UpdateCustomFlight";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { request, check, PERMISSIONS } from "react-native-permissions";
+import {request, check, PERMISSIONS} from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -58,7 +58,7 @@ import { useSelector } from "react-redux";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -110,7 +110,7 @@ export default function detailCustomItinerary(props) {
             marginLeft: 10,
           }}
         >
-          <Text type="bold" size="title" style={{ color: "#fff" }}>
+          <Text type="bold" size="title" style={{color: "#fff"}}>
             {t("AddFlightNumber")}
           </Text>
           <Text
@@ -276,7 +276,7 @@ export default function detailCustomItinerary(props) {
     detail: "",
   });
 
-  const [mutation, { loading, data, error: errorSaved }] = useMutation(
+  const [mutation, {loading, data, error: errorSaved}] = useMutation(
     AddFlight,
     {
       context: {
@@ -293,7 +293,7 @@ export default function detailCustomItinerary(props) {
 
   const [
     mutationUpdate,
-    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
+    {loading: loadingUpdate, data: dataUpdate, error: errorUpdate},
   ] = useMutation(UpdateCustomFlight, {
     context: {
       headers: {
@@ -338,7 +338,12 @@ export default function detailCustomItinerary(props) {
         let files = new ReactNativeFile({
           uri: file.filepath,
           name: file.file_name,
-          type: file.extention,
+          type:
+            file.extention == "jpeg" ||
+            file.extention == "jpg" ||
+            file.extention == "png"
+              ? `image/${file.extention}`
+              : `application/${file.extention}`,
         });
         temp.push(files);
       }
@@ -631,7 +636,7 @@ export default function detailCustomItinerary(props) {
       >
         <View style={styles.ViewContainer}>
           <View style={styles.ViewFlight}>
-            <Plane width={50} height={50} style={{ marginTop: 15 }} />
+            <Plane width={50} height={50} style={{marginTop: 15}} />
             <View style={styles.ViewInputFlight}>
               <FloatingInput
                 label={t("FlightNo")}
@@ -742,7 +747,7 @@ export default function detailCustomItinerary(props) {
             />
           </View>
           <View style={styles.ViewDate}>
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               <FloatingInput
                 label={t("From")}
                 editable={false}
@@ -884,7 +889,7 @@ export default function detailCustomItinerary(props) {
             );
           })}
 
-          <View style={{ flex: 1, marginVertical: 10 }}>
+          <View style={{flex: 1, marginVertical: 10}}>
             <TouchableOpacity
               onPress={() => {
                 pickFile();
@@ -1020,7 +1025,7 @@ export default function detailCustomItinerary(props) {
               setAddressText={text}
               renderLeftButton={() => {
                 return (
-                  <View style={{ justifyContent: "center" }}>
+                  <View style={{justifyContent: "center"}}>
                     <Magnifying />
                   </View>
                 );
@@ -1072,9 +1077,7 @@ export default function detailCustomItinerary(props) {
                     >
                       <Pointmapblack />
                     </View>
-                    <View
-                      style={{ width: Dimensions.get("screen").width - 60 }}
-                    >
+                    <View style={{width: Dimensions.get("screen").width - 60}}>
                       <Text
                         style={{
                           fontFamily: "Lato-Bold",

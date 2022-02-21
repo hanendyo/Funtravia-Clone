@@ -564,33 +564,37 @@ export default function ReoderDetail({navigation, route}) {
                   <More width={15} height={15} />
                 </Button>
               </View>
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  paddingVertical: 5,
-                  justifyContent: "space-between",
-                  alignContent: "center",
-                  alignItems: "center",
-                }}
-              >
+              {item.detail_accomodation ? null : (
                 <View
                   style={{
-                    backgroundColor: "#daf0f2",
+                    width: "100%",
+                    flexDirection: "row",
                     paddingVertical: 5,
-                    paddingHorizontal: 15,
-                    borderRadius: 5,
-                    marginLeft: "15%",
+                    justifyContent: "space-between",
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Text type="bold">
-                    {Getdurasi(item.duration ? item.duration : "00:00:00")}
-                  </Text>
+                  <View
+                    style={{
+                      backgroundColor: "#daf0f2",
+                      paddingVertical: 5,
+                      paddingHorizontal: 15,
+
+                      borderRadius: 5,
+                      marginLeft: "15%",
+                    }}
+                  >
+                    <Text type="bold">
+                      {Getdurasi(item.duration ? item.duration : "00:00:00")}
+                    </Text>
+                  </View>
+                  <View>
+                    <Next width={15} height={15} />
+                  </View>
                 </View>
-                <View>
-                  <Next width={15} height={15} />
-                </View>
-              </View>
+              )}
+
               <View
                 style={{
                   borderTopWidth: 1,
