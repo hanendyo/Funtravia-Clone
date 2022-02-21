@@ -57,6 +57,8 @@ import { setCountMessage, setCountMessageGroup } from "../../redux/action";
 
 export default function Message({ navigation, route }) {
   const _tabIndex = useRef(0);
+  const countPesan = useSelector((data) => data.countMessage);
+  const countPesanGroup = useSelector((data) => data.countMessageGroup);
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
@@ -294,8 +296,8 @@ export default function Message({ navigation, route }) {
     route.params?.page ? route.params.page : 0
   );
   const [routes] = React.useState([
-    { key: "personal", title: "Chat" },
-    { key: "group", title: "Group" },
+    { key: "personal", title: "Chat", count: countPesan },
+    { key: "group", title: "Group", count: countPesanGroup },
   ]);
 
   const renderScene = ({ route }) => {
@@ -334,9 +336,7 @@ export default function Message({ navigation, route }) {
         style={{
           top: 0,
           zIndex: 1,
-
           position: "absolute",
-          // transform: [{ translateY: y }],
           width: "100%",
         }}
       >
@@ -354,18 +354,16 @@ export default function Message({ navigation, route }) {
               key={"tabx" + index}
               onPress={() => {
                 setIndex(index);
-                scrollRef.current?.scrollToIndex({
-                  index: index,
-                  animated: true,
-                });
+                // scrollRef.current?.scrollToIndex({
+                //   index: index,
+                //   animated: true,
+                // });
               }}
             >
               <View
                 style={{
                   borderBottomWidth: index == tabIndex ? 2 : 1,
                   borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
-                  alignContent: "center",
-
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -375,8 +373,8 @@ export default function Message({ navigation, route }) {
                   height: TabBarHeight,
                   alignItems: "center",
                   justifyContent: "center",
-                  alignSelf: "center",
                   paddingHorizontal: Platform.OS === "ios" ? 15 : null,
+                  flexDirection: "row",
                 }}
               >
                 <Text
@@ -401,6 +399,27 @@ export default function Message({ navigation, route }) {
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>
+                <View
+                  style={{
+                    backgroundColor: "#d75995",
+                    marginLeft: 5,
+                    borderRadius: 15,
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    style={{
+                      color: "#fff",
+                      fontSize: 8,
+                      marginBottom: 5,
+                      marginTop: 4,
+                      marginRight: 8,
+                      marginLeft: 7,
+                    }}
+                  >
+                    {item.count}
+                  </Text>
+                </View>
               </View>
             </Ripple>
           )}
@@ -648,12 +667,10 @@ export default function Message({ navigation, route }) {
           onIndexChange={(id) => {
             _tabIndex.current = id;
             setIndex(id);
-            scrollRef.current?.scrollToIndex({
-              // y: 0,
-              // x: 100,
-              index: id,
-              animated: true,
-            });
+            // scrollRef.current?.scrollToIndex({
+            //   index: id,
+            //   animated: true,
+            // });
           }}
           navigationState={{ index: tabIndex, routes }}
           renderScene={renderScene}

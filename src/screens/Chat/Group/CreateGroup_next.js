@@ -480,7 +480,9 @@ export default function NewGroup(props) {
             backgroundColor: "#FFFFFF",
           }}
         >
-          <Text>Participant : {userSelected.length}</Text>
+          <Text>
+            {t("member")} : {userSelected.length}
+          </Text>
         </View>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : null}
@@ -488,12 +490,8 @@ export default function NewGroup(props) {
           style={{
             flex: 1,
             backgroundColor: "#FFFFFF",
-            // flexWrap: "wrap",
-            // flexDirection: "row",
-            paddingHorizontal: 10,
             borderBottomLeftRadius: 15,
             borderBottomRightRadius: 15,
-            // borderWidth: 1,
           }}
         >
           <FlatList
@@ -507,13 +505,10 @@ export default function NewGroup(props) {
                 // onPress={() => selectUser(item)}
                 style={{
                   flexDirection: "row",
-                  width: Dimensions.get("screen").width - 30,
                   paddingVertical: 5,
-                  // justifyContent: "space-between",
-                  // alignItems: "center",
-                  // alignContent: "center",
                   borderBottomWidth: 1,
                   borderBottomColor: "#F6F6F6",
+                  flex: 1,
                 }}
               >
                 <View

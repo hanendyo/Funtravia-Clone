@@ -1920,6 +1920,8 @@ export default function Comments(props) {
                                 caption: dataPost?.caption,
                                 user: dataPost?.user,
                                 media_orientation: dataPost?.media_orientation,
+                                responseCount: dataPost?.response_count,
+                                commentCount: dataPost?.comment_count,
                               },
                               title: "Post",
                               tag_type: "tag_post",

@@ -2300,6 +2300,8 @@ export default function FeedList({ props, token }) {
                               caption: item.node?.caption,
                               user: item.node?.user,
                               media_orientation: item.node?.media_orientation,
+                              responseCount: item.node?.response_count,
+                              commentCount: item.node?.comment_count,
                             },
                             title: "Post",
                             tag_type: "tag_post",

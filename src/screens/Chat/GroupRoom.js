@@ -30,7 +30,14 @@ import {
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { Button, Text, FunImage, StickerModal, Uuid } from "../../component";
+import {
+  Button,
+  Text,
+  FunImage,
+  StickerModal,
+  Uuid,
+  Truncate,
+} from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -160,7 +167,6 @@ export default function Room({ navigation, route }) {
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
           </TouchableOpacity>
-
           <Text
             onPress={() => {
               BackHandler.removeEventListener("hardwareBackPress", onBackPress);
@@ -232,14 +238,11 @@ export default function Room({ navigation, route }) {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
               alignItems: "center",
-              marginVertical: 10,
-              marginLeft: 10,
-              marginBottom: Platform.OS === "ios" ? 20 : 10,
+              width: Dimensions.get("screen").width,
             }}
           >
+            {/* icon back */}
             <TouchableOpacity
               style={{
                 height: 40,
@@ -256,6 +259,8 @@ export default function Room({ navigation, route }) {
                 <Arrowbackwhite height={20} width={20} />
               )}
             </TouchableOpacity>
+            {/* end icon back */}
+
             <Pressable
               onPress={() => {
                 BackHandler.removeEventListener(
@@ -272,13 +277,11 @@ export default function Room({ navigation, route }) {
               }}
               style={{
                 flexDirection: "row",
-                borderWidth: 1,
-                borderColor: "#209fae",
-                width: Dimensions.get("screen").width - 100,
                 height: 45,
                 alignItems: "center",
                 backgroundColor: "#209fae",
                 zIndex: 150,
+                flex: 1,
               }}
             >
               <TouchableOpacity
@@ -312,30 +315,58 @@ export default function Room({ navigation, route }) {
                 />
               </TouchableOpacity>
 
-              <Text
-                onPress={() => {
-                  BackHandler.removeEventListener(
-                    "hardwareBackPress",
-                    onBackPress
-                  );
-                  navigation.navigate("ChatStack", {
-                    screen: "GroupDetail",
-                    params: {
-                      room_id: route.params.room_id,
-                      from: route.params.from,
-                    },
-                  });
-                }}
-                size="title"
+              {/* Title Group */}
+              <View
                 style={{
-                  color: "white",
-                  alignSelf: "center",
-                  paddingHorizontal: 10,
+                  height: "100%",
+                  flex: 1,
+                  marginLeft: 10,
+                  marginRight: 15,
                 }}
-                numberOfLines={2}
               >
-                {dataResponse.grup?.title}
-              </Text>
+                <Text
+                  onPress={() => {
+                    BackHandler.removeEventListener(
+                      "hardwareBackPress",
+                      onBackPress
+                    );
+                    navigation.navigate("ChatStack", {
+                      screen: "GroupDetail",
+                      params: {
+                        room_id: route.params.room_id,
+                        from: route.params.from,
+                      },
+                    });
+                  }}
+                  size="title"
+                  style={{
+                    color: "white",
+                  }}
+                  numberOfLines={1}
+                >
+                  {dataResponse.grup?.title}
+                </Text>
+                <View
+                  style={{
+                    flex: 1,
+                    flexWrap: "nowrap",
+                  }}
+                >
+                  <Text
+                    type="regular"
+                    size="description"
+                    style={{
+                      color: "#fff",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {dataResponse.grup.buddy.map((item, index) => {
+                      return item.first_name + ", ";
+                    })}
+                  </Text>
+                </View>
+              </View>
+              {/* End Title Group */}
             </Pressable>
           </View>
         ),

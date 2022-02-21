@@ -36,6 +36,7 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
+import { RNToasty } from "react-native-toasty";
 
 export default function NewGroup({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
@@ -136,8 +137,15 @@ export default function NewGroup({ navigation, route }) {
       tempData.splice(index, 1);
       setUserSelected(tempData);
     } else {
-      tempData.splice(0, 0, data);
-      setUserSelected(tempData);
+      if (userSelected.length > 149) {
+        RNToasty.Show({
+          title: t("pleaselogin"),
+          position: "bottom",
+        });
+      } else {
+        tempData.splice(0, 0, data);
+        setUserSelected(tempData);
+      }
     }
   };
 
@@ -181,7 +189,6 @@ export default function NewGroup({ navigation, route }) {
               alignItems: "center",
               justifyContent: "space-between",
               paddingVertical: 20,
-              height: 50,
               zIndex: 5,
               flexDirection: "row",
               flex: 1,
@@ -200,7 +207,6 @@ export default function NewGroup({ navigation, route }) {
                 alignContent: "center",
                 height: 35,
                 borderWidth: 1,
-
                 borderColor: "#e8e8e8",
               }}
             >
@@ -233,6 +239,18 @@ export default function NewGroup({ navigation, route }) {
               ) : null}
             </View>
           </View>
+          {userSelected && userSelected.length > 0 ? (
+            <View
+              style={{
+                marginTop: 10,
+                paddingHorizontal: 15,
+              }}
+            >
+              <Text size="description" type="regular">
+                {`${t("member")} : ${userSelected.length}/150`}
+              </Text>
+            </View>
+          ) : null}
           {userSelected && userSelected.length > 0 ? (
             <FlatList
               data={userSelected}

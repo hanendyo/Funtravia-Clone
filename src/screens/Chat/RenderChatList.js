@@ -352,7 +352,7 @@ export default function ChatList({
                       {item?.count_newmassage > 0 ? (
                         <View
                           style={{
-                            backgroundColor: "#209fae",
+                            backgroundColor: "#d75995",
                             borderRadius: 15,
                             marginTop: 4,
                           }}

@@ -209,7 +209,7 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                   {item?.count_newmassage > 0 ? (
                     <View
                       style={{
-                        backgroundColor: "#209fae",
+                        backgroundColor: "#d75995",
                         borderRadius: 15,
                         marginTop: 10,
                       }}
