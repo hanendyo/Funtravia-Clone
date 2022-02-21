@@ -23,9 +23,12 @@ import { Button, Text, Truncate, Loading } from "../../component";
 import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchInput } from "../../redux/action";
 
 export default function ItineraryChooseday(props) {
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
 
   const handlerBack = () => {
     if (props.route.params.data_from) {
@@ -38,7 +41,7 @@ export default function ItineraryChooseday(props) {
           token: props.route.params.token,
           onbackhandler: "chooseDay",
           IdItinerary: props.route.params.Iditinerary,
-          movieId: props.route.params.movie_id,
+          data_from_id: props.route.params.data_from_id,
         },
       });
     } else {
@@ -57,52 +60,19 @@ export default function ItineraryChooseday(props) {
         },
       });
     }
-  };
-
-  const backAction = () => {
-    if (props.route.params.data_from) {
-      props.navigation.push("ItineraryStack", {
-        screen: "ItineraryPlaning",
-        params: {
-          idkiriman: props.route.params.Kiriman,
-          Position: "destination",
-          data_from: props.route.params.data_from,
-          token: props.route.params.token,
-          onbackhandler: "chooseDay",
-          IdItinerary: props.route.params.Iditinerary,
-          movieId: props.route.params.movie_id,
-        },
-      });
-    } else {
-      props.navigation.push("ItineraryStack", {
-        screen: "itindest",
-        params: {
-          IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
-          token: props?.route?.params?.token,
-          datadayaktif: props?.route?.params?.data_dest?.datadayaktif,
-          dataDes: props?.route?.params?.data_dest?.dataDes,
-          lat: props?.route?.params?.data_dest?.lat,
-          long: props?.route?.params?.data_dest?.long,
-          idcity: props?.route?.params?.data_dest?.idcity,
-          idcountries: props?.route?.params?.data_dest?.idcountries,
-          onbackhandler: "chooseDay",
-        },
-      });
-    }
-    return true;
   };
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
+    BackHandler.addEventListener("hardwareBackPress", handlerBack);
     return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [backAction]);
+      BackHandler.removeEventListener("hardwareBackPress", handlerBack);
+  }, [handlerBack]);
 
   useEffect(() => {
     props.navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
+      BackHandler.removeEventListener("hardwareBackPress", handlerBack);
     });
-  }, [backAction]);
+  }, [handlerBack]);
 
   //function hardwareBack
   const hardwareBack = useCallback(() => {
@@ -110,6 +80,7 @@ export default function ItineraryChooseday(props) {
 
     return true;
   }, []);
+
   const HeaderComponent = {
     headerShown: true,
     title: "Choose day",
@@ -162,12 +133,18 @@ export default function ItineraryChooseday(props) {
     };
   }, [props.navigation, hardwareBack]);
 
-  let [Iditinerary, setId] = useState(props.route.params.Iditinerary);
-  let [Kiriman, setIdDes] = useState(props.route.params.Kiriman);
-  let [token, setToken] = useState(props.route.params.token);
-  let [dataSelected, setDataSelected] = useState([]);
-  let [loading, setLoading] = useState(false);
-  let [ArrayDay, setArrayDay] = useState([]);
+  const [Iditinerary, setId] = useState(props.route.params.Iditinerary);
+  const [Kiriman, setIdDes] = useState(props.route.params.Kiriman);
+  const [token, setToken] = useState(props.route.params.token);
+  const [dataSelected, setDataSelected] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [ArrayDay, setArrayDay] = useState([]);
+
+  const searchInput = useSelector((data) => data);
+  console.log(
+    "🚀 ~ file: ItineraryChooseDay.js ~ line 143 ~ ItineraryChooseday ~ searchInput",
+    searchInput
+  );
 
   const [
     GetListEvent,
@@ -306,6 +283,7 @@ export default function ItineraryChooseday(props) {
       Alert.alert("" + error);
     }
   };
+  console.log("params", props.route.params);
 
   const getDN = (start, end) => {
     start = start.split(" ");
@@ -334,6 +312,350 @@ export default function ItineraryChooseday(props) {
     getchecked(id);
   };
 
+  const dataFromPicker = {
+    search: {
+      index: 2,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "SearchPg",
+          state: {
+            routes: {
+              name: "SearchPg",
+              // params: {
+              //   token: props.route.params.token,
+              //   searchInput: props.route.params.search_input,
+              // },
+            },
+          },
+        },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  dataFrom: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    movie: {
+      index: 3,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "TravelIdeaStack",
+          state: {
+            routes: [
+              {
+                name: "MovieLocation",
+                params: {
+                  token: props.route.params.token,
+                  from: "movie_detail",
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "TravelIdeaStack",
+          state: {
+            routes: [
+              {
+                name: "Detail_movie",
+                params: {
+                  movie_id: props.route.params.data_from_id,
+                  token: props.route.params.token,
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected?.[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  data_from: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    eventdetail: {
+      index: 2,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "listEventHome",
+          state: {
+            routes: [
+              {
+                name: "listEventHome",
+                params: {
+                  token: token,
+                },
+              },
+            ],
+          },
+        },
+        // {
+        //   name: "eventdetail",
+        //   state: {
+        //     routes: [
+        //       {
+        //         name: "eventdetail",
+        //         params: {
+        //           event_id: props.route.params.Kiriman,
+        //           token: token,
+        //         },
+        //       },
+        //     ],
+        //   },
+        // },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected?.[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  data_from: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    destination_list: {
+      index: 3,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "CountryStack",
+          state: {
+            routes: [
+              {
+                name: "CityDetail",
+                params: {
+                  data: {
+                    city_id: props.route.params.data_from_id,
+                    token: token ? token : props.route.params.token,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "DestinationList",
+          state: {
+            routes: [
+              {
+                name: "DestinationList",
+                params: {
+                  idcity: props.route.params?.data_from_id,
+                  token: token ? token : props.route.params.token,
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected?.[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  data_from: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    unesco: {
+      index: 3,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "TravelIdeaStack",
+          state: {
+            routes: [
+              {
+                name: "Unesco",
+                params: {
+                  token: token,
+                  from: "unesco_detail",
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "TravelIdeaStack",
+          state: {
+            routes: [
+              {
+                name: "DestinationUnescoDetail",
+                params: {
+                  token: token,
+                  id: props.route.params.data_from_id,
+                },
+              },
+            ],
+          },
+        },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected?.[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  data_from: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+  console.log({
+    itintitle: dataItinerary?.itinerary_detail.name,
+    country: Iditinerary,
+    dateitin:
+      dataItinerary && dataItinerary?.itinerary_detail
+        ? dateFormatr(dataItinerary?.itinerary_detail.start_date) +
+          "  -  " +
+          dateFormatr(dataItinerary?.itinerary_detail.end_date)
+        : null,
+    token: token,
+    datadayaktif: dataSelected[0],
+    status: "edit",
+    onbackhandler: "list",
+    Kiriman: Kiriman,
+    data_from: props.route.params.data_from,
+  });
+
   const saveData = async () => {
     if (dataSelected.length > 0) {
       setLoading(true);
@@ -346,6 +668,10 @@ export default function ItineraryChooseday(props) {
         }
         if (x == dataSelected.length) {
           try {
+            console.log("iddes", {
+              day: datas,
+              idDestination: Kiriman,
+            });
             let response = await mutationSave({
               variables: {
                 day: datas,
@@ -359,6 +685,7 @@ export default function ItineraryChooseday(props) {
               throw new Error("Error Input");
             }
             if (response.data) {
+              console.log("err resp data?");
               if (response.data.add_destination.code !== 200) {
                 throw new Error(response.data.add_destination.message);
               }
@@ -391,57 +718,10 @@ export default function ItineraryChooseday(props) {
                         })
                       )
                     : props.navigation.reset({
-                        index: 2,
-                        routes: [
-                          {
-                            name: "BottomStack",
-                            state: {
-                              routes: [{ name: "HomeScreen" }],
-                            },
-                          },
-                          {
-                            name: "BottomStack",
-                            state: {
-                              routes: [{ name: "TripPlaning" }],
-                            },
-                          },
-                          {
-                            name: "ItineraryStack",
-                            state: {
-                              routes: [
-                                {
-                                  name: "itindetail",
-                                  params: {
-                                    itintitle:
-                                      dataItinerary.itinerary_detail.name,
-                                    country: Iditinerary,
-                                    dateitin:
-                                      dataItinerary &&
-                                      dataItinerary.itinerary_detail
-                                        ? dateFormatr(
-                                            dataItinerary.itinerary_detail
-                                              .start_date
-                                          ) +
-                                          "  -  " +
-                                          dateFormatr(
-                                            dataItinerary.itinerary_detail
-                                              .end_date
-                                          )
-                                        : null,
-                                    token: token,
-                                    datadayaktif: dataSelected[0],
-                                    status: "edit",
-                                    index: 0,
-                                    onbackhandler: "list",
-                                    dataFrom: props?.route?.params?.data_from,
-                                    idKiriman: props?.route?.params?.Kiriman,
-                                    movieId: props?.route?.params?.movie_id,
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        ],
+                        index:
+                          dataFromPicker[props.route.params.data_from].index,
+                        routes:
+                          dataFromPicker[props.route.params.data_from].routes,
                       })
                   : null;
               }
@@ -449,7 +729,7 @@ export default function ItineraryChooseday(props) {
             setLoading(false);
           } catch (error) {
             setLoading(false);
-            Alert.alert("" + error);
+            Alert.alert("Error " + error);
           }
         }
       } else if (Position === "google" || Position === "Google") {
@@ -801,6 +1081,13 @@ export default function ItineraryChooseday(props) {
     const unsubscribe = props.navigation.addListener("focus", () => {
       _Refresh();
     });
+    dispatch(
+      setSearchInput({
+        search_input: props.route.params.search_input,
+        aktifsearch: true,
+        active_src: "destination",
+      })
+    );
     return unsubscribe;
   }, [props.navigation]);
 

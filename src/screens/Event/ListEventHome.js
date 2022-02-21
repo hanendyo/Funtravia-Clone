@@ -1035,6 +1035,15 @@ export default function ListEventHome(props) {
           data={props.navigationState.routes}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
+          onScrollToIndexFailed={() => {
+            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+            wait.then(() => {
+              scrollRef.current?.scrollToIndex({
+                index: index,
+                animated: true,
+              });
+            });
+          }}
           style={{
             backgroundColor: "white",
           }}
@@ -2272,6 +2281,7 @@ export default function ListEventHome(props) {
   };
 
   const eventdetail = (data) => {
+    console.log("eventid", data.id);
     props.navigation.navigate("eventdetail", {
       event_id: data.id,
       name: data.name,

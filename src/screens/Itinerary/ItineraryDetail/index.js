@@ -286,7 +286,12 @@ export default function ItineraryDetail(props) {
 
   let [users, setuser] = useState(setting.user);
   const loadasync = async () => {
-    await _Refresh();
+    try {
+      await _Refresh();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error: ", error);
+    }
   };
   let [Anggota, setAnggota] = useState(null);
 
@@ -327,8 +332,13 @@ export default function ItineraryDetail(props) {
   });
 
   const GetTimeline = async (id) => {
-    await setidDay(id ? id : idDay);
-    await GetTimelin();
+    try {
+      setidDay(id ? id : idDay);
+      await GetTimelin();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error: ", error);
+    }
   };
 
   const EndTimeConverter = (datetime) => {
@@ -347,7 +357,6 @@ export default function ItineraryDetail(props) {
       },
     },
   });
-  console.log("aa", datadetail);
 
   const _handlehapus = async (id) => {
     setloading(true);
@@ -1336,18 +1345,7 @@ export default function ItineraryDetail(props) {
   };
 
   const _handlerBack = async () => {
-    props.route.params.dataFrom == "movie"
-      ? props.navigation.navigate("TravelIdeaStack", {
-          screen: "Detail_movie",
-          params: {
-            movie_id: props?.route?.params?.movieId,
-            from: "itin_detail",
-          },
-        })
-      : props.route.params.onbackhandler === "list" ||
-        props.route.params.onbackhandler === "chooseDay"
-      ? props.navigation.navigate("TripBottomPlaning")
-      : props.navigation.goBack();
+    props.navigation.goBack();
   };
 
   useEffect(() => {

@@ -37,6 +37,8 @@ export default function CardDestination({
   setData,
   token,
   dataFrom,
+  dataFromId,
+  searchInput,
   movieId,
 }) {
   const { t } = useTranslation();
@@ -148,6 +150,7 @@ export default function CardDestination({
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                   data_dest: props.route.params,
+                  data_from_id: dataFromId,
                 },
               })
             )
@@ -157,7 +160,8 @@ export default function CardDestination({
                 idkiriman: kiriman.id,
                 Position: "destination",
                 data_from: dataFrom,
-                movieId: movieId,
+                data_from_id: dataFromId,
+                searchInput: searchInput,
               },
             });
       } else {
@@ -171,6 +175,8 @@ export default function CardDestination({
                   token: token,
                   Position: "destination",
                   datadayaktif: props?.route?.params?.datadayaktif,
+                  data_from_id: dataFromId,
+                  searchInput: searchInput,
                 },
               })
             )
@@ -180,6 +186,8 @@ export default function CardDestination({
                 idkiriman: data?.id,
                 Position: "destination",
                 data_from: dataFrom,
+                data_from_id: dataFromId,
+                searchInput: searchInput,
               },
             });
       }

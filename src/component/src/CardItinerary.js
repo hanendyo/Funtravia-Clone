@@ -39,7 +39,8 @@ export default function CardItinerary({
   // token,
   // setting,
   dataFrom,
-  movieId,
+  dataFromId,
+  searchInput,
 }) {
   const { t } = useTranslation();
   const [datas, setDatas] = useState(data);
@@ -261,7 +262,8 @@ export default function CardItinerary({
                               token: token,
                               Position: props.route.params.Position,
                               data_from: dataFrom,
-                              movie_id: movieId,
+                              data_from_id: dataFromId,
+                              search_input: searchInput,
                             },
                           })
                         )
@@ -299,6 +301,7 @@ export default function CardItinerary({
                                 token: token,
                                 Position: props.route.params.Position,
                                 data_from: dataFrom,
+                                search_input: searchInput,
                               },
                             })
                           )

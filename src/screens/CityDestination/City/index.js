@@ -848,6 +848,7 @@ export default function CityDetail(props) {
                               idcountries: render?.countries?.id,
                               idcity: render?.id,
                               token: tokenApps,
+                              data_from_id: render?.id,
                             });
                           }}
                           style={{

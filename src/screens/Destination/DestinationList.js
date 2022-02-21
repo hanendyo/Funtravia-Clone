@@ -34,6 +34,7 @@ import DeviceInfo from "react-native-device-info";
 import deviceInfoModule from "react-native-device-info";
 import CityCursorBased from "../../graphQL/Query/Itinerary/CityCursorBased";
 import Ripple from "react-native-material-ripple";
+import { useSelector } from "react-redux";
 
 const deviceId = DeviceInfo.getModel();
 
@@ -86,7 +87,7 @@ export default function ItineraryDestination(props) {
 
   let [show, setshow] = useState(false);
   let [hasApply, setHasApply] = useState(1);
-  let [token, setToken] = useState(props.route.params.token);
+  const token = useSelector((data) => data.token);
   let [dataFilterCategori, setdataFilterCategori] = useState([]);
   let [dataFilterCategoris, setdataFilterCategoris] = useState([]);
   let [tempDataCategory, setTempDataCategory] = useState([]);
@@ -118,7 +119,7 @@ export default function ItineraryDestination(props) {
       props?.route?.params && props?.route?.params?.idcountries
         ? props.route.params.idcountries
         : [],
-    provinces: props.route.params.idprovince
+    provinces: props.route.params?.idprovince
       ? [props.route.params.idprovince]
       : [],
     cities:
@@ -283,7 +284,6 @@ export default function ItineraryDestination(props) {
       for (let dataType of data.destinationList_v2) {
         type = type.concat(dataType.destination_unique_type);
       }
-      await setUniqueType([...new Set(type.map((x) => x.id))]);
     },
   });
 
@@ -985,6 +985,11 @@ export default function ItineraryDestination(props) {
           setData={(e) => setdataDes(e)}
           token={token}
           dataFrom="destination_list"
+          dataFromId={
+            props.route.params?.data_from_id
+              ? props.route.params.data_from_id
+              : null
+          }
         />
       ) : (
         <View style={{ marginTop: 15 }}>

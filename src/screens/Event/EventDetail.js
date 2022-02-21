@@ -246,7 +246,7 @@ export default function EventDetail(props) {
               Position: "Event",
               data_from: "eventdetail",
             },
-          });
+          })
     } else {
       setModalLogin(true);
     }

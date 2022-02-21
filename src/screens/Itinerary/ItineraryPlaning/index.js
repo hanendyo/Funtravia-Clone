@@ -564,7 +564,8 @@ export default function listItinPlaning(props) {
           //  setting={setting}
           setData={(e) => setDatas(e)}
           dataFrom={props.route.params.data_from}
-          movieId={props.route.params.movieId}
+          dataFromId={props.route.params.data_from_id}
+          searchInput={props.route.params.searchInput}
         />
       ) : (
         <View style={{ marginTop: 15 }}>

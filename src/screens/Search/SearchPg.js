@@ -13,6 +13,7 @@ import {
   BackHandler,
   ActivityIndicator,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Toast, Root } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -58,23 +59,45 @@ export default function SearchPg(props, { navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
   const { t, i18n } = useTranslation();
-  const [active_src, setActiveSrc] = useState("location");
+  const [active_src, setActiveSrc] = useState(
+    searchRdx?.active_src ? searchRdx.active_src : "location"
+  );
   let [list_rekomendasi_user, SetListrequser] = useState([]);
+  const searchRdx = useSelector((data) => data.searchInput);
+  // console.log(
+  //   "🚀 ~ file: SearchPg.js ~ line 70 ~ SearchPg ~ searchData",
+  //   searchRdx,
+  //   aktifsearch,
+  //   active_src,
+  //   searchtext
+  // );
+
   const [searchtext, SetSearchtext] = useState(
-    props.route.params.searchInput ? props.route.params.searchInput : ""
+    props.route.params?.searchInput
+      ? props.route.params.searchInput
+      : searchRdx.search_input
+      ? searchRdx.search_input
+      : ""
   );
   const [locationname, setLocationname] = useState(
-    props.route.params.locationname ? props.route.params.locationname : null
+    props.route.params?.locationname ? props.route.params.locationname : null
   );
 
   const myStateRef = React.useRef(aktifsearch);
   const fromotherpage = React.useRef(
-    props.route.params.aktifsearch ? props.route.params.aktifsearch : false
+    props.route.params?.aktifsearch
+      ? props.route.params.aktifsearch
+      : searchRdx.aktifsearch
+      ? searchRdx.aktifsearch
+      : null
   );
-  // let [setting, setSetting] = useState();
   let [recent, setRecent] = useState([]);
   let [aktifsearch, setAktifSearch] = useState(
-    props.route.params.aktifsearch ? props.route.params.aktifsearch : false
+    searchRdx.aktifsearch
+      ? searchRdx.aktifsearch
+      : props.route.params.aktifsearch
+      ? props.route.params.aktifsearch
+      : null
   );
 
   let { width, height } = Dimensions.get("screen");
@@ -125,6 +148,7 @@ export default function SearchPg(props, { navigation, route }) {
       }
     } catch (error) {
       console.log(error);
+      Alert.alert("Error: ", error);
     }
   };
 
@@ -202,39 +226,54 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const hapusrecent = async (index) => {
-    let arryrecent = [...recent];
-    arryrecent.splice(index, 1);
-    setRecent(arryrecent);
-    await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
+    try {
+      let arryrecent = [...recent];
+      arryrecent.splice(index, 1);
+      setRecent(arryrecent);
+      await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error: ", error);
+    }
   };
 
   const clearallrecent = async () => {
-    let arryrecent = [];
-    setRecent(arryrecent);
-    await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
+    try {
+      let arryrecent = [];
+      setRecent(arryrecent);
+      await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error: ", error);
+    }
   };
 
   const recent_save = async (data) => {
-    let arryrecent = [...recent];
-    arryrecent.splice(0, 0, data);
-    var filteredArray = arryrecent.filter(function(item, pos) {
-      return arryrecent.indexOf(item) == pos;
-    });
-    let ambil;
-    if (filteredArray.length > 5) {
-      ambil = filteredArray.slice(0, 5);
-    } else {
-      ambil = filteredArray;
+    try {
+      let arryrecent = [...recent];
+      arryrecent.splice(0, 0, data);
+      var filteredArray = arryrecent.filter(function(item, pos) {
+        return arryrecent.indexOf(item) == pos;
+      });
+      let ambil;
+      if (filteredArray.length > 5) {
+        ambil = filteredArray.slice(0, 5);
+      } else {
+        ambil = filteredArray;
+      }
+      setRecent(ambil);
+      await AsyncStorage.setItem("recent_src", JSON.stringify(ambil));
+    } catch (error) {
+      console.log("Error: ", error);
+      Alert.alert("Error: ", error);
     }
-    setRecent(ambil);
-    await AsyncStorage.setItem("recent_src", JSON.stringify(ambil));
   };
 
-  let countries_id = props.route.params.idcountry
+  let countries_id = props.route.params?.idcountry
     ? props.route.params.idcountry
     : null;
-  let cities_id = props.route.params.idcity ? props.route.params.idcity : null;
-  let province_id = props.route.params.province_id
+  let cities_id = props.route.params?.idcity ? props.route.params.idcity : null;
+  let province_id = props.route.params?.province_id
     ? props.route.params.province_id
     : null;
 
@@ -1142,6 +1181,7 @@ export default function SearchPg(props, { navigation, route }) {
                     setData={(e) => SetdestinationSearch(e)}
                     token={tokenApps}
                     dataFrom="search"
+                    searchInput={searchtext ? searchtext : null}
                   />
                 ) : (
                   <View style={{ marginTop: 30, alignItems: "center" }}>

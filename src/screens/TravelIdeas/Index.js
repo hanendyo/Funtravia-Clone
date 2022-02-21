@@ -44,17 +44,7 @@ export default function TravelIdeas(props) {
         type="circle"
         variant="transparent"
         onPress={() => {
-          props?.route?.params?.from == "movie_location"
-            ? props.navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: "BottomStack",
-                    routes: [{ name: "HomeScreen" }],
-                  },
-                ],
-              })
-            : props.navigation.goBack();
+          props.navigation.goBack();
         }}
         style={{
           height: 55,
@@ -73,32 +63,32 @@ export default function TravelIdeas(props) {
     props.navigation.setOptions(HeaderComponent);
   }, []);
 
-  const backAction = () => {
-    props?.route?.params?.from == "movie_location"
-      ? props.navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: "BottomStack",
-              routes: [{ name: "HomeScreen" }],
-            },
-          ],
-        })
-      : props.navigation.goBack();
-    return true;
-  };
+  // const backAction = () => {
+  //   props?.route?.params?.from == "movie_location"
+  //     ? props.navigation.reset({
+  //         index: 0,
+  //         routes: [
+  //           {
+  //             name: "BottomStack",
+  //             routes: [{ name: "HomeScreen" }],
+  //           },
+  //         ],
+  //       })
+  //     : props.navigation.goBack();
+  //   return true;
+  // };
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, [backAction]);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, [backAction]);
 
-  useEffect(() => {
-    props.navigation.addListener("blur", () => {
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-    });
-  }, [backAction]);
+  // useEffect(() => {
+  //   props.navigation.addListener("blur", () => {
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  //   });
+  // }, [backAction]);
 
   return (
     <ScrollView
