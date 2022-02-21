@@ -40,7 +40,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import ImageTransformer from "react-native-image-transformer";
 import DeviceInfo from "react-native-device-info";
 import ImageRotate from "react-native-image-rotate";
-import { PinchGestureHandler } from "react-native-gesture-handler";
+import { PinchGestureHandler, State } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatTypelayout({
@@ -65,6 +65,20 @@ export default function ChatTypelayout({
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
   let Notch = DeviceInfo.hasNotch();
+  let SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: 0,
+  });
+  let [angel, setAngel] = useState(0);
+
+  const rotate = (angles) => {
+    const nextAngle = angel + angles;
+    if (nextAngle == 360) {
+      setAngel(0);
+    } else {
+      setAngel(nextAngle);
+    }
+  };
 
   const _uploadimages = async (image, id) => {
     try {
@@ -171,61 +185,6 @@ export default function ChatTypelayout({
   const playerRef = useRef(null);
   const [modalss, setModalss] = useState(false);
   const [count, setCount] = useState(0);
-  const Loadingkirim = ({ loadings }) => {
-    // setTimeout(() => {
-    //   setloading(false);
-    // }, 5000);
-    if (loadings) {
-      return <ActivityIndicator size="large" color="#209fae" />;
-    } else {
-      return (
-        <Pressable
-          onPress={() => {
-            _uploadimages(item.text, item.id);
-            setloading(true);
-          }}
-          style={{
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "center",
-            height: 40,
-            width: 150,
-            borderRadius: 5,
-          }}
-        >
-          <View
-            style={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              backgroundColor: "#000",
-              borderRadius: 5,
-              opacity: 0.3,
-            }}
-          ></View>
-          <View
-            style={{
-              position: "absolute",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Reupload height={15} width={15} />
-            <Text
-              size="label"
-              type="regular"
-              style={{
-                color: "white",
-                marginLeft: 5,
-              }}
-            >
-              {t("reUpload")}
-            </Text>
-          </View>
-        </Pressable>
-      );
-    }
-  };
 
   // let count = 0;
   useEffect(() => {
@@ -233,18 +192,12 @@ export default function ChatTypelayout({
       socket.current.emit("message", item);
     }
     if (item.is_send == false && item.type == "att_image") {
-      // count = 1;
-      // if (count > 0) {
-      //   setCount(1);
       setTimeout(function() {
         _uploadimages(item.text, item.id);
       }, 1000);
-      // } else {
-      //   setCount(1);
-      //   _uploadimages(item.text, item.id);
-      // }
     }
   }, [connected, socket_connect]);
+
   // sticker layout
   if (item.type == "sticker") {
     return (
@@ -831,7 +784,7 @@ export default function ChatTypelayout({
               >
                 <LikeBlack width="15" height="15" />
                 <Text size="label" type="black" style={{ marginLeft: 5 }}>
-                  15
+                  {data.responseCount}
                 </Text>
               </View>
               <View
@@ -843,7 +796,7 @@ export default function ChatTypelayout({
               >
                 <CommentBlack width="15" height="15" />
                 <Text size="label" type="black" style={{ marginLeft: 5 }}>
-                  15
+                  {data.commentCount}
                 </Text>
               </View>
             </View>
@@ -1172,23 +1125,6 @@ export default function ChatTypelayout({
 
   // att_image_layout
   if (item.type == "att_image") {
-    let SafeStatusBar = Platform.select({
-      ios: Notch ? 48 : 20,
-      android: 0,
-    });
-    let [img, setImg] = useState(item.text);
-    let [angel, setAngel] = useState(0);
-    console.log("~ angel", angel);
-
-    const rotate = (angles) => {
-      const nextAngle = angel + angles;
-      if (nextAngle == 360) {
-        setAngel(0);
-      } else {
-        setAngel(nextAngle);
-      }
-    };
-
     return (
       <>
         <Pressable
@@ -1196,7 +1132,7 @@ export default function ChatTypelayout({
             borderWidth: 1,
             borderColor: "#209fae",
             borderRadius: 15,
-            width: moderateScale(225, 2),
+            width: moderateScale(215, 2),
             height: moderateScale(171, 2),
             marginBottom: 5,
             backgroundColor: "#F6F6F6",
@@ -1412,7 +1348,7 @@ export default function ChatTypelayout({
             </Pressable>
           </View>
           <Image
-            source={{ uri: img }}
+            source={{ uri: item.text }}
             style={{
               width: angel == 90 || angel == 270 ? "140%" : "100%",
               height: "100%",

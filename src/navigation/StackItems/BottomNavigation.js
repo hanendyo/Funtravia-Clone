@@ -153,14 +153,16 @@ export default function BottomNavigationItems(props) {
       },
     });
     let dataResponse = await response.json();
-    for (let i of dataResponse) {
-      socket.emit("join", i.id);
+    if (dataResponse) {
+      for (let i of dataResponse) {
+        socket.emit("join", i.id);
+      }
+      let sum = await dataResponse.reduce(
+        (a, { count_newmassage }) => a + count_newmassage,
+        0
+      );
+      dispatch(setCountMessage(sum));
     }
-    let sum = await dataResponse.reduce(
-      (a, { count_newmassage }) => a + count_newmassage,
-      0
-    );
-    dispatch(setCountMessage(sum));
   };
 
   const getRoomGroup = async () => {
@@ -173,23 +175,25 @@ export default function BottomNavigationItems(props) {
       },
     });
     let dataResponse = await response.json();
-    for (let i of dataResponse) {
-      socket.emit("join", i.group_id);
-    }
-    let dataCount = [];
-    for (var i of dataResponse) {
-      if (!i.count_newmassage) {
-        i.count_newmassage = 0;
-        dataCount.push(i);
-      } else {
-        dataCount.push(i);
+    if (dataResponse) {
+      for (let i of dataResponse) {
+        socket.emit("join", i.group_id);
       }
+      let dataCount = [];
+      for (var i of dataResponse) {
+        if (!i.count_newmassage) {
+          i.count_newmassage = 0;
+          dataCount.push(i);
+        } else {
+          dataCount.push(i);
+        }
+      }
+      let sum = await dataCount.reduce(
+        (a, { count_newmassage }) => a + count_newmassage,
+        0
+      );
+      dispatch(setCountMessageGroup(sum));
     }
-    let sum = await dataCount.reduce(
-      (a, { count_newmassage }) => a + count_newmassage,
-      0
-    );
-    dispatch(setCountMessageGroup(sum));
   };
 
   useEffect(() => {
