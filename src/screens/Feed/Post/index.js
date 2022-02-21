@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Pressable,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -54,6 +55,7 @@ export default function Post(props) {
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
+  console.log("~ imageRoll", imageRoll);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Preview, setPreview] = useState(true);
@@ -421,6 +423,7 @@ export default function Post(props) {
   };
 
   const getImageFromRoll = async (dataalbum) => {
+    console.log("~ dataalbum", dataalbum);
     let dataCamera;
     switch (dataalbum.title) {
       case "Recent Photos":
@@ -732,156 +735,158 @@ export default function Post(props) {
           onPress={() => nextFunction(recent?.node?.type, checklistVideo)}
         />
       </View>
-      {/* {Preview ? ( */}
-      <View
-        style={{
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        {recent?.node?.type.substr(0, 5) === "video" ? (
-          <>
-            <FunVideo
-              source={{
-                uri:
-                  Platform.OS === "ios"
-                    ? `assets-library://asset/asset.${recent.node.image.filename.substring(
-                        recent.node.image.filename.length - 3
-                      )}?id=${recent.node.image.uri.substring(
-                        5,
-                        41
-                      )}&ext=${recent.node.image.filename.substring(
-                        recent.node.image.filename.length - 3
-                      )}`
-                    : recent.node?.image?.uri,
-              }}
-              ref={(slider) => {
-                videoView = slider;
-              }}
-              onProgress={(e) => durationTime(e)}
-              paused={props.route.name == "Post" && isFocused ? false : true}
-              repeat={time ? true : false}
-              // onBuffer={videoView?.current?.onBuffer}
-              onError={videoView?.current?.videoError}
-              style={{
-                width: ratio.label == "P" ? width * (4 / 5) : width,
-                height: ratio.label == "L" ? width * (2.2 / 3) : width,
-              }}
-              muted={mute ? true : false}
-              resizeMode="cover"
-            ></FunVideo>
-            {loadVid ? (
-              <View
-                style={{
-                  position: "absolute",
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                  opacity: 0.5,
-                  height: "100%",
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator size="large" color="#209fae" />
-              </View>
-            ) : null}
-          </>
-        ) : (
-          <View
-            style={{
-              height: width,
-              width: width,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              // resizeMode="contain"
-              source={{ uri: recent.node?.image?.uri }}
-              style={{
-                width: ratio.label == "P" ? width * (4 / 5) : width,
-                height: ratio.label == "L" ? width * (2.2 / 3) : width,
-                // width: ratio.label == "P" ? width * (4 / 5) : width,
-                // height: ratio.label == "L" ? width * (2 / 3) : width,
-                // width: width,
-                // height: width,
-                // resizeMode: ratio.width == 1 ? "cover" : "contain",
-                // resizeMode: "contain",
-              }}
-            />
-            {/* <ImageCropper
-                  style={{
-                    width: width,
-                    height: width,
-                    borderWidth: 5,
-                  }}
-                  imageUri={recent.node?.image?.uri}
-                  setCropperParams={() => setCropperParams}
-                  resizeMode="contain"
-                /> */}
-          </View>
-        )}
-        {checklistVideo.length < 2 ? (
-          <Pressable
-            onPress={() =>
-              setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
-            }
-            style={{
-              idth: width,
-              // height: width,
-              backgroundColor: "#B2B2B2",
-              position: "absolute",
-              bottom: 0,
-              borderRadius: 20,
-              margin: 15,
-              width: 40,
-              height: 40,
-              left: 0,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {ratio.index == 0 ? (
-              <SizeOri height={23} width={23} />
-            ) : (
-              <SizeStrace height={23} width={23} />
-            )}
-          </Pressable>
-        ) : null}
-        {recent?.node?.type.substr(0, 5) === "video" ? (
-          <Pressable
-            onPress={() => setMute(!mute)}
-            style={{
-              position: "absolute",
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              // backgroundColor: "#464646",
-              bottom: 10,
-              right: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {mute ? (
-              <Mute width="15" height="15" />
-            ) : (
-              <Unmute width="15" height="15" />
-            )}
-          </Pressable>
-        ) : null}
-      </View>
-      {/* ) : null} */}
 
       <FlatList
         keyExtractor={(item) => item?.node?.image?.uri}
         style={{
-          paddingStart: 0,
-          alignContent: "center",
-          backgroundColor: "white",
           backgroundColor: "#fff",
-          height: Dimensions.get("screen").height,
+          height: Dimensions.get("screen").height * 0.9,
+          marginBottom: 100,
         }}
+        stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <View
+            style={{
+              // alignItems: "center",
+              backgroundColor: "#fff",
+            }}
+          >
+            {recent?.node?.type.substr(0, 5) === "video" ? (
+              <>
+                <FunVideo
+                  source={{
+                    uri:
+                      Platform.OS === "ios"
+                        ? `assets-library://asset/asset.${recent.node.image.filename.substring(
+                            recent.node.image.filename.length - 3
+                          )}?id=${recent.node.image.uri.substring(
+                            5,
+                            41
+                          )}&ext=${recent.node.image.filename.substring(
+                            recent.node.image.filename.length - 3
+                          )}`
+                        : recent.node?.image?.uri,
+                  }}
+                  ref={(slider) => {
+                    videoView = slider;
+                  }}
+                  onProgress={(e) => durationTime(e)}
+                  paused={
+                    props.route.name == "Post" && isFocused ? false : true
+                  }
+                  repeat={time ? true : false}
+                  // onBuffer={videoView?.current?.onBuffer}
+                  onError={videoView?.current?.videoError}
+                  style={{
+                    width: ratio.label == "P" ? width * (4 / 5) : width,
+                    height: ratio.label == "L" ? width * (2.2 / 3) : width,
+                  }}
+                  muted={mute ? true : false}
+                  resizeMode="cover"
+                ></FunVideo>
+                {loadVid ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "rgba(255, 255, 255, 0.8)",
+                      opacity: 0.5,
+                      height: "100%",
+                      width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ActivityIndicator size="large" color="#209fae" />
+                  </View>
+                ) : null}
+              </>
+            ) : (
+              <View
+                style={{
+                  height: width,
+                  width: width,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  // resizeMode="contain"
+                  source={{ uri: recent.node?.image?.uri }}
+                  style={{
+                    width: ratio.label == "P" ? width * (4 / 5) : width,
+                    height: ratio.label == "L" ? width * (2.2 / 3) : width,
+                    // width: ratio.label == "P" ? width * (4 / 5) : width,
+                    // height: ratio.label == "L" ? width * (2 / 3) : width,
+                    // width: width,
+                    // height: width,
+                    // resizeMode: ratio.width == 1 ? "cover" : "contain",
+                    // resizeMode: "contain",
+                  }}
+                />
+                {/* <ImageCropper
+            style={{
+              width: width,
+              height: width,
+              borderWidth: 5,
+            }}
+            imageUri={recent.node?.image?.uri}
+            setCropperParams={() => setCropperParams}
+            resizeMode="contain"
+          /> */}
+              </View>
+            )}
+            {checklistVideo.length < 2 ? (
+              <Pressable
+                onPress={() =>
+                  setRatio(ratio.index == 1 ? ratioindex[0] : ratioindex[1])
+                }
+                style={{
+                  idth: width,
+                  // height: width,
+                  backgroundColor: "#B2B2B2",
+                  position: "absolute",
+                  bottom: 0,
+                  borderRadius: 20,
+                  margin: 15,
+                  width: 40,
+                  height: 40,
+                  left: 0,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {ratio.index == 0 ? (
+                  <SizeOri height={23} width={23} />
+                ) : (
+                  <SizeStrace height={23} width={23} />
+                )}
+              </Pressable>
+            ) : null}
+            {recent?.node?.type.substr(0, 5) === "video" ? (
+              <Pressable
+                onPress={() => setMute(!mute)}
+                style={{
+                  position: "absolute",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  // backgroundColor: "#464646",
+                  bottom: 10,
+                  right: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {mute ? (
+                  <Mute width="15" height="15" />
+                ) : (
+                  <Unmute width="15" height="15" />
+                )}
+              </Pressable>
+            ) : null}
+          </View>
+        }
         ref={slider}
         data={imageRoll && imageRoll.length ? imageRoll : null}
         renderItem={({ item, index }) =>
@@ -1089,7 +1094,8 @@ export default function Post(props) {
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 30,
+                marginTop: 10,
+                paddingBottom: 40,
               }}
             >
               <ActivityIndicator

@@ -287,6 +287,8 @@ export default function ProvinceDetail(props) {
         });
       });
 
+      console.log("dataProvince", dataProvince);
+
       setRoutes(tab);
 
       let loop = 0;
@@ -3399,7 +3401,7 @@ export default function ProvinceDetail(props) {
             props.navigation.push("SearchPg", {
               province_id: dataProvince?.province_detail_v2?.id,
               searchInput: "",
-              locationname: lisProvince.name,
+              locationname: lisProvince?.name,
               aktifsearch: true,
             })
           }
@@ -3431,7 +3433,9 @@ export default function ProvinceDetail(props) {
               }}
             >
               <Truncate
-                text={lisProvince?.name ? t("searchin") + lisProvince.name : ""}
+                text={
+                  lisProvince?.name ? t("searchin") + lisProvince?.name : ""
+                }
                 length={25}
               />
             </Text>
@@ -3513,7 +3517,7 @@ export default function ProvinceDetail(props) {
             props.navigation.push("SearchPg", {
               province_id: dataProvince?.province_detail_v2?.id,
               searchInput: "",
-              locationname: lisProvince.name,
+              locationname: lisProvince?.name,
               aktifsearch: true,
             })
           }
@@ -3544,7 +3548,7 @@ export default function ProvinceDetail(props) {
                 color: "#FFFFFF",
               }}
             >
-              {t("searchin") + lisProvince.name}
+              {t("searchin") + lisProvince?.name}
             </Text>
           </View>
         </TouchableOpacity>
