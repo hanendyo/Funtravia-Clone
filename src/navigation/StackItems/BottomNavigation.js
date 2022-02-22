@@ -236,9 +236,9 @@ export default function BottomNavigationItems(props) {
           tabBarLabel: t("home"),
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <HomeOn width="20" height="22" />
+              <HomeOn width="23" height="25" />
             ) : (
-              <HomeOff width="20" height="22" />
+              <HomeOff width="23" height="25" />
             ),
         }}
       />
@@ -255,9 +255,9 @@ export default function BottomNavigationItems(props) {
           tabBarLabel: t("feed"),
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <FeedOn width="20" height="22" />
+              <FeedOn width="23" height="25" />
             ) : (
-              <FeedOff width="20" height="22" />
+              <FeedOff width="23" height="25" />
             ),
         }}
       />
@@ -300,24 +300,24 @@ export default function BottomNavigationItems(props) {
                   <View
                     style={{
                       backgroundColor: "#d75995",
-                      position: "absolute",
-                      zIndex: 1,
-                      borderRadius: 15,
+                      height: 20,
+                      minWidth: 20,
+                      borderRadius: 20,
                       justifyContent: "center",
                       alignItems: "center",
+                      paddingHorizontal: 5,
+                      position: "absolute",
+                      zIndex: 1,
                       left: 15,
                       top: -5,
                     }}
                   >
                     <Text
                       type="bold"
+                      size="small"
                       style={{
                         color: "#fff",
-                        fontSize: 8,
-                        marginBottom: 5,
-                        marginTop: 4,
-                        marginRight: 8,
-                        marginLeft: 7,
+                        marginBottom: 1,
                       }}
                     >
                       99+
@@ -327,31 +327,31 @@ export default function BottomNavigationItems(props) {
                   <View
                     style={{
                       backgroundColor: "#d75995",
-                      position: "absolute",
-                      zIndex: 1,
-                      borderRadius: 15,
+                      height: 20,
+                      minWidth: 20,
+                      borderRadius: 20,
                       justifyContent: "center",
                       alignItems: "center",
+                      paddingHorizontal: 5,
+                      position: "absolute",
+                      zIndex: 1,
                       left: 15,
                       top: -5,
                     }}
                   >
                     <Text
                       type="bold"
+                      size="small"
                       style={{
                         color: "#fff",
-                        fontSize: 8,
-                        marginBottom: 5,
-                        marginTop: 4,
-                        marginRight: 8,
-                        marginLeft: 7,
+                        marginBottom: 1,
                       }}
                     >
                       {countPesan + countPesanGroup}
                     </Text>
                   </View>
                 ) : null}
-                <ChatOn width="20" height="22" />
+                <ChatOn width="23" height="25" />
               </View>
             ) : (
               <View>
@@ -359,24 +359,24 @@ export default function BottomNavigationItems(props) {
                   <View
                     style={{
                       backgroundColor: "#d75995",
-                      position: "absolute",
-                      zIndex: 1,
-                      borderRadius: 15,
+                      height: 20,
+                      minWidth: 20,
+                      borderRadius: 20,
                       justifyContent: "center",
                       alignItems: "center",
+                      paddingHorizontal: 5,
+                      position: "absolute",
+                      zIndex: 1,
                       left: 15,
                       top: -5,
                     }}
                   >
                     <Text
                       type="bold"
+                      size="small"
                       style={{
                         color: "#fff",
-                        fontSize: 8,
-                        marginBottom: 5,
-                        marginTop: 4,
-                        marginRight: 8,
-                        marginLeft: 7,
+                        marginBottom: 1,
                       }}
                     >
                       99+
@@ -386,31 +386,31 @@ export default function BottomNavigationItems(props) {
                   <View
                     style={{
                       backgroundColor: "#d75995",
-                      position: "absolute",
-                      zIndex: 1,
-                      borderRadius: 15,
+                      height: 20,
+                      minWidth: 20,
+                      borderRadius: 20,
                       justifyContent: "center",
                       alignItems: "center",
+                      paddingHorizontal: 5,
+                      position: "absolute",
+                      zIndex: 1,
                       left: 15,
                       top: -5,
                     }}
                   >
                     <Text
                       type="bold"
+                      size="small"
                       style={{
                         color: "#fff",
-                        fontSize: 8,
-                        marginBottom: 5,
-                        marginTop: 4,
-                        marginRight: 8,
-                        marginLeft: 7,
+                        marginBottom: 1,
                       }}
                     >
                       {countPesan + countPesanGroup}
                     </Text>
                   </View>
                 ) : null}
-                <ChatOff width="20" height="22" />
+                <ChatOff width="23" height="25" />
               </View>
             ),
         }}
@@ -422,9 +422,9 @@ export default function BottomNavigationItems(props) {
           tabBarLabel: t("account"),
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <ProfileOn width="20" height="22" />
+              <ProfileOn width="23" height="25" />
             ) : (
-              <ProfileOff width="20" height="22" />
+              <ProfileOff width="23" height="25" />
             ),
         }}
       />

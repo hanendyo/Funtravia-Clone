@@ -162,21 +162,18 @@ export default function Message({ navigation, route }) {
     });
     if (response.status != 500) {
       let dataResponse = await response.json();
-      if (dataResponse) {
-        let sum = await dataResponse.reduce(
-          (a, { count_newmassage }) => a + count_newmassage,
-          0
-        );
-        dispatch(setCountMessage(sum));
-        for (let i of dataResponse) {
-          socket.emit("join", i.id);
-        }
+      let sum = await dataResponse.reduce(
+        (a, { count_newmassage }) => a + count_newmassage,
+        0
+      );
+      dispatch(setCountMessage(sum));
+      for (let i of dataResponse) {
+        socket.emit("join", i.id);
       }
+      await setData(dataResponse);
+      await setDataRes(dataResponse);
+      await setLoading(false);
     }
-
-    await setData(dataResponse);
-    await setDataRes(dataResponse);
-    await setLoading(false);
   };
 
   const getRoomGroup = async () => {
@@ -210,12 +207,11 @@ export default function Message({ navigation, route }) {
         0
       );
       dispatch(setCountMessageGroup(sum));
+      // await setDataGroup(dataResponse);
+      // await setDataGroupRes(dataResponse);
+      await setDataGroup(dataCount);
+      await setDataGroupRes(dataCount);
     }
-
-    // await setDataGroup(dataResponse);
-    // await setDataGroupRes(dataResponse);
-    await setDataGroup(dataCount);
-    await setDataGroupRes(dataCount);
   };
 
   const getUserAndToken = async () => {
@@ -337,6 +333,14 @@ export default function Message({ navigation, route }) {
     //   outputRange: [HeaderHeight, 55],
     //   extrapolateRight: "clamp",
     // });
+    let state = [...props.navigationState.routes];
+    for (var i of state) {
+      if (i.key == "personal") {
+        i.count = countPesan;
+      } else {
+        i.count = countPesanGroup;
+      }
+    }
     return (
       <Animated.View
         style={{
@@ -405,27 +409,31 @@ export default function Message({ navigation, route }) {
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>
-                <View
-                  style={{
-                    backgroundColor: "#d75995",
-                    marginLeft: 5,
-                    borderRadius: 15,
-                  }}
-                >
-                  <Text
-                    type="bold"
+                {item.count != 0 ? (
+                  <View
                     style={{
-                      color: "#fff",
-                      fontSize: 8,
-                      marginBottom: 5,
-                      marginTop: 4,
-                      marginRight: 8,
-                      marginLeft: 7,
+                      backgroundColor: "#d75995",
+                      marginLeft: 5,
+                      height: 20,
+                      minWidth: 20,
+                      borderRadius: 20,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 5,
                     }}
                   >
-                    {item.count}
-                  </Text>
-                </View>
+                    <Text
+                      type="bold"
+                      size="small"
+                      style={{
+                        color: "#fff",
+                        marginBottom: 1,
+                      }}
+                    >
+                      {item.count}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
             </Ripple>
           )}
