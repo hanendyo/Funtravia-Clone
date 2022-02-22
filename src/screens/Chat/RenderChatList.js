@@ -353,18 +353,22 @@ export default function ChatList({
                         <View
                           style={{
                             backgroundColor: "#d75995",
-                            borderRadius: 15,
+                            marginLeft: 5,
+                            height: 20,
+                            minWidth: 20,
+                            borderRadius: 20,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 5,
                             marginTop: 4,
                           }}
                         >
                           <Text
-                            size="small"
                             type="bold"
+                            size="small"
                             style={{
-                              color: "white",
-                              marginHorizontal: 8,
-                              marginVertical: 5,
-                              lineHeight: 12,
+                              color: "#fff",
+                              marginBottom: 1,
                             }}
                           >
                             {item.count_newmassage < 999
