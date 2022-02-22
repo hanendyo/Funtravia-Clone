@@ -160,16 +160,19 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
-    let dataResponse = await response.json();
-    for (let i of dataResponse) {
-      socket.emit("join", i.id);
+    if (response.status != 500) {
+      let dataResponse = await response.json();
+      if (dataResponse) {
+        let sum = await dataResponse.reduce(
+          (a, { count_newmassage }) => a + count_newmassage,
+          0
+        );
+        dispatch(setCountMessage(sum));
+        for (let i of dataResponse) {
+          socket.emit("join", i.id);
+        }
+      }
     }
-    let sum = await dataResponse.reduce(
-      (a, { count_newmassage }) => a + count_newmassage,
-      0
-    );
-
-    dispatch(setCountMessage(sum));
 
     await setData(dataResponse);
     await setDataRes(dataResponse);
@@ -185,26 +188,29 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
-    let dataResponse = await response.json();
 
-    for (let i of dataResponse) {
-      socket.emit("join", i.group_id);
-    }
-    let dataCount = [];
-    for (var i of dataResponse) {
-      let data = { ...i };
-      if (!data.count_newmassage) {
-        data.count_newmassage = 0;
-        dataCount.push(data);
-      } else {
-        dataCount.push(data);
+    if (response.status != 500) {
+      let dataResponse = await response.json();
+
+      for (let i of dataResponse) {
+        socket.emit("join", i.group_id);
       }
+      let dataCount = [];
+      for (var i of dataResponse) {
+        let data = { ...i };
+        if (!data.count_newmassage) {
+          data.count_newmassage = 0;
+          dataCount.push(data);
+        } else {
+          dataCount.push(data);
+        }
+      }
+      let sum = await dataCount.reduce(
+        (a, { count_newmassage }) => a + count_newmassage,
+        0
+      );
+      dispatch(setCountMessageGroup(sum));
     }
-    let sum = await dataCount.reduce(
-      (a, { count_newmassage }) => a + count_newmassage,
-      0
-    );
-    dispatch(setCountMessageGroup(sum));
 
     // await setDataGroup(dataResponse);
     // await setDataGroupRes(dataResponse);

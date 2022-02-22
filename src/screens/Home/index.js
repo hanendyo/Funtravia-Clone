@@ -55,37 +55,14 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
   const notifApps = useSelector((data) => data.notif);
-  const countPesan = useSelector((data) => data.countMessage);
   const settingApps = useSelector((data) => data.setting);
   const searchInput = useSelector((data) => data.searchInput);
-  let [token, setToken] = useState("");
   let [refresh, setRefresh] = useState(false);
   let [data, setdata] = useState(null);
   let [shareId, setShareId] = useState(props.route.params.shareid);
   let [loadingModal, setLoadingModal] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
   let [modalBlocked, setModalBlocked] = useState(false);
-
-  const getRoom = async () => {
-    let response = await fetch(`${CHATSERVER}/api/personal/list`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    let dataResponse = await response.json();
-    let sum = await dataResponse.reduce(
-      (a, { count_newmassage }) => a + count_newmassage,
-      0
-    );
-    dispatch(setCountMessage(sum));
-  };
-
-  useEffect(() => {
-    getRoom();
-  }, []);
 
   const loadAsync = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
@@ -167,8 +144,12 @@ export default function Home(props) {
   const loadNavigate = async () => {
     let tkn = await AsyncStorage.getItem("access_token");
     let setting = await AsyncStorage.getItem("setting");
-    dispatch(setSettingUser(JSON.parse(setting)));
-    dispatch(setTokenApps(`Bearer ${tkn}`));
+    if (tkn) {
+      dispatch(setTokenApps(`Bearer ${tkn}`));
+    }
+    if (setting) {
+      dispatch(setSettingUser(JSON.parse(setting)));
+    }
     if (notifApps) {
       switch (notifApps.data.page) {
         case "comment":
