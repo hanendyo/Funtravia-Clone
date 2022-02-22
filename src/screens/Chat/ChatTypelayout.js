@@ -7,19 +7,14 @@ import {
   ActivityIndicator,
   ImageBackground,
   Modal,
-  StatusBar,
   Platform,
   Image,
-  Animated,
-  PanResponder,
-  useWindowDimensions,
 } from "react-native";
-import { Text, FunImage, FunImageAutoSize, FunVideo } from "../../component";
+import { Text, FunImage } from "../../component";
 import {
   Star,
   AddHijau,
   Reupload,
-  Xwhite,
   LikeBlack,
   CommentBlack,
   Arrowbackios,
@@ -29,20 +24,12 @@ import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CHATSERVER, RESTFULL_API } from "../../config";
+import { RESTFULL_API } from "../../config";
 import normalize from "react-native-normalize";
-import ImageViewer from "react-native-image-zoom-viewer";
-import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
 import { dateFormatDateMonthYears } from "../../component/src/dateformatter";
-import { TouchableHighlight } from "react-native-gesture-handler";
-import ImageTransformer from "react-native-image-transformer";
 import DeviceInfo from "react-native-device-info";
-import ImageRotate from "react-native-image-rotate";
-import { PinchGestureHandler, State } from "react-native-gesture-handler";
-
-const { width, height } = Dimensions.get("screen");
+import { stat } from "react-native-fs";
 export default function ChatTypelayout({
   item,
   user_id,
@@ -115,9 +102,6 @@ export default function ChatTypelayout({
         }
       );
       let responseJson = await response.json();
-      //   "🚀 ~ file: ChatTypelayout.js ~ line 81 ~ const_uploadimage= ~ responseJson",
-      //   responseJson
-      // );
       if (responseJson.status == true) {
         // getUserAndToken();
         let dateTime = new Date();
@@ -1125,6 +1109,26 @@ export default function ChatTypelayout({
 
   // att_image_layout
   if (item.type == "att_image") {
+    let [scales, setScales] = useState("S");
+    if (item && item.text) {
+      Image.getSize(item.text, (width, height) => {
+        console.log(
+          `The image dimensions are width = ${width}x height = ${height}`
+        );
+        if (width > height) {
+          setScales("L");
+        } else if (width < height) {
+          setScales("P");
+        } else {
+          setScales("S");
+        }
+      });
+    }
+
+    console.log("scales", scales);
+    // const statResult = stat(item.text);
+    // console.log("~ statResult", statResult);
+
     return (
       <>
         <Pressable
@@ -1279,13 +1283,21 @@ export default function ChatTypelayout({
         <Modal
           onBackdropPress={() => {
             setModalss(false);
+            setAngel(0);
           }}
-          onRequestClose={() => setModalss(false)}
-          onDismiss={() => setModalss(false)}
+          onRequestClose={() => {
+            setModalss(false);
+            setAngel(0);
+          }}
+          onDismiss={() => {
+            setModalss(false);
+            setAngel(0);
+          }}
           transparent={true}
           visible={modalss}
           onRequestClose={() => {
             setModalss(false);
+            setAngel(0);
           }}
           style={{
             alignItems: "center",
@@ -1293,9 +1305,9 @@ export default function ChatTypelayout({
           }}
         >
           <Pressable
-            onPress={() => {
-              setModalss(false);
-            }}
+            // onPress={() => {
+            //   setModalss(false);
+            // }}
             style={{
               height: Dimensions.get("screen").height,
               width: Dimensions.get("screen").width,
@@ -1347,7 +1359,34 @@ export default function ChatTypelayout({
               <Reupload height={20} width={20}></Reupload>
             </Pressable>
           </View>
-          <Image
+          <FunImage
+            source={{ uri: item.text }}
+            style={{
+              width:
+                (scales == "P" && angel == 90) ||
+                (scales == "P" && angel == 270)
+                  ? "80%"
+                  : (scales == "L" && angel == 90) ||
+                    (scales == "L" && angel == 270)
+                  ? "140%"
+                  : "100%",
+              // angel == 90 || (angel == 270 && )
+              //   ? "140%"
+              //   : "100%",
+              height:
+                (scales == "P" && angel == 90) ||
+                (scales == "P" && angel == 270)
+                  ? "120%"
+                  : (scales == "L" && angel == 90) ||
+                    (scales == "L" && angel == 270)
+                  ? "80%"
+                  : "100%",
+              alignSelf: "center",
+              resizeMode: "contain",
+              transform: [{ rotate: `${angel}deg` }],
+            }}
+          />
+          {/* <Image
             source={{ uri: item.text }}
             style={{
               width: angel == 90 || angel == 270 ? "140%" : "100%",
@@ -1356,7 +1395,7 @@ export default function ChatTypelayout({
               resizeMode: "contain",
               transform: [{ rotate: `${angel}deg` }],
             }}
-          />
+          /> */}
         </Modal>
         {/*End New Image Viewer */}
       </>
