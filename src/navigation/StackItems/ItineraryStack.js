@@ -1,5 +1,5 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {createStackNavigator} from "@react-navigation/stack";
 import Trip from "../../screens/Itinerary/TripPlaning/CreateTrip";
 import itindetail from "../../screens/Itinerary/ItineraryDetail";
 import ItinGoogle from "../../screens/Itinerary/ItinGoogle";
@@ -25,6 +25,7 @@ import customFlight from "../../screens/Itinerary/CustomItinerary/flight";
 import customStay from "../../screens/Itinerary/CustomItinerary/stay";
 import ItinerarySearchCategory from "../../screens/Itinerary/ItineraryPopular/ItinerarySearch";
 import editprivacy from "../../screens/Itinerary/ItineraryDetail/editprivacy";
+import editCustomActivity from "../../screens/Itinerary/CustomItinerary/editCustomActivity";
 
 const ItineraryStack = createStackNavigator();
 export default function ItineraryStackNavigation() {
@@ -244,6 +245,15 @@ export default function ItineraryStackNavigation() {
       <ItineraryStack.Screen
         name="editprivacy"
         component={editprivacy}
+        options={{
+          headerTransparent: false,
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <ItineraryStack.Screen
+        name="editcustomactivity"
+        component={editCustomActivity}
         options={{
           headerTransparent: false,
           headerTintColor: "white",
