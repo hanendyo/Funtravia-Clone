@@ -895,5 +895,6 @@
   "failedToSelectCity": "Gagal memilih kota",
   "failedToSelectCurrency": "Gagal memilih mata uang",
   "itineraryAlbum": "Album Perjalanan",
-  "feedAlbum": "Album Feed"
+  "feedAlbum": "Album Feed",
+  "editCustomActivity" : "Edit aktivitas Buatan"
 }

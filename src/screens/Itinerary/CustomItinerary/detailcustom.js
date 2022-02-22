@@ -53,7 +53,6 @@ import DeviceInfo from "react-native-device-info";
 import {useSelector} from "react-redux";
 
 export default function detailCustomItinerary(props) {
-  console.log("dataprops", props);
   const {t, i18n} = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
@@ -247,7 +246,6 @@ export default function detailCustomItinerary(props) {
   });
 
   const savetimeline = async (datakiriman) => {
-    console.log("a", JSON.stringify(datakiriman));
     try {
       let response = await mutationSaveTimeline({
         variables: {
@@ -622,7 +620,6 @@ export default function detailCustomItinerary(props) {
               ? `${newjam + 1}:${newmenit - 60}`
               : `${newjam}:${newmenit}`;
         }
-        console.log("new", newtime);
 
         datareplace.time = await hitungDuration({
           startt: newtime,
@@ -637,7 +634,6 @@ export default function detailCustomItinerary(props) {
     if (datahotel.length > 0) {
       datax.splice(0, 0, datahotel[0]);
     }
-    console.log("datax", datax);
 
     let sum = datax.reduce(
       (itinerary, item) => itinerary.add(moment.duration(item.duration)),
@@ -2108,7 +2104,11 @@ export default function detailCustomItinerary(props) {
                 borderBottomWidth: 1,
               }}
               onPress={() => {
-                handleEdit();
+                setModalMore(false);
+                props.navigation.navigate("editcustomactivity", {
+                  token: token,
+                  dataParent: dataParent,
+                });
               }}
             >
               <Text

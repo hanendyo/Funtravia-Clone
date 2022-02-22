@@ -897,5 +897,6 @@
   "failedToSelectCity": "Failed to select city",
   "failedToSelectCurrency": "Failed to select currency",
   "itineraryAlbum": "Itinerary Album",
-  "feedAlbum": "Feed Album"
+  "feedAlbum": "Feed Album",
+  "editCustomActivity" : "Edit custom activity"
 }
