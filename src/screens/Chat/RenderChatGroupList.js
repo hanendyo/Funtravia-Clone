@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Pressable,
+  Platform,
 } from "react-native";
 import {
   Text,
@@ -225,7 +226,8 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                         size="small"
                         style={{
                           color: "#fff",
-                          marginBottom: 1,
+                          marginBottom: Platform.OS == "ios" ? 0 : 1,
+                          marginLeft: Platform.OS == "ios" ? 1 : 0,
                         }}
                       >
                         {item.count_newmassage < 999

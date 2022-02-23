@@ -74,6 +74,7 @@ import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 
 export default function Comments(props) {
+  console.log("~ props", props);
   const updateDataPost = props?.route?.params?.updateDataPost;
   const from = props?.route?.params?.from;
   const Notch = DeviceInfo.hasNotch();
@@ -330,7 +331,7 @@ export default function Comments(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: async () => {
+    onCompleted: async (queryDataComment) => {
       setDataComment(queryDataComment?.comment);
       let temps = { ...queryDataComment };
       let index = temps.comment.findIndex((k) => k["id"] === idComment);
@@ -792,7 +793,7 @@ export default function Comments(props) {
           });
 
           if (response.data) {
-            if (response.data.comment_post.code === 200) {
+            if (response.data.comment_post.code == 200) {
               const tempData = [...dataComment];
               const tempDataPost = { ...dataPost };
               dataPost.comment_count = dataPost.comment_count + 1;

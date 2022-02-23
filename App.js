@@ -26,40 +26,38 @@ if (Platform.OS === "ios") {
   PushNotification.cancelAllLocalNotifications();
 }
 
-PushNotification.configure({
-  onRegister: function(token) {
-    // console.log("TOKEN:", token);
-  },
-  onNotification: async function(notification) {
-    console.log("NOTIFICATION:", notification);
-    if (notification.userInteraction == true) {
-      await AsyncStorage.setItem(
-        "dataNotification",
-        JSON.stringify(notification)
-      );
-      if (notification.foreground == true) {
-        await RNRestart.Restart();
-      }
-    }
-    // notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
-  onAction: function(notification) {
-    console.log("ONACTION:", notification);
-  },
-  onRegistrationError: function(err) {
-    console.log(err.message, err);
-  },
-  permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
-  onMessage: function(notification) {
-    console.log("onmessage:", notification);
-  },
-  popInitialNotification: true,
-  requestPermissions: true,
-});
+// PushNotification.configure({
+//   onRegister: function(token) {
+//   },
+//   onNotification: async function(notification) {
+//     console.log("NOTIFICATION:", notification);
+//     if (notification.userInteraction == true) {
+//       await AsyncStorage.setItem(
+//         "dataNotification",
+//         JSON.stringify(notification)
+//       );
+//       if (notification.foreground == true) {
+//         await RNRestart.Restart();
+//       }
+//     }
+//   },
+//   onAction: function(notification) {
+//     console.log("ONACTION:", notification);
+//   },
+//   onRegistrationError: function(err) {
+//     console.log(err.message, err);
+//   },
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
+//   onMessage: function(notification) {
+//     console.log("onmessage:", notification);
+//   },
+//   popInitialNotification: true,
+//   requestPermissions: true,
+// });
 
 function App() {
   const { t, i18n } = useTranslation();
