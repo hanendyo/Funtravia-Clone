@@ -20,7 +20,7 @@ import {
   TravelStoriesdis,
   TravelAlbumdis,
 } from "../../assets/svg";
-import { Text, Truncate, Button } from "../../component";
+import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 import { Bg_soon, default_profile, ItineraryKosong } from "../../assets/png";
@@ -35,9 +35,6 @@ import { useSelector } from "react-redux";
 export default function CardItinerary({
   data,
   props,
-  // setData,
-  // token,
-  // setting,
   dataFrom,
   dataFromId,
   searchInput,
@@ -118,10 +115,7 @@ export default function CardItinerary({
     }
   };
 
-  const [
-    mutationliked,
-    { loading: loadingLike, data: dataLike, error: errorLike },
-  ] = useMutation(ItineraryLiked, {
+  const [mutationliked] = useMutation(ItineraryLiked, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -130,10 +124,7 @@ export default function CardItinerary({
     },
   });
 
-  const [
-    mutationUnliked,
-    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
-  ] = useMutation(ItineraryUnliked, {
+  const [mutationUnliked] = useMutation(ItineraryUnliked, {
     context: {
       headers: {
         "Content-Type": "application/json",

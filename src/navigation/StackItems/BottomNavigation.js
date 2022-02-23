@@ -341,10 +341,10 @@ export default function BottomNavigationItems(props) {
                   >
                     <Text
                       type="bold"
-                      size="small"
                       style={{
                         color: "#fff",
                         marginBottom: 1,
+                        fontSize: 9,
                       }}
                     >
                       {countPesan + countPesanGroup}
@@ -373,10 +373,10 @@ export default function BottomNavigationItems(props) {
                   >
                     <Text
                       type="bold"
-                      size="small"
                       style={{
                         color: "#fff",
                         marginBottom: 1,
+                        fontSize: 9,
                       }}
                     >
                       99+

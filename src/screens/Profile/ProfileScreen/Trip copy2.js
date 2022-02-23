@@ -1,46 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
-  StyleSheet,
   TouchableOpacity,
   Dimensions,
-  FlatList,
   Image,
   ImageBackground,
-  TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
-import { default_image, imgPrivate } from "../../../assets/png";
+import { default_image } from "../../../assets/png";
 
-import User_Post from "../../../graphQL/Query/Profile/post";
 import {
   Calendargrey,
-  Kosong,
+  LikeEmpty,
+  LikeRed,
+  Newglobe,
+  Padlock,
   PinHijau,
   TravelAlbum,
-  TravelStories,
+  TravelAlbumdis,
   TravelStoriesdis,
   User,
 } from "../../../assets/svg";
-import { CardItinerary, Text, Truncate } from "../../../component";
-import { useTranslation } from "react-i18next";
-import { useQuery } from "@apollo/client";
-import Ripple from "react-native-material-ripple";
+import { Text, Truncate } from "../../../component";
 import { dateFormats } from "../../../component/src/dateformatter";
 import DeviceInfo from "react-native-device-info";
+import normalize from "react-native-normalize";
+import { RNToasty } from "react-native-toasty";
 
-const Notch = DeviceInfo.hasNotch();
-const arrayShadow = {
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
-  shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
-  elevation: Platform.OS == "ios" ? 3 : 3,
-};
-
-export default function Trip({ item, props, token, position }) {
+export default function Trip(
+  { tokenApps, props, item, index },
+  setting,
+  data,
+  setModalLogin,
+  setSoon,
+  setdataTrip,
+  mutationliked,
+  mutationUnliked
+) {
   const getDN = (start, end) => {
-    var x = start;
-    var y = end,
-      start = start.split(" ");
+    start = start.split(" ");
     end = end.split(" ");
     var date1 = new Date(start[0]);
     var date2 = new Date(end[0]);
@@ -49,27 +47,11 @@ export default function Trip({ item, props, token, position }) {
 
     return (
       <View style={{ flexDirection: "row" }}>
-        <Text
-          size="description"
-          type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
-        >
+        <Text size="description" type={"regular"}>
           {Difference_In_Days + 1} days
           {", "}
         </Text>
-        <Text
-          size="description"
-          type={"regular"}
-          style={
-            {
-              // color: "white",
-            }
-          }
-        >
+        <Text size="description" type={"regular"}>
           {Difference_In_Days} nights
         </Text>
       </View>
@@ -79,26 +61,98 @@ export default function Trip({ item, props, token, position }) {
   const getdate = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
-
     return dateFormats(start[0]) + " - " + dateFormats(end[0]);
+  };
+
+  const _liked = async (id, index) => {
+    if (tokenApps) {
+      try {
+        let response = await mutationliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+
+        if (response.data) {
+          if (
+            response.data.setItineraryFavorit.code === 200 ||
+            response.data.setItineraryFavorit.code === "200"
+          ) {
+            const tempData = [...data];
+            const tempDataDetail = { ...tempData[index] };
+            tempDataDetail.liked = true;
+            tempData.splice(index, 1, tempDataDetail);
+            setdataTrip(tempData);
+          } else {
+            RNToasty.Show({
+              title: "FailedLikeItinerary",
+              position: "bottom",
+            });
+          }
+        }
+      } catch (error) {
+        RNToasty.Show({
+          title: "FailedLikeItinerary",
+          position: "bottom",
+        });
+      }
+    } else {
+      return setModalLogin(true);
+    }
+  };
+  const _unliked = async (id, index) => {
+    if (tokenApps) {
+      try {
+        let response = await mutationUnliked({
+          variables: {
+            id: id,
+            qty: 1,
+          },
+        });
+
+        if (response.data) {
+          if (
+            response.data.unsetItineraryFavorit.code === 200 ||
+            response.data.unsetItineraryFavorit.code === "200"
+          ) {
+            const tempData = [...data];
+            const tempDataDetail = { ...tempData[index] };
+            tempDataDetail.liked = false;
+            tempData.splice(index, 1, tempDataDetail);
+            setdataTrip(tempData);
+          } else {
+            RNToasty.Show({
+              title: "somethingwrong",
+              position: "bottom",
+            });
+          }
+        }
+      } catch (error) {
+        RNToasty.Show({
+          title: "somethingwrong",
+          position: "bottom",
+        });
+      }
+    } else {
+      return setModalLogin(true);
+    }
   };
 
   return (
     <View
       style={{
-        height: 150,
-        marginTop: Platform.OS === "ios" ? (Notch ? 15 : -35) : 30,
-        marginBottom: Platform.OS === "ios" ? (Notch ? 0 : 50) : -10,
-        borderRadius: 10,
+        height: normalize(175),
+        marginTop: index == 0 ? 40 : 20,
+
+        borderRadius: 5,
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: arrayShadow.shadowOpacity,
-        shadowRadius: arrayShadow.shadowRadius,
-        elevation: arrayShadow.elevation,
         justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         overflow: "hidden",
         marginHorizontal: 15,
-        // width: "50%",
+        borderWidth: 1,
+        borderColor: "red",
       }}
     >
       <TouchableOpacity
@@ -109,7 +163,7 @@ export default function Trip({ item, props, token, position }) {
               itintitle: item.name,
               country: item.id,
               dateitin: getdate(item.start_date, item.end_date),
-              token: token,
+              token: tokenApps,
               status: "favorite",
             },
           })
@@ -120,16 +174,13 @@ export default function Trip({ item, props, token, position }) {
           borderTopLeftRadius: 5,
           borderTopRightRadius: 5,
           flexDirection: "row",
-          shadowOpacity: arrayShadow.shadowOpacity,
-          shadowRadius: arrayShadow.shadowRadius,
-          elevation: arrayShadow.elevation,
         }}
       >
         <ImageBackground
           source={item && item.cover ? { uri: item.cover } : default_image}
           style={{
             height: "100%",
-            width: "35%",
+            width: Dimensions.get("screen").width * 0.3,
             borderTopLeftRadius: 5,
           }}
           imageStyle={{
@@ -153,7 +204,7 @@ export default function Trip({ item, props, token, position }) {
                   itintitle: item.name,
                   country: item.id,
                   dateitin: getdate(item.start_date, item.end_date),
-                  token: token,
+                  token: tokenApps,
                   status: "favorite",
                 },
               })
@@ -194,6 +245,7 @@ export default function Trip({ item, props, token, position }) {
                   paddingHorizontal: 10,
                   borderRadius: 3,
                   overflow: "hidden",
+                  maxWidth: "80%",
                 }}
               >
                 <Text
@@ -202,6 +254,7 @@ export default function Trip({ item, props, token, position }) {
                   style={{
                     color: "white",
                   }}
+                  numberOfLines={1}
                 >
                   {item.user_created
                     ? item.user_created.first_name
@@ -214,75 +267,98 @@ export default function Trip({ item, props, token, position }) {
 
         <View
           style={{
-            width: "65%",
-            height: "100%",
+            flex: 1,
             paddingHorizontal: 10,
-            backgroundColor: "#FFFFFF",
             paddingVertical: 10,
+            backgroundColor: "#FFFFFF",
             overflow: "hidden",
+            borderTopRightRadius: 3,
             justifyContent: "space-between",
+            borderBottomWidth: 1,
+            borderBottomColor: "#d1d1d1",
           }}
         >
-          <View>
+          <View style={{ justifyContent: "flex-start" }}>
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                aligndatas: "center",
+                alignItems: "center",
+                // marginTop: 10,
               }}
             >
               <View
                 style={{
-                  backgroundColor: "#DAF0F2",
-                  borderWidth: 1,
-                  borderRadius: 3,
-                  borderColor: "#209FAE",
-                  paddingHorizontal: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  maxWidth: Dimensions.get("screen").width / 3.5,
                 }}
               >
-                <Text
-                  type="bold"
-                  size="description"
-                  style={{ color: "#209FAE" }}
+                <View
+                  style={{
+                    backgroundColor: "#DAF0F2",
+                    borderRadius: 3,
+                    borderColor: "#209FAE",
+                    paddingHorizontal: 4,
+                    paddingVertical: 1,
+                  }}
                 >
-                  {item?.categori?.name ? item?.categori?.name : "No Category"}
-                </Text>
-              </View>
-              <View>
-                {item.isprivate == true ? (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      paddingVertical: 3,
-                      paddingHorizontal: 10,
-                      borderRadius: 3,
-                      overflow: "hidden",
-                    }}
+                  <Text
+                    type="bold"
+                    size="description"
+                    style={{ color: "#209FAE" }}
+                    numberOfLines={1}
                   >
-                    <Image
-                      source={imgPrivate}
-                      style={{
-                        height: 10,
-                        width: 10,
-                        marginRight: 5,
-                      }}
-                    />
-                    <Text
-                      size="small"
-                      type={"regular"}
-                      style={{
-                        color: "white",
-                      }}
-                    >
-                      private
-                    </Text>
-                  </View>
-                ) : null}
+                    {item?.categori?.name
+                      ? item?.categori?.name
+                      : "No Category"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    height: 5,
+                    width: 5,
+                    borderRadius: 5,
+                    marginHorizontal: 10,
+                    backgroundColor: "#000",
+                  }}
+                />
+                {item?.isprivate ? (
+                  <Padlock height={20} width={20} />
+                ) : (
+                  <Newglobe height={20} width={20} />
+                )}
               </View>
+              {item?.status == "F" &&
+              !item?.isprivate &&
+              item?.user_created?.id !== setting?.user_id ? (
+                item.liked === false ? (
+                  <TouchableOpacity
+                    style={{
+                      padding: 5,
+                    }}
+                    onPress={() => _liked(item.id, index, item)}
+                  >
+                    <LikeEmpty height={15} width={15} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      padding: 5,
+                    }}
+                    onPress={() => _unliked(item.id, index, item)}
+                  >
+                    <LikeRed height={15} width={15} />
+                  </TouchableOpacity>
+                )
+              ) : null}
             </View>
-            <Text size="label" type="black" style={{ marginTop: 5 }}>
+            <Text
+              size="label"
+              type="black"
+              style={{ marginTop: 5 }}
+              numberOfLines={1}
+            >
               <Truncate text={item.name} length={40} />
             </Text>
             <View
@@ -329,7 +405,7 @@ export default function Trip({ item, props, token, position }) {
               }}
             >
               <User width={10} height={10} style={{ marginRight: 5 }} />
-              <Text size="small" type="regular">
+              <Text size="description" type="regular">
                 {(item && item.buddy.length ? item.buddy.length : null) + " "}
                 person
               </Text>
@@ -346,15 +422,24 @@ export default function Trip({ item, props, token, position }) {
           borderBottomLeftRadius: 5,
           borderBottomRightRadius: 5,
           justifyContent: "space-between",
+          shadowOpacity: 0,
         }}
       >
-        <Ripple
+        <Pressable
+          disabled={item?.status == "D" ? true : false}
           onPress={() =>
-            props.navigation.push("tripalbum", {
-              iditinerary: item.id,
-              token: token,
-              position: position,
-            })
+            tokenApps
+              ? props.navigation.navigate("ItineraryStack", {
+                  screen: "itindetail",
+                  params: {
+                    itintitle: item.name,
+                    country: item.id,
+                    token: tokenApps,
+                    status: "favorite",
+                    index: 1,
+                  },
+                })
+              : setModalLogin(true)
           }
           style={{
             width: "50%",
@@ -362,23 +447,35 @@ export default function Trip({ item, props, token, position }) {
             alignItems: "center",
             justifyContent: "center",
             borderRightWidth: 1,
-            borderColor: "#d3d3d3",
-            paddingVertical: 5,
+            borderColor: "#D1D1D1",
           }}
         >
-          <TravelAlbum height={15} width={15} style={{ marginRight: 5 }} />
-          <Text size="small" type="bold" style={{ color: "#209fae" }}>
-            Travel Album
-          </Text>
-        </Ripple>
-        <Ripple
-          // onPress={() =>
-          //   props.navigation.push("tripalbum", {
-          //     iditinerary: item.id,
-          //     token: token,
-          //     position: position,
-          //   })
-          // }
+          {item?.status == "D" ? (
+            <>
+              <TravelAlbumdis
+                style={{ marginRight: 5 }}
+                height={20}
+                width={20}
+              />
+              <Text
+                size="description"
+                type="regular"
+                style={{ color: "#c7c7c7" }}
+              >
+                Travel Album
+              </Text>
+            </>
+          ) : (
+            <>
+              <TravelAlbum style={{ marginRight: 5 }} height={20} width={20} />
+              <Text size="description" type="bold" style={{ color: "#209FAE" }}>
+                Travel Album
+              </Text>
+            </>
+          )}
+        </Pressable>
+        <Pressable
+          onPress={() => setSoon(true)}
           style={{
             width: "50%",
             flexDirection: "row",
@@ -386,11 +483,11 @@ export default function Trip({ item, props, token, position }) {
             justifyContent: "center",
           }}
         >
-          <TravelStoriesdis height={15} width={15} style={{ marginRight: 5 }} />
-          <Text size="small" type="bold" style={{ color: "#d3d3d3" }}>
+          <TravelStoriesdis height={20} width={20} style={{ marginRight: 5 }} />
+          <Text size="description" type="regular" style={{ color: "#d3d3d3" }}>
             Travel Stories
           </Text>
-        </Ripple>
+        </Pressable>
       </View>
     </View>
   );
