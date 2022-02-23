@@ -383,6 +383,8 @@ export default function Room({ navigation, route }) {
       .catch((err) => {});
   };
 
+  let [showIconError, setShowIconError] = useState(false);
+
   const _uploadimage = async (image, id) => {
     try {
       image = JSON.parse(image);
@@ -419,6 +421,8 @@ export default function Room({ navigation, route }) {
       let responseJson = await response.json();
       if (responseJson.status == true) {
         // getUserAndToken();
+        setShowIconError(false);
+
         let dateTime = new Date();
         let chatData = {
           id: id,
@@ -446,10 +450,12 @@ export default function Room({ navigation, route }) {
           }
         }, 2000);
       } else {
+        setShowIconError(true);
         //   setloading(false);
         throw new Error(responseJson.message);
       }
     } catch (error) {
+      setShowIconError(true);
       // RNToasty.Show({
       //   duration: 1,
       //   title: "error : someting wrong!",
@@ -542,6 +548,7 @@ export default function Room({ navigation, route }) {
               alignSelf: "center",
               paddingHorizontal: 10,
             }}
+            numberOfLines={2}
           >
             {route.params.name}
           </Text>
@@ -846,7 +853,9 @@ export default function Room({ navigation, route }) {
                 alignItems: "center",
               }}
             >
-              {item.is_send == false ? <Errorr height={15} width={15} /> : null}
+              {item.is_send == false && showIconError ? (
+                <Errorr height={15} width={15} />
+              ) : null}
               <Text
                 size="small"
                 style={{

@@ -899,5 +899,7 @@
   "failedToSelectCurrency": "Failed to select currency",
   "itineraryAlbum": "Itinerary Album",
   "feedAlbum": "Feed Album",
-  "editCustomActivity" : "Edit custom activity"
+  "editCustomActivity" : "Edit custom activity",
+  "successAddMember": "Success add new member"
+
 }

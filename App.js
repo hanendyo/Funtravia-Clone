@@ -18,7 +18,6 @@ import { createUploadLink } from "apollo-upload-client";
 import { Provider } from "react-redux";
 import { storeState } from "./src/redux";
 import RNRestart from "react-native-restart";
-import { useDispatch, useSelector } from "react-redux";
 
 if (Platform.OS === "ios") {
   PushNotificationIOS.cancelAllLocalNotifications();
@@ -166,6 +165,7 @@ function App() {
       },
       onNotification: async function(notification) {
         console.log("NOTIFICATION:", notification);
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
         if (notification.userInteraction == true) {
           await setDataNotifikasi(notification);
           await AsyncStorage.setItem(
@@ -176,7 +176,6 @@ function App() {
             await RNRestart.Restart();
           }
         }
-        // notification.finish(PushNotificationIOS.FetchResult.NoData);
       },
       onAction: function(notification) {
         console.log("ONACTION:", notification);

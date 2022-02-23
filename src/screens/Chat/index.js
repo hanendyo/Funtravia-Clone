@@ -446,8 +446,6 @@ export default function Message({ navigation, route }) {
   const srcinpt = useRef();
   return (
     <View style={{ flex: 1 }}>
-      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
-      {/* <View style={{ flex: 1, borderRadius: 15 }}> */}
       <Modal
         useNativeDriver={true}
         visible={modalLogin}

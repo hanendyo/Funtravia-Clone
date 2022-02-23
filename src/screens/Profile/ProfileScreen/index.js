@@ -777,7 +777,7 @@ export default function OtherProfile(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
+    onCompleted: (datatrip) => {
       setdataTrip(datatrip?.user_tripbyid);
     },
   });
