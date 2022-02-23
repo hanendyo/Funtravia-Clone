@@ -308,9 +308,9 @@ export default function Room({ navigation, route }) {
                       : default_image
                   }
                   style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
+                    width: Platform.OS == "ios" ? 33 : 40,
+                    height: Platform.OS == "ios" ? 33 : 40,
+                    borderRadius: Platform.OS == "ios" ? 33 : 40,
                   }}
                 />
               </TouchableOpacity>
@@ -338,7 +338,7 @@ export default function Room({ navigation, route }) {
                       },
                     });
                   }}
-                  size="title"
+                  size={Platform.OS == "ios" ? "label" : "title"}
                   style={{
                     color: "white",
                   }}
@@ -357,6 +357,7 @@ export default function Room({ navigation, route }) {
                     size="description"
                     style={{
                       color: "#fff",
+                      marginTop: Platform.OS == "ios" ? (Notch ? -3 : 0) : 0,
                     }}
                     numberOfLines={1}
                   >

@@ -139,7 +139,7 @@ export default function AddMember(props) {
           props.navigation.goBack();
           RNToasty.Show({
             duration: 1,
-            title: "sukses add new member",
+            title: t("successAddMember"),
             position: "bottom",
           });
         } else {

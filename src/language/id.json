@@ -897,5 +897,7 @@
   "failedToSelectCurrency": "Gagal memilih mata uang",
   "itineraryAlbum": "Album Perjalanan",
   "feedAlbum": "Album Feed",
-  "editCustomActivity" : "Edit aktivitas Buatan"
+  "editCustomActivity" : "Edit aktivitas Buatan",
+  "successAddMember": "Berhasil menambahkan anggota baru"
+
 }

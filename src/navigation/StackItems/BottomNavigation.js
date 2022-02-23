@@ -310,14 +310,16 @@ export default function BottomNavigationItems(props) {
                       zIndex: 1,
                       left: 15,
                       top: -5,
+                      borderWidth: 1,
+                      borderColor: "#fff",
                     }}
                   >
                     <Text
                       type="bold"
-                      size="small"
                       style={{
+                        fontSize: 9,
                         color: "#fff",
-                        marginBottom: 1,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
                       }}
                     >
                       99+
@@ -337,6 +339,8 @@ export default function BottomNavigationItems(props) {
                       zIndex: 1,
                       left: 15,
                       top: -5,
+                      borderWidth: 1,
+                      borderColor: "#fff",
                     }}
                   >
                     <Text
@@ -369,13 +373,15 @@ export default function BottomNavigationItems(props) {
                       zIndex: 1,
                       left: 15,
                       top: -5,
+                      borderWidth: 1,
+                      borderColor: "#fff",
                     }}
                   >
                     <Text
                       type="bold"
                       style={{
                         color: "#fff",
-                        marginBottom: 1,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
                         fontSize: 9,
                       }}
                     >
@@ -396,6 +402,8 @@ export default function BottomNavigationItems(props) {
                       zIndex: 1,
                       left: 15,
                       top: -5,
+                      borderWidth: 1,
+                      borderColor: "#fff",
                     }}
                   >
                     <Text

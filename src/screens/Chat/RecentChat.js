@@ -121,7 +121,7 @@ export default function RecentChat({ data, style, room }) {
         <PinAbu
           width={11}
           height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
+          style={{ marginRight: 5, marginTop: 2 }}
         />
         <Text
           style={{ flex: 1 }}
@@ -157,7 +157,7 @@ export default function RecentChat({ data, style, room }) {
         <PinAbu
           width={11}
           height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
+          style={{ marginRight: 5, marginTop: 2 }}
         />
         <Text
           style={{ flex: 1 }}
@@ -192,7 +192,7 @@ export default function RecentChat({ data, style, room }) {
         <PinAbu
           width={11}
           height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
+          style={{ marginRight: 5, marginTop: 2 }}
         />
         <Text
           style={{ flex: 1 }}
@@ -281,7 +281,7 @@ export default function RecentChat({ data, style, room }) {
         <Tagdocument
           width={11}
           height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
+          style={{ marginRight: 5, marginTop: 2 }}
         />
         <Text
           style={{ flex: 1 }}
@@ -316,7 +316,7 @@ export default function RecentChat({ data, style, room }) {
         <Tagdocument
           width={11}
           height={11}
-          style={{ marginRight: 5, marginVertical: 5 }}
+          style={{ marginRight: 5, marginTop: 2 }}
         />
         <Text
           style={{ flex: 1 }}
@@ -335,7 +335,6 @@ export default function RecentChat({ data, style, room }) {
       <View
         style={{
           flexDirection: "row",
-          alignContent: "center",
           alignItems: "center",
         }}
       >
@@ -348,7 +347,11 @@ export default function RecentChat({ data, style, room }) {
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
-        <Tagimage width={11} height={11} style={{ marginRight: 5 }} />
+        <Tagimage
+          width={11}
+          height={11}
+          style={{ marginRight: 5, marginTop: 2 }}
+        />
         <Text style={style} size="description" type="regular">
           Image
         </Text>

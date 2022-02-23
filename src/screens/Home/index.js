@@ -760,15 +760,17 @@ export default function Home(props) {
                 <View
                   style={{
                     position: "absolute",
-                    right: -3,
-                    top: 4,
+                    left: 27,
+                    top: -5,
                     backgroundColor: "#D75995",
-                    minWidth: 15,
                     borderWidth: 1,
                     borderColor: "white",
-                    // height: 14,
-                    borderRadius: 50,
-                    // alignSelf: "center",
+                    height: 20,
+                    minWidth: 20,
+                    borderRadius: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingHorizontal: 5,
                   }}
                 >
                   {datanotif?.count_notif?.count > 100 ? (
@@ -776,9 +778,8 @@ export default function Home(props) {
                       type="bold"
                       style={{
                         fontSize: 10,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
                         color: "white",
-                        alignSelf: "center",
-                        paddingHorizontal: 2,
                       }}
                     >
                       99+
@@ -789,8 +790,7 @@ export default function Home(props) {
                       style={{
                         fontSize: 10,
                         color: "white",
-                        alignSelf: "center",
-                        paddingHorizontal: 2,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
                       }}
                     >
                       {datanotif?.count_notif?.count}
