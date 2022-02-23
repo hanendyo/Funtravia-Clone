@@ -592,7 +592,7 @@ export default function Settings(props) {
               }}
             >
               <Text type="light" size="description" style={{}}>
-                1.0.35 versi 22 feb 2022
+                1.0.26
               </Text>
             </View>
           </View>
