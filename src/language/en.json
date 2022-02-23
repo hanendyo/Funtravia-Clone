@@ -875,6 +875,7 @@
   "register": "Register",
   "login": "login",
   "pending": "Pending",
+  "rejected": "Rejected",
   "AddFlightDetail": "Add flight number to your itinerary",
   "addPlaceName": "Add place name",
   "public (shared)": "Public (shared)",

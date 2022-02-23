@@ -188,7 +188,7 @@ export default function SettingNegara(props) {
       try {
         let response = await mutationCity({
           variables: {
-            countries_id: detail.id,
+            countries_id: detail?.id,
           },
         });
         if (response.data) {

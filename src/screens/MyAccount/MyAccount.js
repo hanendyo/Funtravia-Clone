@@ -750,7 +750,7 @@ export default function MyAccount(props) {
                   position: "bottom",
                 });
                 await AsyncStorage.setItem("access_token", "");
-                await AsyncStorage.setItem("setting", "");
+                await AsyncStorage.setItem("setting", JSON.stringify({}));
                 // await LoadUserProfile();
                 props.navigation.navigate("AuthStack", {
                   screen: "SplashScreen",
