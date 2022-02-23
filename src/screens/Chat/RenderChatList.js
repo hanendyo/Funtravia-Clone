@@ -368,7 +368,8 @@ export default function ChatList({
                             size="small"
                             style={{
                               color: "#fff",
-                              marginBottom: 1,
+                              marginBottom: Platform.OS == "ios" ? 0 : 1,
+                              marginLeft: Platform.OS == "ios" ? 1 : 0,
                             }}
                           >
                             {item.count_newmassage < 999

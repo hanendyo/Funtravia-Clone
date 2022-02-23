@@ -25,7 +25,7 @@ import {
   ChatOff,
 } from "../../assets/svg";
 import { Text } from "../../component";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 
@@ -343,7 +343,7 @@ export default function BottomNavigationItems(props) {
                       type="bold"
                       style={{
                         color: "#fff",
-                        marginBottom: 1,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
                         fontSize: 9,
                       }}
                     >
@@ -403,7 +403,8 @@ export default function BottomNavigationItems(props) {
                       size="small"
                       style={{
                         color: "#fff",
-                        marginBottom: 1,
+                        marginBottom: Platform.OS == "ios" ? 0 : 1,
+                        fontSize: 9,
                       }}
                     >
                       {countPesan + countPesanGroup}

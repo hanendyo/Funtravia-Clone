@@ -14,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLazyQuery } from "@apollo/react-hooks";
 import FeedPopuler from "../../graphQL/Query/Home/FeedPopuler";
 import RenderPost from "./RenderPost";
-import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import likepost from "../../graphQL/Mutation/Post/likepost";
 import unlikepost from "../../graphQL/Mutation/Post/unlikepost";
@@ -64,6 +63,12 @@ export default function SearchFeed({ props }) {
     });
     return feedasync;
   }, [props.navigation]);
+
+  const countKoment = (id) => {
+    const tempd = [...datas];
+    const index = tempd.findIndex((k) => k["id"] === id);
+    tempd[index].comment_count = tempd[index].comment_count + 1;
+  };
 
   const Ceklogin = (id, item, index) => {
     props.navigation.push("FeedStack", {
