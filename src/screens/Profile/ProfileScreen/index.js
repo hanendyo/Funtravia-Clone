@@ -92,7 +92,6 @@ export default function OtherProfile(props) {
   const [dataTrip, setdataTrip] = useState([]);
   let [heightbio, setHeightBio] = useState(0);
   let [heightname, setHeightName] = useState(0);
-  let [heightusername, setHeightUsername] = useState(0);
   const [canScroll, setCanScroll] = useState(true);
   let [soon, setSoon] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
@@ -1330,12 +1329,12 @@ export default function OtherProfile(props) {
             data,
             modalLogin,
             setModalLogin,
-            soon,
             setSoon,
             dataTrip,
             setdataTrip,
             mutationliked,
-            mutationUnliked
+            mutationUnliked,
+            users
           );
         paddingHorizontal = 15;
         break;
