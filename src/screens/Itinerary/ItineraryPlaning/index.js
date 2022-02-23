@@ -47,7 +47,6 @@ const arrayShadow = {
 };
 
 export default function listItinPlaning(props) {
-  console.log("🚀 ~ file: index.js ~ line 50 ~ listItinPlaning ~ props", props);
   const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {

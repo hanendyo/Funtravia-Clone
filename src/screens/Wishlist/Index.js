@@ -39,8 +39,8 @@ export default function Wishlist(props) {
   // let [setting, setSetting] = useState("");
   // const setting = useSelector((data) => data.setting);
 
-  let [texts, setText] = useState("");
-  let [tabIndex, setIndex] = useState(0);
+  let [texts, setText] = useState(props.route.params?.search_text ?? "");
+  let [tabIndex, setIndex] = useState(props.route.params?.tabIndex ?? 0);
   let scrollRef = useRef();
 
   const HeaderComponent = {

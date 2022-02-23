@@ -74,6 +74,7 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
+
   const NotchAndro = StatusBar.currentHeight > 24;
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
@@ -176,7 +177,6 @@ const Index = (props) => {
   const refreshStatusRef = useRef(false);
   // let [dataDestination, setDataDestination] = useState(data);
   let [dataDestination, setDataDestination] = useState();
-
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState({});
@@ -1137,6 +1137,7 @@ const Index = (props) => {
                   token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
+                  parent: props.route.params?.parent,
                 },
               })
             )
@@ -1145,8 +1146,9 @@ const Index = (props) => {
               params: {
                 idkiriman: kiriman.id,
                 Position: "destination",
-                data_from: "detail_destination",
+                data_from: props.route.params?.parent ?? "detail_destination",
                 token: tokenApps,
+                parent: props.route.params?.parent,
               },
             });
       } else {
@@ -1160,6 +1162,7 @@ const Index = (props) => {
                   token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
+                  parent: props.route.params?.parent,
                 },
               })
             )
@@ -1168,8 +1171,9 @@ const Index = (props) => {
               params: {
                 idkiriman: data?.destinationById?.id,
                 Position: "destination",
-                data_from: "detail_destination",
+                data_from: props.route.params?.parent ?? "detail_destination",
                 token: tokenApps,
+                parent: props.route.params?.parent,
               },
             });
       }
@@ -1728,6 +1732,7 @@ const Index = (props) => {
             setData={(e) => setAnotherDes(e)}
             token={tokenApps}
             dataFrom="detail_destination"
+            dataFromId={dataDestination?.id}
           />
         </View>
       </Animated.View>

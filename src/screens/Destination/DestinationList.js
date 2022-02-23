@@ -34,7 +34,8 @@ import DeviceInfo from "react-native-device-info";
 import deviceInfoModule from "react-native-device-info";
 import CityCursorBased from "../../graphQL/Query/Itinerary/CityCursorBased";
 import Ripple from "react-native-material-ripple";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchDestinationInput } from "../../redux/action";
 
 const deviceId = DeviceInfo.getModel();
 
@@ -42,6 +43,7 @@ export default function ItineraryDestination(props) {
   let [filtershow, setfiltershow] = useState([]);
   let [filtershowcity, setfiltershowcity] = useState([]);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
 
   const HeaderComponent = {
     headerShown: true,
@@ -106,11 +108,8 @@ export default function ItineraryDestination(props) {
   let [aktif, setaktif] = useState("categories");
 
   let [search, setSearch] = useState({
-    type:
-      props?.route?.params && props?.route?.params?.type
-        ? props?.route?.params?.type
-        : [],
-    keyword: null,
+    type: props.route.params?.type ?? searchRdx?.type ?? [],
+    keyword: searchRdx?.search_input ?? null,
     grouptype:
       props?.route?.params && props?.route?.params?.groupid
         ? [props.route.params?.groupid]
@@ -347,6 +346,17 @@ export default function ItineraryDestination(props) {
     dataFilterCity,
     // dataFilterCountry,
   ]);
+
+  // useEffect(() => {
+  //   dispatch(
+  //     setSearchDestinationInput({
+  //       search_input: search.keyword,
+  //       type: search.type,
+  //     })
+  //   );
+  // }, [search]);
+
+  const searchRdx = useSelector((data) => data.searchDestinationInput);
 
   const _liked = async (id) => {
     if (token && token !== "" && token !== null) {

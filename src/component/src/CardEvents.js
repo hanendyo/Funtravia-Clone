@@ -18,7 +18,14 @@ import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { dateFormatBetween } from "../../component/src/dateformatter";
 
-export default function CardEvents({ data, props, setData, token, dataFrom }) {
+export default function CardEvents({
+  data,
+  props,
+  setData,
+  token,
+  dataFrom,
+  searchInput,
+}) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
 
@@ -159,6 +166,8 @@ export default function CardEvents({ data, props, setData, token, dataFrom }) {
                 event_id: item.id,
                 name: item.name,
                 token: token,
+                data_from: dataFrom,
+                search_input: searchInput,
               })
             }
             key={index.toString()}
