@@ -192,7 +192,6 @@ export default function Unesco({ navigation, route }) {
     },
     fetchPolicy: "network-only",
     onCompleted: () => {
-      console.log("dataBanner", dataBanner);
       SetDataBanner(dataBanner?.get_banner);
     },
   });
@@ -650,6 +649,7 @@ export default function Unesco({ navigation, route }) {
               id: item.id,
               name: item.name,
               token: tokenApps,
+              parent: "unesco",
             })
           }
           style={{
@@ -1000,7 +1000,6 @@ export default function Unesco({ navigation, route }) {
   };
 
   let [loadingPage, setLoadingPage] = useState(true);
-  console.log("loadingPage", loadingPage);
 
   useEffect(() => {
     setTimeout(() => {

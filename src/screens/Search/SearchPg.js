@@ -58,50 +58,30 @@ import { setSettingUser } from "../../redux/action";
 export default function SearchPg(props, { navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
+  const searchRdx = useSelector((data) => data.searchInput);
   const { t, i18n } = useTranslation();
   const [active_src, setActiveSrc] = useState(
-    searchRdx?.active_src ? searchRdx.active_src : "location"
+    searchRdx && searchRdx.active_src.length ? searchRdx.active_src : "location"
   );
   let [list_rekomendasi_user, SetListrequser] = useState([]);
-  const searchRdx = useSelector((data) => data.searchInput);
-  // console.log(
-  //   "🚀 ~ file: SearchPg.js ~ line 70 ~ SearchPg ~ searchData",
-  //   searchRdx,
-  //   aktifsearch,
-  //   active_src,
-  //   searchtext
-  // );
 
   const [searchtext, SetSearchtext] = useState(
-    props.route.params?.searchInput
-      ? props.route.params.searchInput
-      : searchRdx.search_input
-      ? searchRdx.search_input
-      : ""
+    props.route.params?.searchInput ?? searchRdx.search_input ?? ""
   );
   const [locationname, setLocationname] = useState(
-    props.route.params?.locationname ? props.route.params.locationname : null
+    props.route.params?.locationname ?? null
   );
 
   const myStateRef = React.useRef(aktifsearch);
   const fromotherpage = React.useRef(
-    props.route.params?.aktifsearch
-      ? props.route.params.aktifsearch
-      : searchRdx.aktifsearch
-      ? searchRdx.aktifsearch
-      : null
+    searchRdx.aktifsearch ?? props.route.params?.aktifsearch ?? null
   );
   let [recent, setRecent] = useState([]);
   let [aktifsearch, setAktifSearch] = useState(
-    searchRdx.aktifsearch
-      ? searchRdx.aktifsearch
-      : props.route.params.aktifsearch
-      ? props.route.params.aktifsearch
-      : null
+    searchRdx.aktifsearch ?? props.route.params.aktifsearch ?? null
   );
 
   let { width, height } = Dimensions.get("screen");
-
   const HeaderComponent = {
     headerTitle: locationname ? (
       <Text type="bold" size="header" style={{ color: "#fff" }}>
@@ -1216,6 +1196,8 @@ export default function SearchPg(props, { navigation, route }) {
                     props={props}
                     setData={(e) => SetEventSearch(e)}
                     token={tokenApps}
+                    dataFrom="search"
+                    searchInput={searchtext ? searchtext : null}
                   />
                 ) : null
               ) : null}

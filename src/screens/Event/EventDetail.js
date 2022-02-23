@@ -244,9 +244,10 @@ export default function EventDetail(props) {
             params: {
               idkiriman: event_id,
               Position: "Event",
-              data_from: "eventdetail",
+              data_from: props.route.params?.data_from ?? "eventdetail",
+              searchInput: props.route.params?.search_input,
             },
-          })
+          });
     } else {
       setModalLogin(true);
     }

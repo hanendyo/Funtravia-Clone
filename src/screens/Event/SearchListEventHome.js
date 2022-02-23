@@ -32,18 +32,24 @@ import Modal from "react-native-modal";
 import CheckBox from "@react-native-community/checkbox";
 import DeviceInfo from "react-native-device-info";
 import { useDispatch, useSelector } from "react-redux";
-import { setSettingUser } from "../../redux/action";
+import { setSearchEventInput, setSettingUser } from "../../redux/action";
 
 export default function SearchListEventHome(props) {
+  console.log(
+    "🚀 ~ file: SearchListEventHome.js ~ line 38 ~ SearchListEventHome ~ props",
+    props.route.params
+  );
   const { t, i18n } = useTranslation();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const setting = useSelector((data) => data.setting);
   const tokenApps = useSelector((data) => data.token);
+  const dataRdx = useSelector((data) => data);
+
   let [oldYear, setOldYear] = useState(
-    props.route.params.year ? props.route.params.year : null
+    props.route.params?.year ?? dataRdx.year ?? null
   );
   let [tempYear, setTempYear] = useState(
-    props.route.params.year ? props.route.params.year : null
+    props.route.params?.year ?? dataRdx.year ?? null
   );
   let [tempSelectedYear, setTempSelectedYear] = useState(0);
   let [dataEventAll, setDataEventAll] = useState([]);
@@ -60,15 +66,15 @@ export default function SearchListEventHome(props) {
   let [dataCountryMain, setDataCountryMain] = useState([]);
   let [tempDataCountry, setTempDataCountry] = useState("");
   let [selectedCountry, setSelectedCountry] = useState(
-    props.route.params.idcountries ? props.route.params.idcountries : null
+    props.route.params?.idcountries ?? dataRdx.idcountries ?? null
   );
   let [tempSelectedCountry, setTempSelectedCountry] = useState("");
 
   let [selectedCity, setSelectedCity] = useState(
-    props.route.params.idcity ? props.route.params.idcity : null
+    props.route.params?.idcity ?? null
   );
   let [selectedProvince, setSelectedProvince] = useState(
-    props.route.params.idprovince ? props.route.params.idprovince : null
+    props.route.params?.idprovince ?? dataRdx.idprovince ?? null
   );
   const [countryName, setCountryName] = useState("");
   const [categoryName, setCategoryName] = useState("");
@@ -1033,15 +1039,28 @@ export default function SearchListEventHome(props) {
     year: oldYear ? oldYear : null,
     type: null,
     tag: null,
-    keyword: null,
-    countries: selectedCountry ? selectedCountry : null,
+    keyword: "",
+    countries: selectedCountry ?? null,
     date_from: null,
     date_until: null,
     price_start: null,
     price_end: null,
     city: selectedCity ? selectedCity : null,
-    province: selectedProvince ? selectedProvince : null,
+    province: selectedProvince ?? null,
   });
+
+  useEffect(() => {
+    if (search.keyword?.length !== 0) {
+      dispatch(
+        setSearchEventInput({
+          idcountries: props.route.params?.idcountries,
+          countryName: props.route.params?.countryName,
+          year: props.route.params?.year,
+          search_text: search.keyword,
+        })
+      );
+    }
+  }, [search]);
 
   //! FUNCTION CLEAR FILTER
 
@@ -1337,6 +1356,7 @@ export default function SearchListEventHome(props) {
           props={props}
           setData={(e) => setDataEventAll(e)}
           token={tokenApps}
+          dataFrom="searchEvent"
         />
       );
     } else if (route.key == "eventspublic") {
@@ -1346,6 +1366,7 @@ export default function SearchListEventHome(props) {
           props={props}
           setData={(e) => setDataEventPublic(e)}
           token={tokenApps}
+          dataFrom="searchEvent"
         />
       );
     }
@@ -1406,7 +1427,7 @@ export default function SearchListEventHome(props) {
       if (!show && tempYear != null) {
         if (!hasApply) {
           if (oldYear !== tempYear) {
-            setOldYear(props.route.params.year);
+            setOldYear(props.route.params?.year);
           } else {
             setOldYear(tempYear);
           }

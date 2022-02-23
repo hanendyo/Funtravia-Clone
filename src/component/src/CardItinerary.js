@@ -292,6 +292,7 @@ export default function CardItinerary({
                                 token: token,
                                 Position: props.route.params.Position,
                                 data_from: dataFrom,
+                                data_from_id: dataFromId,
                                 search_input: searchInput,
                               },
                             })

@@ -5,6 +5,8 @@ import {
   SETCOUNTMESSAGE,
   SETCOUNTMESSAGEGROUP,
   SET_SEARCH_INPUT,
+  SET_SEARCH_EVENT_INPUT,
+  SET_SEARCH_DESTINATION_INPUT,
 } from "./tipe";
 
 const initData = {
@@ -14,6 +16,8 @@ const initData = {
   countMessage: null,
   countMessageGroup: null,
   searchInput: null,
+  searchEventInput: null,
+  searchDestinationInput: null,
 };
 
 export const reducerApps = (state = initData, action) => {
@@ -30,6 +34,10 @@ export const reducerApps = (state = initData, action) => {
       return { ...state, countMessageGroup: action.data };
     case SET_SEARCH_INPUT:
       return { ...state, searchInput: action.data };
+    case SET_SEARCH_EVENT_INPUT:
+      return { ...state, searchEventInput: action.data };
+    case SET_SEARCH_DESTINATION_INPUT:
+      return { ...state, searchDestinationInput: action.data };
     default:
       return state;
   }

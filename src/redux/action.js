@@ -5,6 +5,8 @@ import {
   SETCOUNTMESSAGE,
   SETCOUNTMESSAGEGROUP,
   SET_SEARCH_INPUT,
+  SET_SEARCH_EVENT_INPUT,
+  SET_SEARCH_DESTINATION_INPUT,
 } from "./tipe";
 
 export const setTokenApps = (token) => ({
@@ -30,5 +32,15 @@ export const setCountMessageGroup = (countMessageGroup) => ({
 
 export const setSearchInput = (input) => ({
   type: SET_SEARCH_INPUT,
+  data: input,
+});
+
+export const setSearchEventInput = (input) => ({
+  type: SET_SEARCH_EVENT_INPUT,
+  data: input,
+});
+
+export const setSearchDestinationInput = (input) => ({
+  type: SET_SEARCH_DESTINATION_INPUT,
   data: input,
 });

@@ -39,7 +39,7 @@ export default function CardDestination({
   dataFrom,
   dataFromId,
   searchInput,
-  movieId,
+  sebelum,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -151,6 +151,7 @@ export default function CardDestination({
                   datadayaktif: props.route.params.datadayaktif,
                   data_dest: props.route.params,
                   data_from_id: dataFromId,
+                  sebelum: sebelum,
                 },
               })
             )
@@ -177,6 +178,7 @@ export default function CardDestination({
                   datadayaktif: props?.route?.params?.datadayaktif,
                   data_from_id: dataFromId,
                   searchInput: searchInput,
+                  sebelum: sebelum,
                 },
               })
             )

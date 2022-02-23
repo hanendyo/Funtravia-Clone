@@ -59,7 +59,6 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 
 export default function ItineraryDestination(props) {
-  console.log("props itindes", props);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -1412,6 +1411,7 @@ export default function ItineraryDestination(props) {
           props={props}
           setData={(e) => setdataDestination(e)}
           token={token}
+          sebelum={true}
           //  setting={setting}
         />
       ) : null}
