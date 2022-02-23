@@ -1550,9 +1550,9 @@ export default function SettingsAkun(props) {
                   //   setting: setting,
                   // })
                   {
-                    dataAccountConnection.facebook
+                    dataAccountConnection?.facebook
                       ? _handleModalDisconnect(
-                          dataAccountConnection.facebook.id,
+                          dataAccountConnection?.facebook.id,
                           "facebook"
                         )
                       : _handleFacebookConnect();
@@ -1585,13 +1585,13 @@ export default function SettingsAkun(props) {
                   >
                     Facebook
                   </Text>
-                  {dataAccountConnection.facebook ? (
+                  {dataAccountConnection?.facebook ? (
                     <Text
                       type="regular"
                       size="small"
                       style={{ color: "#6c6c6c" }}
                     >
-                      {dataAccountConnection.facebook.name}
+                      {dataAccountConnection?.facebook?.name}
                     </Text>
                   ) : null}
                 </View>
@@ -1599,7 +1599,7 @@ export default function SettingsAkun(props) {
                   type="regular"
                   size="label"
                   style={{
-                    color: dataAccountConnection.facebook
+                    color: dataAccountConnection?.facebook
                       ? "#D75995"
                       : "#209fae",
                     // color: "#D75995",
@@ -1607,7 +1607,7 @@ export default function SettingsAkun(props) {
                     // marginBottom: 5,
                   }}
                 >
-                  {dataAccountConnection.facebook
+                  {dataAccountConnection?.facebook
                     ? t("disConnect")
                     : t("connect")}
                 </Text>
@@ -1637,9 +1637,9 @@ export default function SettingsAkun(props) {
               <GoogleIcon width={40} height={40} />
               <Pressable
                 onPress={() => {
-                  dataAccountConnection.gmail
+                  dataAccountConnection?.gmail
                     ? _handleModalDisconnect(
-                        dataAccountConnection.gmail.id,
+                        dataAccountConnection?.gmail?.id,
                         "google"
                       )
                     : _handleGoogleConnect();
@@ -1675,7 +1675,7 @@ export default function SettingsAkun(props) {
                       size="small"
                       style={{ color: "#6c6c6c" }}
                     >
-                      {dataAccountConnection.gmail.email}
+                      {dataAccountConnection?.gmail?.email}
                     </Text>
                   ) : null}
                 </View>
@@ -1683,13 +1683,15 @@ export default function SettingsAkun(props) {
                   type="regular"
                   size="label"
                   style={{
-                    color: dataAccountConnection.gmail ? "#D75995" : "#209fae",
+                    color: dataAccountConnection?.gmail ? "#D75995" : "#209fae",
                     // color: "#D75995",
                     // width: "30%",
                     marginBottom: 8,
                   }}
                 >
-                  {dataAccountConnection.gmail ? t("disConnect") : t("connect")}
+                  {dataAccountConnection?.gmail
+                    ? t("disConnect")
+                    : t("connect")}
                 </Text>
               </Pressable>
             </View>

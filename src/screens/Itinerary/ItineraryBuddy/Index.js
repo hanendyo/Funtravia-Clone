@@ -187,7 +187,6 @@ export default function ItineraryBuddy(props) {
       if (errorAdmin) {
         throw new Error("Error Deleted");
       }
-      // console.log(response);
       if (response.data) {
         if (response.data.make_admin.code !== 200) {
           throw new Error(response.data.make_admin.message);
@@ -214,7 +213,6 @@ export default function ItineraryBuddy(props) {
       if (errorRemove) {
         throw new Error("Error Deleted");
       }
-      // console.log(response);
       if (response.data) {
         if (response.data.remove_admin.code !== 200) {
           throw new Error(response.data.remove_admin.message);
@@ -547,9 +545,17 @@ export default function ItineraryBuddy(props) {
                         style={{
                           flexDirection: "row",
                           opacity: value.isconfrim !== true ? 0.3 : 1,
+                          width: normalize(270),
                         }}
                       >
-                        <Text size="label" type="bold">
+                        <Text
+                          size="label"
+                          type="bold"
+                          style={{
+                            flex: 1,
+                          }}
+                          numberOfLines={2}
+                        >
                           {value?.first_name} {value?.last_name}
                         </Text>
                         {value.isconfrim !== true ? (
@@ -561,7 +567,7 @@ export default function ItineraryBuddy(props) {
                               color: "#D75995",
                             }}
                           >
-                            Pending
+                            {t("pending")}
                           </Text>
                         ) : value.accepted_at !== null ? null : (
                           <Text
@@ -572,7 +578,7 @@ export default function ItineraryBuddy(props) {
                               color: "#D75995",
                             }}
                           >
-                            Rejected
+                            {t("rejected")}
                           </Text>
                         )}
                       </View>

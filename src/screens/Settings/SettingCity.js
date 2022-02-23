@@ -174,16 +174,18 @@ export default function SettingCity(props) {
     },
     // pollInterval: 5500,
     notifyOnNetworkStatusChange: true,
-    onCompleted: async () => {
-      setData(dataKota?.city_search_cursor_based?.edges);
-      const tempData = [...dataKota?.city_search_cursor_based?.edges];
-      const indeks = await tempData.findIndex(
-        (k) => k?.node?.id === setting?.cities?.id
-      );
+    onCompleted: () => {
+      if (dataKota) {
+        setData(dataKota?.city_search_cursor_based?.edges);
+        const tempData = [...dataKota?.city_search_cursor_based?.edges];
+        const indeks = tempData.findIndex(
+          (k) => k?.node?.id === setting?.cities?.id
+        );
 
-      if (indeks != -1) {
-        await setIndeksScrollto(indeks);
-        await Scroll_to(indeks);
+        if (indeks != -1) {
+          setIndeksScrollto(indeks);
+          Scroll_to(indeks);
+        }
       }
 
       // setTimeout(() => {
@@ -227,12 +229,12 @@ export default function SettingCity(props) {
   });
 
   const scrollToIndexFailed = (error) => {
-    const offset = error.averageItemLength * error.index;
-    ref.current.scrollToOffset({ offset });
+    const offset = error?.averageItemLength * error?.index;
+    ref?.current?.scrollToOffset({ offset });
     setTimeout(
       () =>
         ref?.current?.scrollToIndex({
-          index: error.index,
+          index: error?.index,
         }),
       100
     );
@@ -240,20 +242,21 @@ export default function SettingCity(props) {
 
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { pageInfo } = fetchMoreResult.city_search_cursor_based;
+    const { pageInfo } = fetchMoreResult?.city_search_cursor_based;
     const edges = [
-      ...prev.city_search_cursor_based.edges,
-      ...fetchMoreResult.city_search_cursor_based.edges,
+      ...prev?.city_search_cursor_based?.edges,
+      ...fetchMoreResult?.city_search_cursor_based.edges,
     ];
     const feedback = Object.assign({}, prev, {
       city_search_cursor_based: {
-        __typename: prev.city_search_cursor_based.__typename,
+        __typename: prev?.city_search_cursor_based?.__typename,
         pageInfo,
         edges,
       },
     });
     return feedback;
   };
+
   const handleOnEndReached = () => {
     if (
       dataKota?.city_search_cursor_based?.pageInfo.hasNextPage &&
@@ -278,8 +281,8 @@ export default function SettingCity(props) {
           },
         });
 
-        if (response.data) {
-          if (response.data.update_city_settings.code === 200) {
+        if (response?.data) {
+          if (response?.data?.update_city_settings?.code === 200) {
             let newstorage = { ...setting };
             newstorage["cities"] = detail?.node;
             // await props.route.params.setSetting(storage);
@@ -301,7 +304,7 @@ export default function SettingCity(props) {
             // setCity(null);
             // setModalCity(false);
           } else {
-            throw new Error(response.data.update_city_settings.message);
+            throw new Error(response?.data?.update_city_settings?.message);
           }
         }
       } catch (error) {

@@ -153,15 +153,15 @@ export default function JournalCategory(props) {
 
   const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.journal_list;
+    const { page_info } = fetchMoreResult?.journal_list;
     const datas = [
-      ...prev.journal_list.datas,
-      ...fetchMoreResult.journal_list.datas,
+      ...prev?.journal_list?.datas,
+      ...fetchMoreResult?.journal_list?.datas,
     ];
 
     return Object.assign({}, prev, {
       list: {
-        __typename: prev.journal_list.__typename,
+        __typename: prev?.journal_list?.__typename,
         page_info,
         datas,
       },
@@ -169,14 +169,14 @@ export default function JournalCategory(props) {
   };
 
   const handleOnEndReached = () => {
-    if (dataList.journal_list.page_info.hasNextPage) {
+    if (dataList?.journal_list?.page_info?.hasNextPage) {
       return fetchMore({
         variables: {
           category_id: null,
           keyword: search.keyword,
           orderby: null,
           limit: 10,
-          offset: dataList.journal_list.page_info.offset,
+          offset: dataList?.journal_list?.page_info?.offset,
         },
         updateQuery: onUpdate,
       });
@@ -198,6 +198,7 @@ export default function JournalCategory(props) {
   //     },
   //   },
   // });
+
   const [
     getDataCategory,
     {
@@ -217,17 +218,17 @@ export default function JournalCategory(props) {
         "Content-Type": "application/json",
       },
     },
-    onCompleted: async () => {
-      const tempData = [...dataCategory?.category_journal];
-      await setIndeksScrollto(indeks);
-      const indeks = tempData.findIndex(
-        (k) => k["id"] == props.route.params.category
-      );
-      if (indeks > -1) {
-        await setIndeksScrollto(indeks);
-        await Scroll_to(indeks);
-      }
-    },
+    // onCompleted: async () => {
+    //   const tempData = [...dataCategory?.category_journal];
+    //   await setIndeksScrollto(indeks);
+    //   const indeks = tempData.findIndex(
+    //     (k) => k["id"] == props.route.params.category
+    //   );
+    //   if (indeks > -1) {
+    //     await setIndeksScrollto(indeks);
+    //     await Scroll_to(indeks);
+    //   }
+    // },
   });
 
   const JournalDetail = (data) => {
@@ -236,13 +237,20 @@ export default function JournalCategory(props) {
     });
   };
 
-  const indexSelector = async () => {
-    const tempData = [...dataCategory?.category_journal];
-    await setIndeksScrollto(indeks);
-    const indeks = tempData.findIndex((k) => k["id"] == categoryId);
-    if (indeks > -1) {
+  const indexSelector = () => {
+    if (dataCategory) {
+      const tempData = [...dataCategory?.category_journal];
       setIndeksScrollto(indeks);
-      Scroll_to(indeks);
+      const indeks = tempData.findIndex((k) => k["id"] == categoryId);
+      if (indeks > -1) {
+        setIndeksScrollto(indeks);
+        Scroll_to(indeks);
+      }
+    } else {
+      setTimeout(() => {
+        setIndeksScrollto(props?.route?.params?.index);
+        Scroll_to(props?.route?.params?.index);
+      }, 800);
     }
   };
 
@@ -255,7 +263,7 @@ export default function JournalCategory(props) {
       // fetchCategory();
     });
     return unsubscribe;
-  }, [props.navigation, categoryId]);
+  }, [props.navigation, categoryId, category]);
 
   const selectCategory = async (id) => {
     if (category == id) {
@@ -332,7 +340,7 @@ export default function JournalCategory(props) {
                 padding: 0,
               }}
             />
-            {search.length !== 0 ? (
+            {search?.length !== 0 ? (
               <TouchableOpacity
                 onPress={() => {
                   setSearch("");
@@ -375,7 +383,8 @@ export default function JournalCategory(props) {
             contentContainerStyle={{
               flexDirection: "row",
               paddingRight: 15,
-              // marginTop: 15,
+              marginVertical: 5,
+              marginLeft: 10,
             }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -386,14 +395,23 @@ export default function JournalCategory(props) {
                   selectCategory(item.id);
                   setCategoryId(item.id);
                 }}
+                style={{
+                  paddingVertical: 8,
+                  paddingHorizontal: 15,
+                  // color: category === item.id && select ? "white" : "black",
+                  backgroundColor:
+                    category === item.id && select ? "#209FAE" : "#F6F6F6",
+                  marginHorizontal: 3,
+                  borderRadius: 5,
+                }}
               >
                 <Text
                   style={{
-                    padding: 10,
-                    backgroundColor:
-                      category === item.id && select ? "#209FAE" : "#F6F6F6",
-                    marginLeft: 15,
-                    borderRadius: 5,
+                    // padding: 10,
+                    // backgroundColor:
+                    //   category === item.id && select ? "#209FAE" : "#F6F6F6",
+                    // marginLeft: 15,
+                    // borderRadius: 5,
                     color: category === item.id && select ? "white" : "black",
                   }}
                   size={"label"}
@@ -406,7 +424,7 @@ export default function JournalCategory(props) {
           />
         ) : null}
       </View>
-      {list.length > 0 ? (
+      {list?.length > 0 ? (
         <View
           style={{
             flex: 1,
@@ -458,10 +476,6 @@ export default function JournalCategory(props) {
                         numberOfLines={1}
                       >
                         {item.title}
-                        {/* <Truncate
-                          text={item.title ? item.title : ""}
-                          length={40}
-                        /> */}
                       </Text>
                       <Text
                         size={"label"}
@@ -474,10 +488,6 @@ export default function JournalCategory(props) {
                         numberOfLines={2}
                       >
                         {item.firsttxt}
-                        {/* <Truncate
-                          text={item.firsttxt ? item.firsttxt : ""}
-                          length={110}
-                        /> */}
                       </Text>
                     </View>
                     <View>
