@@ -280,6 +280,7 @@ export default function ItineraryChooseday(props) {
     }
   };
 
+  console.log("params", props.route.params);
   const getDN = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
@@ -962,7 +963,7 @@ export default function ItineraryChooseday(props) {
               }
               {
                 dataItinerary.itinerary_detail
-                  ? props.route.params.sebelum === undefined
+                  ? props.route.params.sebelum
                     ? props.navigation.dispatch(
                         StackActions.replace("ItineraryStack", {
                           screen: "itindetail",

@@ -39,6 +39,7 @@ export default function CardDestination({
   dataFrom,
   dataFromId,
   searchInput,
+  sebelum,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
