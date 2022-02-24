@@ -237,6 +237,17 @@ export default function ItineraryDay({
         ref={slider}
         style={{}}
         showsVerticalScrollIndicator={false}
+        onScrollToIndexFailed={(error) => {
+          const offset = error.averageItemLength * error.index;
+          slider.current.scrollToOffset({ offset });
+          setTimeout(
+            () =>
+              slider?.current?.scrollToIndex({
+                index: error.index,
+              }),
+            500
+          );
+        }}
         showsHorizontalScrollIndicator={false}
         initialScrollIndex={indexnya}
         // scrollToIndex={indexnya}

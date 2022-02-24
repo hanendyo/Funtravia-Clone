@@ -186,58 +186,62 @@ export default function ImageSlide({
         {slider.length > 0 ? (
           <ImageViewer
             renderIndicator={() => <View></View>}
-            renderArrowLeft={() => (
-              <TouchableOpacity
-                style={{
-                  height: 30,
-                  width: 30,
-                  borderRadius: 15,
-                  backgroundColor: "rgba(240, 240, 240, 0.5)",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  marginLeft: 15,
-                }}
-                onPress={() => {
-                  handel_prev();
-                }}
-              >
-                <Image
+            renderArrowLeft={() =>
+              slider.length > 1 ? (
+                <TouchableOpacity
                   style={{
-                    resizeMode: "contain",
-                    height: 15,
-                    width: 15,
-                    marginRight: 5,
+                    height: 30,
+                    width: 30,
+                    borderRadius: 15,
+                    backgroundColor: "rgba(240, 240, 240, 0.5)",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    marginLeft: 15,
                   }}
-                  source={prev_putih}
-                />
-              </TouchableOpacity>
-            )}
-            renderArrowRight={() => (
-              <TouchableOpacity
-                style={{
-                  height: 30,
-                  width: 30,
-                  borderRadius: 15,
-                  backgroundColor: "rgba(240, 240, 240, 0.5)",
-                  alignItems: "center",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  marginRight: 15,
-                }}
-                onPress={() => handel_next()}
-              >
-                <Image
+                  onPress={() => {
+                    handel_prev();
+                  }}
+                >
+                  <Image
+                    style={{
+                      resizeMode: "contain",
+                      height: 15,
+                      width: 15,
+                      marginRight: 5,
+                    }}
+                    source={prev_putih}
+                  />
+                </TouchableOpacity>
+              ) : null
+            }
+            renderArrowRight={() =>
+              slider.length > 1 ? (
+                <TouchableOpacity
                   style={{
-                    resizeMode: "contain",
-                    height: 15,
-                    width: 15,
-                    marginLeft: 5,
+                    height: 30,
+                    width: 30,
+                    borderRadius: 15,
+                    backgroundColor: "rgba(240, 240, 240, 0.5)",
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    marginRight: 15,
                   }}
-                  source={next_putih}
-                />
-              </TouchableOpacity>
-            )}
+                  onPress={() => handel_next()}
+                >
+                  <Image
+                    style={{
+                      resizeMode: "contain",
+                      height: 15,
+                      width: 15,
+                      marginLeft: 5,
+                    }}
+                    source={next_putih}
+                  />
+                </TouchableOpacity>
+              ) : null
+            }
             // enableImageZoom={false}
             saveToLocalByLongPress={false}
             imageUrls={slider}

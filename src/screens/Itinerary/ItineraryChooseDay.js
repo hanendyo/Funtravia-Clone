@@ -280,7 +280,6 @@ export default function ItineraryChooseday(props) {
     }
   };
 
-  console.log("params", props.route.params);
   const getDN = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");
@@ -291,7 +290,7 @@ export default function ItineraryChooseday(props) {
 
     return Difference_In_Days + 1 + "D" + Difference_In_Days + "N";
   };
-  const _handleCheck = (id, day, total_hours) => {
+  const _handleCheck = (id, day, total_hours, date, itinerary_id) => {
     var tempdata = [...dataSelected];
     var index = tempdata.findIndex((k) => k["id"] === id);
     if (index !== -1) {
@@ -302,6 +301,8 @@ export default function ItineraryChooseday(props) {
         day: day,
         checked: true,
         total_hours: total_hours,
+        date: date,
+        itinerary_id: itinerary_id,
       });
     }
     setDataSelected(tempdata);
@@ -1246,7 +1247,9 @@ export default function ItineraryChooseday(props) {
           _handleCheck(
             item.id,
             item.day,
-            item.total_hours ? item.total_hours : "00:00:00"
+            item.total_hours ? item.total_hours : "00:00:00",
+            item.date,
+            item.itinerary_id
           )
         }
         disabled={cek(
@@ -1287,7 +1290,9 @@ export default function ItineraryChooseday(props) {
             _handleCheck(
               item.id,
               item.day,
-              item.total_hours ? item.total_hours : "00:00:00"
+              item.total_hours ? item.total_hours : "00:00:00",
+              item.date,
+              item.itinerary_id
             )
           }
           value={getchecked(item.id)}

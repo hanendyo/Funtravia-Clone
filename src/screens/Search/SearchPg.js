@@ -1054,6 +1054,7 @@ export default function SearchPg(props, { navigation, route }) {
                   }}
                   horizontal={false}
                   onEndReachedThreshold={0.7}
+                  showsVerticalScrollIndicator={false}
                   onEndReached={handleOnEndReachedLocation}
                   renderItem={({ item, index }) => (
                     <Pressable
