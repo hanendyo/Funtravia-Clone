@@ -671,7 +671,10 @@ export default function Detail_movie(props) {
           right: 0,
           backgroundColor: "#14646e",
           overflow: "hidden",
-          height: HEADER_MAX_HEIGHT,
+          height:
+            Platform.OS == "ios"
+              ? HEADER_MAX_HEIGHT - 8
+              : HEADER_MAX_HEIGHT - 5,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -703,15 +706,17 @@ export default function Detail_movie(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: normalize(55),
+          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
           position: "absolute",
           left: 0,
-          right: 0,
-          paddingLeft: 60,
+          right: -10,
+          bottom: 0,
           zIndex: 999,
+          paddingLeft: 60,
+          backgroundColor: "#209FAE",
           opacity: titleOpacity,
           top:
             Platform.OS == "ios"
@@ -719,7 +724,6 @@ export default function Detail_movie(props) {
               : NotchAndro
               ? SafeStatusBar + 5
               : SafeStatusBar,
-          backgroundColor: "#209FAE",
         }}
       >
         <Text
@@ -767,7 +771,7 @@ export default function Detail_movie(props) {
             props.navigation.goBack();
           }}
           style={{
-            marginTop: 15,
+            marginTop: 10,
             marginLeft: 15,
             backgroundColor: "rgba(0,0,0, 0.5)",
             borderRadius: 35,
@@ -812,7 +816,7 @@ export default function Detail_movie(props) {
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: 15,
+            marginTop: 10,
             marginLeft: 15,
             borderRadius: 40,
             height: 40,

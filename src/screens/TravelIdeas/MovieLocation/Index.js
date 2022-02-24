@@ -649,7 +649,7 @@ export default function MovieLocation({ navigation, route }) {
           height:
             Platform.OS == "ios"
               ? HEADER_MAX_HEIGHT - 8
-              : HEADER_MAX_HEIGHT - 1,
+              : HEADER_MAX_HEIGHT - 5,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
           top: SafeStatusBar,
@@ -680,7 +680,7 @@ export default function MovieLocation({ navigation, route }) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: normalize(55),
+          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -696,7 +696,7 @@ export default function MovieLocation({ navigation, route }) {
             Platform.OS == "ios"
               ? SafeStatusBar
               : NotchAndro
-              ? SafeStatusBar + 5
+              ? SafeStatusBar + 8
               : SafeStatusBar,
         }}
       >
