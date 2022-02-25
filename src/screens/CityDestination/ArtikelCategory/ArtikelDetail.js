@@ -295,11 +295,17 @@ export default function ArticelDetail(props) {
         </View>
 
         {/* detail */}
-        {dataDetail.article_byid.content.map((item, index) => {
-          // console.log(item);
-          return (
+        <FlatList
+          keyExtractor={(item, index) => {
+            `key-${index}-bruh`;
+          }}
+          data={dataDetail?.article_byid?.content}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          renderItem={(item, index) => {
             <View
-              key={"content" + index}
+              // key={`key-${index}`}
               style={{
                 paddingHorizontal: 20,
                 width: "100%",
@@ -323,27 +329,27 @@ export default function ArticelDetail(props) {
                 ></Image>
               ) : null}
               {/* <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                  marginBottom: 5,
-                }}
-              > */}
+             style={{
+               flexDirection: "row",
+               alignContent: "center",
+               alignItems: "center",
+               marginBottom: 5,
+             }}
+           > */}
               {/* <Text type="light" size="small" style={{}}>
-                  Source :{" "}
-                </Text>
+               Source :{" "}
+             </Text>
 
-                <Text type="light" size="small" style={{ fontStyle: "italic" }}>
-                  http://id.pinterest.com/
-                </Text> */}
+             <Text type="light" size="small" style={{ fontStyle: "italic" }}>
+               http://id.pinterest.com/
+             </Text> */}
               {/* </View> */}
               {item.text !== null && item.text !== "" ? (
                 <Text style={{ textAlign: "justify" }}>{item.text}</Text>
               ) : null}
-            </View>
-          );
-        })}
+            </View>;
+          }}
+        />
 
         {/* more related */}
         {list.length > 0 ? (
@@ -380,9 +386,10 @@ export default function ArticelDetail(props) {
             </View>
             <FlatList
               data={list}
+              keyExtractor={(item, index) => `key-${index}`}
               renderItem={({ item, index }) => (
                 <Ripple
-                  key={"more" + item.id}
+                  // key={"more" + item.id}
                   onPress={() => {
                     props.navigation.push("ArticelDetail", {
                       id: item.id,

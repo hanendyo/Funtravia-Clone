@@ -522,7 +522,7 @@ export default function Country(props) {
     var remainderz = y % z;
     return (
       <FlatList
-        listKey={"renderFact"}
+        listKey={"render-fact"}
         numColumns={
           data.length && data.length > 1
             ? data.length === 2 && remainder === 0
@@ -531,7 +531,7 @@ export default function Country(props) {
             : 1
         }
         data={data}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => `key-${index}-render-fact`}
         renderItem={({ item, index }) => {
           return (
             <Ripple
@@ -609,6 +609,7 @@ export default function Country(props) {
 
     return (
       <Animated.View
+        key={`general-parent-1`}
         style={{
           marginBottom: 70,
           transform: [{ translateY: y }],
@@ -616,6 +617,7 @@ export default function Country(props) {
       >
         {render && render.description ? (
           <View
+            key={`general-parent-2`}
             style={{
               justifyContent: "flex-start",
               paddingHorizontal: 5,
@@ -692,6 +694,7 @@ export default function Country(props) {
 
         {/* at Glance with Tabs */}
         <View
+          key={`general-parent-3`}
           style={{
             paddingTop: 15,
             width: "100%",
@@ -881,6 +884,7 @@ export default function Country(props) {
         {/* Travel Jurnal */}
         {renderjournal && renderjournal.length > 0 ? (
           <View
+            key={`general-parent-4`}
             style={{
               paddingTop: 15,
               width: "100%",
@@ -918,7 +922,7 @@ export default function Country(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  key={"imagesliderjournalsdsd"}
+                  key={"image-slider-journal"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -927,11 +931,11 @@ export default function Country(props) {
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
-                    <View key={"ky" + index}>
+                    <View key={`key-${index}-image-slider-1`}>
                       {item.map((dataX, indeks) => {
                         return (
                           <Pressable
-                            key={"jrnla" + indeks}
+                            key={`key-${indeks}-image-slider-2`}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -1058,7 +1062,7 @@ export default function Country(props) {
                         (image, index) => {
                           return (
                             <TouchableHighlight
-                              key={"keys" + index}
+                              key={`key-${index}-image-slider-1`}
                               underlayColor="#f7f7f700"
                             >
                               <View
@@ -1096,6 +1100,7 @@ export default function Country(props) {
         ) : null}
         {render?.city ? (
           <View
+            key={`general-parent-5`}
             style={{
               paddingTop: 15,
               flexDirection: "column",
@@ -1120,6 +1125,7 @@ export default function Country(props) {
             </View>
 
             <View
+              key={`img-sldr-prnt`}
               style={{
                 marginTop: 10,
                 borderRadius: 10,
@@ -1150,6 +1156,7 @@ export default function Country(props) {
                 }}
                 customButtons={(position, move) => (
                   <View
+                    key={`custom-button-${position}`}
                     style={{
                       alignContent: "center",
                       alignItems: "center",
@@ -1164,7 +1171,7 @@ export default function Country(props) {
                       ? render?.city
                       : [default_image]
                     ).map((item, index) => (
-                      <View>
+                      <View key={`key-${index}-image-slider-3`}>
                         {position == index ? (
                           <View
                             style={{
@@ -1380,6 +1387,7 @@ export default function Country(props) {
         {/*  artikel */}
         {render?.article_type && render.article_type.length > 0 ? (
           <View
+            key={`general-parent-6`}
             style={{
               marginTop: 15,
               flexDirection: "column",
@@ -1484,6 +1492,7 @@ export default function Country(props) {
         {/* Essential with Tabs */}
         {render?.practical?.length > 0 || render?.about?.length > 0 ? (
           <View
+            key={`general-parent-7`}
             style={{
               paddingTop: 15,
               paddingBottom: 15,
@@ -1571,7 +1580,7 @@ export default function Country(props) {
                     {render.about.length > 0
                       ? render.about.map((item, index) => (
                           <Ripple
-                            key={"keyabout" + index}
+                            key={`key-${index}-about`}
                             onPress={() => {
                               props.navigation.navigate("AboutCountry", {
                                 active: item.id,
@@ -1651,7 +1660,7 @@ export default function Country(props) {
                     {render.practical.length > 0
                       ? render.practical.map((item, index) => (
                           <Ripple
-                            key={"keypractical" + index}
+                            key={`key-${index}-practical`}
                             onPress={() => {
                               props.navigation.navigate("PracticalCountry", {
                                 active: item.id,
@@ -1713,6 +1722,7 @@ export default function Country(props) {
 
     return (
       <Animated.View
+        key={`key-ASU-render-article`}
         style={{
           paddingTop: 5,
           paddingBottom: 60,
@@ -1722,7 +1732,10 @@ export default function Country(props) {
         {render && render.length
           ? render.map((i, index) => {
               if (!i) {
-                <View key={"content" + index} style={{ alignItems: "center" }}>
+                <View
+                  key={`key-${index}-render-article`}
+                  style={{ alignItems: "center" }}
+                >
                   <Text
                     type="regular"
                     size="title"
@@ -1736,7 +1749,7 @@ export default function Country(props) {
                 </View>;
               } else {
                 return (
-                  <View key={index}>
+                  <View key={`key-${index}-render-article`}>
                     {i.type === "image" ? (
                       <View>
                         {i.title ? (
@@ -2187,7 +2200,7 @@ export default function Country(props) {
     }
     return (
       <Animated.FlatList
-        listkey={"flatcity"}
+        listkey={"flat-city"}
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
@@ -2231,7 +2244,7 @@ export default function Country(props) {
         data={data}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, indexC) => `key-${indexC}-flat-city`}
       />
     );
   };
@@ -2253,7 +2266,8 @@ export default function Country(props) {
         }}
       >
         <FlatList
-          key={"listtabbar"}
+          listKey={"list-tab-bar"}
+          keyExtractor={(item, index) => `key-${index}-list-tab-bar`}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
@@ -2265,7 +2279,7 @@ export default function Country(props) {
           }}
           renderItem={({ item, index }) => (
             <Ripple
-              key={"tabx" + index}
+              // key={"tabx" + index}
               onPress={() => {
                 _tabIndex.current = id;
                 setIndex(index);

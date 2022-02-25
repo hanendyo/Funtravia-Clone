@@ -287,8 +287,6 @@ export default function ProvinceDetail(props) {
         });
       });
 
-      console.log("dataProvince", dataProvince);
-
       setRoutes(tab);
 
       let loop = 0;
@@ -710,10 +708,6 @@ export default function ProvinceDetail(props) {
       dataProvince && dataProvince?.province_detail_v2
         ? dataProvince?.province_detail_v2
         : null;
-    console.log(
-      "🚀 ~ file: index.js ~ line 707 ~ RenderGeneral ~ render",
-      render
-    );
 
     let renderjournal = [];
     renderjournal = list_journal;
@@ -2073,7 +2067,8 @@ export default function ProvinceDetail(props) {
             ) : renderItinerary.length > 0 ? (
               <FlatList
                 data={renderItinerary}
-                keyExtractor={(item) => item.id}
+                listKey={"render-itinerary"}
+                keyExtractor={(item, index) => `key-${index}-render-itinerary`}
                 horizontal={true}
                 contentContainerStyle={{
                   paddingLeft: 2,
@@ -2958,7 +2953,7 @@ export default function ProvinceDetail(props) {
     }
     return (
       <Animated.FlatList
-        listkey={"flatcity"}
+        listkey={"flat-city"}
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
@@ -3004,7 +2999,7 @@ export default function ProvinceDetail(props) {
         data={data}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => `key-${index}-flat-city`}
       />
     );
   };
@@ -3025,7 +3020,8 @@ export default function ProvinceDetail(props) {
         }}
       >
         <FlatList
-          key={"listtabbar"}
+          listKey={"list-tab-bar"}
+          keyExtractor={(item, index) => `key-${index}-list-tab-bar`}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
@@ -3037,7 +3033,7 @@ export default function ProvinceDetail(props) {
           }}
           renderItem={({ item, index }) => (
             <Ripple
-              key={"tabx" + index}
+              // key={"tabx" + index}
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({

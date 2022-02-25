@@ -165,13 +165,13 @@ export default function myfeed(props) {
     loading: loadingFeed,
     data: dataFeed,
     error: errorFeed,
-    fetchMore: fetchMoreFeed,
+    fetchMore,
     refetch: refetchFeed,
     networkStatus: networkStatusFeed,
   } = useQuery(PostCursorBased, {
     variables: {
       user_id: datauser?.id,
-      first: 20,
+      first: indekScrollto ? indekScrollto + 1 : 20,
       after: "",
     },
     context: {
@@ -216,7 +216,7 @@ export default function myfeed(props) {
 
   const loadasync = () => {
     LoadFollowing();
-    refetchFeed();
+    // refetchFeed();
   };
 
   const [
@@ -255,7 +255,11 @@ export default function myfeed(props) {
           }
         }
       } catch (error) {
-        Alert.alert("" + error);
+        RNToasty.Show({
+          title: t("somethingwrong"),
+          position: "bottom",
+        });
+        // Alert.alert("" + error);
       }
     } else {
       console.warn("Please Login");
@@ -623,35 +627,32 @@ export default function myfeed(props) {
   };
 
   const onUpdate = (prev, { fetchMoreResult }) => {
-    if (
-      prev.user_post_paging.datas.length <
-      fetchMoreResult.user_post_paging.page_info.offset
-    ) {
-      if (!fetchMoreResult) return prev;
-      const { page_info } = fetchMoreResult.user_post_paging;
-      const datas = [
-        ...prev.user_post_paging.datas,
-        ...fetchMoreResult.user_post_paging.datas,
-      ];
-
-      return Object.assign({}, prev, {
-        user_post_paging: {
-          __typename: prev.user_post_paging.__typename,
-          page_info,
-          datas,
-        },
-      });
-    }
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult?.user_post_cursor_based;
+    const edges = [
+      ...prev?.user_post_cursor_based?.edges,
+      ...fetchMoreResult?.user_post_cursor_based?.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      user_post_cursor_based: {
+        __typename: prev?.user_post_cursor_based?.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+    return feedback;
   };
-
   const handleOnEndReached = () => {
-    if (datapost?.user_post_paging?.page_info?.hasNextPage) {
+    if (
+      dataFeed?.user_post_cursor_based?.pageInfo?.hasNextPage &&
+      !loadingFeed
+    ) {
       return fetchMore({
-        variables: {
-          limit: 50,
-          offset: datapost?.user_post_paging?.page_info?.offset,
-        },
         updateQuery: onUpdate,
+        variables: {
+          first: indekScrollto ? indekScrollto + 1 : 20,
+          after: dataFeed?.user_post_cursor_based?.pageInfo?.endCursor,
+        },
       });
     }
   };
@@ -962,9 +963,9 @@ export default function myfeed(props) {
         // refreshControl={
         //   <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         // }
+        initialNumToRender={indekScrollto ? indekScrollto + 1 : 20}
         onEndReachedThreshold={1}
-        // onEndReached={handleOnEndReached}
-        // onEndThreshold={3000}
+        onEndReached={handleOnEndReached}
         renderItem={({ item, index }) => (
           <View
             style={{

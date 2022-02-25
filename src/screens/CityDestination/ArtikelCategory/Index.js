@@ -135,7 +135,6 @@ export default function ArtikelCategory(props) {
     let tab = [];
 
     articles.map((item, index) => {
-      console.log("item", item);
       tab.push({ key: item.id, title: item.title });
     });
 
@@ -223,6 +222,9 @@ export default function ArtikelCategory(props) {
         }}
         data={data}
         renderItem={renderItem}
+        keyExtractor={(item, index) => {
+          `key-${index}-${item.id}`;
+        }}
       />
     );
   };
@@ -240,7 +242,10 @@ export default function ArtikelCategory(props) {
         }}
       >
         <FlatList
-          key={"listtabbar"}
+          // key={"listtabbar"}
+          keyExtractor={(item, index) => {
+            `key-${index}`;
+          }}
           ref={scrollRef}
           data={props?.navigationState?.routes}
           horizontal={true}

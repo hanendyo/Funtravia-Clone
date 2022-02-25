@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   BackHandler,
+  SafeAreaView,
 } from "react-native";
 import {
   Arrowbackblack,
@@ -128,7 +129,6 @@ export default function Asia({ navigation }) {
   const onBackPress = useCallback(() => {
     if (BackUse.current.id !== "142") {
       // navigation.goBack();
-      // console.log("not go back");
       setSubContinent({ id: "142" });
       InitialCountry({ id: "142" });
       BackUse.current = {
@@ -136,7 +136,6 @@ export default function Asia({ navigation }) {
         label: "All",
       };
     } else {
-      console.log("go back");
       navigation.goBack();
     }
     return true;
@@ -162,7 +161,6 @@ export default function Asia({ navigation }) {
         );
       }
     });
-    // console.log("d", data);
     setCountries(data);
   };
   useEffect(() => {
@@ -352,7 +350,7 @@ export default function Asia({ navigation }) {
               backgroundColor: "#FFFFFF",
               height: Platform.select({
                 ios: Notch ? "85%" : "85%",
-                android: "78%",
+                android: "75%",
               }),
             }}
           >
@@ -369,19 +367,23 @@ export default function Asia({ navigation }) {
                 {t("region")}
               </Text>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <SafeAreaView
+              showsVerticalScrollIndicator={false}
+              style={{ flex: 1, paddingTop: -50 }}
+            >
               <FlatList
                 data={subContinentData}
                 contentContainerStyle={{
                   paddingHorizontal: 5,
                   marginTop: 5,
 
-                  marginBottom: 50,
+                  // marginBottom: 50,
+                  // borderWidth: 1,
                 }}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item, index }) => (
-                  <Pressable
+                  <TouchableOpacity
                     key={index}
                     onPress={() => {
                       {
@@ -433,10 +435,10 @@ export default function Asia({ navigation }) {
                         <Next width={12} height={12} />
                       </View>
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                 )}
               />
-            </ScrollView>
+            </SafeAreaView>
           </View>
         </View>
       ) : (
@@ -486,7 +488,7 @@ export default function Asia({ navigation }) {
             {countries.length > 0 ? (
               <FlatList
                 data={countries}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => `key-${index}`}
                 renderItem={({ item, index }) => (
                   <View
                     style={{
@@ -505,7 +507,7 @@ export default function Asia({ navigation }) {
                         paddingVertical: 15,
                       }}
                     >
-                      <Pressable
+                      <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("CountryStack", {
                             screen: "Country",
@@ -514,7 +516,7 @@ export default function Asia({ navigation }) {
                             },
                           })
                         }
-                        key={index}
+                        // key={index}
                         style={{
                           flex: 1,
                         }}
@@ -555,7 +557,7 @@ export default function Asia({ navigation }) {
                             {item.name}
                           </Text>
                         </View>
-                      </Pressable>
+                      </TouchableOpacity>
                       <View
                         style={{
                           width: "15%",

@@ -40,7 +40,6 @@ const HeightFlatlist = Platform.select({
 export default function World({ navigation }) {
   let { t, i18n } = useTranslation();
   let [soon, setSoon] = useState(false);
-  // console.log("navigation", navigation);
   const { width, height } = Dimensions.get("screen");
   const HeaderHeight = (height * 34) / 100;
   const ContentHeight = (height * 66) / 100;
@@ -249,11 +248,12 @@ export default function World({ navigation }) {
         }}
       >
         <FlatList
-          key="world"
+          // key="world"
           data={data}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
+          keyExtractor={(item, index) => `key-${index}`}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() =>
@@ -261,7 +261,7 @@ export default function World({ navigation }) {
                   ? navigation.navigate(item.screen)
                   : setSoon(true)
               }
-              key={index.toString()}
+              // key={index}
               style={{
                 borderRadius: 5,
                 backgroundColor: "#FFF",
