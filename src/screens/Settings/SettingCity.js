@@ -400,7 +400,7 @@ export default function SettingCity(props) {
           data={data}
           onViewableItemsChanged={onViewRef.current}
           viewabilityConfig={viewConfigRef.current}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => `key-${index}`}
           scrollToIndex={indekScrollto}
           onScrollToIndexFailed={(e) => {
             scrollToIndexFailed(e);

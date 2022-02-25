@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -16,7 +16,7 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
   ArrowRight,
@@ -37,20 +37,21 @@ import {
   Peringatan,
   FunDocument,
 } from "../../../component";
-import {Button, Text, Loading, FunIcon, Capital} from "../../../component";
-import {useTranslation} from "react-i18next";
-import MapView, {Marker} from "react-native-maps";
+import { Button, Text, Loading, FunIcon, Capital } from "../../../component";
+import { useTranslation } from "react-i18next";
+import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
-import {ReactNativeFile} from "apollo-upload-client";
+import { ReactNativeFile } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
 import Modal from "react-native-modal";
 import AddFlight from "../../../graphQL/Mutation/Itinerary/AddCustomFlight";
 import UpdateCustomFlight from "../../../graphQL/Mutation/Itinerary/UpdateCustomFlight";
-import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {request, check, PERMISSIONS} from "react-native-permissions";
+import { request, check, PERMISSIONS } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import { RNToasty } from "react-native-toasty";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -58,7 +59,7 @@ import {useSelector} from "react-redux";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -110,7 +111,7 @@ export default function detailCustomItinerary(props) {
             marginLeft: 10,
           }}
         >
-          <Text type="bold" size="title" style={{color: "#fff"}}>
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
             {t("AddFlightNumber")}
           </Text>
           <Text
@@ -276,7 +277,7 @@ export default function detailCustomItinerary(props) {
     detail: "",
   });
 
-  const [mutation, {loading, data, error: errorSaved}] = useMutation(
+  const [mutation, { loading, data, error: errorSaved }] = useMutation(
     AddFlight,
     {
       context: {
@@ -293,7 +294,7 @@ export default function detailCustomItinerary(props) {
 
   const [
     mutationUpdate,
-    {loading: loadingUpdate, data: dataUpdate, error: errorUpdate},
+    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
   ] = useMutation(UpdateCustomFlight, {
     context: {
       headers: {
@@ -412,8 +413,11 @@ export default function detailCustomItinerary(props) {
       }
       setLoadingApp(false);
     } catch (error) {
-      // Alert.alert("" + error);
-      console.log("error catch :", error);
+      RNToasty.Show({
+        title: t("somethingwrong"),
+        position: "bottom",
+      });
+      // console.log("error catch :", error);
       setLoadingApp(false);
       setButtonDisabled(false);
     }
@@ -469,14 +473,15 @@ export default function detailCustomItinerary(props) {
       }
       setLoadingApp(false);
     } catch (error) {
-      Alert.alert("" + error);
-      console.error("error catch :", error);
+      RNToasty.Show({
+        title: t("somethingwrong"),
+        position: "bottom",
+      });
+      // console.error("error catch :", error);
       setLoadingApp(false);
       setButtonDisabled(false);
     }
   };
-
-  // console.log("token", token);
 
   const validateData = () => {
     setItemValid({
@@ -506,7 +511,6 @@ export default function detailCustomItinerary(props) {
     }
     if (flightNumber && timeArrCheck && timeDepCheck && from && to) {
       props.route.params.activityId ? mutationUpdateFlight() : mutationInput();
-      // console.log(attachment);
     }
   };
 
@@ -517,7 +521,6 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      // console.log("res", res);
       let files = new ReactNativeFile({
         uri: res.uri,
         type: res.type,
@@ -559,7 +562,13 @@ export default function detailCustomItinerary(props) {
       if (granted) {
         await Geolocation.getCurrentPosition(
           (position) => _nearbyLocation(position),
-          (err) => console.log(err),
+          (err) => {
+            RNToasty.Show({
+              title: t("somethingwrong"),
+              position: "bottom",
+            });
+            // console.log(err)
+          },
           {
             enableHighAccuracy: false,
             timeout: 10000,
@@ -568,7 +577,11 @@ export default function detailCustomItinerary(props) {
         );
       }
     } catch (error) {
-      console.log(error);
+      RNToasty.Show({
+        title: t("somethingwrong"),
+        position: "bottom",
+      });
+      // console.log(error);
     }
   };
 
@@ -617,7 +630,11 @@ export default function detailCustomItinerary(props) {
         setLoadingApp(false);
       }
     } catch (error) {
-      console.error(error);
+      RNToasty.Show({
+        title: t("somethingwrong"),
+        position: "bottom",
+      });
+      // console.error(error);
     }
   };
 
@@ -636,7 +653,7 @@ export default function detailCustomItinerary(props) {
       >
         <View style={styles.ViewContainer}>
           <View style={styles.ViewFlight}>
-            <Plane width={50} height={50} style={{marginTop: 15}} />
+            <Plane width={50} height={50} style={{ marginTop: 15 }} />
             <View style={styles.ViewInputFlight}>
               <FloatingInput
                 label={t("FlightNo")}
@@ -747,7 +764,7 @@ export default function detailCustomItinerary(props) {
             />
           </View>
           <View style={styles.ViewDate}>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <FloatingInput
                 label={t("From")}
                 editable={false}
@@ -889,7 +906,7 @@ export default function detailCustomItinerary(props) {
             );
           })}
 
-          <View style={{flex: 1, marginVertical: 10}}>
+          <View style={{ flex: 1, marginVertical: 10 }}>
             <TouchableOpacity
               onPress={() => {
                 pickFile();
@@ -1018,14 +1035,20 @@ export default function detailCustomItinerary(props) {
                 value: text,
               }}
               listViewDisplayed="auto"
-              onFail={(error) => console.log(error)}
+              onFail={(error) => {
+                RNToasty.Show({
+                  title: t("somethingwrong"),
+                  position: "bottom",
+                });
+                //  console.log(error)
+              }}
               placeholder={"Search for location"}
               currentLocationLabel="Nearby location"
               ref={GooglePlacesRef}
               setAddressText={text}
               renderLeftButton={() => {
                 return (
-                  <View style={{justifyContent: "center"}}>
+                  <View style={{ justifyContent: "center" }}>
                     <Magnifying />
                   </View>
                 );
@@ -1077,7 +1100,9 @@ export default function detailCustomItinerary(props) {
                     >
                       <Pointmapblack />
                     </View>
-                    <View style={{width: Dimensions.get("screen").width - 60}}>
+                    <View
+                      style={{ width: Dimensions.get("screen").width - 60 }}
+                    >
                       <Text
                         style={{
                           fontFamily: "Lato-Bold",
@@ -1218,7 +1243,7 @@ export default function detailCustomItinerary(props) {
 
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Notch ? 90 : 65}
+        keyboardVerticalOffset={Notch ? 90 : 88}
       >
         <View
           style={{

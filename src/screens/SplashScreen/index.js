@@ -57,6 +57,7 @@ export default function SplashScreen(props) {
         horizontal={true}
         pagingEnabled={true}
         data={imageCarousel}
+        keyExtractor={(item, index) => `key-${index}`}
         renderItem={({ item }) => {
           return (
             <Image source={item} style={{ height: height, width: width }} />
@@ -110,7 +111,7 @@ export default function SplashScreen(props) {
                 marginBottom: 1,
               }}
             >
-              {"Skip"}
+              {t("skip")}
             </Text>
           </Button>
         </View>

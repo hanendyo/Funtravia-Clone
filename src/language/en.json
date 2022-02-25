@@ -876,7 +876,7 @@
   "login": "login",
   "pending": "Pending",
   "rejected": "Rejected",
-  "AddFlightDetail": "Add flight number to your itinerary",
+  "addFlightDetail": "Add flight number to your itinerary",
   "addPlaceName": "Add place name",
   "public (shared)": "Public (shared)",
   "canNotChangePrivacy": "You can not change privacy setting",

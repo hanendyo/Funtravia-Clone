@@ -85,11 +85,9 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
-  // console.log("🚀 ~ file: index.js ~ line 88 ~ CityDetail ~ props", props);
   const { t, i18n } = useTranslation();
   const settingApps = useSelector((data) => data.setting);
   const tokenApps = useSelector((data) => data.token);
-  // console.log("tokenCity", tokenApps);
 
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
@@ -221,8 +219,6 @@ export default function CityDetail(props) {
     return Journalitinerarydata;
   }, [props.navigation, tokenApps]);
 
-  // console.log("year", new Date().getFullYear());
-
   useEffect(() => {
     scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
@@ -300,8 +296,6 @@ export default function CityDetail(props) {
       await getJournalCity();
     },
   });
-
-  // console.log("dataCity", dataCity);
 
   const Goto = (item) => {
     if (item?.id) {
@@ -841,7 +835,7 @@ export default function CityDetail(props) {
                   ? render.destination_type.map((item, index) => {
                       return index < 8 ? (
                         <Ripple
-                          key={"keydestination" + index}
+                          key={`key-${index}-destination`}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               type: item.id_type,
@@ -920,7 +914,7 @@ export default function CityDetail(props) {
                   : render.destination_type.map((item, index) => {
                       return (
                         <Ripple
-                          key={"keydestination1" + index}
+                          key={`key-${index}-destination-2`}
                           onPress={() => {
                             props.navigation.push("DestinationList", {
                               idtype: item.id,
@@ -1247,11 +1241,11 @@ export default function CityDetail(props) {
                     backgroundColor: "#white",
                   }}
                   customSlide={({ index, item, style, width }) => (
-                    <View key={"ky" + index}>
+                    <View key={`key-${index}-image-slider-parent`}>
                       {item.map((dataX, indeks) => {
                         return (
                           <Pressable
-                            key={"jrnla" + indeks}
+                            key={`key-${indeks}-image-slider-child`}
                             onPress={() =>
                               props.navigation.push("JournalStackNavigation", {
                                 screen: "DetailJournal",
@@ -1383,7 +1377,7 @@ export default function CityDetail(props) {
                         (image, index) => {
                           return (
                             <TouchableHighlight
-                              key={"keys" + index}
+                              key={`key-${index}-render-journal`}
                               underlayColor="#f7f7f700"
                             >
                               <View
@@ -2593,7 +2587,7 @@ export default function CityDetail(props) {
     }
     return (
       <Animated.FlatList
-        listkey={"flatcity"}
+        listkey={"flat-city"}
         scrollToOverflowEnabled={true}
         scrollEnabled={canScroll}
         {...listPanResponder.panHandlers}
@@ -2639,7 +2633,7 @@ export default function CityDetail(props) {
         data={data}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => `key-${index}-flat-city`}
       />
     );
   };
@@ -2661,7 +2655,8 @@ export default function CityDetail(props) {
         }}
       >
         <FlatList
-          key={"listtabbar"}
+          listKey={"list-tab-bar"}
+          keyExtractor={(item, index) => `key-${index}-list-tab-bar`}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
