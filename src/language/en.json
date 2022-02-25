@@ -900,6 +900,6 @@
   "itineraryAlbum": "Itinerary Album",
   "feedAlbum": "Feed Album",
   "editCustomActivity" : "Edit custom activity",
-  "successAddMember": "Success add new member"
-
+  "successAddMember": "Success add new member",
+  "maxMemberGroup": "Maximum of participants are 150 "
 }

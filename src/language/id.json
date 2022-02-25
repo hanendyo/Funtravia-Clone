@@ -898,6 +898,7 @@
   "itineraryAlbum": "Album Perjalanan",
   "feedAlbum": "Album Feed",
   "editCustomActivity" : "Edit aktivitas Buatan",
-  "successAddMember": "Berhasil menambahkan anggota baru"
+  "successAddMember": "Berhasil menambahkan anggota baru",
+  "maxMemberGroup": "Jumlah anggota telah mencapai 150"
 
 }

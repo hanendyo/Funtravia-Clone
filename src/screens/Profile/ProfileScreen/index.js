@@ -85,6 +85,7 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function OtherProfile(props) {
   const tokenApps = useSelector((data) => data.token);
+  console.log("~ tokenApps", tokenApps);
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
@@ -782,6 +783,8 @@ export default function OtherProfile(props) {
     },
   });
 
+  console.log("datatrip", datatrip);
+
   const [
     LoadTrip2,
     { data: datatripX, loading: loadingtripX, error: errortripX },
@@ -800,6 +803,34 @@ export default function OtherProfile(props) {
       setdataTrip(datatripX?.user_trip);
     },
   });
+
+  console.log("datatripX", datatripX);
+
+  // const likeTrue = async () => {
+  //   try {
+  //     let tempData = [...dataTrip];
+  //     var tempBuddy = [];
+  //     for (var i in tempData) {
+  //       let tempDataBuddy = [...tempData[i].buddy];
+  //       for (var i in tempDataBuddy) {
+  //         if (tempDataBuddy[i].user?.id == users?.id) {
+  //           tempDataBuddy[i].showLike = true;
+  //         } else {
+  //           tempDataBuddy[i].showLike = false;
+  //         }
+  //         tempBuddy.push(tempDataBuddy);
+  //       }
+
+  //       console.log("~ tempBuddy", tempBuddy);
+  //     }
+  //   } catch (error) {
+  //     console.log("~ error", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   likeTrue();
+  // }, [dataTrip]);
 
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");

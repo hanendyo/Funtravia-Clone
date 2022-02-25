@@ -17,6 +17,7 @@ const itinerary = gql
       buddy{
         id
         user{
+          id
           username
           first_name
           picture
