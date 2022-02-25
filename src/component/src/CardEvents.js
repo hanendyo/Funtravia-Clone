@@ -10,13 +10,14 @@ import { CalendarBiru, LikeEmpty, LikeRed, PinHijau } from "../../assets/svg";
 import { Text, FunImageBackground } from "../../component";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
-import { default_image } from "../../assets/png";
+import { default_image, CalenderGrey } from "../../assets/png";
 import { ModalLogin } from "../../component";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";
 import UnLiked from "../../graphQL/Mutation/unliked";
 import { dateFormatBetween } from "../../component/src/dateformatter";
+import CustomImage from "./CustomImage";
 
 export default function CardEvents({
   data,
@@ -173,7 +174,7 @@ export default function CardEvents({
             key={index.toString()}
             style={{
               borderRadius: 5,
-              height: normalize(255),
+              height: normalize(260),
               width: "48.5%",
               marginRight: 10,
               marginBottom: 10,
@@ -290,12 +291,25 @@ export default function CardEvents({
                     alignItems: "center",
                   }}
                 >
-                  <CalendarBiru height={17} width={17} />
+                  {/* <CalendarBiru height={17} width={17} /> */}
+                  <CustomImage
+                    customStyle={{
+                      width: 16,
+                      height: 16,
+                      marginRight: 5,
+                    }}
+                    customImageStyle={{
+                      width: 18,
+                      height: 18,
+                      resizeMode: "contain",
+                    }}
+                    source={CalenderGrey}
+                  />
                   {item.is_repeat === true ? (
                     <Text
                       size="description"
                       style={{
-                        marginLeft: 5,
+                        // marginLeft: 5,
                         flex: 1,
                       }}
                       numberOfLines={1}
@@ -308,7 +322,7 @@ export default function CardEvents({
                       size="description"
                       style={{
                         flex: 1,
-                        marginLeft: 5,
+                        // marginLeft: 5,
                       }}
                       numberOfLines={1}
                       type="regular"

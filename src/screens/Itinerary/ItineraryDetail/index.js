@@ -1568,6 +1568,7 @@ export default function ItineraryDetail(props) {
   const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
+
   //   let HeaderHeight = HeaderHeight;
   let HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 75 : 60;
   let HEADER_SCROLL_DISTANCE = HeaderHeight - HEADER_MIN_HEIGHT;
@@ -4237,6 +4238,7 @@ export default function ItineraryDetail(props) {
     });
 
     const scrollToIndexFailed = (error) => {
+      console.log("scrollToIndexTabBar", error);
       const offset = error.averageItemLength * error.index;
       ref.current.scrollToOffset({ offset });
       setTimeout(
@@ -4268,6 +4270,7 @@ export default function ItineraryDetail(props) {
             backgroundColor: "white",
           }}
           onScrollToIndexFailed={(e) => {
+            console.log("scrollToIndex", e);
             scrollToIndexFailed(e);
           }}
           renderItem={({ item, index }) => (

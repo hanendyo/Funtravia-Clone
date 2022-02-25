@@ -137,8 +137,6 @@ export default function ListEvent(props) {
     },
   });
 
-  console.log("data", data);
-
   const [
     GetEventCategory,
     { data: dataFillter, loading: loadingcat, error: errorcat },

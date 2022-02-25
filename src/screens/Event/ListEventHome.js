@@ -681,7 +681,7 @@ export default function ListEventHome(props) {
               justifyContent: "center",
               width: (Dimensions.get("screen").width - 50) / 2,
               // height: Dimensions.get("screen").width * 0.7,
-              height: normalize(250),
+              height: normalize(260),
               margin: 5,
               // borderWidth: 1,
               marginBottom: -5,
@@ -692,7 +692,7 @@ export default function ListEventHome(props) {
               shadowOffset: { width: 2, height: 2 },
               shadowOpacity: 0.5,
               shadowRadius: 3,
-
+              // paddingBottom: 5,
               elevation: 3,
             }}
           >
@@ -802,11 +802,9 @@ export default function ListEventHome(props) {
             <View
               style={{
                 flex: 1,
-                flexDirection: "column",
-                justifyContent: "space-around",
-                height: 230,
-                marginVertical: 3,
-                marginHorizontal: 10,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                justifyContent: "space-between",
               }}
             >
               <Text
@@ -838,13 +836,13 @@ export default function ListEventHome(props) {
                 >
                   <CustomImage
                     customStyle={{
-                      width: 15,
-                      height: 15,
+                      width: 16,
+                      height: 16,
                       marginRight: 5,
                     }}
                     customImageStyle={{
-                      width: 15,
-                      height: 15,
+                      width: 18,
+                      height: 18,
                       resizeMode: "contain",
                     }}
                     source={CalenderGrey}
@@ -853,8 +851,8 @@ export default function ListEventHome(props) {
                     <Text
                       size="description"
                       style={{
-                        paddingRight: 20,
-                        width: "100%",
+                        flex: 1,
+                        // marginLeft: 5,
                       }}
                     >
                       {handlerepeat(item.start_date, item.end_date)}
@@ -863,9 +861,11 @@ export default function ListEventHome(props) {
                     <Text
                       size="description"
                       style={{
-                        paddingRight: 20,
-                        width: "100%",
+                        flex: 1,
+                        // marginLeft: 5,
                       }}
+                      numberOfLines={1}
+                      type="regular"
                     >
                       {dateFormatBetween(item.start_date, item.end_date)}
                     </Text>
@@ -881,9 +881,11 @@ export default function ListEventHome(props) {
                 >
                   <CustomImage
                     customStyle={{
-                      width: 15,
-                      height: 15,
-                      marginRight: 5,
+                      width: 16,
+                      height: 16,
+                      marginRight: 3,
+                      marginLeft: 2,
+                      marginTop: 2,
                     }}
                     customImageStyle={{
                       width: 15,
@@ -2281,7 +2283,6 @@ export default function ListEventHome(props) {
   };
 
   const eventdetail = (data) => {
-    console.log("eventid", data.id);
     props.navigation.navigate("eventdetail", {
       event_id: data.id,
       name: data.name,
