@@ -106,7 +106,6 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function ProvinceDetail(props) {
   const { t, i18n } = useTranslation();
-  // let [token, setToken] = useState("");
   const token = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
   const [modalLogin, setModalLogin] = useState(false);

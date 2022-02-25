@@ -31,17 +31,17 @@ export default function ImageSlide({
 
   // console.log(slider);
 
-  const handel_select = async (index) => {
-    slidep.current.scrollToIndex({ animated: true, index: index });
-    var tempdata = [...slider];
-    for (var x of tempdata) {
-      x.selected = false;
-    }
-    tempdata[index].selected = true;
-    setSlider([]);
-    await setIn(index);
-    await setSlider(tempdata);
-  };
+  // const handel_select = async (index) => {
+  //   slidep.current.scrollToIndex({ animated: true, index: index });
+  //   var tempdata = [...slider];
+  //   for (var x of tempdata) {
+  //     x.selected = false;
+  //   }
+  //   tempdata[index].selected = true;
+  //   setSlider([]);
+  //   await setIn(index);
+  //   await setSlider(tempdata);
+  // };
 
   const handel_next = async () => {
     if (inde < slider.length - 1) {
@@ -186,6 +186,8 @@ export default function ImageSlide({
         {slider.length > 0 ? (
           <ImageViewer
             renderIndicator={() => <View></View>}
+            flipThreshold={2000}
+            pageAnimateTime={100}
             renderArrowLeft={() =>
               slider.length > 1 ? (
                 <TouchableOpacity
@@ -245,7 +247,7 @@ export default function ImageSlide({
             // enableImageZoom={false}
             saveToLocalByLongPress={false}
             imageUrls={slider}
-            onChange={(index) => handel_select(index)}
+            // onChange={(index) => handel_select(index)}
             index={inde}
             renderFooter={(index) => (
               <View

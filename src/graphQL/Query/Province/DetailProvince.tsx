@@ -12,17 +12,12 @@ const province_detail = gql`
         id
         name
         flag
-        climate
-        religion
       }
       cover
-      map
       destination_group {
         id
-        province_id
         name
         description
-        icon
         icon
         type {
           type_id
