@@ -55,7 +55,6 @@ export default function Post(props) {
   const [time, setTime] = useState(false);
   const { t, i18n } = useTranslation();
   const [imageRoll, setImageRoll] = useState([]);
-  console.log("~ imageRoll", imageRoll);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [Preview, setPreview] = useState(true);
@@ -423,12 +422,11 @@ export default function Post(props) {
   };
 
   const getImageFromRoll = async (dataalbum) => {
-    console.log("~ dataalbum", dataalbum);
     let dataCamera;
     switch (dataalbum.title) {
       case "Recent Photos":
         dataCamera = await CameraRoll.getPhotos({
-          first: 43,
+          first: 100,
           assetType: "Photos",
           // groupTypes: "Album",
           // groupName: "Recent Photos",
@@ -437,7 +435,7 @@ export default function Post(props) {
         break;
       case "Recent Videos":
         dataCamera = await CameraRoll.getPhotos({
-          first: 43,
+          first: 100,
           assetType: "Videos",
           // groupTypes: "Album",
           // groupName: "Recent Photos",
@@ -446,7 +444,7 @@ export default function Post(props) {
         break;
       default:
         dataCamera = await CameraRoll.getPhotos({
-          first: 43,
+          first: 100,
           assetType: "All",
           groupTypes: "Album",
           groupName: dataalbum.title,
@@ -506,7 +504,7 @@ export default function Post(props) {
       const datas = [...imageRoll, ...data_foto];
       setImageRoll(datas);
       setPageInfo(dataCamera.page_info);
-      await setLoadimg(false);
+      setLoadimg(false);
     }
   };
 
@@ -739,9 +737,9 @@ export default function Post(props) {
       <FlatList
         keyExtractor={(item) => item?.node?.image?.uri}
         style={{
-          backgroundColor: "#fff",
-          height: Dimensions.get("screen").height * 0.9,
-          marginBottom: 100,
+          backgroundColor: "white",
+          height: Dimensions.get("screen").height * 0.85,
+          // marginBottom: 100,
         }}
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
@@ -900,6 +898,7 @@ export default function Post(props) {
                 alignItems: "center",
                 paddingVertical: 1,
                 paddingHorizontal: 1,
+                marginBottom: 15,
               }}
               onPress={() => selectImg(item)}
               onLongPress={() => selectMutiVideo(item, index)}
@@ -1094,7 +1093,7 @@ export default function Post(props) {
                 width: Dimensions.get("screen").width,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: 10,
+                marginVertical: 10,
                 paddingBottom: 40,
               }}
             >
@@ -1107,8 +1106,9 @@ export default function Post(props) {
           ) : null
         }
         numColumns={4}
-        onEndReachedThreshold={1}
-        onEndReached={getMoreImage}
+        onEndReachedThreshold={0.5}
+        // onEndReached={getMoreImage}
+        initialNumToRender={40}
         onEndThreshold={3000}
         onScroll={() => setPreview(false)}
       />

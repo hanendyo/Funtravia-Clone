@@ -1529,7 +1529,7 @@ export default function SearchPg(props, { navigation, route }) {
                     )}
                     showsHorizontalScrollIndicator={false}
                     ListFooterComponent={
-                      searchtext !== "" && search_location.length <= 0 ? (
+                      searchtext !== "" && search_location?.length <= 0 ? (
                         <View
                           style={{
                             alignItems: "center",
