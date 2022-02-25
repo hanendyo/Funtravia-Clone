@@ -1334,7 +1334,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
               />
             </Pressable>
             <Pressable
-              style={{ flex: 1, marginLeft: 10 }}
+              style={{ flex: 1, marginLeft: 15 }}
               onPress={() => handle_areaklik_like_itinerary(item)}
             >
               <Text size="label" type="bold" numberOfLines={2}>

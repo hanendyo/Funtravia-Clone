@@ -137,9 +137,9 @@ export default function NewGroup({ navigation, route }) {
       tempData.splice(index, 1);
       setUserSelected(tempData);
     } else {
-      if (userSelected.length > 149) {
+      if (userSelected.length > 3) {
         RNToasty.Show({
-          title: t("pleaselogin"),
+          title: t("maxMemberGroup"),
           position: "bottom",
         });
       } else {

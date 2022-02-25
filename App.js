@@ -58,6 +58,29 @@ if (Platform.OS === "ios") {
 //   requestPermissions: true,
 // });
 
+PushNotification.configure({
+  onNotification: async function(notification) {
+    console.log("NOTIFICATIONSS:", notification);
+    notification.finish(PushNotificationIOS.FetchResult.NoData);
+    if (notification.userInteraction == true) {
+      await AsyncStorage.setItem(
+        "dataNotification",
+        JSON.stringify(notification)
+      );
+
+      if (notification.foreground == true) {
+        await RNRestart.Restart();
+      }
+      if (Platform.OS == "ios") {
+        RNRestart.Restart();
+      }
+    }
+
+    let storage = JSON.parse(await AsyncStorage.getItem("dataNotification"));
+    console.log("~ storage", storage);
+  },
+});
+
 function App() {
   const { t, i18n } = useTranslation();
   const { width } = Dimensions.get("screen");
@@ -65,7 +88,9 @@ function App() {
   let [authBlocked, setAuthBlocked] = useState(false);
   let [appLoading, setAppLoading] = useState(true);
   let [appToken, setAppToken] = useState(null);
+  const [firstScreen, setFirstScreen] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState(null);
+  console.log("~ dataNotifikasi", dataNotifikasi);
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
@@ -129,8 +154,6 @@ function App() {
     await setAppLoading(false);
   };
 
-  const [firstScreen, setFirstScreen] = useState(null);
-
   const astor = async () => {
     const isFirst = await AsyncStorage.getItem("isFirst");
     setFirstScreen(isFirst);
@@ -155,7 +178,6 @@ function App() {
     let notif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
     console.log("~ notif", notif);
     await setDataNotifikasi(notif);
-    // await AsyncStorage.setItem("dataNotification", "");
   };
 
   useEffect(() => {
@@ -163,22 +185,22 @@ function App() {
       onRegister: function(token) {
         // console.log("TOKEN:", token);
       },
-      onNotification: async function(notification) {
-        console.log("NOTIFICATION:", notification);
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-        if (notification.userInteraction == true) {
-          await setDataNotifikasi(notification);
-          await AsyncStorage.setItem(
-            "dataNotification",
-            JSON.stringify(notification)
-          );
-          if (notification.foreground == true) {
-            await RNRestart.Restart();
-          }
-        }
-      },
+      // onNotification: async function(notification) {
+      //   console.log("NOTIFICATIONSS:", notification);
+      //   notification.finish(PushNotificationIOS.FetchResult.NoData);
+      //   if (notification.userInteraction == true) {
+      //     await setDataNotifikasi(notification);
+      //     await AsyncStorage.setItem(
+      //       "dataNotification",
+      //       JSON.stringify(notification)
+      //     );
+      //     if (notification.foreground == true) {
+      //       await RNRestart.Restart();
+      //     }
+      //   }
+      // },
       onAction: function(notification) {
-        console.log("ONACTION:", notification);
+        console.log("ONACTION:", notification.action);
       },
       onRegistrationError: function(err) {
         console.log(err.message, err);
