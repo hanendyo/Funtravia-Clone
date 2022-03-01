@@ -1066,6 +1066,7 @@ export default function Country(props) {
                               underlayColor="#f7f7f700"
                             >
                               <View
+                                key={`key-${index}-image-slider-child`}
                                 style={{
                                   height: position === index ? 5 : 5,
                                   width: position === index ? 15 : 5,
@@ -1309,8 +1310,9 @@ export default function Country(props) {
                     >
                       {item.destination && item.destination.length > 0 ? (
                         <FlatList
-                          listKey={(item, index) => "D" + index.toString()}
+                          listKey={`key-${item.destination.length}`}
                           data={item.destination}
+                          keyExtractor={(item, index) => `key-${index}`}
                           numColumns={4}
                           renderItem={({ item, index }) => (
                             <Ripple
@@ -1596,6 +1598,7 @@ export default function Country(props) {
                             }}
                           >
                             <View
+                              key={`key-${index}-about-child`}
                               style={{
                                 height: 45,
                               }}
@@ -1676,6 +1679,7 @@ export default function Country(props) {
                             }}
                           >
                             <View
+                              key={`key-${index}-practical-child`}
                               style={{
                                 height: 45,
                               }}
@@ -1722,7 +1726,7 @@ export default function Country(props) {
 
     return (
       <Animated.View
-        key={`key-ASU-render-article`}
+        key={`key-coba-render-article`}
         style={{
           paddingTop: 5,
           paddingBottom: 60,
@@ -1840,25 +1844,25 @@ export default function Country(props) {
    *  helper functions
    */
   const syncScrollOffset = () => {
-    const curRouteKey = routes[_tabIndex.current].key;
+    const curRouteKey = routes[_tabIndex?.current]?.key;
 
-    listRefArr.current.forEach((item) => {
-      if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
-          if (item.value) {
-            item.value.scrollToOffset({
-              offset: scrollY._value,
+    listRefArr?.current?.forEach((item) => {
+      if (item?.key !== curRouteKey) {
+        if (scrollY?._value < HeaderHeight && scrollY?._value >= 0) {
+          if (item?.value) {
+            item?.value?.scrollToOffset({
+              offset: scrollY?._value,
               animated: false,
             });
-            listOffset.current[item.key] = scrollY._value;
+            listOffset.current[item?.key] = scrollY?._value;
           }
-        } else if (scrollY._value >= HeaderHeight) {
+        } else if (scrollY?._value >= HeaderHeight) {
           if (
-            listOffset.current[item.key] < HeaderHeight ||
-            listOffset.current[item.key] == null
+            listOffset.current[item?.key] < HeaderHeight ||
+            listOffset.current[item?.key] == null
           ) {
-            if (item.value) {
-              item.value.scrollToOffset({
+            if (item?.value) {
+              item?.value?.scrollToOffset({
                 offset: HeaderHeight,
                 animated: false,
               });
