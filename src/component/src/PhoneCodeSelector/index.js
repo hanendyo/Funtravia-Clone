@@ -1,7 +1,6 @@
 import React from "react";
 import { countryCallCode } from "./countryCallCode";
 import {
-  Picker,
   View,
   StyleSheet,
   Dimensions,
@@ -13,6 +12,7 @@ import { Button } from "../../../component";
 import { Xgray } from "../../../assets/svg";
 import Modal from "react-native-modal";
 import { useTranslation } from "react-i18next";
+import { Picker as SelectPicker } from "@react-native-picker/picker";
 export default function PhoneCodeSelector({
   show,
   close,
@@ -43,7 +43,7 @@ export default function PhoneCodeSelector({
               <Xgray width={15} height={15} />
             </Pressable>
             <View style={styles.PickerContainer}>
-              <Picker
+              <SelectPicker
                 note
                 mode="dropdown"
                 selectedValue={value}
@@ -52,14 +52,14 @@ export default function PhoneCodeSelector({
               >
                 {countryCallCode.map((value, index) => {
                   return (
-                    <Picker.Item
+                    <SelectPicker.Item
                       key={index}
                       label={value.name + " (" + value.code + ")"}
                       value={value.code}
                     />
                   );
                 })}
-              </Picker>
+              </SelectPicker>
             </View>
             <View style={styles.FooterContainer}>
               <Button

@@ -13,7 +13,7 @@ import {
 import { CustomImage, FloatingInput } from "../../../component";
 import { phone_vektor } from "../../../assets/png";
 import { Peringatan } from "../../../component";
-import { PhoneCodeSelector } from "../../../component";
+import PhoneCodeSelector from "../../../component/src/PhoneCodeSelector";
 import { useTranslation } from "react-i18next";
 import { Text, Button } from "../../../component";
 

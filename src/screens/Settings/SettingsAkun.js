@@ -28,8 +28,8 @@ import { useTranslation } from "react-i18next";
 import { Text, Button, CustomImage } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { Truncate } from "../../component";
-import DatePicker from "react-native-modern-datepicker";
-import { Picker } from "react-native";
+import { Picker as SelectPicker } from "@react-native-picker/picker";
+
 import {
   dateFormat,
   dateFormatYMD,
@@ -943,7 +943,7 @@ export default function SettingsAkun(props) {
                 borderBottomWidth: 1,
               }}
             >
-              <Picker
+              <SelectPicker
                 note
                 mode="dropdown"
                 style={{
@@ -957,10 +957,10 @@ export default function SettingsAkun(props) {
                 selectedValue={genders}
                 onValueChange={(x) => setGender(x)}
               >
-                <Picker.Item label={t("gender")} />
-                <Picker.Item label={t("Male")} value="M" />
-                <Picker.Item label={t("Female")} value="F" />
-              </Picker>
+                <SelectPicker.Item label={t("gender")} />
+                <SelectPicker.Item label={t("Male")} value="M" />
+                <SelectPicker.Item label={t("Female")} value="F" />
+              </SelectPicker>
             </View>
             <View
               style={{
