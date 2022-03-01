@@ -27,8 +27,8 @@ import {
   CustomImage,
   FloatingInput,
   Peringatan,
-  PhoneCodeSelector,
 } from "../../component";
+import PhoneCodeSelector from "../../component/src/PhoneCodeSelector";
 import { useTranslation } from "react-i18next";
 import { TextInput } from "react-native";
 import normalize from "react-native-normalize";
