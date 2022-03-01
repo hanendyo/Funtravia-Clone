@@ -7,6 +7,7 @@ import {
   Platform,
   Text,
   Pressable,
+  Picker,
 } from "react-native";
 import { Button } from "../../../component";
 import { Xgray } from "../../../assets/svg";
@@ -43,7 +44,7 @@ export default function PhoneCodeSelector({
               <Xgray width={15} height={15} />
             </Pressable>
             <View style={styles.PickerContainer}>
-              <SelectPicker
+              <Picker
                 note
                 mode="dropdown"
                 selectedValue={value}
@@ -52,14 +53,14 @@ export default function PhoneCodeSelector({
               >
                 {countryCallCode.map((value, index) => {
                   return (
-                    <SelectPicker.Item
+                    <Picker.Item
                       key={index}
                       label={value.name + " (" + value.code + ")"}
                       value={value.code}
                     />
                   );
                 })}
-              </SelectPicker>
+              </Picker>
             </View>
             <View style={styles.FooterContainer}>
               <Button
