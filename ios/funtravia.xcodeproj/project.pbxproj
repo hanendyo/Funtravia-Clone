@@ -327,7 +327,6 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				68A0021549A82C143772C8D5 /* [CP] Copy Pods Resources */,
-				25C09BBAEA550F9F730692DE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -351,7 +350,6 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				ADDEA6294DA002FC6D971976 /* [CP] Copy Pods Resources */,
 				A3A2EF938AD01A4FC3B6527F /* [CP-User] [RNFB] Core Configuration */,
-				2708A4D837B648779109E02B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -544,46 +542,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		25C09BBAEA550F9F730692DE /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/VideoEditorSDK/VideoEditorSDK.framework/VideoEditorSDK",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/imglyKit/ImglyKit.framework/ImglyKit",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VideoEditorSDK.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImglyKit.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-funtravia-funtraviaTests/Pods-funtravia-funtraviaTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2708A4D837B648779109E02B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-funtravia/Pods-funtravia-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/VideoEditorSDK/VideoEditorSDK.framework/VideoEditorSDK",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/imglyKit/ImglyKit.framework/ImglyKit",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VideoEditorSDK.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImglyKit.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-funtravia/Pods-funtravia-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {

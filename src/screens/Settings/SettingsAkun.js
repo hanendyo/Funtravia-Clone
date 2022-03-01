@@ -10,6 +10,7 @@ import {
   Modal as ModalRN,
   Image,
   ScrollView,
+  Picker,
 } from "react-native";
 import Modal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,7 +29,6 @@ import { useTranslation } from "react-i18next";
 import { Text, Button, CustomImage } from "../../component";
 import Ripple from "react-native-material-ripple";
 import { Truncate } from "../../component";
-import { Picker as SelectPicker } from "@react-native-picker/picker";
 
 import {
   dateFormat,
@@ -943,7 +943,7 @@ export default function SettingsAkun(props) {
                 borderBottomWidth: 1,
               }}
             >
-              <SelectPicker
+              <Picker
                 note
                 mode="dropdown"
                 style={{
@@ -957,10 +957,10 @@ export default function SettingsAkun(props) {
                 selectedValue={genders}
                 onValueChange={(x) => setGender(x)}
               >
-                <SelectPicker.Item label={t("gender")} />
-                <SelectPicker.Item label={t("Male")} value="M" />
-                <SelectPicker.Item label={t("Female")} value="F" />
-              </SelectPicker>
+                <Picker.Item label={t("gender")} />
+                <Picker.Item label={t("Male")} value="M" />
+                <Picker.Item label={t("Female")} value="F" />
+              </Picker>
             </View>
             <View
               style={{

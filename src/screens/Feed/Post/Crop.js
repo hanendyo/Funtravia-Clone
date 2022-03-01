@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 import { stat } from "react-native-fs";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { RNToasty } from "react-native-toasty";
-import { VESDK } from "react-native-videoeditorsdk";
+// import { VESDK } from "react-native-videoeditorsdk";
 import { useSelector } from "react-redux";
 import {
   Video as VideoCompress,
