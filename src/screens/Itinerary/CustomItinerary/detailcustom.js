@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useLayoutEffect} from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   View,
   Dimensions,
@@ -12,7 +12,7 @@ import {
   StyleSheet,
   Picker,
 } from "react-native";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -38,25 +38,25 @@ import {
   Truncate,
   Distance,
 } from "../../../component";
-import {useTranslation} from "react-i18next";
-import MapView, {Marker} from "react-native-maps";
+import { useTranslation } from "react-i18next";
+import MapView, { Marker } from "react-native-maps";
 import DocumentPicker from "react-native-document-picker";
-import {ReactNativeFile} from "apollo-upload-client";
+import { ReactNativeFile } from "apollo-upload-client";
 import ImageSlide from "../../../component/src/ImageSlide";
 import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
-import {StackActions} from "@react-navigation/native";
-import {RNToasty} from "react-native-toasty";
+import { StackActions } from "@react-navigation/native";
+import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import moment from "moment";
 import DeviceInfo from "react-native-device-info";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function detailCustomItinerary(props) {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
-  const {height, width} = Dimensions.get("screen");
+  const { height, width } = Dimensions.get("screen");
   const token = useSelector((data) => data.token);
 
   const HeaderComponent = {
@@ -111,18 +111,22 @@ export default function detailCustomItinerary(props) {
             marginBottom: 5,
           }}
         >
-          <Text type="bold" size="title" style={{color: "#fff"}}>
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
             {t("activityDetails")}
           </Text>
 
           <Text
             style={{
               color: "#fff",
-              width: "100%",
+              width: Dimensions.get("screen").width - normalize(80),
             }}
             numberOfLines={1}
           >
-            <Truncate text={props.route.params.nameitin} length={27} />
+            {props.route.params.nameitin}
+            {/* <Truncate
+              text={props.route.params.nameitin}
+              length={Platform.OS == "ios" ? (Notch ? 30 : 30) : 50}
+            /> */}
           </Text>
         </View>
       </View>
@@ -150,7 +154,7 @@ export default function detailCustomItinerary(props) {
     for (var i of data) {
       if (i.id === parent) {
         //   dataX.push(i);
-        dataparents = {...i};
+        dataparents = { ...i };
       } else if (i.parent_id === parent) {
         dataX.push(i);
       }
@@ -207,7 +211,7 @@ export default function detailCustomItinerary(props) {
     );
   };
 
-  const hitungDuration = ({startt, dur}) => {
+  const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
     var starttime = startt ? startt.split(":") : "00:00:00";
 
@@ -235,7 +239,7 @@ export default function detailCustomItinerary(props) {
 
   const [
     mutationSaveTimeline,
-    {loading: loadingSave, data: dataSave, error: errorSave},
+    { loading: loadingSave, data: dataSave, error: errorSave },
   ] = useMutation(UpdateTimeline, {
     context: {
       headers: {
@@ -431,7 +435,7 @@ export default function detailCustomItinerary(props) {
     );
   };
 
-  const GetStartTime = ({startt}) => {
+  const GetStartTime = ({ startt }) => {
     var starttime = startt.split(":");
 
     return (
@@ -441,7 +445,7 @@ export default function detailCustomItinerary(props) {
     );
   };
 
-  const GetEndTime = ({startt, dur}) => {
+  const GetEndTime = ({ startt, dur }) => {
     var duration = dur.split(":");
     var starttime = startt.split(":");
 
@@ -499,7 +503,7 @@ export default function detailCustomItinerary(props) {
     let datax = [...dataLists];
 
     console.log("datax", datax);
-    let dataganti = {...datax[indexinput]};
+    let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
     dataganti.duration = durations;
@@ -558,7 +562,7 @@ export default function detailCustomItinerary(props) {
     }
 
     for (var y in datax) {
-      let datareplace = {...datax[y]};
+      let datareplace = { ...datax[y] };
       datareplace.order = order;
       if (datax[y - 1]) {
         // longitude & latitude index sebelum custom
@@ -649,7 +653,7 @@ export default function detailCustomItinerary(props) {
     let hasilmenit = menitpertama + durmin;
 
     if (hasiljam <= 23) {
-      let dataday = {...datadayaktif};
+      let dataday = { ...datadayaktif };
 
       if (hasiljam === 23 && hasilmenit <= 59) {
         savetimeline(datax);
@@ -805,7 +809,7 @@ export default function detailCustomItinerary(props) {
 
   const [
     mutationUpload,
-    {loading: loadingSaved, data: dataSaved, error: errorSaved},
+    { loading: loadingSaved, data: dataSaved, error: errorSaved },
   ] = useMutation(Upload, {
     context: {
       headers: {
@@ -884,7 +888,7 @@ export default function detailCustomItinerary(props) {
           });
         } else {
           if (sumber === "parent") {
-            let datan = {...dataParent};
+            let datan = { ...dataParent };
             let tempes = [];
             if (datan.attachment?.length > 0) {
               tempes = [...datan.attachment];
@@ -899,7 +903,7 @@ export default function detailCustomItinerary(props) {
               tiny: response.data.upload_attach_custom.data[0].tiny,
             };
             tempes.push(init);
-            let datas = {...dataParent};
+            let datas = { ...dataParent };
             datas["attachment"] = tempes;
 
             setDataParent(datas);
@@ -936,7 +940,7 @@ export default function detailCustomItinerary(props) {
 
   const [
     mutationdelete,
-    {loading: loadingdelete, data: datadelete, error: errordelete},
+    { loading: loadingdelete, data: datadelete, error: errordelete },
   ] = useMutation(DeleteAttachcustom, {
     context: {
       headers: {
@@ -971,7 +975,7 @@ export default function detailCustomItinerary(props) {
         } else {
           let tempes = [...dataParents.attachment];
           tempes.splice(index, 1);
-          let datas = {...dataParents};
+          let datas = { ...dataParents };
           datas["attachment"] = tempes;
           setDataParent(datas);
           await setLoadingHapusFile(false);
@@ -1009,7 +1013,7 @@ export default function detailCustomItinerary(props) {
         } else {
           let tempes = [...item.attachment];
           tempes.splice(indah, 1);
-          let datas = {...item};
+          let datas = { ...item };
           datas["attachment"] = tempes;
           let datan = [...dataChild];
           datan[index] = datas;
@@ -1048,7 +1052,7 @@ export default function detailCustomItinerary(props) {
         url: data[i].filepath ? data[i].filepath : "",
         width: wid,
         height: hig,
-        props: {source: data[i].filepath ? data[i].filepath : ""},
+        props: { source: data[i].filepath ? data[i].filepath : "" },
       });
       x++;
     }
@@ -1089,7 +1093,7 @@ export default function detailCustomItinerary(props) {
           // minHeight: Dimensions.get("screen").height,
         }}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => (
+        renderItem={({ item, index }) => (
           <View
             style={{
               flexDirection: "row",
@@ -1120,7 +1124,7 @@ export default function detailCustomItinerary(props) {
                   backgroundColor: "#209fae",
                   elevation: 3,
                   shadowColor: "#d3d3d3",
-                  shadowOffset: {width: 2, height: 2},
+                  shadowOffset: { width: 2, height: 2 },
                   shadowOpacity: 1,
                   shadowRadius: 2,
                 }}
@@ -1145,7 +1149,7 @@ export default function detailCustomItinerary(props) {
                 backgroundColor: "#fff",
                 elevation: 3,
                 shadowColor: "#d3d3d3",
-                shadowOffset: {width: 2, height: 2},
+                shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
               }}
@@ -1205,7 +1209,7 @@ export default function detailCustomItinerary(props) {
                 )}
 
                 <TouchableOpacity
-                  style={{flex: 1, paddingHorizontal: 10}}
+                  style={{ flex: 1, paddingHorizontal: 10 }}
                   // onLongPress={status !== "saved" ? drag : null}
                 >
                   <Text size="label" type="bold" style={{}}>
@@ -1323,7 +1327,7 @@ export default function detailCustomItinerary(props) {
                   }}
                 >
                   <Text>{t("notes")}</Text>
-                  <Text style={{marginTop: 10}}>{item.note}</Text>
+                  <Text style={{ marginTop: 10 }}>{item.note}</Text>
                 </View>
               ) : null}
 
@@ -1398,7 +1402,7 @@ export default function detailCustomItinerary(props) {
                       : null}
                   </View>
 
-                  <View style={{flex: 1, marginVertical: 10}}>
+                  <View style={{ flex: 1, marginVertical: 10 }}>
                     <TouchableOpacity
                       onPress={() => {
                         pickFile(item.id, "child");
@@ -1458,7 +1462,7 @@ export default function detailCustomItinerary(props) {
                 backgroundColor: "#fff",
                 elevation: 3,
                 shadowColor: "#d3d3d3",
-                shadowOffset: {width: 2, height: 2},
+                shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
                 padding: 10,
@@ -1496,7 +1500,7 @@ export default function detailCustomItinerary(props) {
               backgroundColor: "#fff",
               elevation: 3,
               shadowColor: "#d3d3d3",
-              shadowOffset: {width: 2, height: 2},
+              shadowOffset: { width: 2, height: 2 },
               shadowOpacity: 1,
               shadowRadius: 2,
             }}
@@ -1555,7 +1559,7 @@ export default function detailCustomItinerary(props) {
                 />
               )}
               <TouchableOpacity
-                style={{flex: 1, paddingHorizontal: 10}}
+                style={{ flex: 1, paddingHorizontal: 10 }}
                 // onLongPress={status !== "saved" ? drag : null}
               >
                 <Text size="label" type="bold" style={{}}>
@@ -1655,7 +1659,7 @@ export default function detailCustomItinerary(props) {
                           width: "85%",
                         }}
                       >
-                        <Text type="light" style={{marginBottom: 3}}>
+                        <Text type="light" style={{ marginBottom: 3 }}>
                           {t("From")}
                         </Text>
                         <Text type="bold">{dataParent.detail_flight.from}</Text>
@@ -1668,7 +1672,7 @@ export default function detailCustomItinerary(props) {
                               : `geo:0,0?q=${dataParent.detail_flight?.latitude_departure},${dataParent.detail_flight?.longitude_departure}(${dataParent.detail_flight.from})`
                           );
                         }}
-                        style={{alignSelf: "center", marginHorizontal: 5}}
+                        style={{ alignSelf: "center", marginHorizontal: 5 }}
                       >
                         <PinMapGreen width={30} height={30} />
                       </TouchableOpacity>
@@ -1680,7 +1684,7 @@ export default function detailCustomItinerary(props) {
                           width: "85%",
                         }}
                       >
-                        <Text type="light" style={{marginBottom: 3}}>
+                        <Text type="light" style={{ marginBottom: 3 }}>
                           {t("To")}
                         </Text>
                         <Text type="bold">
@@ -1695,7 +1699,7 @@ export default function detailCustomItinerary(props) {
                               : `geo:0,0?q=${dataParent.detail_flight?.latitude_arrival},${dataParent.detail_flight?.longitude_arrival}(${dataParent.detail_flight.destination})`
                           );
                         }}
-                        style={{alignSelf: "center", marginHorizontal: 5}}
+                        style={{ alignSelf: "center", marginHorizontal: 5 }}
                       >
                         <PinMapGreen width={30} height={30} />
                       </TouchableOpacity>
@@ -1902,7 +1906,7 @@ export default function detailCustomItinerary(props) {
               }}
             >
               <Text size="small">{t("notes")}</Text>
-              <Text style={{marginTop: 10}}>
+              <Text style={{ marginTop: 10 }}>
                 {dataParent.note ? dataParent.note : "-"}
               </Text>
             </View>
@@ -1979,7 +1983,7 @@ export default function detailCustomItinerary(props) {
                     : null}
                 </View>
 
-                <View style={{flex: 1, marginVertical: 10}}>
+                <View style={{ flex: 1, marginVertical: 10 }}>
                   <TouchableOpacity
                     onPress={() => {
                       pickFile(dataParent.id, "parent");
@@ -2080,7 +2084,7 @@ export default function detailCustomItinerary(props) {
                 borderTopRightRadius: 5,
               }}
             >
-              <Text style={{marginVertical: 15}} type="bold" size="title">
+              <Text style={{ marginVertical: 15 }} type="bold" size="title">
                 {t("option")}
               </Text>
             </View>
@@ -2199,7 +2203,7 @@ export default function detailCustomItinerary(props) {
                 backgroundColor: "#f6f6f6",
               }}
             >
-              <Text style={{marginVertical: 15}} size="title" type="bold">
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
                 {t("deleteActivity")}
               </Text>
             </View>
@@ -2215,7 +2219,7 @@ export default function detailCustomItinerary(props) {
             >
               {t("DeleteActivityfromItinerary")}
             </Text>
-            <View style={{marginTop: 20, marginHorizontal: 10}}>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
               <Button
                 onPress={() => {
                   // _handledeleteDay(
@@ -2232,7 +2236,7 @@ export default function detailCustomItinerary(props) {
                 onPress={() => {
                   setModalDeleteActivity(false);
                 }}
-                style={{marginVertical: 5}}
+                style={{ marginVertical: 5 }}
                 variant="transparent"
                 text={t("discard")}
               ></Button>
@@ -2295,7 +2299,7 @@ export default function detailCustomItinerary(props) {
             <Text
               size="label"
               // type="bold"
-              style={{alignSelf: "center"}}
+              style={{ alignSelf: "center" }}
             >
               {t("From")}
             </Text>
@@ -2308,7 +2312,7 @@ export default function detailCustomItinerary(props) {
                 alignItems: "center",
               }}
             >
-              <View style={{width: "40%"}}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosIcon={
                     <View>
@@ -2319,11 +2323,11 @@ export default function detailCustomItinerary(props) {
                   note
                   mode="dropdown"
                   selectedValue={hourFrom}
-                  textStyle={{fontFamily: "Lato-Regular"}}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
                   itemTextStyle={{
                     fontFamily: "Lato-Regular",
                   }}
-                  itemStyle={{fontFamily: "Lato-Regular"}}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
                   placeholderStyle={{
                     fontFamily: "Lato-Regular",
                   }}
@@ -2355,7 +2359,7 @@ export default function detailCustomItinerary(props) {
                   :
                 </Text>
               </View>
-              <View style={{width: "40%"}}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosHeader="Select Minutes"
                   headerBackButtonTextStyle={{
@@ -2364,11 +2368,11 @@ export default function detailCustomItinerary(props) {
                   note
                   mode="dropdown"
                   selectedValue={minuteFrom}
-                  textStyle={{fontFamily: "Lato-Regular"}}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
                   itemTextStyle={{
                     fontFamily: "Lato-Regular",
                   }}
-                  itemStyle={{fontFamily: "Lato-Regular"}}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
                   placeholderStyle={{
                     fontFamily: "Lato-Regular",
                   }}
@@ -2398,7 +2402,7 @@ export default function detailCustomItinerary(props) {
             <Text
               size="label"
               // type="bold"
-              style={{alignSelf: "center"}}
+              style={{ alignSelf: "center" }}
             >
               {t("To")}
             </Text>
@@ -2412,7 +2416,7 @@ export default function detailCustomItinerary(props) {
                 alignItems: "center",
               }}
             >
-              <View style={{width: "40%"}}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosIcon={
                     <View>
@@ -2423,11 +2427,11 @@ export default function detailCustomItinerary(props) {
                   note
                   mode="dropdown"
                   selectedValue={hourTo}
-                  textStyle={{fontFamily: "Lato-Regular"}}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
                   itemTextStyle={{
                     fontFamily: "Lato-Regular",
                   }}
-                  itemStyle={{fontFamily: "Lato-Regular"}}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
                   placeholderStyle={{
                     fontFamily: "Lato-Regular",
                   }}
@@ -2461,7 +2465,7 @@ export default function detailCustomItinerary(props) {
                   :
                 </Text>
               </View>
-              <View style={{width: "40%"}}>
+              <View style={{ width: "40%" }}>
                 <Picker
                   iosHeader="Select Minutes"
                   headerBackButtonTextStyle={{
@@ -2470,11 +2474,11 @@ export default function detailCustomItinerary(props) {
                   note
                   mode="dropdown"
                   selectedValue={minuteTo}
-                  textStyle={{fontFamily: "Lato-Regular"}}
+                  textStyle={{ fontFamily: "Lato-Regular" }}
                   itemTextStyle={{
                     fontFamily: "Lato-Regular",
                   }}
-                  itemStyle={{fontFamily: "Lato-Regular"}}
+                  itemStyle={{ fontFamily: "Lato-Regular" }}
                   placeholderStyle={{
                     fontFamily: "Lato-Regular",
                   }}

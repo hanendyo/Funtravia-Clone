@@ -259,7 +259,7 @@ export default function FeedList({ props, token }) {
           tempdataIndeks.node = tempdatas;
           tempdata.splice(indeks, 1, tempdataIndeks);
           setDataFeed(tempdata);
-          setIndeksScrollto(indeks);
+          setIndeksScrollto(indeks < 0 ? 0 : indeks);
           Scroll_to(indeks);
         }
       }

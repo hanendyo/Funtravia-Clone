@@ -14,6 +14,7 @@ import {
   Pressable,
   Platform,
   StyleSheet,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -52,6 +53,7 @@ import { request, check, PERMISSIONS } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
 import { useSelector } from "react-redux";
 import { RNToasty } from "react-native-toasty";
+import normalize from "react-native-normalize";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -60,6 +62,9 @@ import { RNToasty } from "react-native-toasty";
 
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
+  const NotchAndro = StatusBar ? StatusBar.currentHeight > 24 : false;
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -70,7 +75,7 @@ export default function detailCustomItinerary(props) {
       backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      height: 108,
+      height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
     },
     headerTitleStyle: {
       fontFamily: "Lato-Bold",
@@ -128,7 +133,6 @@ export default function detailCustomItinerary(props) {
   };
   let GooglePlacesRef = useRef();
   const [loadingApp, setLoadingApp] = useState(false);
-  const Notch = DeviceInfo.hasNotch();
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const token = useSelector((data) => data.token);
   const [text, setText] = useState("");
@@ -138,7 +142,6 @@ export default function detailCustomItinerary(props) {
   const itineraryId = props.route.params.itineraryId;
   const startDate = props.route.params.startDate.split(" ").join("T");
   const endDate = props.route.params.endDate.split(" ").join("T");
-
   //params edit data
 
   //modal
@@ -669,100 +672,100 @@ export default function detailCustomItinerary(props) {
             </View>
           </View>
 
-          <View style={styles.ViewDate}>
-            <View style={styles.ViewDateAndInput}>
-              {timeDepCheck !== "" ? (
-                <Text style={styles.floatPlaceholder}>{t("Departure")}</Text>
-              ) : null}
-              <CalendarIcon
-                height={15}
-                width={15}
-                // style={{ marginBottom: -10 }}
-              />
-              <TextInput
-                placeholder={t("Departure")}
-                autoCorrect={false}
-                editable={false}
-                value={timeDepCheck}
-                placeholderTextColor="#a9a9a9"
-                onChangeText={(e) => {
-                  setTimeDeparture(e);
-                  setTimeDepCheck(e);
-                }}
-                style={styles.TextDateInput}
-              />
-              {timeDepCheck.length === 0 &&
-                (!itemValid.timeDepCheck ? (
-                  <Text type="regular" size="small" style={styles.textAlert}>
-                    {t("inputAlertDateTime")}
-                  </Text>
-                ) : null)}
-              <TouchableOpacity
-                onPress={() => setDateTimeModalDeparture(true)}
-                style={styles.TouchOpacityDate}
-              />
-            </View>
-
-            <DateTimePickerModal
-              isVisible={dateTimeModalDeparture}
-              mode="datetime"
-              locale="en_id"
-              is24Hour
-              minimumDate={new Date(startDate)}
-              maximumDate={new Date(endDate)}
-              onConfirm={(date) => {
-                timeConverter(date);
-                setDateTimeModalDeparture(false);
-              }}
-              onCancel={() => setDateTimeModalDeparture(false)}
+          {/* <View style={styles.ViewDate}> */}
+          <View style={styles.ViewDateAndInput}>
+            {timeDepCheck !== "" ? (
+              <Text style={styles.floatPlaceholder}>{t("Departure")}</Text>
+            ) : null}
+            <CalendarIcon
+              height={15}
+              width={15}
+              // style={{ marginBottom: -10 }}
             />
-            <View style={styles.ViewDateAndInputRight}>
-              {timeArrCheck !== "" ? (
-                <Text style={styles.floatPlaceholder}>{t("Arrival")}</Text>
-              ) : null}
-              <CalendarIcon
-                height={15}
-                width={15}
-                // style={{ marginBottom: -10 }}
-              />
-              <TextInput
-                placeholder={t("Arrival")}
-                autoCorrect={false}
-                editable={false}
-                value={timeArrCheck}
-                placeholderTextColor="#a9a9a9"
-                onChangeText={(e) => {
-                  setTimeArrival(e);
-                  setTimeArrCheck(e);
-                }}
-                style={styles.TextDateInput}
-              />
-              {timeArrCheck.length === 0 &&
-                (!itemValid.timeArrCheck ? (
-                  <Text type="regular" size="small" style={styles.textAlert}>
-                    {t("inputAlertDateTime")}
-                  </Text>
-                ) : null)}
-              <TouchableOpacity
-                onPress={() => setDateTimeModalArrival(true)}
-                style={styles.TouchOpacityDate}
-              />
-            </View>
-
-            <DateTimePickerModal
-              isVisible={dateTimeModalArrival}
-              mode="datetime"
-              locale="en_id"
-              is24Hour
-              minimumDate={new Date(startDate)}
-              maximumDate={new Date(endDate)}
-              onConfirm={(date) => {
-                timeConverter(date);
-                setDateTimeModalArrival(false);
+            <TextInput
+              placeholder={t("Departure")}
+              autoCorrect={false}
+              editable={false}
+              value={timeDepCheck}
+              placeholderTextColor="#a9a9a9"
+              onChangeText={(e) => {
+                setTimeDeparture(e);
+                setTimeDepCheck(e);
               }}
-              onCancel={() => setDateTimeModalArrival(false)}
+              style={styles.TextDateInput}
+            />
+            {timeDepCheck.length === 0 &&
+              (!itemValid.timeDepCheck ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertDateTime")}
+                </Text>
+              ) : null)}
+            <TouchableOpacity
+              onPress={() => setDateTimeModalDeparture(true)}
+              style={styles.TouchOpacityDate}
             />
           </View>
+
+          <DateTimePickerModal
+            isVisible={dateTimeModalDeparture}
+            mode="datetime"
+            locale="en_id"
+            is24Hour
+            minimumDate={new Date(startDate)}
+            maximumDate={new Date(endDate)}
+            onConfirm={(date) => {
+              timeConverter(date);
+              setDateTimeModalDeparture(false);
+            }}
+            onCancel={() => setDateTimeModalDeparture(false)}
+          />
+          <View style={styles.ViewDateAndInputRight}>
+            {timeArrCheck !== "" ? (
+              <Text style={styles.floatPlaceholder}>{t("Arrival")}</Text>
+            ) : null}
+            <CalendarIcon
+              height={15}
+              width={15}
+              // style={{ marginBottom: -10 }}
+            />
+            <TextInput
+              placeholder={t("Arrival")}
+              autoCorrect={false}
+              editable={false}
+              value={timeArrCheck}
+              placeholderTextColor="#a9a9a9"
+              onChangeText={(e) => {
+                setTimeArrival(e);
+                setTimeArrCheck(e);
+              }}
+              style={styles.TextDateInput}
+            />
+            {timeArrCheck.length === 0 &&
+              (!itemValid.timeArrCheck ? (
+                <Text type="regular" size="small" style={styles.textAlert}>
+                  {t("inputAlertDateTime")}
+                </Text>
+              ) : null)}
+            <TouchableOpacity
+              onPress={() => setDateTimeModalArrival(true)}
+              style={styles.TouchOpacityDate}
+            />
+          </View>
+
+          <DateTimePickerModal
+            isVisible={dateTimeModalArrival}
+            mode="datetime"
+            locale="en_id"
+            is24Hour
+            minimumDate={new Date(startDate)}
+            maximumDate={new Date(endDate)}
+            onConfirm={(date) => {
+              timeConverter(date);
+              setDateTimeModalArrival(false);
+            }}
+            onCancel={() => setDateTimeModalArrival(false)}
+          />
+          {/* </View> */}
           <View style={styles.ViewDate}>
             <View style={{ flex: 1 }}>
               <FloatingInput
@@ -959,19 +962,34 @@ export default function detailCustomItinerary(props) {
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
-              height: 50,
+              height:
+                Platform.OS === "ios"
+                  ? Notch
+                    ? normalize(72)
+                    : normalize(56)
+                  : NotchAndro
+                  ? normalize(57)
+                  : normalize(43),
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
+              marginTop: Platform.OS === "ios" ? 0 : -15,
             }}
           >
             <TouchableOpacity
               style={{
-                height: 50,
+                height:
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? normalize(15)
+                      : normalize(45)
+                    : NotchAndro
+                    ? normalize(0)
+                    : normalize(0),
+                paddingLeft: 10,
                 width: 50,
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: 15,
+                paddingTop: Platform.OS === "ios" ? 15 : null,
               }}
               onPress={() => {
                 setModalFrom(false), setModalTo(false);
@@ -985,13 +1003,20 @@ export default function detailCustomItinerary(props) {
             </TouchableOpacity>
             <Text
               style={{
-                top: Platform.OS === "ios" ? 12 : 15,
+                top:
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? normalize(40)
+                      : normalize(18)
+                    : NotchAndro
+                    ? normalize(17)
+                    : normalize(12),
                 left: 55,
                 fontFamily: "Lato-Regular",
                 fontSize: 16,
                 fontWeight: "bold",
                 color: "white",
-                height: 50,
+                height: 60,
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
@@ -1243,14 +1268,13 @@ export default function detailCustomItinerary(props) {
 
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Notch ? 90 : 88}
+        keyboardVerticalOffset={Notch ? 90 : 70}
       >
         <View
           style={{
             backgroundColor: "#fff",
-            paddingHorizontal: 15,
-            paddingVertical: 5,
-            marginBottom: 20,
+            padding: 15,
+            // paddingBottom: 40,
           }}
         >
           <Button
@@ -1327,7 +1351,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "black",
-    borderBottomEndRadius: 10,
+    marginTop: 20,
+    // borderBottomEndRadius: 10,
   },
   TextDateInput: {
     flex: 1,
@@ -1352,7 +1377,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginLeft: 15,
+    marginTop: 20,
+    // marginLeft: 15,
   },
   TextInputTo: {
     flex: 1,
@@ -1433,7 +1459,7 @@ const styles = StyleSheet.create({
   },
   floatPlaceholder: {
     position: "absolute",
-    top: -9,
+    top: -12,
     left: Platform.OS === "ios" ? 25 : 28,
     fontFamily: "Lato-Regular",
     color: "#A0A0A0",

@@ -901,5 +901,7 @@
   "feedAlbum": "Feed Album",
   "editCustomActivity" : "Edit custom activity",
   "successAddMember": "Success add new member",
-  "maxMemberGroup": "Maximum of participants are 150 "
+  "maxMemberGroup": "Maximum of participants are 150 ",
+  "PleaseFillYourHotelName": "Please fill your hotel name"
+
 }

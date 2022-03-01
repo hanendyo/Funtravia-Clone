@@ -899,6 +899,7 @@
   "feedAlbum": "Album Feed",
   "editCustomActivity" : "Edit aktivitas Buatan",
   "successAddMember": "Berhasil menambahkan anggota baru",
-  "maxMemberGroup": "Jumlah anggota telah mencapai 150"
+  "maxMemberGroup": "Jumlah anggota telah mencapai 150",
+  "PleaseFillYourHotelName": "Mohon untuk mengisi nama hotel"
 
 }
