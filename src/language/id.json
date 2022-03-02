@@ -900,6 +900,8 @@
   "editCustomActivity" : "Edit aktivitas Buatan",
   "successAddMember": "Berhasil menambahkan anggota baru",
   "maxMemberGroup": "Jumlah anggota telah mencapai 150",
-  "PleaseFillYourHotelName": "Mohon untuk mengisi nama hotel"
+  "PleaseFillYourHotelName": "Mohon untuk mengisi nama hotel",
+  "AktivitasFull": "Aktivitas ini tidak bisa disimpan karena total aktivitas hari ini sudah lewat dari 24 jam",
+  "FailedUpdate" : "Gagal perbarui data"
 
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import {
   View,
   ImageBackground,
@@ -9,26 +9,30 @@ import {
   TouchableOpacity,
   Platform,
   BackHandler,
+  Modal as Modalss,
+  Pressable,
 } from "react-native";
-import { back_arrow_white, default_image } from "../../assets/png";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import {back_arrow_white, default_image} from "../../assets/png";
+import {useLazyQuery, useMutation} from "@apollo/react-hooks";
 import CheckBox from "@react-native-community/checkbox";
 import ItineraryDetails from "../../graphQL/Query/Itinerary/ItineraryDetails";
-import { dateFormat, dateFormats } from "../../component/src/dateformatter";
+import {dateFormat, dateFormats} from "../../component/src/dateformatter";
 import AddDay from "../../graphQL/Mutation/Itinerary/AddDay";
 import AddDestination from "../../graphQL/Mutation/Itinerary/AddDestination";
 import AddGoogle from "../../graphQL/Mutation/Itinerary/AddGoogle";
 import AddEvent from "../../graphQL/Mutation/Itinerary/AddEvent";
-import { Button, Text, Truncate, Loading } from "../../component";
-import { Arrowbackios, Arrowbackwhite } from "../../assets/svg";
-import { useTranslation } from "react-i18next";
-import { StackActions } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { setSearchInput } from "../../redux/action";
+import {Button, Text, Truncate, Loading} from "../../component";
+import {Arrowbackios, Arrowbackwhite, Errors} from "../../assets/svg";
+import {useTranslation} from "react-i18next";
+import {StackActions} from "@react-navigation/native";
+import {useDispatch, useSelector} from "react-redux";
+import {setSearchInput} from "../../redux/action";
 
 export default function ItineraryChooseday(props) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
+  let [modalAlert, setmodalAlert] = useState(false);
+  let [textAlert, settextAlert] = useState("");
 
   const handlerBack = () => {
     if (props.route.params.data_from) {
@@ -87,7 +91,7 @@ export default function ItineraryChooseday(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" style={{color: "#fff"}}>
         {t("chooseDay")}
       </Text>
     ),
@@ -144,7 +148,7 @@ export default function ItineraryChooseday(props) {
 
   const [
     GetListEvent,
-    { data: dataItinerary, loading: loadingdetail, error: errordetail },
+    {data: dataItinerary, loading: loadingdetail, error: errordetail},
   ] = useLazyQuery(ItineraryDetails, {
     fetchPolicy: "network-only",
     context: {
@@ -153,7 +157,7 @@ export default function ItineraryChooseday(props) {
         Authorization: token,
       },
     },
-    variables: { id: Iditinerary },
+    variables: {id: Iditinerary},
   });
 
   const wait = (timeout) => {
@@ -166,12 +170,14 @@ export default function ItineraryChooseday(props) {
 
   const _Refresh = React.useCallback(() => {
     let datadayaktif = props.route.params.datadayaktif;
+    console.log("dayaAktif", datadayaktif);
     if (datadayaktif) {
-      let tempdata = { ...datadayaktif };
+      let tempdata = {...datadayaktif};
       tempdata["checked"] = true;
       tempdata["daywajib"] = true;
       let datasel = [...dataSelected];
       datasel.push(tempdata);
+
       setDataSelected(datasel);
     }
     setRefreshing(true);
@@ -180,6 +186,8 @@ export default function ItineraryChooseday(props) {
       setRefreshing(false);
     });
   }, []);
+
+  console.log("dataSelected", dataSelected);
 
   let [Position, setPosition] = useState(props.route.params.Position);
 
@@ -190,7 +198,7 @@ export default function ItineraryChooseday(props) {
 
   const [
     mutationAddDay,
-    { loading: Loadingday, data: dataAddDay, error: errorday },
+    {loading: Loadingday, data: dataAddDay, error: errorday},
   ] = useMutation(AddDay, {
     context: {
       headers: {
@@ -202,7 +210,7 @@ export default function ItineraryChooseday(props) {
 
   const [
     mutationSave,
-    { loading: LoadingSave, data: dataSave, error: errorSave },
+    {loading: LoadingSave, data: dataSave, error: errorSave},
   ] = useMutation(AddDestination, {
     context: {
       headers: {
@@ -214,11 +222,7 @@ export default function ItineraryChooseday(props) {
 
   const [
     mutationSaveGoogle,
-    {
-      loading: LoadingSavegoogle,
-      data: dataSavegoogle,
-      error: errorSavegoogle,
-    },
+    {loading: LoadingSavegoogle, data: dataSavegoogle, error: errorSavegoogle},
   ] = useMutation(AddGoogle, {
     context: {
       headers: {
@@ -230,7 +234,7 @@ export default function ItineraryChooseday(props) {
 
   const [
     mutationSaveEvent,
-    { loading: LoadingSaveEvent, data: dataSaveEvent, error: errorSaveEvent },
+    {loading: LoadingSaveEvent, data: dataSaveEvent, error: errorSaveEvent},
   ] = useMutation(AddEvent, {
     context: {
       headers: {
@@ -316,7 +320,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -364,7 +368,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -442,7 +446,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -505,7 +509,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -576,7 +580,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -647,7 +651,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "AccountBottomScreen" }],
+            routes: [{name: "AccountBottomScreen"}],
           },
         },
         {
@@ -700,7 +704,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -755,7 +759,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "AccountBottomScreen" }],
+            routes: [{name: "AccountBottomScreen"}],
           },
         },
         {
@@ -815,7 +819,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -878,7 +882,7 @@ export default function ItineraryChooseday(props) {
         {
           name: "BottomStack",
           state: {
-            routes: [{ name: "HomeScreen" }],
+            routes: [{name: "HomeScreen"}],
           },
         },
         {
@@ -940,10 +944,13 @@ export default function ItineraryChooseday(props) {
       if (Position === "destination" || Position === "Destination") {
         var datas = [];
         var x = 0;
+
         for (var i in dataSelected) {
           datas.push(dataSelected[i].id);
           x++;
         }
+        console.log("datas", datas);
+
         if (x == dataSelected.length) {
           try {
             let response = await mutationSave({
@@ -960,9 +967,16 @@ export default function ItineraryChooseday(props) {
             }
             if (response.data) {
               if (response.data.add_destination.code !== 200) {
-                throw new Error(response.data.add_destination.message);
-              }
-              {
+                if (response.data.add_destination.message == "Failed") {
+                  settextAlert("FailedUpdate");
+                  setmodalAlert(true);
+                }
+                if (response.data.add_destination.message == "Full") {
+                  settextAlert("AktivitasFull");
+                  setmodalAlert(true);
+                  // throw new Error("Destinasi sudah full");
+                }
+              } else {
                 dataItinerary.itinerary_detail
                   ? props.route.params.sebelum
                     ? props.navigation.dispatch(
@@ -1002,6 +1016,7 @@ export default function ItineraryChooseday(props) {
             setLoading(false);
           } catch (error) {
             setLoading(false);
+
             Alert.alert("Error " + error);
           }
         }
@@ -1015,7 +1030,7 @@ export default function ItineraryChooseday(props) {
 
         if (x == dataSelected.length) {
           try {
-            let responsegoogle = await mutationSaveGoogle({
+            let response = await mutationSaveGoogle({
               variables: {
                 id: datas,
                 title: Kiriman.name,
@@ -1036,11 +1051,19 @@ export default function ItineraryChooseday(props) {
               throw new Error("Error Input");
             }
 
-            if (responsegoogle.data) {
-              if (responsegoogle.data.add_google.code !== 200) {
-                throw new Error(responsegoogle.data.add_google.message);
-              }
-              {
+            if (response.data) {
+              if (response.data.add_google.code !== 200) {
+                if (response.data.add_google.message == "Failed") {
+                  settextAlert("FailedUpdate");
+                  setmodalAlert(true);
+                }
+                if (response.data.add_google.message == "Full") {
+                  settextAlert("AktivitasFull");
+                  setmodalAlert(true);
+                  // throw new Error("Destinasi sudah full");
+                }
+                setLoading(false);
+              } else {
                 dataItinerary.itinerary_detail
                   ? props.route.params.sebelum
                     ? props.navigation.dispatch(
@@ -1073,13 +1096,13 @@ export default function ItineraryChooseday(props) {
                           {
                             name: "BottomStack",
                             state: {
-                              routes: [{ name: "HomeScreen" }],
+                              routes: [{name: "HomeScreen"}],
                             },
                           },
                           {
                             name: "BottomStack",
                             state: {
-                              routes: [{ name: "TripPlaning" }],
+                              routes: [{name: "TripPlaning"}],
                             },
                           },
                           {
@@ -1151,7 +1174,15 @@ export default function ItineraryChooseday(props) {
 
             if (responseevent.data) {
               if (responseevent.data.add_event.code !== 200) {
-                throw new Error(responseevent.data.add_event.message);
+                if (response.data.add_event.message == "Failed") {
+                  settextAlert("FailedUpdate");
+                  setmodalAlert(true);
+                }
+                if (response.data.add_event.message == "Full") {
+                  settextAlert("AktivitasFull");
+                  setmodalAlert(true);
+                  // throw new Error("Destinasi sudah full");
+                }
               }
               {
                 dataItinerary.itinerary_detail
@@ -1239,7 +1270,7 @@ export default function ItineraryChooseday(props) {
     }
   };
 
-  const RenderActive = ({ item, index }) => {
+  const RenderActive = ({item, index}) => {
     return (
       <TouchableOpacity
         key={index}
@@ -1282,8 +1313,8 @@ export default function ItineraryChooseday(props) {
               android: 35,
             }),
             transform: Platform.select({
-              ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-              android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+              ios: [{scaleX: 0.8}, {scaleY: 0.8}],
+              android: [{scaleX: 1.3}, {scaleY: 1.3}],
             }),
           }}
           onChange={() =>
@@ -1339,6 +1370,175 @@ export default function ItineraryChooseday(props) {
         paddingHorizontal: 20,
       }}
     >
+      {/* modal alert */}
+      <Modalss
+        onBackdropPress={() => {
+          setmodalAlert(false);
+          props.navigation.dispatch(
+            StackActions.replace("ItineraryStack", {
+              screen: "itindetail",
+              params: {
+                itintitle: dataItinerary.itinerary_detail.name,
+                country: Iditinerary,
+                dateitin:
+                  dataItinerary && dataItinerary.itinerary_detail
+                    ? dateFormatr(dataItinerary.itinerary_detail.start_date) +
+                      "  -  " +
+                      dateFormatr(dataItinerary.itinerary_detail.end_date)
+                    : null,
+                token: token,
+                datadayaktif: dataSelected[0],
+                status: "edit",
+                Kiriman: Kiriman,
+                data_from: props.route.params.data_from,
+              },
+            })
+          );
+        }}
+        onRequestClose={() => setmodalAlert(false)}
+        onDismiss={() => setmodalAlert(false)}
+        visible={modalAlert}
+        transparent={true}
+      >
+        <Pressable
+          onPress={() => {
+            setmodalAlert(false);
+            props.navigation.dispatch(
+              StackActions.replace("ItineraryStack", {
+                screen: "itindetail",
+                params: {
+                  itintitle: dataItinerary.itinerary_detail.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary.itinerary_detail
+                      ? dateFormatr(dataItinerary.itinerary_detail.start_date) +
+                        "  -  " +
+                        dateFormatr(dataItinerary.itinerary_detail.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected[0],
+                  status: "edit",
+                  Kiriman: Kiriman,
+                  data_from: props.route.params.data_from,
+                },
+              })
+            );
+          }}
+          style={{
+            height: Dimensions.get("screen").height,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+            // opacity: 0.7,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              backgroundColor: "#F6F6F6",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              borderBottomColor: "#d1d1d1",
+              borderBottomWidth: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              size="label"
+              type="bold"
+              style={{
+                marginTop: 13,
+                marginBottom: 15,
+              }}
+            >
+              Oops
+            </Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: "white",
+              alignItems: "center",
+              alignContent: "center",
+              // height: 100,
+              width: Dimensions.get("screen").width - 100,
+              borderBottomLeftRadius: 5,
+              borderBottomRightRadius: 5,
+              paddingVertical: 20,
+              paddingHorizontal: 15,
+            }}
+          >
+            <Errors height={80} width={80} />
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                marginTop: 20,
+                textAlign: "center",
+              }}
+            >
+              {t("FailedUpdate")}
+            </Text>
+
+            <View
+              style={{
+                marginTop: 20,
+                backgroundColor: "#f3f3f3",
+                padding: 20,
+              }}
+            >
+              <Text size="label" style={{textAlign: "center"}}>
+                {t(textAlert)}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setmodalAlert(false);
+                props.navigation.dispatch(
+                  StackActions.replace("ItineraryStack", {
+                    screen: "itindetail",
+                    params: {
+                      itintitle: dataItinerary.itinerary_detail.name,
+                      country: Iditinerary,
+                      dateitin:
+                        dataItinerary && dataItinerary.itinerary_detail
+                          ? dateFormatr(
+                              dataItinerary.itinerary_detail.start_date
+                            ) +
+                            "  -  " +
+                            dateFormatr(dataItinerary.itinerary_detail.end_date)
+                          : null,
+                      token: token,
+                      datadayaktif: dataSelected[0],
+                      status: "edit",
+                      Kiriman: Kiriman,
+                      data_from: props.route.params.data_from,
+                    },
+                  })
+                );
+              }}
+              style={{
+                paddingTop: 20,
+              }}
+            >
+              <Text
+                type="bold"
+                size="label"
+                style={{
+                  color: "#209fae",
+                }}
+              >
+                {t("understand")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modalss>
+
+      {/* modal alert */}
       <Loading show={loading}></Loading>
       {/* <NavigationEvents onDidFocus={() => _Refresh()} /> */}
       <ScrollView
@@ -1353,7 +1553,7 @@ export default function ItineraryChooseday(props) {
             <ImageBackground
               source={
                 dataItinerary.itinerary_detail.cover
-                  ? { uri: dataItinerary.itinerary_detail.cover }
+                  ? {uri: dataItinerary.itinerary_detail.cover}
                   : default_image
               }
               style={{
@@ -1499,7 +1699,7 @@ export default function ItineraryChooseday(props) {
             </TouchableOpacity>
           </View>
         ) : null}
-        <View style={{ height: 70 }}></View>
+        <View style={{height: 70}}></View>
       </ScrollView>
       <View
         style={{
@@ -1514,7 +1714,7 @@ export default function ItineraryChooseday(props) {
           borderTopWidth: 1,
           borderColor: "#F0F0F0",
           shadowColor: "#F0F0F0",
-          shadowOffset: { width: 2, height: 2 },
+          shadowOffset: {width: 2, height: 2},
           shadowOpacity: 1,
           shadowRadius: 2,
           elevation: 3,
