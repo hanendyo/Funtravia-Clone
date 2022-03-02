@@ -742,7 +742,7 @@ export default function TravelGoalDetail(props) {
               : SafeStatusBar - 6,
         }}
       >
-        <Text
+        {/* <Text
           size="title"
           type="bold"
           style={{
@@ -753,7 +753,7 @@ export default function TravelGoalDetail(props) {
           numberOfLines={1}
         >
           {datadetail.title}
-        </Text>
+        </Text> */}
       </Animated.View>
 
       {/*End Title Header */}
@@ -806,26 +806,26 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: 100,
-          width: 100,
+          height: Platform.OS === "ios" ? normalize(53) : normalize(55),
+          flex: 1,
+          alignItems: "flex-start",
+          alignItems: "center",
           position: "absolute",
+          paddingLeft: 15,
           zIndex: 999,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar - 13
-                : SafeStatusBar - 18
-              : NotchAndro
-              ? SafeStatusBar - 3
-              : SafeStatusBar - 17,
           opacity: titleOpacity,
+          flexDirection: "row",
+          top:
+            Platform.OS === "ios"
+              ? SafeStatusBar - 3
+              : NotchAndro
+              ? SafeStatusBar + 10
+              : SafeStatusBar - 6,
         }}
       >
         <Pressable
           onPress={() => props.navigation.goBack()}
           style={{
-            marginTop: Platform.OS === "ios" ? 20 : 23,
-            marginLeft: 15,
             borderRadius: 40,
             height: 40,
             width: 40,
@@ -839,6 +839,19 @@ export default function TravelGoalDetail(props) {
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
           )}
         </Pressable>
+        <Text
+          size="title"
+          type="bold"
+          style={{
+            color: "#fff",
+            marginBottom: NotchAndro ? 0 : 5,
+            marginTop: Platform.OS === "ios" ? 4 : -4,
+            marginLeft: 5,
+          }}
+          numberOfLines={1}
+        >
+          {datadetail.title}
+        </Text>
       </Animated.View>
 
       {/* End Back Arrow Two */}

@@ -1389,6 +1389,7 @@ export default function ItineraryDestination(props) {
                       ) : null}
                     </View>
                   </View>
+
                   <ScrollView
                     // style={{ borderWidth: 1, height: 100 }}
                     nestedScrollEnabled={true}

@@ -1328,6 +1328,8 @@ export default function ItineraryChooseday(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  let [checked, setChecked] = useState(true);
+
   return (
     <View
       style={{
