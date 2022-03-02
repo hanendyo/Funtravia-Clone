@@ -74,7 +74,6 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
-
   const NotchAndro = StatusBar.currentHeight > 24;
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
@@ -129,7 +128,7 @@ const Index = (props) => {
           HeightWeb -
           StatusBar.currentHeight
         : NotchAndro
-        ? normalize(210) +
+        ? normalize(220) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -2394,7 +2393,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 8,
+            width: Dimensions.get("screen").width / 7,
           }}
         >
           <Animated.View>
@@ -2443,7 +2442,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 8,
+            width: Dimensions.get("screen").width / 7,
           }}
         >
           <Animated.View>
@@ -2451,11 +2450,10 @@ const Index = (props) => {
               <Pressable
                 onPress={() => setModalSosial(true)}
                 style={{
-                  height: layoutsWeb,
+                  // height: layoutsWeb,
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
-                  // marginVertical: 5,
                 }}
               >
                 <Text

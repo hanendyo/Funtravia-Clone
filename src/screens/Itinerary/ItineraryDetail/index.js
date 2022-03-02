@@ -4277,12 +4277,12 @@ export default function ItineraryDetail(props) {
             <Ripple
               key={"tabx" + index}
               onPress={() => {
-                status === "edit" && index !== 0
+                status === "edit" && index === 1
                   ? setmodalTrip(true)
                   : item.active === false
                   ? setSoon(true)
                   : null;
-                setIndex(index);
+                index !== 2 ? setIndex(index) : null;
               }}
             >
               <View
@@ -4290,7 +4290,7 @@ export default function ItineraryDetail(props) {
                   borderBottomWidth: index == tabIndex ? 2 : 1,
                   borderBottomColor: index == tabIndex ? "#209fae" : "#d1d1d1",
                   alignContent: "center",
-
+                  flexDirection: "row",
                   width:
                     props.navigationState.routes.length <= 2
                       ? Dimensions.get("screen").width * 0.5
@@ -4304,9 +4304,64 @@ export default function ItineraryDetail(props) {
                   paddingHorizontal: Platform.OS === "ios" ? 15 : null,
                 }}
               >
+                {index === tabIndex ? (
+                  index === 0 ? (
+                    <ItineraryIcon
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  ) : index === 1 ? (
+                    <TravelAlbum
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  ) : (
+                    <TravelStories
+                      style={{
+                        marginRight: 5,
+                      }}
+                      height={20}
+                      width={20}
+                    />
+                  )
+                ) : index === 0 ? (
+                  <ItineraryIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : index === 1 ? (
+                  <AlbumIconGray
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                ) : (
+                  <TravelStoriesdis
+                    style={{
+                      marginRight: 5,
+                    }}
+                    height={20}
+                    width={20}
+                  />
+                )}
                 <Text
                   style={[
-                    index == tabIndex ? styles.labelActive : styles.label,
+                    index == tabIndex
+                      ? styles.labelActive
+                      : index === 2
+                      ? styles.labelDisabled
+                      : styles.label,
                     {
                       opacity: index == tabIndex ? 1 : 1,
                       borderBottomWidth: 0,
@@ -7001,6 +7056,7 @@ export default function ItineraryDetail(props) {
                 size="title"
                 style={{
                   marginTop: 20,
+                  textAlign: "center",
                 }}
               >
                 {t("TripnotStarted")}
@@ -7412,7 +7468,12 @@ export default function ItineraryDetail(props) {
             style={{
               flexDirection: "column",
               marginTop: "auto",
-              height: Dimensions.get("screen").height * 0.45,
+              height:
+                Platform.OS === "ios"
+                  ? Notch
+                    ? Dimensions.get("screen").height * 0.45
+                    : Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.45,
               width: Dimensions.get("screen").width,
               backgroundColor: "white",
               borderTopLeftRadius: 15,
@@ -7823,6 +7884,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Platform.OS == "ios" ? 18 : 16,
     color: "#464646",
+    fontFamily: "Lato-Bold",
+  },
+  labelDisabled: {
+    fontSize: Platform.OS == "ios" ? 18 : 16,
+    color: "#c7c7c7",
     fontFamily: "Lato-Bold",
   },
   labelActive: {

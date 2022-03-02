@@ -873,7 +873,7 @@
   "photosFromTrip": "Photos from trip",
   "viewPhotoOnFunFeed": "View photo on fun feed",
   "register": "Register",
-  "login": "login",
+  "login": "Login",
   "pending": "Pending",
   "rejected": "Rejected",
   "addFlightDetail": "Add flight number to your itinerary",
@@ -899,7 +899,7 @@
   "failedToSelectCurrency": "Failed to select currency",
   "itineraryAlbum": "Itinerary Album",
   "feedAlbum": "Feed Album",
-  "editCustomActivity" : "Edit custom activity",
+  "editCustomActivity": "Edit custom activity",
   "successAddMember": "Success add new member",
   "maxMemberGroup": "Maximum of participants are 150 ",
   "PleaseFillYourHotelName": "Please fill your hotel name"

@@ -49,12 +49,12 @@ import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import { useDispatch, useSelector } from "react-redux";
-import { setSettingUser } from "../../../redux/action";
 
 export default function ItinerarySearchCategory(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
   const [modalLogin, setModalLogin] = useState(false);
+
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
@@ -991,7 +991,7 @@ export default function ItinerarySearchCategory(props) {
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{
-                width: "75%",
+                width: "72%",
                 marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}

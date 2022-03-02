@@ -678,7 +678,7 @@ export default function Post(props) {
       <View
         style={{
           backgroundColor: "#209FAE",
-          height: Platform.OS === "ios" ? (Notch ? 44 : 44) : 55,
+          height: Platform.OS === "ios" ? (Notch ? 55 : 44) : 55,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
@@ -738,7 +738,7 @@ export default function Post(props) {
         keyExtractor={(item) => item?.node?.image?.uri}
         style={{
           backgroundColor: "white",
-          height: Dimensions.get("screen").height * 0.85,
+          height: Dimensions.get("screen").height * 0.89,
           // marginBottom: 100,
         }}
         stickyHeaderIndices={[0]}
