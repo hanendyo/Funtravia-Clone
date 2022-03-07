@@ -23,6 +23,7 @@ import {
   Pointmapgray,
   Bottom,
   New,
+  Arrowbackios,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -72,7 +73,11 @@ export default function CreateCustom(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };
@@ -1061,7 +1066,11 @@ export default function CreateCustom(props) {
               }}
               onPress={() => setModal(false)}
             >
-              <Arrowbackwhite width={20} height={20} />
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
             </TouchableOpacity>
             <Text
               size={"title"}

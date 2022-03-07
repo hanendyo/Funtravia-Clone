@@ -11,6 +11,7 @@ import CreateListAlbum from "../../screens/Feed/Post/CreateAlbum";
 import ChooseAlbumItinerary from "../../screens/Feed/Post/ChooseAlbumItinerary";
 import ListFotoAlbums from "../../screens/Feed/ListFotoAlbums";
 import Crop from "../../screens/Feed/Post/Crop";
+import TravelAlbumList from "../../screens/Feed/TravelAlbumList";
 
 const FeedStack = createStackNavigator();
 export default function FeedStackNavigation() {
@@ -27,6 +28,18 @@ export default function FeedStackNavigation() {
       }
     >
       {/* <FeedStack.Screen name="FeedList" component={FeedList} /> */}
+      <FeedStack.Screen
+        name="AlbumTravelList"
+        component={TravelAlbumList}
+        options={{
+          // headerShown: false,
+          headerTitle: "",
+          headerBackTitleVisible: false,
+
+          // headerTintColor: "white",
+          // headerBackTitleVisible: false,
+        }}
+      />
       <FeedStack.Screen
         name="Post"
         component={Postscreen}

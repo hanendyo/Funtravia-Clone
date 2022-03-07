@@ -15,6 +15,8 @@ import { PinchGestureHandler } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("screen");
 export default function RenderSinglePhoto({
+  itinerary_id,
+  has_itinerary,
   data,
   props,
   play,
@@ -211,15 +213,25 @@ export default function RenderSinglePhoto({
             <Pressable
               onPress={() => {
                 token
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "albumdetail",
-                      params: {
-                        id: data?.album?.id,
-                        type: null,
-                        token: token,
-                        judul: data?.album?.title,
-                      },
-                    })
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "AlbumTravelList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                        },
+                      })
                   : setModalLogin(true);
               }}
               style={{
@@ -236,15 +248,25 @@ export default function RenderSinglePhoto({
             <AlbumFeed
               onPress={() => {
                 token
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "albumdetail",
-                      params: {
-                        id: data?.album?.id,
-                        type: null,
-                        token: token,
-                        judul: data?.album?.title,
-                      },
-                    })
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "AlbumTravelList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                        },
+                      })
                   : setModalLogin(true);
               }}
               height={15}
@@ -293,15 +315,27 @@ export default function RenderSinglePhoto({
           <>
             <Pressable
               onPress={() => {
-                props.navigation.push("ProfileStack", {
-                  screen: "albumdetail",
-                  params: {
-                    id: data?.album?.id,
-                    type: null,
-                    token: token,
-                    judul: data?.album?.title,
-                  },
-                });
+                token
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "AlbumTravelList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                        },
+                      })
+                  : setModalLogin(true);
               }}
               style={{
                 backgroundColor: "#040404",
@@ -317,15 +351,25 @@ export default function RenderSinglePhoto({
             <AlbumFeed
               onPress={() => {
                 token
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "albumdetail",
-                      params: {
-                        id: data?.album?.id,
-                        type: null,
-                        token: token,
-                        judul: data?.album?.title,
-                      },
-                    })
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "AlbumTravelList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                        },
+                      })
                   : setModalLogin(true);
               }}
               height={17}

@@ -706,7 +706,7 @@ export default function FeedList({ props, token }) {
             dateitin: "",
             token: tokenApps,
             status: "",
-            index: 1,
+            index: 0,
             datadayaktif: data.day,
           },
         })
@@ -2157,6 +2157,8 @@ export default function FeedList({ props, token }) {
             >
               {item.node.is_single == false ? (
                 <RenderAlbum
+                  itinerary_id={item?.node?.itinerary?.id}
+                  has_itinerary={item?.node?.itinerary?.id ? true : false}
                   data={item.node}
                   props={props}
                   play={play}
@@ -2168,6 +2170,8 @@ export default function FeedList({ props, token }) {
                 />
               ) : (
                 <RenderSinglePhoto
+                  itinerary_id={item?.node?.itinerary?.id}
+                  has_itinerary={item?.node?.itinerary?.id ? true : false}
                   data={item.node}
                   props={props}
                   play={play}

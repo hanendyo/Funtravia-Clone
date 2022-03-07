@@ -1109,7 +1109,7 @@ export default function Trip(props) {
                         data={datacity.city_search_cursor_based.edges}
                         renderItem={({ item, index }) => (
                           <Ripple
-                            key={index + Math.floor(Math.random() * 1.2)}
+                            key={`key-${index}`}
                             // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
                             onPress={() =>
                               setcity(item.node.id, item.node.name)
@@ -1621,7 +1621,7 @@ export default function Trip(props) {
                 style={{
                   marginTop: 0,
                   marginBottom: -35,
-                  backgroundColor: "white",
+                  backgroundColor: "#14646e",
                   justifyContent: "flex-end",
                   alignItems: "center",
                   alignSelf: "center",
