@@ -4280,10 +4280,22 @@ export default function ItineraryDetail(props) {
               onPress={() => {
                 status === "edit" && index === 1
                   ? setmodalTrip(true)
-                  : item.active === false
+                  : item.active == false
                   ? setSoon(true)
                   : null;
-                index !== 2 ? setIndex(index) : null;
+                status === "edit"
+                  ? status === "edit" && index !== 0
+                    ? null
+                    : setIndex(index)
+                  : status === "saved"
+                  ? status === "saved" && index > 1
+                    ? null
+                    : setIndex(index)
+                  : status === "finish"
+                  ? status === "finish" && index > 1
+                    ? null
+                    : setIndex(index)
+                  : null;
               }}
             >
               <View
