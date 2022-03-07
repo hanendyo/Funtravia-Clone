@@ -60,8 +60,6 @@ export default function Albumheader({
   const [albumId, setalbumId] = useState("");
   const [editStatus, setEditStatus] = useState(false);
 
-  console.log("dataalbum", dataAlbum);
-
   let [alertPopUp, setAlertPopUp] = useState({
     show: false,
     judul: "",

@@ -56,7 +56,7 @@ import Searching from "../../../graphQL/Query/Itinerary/SearchDestination";
 import Continent from "../../../graphQL/Query/Countries/Continent";
 import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
-import normalize from "react-native-normalize";
+import filterDestinationV2 from "../../../graphQL/Query/Destination/Destinasifilter";
 
 export default function ItineraryDestination(props) {
   const { t, i18n } = useTranslation();
@@ -114,6 +114,7 @@ export default function ItineraryDestination(props) {
     data: dataContinen,
     loading: loadingcontinen,
     error: errorcontinen,
+    refetch: refetchContinent,
   } = useQuery(Continent, {
     onCompleted: async () => {
       let dats = [...dataContinen?.continent_type];
@@ -129,6 +130,7 @@ export default function ItineraryDestination(props) {
     data: dataCountry,
     loading: loadingcountry,
     error: errorcountry,
+    refetch: refetchCountry,
   } = useQuery(Countryss, {
     variables: {
       continent_id: null,
@@ -171,6 +173,9 @@ export default function ItineraryDestination(props) {
   const [datafilterAll, setdatafilterAll] = useState([]);
   const [dataContinent, setdataContinent] = useState([]);
   const [dataCountrys, setdataCountrys] = useState([]);
+  const [filterShow, setFilterShow] = useState([]);
+
+  console.log("datades", dataDestination);
 
   const [aktif, setaktif] = useState("categories");
 
@@ -271,14 +276,66 @@ export default function ItineraryDestination(props) {
     data: datafilter,
     loading: loadingfilter,
     error: errorfilter,
-  } = useQuery(filterDestination, {
+    refetch: refetchFilterDestination,
+  } = useQuery(filterDestinationV2, {
     onCompleted: () => {
-      setdataFilterCategori(datafilter?.destination_filter?.type);
-      setdataFilterCategoris(datafilter?.destination_filter?.type);
-      setdataFilterFacility(datafilter?.destination_filter?.facility);
-      setdataFilterFacilitys(datafilter?.destination_filter?.facility);
-      setdataFilterCountry(datafilter?.destination_filter?.country);
-      setdataFilterCountrys(datafilter?.destination_filter?.country);
+      if (datafilter) {
+        let datloop = [...datafilter?.destination_filter?.type];
+        let hasil = [...filterShow];
+        let des = [];
+
+        for (let idx in datloop) {
+          if (search.type.includes(datloop[idx].id)) {
+            let dat = { ...datloop[idx] };
+            dat.checked = true;
+            datloop.splice(idx, 1, dat);
+            des.push(dat);
+          }
+        }
+        hasil = hasil.concat(des);
+        console.log("datloop", datloop);
+        setdataFilterCategori(datafilter?.destination_filter?.type);
+        setdataFilterCategoris(datafilter?.destination_filter?.type);
+        setdataFilterFacility(datafilter?.destination_filter?.facility);
+        setdataFilterFacilitys(datafilter?.destination_filter?.facility);
+        setdataFilterCountry(datafilter?.destination_filter?.country);
+        setdataFilterCountrys(datafilter?.destination_filter?.country);
+
+        let dtat = datloop?.filter((item) => item?.sugestion === true);
+
+        for (var datan of dtat) {
+          let indx = hasil.findIndex((key) => key.id === datan.id);
+
+          if (indx !== -1) {
+            let dd = { ...datan };
+            dd.checked = true;
+            hasil.splice(indx, 1, dd);
+          } else {
+            hasil.push(datan);
+          }
+        }
+
+        let dtf = datafilter?.destination_filter?.facility.filter(
+          (item) => item.sugestion === true
+        );
+
+        for (var dataf of dtf) {
+          let indxs = hasil.findIndex((key) => key.id === dataf.id);
+
+          if (indxs !== -1) {
+            let dds = { ...dataf };
+            dds.checked = true;
+            hasil.splice(indxs, 1, dds);
+          } else {
+            hasil.push(dataf);
+          }
+        }
+
+        setFilterShow(hasil);
+      }
+      if (errorfilter) {
+        console.log("error", errorfilter);
+      }
     },
   });
 
@@ -391,6 +448,9 @@ export default function ItineraryDestination(props) {
     props.navigation.setOptions(HeaderComponent);
     const unsubscribe = props.navigation.addListener("focus", () => {
       GetListDestination();
+      refetchFilterDestination();
+      refetchCountry();
+      refetchContinent();
     });
     return unsubscribe;
   }, [props.navigation]);
@@ -1116,6 +1176,7 @@ export default function ItineraryDestination(props) {
                 >
                   {dataFilterCategoris?.map((item, index) => (
                     <TouchableOpacity
+                      key={index}
                       onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
                         flexDirection: "row",
@@ -1134,6 +1195,7 @@ export default function ItineraryDestination(props) {
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
+                        animationDuration={0}
                         boxType={"square"}
                         style={{
                           alignSelf: "center",
@@ -1146,7 +1208,7 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
-                        onChange={() => _handleCheck(item["id"], index, item)}
+                        // onChange={() => _handleCheck(item["id"], index, item)}
                         onValueChange={() =>
                           Platform.OS == "ios"
                             ? null
@@ -1184,6 +1246,7 @@ export default function ItineraryDestination(props) {
                 >
                   {dataFilterFacilitys?.map((item, index) => (
                     <TouchableOpacity
+                      key={index}
                       onPress={() => _handleCheckf(item["id"], index, item)}
                       style={{
                         flexDirection: "row",
@@ -1203,6 +1266,7 @@ export default function ItineraryDestination(props) {
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
                         boxType={"square"}
+                        animationDuration={0}
                         style={{
                           alignSelf: "center",
                           width: Platform.select({
@@ -1214,7 +1278,7 @@ export default function ItineraryDestination(props) {
                             android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                           }),
                         }}
-                        onChange={() => _handleCheckf(item["id"], index, item)}
+                        // onChange={() => _handleCheckf(item["id"], index, item)}
                         onValueChange={() =>
                           Platform.OS == "ios"
                             ? null
@@ -1247,6 +1311,7 @@ export default function ItineraryDestination(props) {
                 >
                   {dataFilterCountrys?.map((item, index) => (
                     <TouchableOpacity
+                      key={index}
                       onPress={() => _handleCheckC(item["id"], index, item)}
                       style={{
                         flexDirection: "row",
@@ -1265,6 +1330,7 @@ export default function ItineraryDestination(props) {
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
+                        animationDuration={0}
                         boxType={"square"}
                         style={{
                           alignSelf: "center",
@@ -1308,6 +1374,7 @@ export default function ItineraryDestination(props) {
                 >
                   {dataFilterCitys?.map((item, index) => (
                     <TouchableOpacity
+                      key={index}
                       onPress={() => _handleCheckCity(item["id"], index, item)}
                       style={{
                         flexDirection: "row",
@@ -1326,6 +1393,7 @@ export default function ItineraryDestination(props) {
                         lineWidth={1}
                         onFillColor="#209FAE"
                         onTintColor="#209FAE"
+                        animationDuration={0}
                         boxType={"square"}
                         style={{
                           alignSelf: "center",
@@ -1508,6 +1576,7 @@ export default function ItineraryDestination(props) {
                       backgroundColor: "#f6f6f6",
                       paddingBottom: 5,
                     }}
+                    key={index}
                   >
                     <View
                       style={{
@@ -1607,6 +1676,7 @@ export default function ItineraryDestination(props) {
               >
                 {dataCountrys?.map((item, index) => (
                   <TouchableOpacity
+                    key={index}
                     onPress={() => _handleCheckCountry(item["id"], index, item)}
                     style={{
                       flexDirection: "row",
@@ -1867,6 +1937,7 @@ export default function ItineraryDestination(props) {
                 {dataFilterCitys?.map((item, index) => {
                   return item.head2 === dataNegara?.name ? (
                     <TouchableOpacity
+                      key={index}
                       onPress={() =>
                         _handleCheckCitySingle(item["id"], index, item)
                       }

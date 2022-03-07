@@ -230,8 +230,8 @@ export default function ChatsearchPage({ navigation, route }) {
       });
       setDataGroupRes(newDataGroup);
     } else {
-      setDataRes([]);
-      setDataGroupRes([]);
+      setDataRes(data);
+      setDataGroupRes(dataGroup);
     }
     // }
   };
@@ -268,7 +268,7 @@ export default function ChatsearchPage({ navigation, route }) {
     if (route.key == "personal") {
       return (
         <ChatList
-          dataRes={dataRes}
+          dataRes={searchtext.length ? dataRes : data}
           user={user}
           navigation={navigation}
           LongPressFunc={(item, room_id) => {
@@ -280,7 +280,7 @@ export default function ChatsearchPage({ navigation, route }) {
     } else if (route.key == "group") {
       return (
         <ChatGroupList
-          dataGroupRes={dataGroupRes}
+          dataGroupRes={searchtext.length ? dataGroupRes : dataGroup}
           navigation={navigation}
           param="search"
         />
