@@ -24,6 +24,10 @@ import TravelAlbumListQuery from "../../graphQL/Query/Album/TravelAlbumList";
 export default function TravelAlbumList(props) {
   const tokenApps = useSelector((data) => data.token);
   const [dataTravelAlbum, setDataTravelAlbum] = useState([]);
+  console.log(
+    "🚀 ~ file: TravelAlbumList.js ~ line 27 ~ TravelAlbumList ~ dataTravelAlbum",
+    dataTravelAlbum
+  );
 
   const [
     travelAlbum,
@@ -175,10 +179,8 @@ export default function TravelAlbumList(props) {
               <View
                 style={{
                   height: 380,
-                  marginBottom: 0,
                   width: Dimensions.get("screen").width,
                   backgroundColor: "white",
-                  alignSelf: "center",
                   justifyContent: "space-evenly",
                 }}
               >
@@ -188,14 +190,15 @@ export default function TravelAlbumList(props) {
                 {/* IMAGE PARENT */}
                 <View
                   style={{
-                    height: 280,
+                    height: 285,
                     width: Dimensions.get("screen").width - 50,
                     justifyContent: "space-evenly",
                     alignSelf: "center",
-                    borderRadius: 8,
+                    borderRadius: 5,
                     marginBottom: 10,
-                    borderWidth: 1,
+                    borderWidth: 0.5,
                     borderColor: "#d1d1d1",
+                    paddingVertical: 6,
                   }}
                 >
                   {/* BIG IMAGE */}
@@ -215,12 +218,11 @@ export default function TravelAlbumList(props) {
                       <Image
                         source={{ uri: item.media[0].filepath }}
                         style={{
-                          height: 155,
+                          height: 150,
                           width: Dimensions.get("screen").width - 65,
                           justifyContent: "space-evenly",
                           alignSelf: "center",
-                          borderRadius: 8,
-                          marginBottom: 0,
+                          borderRadius: 5,
                         }}
                       ></Image>
                     </TouchableOpacity>
@@ -231,7 +233,7 @@ export default function TravelAlbumList(props) {
                         height: 150,
                         width: Dimensions.get("screen").width - 65,
                         backgroundColor: "#e1e1e1",
-                        borderRadius: 8,
+                        borderRadius: 5,
                       }}
                     ></View>
                   )}
@@ -244,11 +246,12 @@ export default function TravelAlbumList(props) {
                       alignSelf: "center",
                       justifyContent: "space-between",
                       width: Dimensions.get("screen").width - 65,
-                      borderRadius: 8,
+                      borderRadius: 5,
                     }}
                   >
                     {item && item.media[1] && item?.media[1].filepath ? (
                       <TouchableOpacity
+                        style={{ width: "32.5%" }}
                         onPress={() =>
                           props.navigation.push("ProfileStack", {
                             screen: "albumdetail",
@@ -265,24 +268,35 @@ export default function TravelAlbumList(props) {
                           style={{
                             alignSelf: "center",
                             height: 110,
-                            width: Dimensions.get("screen").width - 300,
-                            borderRadius: 8,
+                            width: "100%",
+                            borderRadius: 5,
+                            opacity: 0.15,
                           }}
                         ></Image>
+                        <Text
+                          style={{
+                            position: "absolute",
+                            alignSelf: "center",
+                            top: 45,
+                          }}
+                        >
+                          View all
+                        </Text>
                       </TouchableOpacity>
                     ) : (
                       <View
                         style={{
                           alignSelf: "center",
                           height: 110,
-                          width: Dimensions.get("screen").width - 300,
+                          width: "32.5%",
                           backgroundColor: "#e1e1e1",
-                          borderRadius: 8,
+                          borderRadius: 5,
                         }}
                       ></View>
                     )}
                     {item && item.media[2] && item?.media[2].filepath ? (
                       <TouchableOpacity
+                        style={{ width: "32.5%" }}
                         onPress={() =>
                           props.navigation.push("ProfileStack", {
                             screen: "albumdetail",
@@ -299,8 +313,8 @@ export default function TravelAlbumList(props) {
                           style={{
                             alignSelf: "center",
                             height: 110,
-                            width: Dimensions.get("screen").width - 300,
-                            borderRadius: 8,
+                            width: "100%",
+                            borderRadius: 5,
                           }}
                         ></Image>
                       </TouchableOpacity>
@@ -309,14 +323,15 @@ export default function TravelAlbumList(props) {
                         style={{
                           alignSelf: "center",
                           height: 110,
-                          width: Dimensions.get("screen").width - 300,
                           backgroundColor: "#e1e1e1",
-                          borderRadius: 8,
+                          borderRadius: 5,
+                          width: "32.5%",
                         }}
                       ></View>
                     )}
                     {item && item.media[3] && item?.media[3].filepath ? (
                       <TouchableOpacity
+                        style={{ width: "32.5%" }}
                         onPress={() =>
                           props.navigation.push("ProfileStack", {
                             screen: "albumdetail",
@@ -333,8 +348,8 @@ export default function TravelAlbumList(props) {
                           style={{
                             alignSelf: "center",
                             height: 110,
-                            width: Dimensions.get("screen").width - 300,
-                            borderRadius: 8,
+                            width: "100%",
+                            borderRadius: 5,
                           }}
                         ></Image>
                       </TouchableOpacity>
@@ -343,9 +358,9 @@ export default function TravelAlbumList(props) {
                         style={{
                           alignSelf: "center",
                           height: 110,
-                          width: Dimensions.get("screen").width - 300,
                           backgroundColor: "#e1e1e1",
-                          borderRadius: 8,
+                          borderRadius: 5,
+                          width: "32.5%",
                         }}
                       ></View>
                     )}
@@ -364,6 +379,7 @@ export default function TravelAlbumList(props) {
             );
           }}
         />
+        <View style={{ height: Platform.OS == "ios" ? 140 : 170 }}></View>
       </Animated.View>
     </View>
   );
@@ -381,6 +397,6 @@ const styles = StyleSheet.create({
   listAlbumParent: {
     height: Dimensions.get("screen").height,
     marginTop: 5,
-    backgroundColor: "white",
+    backgroundColor: "#e1e1e1",
   },
 });

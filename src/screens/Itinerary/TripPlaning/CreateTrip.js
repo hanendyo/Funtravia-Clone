@@ -390,9 +390,10 @@ export default function Trip(props) {
   };
 
   const settravel = async (item) => {
-    setLoadingApp(true);
-    await setTravelWith(item.first_name);
-    await setsearchtravel([]);
+    // setLoadingApp(true);
+
+    setTravelWith(item.first_name);
+    setsearchtravel([]);
     var tempdata = [...withSelected];
     var inde = tempdata.findIndex((k) => k["id"] === item.id);
     if (inde === -1) {
@@ -401,12 +402,12 @@ export default function Trip(props) {
         name: item.first_name,
         image: item.picture,
       });
-      await setWithSelected(tempdata);
+      setWithSelected(tempdata);
       var tempdatas = [...idwithSelected];
       tempdatas.push(item.id);
-      await setIdwithSelected(tempdatas);
+      setIdwithSelected(tempdatas);
 
-      setLoadingApp(false);
+      // setLoadingApp(false);
     } else {
       Alert.alert(item.first_name + " already with you");
       setLoadingApp(false);
@@ -1620,7 +1621,7 @@ export default function Trip(props) {
                 isVisible={modaltravel}
                 style={{
                   marginTop: 0,
-                  marginBottom: -35,
+                  marginBottom: -40,
                   backgroundColor: "#14646e",
                   justifyContent: "flex-end",
                   alignItems: "center",
@@ -1719,6 +1720,7 @@ export default function Trip(props) {
                           style={{
                             paddingBottom: 10,
                             marginHorizontal: "3%",
+                            // borderWidth: 2
                           }}
                         >
                           <Text
@@ -1774,6 +1776,14 @@ export default function Trip(props) {
                                   >
                                     <Truncate text={item.name} length={8} />
                                   </Text>
+                                  <Xblue
+                                    width="20"
+                                    height="20"
+                                    style={{
+                                      alignSelf: "center",
+                                      marginLeft: 10,
+                                    }}
+                                  />
                                 </TouchableOpacity>
                               );
                             })}
