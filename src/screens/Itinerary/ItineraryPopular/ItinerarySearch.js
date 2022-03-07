@@ -22,6 +22,7 @@ import {
   Text,
   CardItinerary,
   ModalLogin,
+  StatusBar,
 } from "../../../component";
 import { default_image, Bg_soon } from "../../../assets/png";
 import {
@@ -49,12 +50,14 @@ import ListFotoAlbum from "../../../graphQL/Query/Album/ListAlbumHome";
 import JournalList from "../../../graphQL/Query/Journal/JournalList";
 import { dateFormatMonthYears } from "../../../component/src/dateformatter";
 import { useDispatch, useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
 
 export default function ItinerarySearchCategory(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
   const [modalLogin, setModalLogin] = useState(false);
-
+  const Notch = DeviceInfo.hasNotch();
+  const NotchAndro = StatusBar.currentHeight > 24
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
@@ -991,7 +994,7 @@ export default function ItinerarySearchCategory(props) {
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{
-                width: "72%",
+                width: Platform.OS === "ios" ? (Notch ? "74%" : "72%") : "75%",
                 marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}
