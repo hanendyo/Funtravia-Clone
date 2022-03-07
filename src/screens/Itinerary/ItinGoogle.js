@@ -58,7 +58,23 @@ export default function ItinGoogle(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          if (props.route.params.from == "choose_day_back_to_google") {
+            props.navigation.push("itindest", {
+              token: token,
+              datadayaktif: props.route.params.datadayaktif,
+              dataDes: props.route.params.dataDes,
+              lat: props.route.params.lat,
+              long: props.route.params.long,
+              idcity: props.route.params.dataDes.itinerary_detail.city.id,
+              idcountries:
+                props.route.params.dataDes.itinerary_detail.country.id,
+              from: "google_back_to_itin_destination",
+            });
+          } else {
+            props.navigation.goBack();
+          }
+        }}
         style={{
           height: 55,
         }}
@@ -97,8 +113,6 @@ export default function ItinGoogle(props) {
     props.navigation.setOptions(HeaderComponent);
     if (props.route.params.lat && props.route.params.long) {
       if (props.route.params.lat !== null && props.route.params.long !== null) {
-        console.log(props.route.params);
-
         setlat(parseFloat(props.route.params.lat));
         setlong(parseFloat(props.route.params.long));
       }
@@ -315,6 +329,8 @@ export default function ItinGoogle(props) {
                     token: token,
                     Position: "google",
                     datadayaktif: datadayaktif,
+                    dataDes: dataDes,
+                    from: "after_choose_day",
                   },
                 });
               }}
@@ -443,7 +459,6 @@ export default function ItinGoogle(props) {
               GooglePlacesSearchQuery={{ rankby: "distance" }}
               enablePoweredByContainer={false}
               renderRow={(data) => {
-                // console.log(data);
                 if (data.description) {
                   var x = data.description.split(",");
                 }

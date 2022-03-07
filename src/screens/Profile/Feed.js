@@ -887,7 +887,7 @@ export default function myfeed(props) {
             dateitin: "",
             token: tokenApps,
             status: "",
-            index: 1,
+            index: 0,
             datadayaktif: data.day,
           },
         })

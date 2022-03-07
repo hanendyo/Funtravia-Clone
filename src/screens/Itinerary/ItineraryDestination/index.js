@@ -59,6 +59,10 @@ import { RNToasty } from "react-native-toasty";
 import filterDestinationV2 from "../../../graphQL/Query/Destination/Destinasifilter";
 
 export default function ItineraryDestination(props) {
+  console.log(
+    "🚀 ~ file: index.js ~ line 62 ~ ItineraryDestination ~ props",
+    props
+  );
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -152,8 +156,6 @@ export default function ItineraryDestination(props) {
       await setdataCountrys(xc);
     },
   });
-  console.log("negara", dataNegara);
-
   const [token, setToken] = useState(props.route.params.token);
   const [datadayaktif] = useState(props.route.params.datadayaktif);
   const [dataDes] = useState(props.route.params.dataDes);
@@ -212,9 +214,6 @@ export default function ItineraryDestination(props) {
       countries_id: dataNegara?.id ? dataNegara?.id : null,
     },
     onCompleted: async () => {
-      // console.log("masukkk", dataKota);
-      // console.log("masukkk", datasearchlocation);
-
       let datloop = [...datasearchlocation?.searchlocation_populer];
 
       for (var ix in datloop) {
@@ -467,6 +466,18 @@ export default function ItineraryDestination(props) {
           status: "favorite",
           onbackhandler: props.route.params.onbackhandler,
         })
+      : props.route.params.from == "google_back_to_itin_destination"
+      ? props.navigation.navigate("itindetail", {
+          itintitle: props?.route?.params?.dataDes?.itinerary_detail?.name,
+          country: props?.route?.params?.dataDes?.itinerary_detail?.id,
+          datadayaktif: props?.route?.params?.datadayaktif,
+          token: token,
+          data_from: "setting",
+          index: 0,
+          status: "favorite",
+          onbackhandler: "itin_detail_back_to_itin_destination",
+          from: "itin_detail_back_to_itin_destination",
+        })
       : props.navigation.goBack();
   };
 
@@ -548,7 +559,6 @@ export default function ItineraryDestination(props) {
   };
 
   const _handleCheckCitySingle = async (id, index, item) => {
-    // console.log("masuk", dataFilterCityfull);
     let tempe = [...dataFilterCityfull];
     // return false;
 
@@ -665,7 +675,6 @@ export default function ItineraryDestination(props) {
       }
       await xc.push(item);
     }
-    console.log(xc);
     await setdataCountrys(xc);
   };
 
@@ -683,8 +692,6 @@ export default function ItineraryDestination(props) {
     let index = dataFilterCitys.findIndex((key) => key.checked === true);
     let item = { ...dataFilterCitys[index] };
     let ser = { ...search };
-
-    console.log(item);
     ser["countries"] = [];
     ser["provinces"] = [];
     ser["cities"] = [];
@@ -825,6 +832,8 @@ export default function ItineraryDestination(props) {
                 datadayaktif: datadayaktif,
                 lat: lat,
                 long: long,
+                idcity: props?.route?.params?.idcity,
+                idcountries: props?.route?.params?.idcountries,
               })
             }
             style={{

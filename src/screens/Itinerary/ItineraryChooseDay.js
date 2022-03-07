@@ -49,20 +49,35 @@ export default function ItineraryChooseday(props) {
         },
       });
     } else {
-      props.navigation.push("ItineraryStack", {
-        screen: "itindest",
-        params: {
-          IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
+      if (
+        props.route.params.Position == "google" ||
+        props.route.params.Position == "Google"
+      ) {
+        props.navigation.push("ItinGoogle", {
+          dataDes: props?.route?.params?.dataDes,
           token: props?.route?.params?.token,
-          datadayaktif: props?.route?.params?.data_dest?.datadayaktif,
-          dataDes: props?.route?.params?.data_dest?.dataDes,
-          lat: props?.route?.params?.data_dest?.lat,
-          long: props?.route?.params?.data_dest?.long,
-          idcity: props?.route?.params?.data_dest?.idcity,
-          idcountries: props?.route?.params?.data_dest?.idcountries,
+          datadayaktif: props?.route?.params?.datadayaktif,
+          lat: props?.route?.params?.lat,
+          long: props?.route?.params?.long,
+          from: "choose_day_back_to_google",
           onbackhandler: "chooseDay",
-        },
-      });
+        });
+      } else {
+        props.navigation.push("ItineraryStack", {
+          screen: "itindest",
+          params: {
+            IdItinerary: props?.route?.params?.data_dest?.IdItinerary,
+            token: props?.route?.params?.token,
+            datadayaktif: props?.route?.params?.data_dest?.datadayaktif,
+            dataDes: props?.route?.params?.data_dest?.dataDes,
+            lat: props?.route?.params?.data_dest?.lat,
+            long: props?.route?.params?.data_dest?.long,
+            idcity: props?.route?.params?.data_dest?.idcity,
+            idcountries: props?.route?.params?.data_dest?.idcountries,
+            onbackhandler: "chooseDay",
+          },
+        });
+      }
     }
   };
 
@@ -170,7 +185,6 @@ export default function ItineraryChooseday(props) {
 
   const _Refresh = React.useCallback(() => {
     let datadayaktif = props.route.params.datadayaktif;
-    console.log("dayaAktif", datadayaktif);
     if (datadayaktif) {
       let tempdata = { ...datadayaktif };
       tempdata["checked"] = true;
@@ -186,8 +200,6 @@ export default function ItineraryChooseday(props) {
       setRefreshing(false);
     });
   }, []);
-
-  console.log("dataSelected", dataSelected);
 
   let [Position, setPosition] = useState(props.route.params.Position);
 
@@ -943,26 +955,52 @@ export default function ItineraryChooseday(props) {
   };
 
   const BackToDetail = () => {
-    props.navigation.dispatch(
-      StackActions.replace("ItineraryStack", {
-        screen: "itindetail",
-        params: {
-          itintitle: dataItinerary.itinerary_detail.name,
-          country: Iditinerary,
-          dateitin:
-            dataItinerary && dataItinerary.itinerary_detail
-              ? dateFormatr(dataItinerary.itinerary_detail.start_date) +
+    if (props.route.params.from == "after_choose_day") {
+      props.navigation.dispatch(
+        StackActions.replace("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: props?.route?.params?.dataDes?.itinerary_detail?.name,
+            country: props?.route?.params?.dataDes?.itinerary_detail?.id,
+            dateitin: props?.route?.params?.dataDes?.itinerary_detail
+              ? dateFormatr(
+                  props?.route?.params?.dataDes?.itinerary_detail?.start_date
+                ) +
                 "  -  " +
-                dateFormatr(dataItinerary.itinerary_detail.end_date)
+                dateFormatr(
+                  props?.route?.params?.dataDes?.itinerary_detail.end_date
+                )
               : null,
-          token: token,
-          datadayaktif: dataSelected[0],
-          status: "edit",
-          Kiriman: Kiriman,
-          data_from: props.route.params.data_from,
-        },
-      })
-    );
+            // token: token,
+            datadayaktif: props?.route?.params?.dataDes?.datadayaktif,
+            Kiriman: props?.route?.params?.Kiriman,
+            data_from: props.route.params.data_from,
+            from: "after_choose_day",
+          },
+        })
+      );
+    } else {
+      props.navigation.dispatch(
+        StackActions.replace("ItineraryStack", {
+          screen: "itindetail",
+          params: {
+            itintitle: dataItinerary.itinerary_detail.name,
+            country: Iditinerary,
+            dateitin:
+              dataItinerary && dataItinerary.itinerary_detail
+                ? dateFormatr(dataItinerary.itinerary_detail.start_date) +
+                  "  -  " +
+                  dateFormatr(dataItinerary.itinerary_detail.end_date)
+                : null,
+            token: token,
+            datadayaktif: dataSelected[0],
+            status: "edit",
+            Kiriman: Kiriman,
+            data_from: props.route.params.data_from,
+          },
+        })
+      );
+    }
   };
 
   const saveData = async () => {
@@ -976,8 +1014,6 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-        console.log("datas", datas);
-
         if (x == dataSelected.length) {
           try {
             let response = await mutationSave({
@@ -1185,6 +1221,7 @@ export default function ItineraryChooseday(props) {
                                     Kiriman: Kiriman,
                                     data_from: props.route.params.data_from,
                                     index: 0,
+                                    from: "after_choose_day",
                                   },
                                 },
                               ],

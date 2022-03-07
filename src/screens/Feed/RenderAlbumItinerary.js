@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import Video from "react-native-video";
 
 export default function RenderAlbum({
+  itinerary_id,
   data,
   props,
   play,
@@ -165,14 +166,27 @@ export default function RenderAlbum({
               // onPress={() =>
               //   data.itinerary !== null ? goToItinerary(data) : null
               // }
+              // onPress={() => {
+              //   token
+              //     ? props.navigation.push("ProfileStack", {
+              //         screen: " ",
+              //         params: {
+              //           id: data?.album?.id,
+              //           type: null,
+              //           token: token,
+              //           judul: data?.album?.title,
+              //         },
+              //       })
+              //     : setModalLogin(true);
+              // }}
               onPress={() => {
                 token
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "albumdetail",
+                  ? props.navigation.push("FeedStack", {
+                      screen: "AlbumTravelList",
                       params: {
+                        itinerary_id,
                         id: data?.album?.id,
                         type: null,
-                        token: token,
                         judul: data?.album?.title,
                       },
                     })
@@ -257,14 +271,27 @@ export default function RenderAlbum({
         >
           {data.album ? (
             <Pressable
+              // onPress={() => {
+              //   token
+              //     ? props.navigation.push("ProfileStack", {
+              //         screen: "albumdetail",
+              //         params: {
+              //           id: data?.album?.id,
+              //           type: null,
+              //           token: token,
+              //           judul: data?.album?.title,
+              //         },
+              //       })
+              //     : setModalLogin(true);
+              // }}
               onPress={() => {
                 token
-                  ? props.navigation.push("ProfileStack", {
-                      screen: "albumdetail",
+                  ? props.navigation.push("FeedStack", {
+                      screen: "AlbumTravelList",
                       params: {
+                        itinerary_id,
                         id: data?.album?.id,
                         type: null,
-                        token: token,
                         judul: data?.album?.title,
                       },
                     })
