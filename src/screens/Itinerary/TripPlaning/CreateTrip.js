@@ -64,6 +64,48 @@ const boxWidth = Dimensions.get("screen").width / 1.09;
 export default function Trip(props) {
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
+
+  // const HeaderComponent = {
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: (
+  //     <Text size="header" style={{ color: "#fff" }}>
+  //       {t("TripPlanning")}
+  //     </Text>
+  //   ),
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0, // remove shadow on Android
+  //     shadowOpacity: 0, // remove shadow on iOS
+  //     borderBottomWidth: 0, // Just in case.
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       // onPress={() => props.navigation.navigate("HomeScreen")}
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={15} width={15}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+  // };
+
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -74,14 +116,24 @@ export default function Trip(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0, // remove shadow on Android
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+      elevation: 0,
       shadowOpacity: 0, // remove shadow on iOS
-      borderBottomWidth: 0, // Just in case.
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

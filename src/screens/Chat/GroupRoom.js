@@ -88,12 +88,33 @@ export default function Room({ navigation, route }) {
     headerShown: true,
     headerTitle: null,
     headerMode: "screen",
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        {` `}
+      </Text>
+    ),
+    headerTintColor: "white",
+    headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 1,
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+      elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: null,
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
+    },
     headerLeft: () => (
       <View
         style={{
@@ -102,9 +123,6 @@ export default function Room({ navigation, route }) {
           alignContent: "center",
           alignItems: "center",
           marginVertical: 15,
-          marginLeft: 10,
-          marginBottom: Platform.OS === "ios" ? 20 : 10,
-          // borderWidth: 1,
         }}
       >
         <TouchableOpacity
@@ -134,16 +152,16 @@ export default function Room({ navigation, route }) {
               },
             });
           }}
-          style={{
-            flexDirection: "row",
-            borderWidth: 1,
-            borderColor: "#209fae",
-            width: Dimensions.get("screen").width - 100,
-            height: 45,
-            alignItems: "center",
-            backgroundColor: "#209fae",
-            zIndex: 150,
-          }}
+          // style={{
+          //   flexDirection: "row",
+          //   borderWidth: 10,
+          //   borderColor: "#209fae",
+          //   width: Dimensions.get("screen").width - 100,
+          //   height: 45,
+          //   alignItems: "center",
+          //   backgroundColor: "#209fae",
+          //   zIndex: 150,
+          // }}
         >
           <TouchableOpacity
             onPress={() => {
@@ -192,8 +210,6 @@ export default function Room({ navigation, route }) {
         </Pressable>
       </View>
     ),
-    headerLeftContainerStyle: null,
-    headerRight: null,
     headerRightStyle: {
       paddingRight: 20,
     },
@@ -277,7 +293,7 @@ export default function Room({ navigation, route }) {
               }}
               style={{
                 flexDirection: "row",
-                height: 45,
+                height: StatusBar.currentHeight,
                 alignItems: "center",
                 backgroundColor: "#209fae",
                 zIndex: 150,
@@ -307,11 +323,7 @@ export default function Room({ navigation, route }) {
                         }
                       : default_image
                   }
-                  style={{
-                    width: Platform.OS == "ios" ? 33 : 40,
-                    height: Platform.OS == "ios" ? 33 : 40,
-                    borderRadius: Platform.OS == "ios" ? 33 : 40,
-                  }}
+                  style={{ width: 40, height: 40, borderRadius: 20 }}
                 />
               </TouchableOpacity>
 

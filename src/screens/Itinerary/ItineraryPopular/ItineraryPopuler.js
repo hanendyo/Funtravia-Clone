@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Modal as ModalRN,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -79,6 +80,65 @@ export default function ItineraryPopuler(props) {
     elevation: Platform.OS == "ios" ? 3 : 2.5,
   };
 
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: (
+  //     <Text size="header" type="bold" style={{ color: "#fff" }}>
+  //       Itinerary
+  //     </Text>
+  //   ),
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={20} width={20}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+  //   headerRight: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() =>
+  //         props.navigation.navigate("ItineraryStack", {
+  //           screen: "ItinerarySearchCategory",
+  //           params: { token: token },
+  //         })
+  //       }
+  //       style={{
+  //         height: 55,
+  //         marginRight: 10,
+  //       }}
+  //     >
+  //       <SearchWhite height={20} width={20}></SearchWhite>
+  //     </Button>
+  //   ),
+  // };
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -90,13 +150,23 @@ export default function ItineraryPopuler(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -111,7 +181,7 @@ export default function ItineraryPopuler(props) {
         }}
       >
         {Platform.OS == "ios" ? (
-          <Arrowbackios height={20} width={20}></Arrowbackios>
+          <Arrowbackios height={15} width={15}></Arrowbackios>
         ) : (
           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
         )}
@@ -131,7 +201,9 @@ export default function ItineraryPopuler(props) {
         }
         style={{
           height: 55,
-          marginRight: 10,
+          paddingRight: 15,
+          position: "absolute",
+          zIndex: 999,
         }}
       >
         <SearchWhite height={20} width={20}></SearchWhite>

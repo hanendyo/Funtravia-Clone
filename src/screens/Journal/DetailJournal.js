@@ -19,6 +19,7 @@ import {
   shareAction,
   CopyLink,
   ModalLogin,
+  Truncate,
 } from "../../component";
 import { default_image, logo_funtravia } from "../../assets/png";
 import React, { useEffect, useRef, useState, useCallback } from "react";
@@ -85,65 +86,76 @@ export default function DetailJournal(props) {
   let { width, height } = Dimensions.get("screen");
   let [y, setY] = useState(0);
   const { t } = useTranslation();
-  let title = () => (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        alignContent: "center",
-        // justifyContent: "center",
-        // borderWidth: 1,
-        width: Dimensions.get("screen").width - 70,
-      }}
-    >
-      {/* <Text>test</Text> */}
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-      <Text
-        size="title"
-        type="bold"
-        numberOfLines={1}
-        style={{ color: "#FFF", flex: 1 }}
-      >
-        {dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
-      </Text>
-    </View>
-  );
+  // let title = () => (
+  //   <View
+  //     style={{
+  //       flexDirection: "row",
+  //       alignItems: "center",
+  //       alignContent: "center",
+  //       // justifyContent: "center",
+  //       // borderWidth: 1,
+  //       width: Dimensions.get("screen").width - 70,
+  //     }}
+  //   >
+  //     {/* <Text>test</Text> */}
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={15} width={15}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //     <Text
+  //       size="title"
+  //       type="bold"
+  //       numberOfLines={1}
+  //       style={{ color: "#FFF", flex: 1 }}
+  //     >
+  //       {dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
+  //     </Text>
+  //   </View>
+  // );
 
   const HeaderComponent = {
     headerShown: true,
-    title: "",
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        <Truncate
+          text={dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
+          length={Platform.OS === "ios" ? 30 : 30}
+        />
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -176,8 +188,6 @@ export default function DetailJournal(props) {
       },
     },
   });
-
-  console.log("data journal", data);
 
   const afterComment = async () => {
     await refetch();
@@ -260,7 +270,7 @@ export default function DetailJournal(props) {
 
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
-    props.navigation.setOptions({ headerLeft: title });
+    // props.navigation.setOptions({ headerLeft: title });
     loadAsync();
   }, []);
 

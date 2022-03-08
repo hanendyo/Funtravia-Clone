@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, StatusBar } from "react-native";
 import { WebView } from "react-native-webview";
 import { Nextpremier, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { Text, Button } from "../../component";
@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 export default function About(props) {
   const { t, i18n } = useTranslation();
   // let [param, setParam] = useState(props.navigation.getParam('params'));
-  // console.log(param);
   // const [Param, { data, loading, error }] = useLazyQuery(getParams, {
   // 	// fetchPolicy: 'network-only',
   // 	// context: {
@@ -34,13 +33,23 @@ export default function About(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

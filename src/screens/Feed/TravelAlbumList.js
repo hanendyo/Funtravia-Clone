@@ -8,6 +8,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -24,10 +25,6 @@ import TravelAlbumListQuery from "../../graphQL/Query/Album/TravelAlbumList";
 export default function TravelAlbumList(props) {
   const tokenApps = useSelector((data) => data.token);
   const [dataTravelAlbum, setDataTravelAlbum] = useState([]);
-  console.log(
-    "🚀 ~ file: TravelAlbumList.js ~ line 27 ~ TravelAlbumList ~ dataTravelAlbum",
-    dataTravelAlbum
-  );
 
   const [
     travelAlbum,
@@ -74,17 +71,23 @@ export default function TravelAlbumList(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 18,
-    //   color: "white",
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

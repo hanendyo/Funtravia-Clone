@@ -31,6 +31,7 @@ import {
   Flights,
   SavePutih,
 } from "../../../assets/svg";
+import DeviceInfo from "react-native-device-info";
 import { default_image } from "../../../assets/png";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { useMutation } from "@apollo/client";
@@ -47,8 +48,7 @@ export default function ReoderDetail({ navigation, route }) {
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
   const token = useSelector((data) => data.token);
-
-  // console.log(`LISTDATACUI: `, listData);
+  const Notch = DeviceInfo.hasNotch();
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
     route.params.child[0] ? route.params.child[0].time : "00:00"
@@ -169,7 +169,6 @@ export default function ReoderDetail({ navigation, route }) {
       // if (error) {
       //   throw new Error("Error Input");
       // }
-      // console.log(`RESPONSE CUI: `, response);
       if (response.data) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
@@ -195,7 +194,6 @@ export default function ReoderDetail({ navigation, route }) {
         position: "bottom",
       });
     } catch (error) {
-      console.log(`ERROR CUI: `, error);
       setModalSave(false);
       RNToasty.Show({
         title: t("somethingWrong"),
@@ -254,7 +252,6 @@ export default function ReoderDetail({ navigation, route }) {
       lon2: lon2,
       unit: unit,
     });
-    // console.log("jarak", jarak);
     let hasil = jarak / kecepatan;
     let hasils = hasil + "";
 
@@ -791,8 +788,6 @@ export default function ReoderDetail({ navigation, route }) {
     // }
     // saveTimeLine();
   };
-  // console.log(`SATU: `, listData);
-  // console.log(`DUA: `, listData[1]);
 
   const hitungDuration = ({ start, duration }) => {
     duration = duration ? duration.split(":") : "00:00:00";
@@ -813,7 +808,6 @@ export default function ReoderDetail({ navigation, route }) {
 
   let isEdited = false;
   const _backHandler = () => {
-    // console.log(isEdited);
     if (isEdited) {
       Alert.alert("Data Not Saved", "Are you sure ?", [
         {
@@ -827,51 +821,177 @@ export default function ReoderDetail({ navigation, route }) {
     }
   };
 
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: () => {
+  //     return (
+  //       <View style={{ marginBottom: 5 }}>
+  //         {Platform.OS === "ios" ? (
+  //           <View
+  //             style={{
+  //               alignItems: "center",
+  //               width: 200,
+  //             }}
+  //           >
+  //             <Text
+  //               type="bold"
+  //               size="title"
+  //               style={{ color: "#FFF" }}
+  //               numberOfLines={1}
+  //             >
+  //               {headData?.name ? headData.name : ""}
+  //             </Text>
+
+  //             <Text
+  //               type="regular"
+  //               size="label"
+  //               style={{ color: "#FFF" }}
+  //             >{`Day ${dayData.day}`}</Text>
+  //           </View>
+  //         ) : null}
+  //       </View>
+  //     );
+  //   },
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+  //     marginLeft: 10,
+  //   },
+  //   headerRightContainerStyle: {
+  //     marginRight: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <View style={{ flexDirection: "row" }}>
+  //       <Button
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         onPress={() => _backHandler()}
+  //         style={{
+  //           height: 55,
+  //         }}
+  //       >
+  //         {Platform.OS == "ios" ? (
+  //           <Arrowbackios height={20} width={20}></Arrowbackios>
+  //         ) : (
+  //           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //         )}
+  //       </Button>
+  //       <>
+  //         {Platform.OS === "ios" ? null : (
+  //           <View
+  //             style={{
+  //               marginLeft: 15,
+  //               marginTop: 5,
+  //             }}
+  //           >
+  //             <Text
+  //               type="bold"
+  //               size="title"
+  //               style={{ color: "#FFF", marginBottom: -3 }}
+  //               numberOfLines={1}
+  //             >
+  //               {headData?.name ? headData.name : ""}
+  //             </Text>
+
+  //             <Text
+  //               type="regular"
+  //               size="label"
+  //               style={{ color: "#FFF" }}
+  //             >{`Day ${dayData.day}`}</Text>
+  //           </View>
+  //         )}
+  //       </>
+  //     </View>
+  //   ),
+  //   headerRight: () => (
+  //     <Pressable
+  //       onPress={() => setModalSave(true)}
+  //       style={{
+  //         flexDirection: "row",
+  //         alignItems: "center",
+  //       }}
+  //     >
+  //       <SavePutih width={25} height={25} />
+  //       <Text
+  //         style={{
+  //           color: "#FFF",
+  //           marginLeft: 5,
+  //         }}
+  //       >
+  //         {t("save")}
+  //       </Text>
+  //     </Pressable>
+  //   ),
+  // };
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: () => {
-      return (
-        <View style={{ marginBottom: 5 }}>
-          {Platform.OS === "ios" ? (
-            <View
-              style={{
-                alignItems: "center",
-                width: 200,
-              }}
+    headerTitle: (
+      <View
+        style={{
+          marginBottom: 5,
+          width: Dimensions.get("screen").width,
+          alignItems: "center",
+        }}
+      >
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              alignItems: "center",
+              width: 200,
+              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{ color: "#FFF" }}
+              numberOfLines={1}
             >
-              <Text
-                type="bold"
-                size="title"
-                style={{ color: "#FFF" }}
-                numberOfLines={1}
-              >
-                {headData?.name ? headData.name : ""}
-              </Text>
+              {headData?.name ? headData.name : ""}
+            </Text>
 
-              <Text
-                type="regular"
-                size="label"
-                style={{ color: "#FFF" }}
-              >{`Day ${dayData.day}`}</Text>
-            </View>
-          ) : null}
-        </View>
-      );
-    },
+            <Text
+              type="regular"
+              size="label"
+              style={{ color: "#FFF" }}
+            >{`Day ${dayData.day}`}</Text>
+          </View>
+        ) : null}
+      </View>
+    ),
+
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
-    },
-    headerRightContainerStyle: {
-      marginRight: 10,
     },
     headerLeft: () => (
       <View style={{ flexDirection: "row" }}>
@@ -886,7 +1006,7 @@ export default function ReoderDetail({ navigation, route }) {
           }}
         >
           {Platform.OS == "ios" ? (
-            <Arrowbackios height={20} width={20}></Arrowbackios>
+            <Arrowbackios height={15} width={15}></Arrowbackios>
           ) : (
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
           )}
@@ -897,6 +1017,7 @@ export default function ReoderDetail({ navigation, route }) {
               style={{
                 marginLeft: 15,
                 marginTop: 5,
+                width: 200,
               }}
             >
               <Text
@@ -924,6 +1045,7 @@ export default function ReoderDetail({ navigation, route }) {
         style={{
           flexDirection: "row",
           alignItems: "center",
+          marginRight: 5,
         }}
       >
         <SavePutih width={25} height={25} />
@@ -938,6 +1060,7 @@ export default function ReoderDetail({ navigation, route }) {
       </Pressable>
     ),
   };
+
   let [spliceDataStay, setSpliceDataStay] = useState([]);
   useEffect(() => {
     navigation.setOptions(HeaderComponent);

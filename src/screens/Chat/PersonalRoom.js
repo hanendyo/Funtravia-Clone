@@ -30,6 +30,7 @@ import {
 } from "../../assets/svg";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
+import { default_image } from "../../assets/png";
 import {
   Button,
   Text,
@@ -469,9 +470,32 @@ export default function Room({ navigation, route }) {
   const navigationOptions = {
     headerShown: true,
     headerTitle: null,
+    headerTitle: (
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        {` `}
+      </Text>
+    ),
+    headerTintColor: "white",
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <View
@@ -481,8 +505,8 @@ export default function Room({ navigation, route }) {
           alignContent: "center",
           alignItems: "center",
           marginVertical: 10,
-          marginLeft: 10,
-          marginBottom: Platform.OS === "ios" ? 20 : 10,
+          // marginLeft: 10,
+          // marginBottom: Platform.OS === "ios" ? 20 : 10,
         }}
       >
         <TouchableOpacity
@@ -520,7 +544,6 @@ export default function Room({ navigation, route }) {
             width: Dimensions.get("screen").width - 100,
             height: 45,
             alignItems: "center",
-            backgroundColor: "#209fae",
             zIndex: 100,
           }}
         >
@@ -536,7 +559,11 @@ export default function Room({ navigation, route }) {
           >
             <FunImage
               size="xs"
-              source={{ uri: route.params.picture }}
+              source={
+                route.params.picture
+                  ? { uri: route.params.picture }
+                  : default_image
+              }
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
           </TouchableOpacity>
@@ -559,7 +586,6 @@ export default function Room({ navigation, route }) {
       paddingRight: 20,
     },
   };
-
   useEffect(() => {
     navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", hardwareBack);
