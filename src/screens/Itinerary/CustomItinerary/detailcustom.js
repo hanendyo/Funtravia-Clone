@@ -384,6 +384,96 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  const deleteactivitychild = async () => {
+    try {
+      let response = await mutationDeleteActivity({
+        variables: {
+          itinerary_id: props.route.params.idItin,
+          id_activity: dataChildEdit.id,
+          type: "custom",
+        },
+      });
+
+      if (response.data) {
+        if (response.data.delete_activity.code !== 200) {
+          RNToasty.Show({
+            title: response.data.delete_activity.message,
+            position: "bottom",
+          });
+          // throw new Error(response.data.delete_activity.message);
+        }
+
+        var Xdata = [...props.route.params.data];
+        var inde = Xdata.findIndex((k) => k["id"] === dataChildEdit.id);
+
+        if (inde !== -1) {
+          Xdata.splice(inde, 1);
+
+          var x = 0;
+          var order = 1;
+          for (var y in Xdata) {
+            Xdata[y].order = order;
+
+            if (Xdata[y - 1]) {
+              Xdata[y].time = hitungDuration({
+                startt: Xdata[y - 1].time,
+                dur: Xdata[y - 1].duration,
+              });
+            }
+            x++;
+            order++;
+          }
+
+          if ((x = Xdata.length)) {
+            try {
+              let response = await mutationSaveTimeline({
+                variables: {
+                  idday: props.route.params.datadayaktif.id,
+                  value: JSON.stringify(Xdata),
+                },
+              });
+
+              if (response.data) {
+                if (response.data.update_timeline.code !== 200) {
+                  RNToasty.Show({
+                    title: response.data.update_timeline.message,
+                    position: "bottom",
+                  });
+                  // throw new Error(response.data.update_timeline.message);
+                }
+                props.navigation.dispatch(
+                  StackActions.replace("ItineraryStack", {
+                    screen: "itindetail",
+                    params: {
+                      itintitle: props.route.params.nameitin,
+                      country: props.route.params.idItin,
+                      token: token,
+                      status: "edit",
+                    },
+                  })
+                );
+              }
+            } catch (error) {
+              RNToasty.Show({
+                title: error,
+                position: "bottom",
+              });
+            }
+          }
+          await props.navigation.goBack();
+        }
+
+        setModalDeleteActivityChild(false);
+      }
+    } catch (error) {
+      RNToasty.Show({
+        title: error,
+        position: "bottom",
+      });
+      setModalDeleteActivityChild(false);
+    }
+  };
+
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
 
@@ -882,6 +972,66 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  const handleEditChild = () => {
+    if (dataChildEdit.detail_flight) {
+      props.navigation.navigate("customFlight", {
+        activityId: dataChildEdit.id,
+        itineraryId: props.route.params.idItin,
+        dayId: props.route.params.idDay,
+        startDate: props.route.params.startDate,
+        endDate: props.route.params.endDate,
+        name: dataChildEdit.name,
+        departure: dataChildEdit.detail_flight.from,
+        arrival: dataChildEdit.detail_flight.destination,
+        latitude: dataChildEdit.latitude,
+        longitude: dataChildEdit.longitude,
+        latitude_departure: dataChildEdit.detail_flight.latitude_departure,
+        longitude_departure: dataChildEdit.detail_flight.longitude_departure,
+        attachment: dataChildEdit.attachment,
+        timeDep: dataChildEdit.detail_flight.departure,
+        timeArr: dataChildEdit.detail_flight.arrival,
+        note: dataChildEdit.note,
+        guestName: dataChildEdit.detail_flight.guest_name,
+        carrier: dataChildEdit.detail_flight.carrier,
+        booking_ref: dataChildEdit.detail_flight.booking_ref,
+      });
+      setmodalMoreChild(false);
+    } else if (dataChildEdit.detail_accomodation) {
+      props.navigation.navigate("customStay", {
+        activityId: dataChildEdit.id,
+        itineraryId: props.route.params.idItin,
+        dayId: props.route.params.idDay,
+        detail_accomodation: dataChildEdit.detail_accomodation,
+        address: dataChildEdit.address,
+        attachment: dataChildEdit.attachment,
+        latitude: dataChildEdit.latitude,
+        longitude: dataChildEdit.longitude,
+        startDate: dataChildEdit.route.params.startDate,
+        endDate: dataChildEdit.route.params.endDate,
+        order: dataChildEdit.route.params.indexdata,
+        time: dataChildEdit.route.params.time,
+        note: dataChildEdit.note,
+      }),
+        setmodalMoreChild(false);
+    } else {
+      props.navigation.navigate("editcustomactivity", {
+        token: token,
+        dataParent: dataChildEdit,
+        idDay: props.route.params.idDay,
+        idItin: props.route.params.idItin,
+        itintitle: props.route.params.nameitin,
+        // dateitin: props.route.params.dateitin,
+        datadayaktif: props.route.params.datadayaktif,
+        datalist: props.route.params.dataList,
+      });
+      // RNToasty.Show({
+      //   title: "Sorry, feature is not available yet",
+      //   position: "bottom",
+      // });
+      setmodalMoreChild(false);
+    }
+  };
+
   const handleUpload = async (files, id, sumber, res) => {
     try {
       let response = await mutationUpload({
@@ -1045,7 +1195,12 @@ export default function detailCustomItinerary(props) {
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   const [modalMore, setModalMore] = useState(false);
+  const [modalMoreChild, setmodalMoreChild] = useState(false);
   const [modalDeleteActivity, setModalDeleteActivity] = useState(false);
+  const [modalDeleteActivityChild, setModalDeleteActivityChild] = useState(
+    false
+  );
+  const [dataChildEdit, setdataChildEdit] = useState({});
 
   const ImagesSlider = async (index, data) => {
     var tempdatas = [];
@@ -1077,14 +1232,16 @@ export default function detailCustomItinerary(props) {
     setModalMore(true);
   };
 
-  console.log("token", token);
+  const bukamodalmenuchild = (item) => {
+    setdataChildEdit(item);
+    setmodalMoreChild(true);
+  };
 
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "space-between",
-        // backgroundColor: "#fff",
       }}
     >
       <Loading show={loadingUploadFile} />
@@ -1103,14 +1260,13 @@ export default function detailCustomItinerary(props) {
         contentContainerStyle={{
           paddingHorizontal: 15,
           paddingVertical: 15,
-          // minHeight: Dimensions.get("screen").height,
         }}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => (
           <View
             style={{
               flexDirection: "row",
-              // borderWidth: 1,
+
               // height: 200,
             }}
           >
@@ -1246,7 +1402,7 @@ export default function detailCustomItinerary(props) {
                   variant="transparent"
                   style={{}}
                   onPress={() => {
-                    bukamodalmenu(item.id, item.type);
+                    bukamodalmenuchild(item);
                   }}
                 >
                   <More width={15} height={15} />
@@ -2160,6 +2316,123 @@ export default function detailCustomItinerary(props) {
         </View>
       </Modal>
 
+      {/* Modal edit activity Child*/}
+      <Modal
+        onBackdropPress={() => {
+          setmodalMoreChild(false);
+        }}
+        onRequestClose={() => setmodalMoreChild(false)}
+        onDismiss={() => setmodalMoreChild(false)}
+        animationType="fade"
+        visible={modalMoreChild}
+        transparent={true}
+      >
+        <Pressable
+          onPress={() => setmodalMoreChild(false)}
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 100,
+            marginHorizontal: 50,
+            // backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: Dimensions.get("screen").height / 2.5,
+            borderRadius: 5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 60,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: "#d1d1d1",
+                alignItems: "center",
+                backgroundColor: "#f6f6f6",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}
+            >
+              <Text style={{marginVertical: 15}} type="bold" size="title">
+                {t("option")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setmodalMoreChild(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 55,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+              }}
+              onPress={() => {
+                // setModalMore(false);
+                handleEditChild();
+              }}
+            >
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  color: "#464646",
+                  marginVertical: 15,
+                }}
+              >
+                {t("edit")}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setmodalMoreChild(false);
+                setModalDeleteActivityChild(true);
+              }}
+            >
+              <Text
+                size="label"
+                type="regular"
+                style={{
+                  color: "#d75995",
+                  marginVertical: 15,
+                }}
+              >
+                {t("delete")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       {/* Modal Delete Activity */}
       <Modal
         useNativeDriver={true}
@@ -2245,6 +2518,101 @@ export default function detailCustomItinerary(props) {
               <Button
                 onPress={() => {
                   setModalDeleteActivity(false);
+                }}
+                style={{marginVertical: 5}}
+                variant="transparent"
+                text={t("discard")}
+              ></Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal Delete Activity Child*/}
+      <Modal
+        useNativeDriver={true}
+        visible={modalDeleteActivityChild}
+        onRequestClose={() => setModalDeleteActivityChild(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          onPress={() => setModalDeleteActivityChild(false)}
+          style={{
+            width: Dimensions.get("screen").width + 25,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            left: -21,
+          }}
+        />
+        <View
+          style={{
+            width: Dimensions.get("screen").width - 140,
+            // marginHorizontal: 70,
+            alignSelf: "center",
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            alignContent: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 2.5,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width - 140,
+              justifyContent: "center",
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                borderBottomColor: "#d1d1d1",
+                borderBottomWidth: 1,
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                backgroundColor: "#f6f6f6",
+              }}
+            >
+              <Text style={{marginVertical: 15}} size="title" type="bold">
+                {t("deleteActivity")}
+              </Text>
+            </View>
+            <Text
+              style={{
+                alignSelf: "center",
+                textAlign: "center",
+                marginTop: 20,
+                marginHorizontal: 10,
+              }}
+              size="label"
+              type="regular"
+            >
+              {t("DeleteActivityfromItinerary")}
+            </Text>
+            <View style={{marginTop: 20, marginHorizontal: 10}}>
+              <Button
+                onPress={() => {
+                  // _handledeleteDay(
+                  //   datadayaktif?.itinerary_id,
+                  //   datadayaktif?.id
+                  // );
+                  // setModalDeleteActivity(false);
+                  deleteactivitychild();
+                }}
+                color="secondary"
+                text={t("delete")}
+              ></Button>
+              <Button
+                onPress={() => {
+                  setModalDeleteActivityChild(false);
                 }}
                 style={{marginVertical: 5}}
                 variant="transparent"
