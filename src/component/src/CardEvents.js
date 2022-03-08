@@ -26,6 +26,7 @@ export default function CardEvents({
   token,
   dataFrom,
   searchInput,
+  from,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -169,6 +170,9 @@ export default function CardEvents({
                 token: token,
                 data_from: dataFrom,
                 search_input: searchInput,
+                from: from,
+                iditinerary: props.route.params?.IdItinerary,
+                datadayaktif: props.route.params?.datadayaktif,
               })
             }
             key={index.toString()}

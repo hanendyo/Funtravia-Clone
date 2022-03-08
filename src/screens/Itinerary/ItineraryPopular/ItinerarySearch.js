@@ -57,7 +57,6 @@ export default function ItinerarySearchCategory(props) {
   let { width, height } = Dimensions.get("screen");
   const [modalLogin, setModalLogin] = useState(false);
   const Notch = DeviceInfo.hasNotch();
-  const NotchAndro = StatusBar.currentHeight > 24
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
@@ -803,7 +802,6 @@ export default function ItinerarySearchCategory(props) {
               </View>
             )}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             refreshControl={
               <RefreshControl
@@ -994,7 +992,7 @@ export default function ItinerarySearchCategory(props) {
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{
-                width: Platform.OS === "ios" ? (Notch ? "74%" : "72%") : "75%",
+                width: Platform.OS === "ios" ? (Notch ? "74%" : "72%") : "76%",
                 marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}

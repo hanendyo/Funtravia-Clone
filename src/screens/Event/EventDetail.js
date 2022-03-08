@@ -234,8 +234,9 @@ export default function EventDetail(props) {
                 Iditinerary: props.route.params.iditinerary,
                 Kiriman: event_id,
                 token: tokenApps,
-                Position: "Event",
+                Position: props.route.params.from ?? "Event",
                 datadayaktif: props.route.params.datadayaktif,
+                data_dest: props.route.params,
               },
             })
           )

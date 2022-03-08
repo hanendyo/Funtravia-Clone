@@ -686,7 +686,6 @@ const Index = (props) => {
               justifyContent: "center",
               marginRight: 5,
             }}
-            onPress={() => _liked(dataDestination.id)}
           >
             <LikeEmpty height={20} width={20} />
           </Pressable>
@@ -1994,7 +1993,7 @@ const Index = (props) => {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "center",
-                  paddingHorizontal: Platform.OS === "ios" ? 15 : null,
+                  paddingHorizontal: Platform.OS === "ios" ? 10 : null,
                 }}
               >
                 <Text
@@ -2011,6 +2010,8 @@ const Index = (props) => {
                           ? "#FFFFFF"
                           : "#209fae",
                       textTransform: "capitalize",
+                      width: "100%",
+                      textAlign: "center",
                     },
                   ]}
                 >
@@ -2298,7 +2299,6 @@ const Index = (props) => {
                 justifyContent: "center",
                 marginRight: 5,
               }}
-              onPress={() => _liked(dataDestination.id)}
             >
               <LikeEmpty height={20} width={20} />
             </Pressable>
