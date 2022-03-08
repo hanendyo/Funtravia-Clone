@@ -12,7 +12,6 @@ import {
 import { FunImageAutoSize, FunVideo } from "../../component";
 import { Mute, Unmute, AlbumFeed } from "../../assets/svg";
 import { PinchGestureHandler } from "react-native-gesture-handler";
-
 const { width, height } = Dimensions.get("screen");
 export default function RenderSinglePhoto({
   itinerary_id,
@@ -230,6 +229,7 @@ export default function RenderSinglePhoto({
                           type: null,
                           token: token,
                           judul: data?.album?.title,
+                          user: data?.user?.id,
                         },
                       })
                   : setModalLogin(true);
@@ -265,6 +265,7 @@ export default function RenderSinglePhoto({
                           type: null,
                           token: token,
                           judul: data?.album?.title,
+                          user: data?.user?.id,
                         },
                       })
                   : setModalLogin(true);
@@ -333,6 +334,7 @@ export default function RenderSinglePhoto({
                           type: null,
                           token: token,
                           judul: data?.album?.title,
+                          user: data?.user?.id,
                         },
                       })
                   : setModalLogin(true);
@@ -368,6 +370,7 @@ export default function RenderSinglePhoto({
                           type: null,
                           token: token,
                           judul: data?.album?.title,
+                          user: data?.user?.id,
                         },
                       })
                   : setModalLogin(true);

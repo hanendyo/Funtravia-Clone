@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Dimensions,
@@ -13,7 +13,7 @@ import {
   StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -36,19 +36,19 @@ import {
   FunDocument,
   Loading,
 } from "../../../component";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import DocumentPicker from "react-native-document-picker";
-import {ReactNativeFile} from "apollo-upload-client";
+import { ReactNativeFile } from "apollo-upload-client";
 import DeviceInfo from "react-native-device-info";
-import {API_KEY} from "../../../config";
-import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+import { API_KEY } from "../../../config";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import AddCustomAccomodation from "../../../graphQL/Mutation/Itinerary/AddCustomAccomodation";
 import UpdateCustomStay from "../../../graphQL/Mutation/Itinerary/UpdateCustomStay";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Modal from "react-native-modal";
-import {request, check, PERMISSIONS} from "react-native-permissions";
+import { request, check, PERMISSIONS } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
 
 export default function detailCustomItinerary(props) {
@@ -57,37 +57,134 @@ export default function detailCustomItinerary(props) {
   const GooglePlacesRef = useRef();
   const NotchAndro = StatusBar ? StatusBar.currentHeight > 24 : false;
 
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: "",
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //     height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 14,
+  //     color: "white",
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <View
+  //       style={{
+  //         flexDirection: "row",
+  //         alignItems: "center",
+  //         // marginBottom: 20,
+  //       }}
+  //     >
+  //       <Button
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         onPress={() => props.navigation.goBack()}
+  //         style={{
+  //           height: 55,
+  //         }}
+  //       >
+  //         {Platform.OS == "ios" ? (
+  //           <Arrowbackios height={15} width={15}></Arrowbackios>
+  //         ) : (
+  //           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //         )}
+  //       </Button>
+  //       <View
+  //         style={{
+  //           marginLeft: 10,
+  //         }}
+  //       >
+  //         <Text type="bold" size="title" style={{ color: "#fff" }}>
+  //           Stay
+  //         </Text>
+  //         <Text
+  //           style={{
+  //             color: "#fff",
+  //           }}
+  //         >
+  //           {t("customActivity")}
+  //         </Text>
+  //       </View>
+  //     </View>
+  //   ),
+  // };
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: (
+      <View
+        style={{
+          marginBottom: 5,
+          width: Dimensions.get("screen").width,
+          alignItems: "center",
+        }}
+      >
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              alignItems: "center",
+              width: 200,
+              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{ color: "#FFF" }}
+              numberOfLines={1}
+            >
+              {t("addHotelName")}
+            </Text>
+
+            <Text type="regular" size="label" style={{ color: "#FFF" }}>
+              {" "}
+              {t("customActivity")}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          // marginBottom: 20,
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Button
           text={""}
           size="medium"
@@ -104,22 +201,34 @@ export default function detailCustomItinerary(props) {
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
           )}
         </Button>
-        <View
-          style={{
-            marginLeft: 10,
-          }}
-        >
-          <Text type="bold" size="title" style={{color: "#fff"}}>
-            Stay
-          </Text>
-          <Text
-            style={{
-              color: "#fff",
-            }}
-          >
-            {t("customActivity")}
-          </Text>
-        </View>
+        <>
+          {Platform.OS === "ios" ? null : (
+            <View
+              style={{
+                marginLeft: 15,
+                marginTop: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{ color: "#FFF", marginBottom: -3 }}
+                numberOfLines={1}
+              >
+                {t("addHotelName")}
+              </Text>
+
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#FFF", marginLeft: -3 }}
+              >
+                {" "}
+                {t("customActivity")}
+              </Text>
+            </View>
+          )}
+        </>
       </View>
     ),
   };
@@ -235,7 +344,7 @@ export default function detailCustomItinerary(props) {
       temp.push(files);
     }
     let tempData = [...dataState.fileCustomEdit, ...temp];
-    setdataState((prevState) => ({...prevState, fileCustomEdit: tempData}));
+    setdataState((prevState) => ({ ...prevState, fileCustomEdit: tempData }));
   };
 
   const [itemValid, setItemValid] = useState({
@@ -274,9 +383,9 @@ export default function detailCustomItinerary(props) {
 
   const onChangeValidation = (name) => (text) => {
     let check = validation(name, text);
-    setdataState({...dataState, [name]: text});
+    setdataState({ ...dataState, [name]: text });
     setItemValid((prev) => {
-      return {...prev, [name]: check};
+      return { ...prev, [name]: check };
     });
   };
 
@@ -284,60 +393,60 @@ export default function detailCustomItinerary(props) {
     if (name === "hotel_name") {
       return dataState.hotel_name == null || dataState.hotel_name.length == 0
         ? setItemValid((prevNameHotel) => {
-            return {...prevNameHotel, ["hotel_name"]: false};
+            return { ...prevNameHotel, ["hotel_name"]: false };
           })
         : setItemValid((prevNameHotel) => {
-            return {...prevNameHotel, ["hotel_name"]: true};
+            return { ...prevNameHotel, ["hotel_name"]: true };
           });
     } else if (name === "address") {
       return dataState.address == null || dataState.address == ""
         ? setItemValid((prevAddress) => {
-            return {...prevAddress, ["address"]: false};
+            return { ...prevAddress, ["address"]: false };
           })
         : setItemValid((prevAddress) => {
-            return {...prevAddress, ["address"]: true};
+            return { ...prevAddress, ["address"]: true };
           });
     } else if (name === "checkin") {
       return dataState.checkin == null || dataState.checkin == ""
         ? setItemValid((prevCheckIn) => {
-            return {...prevCheckIn, ["checkin"]: false};
+            return { ...prevCheckIn, ["checkin"]: false };
           })
         : setItemValid((prevCheckIn) => {
-            return {...prevCheckIn, ["checkin"]: true};
+            return { ...prevCheckIn, ["checkin"]: true };
           });
     } else if (name === "checkout") {
       return dataState.checkout == null || dataState.checkout == ""
         ? setItemValid((prev) => {
-            return {...prev, ["checkout"]: false};
+            return { ...prev, ["checkout"]: false };
           })
         : setItemValid((prev) => {
-            return {...prev, ["checkout"]: true};
+            return { ...prev, ["checkout"]: true };
           });
     } else if (name === "guest_name") {
       return dataState.guest_name == null || dataState.guest_name == ""
         ? setItemValid((prev) => {
-            return {...prev, ["guest_name"]: false};
+            return { ...prev, ["guest_name"]: false };
           })
         : setItemValid((prev) => {
-            return {...prev, ["guest_name"]: true};
+            return { ...prev, ["guest_name"]: true };
           });
     } else if (name === "booking_ref") {
       return dataState.booking_ref == null || dataState.booking_ref == ""
         ? setItemValid((prev) => {
-            return {...prev, ["booking_ref"]: false};
+            return { ...prev, ["booking_ref"]: false };
           })
         : setItemValid((prev) => {
-            return {...prev, ["booking_ref"]: true};
+            return { ...prev, ["booking_ref"]: true };
           });
     } else if (name === "file") {
       return dataState.file == null ||
         dataState.file == [] ||
         dataState.file.length == 0
         ? setItemValid((prev) => {
-            return {...prev, ["file"]: false};
+            return { ...prev, ["file"]: false };
           })
         : setItemValid((prev) => {
-            return {...prev, ["file"]: true};
+            return { ...prev, ["file"]: true };
           });
     }
   };
@@ -350,7 +459,7 @@ export default function detailCustomItinerary(props) {
       };
     });
     setItemValid((prev) => {
-      return {...prev, ["address"]: modalStateValidation("address")};
+      return { ...prev, ["address"]: modalStateValidation("address") };
     });
     setItemValid((prev) => {
       return {
@@ -359,10 +468,10 @@ export default function detailCustomItinerary(props) {
       };
     });
     setItemValid((prev) => {
-      return {...prev, ["checkin"]: modalStateValidation("checkin")};
+      return { ...prev, ["checkin"]: modalStateValidation("checkin") };
     });
     setItemValid((prev) => {
-      return {...prev, ["checkout"]: modalStateValidation("checkout")};
+      return { ...prev, ["checkout"]: modalStateValidation("checkout") };
     });
     setItemValid((prev) => {
       return {
@@ -371,7 +480,7 @@ export default function detailCustomItinerary(props) {
       };
     });
     setItemValid((prev) => {
-      return {...prev, ["file"]: modalStateValidation("file")};
+      return { ...prev, ["file"]: modalStateValidation("file") };
     });
 
     if (
@@ -396,8 +505,6 @@ export default function detailCustomItinerary(props) {
       props.route.params.activityId ? submitDataEditAPI() : submitDataAPI();
     }
   };
-
-  console.log("dataState", dataState);
 
   const submitDataEditAPI = async () => {
     try {
@@ -493,7 +600,7 @@ export default function detailCustomItinerary(props) {
 
       // setCheckInCheck(formatForScreen);
       setRenderDate((prev) => {
-        return {...prev, renderCheckIn: formatForScreen};
+        return { ...prev, renderCheckIn: formatForScreen };
       });
     }
 
@@ -507,14 +614,14 @@ export default function detailCustomItinerary(props) {
 
       // setCheckoutCheck(formatForScreen);
       setRenderDate((prev) => {
-        return {...prev, renderCheckOut: formatForScreen};
+        return { ...prev, renderCheckOut: formatForScreen };
       });
     }
   };
 
   const [
     mutationUpdate,
-    {loading: loadingUpdate, data: dataUpdate, error: errorUpdate},
+    { loading: loadingUpdate, data: dataUpdate, error: errorUpdate },
   ] = useMutation(UpdateCustomStay, {
     context: {
       headers: {
@@ -527,7 +634,7 @@ export default function detailCustomItinerary(props) {
     },
   });
 
-  const [mutation, {loading, data, error}] = useMutation(
+  const [mutation, { loading, data, error }] = useMutation(
     AddCustomAccomodation,
     {
       context: {
@@ -799,7 +906,7 @@ export default function detailCustomItinerary(props) {
               }}
             />
           </View>
-          <View style={{marginBottom: 10}}>
+          <View style={{ marginBottom: 10 }}>
             {dataState.address == "" ? null : (
               <Text
                 style={{
@@ -830,7 +937,7 @@ export default function detailCustomItinerary(props) {
               }}
               value={dataState.address}
               onChangeText={onChangeValidation("address")}
-              selection={{start: 0, end: 0}}
+              selection={{ start: 0, end: 0 }}
             />
             <TouchableOpacity
               style={{
@@ -870,7 +977,7 @@ export default function detailCustomItinerary(props) {
             ) : null}
           </View>
 
-          <View style={{marginBottom: 10}}>
+          <View style={{ marginBottom: 10 }}>
             <FloatingInput
               label={t("Guest Name")}
               autoCorrect={false}
@@ -1078,7 +1185,7 @@ export default function detailCustomItinerary(props) {
           
           </View> */}
 
-          <View style={{marginBottom: 20}}>
+          <View style={{ marginBottom: 20 }}>
             <FloatingInput
               label={t("BookingRef")}
               autoCorrect={false}
@@ -1125,7 +1232,7 @@ export default function detailCustomItinerary(props) {
                 {t("Notes")}
               </Text>
             </View>
-            <View style={{marginBottom: 10}}>
+            <View style={{ marginBottom: 10 }}>
               <TextInput
                 placeholder={t("Notes")}
                 autoCorrect={false}
@@ -1140,10 +1247,10 @@ export default function detailCustomItinerary(props) {
                 }}
                 value={dataState.note}
                 onChangeText={(e) => {
-                  setdataState({...dataState, note: e});
+                  setdataState({ ...dataState, note: e });
                 }}
                 onSubmitEditing={(e) => {
-                  setdataState({...dataState, note: e});
+                  setdataState({ ...dataState, note: e });
                 }}
               />
             </View>
@@ -1173,7 +1280,7 @@ export default function detailCustomItinerary(props) {
             </Text>
           </View>
 
-          <View style={{flex: 1, marginBottom: 10}}>
+          <View style={{ flex: 1, marginBottom: 10 }}>
             {dataState.fileCustomEdit.map((data, index) => {
               return (
                 <View style={styles.attachment}>
@@ -1430,7 +1537,7 @@ export default function detailCustomItinerary(props) {
                 // currentLocationLabel="Nearby location"
                 renderLeftButton={() => {
                   return (
-                    <View style={{justifyContent: "center"}}>
+                    <View style={{ justifyContent: "center" }}>
                       <Magnifying />
                     </View>
                   );
@@ -1456,7 +1563,7 @@ export default function detailCustomItinerary(props) {
                     ) : null)
                   );
                 }}
-                GooglePlacesSearchQuery={{rankby: "distance"}}
+                GooglePlacesSearchQuery={{ rankby: "distance" }}
                 enablePoweredByContainer={false}
                 renderRow={(data) => {
                   if (data.description) {
@@ -1479,14 +1586,14 @@ export default function detailCustomItinerary(props) {
                         <Pointmapblack />
                       </View>
                       <View
-                        style={{width: Dimensions.get("screen").width - 60}}
+                        style={{ width: Dimensions.get("screen").width - 60 }}
                       >
-                        <Text style={{fontFamily: "Lato-Bold", fontSize: 12}}>
+                        <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
                           {/* {x[0]} */}
                           {x ? x[0] : data.name}
                         </Text>
                         <Text
-                          style={{fontFamily: "Lato-Regular", fontSize: 12}}
+                          style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
                         >
                           <Truncate
                             text={

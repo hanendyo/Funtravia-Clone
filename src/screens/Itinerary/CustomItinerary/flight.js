@@ -65,36 +65,133 @@ export default function detailCustomItinerary(props) {
   const Notch = DeviceInfo.hasNotch();
   const NotchAndro = StatusBar ? StatusBar.currentHeight > 24 : false;
 
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: "",
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //     height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 16,
+  //     color: "white",
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <View
+  //       style={{
+  //         flexDirection: "row",
+  //         alignItems: "center",
+  //         // backgroundColor: "red",
+  //       }}
+  //     >
+  //       <Button
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         onPress={() => props.navigation.goBack()}
+  //         style={{
+  //           height: 55,
+  //         }}
+  //       >
+  //         {Platform.OS == "ios" ? (
+  //           <Arrowbackios height={15} width={15}></Arrowbackios>
+  //         ) : (
+  //           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //         )}
+  //       </Button>
+  //       <View
+  //         style={{
+  //           marginLeft: 10,
+  //         }}
+  //       >
+  //         <Text type="bold" size="title" style={{ color: "#fff" }}>
+  //           {t("AddFlightNumber")}
+  //         </Text>
+  //         <Text
+  //           style={{
+  //             color: "#fff",
+  //             fontSize: 14,
+  //           }}
+  //         >
+  //           {t("customActivity")}
+  //         </Text>
+  //       </View>
+  //     </View>
+  //   ),
+  // };
+
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: "",
+    headerTitle: (
+      <View
+        style={{
+          marginBottom: 5,
+          width: Dimensions.get("screen").width,
+          alignItems: "center",
+        }}
+      >
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              alignItems: "center",
+              width: 200,
+              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{ color: "#FFF" }}
+              numberOfLines={1}
+            >
+              {t("AddFlightNumber")}
+            </Text>
+
+            <Text type="regular" size="label" style={{ color: "#FFF" }}>
+              {" "}
+              {t("customActivity")}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 16,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          // backgroundColor: "red",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <Button
           text={""}
           size="medium"
@@ -111,26 +208,38 @@ export default function detailCustomItinerary(props) {
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
           )}
         </Button>
-        <View
-          style={{
-            marginLeft: 10,
-          }}
-        >
-          <Text type="bold" size="title" style={{ color: "#fff" }}>
-            {t("AddFlightNumber")}
-          </Text>
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 14,
-            }}
-          >
-            {t("customActivity")}
-          </Text>
-        </View>
+        <>
+          {Platform.OS === "ios" ? null : (
+            <View
+              style={{
+                marginLeft: 15,
+                marginTop: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{ color: "#FFF", marginBottom: -3 }}
+                numberOfLines={1}
+              >
+                {t("AddFlightNumber")}
+              </Text>
+
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#FFF", marginLeft: -3 }}
+              >
+                {" "}
+                {t("customActivity")}
+              </Text>
+            </View>
+          )}
+        </>
       </View>
     ),
   };
+
   let GooglePlacesRef = useRef();
   const [loadingApp, setLoadingApp] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);

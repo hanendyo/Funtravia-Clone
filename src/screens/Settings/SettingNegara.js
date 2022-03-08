@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Pressable,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -50,33 +51,25 @@ export default function SettingNegara(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
-      marginLeft: 5,
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => props.navigation.goBack()}
-        style={{
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
   };
 
   let [data, setData] = useState([]);

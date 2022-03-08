@@ -10,6 +10,7 @@ import {
   Pressable,
   Platform,
   BackHandler,
+  StatusBar,
 } from "react-native";
 import {
   Sharegreen,
@@ -37,6 +38,62 @@ export default function albumdetail(props) {
   const { t, i18n } = useTranslation();
   const settingApps = useSelector((data) => data.setting);
   const userID = settingApps?.user_id;
+  const [user, setUser] = useState(props?.route?.params?.user);
+
+  // const HeaderComponent = {
+  //   headerTransparent: false,
+  //   headerTintColor: "white",
+  //   headerTitle: (
+  //     <Text size="header" type="bold" style={{ color: "#fff" }}>
+  //       Album {props?.route?.params?.judul}
+  //     </Text>
+  //   ),
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
+
+  //     marginLeft: 10,
+  //   },
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => props.navigation.goBack()}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={15} width={15}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+
+  //   headerRight: () =>
+  //     user && user === userID ? (
+  //       <TouchableOpacity
+  //         style={{
+  //           marginRight: 15,
+  //           width: 20,
+  //           height: 20,
+  //           justifyContent: "center",
+  //           alignItems: "center",
+  //         }}
+  //         onPress={() => setmodalOptions(true)}
+  //       >
+  //         <OptionsVertWhite height={15} width={15} />
+  //       </TouchableOpacity>
+  //     ) : null,
+  // };
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
@@ -47,13 +104,23 @@ export default function albumdetail(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -79,11 +146,13 @@ export default function albumdetail(props) {
       user && user === userID ? (
         <TouchableOpacity
           style={{
-            marginRight: 15,
+            paddingRight: 25,
             width: 20,
             height: 20,
             justifyContent: "center",
             alignItems: "center",
+            position: "absolute",
+            zIndex: 999,
           }}
           onPress={() => setmodalOptions(true)}
         >
@@ -118,7 +187,6 @@ export default function albumdetail(props) {
   const [modalOptions, setmodalOptions] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDeleteAlbum, setModalDeleteAlbum] = useState(false);
-  const [user, setUser] = useState(props?.route?.params?.user);
 
   const spreadData = (data) => {
     let tmpData = [];
@@ -553,7 +621,6 @@ export default function albumdetail(props) {
           nestedScrollEnabled
           data={spreadData(dataalbums)}
           renderItem={({ item, index }) => {
-            // console.log(item);
             if (item.length > 2) {
               if (item[3].grid == 1) {
                 return (

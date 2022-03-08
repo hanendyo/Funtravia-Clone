@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { View, Dimensions, StyleSheet, Platform, Image } from "react-native";
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  Platform,
+  Image,
+  StatusBar,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { inbox_setting, notif_bell } from "../../assets/png";
 import { Nextpremier, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
@@ -39,9 +46,24 @@ export default function Settings(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button
@@ -57,13 +79,6 @@ export default function Settings(props) {
         )}
       </Button>
     ),
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-
-    headerRight: () => {
-      return null;
-    },
   };
 
   const loadAsync = async () => {

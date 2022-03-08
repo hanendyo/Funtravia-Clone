@@ -13,6 +13,7 @@ import {
   TextInput,
   ScrollView,
   BackHandler,
+  StatusBar,
 } from "react-native";
 import {
   Capital,
@@ -59,10 +60,6 @@ import { RNToasty } from "react-native-toasty";
 import filterDestinationV2 from "../../../graphQL/Query/Destination/Destinasifilter";
 
 export default function ItineraryDestination(props) {
-  console.log(
-    "🚀 ~ file: index.js ~ line 62 ~ ItineraryDestination ~ props",
-    props
-  );
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
     headerShown: true,
@@ -75,17 +72,24 @@ export default function ItineraryDestination(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
-    },
-    headerLRightContainerStyle: {
-      background: "#FFF",
-      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -176,11 +180,7 @@ export default function ItineraryDestination(props) {
   const [dataContinent, setdataContinent] = useState([]);
   const [dataCountrys, setdataCountrys] = useState([]);
   const [filterShow, setFilterShow] = useState([]);
-
-  console.log("datades", dataDestination);
-
   const [aktif, setaktif] = useState("categories");
-
   const [search, setSearch] = useState({
     type:
       props.route.params && props.route.params.idtype
@@ -292,7 +292,6 @@ export default function ItineraryDestination(props) {
           }
         }
         hasil = hasil.concat(des);
-        console.log("datloop", datloop);
         setdataFilterCategori(datafilter?.destination_filter?.type);
         setdataFilterCategoris(datafilter?.destination_filter?.type);
         setdataFilterFacility(datafilter?.destination_filter?.facility);
