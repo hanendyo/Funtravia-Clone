@@ -62,6 +62,15 @@ export default function ItineraryChooseday(props) {
           from: "choose_day_back_to_google",
           onbackhandler: "chooseDay",
         });
+      } else if (props.route.params.Position === "itinerary_wishlist") {
+        props.navigation.push("AccountStack", {
+          screen: "Wishlist",
+          params: {
+            token: props.route.params.token,
+            onbackhandler: "chooseDay",
+            tabIndex: props.route.params.data_dest.event_id ? 1 : 0,
+          },
+        });
       } else {
         props.navigation.push("ItineraryStack", {
           screen: "itindest",
@@ -1262,7 +1271,7 @@ export default function ItineraryChooseday(props) {
 
             if (responseevent.data) {
               if (responseevent.data.add_event.code !== 200) {
-                if (response.data.add_event.message == "Failed") {
+                if (responseevent.data.add_event.message == "Failed") {
                   settextAlert("FailedUpdate");
                   if (Platform.OS == "android") {
                     setmodalAlert(true);
@@ -1272,7 +1281,7 @@ export default function ItineraryChooseday(props) {
                     ]);
                   }
                 }
-                if (response.data.add_event.message == "Full") {
+                if (responseevent.data.add_event.message == "Full") {
                   settextAlert("AktivitasFull");
                   if (Platform.OS == "android") {
                     setmodalAlert(true);
@@ -1281,7 +1290,6 @@ export default function ItineraryChooseday(props) {
                       { text: "OK", onPress: () => BackToDetail() },
                     ]);
                   }
-                  // throw new Error("Destinasi sudah full");
                 }
               }
               {
@@ -1328,8 +1336,203 @@ export default function ItineraryChooseday(props) {
             Alert.alert("" + error);
           }
         }
+      } else if (Position === "itinerary_wishlist") {
+        var datas = [];
+        var x = 0;
+
+        for (var i in dataSelected) {
+          datas.push(dataSelected[i].id);
+          x++;
+        }
+        if (x == dataSelected.length) {
+          try {
+            let response = props.route.params.data_dest.event_id
+              ? await mutationSaveEvent({
+                  variables: {
+                    day_id: datas,
+                    event_id: Kiriman,
+                  },
+                })
+              : await mutationSave({
+                  variables: {
+                    day: datas,
+                    idDestination: Kiriman,
+                  },
+                });
+
+            if (LoadingSave) {
+              Alert.alert("Loading!!");
+            }
+            if (errorSave) {
+              throw new Error("Error Input");
+            }
+            if (response.data?.add_destination) {
+              if (response.data?.add_destination?.code !== 200) {
+                if (response.data?.add_destination?.message == "Failed") {
+                  settextAlert("FailedUpdate");
+                  if (Platform.OS == "android") {
+                    setmodalAlert(true);
+                  } else {
+                    Alert.alert(t("FailedUpdate"), t("FailedUpdate"), [
+                      { text: "OK", onPress: () => BackToDetail() },
+                    ]);
+                  }
+                }
+                if (response.data?.add_destination?.message == "Full") {
+                  settextAlert("AktivitasFull");
+                  if (Platform.OS == "android") {
+                    setmodalAlert(true);
+                  } else {
+                    Alert.alert(t("FailedUpdate"), t("AktivitasFull"), [
+                      { text: "OK", onPress: () => BackToDetail() },
+                    ]);
+                  }
+                }
+              } else {
+                dataItinerary.itinerary_detail
+                  ? props.navigation.reset({
+                      index: 2,
+                      routes: [
+                        {
+                          name: "BottomStack",
+                          state: {
+                            routes: [{ name: "HomeScreen" }],
+                          },
+                        },
+                        {
+                          name: "BottomStack",
+                          state: {
+                            routes: [{ name: "TripPlaning" }],
+                          },
+                        },
+                        {
+                          name: "ItineraryStack",
+                          state: {
+                            routes: [
+                              {
+                                name: "itindetail",
+                                params: {
+                                  itintitle:
+                                    dataItinerary.itinerary_detail.name,
+                                  country: Iditinerary,
+                                  dateitin:
+                                    dataItinerary &&
+                                    dataItinerary.itinerary_detail
+                                      ? dateFormatr(
+                                          dataItinerary.itinerary_detail
+                                            .start_date
+                                        ) +
+                                        "  -  " +
+                                        dateFormatr(
+                                          dataItinerary.itinerary_detail
+                                            .end_date
+                                        )
+                                      : null,
+                                  token: token,
+                                  datadayaktif: dataSelected[0],
+                                  status: "edit",
+                                  Kiriman: Kiriman,
+                                  data_from: props.route.params.data_from,
+                                  index: 0,
+                                  from: "after_choose_day",
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    })
+                  : null;
+              }
+            }
+            if (response.data.add_event) {
+              if (response.data.add_event.code !== 200) {
+                if (response.data.add_event.message == "Failed") {
+                  settextAlert("FailedUpdate");
+                  if (Platform.OS == "android") {
+                    setmodalAlert(true);
+                  } else {
+                    Alert.alert(t("FailedUpdate"), t("FailedUpdate"), [
+                      { text: "OK", onPress: () => BackToDetail() },
+                    ]);
+                  }
+                }
+                if (response.data.add_event.message == "Full") {
+                  settextAlert("AktivitasFull");
+                  if (Platform.OS == "android") {
+                    setmodalAlert(true);
+                  } else {
+                    Alert.alert(t("FailedUpdate"), t("AktivitasFull"), [
+                      { text: "OK", onPress: () => BackToDetail() },
+                    ]);
+                  }
+                }
+              } else {
+                dataItinerary.itinerary_detail
+                  ? props.navigation.reset({
+                      index: 2,
+                      routes: [
+                        {
+                          name: "BottomStack",
+                          state: {
+                            routes: [{ name: "HomeScreen" }],
+                          },
+                        },
+                        {
+                          name: "BottomStack",
+                          state: {
+                            routes: [{ name: "TripPlaning" }],
+                          },
+                        },
+                        {
+                          name: "ItineraryStack",
+                          state: {
+                            routes: [
+                              {
+                                name: "itindetail",
+                                params: {
+                                  itintitle:
+                                    dataItinerary.itinerary_detail.name,
+                                  country: Iditinerary,
+                                  dateitin:
+                                    dataItinerary &&
+                                    dataItinerary.itinerary_detail
+                                      ? dateFormatr(
+                                          dataItinerary.itinerary_detail
+                                            .start_date
+                                        ) +
+                                        "  -  " +
+                                        dateFormatr(
+                                          dataItinerary.itinerary_detail
+                                            .end_date
+                                        )
+                                      : null,
+                                  token: token,
+                                  datadayaktif: dataSelected[0],
+                                  status: "edit",
+                                  Kiriman: Kiriman,
+                                  data_from: props.route.params.data_from,
+                                  index: 0,
+                                  from: "after_choose_day",
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    })
+                  : null;
+              }
+            }
+            setLoading(false);
+          } catch (error) {
+            setLoading(false);
+
+            Alert.alert("Error " + error);
+          }
+        }
       } else {
-        Alert.alert("Fungsi belum ada untuk type" + Position);
+        Alert.alert("Fungsi belum ada untuk type " + Position);
 
         setLoading(false);
       }

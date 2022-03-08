@@ -7,6 +7,7 @@ import {
   SET_SEARCH_INPUT,
   SET_SEARCH_EVENT_INPUT,
   SET_SEARCH_DESTINATION_INPUT,
+  SET_ITINERARY,
 } from "./tipe";
 
 const initData = {
@@ -18,6 +19,7 @@ const initData = {
   searchInput: null,
   searchEventInput: null,
   searchDestinationInput: null,
+  itinerary: null,
 };
 
 export const reducerApps = (state = initData, action) => {
@@ -38,6 +40,8 @@ export const reducerApps = (state = initData, action) => {
       return { ...state, searchEventInput: action.data };
     case SET_SEARCH_DESTINATION_INPUT:
       return { ...state, searchDestinationInput: action.data };
+    case SET_ITINERARY:
+      return { ...state, itinerary: action.data };
     default:
       return state;
   }

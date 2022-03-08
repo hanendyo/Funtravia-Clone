@@ -834,27 +834,29 @@ export default function ReoderDetail({ navigation, route }) {
     headerTitle: () => {
       return (
         <View style={{ marginBottom: 5 }}>
-          <View
-            style={{
-              alignItems: "center",
-              width: 220,
-            }}
-          >
-            <Text
-              type="bold"
-              size="title"
-              style={{ color: "#FFF" }}
-              numberOfLines={1}
+          {Platform.OS === "ios" ? (
+            <View
+              style={{
+                alignItems: "center",
+                width: 200,
+              }}
             >
-              {headData?.name ? headData.name : ""}
-            </Text>
+              <Text
+                type="bold"
+                size="title"
+                style={{ color: "#FFF" }}
+                numberOfLines={1}
+              >
+                {headData?.name ? headData.name : ""}
+              </Text>
 
-            <Text
-              type="regular"
-              size="label"
-              style={{ color: "#FFF" }}
-            >{`Day ${dayData.day}`}</Text>
-          </View>
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#FFF" }}
+              >{`Day ${dayData.day}`}</Text>
+            </View>
+          ) : null}
         </View>
       );
     },
@@ -872,22 +874,49 @@ export default function ReoderDetail({ navigation, route }) {
       marginRight: 10,
     },
     headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => _backHandler()}
-        style={{
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={20} width={20}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
+      <View style={{ flexDirection: "row" }}>
+        <Button
+          text={""}
+          size="medium"
+          type="circle"
+          variant="transparent"
+          onPress={() => _backHandler()}
+          style={{
+            height: 55,
+          }}
+        >
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={20} width={20}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
+        </Button>
+        <>
+          {Platform.OS === "ios" ? null : (
+            <View
+              style={{
+                marginLeft: 15,
+                marginTop: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{ color: "#FFF", marginBottom: -3 }}
+                numberOfLines={1}
+              >
+                {headData?.name ? headData.name : ""}
+              </Text>
+
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#FFF" }}
+              >{`Day ${dayData.day}`}</Text>
+            </View>
+          )}
+        </>
+      </View>
     ),
     headerRight: () => (
       <Pressable

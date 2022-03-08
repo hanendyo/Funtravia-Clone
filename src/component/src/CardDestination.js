@@ -38,6 +38,7 @@ export default function CardDestination({
   token,
   dataFrom,
   dataFromId,
+  from,
   searchInput,
   sebelum,
 }) {
@@ -147,10 +148,9 @@ export default function CardDestination({
                   Iditinerary: props?.route?.params?.IdItinerary,
                   Kiriman: kiriman.id,
                   token: token,
-                  Position: "destination",
+                  Position: props.route.params?.from ?? "destination",
                   datadayaktif: props.route.params.datadayaktif,
                   data_dest: props.route.params,
-                  data_from_id: dataFromId,
                   sebelum: sebelum,
                 },
               })
@@ -174,9 +174,8 @@ export default function CardDestination({
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: data?.destinationById?.id,
                   token: token,
-                  Position: "destination",
+                  Position: props.route.params?.from ?? "destination",
                   datadayaktif: props?.route?.params?.datadayaktif,
-                  data_from_id: dataFromId,
                   searchInput: searchInput,
                   sebelum: sebelum,
                 },
@@ -201,8 +200,10 @@ export default function CardDestination({
   return (
     <View
       style={{
-        paddingTop: dataFrom === "wishlist" ? 40 : 0,
-        paddingBottom: dataFrom === "wishlist" ? 0 : 40,
+        paddingTop:
+          dataFrom === "wishlist" || props.route.params?.from ? 40 : 0,
+        paddingBottom:
+          dataFrom === "wishlist" || props.route.params?.from ? 0 : 40,
       }}
     >
       <ModalLogin

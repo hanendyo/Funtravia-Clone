@@ -7,6 +7,7 @@ import {
   SET_SEARCH_INPUT,
   SET_SEARCH_EVENT_INPUT,
   SET_SEARCH_DESTINATION_INPUT,
+  SET_ITINERARY,
 } from "./tipe";
 
 export const setTokenApps = (token) => ({
@@ -42,5 +43,10 @@ export const setSearchEventInput = (input) => ({
 
 export const setSearchDestinationInput = (input) => ({
   type: SET_SEARCH_DESTINATION_INPUT,
+  data: input,
+});
+
+export const setItinerary = (input) => ({
+  type: SET_ITINERARY,
   data: input,
 });

@@ -33,6 +33,7 @@ export default function Wishlist(props) {
   const _tabIndex = useRef(0);
   const { width, height } = Dimensions.get("screen");
   const tokenApps = useSelector((data) => data.token);
+  const itineraryState = useSelector((data) => data.itinerary);
   const { t, i18n } = useTranslation();
   let [dataEvent, setdataEvent] = useState([]);
   let [dataDes, setdataDes] = useState([]);
@@ -69,7 +70,14 @@ export default function Wishlist(props) {
         size="medium"
         type="circle"
         variant="transparent"
-        onPress={() => props.navigation.goBack()}
+        onPress={() => {
+          props.route.params.onbackhandler
+            ? props.navigation.navigate("itindetail", {
+                ...itineraryState,
+                onbackhandler: props.route.params.onbackhandler,
+              })
+            : props.navigation.goBack();
+        }}
         style={{
           height: 55,
         }}
@@ -162,7 +170,8 @@ export default function Wishlist(props) {
           props={props}
           setData={(e) => setdataEvent(e)}
           token={tokenApps}
-          dataFrom="wishlist"
+          dataFrom={props.route.params?.from ? null : "wishlist"}
+          from={props.route.params?.from ?? null}
         />
       );
     } else if (route.key == "destination") {
@@ -172,7 +181,8 @@ export default function Wishlist(props) {
           props={props}
           setData={(e) => setdataDes(e)}
           token={tokenApps}
-          dataFrom="wishlist"
+          dataFrom={props.route.params?.from ? null : "wishlist"}
+          from={props.route.params?.from ?? null}
         />
       );
     }
@@ -289,7 +299,6 @@ export default function Wishlist(props) {
             underlineColorAndroid="transparent"
             style={{ flex: 1, marginRight: 5, padding: 0 }}
             value={texts}
-            underlineColorAndroid="transparent"
             onChangeText={async (x) => {
               search(x);
             }}

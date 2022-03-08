@@ -35,6 +35,7 @@ import DeleteAlbumItinerary from "../../../graphQL/Mutation/Album/DeleteAlbumIti
 import RenameAlbumTitle from "../../../graphQL/Mutation/Album/RenameAlbumTitle";
 import Delete from "../../../component/src/AlertModal/Delete";
 import { indexOf } from "lodash";
+import { RNToasty } from "react-native-toasty";
 
 export default function Albumheader({
   dataAlbum,
@@ -212,10 +213,17 @@ export default function Albumheader({
           }
         }
       } catch (error) {
-        Alert.alert("token:" + error);
+        setModalcreate(false);
+        RNToasty.Show({
+          title: `token ${error}`,
+          position: "bottom",
+        });
       }
     } else {
-      Alert.alert("pleaseinsertalbumtitle");
+      RNToasty.Show({
+        title: t("pleaseInsertAlbumTitle"),
+        position: "bottom",
+      });
     }
   };
 

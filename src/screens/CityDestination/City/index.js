@@ -2014,7 +2014,7 @@ export default function CityDetail(props) {
         </View>
 
         {/* Itinerary Terbaru */}
-        {renderItinerary.length > 0 ? (
+        {renderItinerary?.length > 0 ? (
           <View
             style={{
               flexDirection: "column",
