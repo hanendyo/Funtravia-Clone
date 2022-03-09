@@ -38,6 +38,7 @@ import {
 import Ripple from "react-native-material-ripple";
 import { StackActions } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },

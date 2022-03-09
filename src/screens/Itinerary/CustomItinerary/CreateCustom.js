@@ -24,6 +24,7 @@ import {
   Bottom,
   New,
   Arrowbackios,
+  CheckWhite,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -360,7 +361,8 @@ export default function CreateCustom(props) {
                   justifyContent: "center",
                 }}
               >
-                <Text
+                <CheckWhite />
+                {/* <Text
                   size="description"
                   type="regular"
                   style={{
@@ -368,7 +370,7 @@ export default function CreateCustom(props) {
                   }}
                 >
                   1
-                </Text>
+                </Text> */}
               </View>
               <Text
                 size="small"

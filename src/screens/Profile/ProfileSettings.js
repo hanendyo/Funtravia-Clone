@@ -467,6 +467,7 @@ export default function ProfileSettings(props) {
   };
 
   const pickGallery = async () => {
+    setmodal(false);
     ImagePicker.openPicker({
       width: 500,
       height: 500,
@@ -500,7 +501,8 @@ export default function ProfileSettings(props) {
 
       // setdataImage(image.data);
       // setdataImagepatch(image.path);
-      setmodal(false);
+
+      setmodalCamera(false);
       // upload(image.data);
     });
   };
@@ -1111,7 +1113,9 @@ export default function ProfileSettings(props) {
               style={{
                 paddingVertical: 10,
               }}
-              onPress={() => pickGallery()}
+              onPress={() => {
+                pickGallery();
+              }}
             >
               <Text size="description" type="regular" style={{}}>
                 {t("OpenGallery")}

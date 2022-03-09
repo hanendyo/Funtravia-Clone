@@ -123,6 +123,7 @@ import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
 import { useSelector, useDispatch } from "react-redux";
 import { setItinerary } from "../../../redux/action";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -546,10 +547,12 @@ export default function ItineraryDetail(props) {
     });
     let hasil = jarak / kecepatan;
     let hasils = hasil + "";
-
+    console.log("hasil", hasil);
     let bahan = hasils.split(".");
 
     let jam = parseFloat(bahan[1]);
+
+    console.log("jam", jam);
 
     return (
       (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
@@ -557,7 +560,9 @@ export default function ItineraryDetail(props) {
         ? " " + jam + " " + t("min")
         : hasil > 0.6
         ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
-        : " " + (jam - 60) + " " + t("min"))
+        : jam
+        ? " " + (jam - 60) + " " + t("min")
+        : "0" + " " + t("min"))
     );
   };
 
@@ -1260,46 +1265,63 @@ export default function ItineraryDetail(props) {
               // longitude & latitude index custom
               let LongCurrent = Xdata[y].longitude;
               let LatCurrent = Xdata[y].latitude;
-              // rumus hitung jarak
-              let jarak = Distance({
-                lat1: LatBefore,
-                lon1: LongBefore,
-                lat2: LatCurrent,
-                lon2: LongCurrent,
-                unit: "km",
-              });
-              // rumus hitung waktu
-              let waktutemp = jarak / 50;
-              let waktu = waktutemp + "";
-              // pecah hasil waktu
-              let split = waktu.split(".");
 
-              let jamtemp = "";
-              let menittemp = "";
-
-              if (split[0] > 1) {
-                jamtemp = split[1];
-                if (split[1] > 0 && split[1] < 60) {
-                  menittemp = split[1];
-                } else {
-                  jamtemp = split[0] + 1;
-                  menittemp = split[1] - 60;
-                }
+              if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+                var newtime = Xdata[y - 1].time;
               } else {
-                if (waktu > 0.6) {
-                  jamtemp = 1;
-                  menittemp = split[1] - 60;
+                // rumus hitung jarak
+                let jarak = Distance({
+                  lat1: LatBefore,
+                  lon1: LongBefore,
+                  lat2: LatCurrent,
+                  lon2: LongCurrent,
+                  unit: "km",
+                });
+                // rumus hitung waktu
+                let waktutemp = jarak / 50;
+                let waktu = waktutemp + "";
+                // pecah hasil waktu
+                let split = waktu.split(".");
+
+                let jamtemp = "";
+                let menittemp = "";
+
+                if (split[0] > 1) {
+                  jamtemp = split[1];
+                  if (split[1] > 0 && split[1] < 60) {
+                    menittemp = split[1];
+                  } else {
+                    jamtemp = split[0] + 1;
+                    menittemp = split[1] - 60;
+                  }
                 } else {
-                  jamtemp = 0;
-                  menittemp = split[1];
+                  if (waktu > 0.6) {
+                    jamtemp = 1;
+                    menittemp = split[1] - 60;
+                  } else {
+                    jamtemp = 0;
+                    menittemp = split[1];
+                  }
                 }
+                let time = Xdata[y - 1].time;
+                let splittime = time.split(":");
+                // let durasitemp = `${jamtemp}:${menittemp}`;
+                let durationold = Xdata[y - 1].duration;
+                let splitdurations = durationold.split(":");
+
+                //menit total untuk mendapatkan menit yang lebih dari 59
+                let menitotal =
+                  parseFloat(splittime[1]) +
+                  parseFloat(splitdurations[1]) +
+                  parseFloat(menittemp);
+
+                let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+                let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+                var newtime =
+                  menitotal > 59
+                    ? `${newjam + 1}:${newmenit - 60}`
+                    : `${newjam}:${newmenit}`;
               }
-              let time = Xdata[y - 1].time;
-              let splittime = time.split(":");
-              // let durasitemp = `${jamtemp}:${menittemp}`;
-              let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
-              let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-              let newtime = `${newjam}:${newmenit}`;
 
               Xdata[y].time = hitungDuration({
                 startt: newtime,
@@ -1329,6 +1351,7 @@ export default function ItineraryDetail(props) {
                 GetTimelin();
               }
             } catch (error) {
+              console.log("errorTimeline", error);
               Alert.alert("" + error);
             }
           }
@@ -1338,6 +1361,7 @@ export default function ItineraryDetail(props) {
         setModalDelete(false);
       }
     } catch (error) {
+      console.log("errorXdata", error);
       Alert.alert("" + error);
       setModalDelete(false);
     }
@@ -2298,6 +2322,7 @@ export default function ItineraryDetail(props) {
 
   const renderItinerary = ({ item, index }) => {
     const x = dataList && dataList.length - 1;
+
     return (
       <View
         style={{
@@ -4615,6 +4640,7 @@ export default function ItineraryDetail(props) {
                 shadowColor: "#F0F0F0",
                 shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
+
                 shadowRadius: 2,
                 elevation: 3,
                 flexDirection: "row",
@@ -4894,6 +4920,7 @@ export default function ItineraryDetail(props) {
               shadowOffset: { width: 2, height: 2 },
               shadowOpacity: 1,
               shadowRadius: 2,
+
               elevation: 3,
               flexDirection: "row",
               justifyContent: "space-between",
@@ -5788,6 +5815,7 @@ export default function ItineraryDetail(props) {
               shadowColor: "#F0F0F0",
               shadowOffset: { width: 2, height: 2 },
               shadowOpacity: 1,
+
               shadowRadius: 2,
               elevation: 3,
               flexDirection: "row",

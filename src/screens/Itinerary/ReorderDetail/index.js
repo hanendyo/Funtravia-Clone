@@ -771,6 +771,31 @@ export default function ReoderDetail({ navigation, route }) {
             menitotal > 59
               ? `${newjam + 1}:${newmenit - 60}`
               : `${newjam}:${newmenit}`;
+          if (jamtemp > 23) {
+            Alert.alert("Opss", "Aktivitas sudah melewati 24 jam", [
+              {
+                text: "OK",
+                onPress: () =>
+                  navigation.dispatch(
+                    StackActions.replace("ItineraryStack", {
+                      screen: "ReorderDetail",
+                      params: {
+                        head: route.params.head,
+                        child: route.params.child,
+                        active: route.params.active,
+                        token: token,
+                      },
+                    })
+                  ),
+                // navigation.navigate("ReorderDetail", {
+                //   head: route.params.head,
+                //   child: route.params.child,
+                //   active: route.params.active,
+                //   token: token,
+                // }),
+              },
+            ]);
+          }
         }
 
         tempdata[y].time = hitungDuration({
