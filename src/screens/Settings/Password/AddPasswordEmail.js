@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable,
   Image,
+  StatusBar,
 } from "react-native";
 import { Input, Item, Label } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -66,17 +67,24 @@ export default function AddPasswordEmail(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
-    },
-    headerLRightContainerStyle: {
-      background: "#FFF",
-      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -92,13 +100,6 @@ export default function AddPasswordEmail(props) {
         )}
       </Button>
     ),
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-
-    headerRight: () => {
-      return null;
-    },
   };
 
   const [
@@ -155,7 +156,6 @@ export default function AddPasswordEmail(props) {
             password: text1,
           },
         });
-        console.log("response", response);
         if (response.data) {
           if (
             response.data.update_password_settings.code === 200 ||
@@ -179,7 +179,6 @@ export default function AddPasswordEmail(props) {
           }
         }
       } catch (error) {
-        console.log("error", error);
         RNToasty.Show({
           title: t("failedAddPassword"),
           position: "bottom",

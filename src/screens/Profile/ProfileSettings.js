@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
   Platform,
+  StatusBar,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Button, Text, Loading } from "../../component";
@@ -45,24 +46,32 @@ export default function ProfileSettings(props) {
   let [modalCamera, setmodalCamera] = useState(false);
 
   const HeaderComponent = {
-    title: "",
-    headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" size="title" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("editprofile")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
-
       borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

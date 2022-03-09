@@ -149,19 +149,19 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
             }}
           >
             <Text
               type="bold"
-              size="title"
+              size="label"
               style={{ color: "#FFF" }}
               numberOfLines={1}
             >
               {t("AddFlightNumber")}
             </Text>
 
-            <Text type="regular" size="label" style={{ color: "#FFF" }}>
+            <Text type="regular" size="description" style={{ color: "#FFF" }}>
               {" "}
               {t("customActivity")}
             </Text>
@@ -529,7 +529,6 @@ export default function detailCustomItinerary(props) {
         title: t("somethingwrong"),
         position: "bottom",
       });
-      // console.log("error catch :", error);
       setLoadingApp(false);
       setButtonDisabled(false);
     }
@@ -589,7 +588,6 @@ export default function detailCustomItinerary(props) {
         title: t("somethingwrong"),
         position: "bottom",
       });
-      // console.error("error catch :", error);
       setLoadingApp(false);
       setButtonDisabled(false);
     }
@@ -679,7 +677,6 @@ export default function detailCustomItinerary(props) {
               title: t("somethingwrong"),
               position: "bottom",
             });
-            // console.log(err)
           },
           {
             enableHighAccuracy: false,
@@ -693,7 +690,6 @@ export default function detailCustomItinerary(props) {
         title: t("somethingwrong"),
         position: "bottom",
       });
-      // console.log(error);
     }
   };
 
@@ -746,7 +742,6 @@ export default function detailCustomItinerary(props) {
         title: t("somethingwrong"),
         position: "bottom",
       });
-      // console.error(error);
     }
   };
 
@@ -1174,7 +1169,6 @@ export default function detailCustomItinerary(props) {
                   title: t("somethingwrong"),
                   position: "bottom",
                 });
-                //  console.log(error)
               }}
               placeholder={"Search for location"}
               currentLocationLabel="Nearby location"

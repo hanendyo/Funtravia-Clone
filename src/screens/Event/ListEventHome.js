@@ -460,7 +460,7 @@ export default function ListEventHome(props) {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
         }}
         // pointerEvents="none"
       >
@@ -2621,12 +2621,14 @@ export default function ListEventHome(props) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          height: 52,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 15,
-
-          width: Dimensions.get("screen").width - 35,
+          // alignContent: "center",
+          // alignItems: "center",
+          // marginHorizontal: 20,
+          paddingHorizontal: 20,
+          // paddingTop: 5,
+          height: 55,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209fae",
         }}
       >
         <View
@@ -2641,7 +2643,8 @@ export default function ListEventHome(props) {
             variant="transparent"
             onPress={() => props.navigation.goBack()}
             style={{
-              height: 60,
+              height: 53,
+              paddingRight: 10,
             }}
           >
             <Animated.View
@@ -2667,7 +2670,9 @@ export default function ListEventHome(props) {
               flexDirection: "row",
               alignContent: "center",
               alignItems: "center",
-              padding: 10,
+              // padding: 10,
+              paddingTop: 0,
+              paddingLeft: 10,
             }}
           >
             <Text
@@ -2696,7 +2701,7 @@ export default function ListEventHome(props) {
             });
           }}
           style={{
-            height: 40,
+            height: 52,
             // marginLeft: 8,
           }}
         >

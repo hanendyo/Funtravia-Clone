@@ -12,6 +12,7 @@ import {
   FlatList,
   Pressable,
   KeyboardAvoidingView,
+  StatusBar,
 } from "react-native";
 import {
   Button,
@@ -30,6 +31,7 @@ import {
   Xblue,
   ArrowRight,
   Magnifying,
+  Arrowbackios,
 } from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import { useTranslation } from "react-i18next";
@@ -64,23 +66,114 @@ export default function NewGroup({ navigation, route }) {
     },
   });
 
+  // const ChatOptions = {
+  //   headerShown: true,
+  //   headerTitle: "",
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#209FAE",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   // headerTitleStyle: {
+  //   //   fontFamily: "Lato-Bold",
+  //   //   fontSize: 18,
+  //   //   color: "white",
+  //   //   marginLeft: -10,
+  //   // },
+  //   headerLeft: () => (
+  //     <View style={{ flexDirection: "row", alignItems: "center" }}>
+  //       <Button
+  //         text={""}
+  //         size="medium"
+  //         type="circle"
+  //         variant="transparent"
+  //         onPress={() => navigation.goBack()}
+  //         style={{
+  //           height: 55,
+  //           marginLeft: 10,
+  //         }}
+  //       >
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       </Button>
+  //       <View>
+  //         <Text size="label" style={{ color: "white" }}>
+  //           {t("newGroupChat")}
+  //         </Text>
+  //         <Text style={{ color: "white" }}>{t("addParticipants")}</Text>
+  //       </View>
+  //     </View>
+  //   ),
+  //   headerRight: () => (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         flexDirection: "row",
+  //       }}
+  //     ></View>
+  //   ),
+  // };
+
   const ChatOptions = {
     headerShown: true,
-    headerTitle: "",
+    headerTransparent: false,
+    headerTintColor: "white",
+    headerTitle: (
+      <View
+        style={{
+          marginBottom: 5,
+          width: Dimensions.get("screen").width,
+          alignItems: "center",
+        }}
+      >
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              alignItems: "center",
+              width: 200,
+              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
+            }}
+          >
+            <Text
+              type="bold"
+              size="label"
+              style={{ color: "#FFF" }}
+              numberOfLines={1}
+            >
+              {t("newGroupChat")}
+            </Text>
+
+            <Text type="regular" size="description" style={{ color: "#FFF" }}>
+              {" "}
+              {t("addParticipants")}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 18,
-    //   color: "white",
-    //   marginLeft: -10,
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
+    },
     headerLeft: () => (
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row" }}>
         <Button
           text={""}
           size="medium"
@@ -89,26 +182,43 @@ export default function NewGroup({ navigation, route }) {
           onPress={() => navigation.goBack()}
           style={{
             height: 55,
-            marginLeft: 10,
           }}
         >
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          {Platform.OS == "ios" ? (
+            <Arrowbackios height={15} width={15}></Arrowbackios>
+          ) : (
+            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+          )}
         </Button>
-        <View>
-          <Text size="label" style={{ color: "white" }}>
-            {t("newGroupChat")}
-          </Text>
-          <Text style={{ color: "white" }}>{t("addParticipants")}</Text>
-        </View>
+        <>
+          {Platform.OS === "ios" ? null : (
+            <View
+              style={{
+                marginLeft: 15,
+                marginTop: 5,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{ color: "#FFF", marginBottom: -3 }}
+                numberOfLines={1}
+              >
+                {t("addHotelName")}
+              </Text>
+
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#FFF", marginLeft: -3 }}
+              >
+                {" "}
+                {t("customActivity")}
+              </Text>
+            </View>
+          )}
+        </>
       </View>
-    ),
-    headerRight: () => (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-        }}
-      ></View>
     ),
   };
 

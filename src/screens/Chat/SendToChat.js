@@ -10,6 +10,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableHighlight,
+  StatusBar,
 } from "react-native";
 import { Button, Text, FunImage } from "../../component";
 import { default_image, search_button } from "../../assets/png";
@@ -71,16 +72,25 @@ export default function SendToChat({ navigation, route }) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 18,
-    //   color: "white",
-    //   marginLeft: -10,
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
+    },
     headerLeft: () => (
       <Button
         text={""}
@@ -95,14 +105,6 @@ export default function SendToChat({ navigation, route }) {
       >
         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
       </Button>
-    ),
-    headerRight: () => (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-        }}
-      ></View>
     ),
   };
 

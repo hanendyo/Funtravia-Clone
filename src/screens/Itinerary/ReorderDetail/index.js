@@ -950,12 +950,12 @@ export default function ReoderDetail({ navigation, route }) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
             }}
           >
             <Text
               type="bold"
-              size="title"
+              size="label"
               style={{ color: "#FFF" }}
               numberOfLines={1}
             >
@@ -964,7 +964,7 @@ export default function ReoderDetail({ navigation, route }) {
 
             <Text
               type="regular"
-              size="label"
+              size="description"
               style={{ color: "#FFF" }}
             >{`Day ${dayData.day}`}</Text>
           </View>

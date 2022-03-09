@@ -2755,7 +2755,7 @@ export default function ProvinceDetail(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
         }}
         pointerEvents="none"
       >
@@ -3471,13 +3471,13 @@ export default function ProvinceDetail(props) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-
-          height: 52,
+          height: 55,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 15,
-
-          width: Dimensions.get("screen").width - 35,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209fae",
+          paddingLeft: 15,
+          paddingRight: 20,
         }}
       >
         <Button
@@ -3518,7 +3518,7 @@ export default function ProvinceDetail(props) {
           }
           style={{
             width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.3)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",

@@ -11,6 +11,7 @@ import {
   // TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Text } from "../../component";
@@ -37,22 +38,32 @@ export default function TravelGoalList(props) {
   let tokenApps = useSelector((data) => data.token);
   const [heights, setHeights] = useState(0);
   const HeaderComponent = {
-    headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text style={{ color: "#fff" }} size="header" type="bold">
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("travelgoals")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

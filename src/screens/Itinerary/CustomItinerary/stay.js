@@ -142,19 +142,19 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 1 : 3) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
             }}
           >
             <Text
               type="bold"
-              size="title"
+              size="label"
               style={{ color: "#FFF" }}
               numberOfLines={1}
             >
               {t("addHotelName")}
             </Text>
 
-            <Text type="regular" size="label" style={{ color: "#FFF" }}>
+            <Text type="regular" size="description" style={{ color: "#FFF" }}>
               {" "}
               {t("customActivity")}
             </Text>

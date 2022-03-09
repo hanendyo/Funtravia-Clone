@@ -24,7 +24,7 @@ import {
 import {
   Button,
   Text,
-  StatusBar as StaBar,
+  StatusBar as CustomStatusBar,
   Truncate,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -469,7 +469,7 @@ export default function Unesco({ navigation, route }) {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
         }}
         // pointerEvents="none"
       >
@@ -1009,6 +1009,7 @@ export default function Unesco({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <CustomStatusBar backgroundColor="#14646e" barStyle="light-content" />
       {loadingPage ? (
         <View
           style={{
@@ -1024,7 +1025,6 @@ export default function Unesco({ navigation, route }) {
           <ActivityIndicator size="large" color="#209fae" />
         </View>
       ) : null}
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
       <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}
@@ -1089,12 +1089,14 @@ export default function Unesco({ navigation, route }) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
+          // alignContent: "center",
+          // alignItems: "center",
+          // marginHorizontal: 20,
+          paddingHorizontal: 20,
+          // paddingTop: 5,
           height: 55,
-          width: Dimensions.get("screen").width - 40,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209fae",
         }}
       >
         <Button
@@ -1104,7 +1106,7 @@ export default function Unesco({ navigation, route }) {
           variant="transparent"
           onPress={() => navigation.goBack()}
           style={{
-            height: 50,
+            height: 55,
             // marginLeft: 8,
           }}
         >

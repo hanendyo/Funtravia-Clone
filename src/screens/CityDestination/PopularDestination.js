@@ -10,6 +10,7 @@ import {
   Pressable,
   Animated,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import Modal from "react-native-modal";
 import {
@@ -37,13 +38,10 @@ export default function AllDestination(props) {
   const token = useSelector((data) => data.token);
   const scrollY = useRef(new Animated.Value(1));
   const [filterRegion, setFilterRegion] = useState([]);
-  console.log("~ filterRegion", filterRegion);
   const [regionName, setRegionName] = useState([]);
   const [region, setRegion] = useState("");
   let [select_region, setRegionSelecteds] = useState([]);
   let [tempDataSelected, setTempDataSelected] = useState([]);
-  console.log("~ tempDataSelected", tempDataSelected);
-
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -55,12 +53,23 @@ export default function AllDestination(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -92,7 +101,6 @@ export default function AllDestination(props) {
   const [dataResult, setDataResult] = useState([]);
   const [show, setShow] = useState(false);
   const [totalCity, setTotalCity] = useState(0);
-  console.log("~ totalCity", totalCity);
 
   const _getAllData = (data) => {
     let tempData = [...data?.populer_city_destination_v2];
@@ -249,7 +257,6 @@ export default function AllDestination(props) {
 
   // render list
   const RenderList = ({ item }) => {
-    console.log("~ item", item.length);
     let sumdestination = item.count_destination;
     return item && item.city.length > 0 ? (
       <View

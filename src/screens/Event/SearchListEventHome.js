@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable,
   StyleSheet,
+  StatusBar,
 } from "react-native";
 import {
   Xblue,
@@ -35,10 +36,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSearchEventInput, setSettingUser } from "../../redux/action";
 
 export default function SearchListEventHome(props) {
-  console.log(
-    "🚀 ~ file: SearchListEventHome.js ~ line 38 ~ SearchListEventHome ~ props",
-    props.route.params
-  );
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   // const setting = useSelector((data) => data.setting);
@@ -1215,12 +1212,23 @@ export default function SearchListEventHome(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

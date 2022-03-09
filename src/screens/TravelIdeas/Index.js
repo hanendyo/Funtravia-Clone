@@ -6,6 +6,7 @@ import {
   ScrollView,
   BackHandler,
   Pressable,
+  StatusBar,
 } from "react-native";
 import { Button, Text } from "../../component";
 import { travel_idea_ilust } from "../../assets/png";
@@ -21,20 +22,31 @@ export default function TravelIdeas(props) {
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
+    headerTintColor: "white",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("travelideas")}
       </Text>
     ),
-    // headerMode: "none",
+    headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0, // remove shadow on Android
-      shadowOpacity: 0, // remove shadow on iOS
-      borderBottomWidth: 0, // Just in case.
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

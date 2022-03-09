@@ -9,6 +9,7 @@ import {
   Dimensions,
   Pressable,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/react-hooks";
 import FollowingQuery from "../../graphQL/Query/Profile/Following";
@@ -26,38 +27,33 @@ export default function Following(props) {
   const token = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
   const HeaderComponent = {
+    headerTransparent: false,
     headerTintColor: "white",
-    // headerTitle: "Following",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("Following")}
       </Text>
     ),
-    // headerTitle: (
-    //   <Text
-    //     size="title"
-    //     type="regular"
-    //     style={{ color: "#fff", fontFamily: "Lato-Bold" }}
-    //     allowFontScaling={false}
-    //   >
-    //     {t("Following")}
-    //   </Text>
-    // ),
-
     headerMode: "screen",
-    headerTransparent: false,
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 18,
-    //   color: "white",
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button
