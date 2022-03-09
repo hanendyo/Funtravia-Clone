@@ -326,7 +326,6 @@ export default function GroupDetail(props) {
         title: "error : something wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -368,7 +367,6 @@ export default function GroupDetail(props) {
         title: "error : someting wrong!",
         position: "bottom",
       });
-      console.log(error);
     }
   };
 
@@ -447,7 +445,6 @@ export default function GroupDetail(props) {
         position: "bottom",
       });
       // setloading(false);
-      console.log(error);
     }
   };
   const _removeAdmin = async (user_id) => {
@@ -480,7 +477,6 @@ export default function GroupDetail(props) {
         position: "bottom",
       });
       // setloading(false);
-      console.log(error);
     }
   };
 
@@ -967,6 +963,7 @@ export default function GroupDetail(props) {
               scrollEnabled={false}
               contentContainerStyle={{
                 backgroundColor: "#FFFFFF",
+                paddingBottom: 190,
               }}
               ListHeaderComponent={() =>
                 mydata && mydata.isadmin == true ? (

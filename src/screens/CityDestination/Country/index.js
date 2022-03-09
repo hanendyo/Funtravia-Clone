@@ -2010,7 +2010,7 @@ export default function Country(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
         }}
         pointerEvents="none"
       >
@@ -2726,12 +2726,14 @@ export default function Country(props) {
           flexDirection: "row",
           justifyContent: "space-between",
 
-          height: 52,
+          height: 55,
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 15,
+          paddingLeft: 15,
+          paddingRight: 20,
 
-          width: Dimensions.get("screen").width - 35,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209fae",
         }}
       >
         <Button

@@ -70,6 +70,24 @@ export default function SettingNegara(props) {
       zIndex: 999,
       marginLeft: 10,
     },
+    headerLeft: () => (
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => props.navigation.goBack()}
+        style={{
+          height: 55,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
+    ),
   };
 
   let [data, setData] = useState([]);

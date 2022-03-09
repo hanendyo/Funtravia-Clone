@@ -85,7 +85,6 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function OtherProfile(props) {
   const tokenApps = useSelector((data) => data.token);
-  console.log("~ tokenApps", tokenApps);
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
@@ -783,8 +782,6 @@ export default function OtherProfile(props) {
     },
   });
 
-  console.log("datatrip", datatrip);
-
   const [
     LoadTrip2,
     { data: datatripX, loading: loadingtripX, error: errortripX },
@@ -804,8 +801,6 @@ export default function OtherProfile(props) {
     },
   });
 
-  console.log("datatripX", datatripX);
-
   // const likeTrue = async () => {
   //   try {
   //     let tempData = [...dataTrip];
@@ -821,7 +816,6 @@ export default function OtherProfile(props) {
   //         tempBuddy.push(tempDataBuddy);
   //       }
 
-  //       console.log("~ tempBuddy", tempBuddy);
   //     }
   //   } catch (error) {
   //     console.log("~ error", error);

@@ -773,7 +773,7 @@ const Index = (props) => {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
         }}
       >
         <Animated.Image
@@ -2134,7 +2134,7 @@ const Index = (props) => {
           <ActivityIndicator size="large" color="#209fae" />
         </View>
       ) : null}
-      <Satbar backgroundColor="#14646E" />
+      <Satbar backgroundColor="#14646E" barStyle="light-content" />
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -2164,7 +2164,7 @@ const Index = (props) => {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
           style={{
-            height: 50,
+            height: 52,
             // marginLeft: 8,
           }}
         >
@@ -2196,12 +2196,15 @@ const Index = (props) => {
           zIndex: 9999,
           opacity: hide.current,
           flexDirection: "row",
-          // justifyContent: "space-between",
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
+          justifyContent: "space-between",
+          // alignContent: "center",
+          // alignItems: "center",
+          // marginHorizontal: 20,
+          paddingHorizontal: 20,
+          // paddingTop: 5,
           height: 55,
-          width: Dimensions.get("screen").width - 40,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209fae",
         }}
       >
         <Button
@@ -2211,7 +2214,7 @@ const Index = (props) => {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
           style={{
-            height: 50,
+            height: 52,
             // marginLeft: 8,
           }}
         >
@@ -2239,6 +2242,7 @@ const Index = (props) => {
             // opacity: hide.current,
             color: "#fff",
             marginLeft: 10,
+            top: 12,
             // fontSize: 20,
             // fontFamily: "Lato-Bold",
           }}

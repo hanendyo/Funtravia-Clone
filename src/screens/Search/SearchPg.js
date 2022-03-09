@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Alert,
+  StatusBar,
 } from "react-native";
 import { Toast, Root } from "native-base";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -93,10 +94,26 @@ export default function SearchPg(props, { navigation, route }) {
         {t("search")}
       </Text>
     ),
+    headerMode: "screen",
     headerStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
-      backgroundColor: "#209FAE",
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <TouchableOpacity onPress={() => onBackPress()}>
@@ -107,10 +124,6 @@ export default function SearchPg(props, { navigation, route }) {
         )}
       </TouchableOpacity>
     ),
-    headerLeftContainerStyle: {
-      paddingLeft: 20,
-    },
-    headerRight: null,
   };
 
   const loadAsync = async () => {
@@ -127,7 +140,6 @@ export default function SearchPg(props, { navigation, route }) {
         setRecent(JSON.parse(recent_src));
       }
     } catch (error) {
-      console.log(error);
       Alert.alert("Error: ", error);
     }
   };
@@ -212,7 +224,6 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(arryrecent);
       await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
     } catch (error) {
-      console.log(error);
       Alert.alert("Error: ", error);
     }
   };
@@ -223,7 +234,6 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(arryrecent);
       await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
     } catch (error) {
-      console.log(error);
       Alert.alert("Error: ", error);
     }
   };
@@ -244,7 +254,6 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(ambil);
       await AsyncStorage.setItem("recent_src", JSON.stringify(ambil));
     } catch (error) {
-      console.log("Error: ", error);
       Alert.alert("Error: ", error);
     }
   };

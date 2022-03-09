@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Pressable,
+  StatusBar,
 } from "react-native";
 import {
   Button,
@@ -58,40 +59,49 @@ export default function NewChat({ navigation }) {
     headerShown: true,
     headerTitle: "",
     headerMode: "screen",
+    headerTitle: (
+      <Text type="bold" size="title" style={{ color: "#FFF", marginLeft: 5 }}>
+        {t("newMessage")}
+      </Text>
+    ),
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 14,
-    //   color: "white",
-    //   marginLeft: -10,
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      elevation: Platform.OS == "ios" ? 0 : null,
+      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingVertical: Platform.OS == "ios" ? 10 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
+    },
     headerLeft: () => (
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 55,
-            marginLeft: 10,
-          }}
-        >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Button>
-        <Text type="bold" size="title" style={{ color: "#FFF", marginLeft: 5 }}>
-          {t("newMessage")}
-        </Text>
-      </View>
+      <Button
+        text={""}
+        size="medium"
+        type="circle"
+        variant="transparent"
+        onPress={() => navigation.goBack()}
+        style={{
+          height: 55,
+          marginLeft: 10,
+        }}
+      >
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
+      </Button>
     ),
     headerRight: () => (
       <View

@@ -3038,7 +3038,6 @@ export default function ItineraryDetail(props) {
   };
 
   const renderAlbum = ({ item, index }) => {
-    console.log("a");
     return grid !== 1 ? (
       item.id === dataalbumaktif?.id ? (
         <View
@@ -5190,7 +5189,6 @@ export default function ItineraryDetail(props) {
             opacity: textOpacity,
             flexDirection: "row",
             justifyContent: "space-between",
-
             // borderWidth: 1,
             alignContent: "center",
             alignItems: "center",
