@@ -14,6 +14,7 @@ import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackwhite,
+  CheckWhite,
   Delete,
   Pencilgreen,
   Xgray,
@@ -102,7 +103,6 @@ export default function ChoosePosition(props) {
   };
 
   const GetStartTime = ({ startt }) => {
-    console.log("start", startt);
     var starttime = startt.split(":");
 
     return (
@@ -136,7 +136,7 @@ export default function ChoosePosition(props) {
     // 	jam = 24 - jam;
     // }
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-    console.log("menit", menit);
+
     if (menit >= 60) {
       menit = menit - 60;
     }
@@ -512,7 +512,18 @@ export default function ChoosePosition(props) {
     var inputan = { ...dataInput };
     let jam = jammax.split(":");
     let jambaru = inputan.duration.split(":");
-    let jumlah = parseFloat(jam[0]) + parseFloat(jambaru[0]);
+
+    let lastTime = datatimeline[datatimeline.length - 1].time;
+    let splitlastTime = lastTime.split(":");
+
+    let lastDuration = datatimeline[datatimeline.length - 1].duration;
+    let splitlastDuration = lastDuration.split(":");
+
+    let jumlah =
+      parseFloat(splitlastTime[0]) +
+      parseFloat(splitlastDuration[0]) +
+      parseFloat(jambaru[0]);
+
     if (jumlah <= 23) {
       inputan["stat"] = "new";
       inputan["type"] = "custom";
@@ -543,6 +554,7 @@ export default function ChoosePosition(props) {
           // kondisi jika lokasi yang sama dan aktivitas berbeda
           if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
             var newtime = tempdata[y - 1].time;
+            console.log("newTImeSama", newtime);
           } else {
             let jarak = Distance({
               lat1: LatBefore,
@@ -559,7 +571,7 @@ export default function ChoosePosition(props) {
 
             let jamtemp = "";
             let menittemp = "";
-
+            console.log("waktu", split[1]);
             if (split[0] > 1) {
               jamtemp = split[1];
               if (split[1] > 0 && split[1] < 60) {
@@ -574,22 +586,47 @@ export default function ChoosePosition(props) {
                 menittemp = split[1] - 60;
               } else {
                 jamtemp = 0;
-                menittemp = split[1];
+                menittemp = split[1] ? split[1] : 1;
               }
             }
             let time = tempdata[y - 1].time;
             let splittime = time.split(":");
             // let durasitemp = `${jamtemp}:${menittemp}`;
+            let durationold = tempdata[y - 1].duration;
+            let splitdurations = durationold.split(":");
+
+            //menit total untuk mendapatkan menit yang lebih dari 59
+            let menitotal =
+              parseFloat(splittime[1]) +
+              parseFloat(splitdurations[1]) +
+              parseFloat(menittemp);
+
+            console.log("MenitTemp", menittemp);
+
             let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
             let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-            console.log("newmenit", newmenit);
+            console.log("NewMenit", newmenit);
             var newtime =
-              newmenit > 60
+              menitotal > 59
                 ? `${newjam + 1}:${newmenit - 60}`
                 : `${newjam}:${newmenit}`;
+            console.log("newTIme", newtime);
+            if (jamtemp > 23) {
+              Alert.alert("Opss", "Aktivitas sudah melewati 24 jam", [
+                {
+                  text: "OK",
+                  onPress: () => console.log("ok"),
+                  // navigation.navigate("ReorderDetail", {
+                  //   head: route.params.head,
+                  //   child: route.params.child,
+                  //   active: route.params.active,
+                  //   token: token,
+                  // }),
+                },
+              ]);
+            }
           }
-          console.log("newtime", newtime);
-          console.log("newww", tempdata[y].time);
+
           tempdata[y].time = hitungDuration({
             startt: newtime,
             dur: tempdata[y - 1].duration,
@@ -603,7 +640,7 @@ export default function ChoosePosition(props) {
       }
       setjammax(jumlah + ":00:00");
     } else {
-      Alert.alert("Waktu sudah melewati batas maksimal");
+      Alert.alert(t("AktivitasFull"));
     }
   };
 
@@ -929,15 +966,7 @@ export default function ChoosePosition(props) {
                   justifyContent: "center",
                 }}
               >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  1
-                </Text>
+                <CheckWhite />
               </View>
               <Text
                 size="small"
@@ -968,15 +997,7 @@ export default function ChoosePosition(props) {
                   justifyContent: "center",
                 }}
               >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  2
-                </Text>
+                <CheckWhite />
               </View>
               <Text
                 size="small"
@@ -1057,7 +1078,6 @@ export default function ChoosePosition(props) {
         <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
           {datatimeline.length > 0 ? (
             datatimeline.map((item, index) => {
-              console.log(item);
               if (props.route.params.dataParent) {
                 return props.route.params.dataParent.id === item.id ||
                   props.route.params.dataParent.id === item.parent_id ||
