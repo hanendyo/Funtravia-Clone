@@ -86,7 +86,7 @@ export default function Wishlist(props) {
           props.route.params?.onbackhandler
             ? props.navigation.navigate("itindetail", {
                 ...itineraryState,
-                onbackhandler: props.route.params?.onbackhandler,
+                onbackhandler: props.route.params.onbackhandler,
               })
             : props.navigation.goBack();
         }}

@@ -245,6 +245,8 @@ export default function CardDestination({
                     id: item?.id,
                     name: item?.name,
                     token: token,
+                    iditinerary: props.route.params.IdItinerary,
+                    Position: "itinerary_destination",
                   })
                 }
                 key={"nir" + index}
