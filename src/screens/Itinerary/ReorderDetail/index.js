@@ -1006,7 +1006,7 @@ export default function ReoderDetail({ navigation, route }) {
           }}
         >
           {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
+            <Arrowbackios height={20} width={20}></Arrowbackios>
           ) : (
             <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
           )}
@@ -1017,7 +1017,6 @@ export default function ReoderDetail({ navigation, route }) {
               style={{
                 marginLeft: 15,
                 marginTop: 5,
-                width: 200,
               }}
             >
               <Text

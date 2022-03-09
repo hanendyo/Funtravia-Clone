@@ -33,8 +33,10 @@ export default function ItineraryChooseday(props) {
   const dispatch = useDispatch();
   let [modalAlert, setmodalAlert] = useState(false);
   let [textAlert, settextAlert] = useState("");
-
   const handlerBack = () => {
+    if (props.route.params.Position === "itinerary_destination") {
+      return props.navigation.goBack();
+    }
     if (props.route.params.data_from) {
       props.navigation.push("ItineraryStack", {
         screen: "ItineraryPlaning",
@@ -1015,7 +1017,11 @@ export default function ItineraryChooseday(props) {
   const saveData = async () => {
     if (dataSelected.length > 0) {
       setLoading(true);
-      if (Position === "destination" || Position === "Destination") {
+      if (
+        Position === "destination" ||
+        Position === "Destination" ||
+        Position === "itinerary_destination"
+      ) {
         var datas = [];
         var x = 0;
 
@@ -1062,32 +1068,59 @@ export default function ItineraryChooseday(props) {
                 }
               } else {
                 dataItinerary.itinerary_detail
-                  ? props.route.params.sebelum
-                    ? props.navigation.dispatch(
-                        StackActions.replace("ItineraryStack", {
-                          screen: "itindetail",
-                          params: {
-                            itintitle: dataItinerary.itinerary_detail.name,
-                            country: Iditinerary,
-                            dateitin:
-                              dataItinerary && dataItinerary.itinerary_detail
-                                ? dateFormatr(
-                                    dataItinerary.itinerary_detail.start_date
-                                  ) +
-                                  "  -  " +
-                                  dateFormatr(
-                                    dataItinerary.itinerary_detail.end_date
-                                  )
-                                : null,
-                            token: token,
-                            datadayaktif: dataSelected[0],
-                            status: "edit",
-                            onbackhandler: "list",
-                            Kiriman: Kiriman,
-                            data_from: props.route.params.data_from,
+                  ? !props.route.params.data_from
+                    ? props.navigation.reset({
+                        index: 2,
+                        routes: [
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "HomeScreen" }],
+                            },
                           },
-                        })
-                      )
+                          {
+                            name: "BottomStack",
+                            state: {
+                              routes: [{ name: "TripPlaning" }],
+                            },
+                          },
+                          {
+                            name: "ItineraryStack",
+                            state: {
+                              routes: [
+                                {
+                                  name: "itindetail",
+                                  params: {
+                                    itintitle:
+                                      dataItinerary.itinerary_detail.name,
+                                    country: Iditinerary,
+                                    dateitin:
+                                      dataItinerary &&
+                                      dataItinerary.itinerary_detail
+                                        ? dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .start_date
+                                          ) +
+                                          "  -  " +
+                                          dateFormatr(
+                                            dataItinerary.itinerary_detail
+                                              .end_date
+                                          )
+                                        : null,
+                                    token: token,
+                                    datadayaktif: dataSelected[0],
+                                    status: "edit",
+                                    Kiriman: Kiriman,
+                                    data_from: props.route.params.data_from,
+                                    index: 0,
+                                    from: "after_choose_day",
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      })
                     : props.navigation.reset({
                         index:
                           dataFromPicker[props.route.params.data_from].index,
