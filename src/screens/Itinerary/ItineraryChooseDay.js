@@ -11,6 +11,7 @@ import {
   BackHandler,
   Modal as Modalss,
   Pressable,
+  StatusBar,
 } from "react-native";
 import { back_arrow_white, default_image } from "../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -117,19 +118,28 @@ export default function ItineraryChooseday(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="title" style={{ color: "#fff" }}>
         {t("chooseDay")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

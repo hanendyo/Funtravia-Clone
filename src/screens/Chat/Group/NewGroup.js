@@ -131,7 +131,7 @@ export default function NewGroup({ navigation, route }) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 5 : 5) : null,
             }}
           >
             <Text
@@ -159,12 +159,11 @@ export default function NewGroup({ navigation, route }) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",

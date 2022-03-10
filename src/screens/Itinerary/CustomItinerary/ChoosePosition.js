@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  StatusBar,
 } from "react-native";
 import { Textarea } from "native-base";
 import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
 import {
+  Arrowbackios,
   Arrowbackwhite,
   CheckWhite,
   Delete,
@@ -42,13 +44,22 @@ export default function ChoosePosition(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -62,7 +73,11 @@ export default function ChoosePosition(props) {
           height: 55,
         }}
       >
-        <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        {Platform.OS == "ios" ? (
+          <Arrowbackios height={15} width={15}></Arrowbackios>
+        ) : (
+          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+        )}
       </Button>
     ),
   };

@@ -52,6 +52,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
+import normalize from "react-native-normalize";
 
 export default function EventDetail(props) {
   const [modalLogin, setModalLogin] = useState(false);
@@ -100,7 +101,7 @@ export default function EventDetail(props) {
     headerTitle: "",
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: "#14646e",
       elevation: 0,
       borderBottomWidth: 0,
     },
@@ -682,74 +683,99 @@ export default function EventDetail(props) {
       headerBackground: () => (
         <Animated.View
           style={{
-            backgroundColor: "#209FAE",
+            backgroundColor: "#14646e",
             position: "absolute",
             left: 0,
 
             right: 0,
-            // height: Platform.OS == "ios" ? 100 : 80,
-            height: Platform.select({
-              ios: Notch ? 100 : 70,
-              android: deviceId == "CPH2127" ? 100 : 85,
-            }),
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? normalize(45)
+                  : normalize(20)
+                : normalize(45),
+            // Platform.select({
+            //   ios: Notch ? 100 : 70,
+            //   android: deviceId == "CPH2127" ? 100 : 85,
+            // }),
             flexDirection: "row",
             top: 0,
             bottom: 0,
             opacity: headerOpacity,
           }}
         >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
+          <Animated.View
             style={{
-              height: 50,
-              marginLeft: 18,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-                top:
-                  Platform.OS == "ios"
-                    ? SafeStatusBar
-                    : deviceId == "CPH2127"
-                    ? SafeStatusBar + 5
-                    : SafeStatusBar + 5,
-                borderRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-          <Animated.Text
-            style={{
-              color: "#fff",
-              marginLeft: 10,
-              fontSize: 18,
+              width: Dimensions.get("screen").width,
+              flexDirection: "row",
+              height:
+                Platform.OS == "ios"
+                  ? Notch
+                    ? normalize(45)
+                    : normalize(45)
+                  : normalize(45),
               top:
                 Platform.OS == "ios"
-                  ? SafeStatusBar + 15
-                  : deviceId == "CPH2127"
-                  ? SafeStatusBar + 16
-                  : SafeStatusBar + 16,
-              fontFamily: "Lato-Bold",
+                  ? Notch
+                    ? normalize(45)
+                    : normalize(20)
+                  : normalize(45),
+              backgroundColor: "#209fae",
             }}
           >
-            <Truncate
-              text={dataevent?.name ? dataevent.name : ""}
-              length={35}
-            />
-          </Animated.Text>
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => props.navigation.goBack()}
+              style={{
+                height: 50,
+                marginLeft: 18,
+              }}
+            >
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+                  top: normalize(0),
+                  // Platform.OS == "ios"
+                  //   ? SafeStatusBar
+                  //   : deviceId == "CPH2127"
+                  //   ? SafeStatusBar + 5
+                  //   : SafeStatusBar + 5,
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <Animated.Text
+              style={{
+                color: "#fff",
+                marginLeft: 10,
+                fontSize: 18,
+                top: normalize(13),
+                // Platform.OS == "ios"
+                //   ? SafeStatusBar + 15
+                //   : deviceId == "CPH2127"
+                //   ? SafeStatusBar + 16
+                //   : SafeStatusBar + 16,
+                fontFamily: "Lato-Bold",
+              }}
+            >
+              <Truncate
+                text={dataevent?.name ? dataevent.name : ""}
+                length={35}
+              />
+            </Animated.Text>
+          </Animated.View>
         </Animated.View>
       ),
       headerTransparent: true,

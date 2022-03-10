@@ -179,10 +179,13 @@ export default function RenderAlbum({
               //       })
               //     : setModalLogin(true);
               // }}
+              onPress={() =>
+                data.itinerary !== null ? goToItinerary(data) : null
+              }
               onPress={() => {
                 token
                   ? props.navigation.push("FeedStack", {
-                      screen: "AlbumTravelList",
+                      screen: "TravelAlbumList",
                       params: {
                         itinerary_id,
                         id: data?.album?.id,
@@ -287,7 +290,7 @@ export default function RenderAlbum({
               onPress={() => {
                 token
                   ? props.navigation.push("FeedStack", {
-                      screen: "AlbumTravelList",
+                      screen: "TravelAlbumList",
                       params: {
                         itinerary_id,
                         id: data?.album?.id,

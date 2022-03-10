@@ -209,7 +209,7 @@ export default function Asia({ navigation }) {
         backgroundColor: "#FFFFFF",
       }}
     >
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+      <StatusBar backgroundColor="#14646e" barStyle="dark-content" />
       <View
         style={{
           height: Platform.select({

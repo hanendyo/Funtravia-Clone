@@ -77,12 +77,11 @@ export default function TravelAlbumList(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -114,6 +113,7 @@ export default function TravelAlbumList(props) {
     props.navigation.setOptions(HeaderComponent);
     travelAlbum();
   }, [props.navigation]);
+
   return (
     <View style={styles.main}>
       {/* VIEW TRIP */}
@@ -178,7 +178,7 @@ export default function TravelAlbumList(props) {
           data={dataTravelAlbum?.album}
           keyExtractor={(item, index) => `${item}-${index}`}
           renderItem={({ item, index }) => {
-            return (
+            return item && item.media.length > 0 ? (
               <View
                 style={{
                   height: 380,
@@ -273,18 +273,8 @@ export default function TravelAlbumList(props) {
                             height: 110,
                             width: "100%",
                             borderRadius: 5,
-                            opacity: 0.15,
                           }}
                         ></Image>
-                        <Text
-                          style={{
-                            position: "absolute",
-                            alignSelf: "center",
-                            top: 45,
-                          }}
-                        >
-                          View all
-                        </Text>
                       </TouchableOpacity>
                     ) : (
                       <View
@@ -353,8 +343,20 @@ export default function TravelAlbumList(props) {
                             height: 110,
                             width: "100%",
                             borderRadius: 5,
+                            opacity: item.media.length > 4 ? 0.2 : null,
                           }}
                         ></Image>
+                        {item.media.length > 4 ? (
+                          <Text
+                            style={{
+                              position: "absolute",
+                              alignSelf: "center",
+                              top: 45,
+                            }}
+                          >
+                            View all
+                          </Text>
+                        ) : null}
                       </TouchableOpacity>
                     ) : (
                       <View
@@ -379,7 +381,7 @@ export default function TravelAlbumList(props) {
                   }}
                 ></View>
               </View>
-            );
+            ) : null;
           }}
         />
         <View style={{ height: Platform.OS == "ios" ? 140 : 170 }}></View>

@@ -123,12 +123,12 @@ export default function Trip(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
+
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 7 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",

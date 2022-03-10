@@ -149,15 +149,10 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 5 : 5) : null,
             }}
           >
-            <Text
-              type="bold"
-              size="label"
-              style={{ color: "#FFF" }}
-              numberOfLines={1}
-            >
+            <Text type="bold" size="label" style={{ color: "#FFF" }}>
               {t("AddFlightNumber")}
             </Text>
 
@@ -177,12 +172,11 @@ export default function detailCustomItinerary(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -1053,7 +1047,7 @@ export default function detailCustomItinerary(props) {
         <KeyboardAvoidingView
           style={{
             flex: 1,
-            backgroundColor: "#209fae",
+            backgroundColor: "#14646e",
             width: Dimensions.get("screen").width,
             height: Dimensions.get("screen").height,
           }}
@@ -1066,34 +1060,34 @@ export default function detailCustomItinerary(props) {
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
-              height:
-                Platform.OS === "ios"
-                  ? Notch
-                    ? normalize(72)
-                    : normalize(56)
-                  : NotchAndro
-                  ? normalize(57)
-                  : normalize(43),
+              height: normalize(45),
+              // Platform.OS === "ios"
+              //   ? Notch
+              //     ? normalize(41)
+              //     : normalize(56)
+              //   : NotchAndro
+              //   ? normalize(57)
+              //   : normalize(43),
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 0 : -15,
+              marginTop: Platform.OS === "ios" ? 25 : -15,
             }}
           >
             <TouchableOpacity
               style={{
-                height:
-                  Platform.OS === "ios"
-                    ? Notch
-                      ? normalize(15)
-                      : normalize(45)
-                    : NotchAndro
-                    ? normalize(0)
-                    : normalize(0),
+                height: normalize(45),
+                // Platform.OS === "ios"
+                //   ? Notch
+                //     ? normalize(41)
+                //     : normalize(45)
+                //   : NotchAndro
+                //   ? normalize(0)
+                //   : normalize(0),
                 paddingLeft: 10,
                 width: 50,
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: Platform.OS === "ios" ? 15 : null,
+                paddingTop: Platform.OS === "ios" ? 17 : null,
               }}
               onPress={() => {
                 setModalFrom(false), setModalTo(false);
@@ -1107,23 +1101,24 @@ export default function detailCustomItinerary(props) {
             </TouchableOpacity>
             <Text
               style={{
-                top:
-                  Platform.OS === "ios"
-                    ? Notch
-                      ? normalize(40)
-                      : normalize(18)
-                    : NotchAndro
-                    ? normalize(17)
-                    : normalize(12),
+                // Platform.OS === "ios"
+                //   ? Notch
+                //     ? normalize(40)
+                //     : normalize(18)
+                //   : NotchAndro
+                //   ? normalize(17)
+                //   : normalize(12),
                 left: 55,
                 fontFamily: "Lato-Regular",
                 fontSize: 16,
                 fontWeight: "bold",
                 color: "white",
-                height: 60,
+                height: normalize(45),
                 position: "absolute",
-                alignItems: "center",
-                alignContent: "center",
+                // alignItems: "center",
+                // // alignContent: "center",
+                // justifyContent: "center",
+                paddingTop: 14,
               }}
             >
               {modalFrom ? t("from") : t("to")}
