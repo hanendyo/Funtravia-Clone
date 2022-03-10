@@ -569,7 +569,6 @@ export default function ChoosePosition(props) {
           // kondisi jika lokasi yang sama dan aktivitas berbeda
           if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
             var newtime = tempdata[y - 1].time;
-            console.log("newTImeSama", newtime);
           } else {
             let jarak = Distance({
               lat1: LatBefore,
@@ -580,13 +579,13 @@ export default function ChoosePosition(props) {
             });
             // rumus hitung waktu
             let waktutemp = jarak / 50;
-            let waktu = waktutemp + "";
+            let waktu = parseFloat(waktutemp).toFixed(2);
             // pecah hasil waktu
             let split = waktu.split(".");
 
             let jamtemp = "";
             let menittemp = "";
-            console.log("waktu", split[1]);
+
             if (split[0] > 1) {
               jamtemp = split[1];
               if (split[1] > 0 && split[1] < 60) {
@@ -604,6 +603,7 @@ export default function ChoosePosition(props) {
                 menittemp = split[1] ? split[1] : 1;
               }
             }
+
             let time = tempdata[y - 1].time;
             let splittime = time.split(":");
             // let durasitemp = `${jamtemp}:${menittemp}`;
