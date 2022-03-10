@@ -371,13 +371,14 @@ export default function ItineraryDetail(props) {
         throw new Error("Error Input");
       }
       if (response.data) {
+        if (response.data.delete_itinerary.code !== 200) {
+          throw new Error(response.data.delete_itinerary.message);
+        }
+
         props.navigation.navigate("BottomStack", {
           screen: "TripBottomPlaning",
           params: { screen: "TripPlaning" },
         });
-        if (response.data.delete_itinerary.code !== 200) {
-          throw new Error(response.data.delete_itinerary.message);
-        }
       }
 
       setloading(false);
@@ -428,9 +429,6 @@ export default function ItineraryDetail(props) {
           screen: "TripBottomPlaning",
           params: { screen: "TripPlaning" },
         });
-        // props.navigation.push("TripPlaning", {
-        // 	index: status === "saved" ? 1 : 0,
-        // });
       }
 
       setloading(false);
@@ -546,13 +544,11 @@ export default function ItineraryDetail(props) {
       unit: unit,
     });
     let hasil = jarak / kecepatan;
-    let hasils = hasil + "";
-    console.log("hasil", hasil);
+    let hasils = parseFloat(hasil).toFixed(2);
+
     let bahan = hasils.split(".");
 
     let jam = parseFloat(bahan[1]);
-
-    console.log("jam", jam);
 
     return (
       (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
@@ -562,7 +558,7 @@ export default function ItineraryDetail(props) {
         ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
         : jam
         ? " " + (jam - 60) + " " + t("min")
-        : "0" + " " + t("min"))
+        : "1" + " " + t("min"))
     );
   };
 
@@ -1279,7 +1275,7 @@ export default function ItineraryDetail(props) {
                 });
                 // rumus hitung waktu
                 let waktutemp = jarak / 50;
-                let waktu = waktutemp + "";
+                let waktu = parseFloat(waktutemp).toFixed(2);
                 // pecah hasil waktu
                 let split = waktu.split(".");
 
@@ -1351,7 +1347,6 @@ export default function ItineraryDetail(props) {
                 GetTimelin();
               }
             } catch (error) {
-              console.log("errorTimeline", error);
               Alert.alert("" + error);
             }
           }
@@ -1361,7 +1356,6 @@ export default function ItineraryDetail(props) {
         setModalDelete(false);
       }
     } catch (error) {
-      console.log("errorXdata", error);
       Alert.alert("" + error);
       setModalDelete(false);
     }
@@ -1942,6 +1936,7 @@ export default function ItineraryDetail(props) {
   };
 
   const cekTanggal = (starts) => {
+    var start = "";
     var date1 = new Date(),
       start = starts.split(" ");
     var date2 = new Date(start[0]);
@@ -3005,26 +3000,24 @@ export default function ItineraryDetail(props) {
                   <Mobil height={15} width={15} style={{ marginRight: 10 }} />
 
                   <Text type="bold">
-                    {rupiah(
-                      dataList[index + 1].detail_flight
-                        ? Distance({
-                            lat1: dataList[index].latitude,
-                            lon1: dataList[index].longitude,
-                            lat2:
-                              dataList[index + 1].detail_flight
-                                .latitude_departure,
-                            lon2:
-                              dataList[index + 1].detail_flight
-                                .longitude_departure,
-                          })
-                        : Distance({
-                            lat1: dataList[index].latitude,
-                            lon1: dataList[index].longitude,
-                            lat2: dataList[index + 1].latitude,
-                            lon2: dataList[index + 1].longitude,
-                            unit: "km",
-                          })
-                    )}
+                    {dataList[index + 1].detail_flight
+                      ? Distance({
+                          lat1: dataList[index].latitude,
+                          lon1: dataList[index].longitude,
+                          lat2:
+                            dataList[index + 1].detail_flight
+                              .latitude_departure,
+                          lon2:
+                            dataList[index + 1].detail_flight
+                              .longitude_departure,
+                        })
+                      : Distance({
+                          lat1: dataList[index].latitude,
+                          lon1: dataList[index].longitude,
+                          lat2: dataList[index + 1].latitude,
+                          lon2: dataList[index + 1].longitude,
+                          unit: "km",
+                        })}
                   </Text>
                   <Text> km </Text>
                   <Text>- </Text>

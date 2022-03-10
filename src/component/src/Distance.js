@@ -15,13 +15,18 @@ export default function({ lat1, lon1, lat2, lon2, unit }) {
     dist = Math.acos(dist);
     dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
+
     if (unit == "km") {
       dist = dist * 1.609344;
     }
+
     if (unit == "m") {
       dist = dist * 1609.339999;
     }
-    console.log("dist", dist);
-    return dist > 0 && dist < 1 ? dist.toFixed(2) : dist.toFixed(0);
+
+    let hasiljarak =
+      dist > 0 && dist < 1 ? parseFloat(dist).toFixed(2) : dist.toFixed(0);
+
+    return hasiljarak;
   }
 }
