@@ -214,7 +214,7 @@ export default function RenderSinglePhoto({
                 token
                   ? has_itinerary
                     ? props.navigation.push("FeedStack", {
-                        screen: "AlbumTravelList",
+                        screen: "TravelAlbumList",
                         params: {
                           itinerary_id,
                           id: data?.album?.id,
@@ -250,7 +250,7 @@ export default function RenderSinglePhoto({
                 token
                   ? has_itinerary
                     ? props.navigation.push("FeedStack", {
-                        screen: "AlbumTravelList",
+                        screen: "TravelAlbumList",
                         params: {
                           itinerary_id,
                           id: data?.album?.id,
@@ -319,7 +319,7 @@ export default function RenderSinglePhoto({
                 token
                   ? has_itinerary
                     ? props.navigation.push("FeedStack", {
-                        screen: "AlbumTravelList",
+                        screen: "TravelAlbumList",
                         params: {
                           itinerary_id,
                           id: data?.album?.id,
@@ -355,7 +355,7 @@ export default function RenderSinglePhoto({
                 token
                   ? has_itinerary
                     ? props.navigation.push("FeedStack", {
-                        screen: "AlbumTravelList",
+                        screen: "TravelAlbumList",
                         params: {
                           itinerary_id,
                           id: data?.album?.id,

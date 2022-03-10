@@ -2332,11 +2332,11 @@ export default function CityDetail(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
-          height: HeaderHeight,
+          top: SafeStatusBar + 4,
+          height: HeaderHeight - 4,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -2525,7 +2525,7 @@ export default function CityDetail(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar + 250,
@@ -3344,7 +3344,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    backgroundColor: "#FFA088",
+    backgroundColor: "#14646e",
   },
   Image: {
     resizeMode: "cover",

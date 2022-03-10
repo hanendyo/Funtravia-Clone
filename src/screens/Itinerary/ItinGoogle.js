@@ -9,6 +9,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
 } from "react-native";
 import Modal from "react-native-modal";
 import { default_image } from "../../assets/png";
@@ -28,6 +29,7 @@ import { Truncate } from "../../component";
 import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import normalize from "react-native-normalize";
 
 export default function ItinGoogle(props) {
   const { t, i18n } = useTranslation();
@@ -43,13 +45,22 @@ export default function ItinGoogle(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -348,8 +359,8 @@ export default function ItinGoogle(props) {
         animationIn="slideInRight"
         animationOut="slideOutRight"
         isVisible={modals}
+        hasBackdrop={false}
         style={{
-          // backgroundColor: 'rgba(0, 0, 0, 0.25)',
           justifyContent: "flex-end",
           alignItems: "center",
           alignSelf: "center",
@@ -374,10 +385,10 @@ export default function ItinGoogle(props) {
               alignItems: "center",
               // alignContent: "center",
               backgroundColor: "#209fae",
-              height: 50,
+              height: normalize(45),
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 20 : -21,
+              marginTop: Platform.OS === "ios" ? 25 : -26,
             }}
           >
             <TouchableOpacity
@@ -397,11 +408,10 @@ export default function ItinGoogle(props) {
               <Arrowbackwhite width={20} height={20} />
             </TouchableOpacity>
             <Text
+              size="label"
               style={{
-                top: 15,
+                top: 13,
                 left: 55,
-                fontFamily: "Lato-Regular",
-                fontSize: 14,
                 color: "white",
                 height: 50,
                 // width: 50,

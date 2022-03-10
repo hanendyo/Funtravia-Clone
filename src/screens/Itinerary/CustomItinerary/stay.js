@@ -142,15 +142,10 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 3 : 5) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 6 : 5) : null,
             }}
           >
-            <Text
-              type="bold"
-              size="label"
-              style={{ color: "#FFF" }}
-              numberOfLines={1}
-            >
+            <Text type="bold" size="label" style={{ color: "#FFF" }}>
               {t("addHotelName")}
             </Text>
 
@@ -170,12 +165,11 @@ export default function detailCustomItinerary(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height: Platform.OS == "ios" ? StatusBar.currentHeight + 50 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 7 : null,
+      paddingBottom: Platform.OS == "ios" ? 20 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -1426,14 +1420,14 @@ export default function detailCustomItinerary(props) {
                 alignContent: "center",
                 backgroundColor: "#209fae",
                 // height: 50,
-                height:
-                  Platform.OS === "ios"
-                    ? Notch
-                      ? normalize(50)
-                      : normalize(58)
-                    : NotchAndro
-                    ? normalize(57)
-                    : normalize(50),
+                height: normalize(45),
+                // Platform.OS === "ios"
+                //   ? Notch
+                //     ? normalize(50)
+                //     : normalize(58)
+                //   : NotchAndro
+                //   ? normalize(57)
+                //   : normalize(50),
                 width: Dimensions.get("screen").width,
                 marginTop: Platform.OS === "ios" ? 0 : 0,
               }}

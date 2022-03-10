@@ -1964,9 +1964,6 @@ export default function ListEventHome(props) {
           setModaldate(false);
         }}
         onDismiss={() => setModaldate(false)}
-        onRequestClose={() => setModaldate(false)}
-        onBackdropPress={() => setModaldate(false)}
-        onDismiss={() => setModaldate(false)}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         isVisible={Modaldate}

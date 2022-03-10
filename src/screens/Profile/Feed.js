@@ -8,6 +8,7 @@ import {
   Platform,
   BackHandler,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -75,16 +76,30 @@ export default function myfeed(props) {
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: () => (
+    headerTitle: (
       <Text size="header" type="bold" style={{ color: "white" }}>
         {t("posts")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button
@@ -104,11 +119,6 @@ export default function myfeed(props) {
         )}
       </Button>
     ),
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-    headerRight: () => <View style={{ flexDirection: "row" }}></View>,
-    headerRightStyle: {},
   };
 
   const backAction = () => {
@@ -1122,6 +1132,8 @@ export default function myfeed(props) {
             >
               {item.node.is_single == false ? (
                 <RenderAlbum
+                  itinerary_id={item?.node?.itinerary?.id}
+                  has_itinerary={item?.node?.itinerary?.id ? true : false}
                   data={item.node}
                   props={props}
                   play={play}
@@ -1133,6 +1145,8 @@ export default function myfeed(props) {
                 />
               ) : (
                 <RenderSinglePhoto
+                  itinerary_id={item?.node?.itinerary?.id}
+                  has_itinerary={item?.node?.itinerary?.id ? true : false}
                   data={item.node}
                   props={props}
                   play={play}

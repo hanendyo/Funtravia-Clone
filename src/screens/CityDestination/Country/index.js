@@ -2001,11 +2001,11 @@ export default function Country(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
-          height: HeaderHeight,
+          top: SafeStatusBar + 3,
+          height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
@@ -2147,7 +2147,7 @@ export default function Country(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        style={[styles.header, { transform: [{ translateY: y }] }]}
+        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar + 255,
@@ -2988,7 +2988,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    backgroundColor: "#FFA088",
+    backgroundColor: "#14646e",
   },
   Image: {
     resizeMode: "cover",

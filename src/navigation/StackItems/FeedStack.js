@@ -29,7 +29,7 @@ export default function FeedStackNavigation() {
     >
       {/* <FeedStack.Screen name="FeedList" component={FeedList} /> */}
       <FeedStack.Screen
-        name="AlbumTravelList"
+        name="TravelAlbumList"
         component={TravelAlbumList}
         options={{
           // headerShown: false,

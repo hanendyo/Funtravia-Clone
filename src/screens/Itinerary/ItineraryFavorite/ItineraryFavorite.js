@@ -44,12 +44,11 @@ export default function ItineraryFavorite(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      elevation: Platform.OS == "ios" ? 0 : null,
-      borderBottomWidth: Platform.OS == "ios" ? 0 : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingVertical: Platform.OS == "ios" ? 10 : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -69,7 +68,7 @@ export default function ItineraryFavorite(props) {
         }}
       >
         {Platform.OS == "ios" ? (
-          <Arrowbackios height={20} width={20}></Arrowbackios>
+          <Arrowbackios height={15} width={15}></Arrowbackios>
         ) : (
           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
         )}

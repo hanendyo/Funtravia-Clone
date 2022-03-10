@@ -690,7 +690,8 @@ export default function SearchListEventHome(props) {
             style={{
               flexDirection: "row",
               paddingHorizontal: 10,
-              paddingVertical: Platform.OS == "ios" ? 10 : null,
+              paddingTop: Platform.OS == "ios" ? 7 : null,
+              paddingBottom: Platform.OS == "ios" ? 15 : null,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
@@ -775,7 +776,8 @@ export default function SearchListEventHome(props) {
             style={{
               flexDirection: "row",
               paddingHorizontal: 10,
-              paddingVertical: Platform.OS == "ios" ? 10 : null,
+              paddingTop: Platform.OS == "ios" ? 7 : null,
+              paddingBottom: Platform.OS == "ios" ? 15 : null,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",

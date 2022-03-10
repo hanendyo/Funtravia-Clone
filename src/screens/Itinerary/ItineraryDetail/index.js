@@ -1538,51 +1538,51 @@ export default function ItineraryDetail(props) {
   /** ---------------------------------------------------------------------------------------------------------------
    * ref
    */
-  const HeaderComponent = {
-    headerShown: true,
-    title: "",
-    headerTransparent: true,
-    headerTintColor: "white",
-    headerTitle: "",
-    headerMode: "screen",
-    headerStyle: {
-      backgroundColor: "#146463",
-      elevation: 0,
-      borderBottomWidth: 0,
-    },
-    headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
-    },
-    headerLeftContainerStyle: {
-      background: "#FFF",
+  // const HeaderComponent = {
+  //   headerShown: true,
+  //   title: "",
+  //   headerTransparent: true,
+  //   headerTintColor: "white",
+  //   headerTitle: "",
+  //   headerMode: "screen",
+  //   headerStyle: {
+  //     backgroundColor: "#146463",
+  //     elevation: 0,
+  //     borderBottomWidth: 0,
+  //   },
+  //   headerTitleStyle: {
+  //     fontFamily: "Lato-Bold",
+  //     fontSize: 14,
+  //     color: "white",
+  //   },
+  //   headerLeftContainerStyle: {
+  //     background: "#FFF",
 
-      marginLeft: 10,
-    },
+  //     marginLeft: 10,
+  //   },
 
-    headerRightStyle: {},
-    headerLeft: () => (
-      <Button
-        text={""}
-        size="medium"
-        type="circle"
-        variant="transparent"
-        onPress={() => {
-          _handlerBack();
-        }}
-        style={{
-          height: 55,
-        }}
-      >
-        {Platform.OS == "ios" ? (
-          <Arrowbackios height={15} width={15}></Arrowbackios>
-        ) : (
-          <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-        )}
-      </Button>
-    ),
-  };
+  //   headerRightStyle: {},
+  //   headerLeft: () => (
+  //     <Button
+  //       text={""}
+  //       size="medium"
+  //       type="circle"
+  //       variant="transparent"
+  //       onPress={() => {
+  //         _handlerBack();
+  //       }}
+  //       style={{
+  //         height: 55,
+  //       }}
+  //     >
+  //       {Platform.OS == "ios" ? (
+  //         <Arrowbackios height={15} width={15}></Arrowbackios>
+  //       ) : (
+  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+  //       )}
+  //     </Button>
+  //   ),
+  // };
 
   let scrollY = useRef(new Animated.Value(0)).current;
 
@@ -1967,7 +1967,7 @@ export default function ItineraryDetail(props) {
   const renderHeader = (rD) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 50],
+      outputRange: [0, -HeaderHeight + 40],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -4282,7 +4282,7 @@ export default function ItineraryDetail(props) {
     return (
       <Animated.View
         style={{
-          top: 0,
+          top: -5,
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -5294,7 +5294,7 @@ export default function ItineraryDetail(props) {
             // marginHorizontal: 20,
             paddingHorizontal: 20,
             // paddingTop: 5,
-            height: 55,
+            height: normalize(45),
             width: Dimensions.get("screen").width,
             backgroundColor: "#209fae",
           }}
@@ -5334,7 +5334,7 @@ export default function ItineraryDetail(props) {
             </Button>
             <Animated.View
               style={{
-                top: 5,
+                top: 3,
                 flex: 1,
               }}
             >
@@ -5354,7 +5354,7 @@ export default function ItineraryDetail(props) {
               <Animated.View
                 style={{
                   flexDirection: "row",
-                  marginTop: Platform.OS == "ios" ? 0 : 8,
+                  marginTop: Platform.OS == "ios" ? 2 : 2,
                   paddingRight: 20,
                 }}
               >
