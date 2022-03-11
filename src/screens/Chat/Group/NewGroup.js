@@ -13,6 +13,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   StatusBar,
+  NativeModules,
 } from "react-native";
 import {
   Button,
@@ -46,6 +47,10 @@ export default function NewGroup({ navigation, route }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   let [DataBuddy, setDataBuddy] = useState([]);
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
+  const deviceId = DeviceInfo.getModel();
 
   const [
     querywith,
@@ -131,7 +136,7 @@ export default function NewGroup({ navigation, route }) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 5 : 5) : null,
+              marginTop: deviceId == "LYA-L29" ? 8 : NotchAndro ? 2 : 5,
             }}
           >
             <Text
@@ -194,7 +199,7 @@ export default function NewGroup({ navigation, route }) {
             <View
               style={{
                 marginLeft: 15,
-                marginTop: 5,
+                marginTop: deviceId == "LYA-L29" ? 8 : NotchAndro ? 2 : 5,
               }}
             >
               <Text
@@ -203,7 +208,7 @@ export default function NewGroup({ navigation, route }) {
                 style={{ color: "#FFF", marginBottom: -3 }}
                 numberOfLines={1}
               >
-                {t("addHotelName")}
+                {t("newGroupChat")}
               </Text>
 
               <Text
@@ -212,7 +217,7 @@ export default function NewGroup({ navigation, route }) {
                 style={{ color: "#FFF", marginLeft: -3 }}
               >
                 {" "}
-                {t("customActivity")}
+                {t("addParticipants")}
               </Text>
             </View>
           )}

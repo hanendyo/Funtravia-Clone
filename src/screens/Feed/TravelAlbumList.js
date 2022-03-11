@@ -125,9 +125,18 @@ export default function TravelAlbumList(props) {
             alignItems: "center", //Centered vertically
             flex: 1,
             paddingHorizontal: 20,
+            width: Dimensions.get("screen").width,
           }}
         >
-          <Text size={"label"} type={"bold"} style={{}}>
+          <Text
+            numberOfLines={2}
+            size={"label"}
+            type={"bold"}
+            style={{
+              width: Dimensions.get("screen").width - 120,
+              marginRight: 10,
+            }}
+          >
             {dataTravelAlbum?.name}
           </Text>
           <Button
@@ -202,6 +211,17 @@ export default function TravelAlbumList(props) {
                     borderWidth: 0.5,
                     borderColor: "#d1d1d1",
                     paddingVertical: 6,
+                    // shadow
+                    backgroundColor: Platform.OS === "ios" ? "#fff" : null,
+                    borderColor: "#ddd",
+                    shadowColor: Platform.OS === "ios" ? "#ddd" : "#fff",
+                    shadowOffset: {
+                      width: Platform.OS === "ios" ? 3 : 0,
+                      height: Platform.OS === "ios" ? 3 : 2,
+                    },
+                    shadowOpacity: Platform.OS === "ios" ? 1 : 0.8,
+                    shadowRadius: Platform.OS === "ios" ? null : 40,
+                    elevation: Platform.OS === "ios" ? null : 4,
                   }}
                 >
                   {/* BIG IMAGE */}

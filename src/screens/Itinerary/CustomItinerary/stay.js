@@ -11,6 +11,7 @@ import {
   Platform,
   Pressable,
   StatusBar,
+  NativeModules,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -55,7 +56,10 @@ export default function detailCustomItinerary(props) {
   const Notch = DeviceInfo.hasNotch();
   const token = useSelector((data) => data.token);
   const GooglePlacesRef = useRef();
-  const NotchAndro = StatusBar ? StatusBar.currentHeight > 24 : false;
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
+  const deviceId = DeviceInfo.getModel();
 
   const { t, i18n } = useTranslation();
 
@@ -200,7 +204,7 @@ export default function detailCustomItinerary(props) {
             <View
               style={{
                 marginLeft: 15,
-                marginTop: 5,
+                marginTop: deviceId == "LYA-L29" ? 10 : NotchAndro ? 2 : 5,
               }}
             >
               <Text
@@ -1420,7 +1424,14 @@ export default function detailCustomItinerary(props) {
                 alignContent: "center",
                 backgroundColor: "#209fae",
                 // height: 50,
-                height: normalize(45),
+                height:
+                  Platform.OS === "ios"
+                    ? normalize(45)
+                    : deviceId == "LYA-L29"
+                    ? normalize(62)
+                    : NotchAndro
+                    ? normalize(52)
+                    : normalize(57),
                 // Platform.OS === "ios"
                 //   ? Notch
                 //     ? normalize(50)
@@ -1434,20 +1445,28 @@ export default function detailCustomItinerary(props) {
             >
               <TouchableOpacity
                 style={{
-                  height:
-                    Platform.OS === "ios"
-                      ? Notch
-                        ? normalize(40)
-                        : normalize(45)
-                      : NotchAndro
-                      ? normalize(0)
-                      : normalize(0),
+                  height: normalize(45),
+                  // height:
+                  //   Platform.OS === "ios"
+                  //     ? Notch
+                  //       ? normalize(40)
+                  //       : normalize(45)
+                  //     : NotchAndro
+                  //     ? normalize(0)
+                  //     : normalize(0),
                   paddingLeft: 10,
                   width: 50,
                   position: "absolute",
                   alignItems: "center",
                   alignContent: "center",
-                  paddingTop: Platform.OS === "ios" ? 15 : null,
+                  paddingTop:
+                    Platform.OS === "ios"
+                      ? 17
+                      : deviceId == "LYA-L29"
+                      ? 12
+                      : NotchAndro
+                      ? 15
+                      : 15,
                 }}
                 onPress={() => {
                   setModalHotelName(false);
@@ -1461,14 +1480,14 @@ export default function detailCustomItinerary(props) {
               </TouchableOpacity>
               <Text
                 style={{
-                  top:
-                    Platform.OS === "ios"
-                      ? Notch
-                        ? normalize(17)
-                        : normalize(19)
-                      : NotchAndro
-                      ? normalize(18)
-                      : normalize(15),
+                  // top:
+                  //   Platform.OS === "ios"
+                  //     ? Notch
+                  //       ? normalize(17)
+                  //       : normalize(19)
+                  //     : NotchAndro
+                  //     ? normalize(18)
+                  //     : normalize(15),
                   left: 60,
                   fontFamily: "Lato-Bold",
                   fontSize: 15,
@@ -1477,6 +1496,14 @@ export default function detailCustomItinerary(props) {
                   position: "absolute",
                   alignItems: "center",
                   alignContent: "center",
+                  paddingTop:
+                    Platform.OS === "ios"
+                      ? 14
+                      : deviceId == "LYA-L29"
+                      ? 5
+                      : NotchAndro
+                      ? 2
+                      : 4,
                 }}
               >
                 {t("HotelName")}

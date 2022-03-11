@@ -57,7 +57,7 @@ export default function TravelGoalList(props) {
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
-      paddingBottom: Platform.OS == "ios" ? 15 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -599,7 +599,6 @@ export default function TravelGoalList(props) {
           await setModal(false);
         }}
         isVisible={modal}
-        avoidKeyboard={true}
         style={{
           justifyContent: "flex-end",
           margin: 0,
@@ -741,7 +740,6 @@ export default function TravelGoalList(props) {
                           marginBottom: 15,
                           height: 30,
                         }}
-                        key={index}
                       >
                         <CheckBox
                           onCheckColor="#FFF"

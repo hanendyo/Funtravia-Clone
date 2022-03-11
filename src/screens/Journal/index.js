@@ -61,7 +61,7 @@ export default function Journal(props) {
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
-      paddingBottom: Platform.OS == "ios" ? 15 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -945,7 +945,6 @@ export default function Journal(props) {
             </View>
           )}
           keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           refreshControl={
             <RefreshControl

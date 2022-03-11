@@ -63,7 +63,7 @@ export default function AllDestination(props) {
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
-      paddingBottom: Platform.OS == "ios" ? 15 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 2,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -805,7 +805,6 @@ export default function AllDestination(props) {
                     placeholder={t("search")}
                     autoCorrect={false}
                     enablesReturnKeyAutomatically={true}
-                    underlineColorAndroid="transparent"
                     style={{
                       marginHorizontal: 10,
                       padding: 0,

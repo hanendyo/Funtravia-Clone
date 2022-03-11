@@ -1210,7 +1210,6 @@ export default function OtherProfile(props) {
                       size="small"
                       color="primary"
                       variant={"normal"}
-                      text={t("follow")}
                       style={{
                         width: "30%",
                         alignSelf: "flex-end",

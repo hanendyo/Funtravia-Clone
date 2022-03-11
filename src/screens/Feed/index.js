@@ -7,17 +7,20 @@ import {
   Pressable,
   Modal,
   StatusBar,
+  Platform,
 } from "react-native";
 import { Button, Text } from "../../component";
 import { PostButton, SearchWhite, Xgray } from "../../assets/svg";
 import FeedList from "./FeedList";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
 
 export default function Feed(props) {
   const { t } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   let [modalLogin, setModalLogin] = useState(false);
+  const deviceId = DeviceInfo.getModel();
   const HeaderComponent = {
     headerShown: true,
     transparent: false,
@@ -25,7 +28,11 @@ export default function Feed(props) {
     tabBarLabel: "Feed",
     headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" size="header" style={{ color: "#fff" }}>
+      <Text
+        type="bold"
+        size={Platform.OS == "ios" ? "title" : "header"}
+        style={{ color: "#fff" }}
+      >
         Fun Feed
       </Text>
     ),

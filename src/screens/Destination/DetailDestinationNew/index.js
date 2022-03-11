@@ -2242,7 +2242,7 @@ const Index = (props) => {
             // opacity: hide.current,
             color: "#fff",
             marginLeft: 10,
-            top: 12,
+            top: Platform.OS == "ios" ? 12 : deviceId == "LYA-L29" ? 13 : 12,
             // fontSize: 20,
             // fontFamily: "Lato-Bold",
           }}
