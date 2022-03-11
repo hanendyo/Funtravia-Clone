@@ -753,7 +753,7 @@ export default function ReoderDetail({ navigation, route }) {
           } else {
             if (waktu > 0.6) {
               jamtemp = 1;
-              menittemp = split[1] - 60;
+              menittemp = split[1] > 60 ? split[1] - 60 : split[1];
             } else {
               jamtemp = 0;
               menittemp = split[1] ? split[1] : 1;

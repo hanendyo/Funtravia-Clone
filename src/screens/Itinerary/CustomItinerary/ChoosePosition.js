@@ -528,10 +528,16 @@ export default function ChoosePosition(props) {
     let jam = jammax.split(":");
     let jambaru = inputan.duration.split(":");
 
-    let lastTime = datatimeline[datatimeline.length - 1].time;
+    var lastTime =
+      datatimeline.length > 0
+        ? datatimeline[datatimeline.length - 1].time
+        : "06:00:00";
     let splitlastTime = lastTime.split(":");
 
-    let lastDuration = datatimeline[datatimeline.length - 1].duration;
+    let lastDuration =
+      datatimeline.length > 0
+        ? datatimeline[datatimeline.length - 1].duration
+        : "01:00:00";
     let splitlastDuration = lastDuration.split(":");
 
     let jumlah =
@@ -554,6 +560,7 @@ export default function ChoosePosition(props) {
         tempdata[y].order = order;
         if (tempdata[y].stat && tempdata[y].stat === "new") {
           var z = [...dataAkhir];
+
           z.push(order);
           setData(z);
         }
@@ -597,7 +604,7 @@ export default function ChoosePosition(props) {
             } else {
               if (waktu > 0.6) {
                 jamtemp = 1;
-                menittemp = split[1] - 60;
+                menittemp = split[1] > 60 ? split[1] - 60 : split[1];
               } else {
                 jamtemp = 0;
                 menittemp = split[1] ? split[1] : 1;
@@ -616,16 +623,14 @@ export default function ChoosePosition(props) {
               parseFloat(splitdurations[1]) +
               parseFloat(menittemp);
 
-            console.log("MenitTemp", menittemp);
-
             let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
             let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
-            console.log("NewMenit", newmenit);
+
             var newtime =
               menitotal > 59
                 ? `${newjam + 1}:${newmenit - 60}`
                 : `${newjam}:${newmenit}`;
-            console.log("newTIme", newtime);
+
             if (jamtemp > 23) {
               Alert.alert("Opss", "Aktivitas sudah melewati 24 jam", [
                 {
@@ -653,6 +658,8 @@ export default function ChoosePosition(props) {
       if ((x = tempdata.length)) {
         setDatatimeline(tempdata);
       }
+
+      console.log("dataTimeline", datatimeline);
       setjammax(jumlah + ":00:00");
     } else {
       Alert.alert(t("AktivitasFull"));
@@ -661,7 +668,7 @@ export default function ChoosePosition(props) {
 
   const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
-    var starttime = startt ? startt.split(":") : "00:00:00";
+    var starttime = startt ? startt.split(":") : "06:00:00";
 
     var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
     // if (jam > 23) {
