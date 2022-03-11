@@ -308,6 +308,7 @@ import Upload100 from "./files/Upload100.svg";
 import Backtotop from "./files/backtotop.svg";
 import Bottomsegitiga from "./files/bottomsegitiga";
 import Mark from "./files/mark";
+import DeleteMessage from "./files/DeleteMessage";
 
 export {
   Mark,
@@ -620,4 +621,5 @@ export {
   Upload100,
   Backtotop,
   Bottomsegitiga,
+  DeleteMessage,
 };

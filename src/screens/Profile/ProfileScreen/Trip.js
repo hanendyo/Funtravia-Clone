@@ -344,9 +344,7 @@ export default function Trip(
                     <Newglobe height={20} width={20} />
                   )}
                 </View>
-                {item?.status == "F" &&
-                !item?.isprivate &&
-                item?.user_created?.id !== users?.id ? (
+                {item.like_show ? (
                   item.liked === false ? (
                     <TouchableOpacity
                       style={{

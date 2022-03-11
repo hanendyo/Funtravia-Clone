@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { dateFormatDateMonthYears } from "../../component/src/dateformatter";
 import DeviceInfo from "react-native-device-info";
 import { stat } from "react-native-fs";
+import { TouchableHighlight } from "react-native-gesture-handler";
 export default function ChatTypelayout({
   item,
   user_id,
@@ -48,6 +49,9 @@ export default function ChatTypelayout({
   type,
   from,
   user,
+  setSelect,
+  select,
+  selectItem,
 }) {
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
@@ -202,15 +206,21 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("CountryStack", {
-            screen: "CityDetail",
-            params: {
-              data: {
-                city_id: data.id,
-              },
-            },
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("CountryStack", {
+                screen: "CityDetail",
+                params: {
+                  data: {
+                    city_id: data.id,
+                  },
+                },
+              });
         }}
         style={{
           borderWidth: 1,
@@ -300,15 +310,21 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("CountryStack", {
-            screen: "Province",
-            params: {
-              data: {
-                id: data.id,
-              },
-            },
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("CountryStack", {
+                screen: "Province",
+                params: {
+                  data: {
+                    id: data.id,
+                  },
+                },
+              });
         }}
         style={{
           borderWidth: 1,
@@ -398,16 +414,22 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("CountryStack", {
-            screen: "Country",
-            params: {
-              data: {
-                id: data.id,
-              },
-            },
-            exParam: true,
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("CountryStack", {
+                screen: "Country",
+                params: {
+                  data: {
+                    id: data.id,
+                  },
+                },
+                exParam: true,
+              });
         }}
         style={{
           borderWidth: 1,
@@ -506,11 +528,17 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.push("DestinationUnescoDetail", {
-            id: data.id,
-            name: data.name,
-          });
+          select
+            ? selectItem(index)
+            : navigation.push("DestinationUnescoDetail", {
+                id: data.id,
+                name: data.name,
+              });
         }}
         style={{
           borderWidth: 1,
@@ -682,16 +710,22 @@ export default function ChatTypelayout({
       }
       return (
         <Pressable
+          onLongPress={() => {
+            selectItem(index);
+            setSelect(true);
+          }}
           onPress={() => {
-            navigation.navigate("FeedStack", {
-              screen: "CommentPost",
-              params: {
-                post_id: data.id,
-                updateDataPost: null,
-                from: "chat",
-                //   comment_id: data.comment_feed.id,
-              },
-            });
+            select
+              ? selectItem(index)
+              : navigation.navigate("FeedStack", {
+                  screen: "CommentPost",
+                  params: {
+                    post_id: data.id,
+                    updateDataPost: null,
+                    from: "chat",
+                    //   comment_id: data.comment_feed.id,
+                  },
+                });
           }}
           style={{
             borderWidth: 1,
@@ -807,10 +841,16 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("TravelGoalDetail", {
-            article_id: data.id,
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("TravelGoalDetail", {
+                article_id: data.id,
+              });
         }}
         style={{
           width: Dimensions.get("screen").width - 100,
@@ -867,12 +907,18 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("eventdetail", {
-            event_id: data.id,
-            name: data.name,
-            token: token,
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("eventdetail", {
+                event_id: data.id,
+                name: data.name,
+                token: token,
+              });
         }}
         style={{
           width: Dimensions.get("screen").width - 100,
@@ -983,11 +1029,17 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("JournalStackNavigation", {
-            screen: "DetailJournal",
-            params: { dataPopuler: data },
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("JournalStackNavigation", {
+                screen: "DetailJournal",
+                params: { dataPopuler: data },
+              });
         }}
         style={{
           width: Dimensions.get("screen").width - 100,
@@ -996,6 +1048,7 @@ export default function ChatTypelayout({
           borderRadius: 15,
           backgroundColor: "#fff",
           marginBottom: 5,
+          justifyContent: "center",
         }}
       >
         <View style={{ flexDirection: "row" }}>
@@ -1044,13 +1097,19 @@ export default function ChatTypelayout({
     let data = JSON.parse(item.text);
     return (
       <Pressable
+        onLongPress={() => {
+          selectItem(index);
+          setSelect(true);
+        }}
         onPress={() => {
-          navigation.navigate("TravelIdeaStack", {
-            screen: "Detail_movie",
-            params: {
-              movie_id: data.id,
-            },
-          });
+          select
+            ? selectItem(index)
+            : navigation.navigate("TravelIdeaStack", {
+                screen: "Detail_movie",
+                params: {
+                  movie_id: data.id,
+                },
+              });
         }}
         style={{
           width: Dimensions.get("screen").width - 100,
@@ -1112,9 +1171,9 @@ export default function ChatTypelayout({
     let [scales, setScales] = useState("S");
     if (item && item.text) {
       Image.getSize(item.text, (width, height) => {
-        console.log(
-          `The image dimensions are width = ${width}x height = ${height}`
-        );
+        // console.log(
+        //   `The image dimensions are width = ${width}x height = ${height}`
+        // );
         if (width > height) {
           setScales("L");
         } else if (width < height) {
@@ -1124,10 +1183,6 @@ export default function ChatTypelayout({
         }
       });
     }
-
-    console.log("scales", scales);
-    // const statResult = stat(item.text);
-    // console.log("~ statResult", statResult);
 
     return (
       <>
@@ -1144,7 +1199,15 @@ export default function ChatTypelayout({
           }}
         >
           {item.is_send ? (
-            <Pressable onPress={() => setModalss(true)}>
+            <Pressable
+              onPress={() => {
+                select ? selectItem(index) : setModalss(true);
+              }}
+              onLongPress={() => {
+                selectItem(index);
+                setSelect(true);
+              }}
+            >
               <FunImage
                 source={{ uri: item.text }}
                 style={{
@@ -1157,6 +1220,13 @@ export default function ChatTypelayout({
             </Pressable>
           ) : (
             <ImageBackground
+              onPress={() => {
+                select ? selectItem(index) : setModalss(true);
+              }}
+              onLongPress={() => {
+                selectItem(index);
+                setSelect(true);
+              }}
               source={{ uri: JSON.parse(item.text).path }}
               style={{
                 width: "100%",
@@ -1295,19 +1365,12 @@ export default function ChatTypelayout({
           }}
           transparent={true}
           visible={modalss}
-          onRequestClose={() => {
-            setModalss(false);
-            setAngel(0);
-          }}
           style={{
             alignItems: "center",
             justifyContent: "center",
           }}
         >
           <Pressable
-            // onPress={() => {
-            //   setModalss(false);
-            // }}
             style={{
               height: Dimensions.get("screen").height,
               width: Dimensions.get("screen").width,
@@ -1359,33 +1422,46 @@ export default function ChatTypelayout({
               <Reupload height={20} width={20}></Reupload>
             </Pressable>
           </View>
-          <FunImage
-            source={{ uri: item.text }}
+          <View
             style={{
-              width:
-                (scales == "P" && angel == 90) ||
-                (scales == "P" && angel == 270)
-                  ? "80%"
-                  : (scales == "L" && angel == 90) ||
-                    (scales == "L" && angel == 270)
-                  ? "140%"
-                  : "100%",
-              // angel == 90 || (angel == 270 && )
-              //   ? "140%"
-              //   : "100%",
-              height:
-                (scales == "P" && angel == 90) ||
-                (scales == "P" && angel == 270)
-                  ? "120%"
-                  : (scales == "L" && angel == 90) ||
-                    (scales == "L" && angel == 270)
-                  ? "80%"
-                  : "100%",
-              alignSelf: "center",
-              resizeMode: "contain",
-              transform: [{ rotate: `${angel}deg` }],
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
+          >
+            <FunImage
+              source={{ uri: item.text }}
+              style={{
+                width:
+                  (scales == "P" && angel == 90) ||
+                  (scales == "P" && angel == 270)
+                    ? "100%"
+                    : (scales == "L" && angel == 90) ||
+                      (scales == "L" && angel == 270)
+                    ? Dimensions.get("screen").height - 80
+                    : "100%",
+                // angel == 90 || (angel == 270 && )
+                //   ? "140%"
+                //   : "100%",
+                height:
+                  (scales == "P" && angel == 90) ||
+                  (scales == "P" && angel == 270)
+                    ? // ? "120%"
+                      Dimensions.get("screen").width
+                    : (scales == "L" && angel == 90) ||
+                      (scales == "L" && angel == 270)
+                    ? Dimensions.get("screen").width
+                    : "100%",
+                // alignSelf: "center",
+                resizeMode: "contain",
+                alignItems: "center",
+                alignContent: "center",
+                transform: [{ rotate: `${angel}deg` }],
+              }}
+            />
+          </View>
+
           {/* <Image
             source={{ uri: item.text }}
             style={{

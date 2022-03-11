@@ -15,6 +15,7 @@ import {
   Keyboard as onKeyboard,
   BackHandler,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import io from "socket.io-client";
 import Modal from "react-native-modal";
@@ -27,19 +28,15 @@ import {
   Xgray,
   Errorr,
   Arrowbackios,
+  Checkblok,
+  Xwhite,
+  DeleteMessage,
+  OptionsVertWhite,
 } from "../../assets/svg";
+import { Bg_soon } from "../../assets/png";
 import NetInfo from "@react-native-community/netinfo";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { default_image } from "../../assets/png";
-import {
-  Button,
-  Text,
-  Errors,
-  FunImage,
-  StickerModal,
-  FunImageAutoSize,
-  Uuid,
-} from "../../component";
+import { Button, Text, FunImage, StickerModal, Uuid } from "../../component";
 import Svg, { Polygon } from "react-native-svg";
 import { moderateScale } from "react-native-size-matters";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -56,6 +53,8 @@ import { ASSETS_SERVER } from "../../config";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import { useSelector } from "react-redux";
+import CheckBox from "@react-native-community/checkbox";
+
 // import "./CustomKeyboard/demoKeyboards";
 const KeyboardAccessoryView = Keyboard.KeyboardAccessoryView;
 const KeyboardUtils = Keyboard.KeyboardUtils;
@@ -76,6 +75,7 @@ const keyboards = [
 export default function Room({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
+  const deviceId = DeviceInfo.getModel();
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
@@ -88,8 +88,13 @@ export default function Room({ navigation, route }) {
   const [user, setUser] = useState(settingApps.user);
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [soon, setSoon] = useState(false);
   const [socket_connect, setSocketConnect] = useState(false);
   const [loadingPersonal, setLoadingPersonal] = useState(true);
+  let [select, setSelect] = useState(false);
+  let [countSelected, setCountSelected] = useState(0);
+  let [messageAfterDelete, setMessageAfterDelete] = useState([]);
   // const socket = io(CHATSERVER, {
   //   withCredentials: true,
   //   extraHeaders: {
@@ -98,7 +103,7 @@ export default function Room({ navigation, route }) {
   // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
-
+  console.log("~ message", message);
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -197,7 +202,6 @@ export default function Room({ navigation, route }) {
     socket.current.on("disconnect", () => {
       setSocketConnect(false);
     });
-    navigation.setOptions(navigationOptions);
     if (init) {
     }
     socket.current.on("new_chat_personal", (data) => {
@@ -205,7 +209,7 @@ export default function Room({ navigation, route }) {
     });
 
     return () => socket.current.disconnect();
-  }, [connected, tokenApps]);
+  }, [connected, tokenApps, navigation, select]);
 
   useEffect(() => {
     updateReadMassage();
@@ -467,6 +471,61 @@ export default function Room({ navigation, route }) {
 
   let flatListRef = useRef();
 
+  console.log("~ messageAfterDelete", messageAfterDelete);
+
+  const clearAllSelected = () => {
+    let tempData = [...message];
+    let tempClear = [];
+    for (var i in tempData) {
+      if (tempData[i].selected == true) {
+        delete tempData[i].selected;
+      }
+      tempClear.push(tempData[i]);
+    }
+    setSelect(false);
+    setMessage(tempClear);
+    setMessageAfterDelete([]);
+  };
+
+  const deleteMessage = async () => {
+    try {
+      await deleteMessageService();
+      await saveAsyncStorage(messageAfterDelete);
+      await setMessage(messageAfterDelete);
+      await setCountSelected(0);
+      await setSelect(false);
+      await setModalDelete(false);
+      await setMessageAfterDelete([]);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
+  const saveAsyncStorage = async () => {
+    await AsyncStorage.setItem(
+      "history_" + room,
+      JSON.stringify(messageAfterDelete)
+    );
+  };
+
+  const deleteMessageService = async () => {
+    let response = await fetch(
+      `${CHATSERVER}/api/personal/delete/message?receiver_id=${receiver}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: tokenApps,
+          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `room=${room}&body=${JSON.stringify(
+          messageAfterDelete
+        )}&user_id=${user.id}`,
+      }
+    );
+  };
+
   const navigationOptions = {
     headerShown: true,
     headerTitle: null,
@@ -494,97 +553,171 @@ export default function Room({ navigation, route }) {
       background: "#FFF",
       position: "absolute",
       zIndex: 999,
-      marginLeft: 10,
     },
+
     headerLeft: () => (
       <View
         style={{
+          width: Dimensions.get("screen").width,
+          height: "100%",
           flexDirection: "row",
-          justifyContent: "center",
-          alignContent: "center",
           alignItems: "center",
-          marginVertical: 10,
-          // marginLeft: 10,
-          // marginBottom: Platform.OS === "ios" ? 20 : 10,
         }}
       >
-        <TouchableOpacity
-          style={{
-            height: 40,
-            width: 40,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            route?.params?.fromNewChat == true
-              ? navigation.navigate("ChatScreen")
-              : navigation.goBack();
-          }}
-        >
-          {Platform.OS === "ios" ? (
-            <Arrowbackios width={15} height={15} />
-          ) : (
-            <Arrowbackwhite height={20} width={20} />
-          )}
-        </TouchableOpacity>
-        <Pressable
-          onPress={() => {
-            navigation.push("ProfileStack", {
-              screen: "otherprofile",
-              params: {
-                idUser: route.params.receiver,
-              },
-            });
-          }}
-          style={{
-            flexDirection: "row",
-            // borderWidth: 1,
-            width: Dimensions.get("screen").width - 100,
-            height: 45,
-            alignItems: "center",
-            zIndex: 100,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("ProfileStack", {
-                screen: "otherprofile",
-                params: {
-                  idUser: route.params.receiver,
-                },
-              });
-            }}
-          >
-            <FunImage
-              size="xs"
-              source={
-                route.params.picture
-                  ? { uri: route.params.picture }
-                  : default_image
-              }
-              style={{ width: 40, height: 40, borderRadius: 20 }}
-            />
-          </TouchableOpacity>
-          <Text
-            type="bold"
-            size="title"
+        {select ? (
+          <View
             style={{
-              color: "white",
-              alignSelf: "center",
-              paddingHorizontal: 10,
+              width: "100%",
+              height: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            numberOfLines={2}
           >
-            {route.params.name}
-          </Text>
-        </Pressable>
+            <Pressable
+              onPress={() => {
+                clearAllSelected();
+              }}
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                alignItems: "center",
+                paddingLeft: 15,
+              }}
+            >
+              <Xwhite height={15} width={15} />
+              <Text
+                type="regular"
+                size="label"
+                style={{ color: "#fff", marginLeft: 15 }}
+              >
+                {`${countSelected} ${t("Selected")}`}
+              </Text>
+            </Pressable>
+            <View
+              style={{
+                flexDirection: "row",
+                height: "100%",
+                alignItems: "center",
+                marginRight: -5,
+              }}
+            >
+              <Pressable
+                // onPress={() => deleteMessage()}
+                onPress={() => setModalDelete(true)}
+                style={{
+                  height: "100%",
+                  justifyContent: "center",
+                  paddingRight: 20,
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                <DeleteMessage
+                  height={25}
+                  width={25}
+                  // onPress={() => deleteMessage()}
+                  onPress={() => setModalDelete(true)}
+                />
+              </Pressable>
+              {/* <Pressable
+                onPress={() => setSoon(true)}
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  height: "100%",
+                  justifyContent: "center",
+                  paddingRight: 15,
+                }}
+              >
+                <OptionsVertWhite
+                  height={20}
+                  width={20}
+                  onPress={() => setSoon(true)}
+                />
+              </Pressable> */}
+            </View>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: 40,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                route?.params?.fromNewChat == true
+                  ? navigation.navigate("ChatScreen")
+                  : navigation.goBack();
+              }}
+            >
+              {Platform.OS === "ios" ? (
+                <Arrowbackios width={15} height={15} />
+              ) : (
+                <Arrowbackwhite height={20} width={20} />
+              )}
+            </TouchableOpacity>
+            <Pressable
+              onPress={() => {
+                navigation.push("ProfileStack", {
+                  screen: "otherprofile",
+                  params: {
+                    idUser: route.params.receiver,
+                  },
+                });
+              }}
+              style={{
+                flexDirection: "row",
+                // borderWidth: 1,
+                width: Dimensions.get("screen").width - 100,
+                height: 45,
+                alignItems: "center",
+                backgroundColor: "#209fae",
+                zIndex: 100,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: route.params.receiver,
+                    },
+                  });
+                }}
+              >
+                <FunImage
+                  size="xs"
+                  source={{ uri: route.params.picture }}
+                  style={{ width: 40, height: 40, borderRadius: 20 }}
+                />
+              </TouchableOpacity>
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  color: "white",
+                  alignSelf: "center",
+                  paddingHorizontal: 10,
+                }}
+                numberOfLines={2}
+              >
+                {route.params.name}
+              </Text>
+            </Pressable>
+          </>
+        )}
       </View>
     ),
-    headerRightStyle: {
-      paddingRight: 20,
-    },
   };
+
+  useEffect(() => {
+    navigation.setOptions(navigationOptions);
+  }, [select, navigation, countSelected]);
+
   useEffect(() => {
     navigation.addListener("focus", () => {
       BackHandler.addEventListener("hardwareBackPress", hardwareBack);
@@ -606,15 +739,6 @@ export default function Room({ navigation, route }) {
     if (tokenApps) {
       await initialHistory(tokenApps);
     }
-  };
-
-  const setChatHistoryRecive = async (data) => {
-    let history = await AsyncStorage.getItem("history_" + room);
-    let recent = JSON.parse(history);
-    recent.push(data);
-    setMessage((prev) => {
-      return prev.concat(data);
-    });
   };
 
   const setChatHistory = async (data) => {
@@ -668,7 +792,12 @@ export default function Room({ navigation, route }) {
       let responseJson = await response.json();
       let history = await AsyncStorage.getItem("history_" + room);
       let init_local = await JSON.parse(history);
+      console.log("~ init_local", init_local);
       let init_data = await responseJson.data;
+      if (init_data.length == 0 && init_local.length == 0) {
+        setLoadingPersonal(false);
+      }
+      console.log("~ init_data", init_data);
       let filteredList = [];
       if (init_local && init_data) {
         let merge = [...init_data, ...init_local];
@@ -678,6 +807,8 @@ export default function Room({ navigation, route }) {
         filteredList = init_data;
       } else if (!init_data) {
         filteredList = init_local;
+      } else {
+        filteredList = [];
       }
 
       if (filteredList && filteredList.length > 0) {
@@ -810,6 +941,46 @@ export default function Room({ navigation, route }) {
     // }
   };
 
+  // start select item chat
+  const selectItem = (index) => {
+    try {
+      let tempDataMessage = [...message];
+      let count = [];
+      let tempDataAfter = [];
+      if (
+        tempDataMessage &&
+        tempDataMessage[index] &&
+        tempDataMessage[index].selected == true
+      ) {
+        delete tempDataMessage[index].selected;
+      } else {
+        tempDataMessage[index].selected = true;
+      }
+
+      for (var i in tempDataMessage) {
+        if (
+          tempDataMessage &&
+          tempDataMessage[i] &&
+          tempDataMessage[i].selected == true
+        ) {
+          count.push(tempDataMessage[i]);
+        } else {
+          tempDataAfter.push(tempDataMessage[i]);
+        }
+      }
+      if (count.length == 0) {
+        setSelect(false);
+      }
+      console.log("~ tempDataAfter", tempDataAfter);
+      setMessageAfterDelete(tempDataAfter);
+      setCountSelected(count.length);
+      setMessage(tempDataMessage);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  // end select item chat
+
   let tmpRChat = true;
   const RenderChat = ({ item, index }) => {
     const timeState = new Date().toLocaleDateString();
@@ -863,65 +1034,113 @@ export default function Room({ navigation, route }) {
             </Text>
           </View>
         ) : null}
-        <View
+
+        <Pressable
+          onLongPress={() => {
+            selectItem(index);
+            setSelect(!select);
+          }}
+          delayLongPress={100}
+          onPress={() => selectItem(index)}
           key={index}
-          style={[
-            styles.item,
-            user.id == item.user_id ? styles.itemOut : styles.itemIn,
-          ]}
+          style={{
+            flexDirection: select ? "row" : "column",
+            paddingLeft: select ? 10 : 0,
+            alignItems: "center",
+            justifyContent:
+              user.id == item.user_id ? "space-between" : "flex-start",
+            backgroundColor:
+              select && item.selected == true ? "#EAF9FB" : "#fff",
+          }}
         >
-          {user.id == item.user_id ? (
-            <View
+          {select ? (
+            <Pressable
+              onPress={() => selectItem(index)}
               style={{
-                flexDirection: "row",
-                // borderWidth: 1,
+                borderRadius: 22,
+                width: 22,
+                height: 22,
+                borderWidth: 1.5,
+                // backgroundColor: "#209fae",
+                borderColor: "#209fae",
+                justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              {item.is_send == false && showIconError ? (
-                <Errorr height={15} width={15} />
+              {item.selected == true ? (
+                <Checkblok height={25} width={25} />
               ) : null}
-              <Text
-                size="small"
+            </Pressable>
+          ) : null}
+          <View
+            key={index}
+            style={[
+              styles.item,
+              user.id == item.user_id ? styles.itemOut : styles.itemIn,
+            ]}
+          >
+            {user.id == item.user_id ? (
+              <View
                 style={{
-                  marginRight: 5,
-                  // color: item.is_send == false ? "#D75995" : "#464646",
-                  color: "#464646",
-                  marginLeft: 5,
+                  flexDirection: "row",
+                  // borderWidth: 1,
+                  alignItems: "center",
                 }}
               >
+                {item.is_send == false && showIconError ? (
+                  <Errorr height={15} width={15} />
+                ) : null}
+                <Text
+                  size="small"
+                  style={{
+                    marginRight: 5,
+                    // color: item.is_send == false ? "#D75995" : "#464646",
+                    color: "#464646",
+                    marginLeft: 5,
+                  }}
+                >
+                  {timeChat
+                    ? timeChat
+                      ? timeChat.substring(0, 5)
+                      : null
+                    : null}
+                </Text>
+              </View>
+            ) : null}
+
+            <ChatTypelayout
+              key={index}
+              index={index}
+              item={item}
+              user_id={user.id}
+              tmpRChat={tmpRChat}
+              navigation={navigation}
+              token={tokenApps}
+              socket={socket}
+              connected={connected}
+              socket_connect={socket_connect}
+              room={room}
+              flatListRef={flatListRef}
+              _sendmsg={(e) => _sendmsg(e)}
+              type={"personal"}
+              setSelect={(e) => setSelect(e)}
+              select={select}
+              selectItem={(e) => selectItem(e)}
+            />
+            {user.id !== item.user_id ? (
+              <Text size="small" style={{ marginLeft: 5 }}>
                 {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
               </Text>
-            </View>
-          ) : null}
-          <ChatTypelayout
-            key={index}
-            item={item}
-            user_id={user.id}
-            tmpRChat={tmpRChat}
-            navigation={navigation}
-            token={tokenApps}
-            socket={socket}
-            connected={connected}
-            socket_connect={socket_connect}
-            room={room}
-            flatListRef={flatListRef}
-            _sendmsg={(e) => _sendmsg(e)}
-            type={"personal"}
-          />
-          {user.id !== item.user_id ? (
-            <Text size="small" style={{ marginLeft: 5 }}>
-              {timeChat ? (timeChat ? timeChat.substring(0, 5) : null) : null}
-            </Text>
-          ) : null}
-        </View>
+            ) : null}
+          </View>
+        </Pressable>
       </View>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <Toast ref={toastRef} />
       {loadingPersonal ? (
         <View
@@ -1151,9 +1370,6 @@ export default function Room({ navigation, route }) {
                     SetkeyboardOpenState(true);
                   }
                 }
-                style={{
-                  marginRight: 5,
-                }}
               >
                 <Emoticon height={30} width={30} />
               </Button>
@@ -1163,16 +1379,18 @@ export default function Room({ navigation, route }) {
                 type="circle"
                 size="medium"
                 variant="transparent"
-                style={{ width: 30, height: 30 }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  marginLeft: 5,
+                  marginRight: 10,
+                }}
                 onPress={() => {
                   setShowKeyboardOffset(true);
                   // resetKeyboardView();
                   SetkeyboardOpenState(false);
                   refInput.current.focus();
                   // KeyboardUtils.onFocus();
-                }}
-                style={{
-                  marginRight: 5,
                 }}
               >
                 <IconKeyboard height={30} width={30} />
@@ -1280,14 +1498,16 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="transparent"
-              style={{ width: 30, height: 30 }}
+              style={{
+                width: 30,
+                height: 30,
+                marginLeft: 5,
+                marginRight: 10,
+              }}
               onPress={() => {
                 setShowKeyboardOffset(false);
                 dismissKeyboard();
                 SetkeyboardOpenState(true);
-              }}
-              style={{
-                marginRight: 5,
               }}
             >
               <Emoticon height={30} width={30} />
@@ -1298,15 +1518,12 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="normal"
-              style={{ width: 30, height: 30 }}
+              style={{ width: 30, height: 30, marginLeft: 5, marginRight: 10 }}
               onPress={() => {
                 setShowKeyboardOffset(true);
                 SetkeyboardOpenState(false);
                 refInput.current.focus();
                 // KeyboardUtils.onFocus();
-              }}
-              style={{
-                marginRight: 5,
               }}
             >
               <IconKeyboard height={13} width={13} />
@@ -1449,7 +1666,11 @@ export default function Room({ navigation, route }) {
                 height: 60,
               }}
             >
-              <Xgray width={15} height={15} />
+              <Xgray
+                width={15}
+                height={15}
+                style={{ marginBottom: deviceId == "LYA-L29" ? 10 : 5 }}
+              />
             </Pressable>
             <TouchableOpacity
               style={{
@@ -1479,6 +1700,200 @@ export default function Room({ navigation, route }) {
           </View>
         </View>
       </Modal>
+
+      {/* START MODAL DELETE CHAT */}
+      <Modal
+        onBackdropPress={() => {
+          setModalDelete(false);
+        }}
+        onRequestClose={() => setModalDelete(false)}
+        onDismiss={() => setModalDelete(false)}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={modalDelete}
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          alignContent: "center",
+        }}
+      >
+        <View
+          style={{
+            width: Dimensions.get("screen").width / 1.5,
+            marginHorizontal: 50,
+            backgroundColor: "#FFF",
+            zIndex: 15,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 5,
+            marginTop: Dimensions.get("screen").height / 15,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: Dimensions.get("screen").width / 1.5,
+              // paddingHorizontal: 20,
+              borderRadius: 5,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#d1d1d1",
+                alignItems: "center",
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                backgroundColor: "#f6f6f6",
+                // height: 50,
+                justifyContent: "center",
+              }}
+            >
+              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                {t("deleteChat")}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setModalDelete(false)}
+              style={{
+                position: "absolute",
+                right: 0,
+                width: 55,
+                justifyContent: "center",
+                alignItems: "center",
+                height: 60,
+              }}
+            >
+              <Xgray width={15} height={15} />
+            </Pressable>
+            <View
+              style={{
+                alignItems: "center",
+                paddingHorizontal: 20,
+              }}
+            >
+              <Text
+                type="regular"
+                size="label"
+                style={{ marginVertical: 20, textAlign: "center" }}
+              >{`${t("deleteMessageSelected")} ${countSelected} ${t(
+                "message"
+              ).toLocaleLowerCase()} ?`}</Text>
+            </View>
+            <View
+              style={{
+                // alignItems: "center",
+                paddingHorizontal: 30,
+              }}
+            >
+              <Pressable
+                onPress={() => deleteMessage()}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  borderRadius: 5,
+                  backgroundColor: "#D75995",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "#fff" }} size="description" type="bold">
+                  {t("delete")}
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setModalDelete(false)}
+                style={{
+                  width: "100%",
+                  height: 40,
+                  marginBottom: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text size="description" type="bold">
+                  {t("cancel")}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* END MODAL DELETE CHAT */}
+
+      {/* Modal Comming Soon */}
+
+      <Modal
+        useNativeDriver={true}
+        visible={soon}
+        onRequestClose={() => setSoon(false)}
+        transparent={true}
+        animationType="fade"
+      >
+        <Pressable
+          style={{
+            width: Dimensions.get("screen").width,
+            height: Dimensions.get("screen").height,
+            // justifyContent: "center",
+            opacity: 0.7,
+            backgroundColor: "#000",
+            position: "absolute",
+            alignSelf: "center",
+          }}
+        ></Pressable>
+        <View
+          style={{
+            width: Dimensions.get("screen").width,
+            // zIndex: 15,
+            alignSelf: "center",
+            // flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            borderRadius: 3,
+            marginTop: Dimensions.get("screen").width / 15,
+          }}
+        >
+          <View
+            style={{
+              padding: 20,
+              paddingHorizontal: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 10,
+              borderWidth: 3,
+              borderColor: "red",
+            }}
+          >
+            <Image
+              source={Bg_soon}
+              style={{
+                height: Dimensions.get("screen").width - 180,
+                width: Dimensions.get("screen").width - 110,
+                borderRadius: 10,
+                position: "absolute",
+              }}
+            />
+            <Text type="bold" size="h5">
+              {t("comingSoon")}!
+            </Text>
+            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+              {t("soonUpdate")}.
+            </Text>
+            <Button
+              text={"OK"}
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("screen").width / 5,
+              }}
+              type="box"
+              onPress={() => setSoon(false)}
+            ></Button>
+          </View>
+        </View>
+      </Modal>
+      {/* End Modal Comming Soon */}
     </SafeAreaView>
   );
 }

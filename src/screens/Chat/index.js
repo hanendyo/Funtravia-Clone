@@ -617,7 +617,9 @@ export default function Message({ navigation, route }) {
         modals={modalDeleteChat}
         setModals={() => setModalDeleteChat()}
         messageHeader={t("deleteChat")}
-        message={`${t("deleteChatWith")} ${firstName} ${lastName}`}
+        message={`${t("deleteChatWith")} ${firstName} ${
+          lastName ? lastName : ""
+        } ?`}
         onDelete={() => {
           DeleteChat(ID, roomID);
           setModalDeleteChat(false);

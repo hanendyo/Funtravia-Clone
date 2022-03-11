@@ -1,22 +1,23 @@
 import { gql } from "apollo-boost";
-const itinerary = gql
-  `query($id: ID!){
-    user_tripbyid(id: $id){
+const itinerary = gql`
+  query($id: ID!) {
+    user_tripbyid(id: $id) {
       id
       name
       cover
-      country{
+      like_show
+      country {
         id
         name
       }
-      city{
+      city {
         id
         name
         flag
       }
-      buddy{
+      buddy {
         id
-        user{
+        user {
           id
           username
           first_name
@@ -27,26 +28,26 @@ const itinerary = gql
       end_date
       isprivate
       status
-      day{
+      day {
         id
         day
         date
       }
       liked
-      categori{
-          id
-          name
-          slug
-          icon
-        }
-     user_created{
-          id
-          username
-          first_name
-          last_name
-          picture
-        }
+      categori {
+        id
+        name
+        slug
+        icon
+      }
+      user_created {
+        id
+        username
+        first_name
+        last_name
+        picture
+      }
     }
-  }`
-  ;
+  }
+`;
 export default itinerary;

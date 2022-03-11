@@ -173,7 +173,7 @@ export default function NewChat({ navigation }) {
       <View style={{ flex: 1 }}>
         {databuddy.map((value, i) => {
           return (
-            <TouchableOpacity
+            <Pressable
               onPress={() => _sendMessage(value.id)}
               key={value.id}
               style={{
@@ -256,7 +256,7 @@ export default function NewChat({ navigation }) {
               >
                 <SendMessage width={22} height={22} />
               </Button> */}
-            </TouchableOpacity>
+            </Pressable>
           );
         })}
       </View>
