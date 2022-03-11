@@ -86,7 +86,6 @@ export default function Room({ navigation, route }) {
 
   const headerOptions = {
     headerShown: true,
-    headerTitle: null,
     headerMode: "screen",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
@@ -333,6 +332,7 @@ export default function Room({ navigation, route }) {
                   flex: 1,
                   marginLeft: 10,
                   marginRight: 15,
+                  marginBottom: 15,
                 }}
               >
                 <Text
@@ -1144,9 +1144,6 @@ export default function Room({ navigation, route }) {
                   dismissKeyboard();
                   SetkeyboardOpenState(true);
                 }}
-                style={{
-                  marginRight: 5,
-                }}
               >
                 <Emoticon height={30} width={30} />
               </Button>
@@ -1162,9 +1159,6 @@ export default function Room({ navigation, route }) {
                   SetkeyboardOpenState(false);
                   refInput.current.focus();
                   // KeyboardUtils.onFocus();
-                }}
-                style={{
-                  marginRight: 5,
                 }}
               >
                 <IconKeyboard height={30} width={30} />
@@ -1188,7 +1182,7 @@ export default function Room({ navigation, route }) {
                 value={chat}
                 multiline
                 ref={refInput}
-                placeholder="Type a message"
+                placeholder={t("typeMessage")}
                 onChangeText={(text) => setChat(text)}
                 onFocus={() => resetKeyboardView()}
                 style={
@@ -1278,9 +1272,6 @@ export default function Room({ navigation, route }) {
                 dismissKeyboard();
                 SetkeyboardOpenState(true);
               }}
-              style={{
-                marginRight: 5,
-              }}
             >
               <Emoticon height={35} width={35} />
             </Button>
@@ -1296,9 +1287,6 @@ export default function Room({ navigation, route }) {
                 SetkeyboardOpenState(false);
                 refInput.current.focus();
                 // KeyboardUtils.onFocus();
-              }}
-              style={{
-                marginRight: 5,
               }}
             >
               <IconKeyboard height={30} width={30} />
@@ -1323,7 +1311,7 @@ export default function Room({ navigation, route }) {
               value={chat}
               multiline
               ref={refInput}
-              placeholder="Type a message"
+              placeholder={t("typeMessage")}
               onChangeText={(text) => setChat(text)}
               onFocus={() => resetKeyboardView()}
               style={

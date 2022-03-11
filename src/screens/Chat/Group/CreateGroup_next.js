@@ -12,6 +12,7 @@ import {
   Modal,
   KeyboardAvoidingView,
   StatusBar,
+  NativeModules,
 } from "react-native";
 import {
   Button,
@@ -48,6 +49,10 @@ export default function NewGroup(props) {
   const [modals, setmodal] = useState(false);
   const [dataImagepatch, setdataImagepatch] = useState("");
   let [dataImage, setdataImage] = useState(null);
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
+  const deviceId = DeviceInfo.getModel();
   const [
     querywith,
     { loading: loadingwith, data: DataBuddy, error: errorwith },
@@ -124,7 +129,7 @@ export default function NewGroup(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 5 : 5) : null,
+              marginTop: deviceId == "LYA-L29" ? 8 : NotchAndro ? 2 : 5,
             }}
           >
             <Text
@@ -187,7 +192,7 @@ export default function NewGroup(props) {
             <View
               style={{
                 marginLeft: 15,
-                marginTop: 5,
+                marginTop: deviceId == "LYA-L29" ? 8 : NotchAndro ? 2 : 5,
               }}
             >
               <Text
@@ -196,7 +201,7 @@ export default function NewGroup(props) {
                 style={{ color: "#FFF", marginBottom: -3 }}
                 numberOfLines={1}
               >
-                {t("addHotelName")}
+                {t("newGroupChat")}
               </Text>
 
               <Text
@@ -205,7 +210,7 @@ export default function NewGroup(props) {
                 style={{ color: "#FFF", marginLeft: -3 }}
               >
                 {" "}
-                {t("customActivity")}
+                {t("addParticipants")}
               </Text>
             </View>
           )}
@@ -566,7 +571,7 @@ export default function NewGroup(props) {
               >
                 <TextInput
                   underlineColorAndroid="transparent"
-                  placeholder={"Type group subject here...."}
+                  placeholder={t("typeGroupSubject")}
                   maxLength={25}
                   style={{
                     fontFamily: "Lato-Regular",

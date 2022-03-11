@@ -905,5 +905,6 @@
   "AktivitasFull": "Aktivitas ini tidak bisa disimpan karena total aktivitas hari ini sudah lewat dari 24 jam",
   "FailedUpdate": "Gagal perbarui data",
   "pleaseInsertAlbumTitle": "Masukkan Judul Album",
-  "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus"
+  "typeGroupSubject": "Masukkan nama grup disini...",
+  "typeMessage": "Tuliskan sebuah pesan"
 }

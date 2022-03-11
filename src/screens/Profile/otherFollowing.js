@@ -30,7 +30,7 @@ export default function Following(props) {
     headerTintColor: "white",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
-        {t("Followers")}
+        {t("Following")}
       </Text>
     ),
     headerMode: "screen",
@@ -45,7 +45,7 @@ export default function Following(props) {
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
-      paddingBottom: Platform.OS == "ios" ? 15 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",

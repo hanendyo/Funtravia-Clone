@@ -15,6 +15,7 @@ import {
   Platform,
   StyleSheet,
   StatusBar,
+  NativeModules,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -63,7 +64,10 @@ import normalize from "react-native-normalize";
 export default function detailCustomItinerary(props) {
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
-  const NotchAndro = StatusBar ? StatusBar.currentHeight > 24 : false;
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
+  const deviceId = DeviceInfo.getModel();
 
   // const HeaderComponent = {
   //   headerShown: true,
@@ -207,7 +211,7 @@ export default function detailCustomItinerary(props) {
             <View
               style={{
                 marginLeft: 15,
-                marginTop: 5,
+                marginTop: deviceId == "LYA-L29" ? 10 : NotchAndro ? 2 : 5,
               }}
             >
               <Text
@@ -1060,7 +1064,12 @@ export default function detailCustomItinerary(props) {
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
-              height: normalize(45),
+              height:
+                Platform.OS === "ios"
+                  ? normalize(45)
+                  : deviceId == "LYA-L29"
+                  ? normalize(57)
+                  : normalize(51),
               // Platform.OS === "ios"
               //   ? Notch
               //     ? normalize(41)
@@ -1087,7 +1096,14 @@ export default function detailCustomItinerary(props) {
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: Platform.OS === "ios" ? 17 : null,
+                paddingTop:
+                  Platform.OS === "ios"
+                    ? 17
+                    : deviceId == "LYA-L29"
+                    ? 10
+                    : NotchAndro
+                    ? 12
+                    : 11,
               }}
               onPress={() => {
                 setModalFrom(false), setModalTo(false);
@@ -1118,7 +1134,14 @@ export default function detailCustomItinerary(props) {
                 // alignItems: "center",
                 // // alignContent: "center",
                 // justifyContent: "center",
-                paddingTop: 14,
+                paddingTop:
+                  Platform.OS === "ios"
+                    ? 14
+                    : deviceId == "LYA-L29"
+                    ? 8
+                    : NotchAndro
+                    ? 10
+                    : 10,
               }}
             >
               {modalFrom ? t("from") : t("to")}

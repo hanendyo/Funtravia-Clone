@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Platform,
   Dimensions,
+  NativeModules,
 } from "react-native";
 import {
   Button,
@@ -49,6 +50,10 @@ export default function ReoderDetail({ navigation, route }) {
   let [listData, setListData] = useState([...route.params.child]);
   const token = useSelector((data) => data.token);
   const Notch = DeviceInfo.hasNotch();
+  const deviceId = DeviceInfo.getModel();
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
   let [dayData] = useState(route.params.active);
   let [startTime] = useState(
     route.params.child[0] ? route.params.child[0].time : "00:00"
@@ -1041,7 +1046,7 @@ export default function ReoderDetail({ navigation, route }) {
             <View
               style={{
                 marginLeft: 15,
-                marginTop: 5,
+                marginTop: deviceId == "LYA-L29" ? 10 : NotchAndro ? 2 : 5,
               }}
             >
               <Text

@@ -2455,7 +2455,6 @@ export default function FeedList({ props, token }) {
         contentContainerStyle={{ flexGrow: 1 }}
         keyExtractor={(item) => item.node.id}
         refreshing={refreshing}
-        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => Refresh()} />
         }

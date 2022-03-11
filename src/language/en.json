@@ -905,7 +905,8 @@
   "maxMemberGroup": "Maximum of participants are 150 ",
   "PleaseFillYourHotelName": "Please fill your hotel name",
   "AktivitasFull": "This activity cannot be saved because today's total activity has passed 24 hours",
-  "FailedUpdate": "Failed to update data",
-  "pleaseInsertAlbumTitle": "Please insert album title",
-  "thisTripHasBeenDeleted": "This trip has been deleted"
+  "FailedUpdate" : "Failed to update data",
+  "pleaseInsertAlbumTitle" : "Please insert album title",
+  "typeGroupSubject": "Type group subject here...",
+  "typeMessage": "Type a message"
 }

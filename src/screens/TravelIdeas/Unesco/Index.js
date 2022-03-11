@@ -1132,7 +1132,8 @@ export default function Unesco({ navigation, route }) {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            padding: 10,
+            // padding: 10,
+            marginBottom: 1,
           }}
         >
           <Text

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  NativeModules,
 } from "react-native";
 import Modal from "react-native-modal";
 import { default_image } from "../../assets/png";
@@ -30,9 +31,15 @@ import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
+import DeviceInfo from "react-native-device-info";
 
 export default function ItinGoogle(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
+  const deviceId = DeviceInfo.getModel();
   const HeaderComponent = {
     headerShown: true,
     title: "Destination",
@@ -52,9 +59,9 @@ export default function ItinGoogle(props) {
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? 45 : null,
+      height: Platform.OS == "ios" ? 45 : 45,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingTop: Platform.OS == "ios" ? 8 : 10,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
@@ -385,10 +392,17 @@ export default function ItinGoogle(props) {
               alignItems: "center",
               // alignContent: "center",
               backgroundColor: "#209fae",
-              height: normalize(45),
+              height:
+                Platform.OS === "ios"
+                  ? normalize(45)
+                  : deviceId == "LYA-L29"
+                  ? normalize(67)
+                  : NotchAndro
+                  ? normalize(55)
+                  : normalize(55),
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 25 : -26,
+              marginTop: Platform.OS === "ios" ? (Notch ? 25 : 0) : -26,
             }}
           >
             <TouchableOpacity
@@ -399,19 +413,32 @@ export default function ItinGoogle(props) {
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: 15,
+                paddingTop: 18,
                 // top: 20,
                 // left: 20,
               }}
               onPress={() => setModal(false)}
             >
-              <Arrowbackwhite width={20} height={20} />
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
             </TouchableOpacity>
             <Text
-              size="label"
+              size="header"
               style={{
-                top: 13,
-                left: 55,
+                top:
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? 10
+                      : 9
+                    : deviceId == "LYA-L29"
+                    ? 22
+                    : NotchAndro
+                    ? 19
+                    : 19,
+                left: Platform.OS == "ios" ? (Notch ? 130 : 120) : 55,
                 color: "white",
                 height: 50,
                 // width: 50,
