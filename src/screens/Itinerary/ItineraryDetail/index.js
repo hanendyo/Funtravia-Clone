@@ -1,5 +1,11 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Fragment,
+} from "react";
 import { useTranslation } from "react-i18next";
 import {
   StyleSheet,
@@ -41,7 +47,7 @@ import {
   Plusgrey,
   Sharegreen,
   Xhitam,
-  LikeEmptynew,
+  LikeEmpty,
   Reorder,
   CameraIcon,
   Stay,
@@ -130,8 +136,8 @@ const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
 const SafeStatusBar = Platform.select({
-  ios: Notch ? 44 : 24,
-  android: StatusBar.currentHeight,
+  ios: Notch ? 0 : 0,
+  android: StatusBar.currentHeight - 40,
 });
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 17.5) / 4;
@@ -1974,6 +1980,7 @@ export default function ItineraryDetail(props) {
 
     return (
       <Animated.View
+        pointerEvents="none"
         onLayout={() => cekAnggota(rD)}
         {...headerPanResponder.panHandlers}
         style={{
@@ -3630,6 +3637,7 @@ export default function ItineraryDetail(props) {
             paddingHorizontal: tabIndex == 1 ? 5 : 15,
             minHeight: height - SafeStatusBar + HeaderHeight + 60,
             paddingBottom: 70,
+            backgroundColor: "#F6F6F6",
           }}
           ListFooterComponent={() => (
             <View>
@@ -4275,7 +4283,6 @@ export default function ItineraryDetail(props) {
     return (
       <Animated.View
         style={{
-          top: -5,
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -4750,11 +4757,11 @@ export default function ItineraryDetail(props) {
                 backgroundColor: "white",
                 borderTopWidth: 1,
                 borderColor: "#F0F0F0",
-                shadowColor: "#F0F0F0",
-                shadowOffset: { width: 2, height: 2 },
-                shadowOpacity: 1,
-                shadowRadius: 2,
-                elevation: 3,
+                // shadowColor: "#F0F0F0",
+                // shadowOffset: { width: 2, height: 2 },
+                // shadowOpacity: 1,
+                // shadowRadius: 2,
+                // elevation: 3,
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
@@ -4792,6 +4799,17 @@ export default function ItineraryDetail(props) {
                   let menit = parseFloat(maxjam[1]);
                   if (jam < 24) {
                     if (jam < 23) {
+                      dispatch(
+                        setItinerary({
+                          ...props.route.params,
+                          id_city: dataList.length
+                            ? dataList[dataList.length - 1].id_city
+                            : null,
+                          city_name: dataList
+                            ? dataList[dataList.length - 1].city
+                            : null,
+                        })
+                      );
                       props.navigation.push("itindest", {
                         IdItinerary: itineraryId,
                         token: token,
@@ -4811,6 +4829,17 @@ export default function ItineraryDetail(props) {
                         idcountries: datadetail.itinerary_detail.country.id,
                       });
                     } else if (jam === 23 && menit === 0) {
+                      dispatch(
+                        setItinerary({
+                          ...props.route.params,
+                          id_city: dataList
+                            ? dataList[dataList.length - 1].id_city
+                            : null,
+                          city_name: dataList
+                            ? dataList[dataList.length - 1].city
+                            : null,
+                        })
+                      );
                       props.navigation.push("itindest", {
                         IdItinerary: itineraryId,
                         token: token,
@@ -4910,11 +4939,10 @@ export default function ItineraryDetail(props) {
               borderTopWidth: 1,
               borderColor: "#F0F0F0",
               shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-
-              elevation: 3,
+              // shadowOffset: { width: 2, height: 2 },
+              // shadowOpacity: 1,
+              // shadowRadius: 2,
+              // elevation: 3,
               flexDirection: "row",
               justifyContent: "space-between",
             }}
@@ -4954,13 +4982,13 @@ export default function ItineraryDetail(props) {
                     color="tertiary"
                     type="circle"
                     style={{
-                      backgroundColor: "#d3d3d3",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 5,
                       marginVertical: 10,
                       marginRight: 10,
                     }}
                   >
-                    <LikeEmptynew width={20} height={20} />
+                    <LikeEmpty width={20} height={20} />
                   </Button>
                 )
               ) : null}
@@ -5023,7 +5051,7 @@ export default function ItineraryDetail(props) {
                     color="tertiary"
                     type="circle"
                     style={{
-                      backgroundColor: "#f2dae5",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 5,
                       marginVertical: 10,
                       marginRight: 10,
@@ -5039,13 +5067,13 @@ export default function ItineraryDetail(props) {
                     color="tertiary"
                     type="circle"
                     style={{
-                      backgroundColor: "#d3d3d3",
+                      backgroundColor: "#f6f6f6",
                       borderRadius: 5,
                       marginVertical: 10,
                       marginRight: 10,
                     }}
                   >
-                    <LikeEmptynew width={20} height={20} />
+                    <LikeEmpty width={20} height={20} />
                   </Button>
                 )
               ) : null}
@@ -5195,107 +5223,30 @@ export default function ItineraryDetail(props) {
     });
 
     return (
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      <Fragment>
         <CustomStatusBar backgroundColor="#14646e" barStyle="light-content" />
-        <Animated.View
+        <SafeAreaView
           style={{
-            position: "absolute",
-            top: SafeStatusBar,
-            zIndex: 9999,
-            opacity: textOpacity,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // borderWidth: 1,
-            alignContent: "center",
-            alignItems: "center",
-            marginHorizontal: 20,
-            height: 55,
-            width: Dimensions.get("screen").width - 40,
-          }}
-        >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => _handlerBack()}
-            style={{
-              height: 50,
-              // marginLeft: 8,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-
-                borderRadius: 30,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-
-          <Button
-            text={""}
-            onPress={() => setshowside(true)}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            style={{
-              height: 50,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-
-                borderRadius: 30,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-            </Animated.View>
-          </Button>
-        </Animated.View>
-
-        {/* jika scrollheader, animated show */}
-        <Animated.View
-          style={{
-            position: "absolute",
-            top: SafeStatusBar,
-            zIndex: 9999,
-            opacity: textOpacitys,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            // alignContent: "center",
-            // alignItems: "center",
-            // marginHorizontal: 20,
-            paddingHorizontal: 20,
-            // paddingTop: 5,
-            height: normalize(45),
-            width: Dimensions.get("screen").width,
-            backgroundColor: "#209fae",
+            flex: 1,
+            backgroundColor: "#FFF",
+            paddingTop: -50,
+            paddingBottom: -13,
           }}
         >
           <Animated.View
             style={{
+              position: "absolute",
+              top: SafeStatusBar,
+              zIndex: 99,
+              opacity: textOpacity,
               flexDirection: "row",
-              flex: 1,
+              justifyContent: "space-between",
+              // borderWidth: 1,
+              alignContent: "center",
+              alignItems: "center",
+              marginHorizontal: 20,
+              height: 55,
+              width: Dimensions.get("screen").width - 40,
             }}
           >
             <Button
@@ -5314,6 +5265,8 @@ export default function ItineraryDetail(props) {
                   height: 35,
                   width: 35,
 
+                  borderRadius: 30,
+                  backgroundColor: "rgba(0,0,0,0.5)",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -5325,747 +5278,847 @@ export default function ItineraryDetail(props) {
                 )}
               </Animated.View>
             </Button>
-            <Animated.View
+
+            <Button
+              text={""}
+              onPress={() => setshowside(true)}
+              size="medium"
+              type="circle"
+              variant="transparent"
               style={{
-                top: 3,
-                flex: 1,
+                height: 50,
               }}
             >
-              <Animated.Text
-                allowFontScaling={false}
-                style={{
-                  opacity: textOpacitys,
-                  fontFamily: "Lato-Black",
-                  color: "#ffff",
-                  textAlign: "left",
-                  fontSize: normalize(16),
-                }}
-                numberOfLines={1}
-              >
-                {datadetail?.itinerary_detail?.name}
-              </Animated.Text>
               <Animated.View
                 style={{
-                  flexDirection: "row",
-                  marginTop: Platform.OS == "ios" ? 2 : 2,
+                  height: 35,
+                  width: 35,
+
+                  borderRadius: 30,
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+              </Animated.View>
+            </Button>
+          </Animated.View>
+
+          {/* jika scrollheader, animated show */}
+          <Animated.View
+            style={{
+              position: "absolute",
+              // top: SafeStatusBar,
+              zIndex: 99,
+              opacity: textOpacitys,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // alignContent: "center",
+              // alignItems: "center",
+              // marginHorizontal: 20,
+              paddingHorizontal: 20,
+              // paddingTop: 5,
+              height: 55,
+              width: Dimensions.get("screen").width,
+              backgroundColor: "#209fae",
+            }}
+          >
+            <Animated.View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <Button
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                onPress={() => _handlerBack()}
+                style={{
+                  height: 50,
+                  // marginLeft: 8,
+                }}
+              >
+                <Animated.View
+                  style={{
+                    height: 35,
+                    width: 35,
+
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {Platform.OS == "ios" ? (
+                    <Arrowbackios height={15} width={15}></Arrowbackios>
+                  ) : (
+                    <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                  )}
+                </Animated.View>
+              </Button>
+              <Animated.View
+                style={{
+                  // flexDirection: "row",
+                  marginTop: Platform.OS == "ios" ? 2 : 6,
                   paddingRight: 20,
                 }}
               >
-                {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
-                  <Errorx width={18} height={18} style={{ marginRight: 5 }} />
-                ) : null}
-
                 <Animated.Text
-                  size="small"
-                  type="bold"
+                  allowFontScaling={false}
                   style={{
-                    color: "#ffffff",
                     opacity: textOpacitys,
-                    fontFamily: "Lato-Bold",
-                    fontSize: normalize(14),
+                    fontFamily: "Lato-Black",
+                    color: "#ffff",
+                    textAlign: "left",
+                    fontSize: normalize(16),
                   }}
                   numberOfLines={1}
                 >
-                  {/* {t("dates")} :{" "} */}
-                  {datadetail && datadetail.itinerary_detail
-                    ? dateFormatr(datadetail.itinerary_detail.start_date) +
-                      "  -  " +
-                      dateFormatr(datadetail.itinerary_detail.end_date)
-                    : null}
+                  {datadetail?.itinerary_detail?.name}
                 </Animated.Text>
+                <Animated.View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: Platform.OS == "ios" ? 2 : 5,
+                    paddingRight: 20,
+                  }}
+                >
+                  {cekTanggal(datadetail?.itinerary_detail?.start_date) <=
+                  180 ? (
+                    <Errorx width={18} height={18} style={{ marginRight: 5 }} />
+                  ) : null}
+
+                  <Animated.Text
+                    size="small"
+                    type="bold"
+                    style={{
+                      color: "#ffffff",
+                      opacity: textOpacitys,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {/* {t("dates")} :{" "} */}
+                    {datadetail && datadetail.itinerary_detail
+                      ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                        "  -  " +
+                        dateFormatr(datadetail.itinerary_detail.end_date)
+                      : null}
+                  </Animated.Text>
+                </Animated.View>
               </Animated.View>
             </Animated.View>
+
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => setshowside(true)}
+              style={{
+                height: 50,
+              }}
+            >
+              <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
+            </Button>
           </Animated.View>
 
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => setshowside(true)}
-            style={{
-              height: 50,
+          <MenuProvider>
+            {renderTabView()}
+            {renderHeader(rData)}
+            {renderCustomRefresh()}
+            {renderMenuBottom(rData)}
+          </MenuProvider>
+
+          <ImageSlide
+            index={indexs}
+            name="Funtravia Images"
+            location={judul}
+            // {...props}
+            show={modalss}
+            dataImage={dataImage}
+            setClose={() => setModalss(false)}
+          />
+
+          <ImageSliders
+            index={indexs}
+            name="Funtravia Images"
+            location={datadetail?.itinerary_detail?.name}
+            // {...props}
+            show={modalsss}
+            dataImage={dataImage}
+            props={props}
+            token={token}
+            setClose={() => setModalsss(false)}
+          />
+
+          <Modal
+            onRequestClose={() => {
+              setModalcustom(false);
             }}
-          >
-            <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
-          </Button>
-        </Animated.View>
-
-        <MenuProvider>
-          {renderTabView()}
-          {renderHeader(rData)}
-          {renderCustomRefresh()}
-          {renderMenuBottom(rData)}
-        </MenuProvider>
-
-        <ImageSlide
-          index={indexs}
-          name="Funtravia Images"
-          location={judul}
-          // {...props}
-          show={modalss}
-          dataImage={dataImage}
-          setClose={() => setModalss(false)}
-        />
-
-        <ImageSliders
-          index={indexs}
-          name="Funtravia Images"
-          location={datadetail?.itinerary_detail?.name}
-          // {...props}
-          show={modalsss}
-          dataImage={dataImage}
-          props={props}
-          token={token}
-          setClose={() => setModalsss(false)}
-        />
-
-        <Modal
-          onRequestClose={() => {
-            setModalcustom(false);
-          }}
-          onBackdropPress={() => {
-            setModalcustom(false);
-          }}
-          onSwipeComplete={() => {
-            setModalcustom(false);
-          }}
-          swipeDirection={"down"}
-          isVisible={Modalcustom}
-          style={{
-            justifyContent: "flex-end",
-            padding: 0,
-            margin: 0,
-          }}
-        >
-          <View
+            onBackdropPress={() => {
+              setModalcustom(false);
+            }}
+            onSwipeComplete={() => {
+              setModalcustom(false);
+            }}
+            swipeDirection={"down"}
+            isVisible={Modalcustom}
             style={{
-              backgroundColor: "white",
-              width: "100%",
-              borderTopRightRadius: 15,
-              borderTopLeftRadius: 15,
+              justifyContent: "flex-end",
+              padding: 0,
+              margin: 0,
             }}
           >
             <View
               style={{
+                backgroundColor: "white",
                 width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignContent: "center",
-                alignItems: "center",
                 borderTopRightRadius: 15,
                 borderTopLeftRadius: 15,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                paddingHorizontal: 20,
               }}
             >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginBottom: 15, marginTop: 13 }}
-              >
-                {t("addDestinationForm")}
-              </Text>
-              <Pressable
+              <View
                 style={{
-                  height: 60,
-                  width: 60,
-                  justifyContent: "center",
-                  marginRight: -20,
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignContent: "center",
+                  alignItems: "center",
+                  borderTopRightRadius: 15,
+                  borderTopLeftRadius: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  paddingHorizontal: 20,
                 }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginBottom: 15, marginTop: 13 }}
+                >
+                  {t("addDestinationForm")}
+                </Text>
+                <Pressable
+                  style={{
+                    height: 60,
+                    width: 60,
+                    justifyContent: "center",
+                    marginRight: -20,
+                  }}
+                  onPress={() => {
+                    setModalcustom(false);
+                  }}
+                >
+                  <Xhitam
+                    width={15}
+                    height={15}
+                    style={{ alignSelf: "center" }}
+                  />
+                </Pressable>
+              </View>
+
+              <TouchableOpacity
                 onPress={() => {
                   setModalcustom(false);
+                  let maxjam = datadayaktif.total_hours.split(":");
+                  let jam = parseFloat(maxjam[0]);
+                  let menit = parseFloat(maxjam[1]);
+                  if (jam < 24) {
+                    if (jam < 23) {
+                      props.navigation.push("CustomItinerary", {
+                        idItin: itineraryId,
+                        idDay: datadayaktif.id,
+                        itintitle: props.route.params.itintitle,
+                        dateitin: props.route.params.datadayaktif.date,
+                        datadayaktif: datadayaktif,
+                        dataList: dataList,
+                      });
+                    } else if (jam === 23 && menit === 0) {
+                      props.navigation.push("CustomItinerary", {
+                        idItin: itineraryId,
+                        idDay: datadayaktif.id,
+                        itintitle: props.route.params.itintitle,
+                        dateitin: props.route.params.datadayaktif.date,
+                        datadayaktif: datadayaktif,
+                      });
+                    } else {
+                      Alert.alert(t("alertjam"));
+                    }
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                }}
+                style={{
+                  marginVertical: 2.5,
+                  width: "100%",
+                  height: Dimensions.get("screen").width * 0.2,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
                 }}
               >
-                <Xhitam
-                  width={15}
-                  height={15}
-                  style={{ alignSelf: "center" }}
-                />
-              </Pressable>
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 25,
+                    backgroundColor: "#f3f3f3",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <PlusBlack height={15} width={15} />
+                </View>
+                <View style={{ marginBottom: 5 }}>
+                  <Text size="label" type="bold">
+                    {t("createActivity")}
+                  </Text>
+                  <Text size="description" type="regular">
+                    {t("addCustomActivity")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalcustom(false);
+                  props.navigation.push("ItineraryStack", {
+                    screen: "customFlight",
+                    params: {
+                      itineraryId: itineraryId,
+                      dayId: idDay,
+                      startDate: datadetail?.itinerary_detail?.start_date,
+                      endDate: EndTimeConverter(
+                        datadetail?.itinerary_detail?.end_date
+                      ),
+                    },
+                  });
+                }}
+                style={{
+                  marginVertical: 2.5,
+                  width: "100%",
+                  height: Dimensions.get("screen").width * 0.2,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 25,
+                    backgroundColor: "#f3f3f3",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <Flights height={25} width={25} />
+                </View>
+                <View style={{ marginBottom: 5 }}>
+                  <Text size="label" type="bold">
+                    {t("Flight")}
+                  </Text>
+                  <Text size="description" type="regular">
+                    {t("addFlightDetail")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalcustom(false);
+                  props.navigation.push("ItineraryStack", {
+                    screen: "customStay",
+                    params: {
+                      itineraryId: itineraryId,
+                      dayId: idDay,
+                      startDate: datadetail?.itinerary_detail?.start_date,
+                      endDate: EndTimeConverter(
+                        datadetail?.itinerary_detail?.end_date
+                      ),
+                    },
+                  });
+                }}
+                style={{
+                  marginVertical: 2.5,
+                  width: "100%",
+                  height: Dimensions.get("screen").width * 0.2,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 25,
+                    backgroundColor: "#f3f3f3",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <Stay height={25} width={25} />
+                </View>
+                <View>
+                  <Text size="label" type="bold">
+                    {t("Stay")}
+                  </Text>
+                  <Text size="description" type="regular">
+                    {t("addPlaceName")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setModalcustom(false);
+                  let maxjam = datadayaktif.total_hours.split(":");
+                  let jam = parseFloat(maxjam[0]);
+                  let menit = parseFloat(maxjam[1]);
+                  dispatch(setItinerary(props.route.params));
+                  if (jam < 24) {
+                    if (jam < 23) {
+                      props.navigation.push("AccountStack", {
+                        screen: "Wishlist",
+                        params: {
+                          IdItinerary: itineraryId,
+                          datadayaktif: datadayaktif,
+                          dataDes:
+                            datadetail && datadetail.itinerary_detail
+                              ? datadetail
+                              : null,
+                          datadayaktif: datadayaktif,
+                          lat: datadetail.itinerary_detail.city.latitude,
+                          long: datadetail.itinerary_detail.city.longitude,
+                          from: "itinerary_wishlist",
+                        },
+                      });
+                    } else if (jam === 23 && menit === 0) {
+                      props.navigation.push("AccountStack", {
+                        screen: "Wishlist",
+                        params: {
+                          IdItinerary: itineraryId,
+                          datadayaktif: datadayaktif,
+                          dataDes:
+                            datadetail && datadetail.itinerary_detail
+                              ? datadetail
+                              : null,
+                          datadayaktif: datadayaktif,
+                          lat: datadetail.itinerary_detail.city.latitude,
+                          long: datadetail.itinerary_detail.city.longitude,
+                          from: "itinerary_wishlist",
+                        },
+                      });
+                    } else {
+                      Alert.alert(t("alertjam"));
+                    }
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                }}
+                style={{
+                  marginVertical: 2.5,
+                  width: "100%",
+                  height: Dimensions.get("screen").width * 0.2,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 25,
+                    backgroundColor: "#f3f3f3",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <Love height={15} width={15} />
+                </View>
+                <View style={{ marginBottom: 5 }}>
+                  <Text size="label" type="bold">
+                    {t("myWishlist")}
+                  </Text>
+                  <Text size="description" type="regular">
+                    {t("addFromWishtlist")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalcustom(false);
+                  let maxjam = datadayaktif.total_hours.split(":");
+                  let jam = parseFloat(maxjam[0]);
+                  let menit = parseFloat(maxjam[1]);
+                  if (jam < 24) {
+                    if (jam < 23) {
+                      props.navigation.push("ItinGoogle", {
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                      });
+                    } else if (jam === 23 && menit === 0) {
+                      props.navigation.push("ItinGoogle", {
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                      });
+                    } else {
+                      Alert.alert(t("alertjam"));
+                    }
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
+                }}
+                style={{
+                  // marginVertical: 2.5,
+                  width: "100%",
+                  height: Dimensions.get("screen").width * 0.2,
+                  // borderBottomWidth: 1,
+                  // borderBottomColor: "#d1d1d1",
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 25,
+                    backgroundColor: "#f3f3f3",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <Google height={15} width={15} />
+                </View>
+                <View style={{ marginBottom: 5 }}>
+                  <Text size="label" type="bold">
+                    {t("searchFromGoogle")}
+                  </Text>
+                  <Text size="description" type="regular">
+                    {t("addDestinationGoogle")}
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("CustomItinerary", {
-                      idItin: itineraryId,
-                      idDay: datadayaktif.id,
-                      itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.datadayaktif.date,
-                      datadayaktif: datadayaktif,
-                      dataList: dataList,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("CustomItinerary", {
-                      idItin: itineraryId,
-                      idDay: datadayaktif.id,
-                      itintitle: props.route.params.itintitle,
-                      dateitin: props.route.params.datadayaktif.date,
-                      datadayaktif: datadayaktif,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <PlusBlack height={15} width={15} />
-              </View>
-              <View style={{ marginBottom: 5 }}>
-                <Text size="label" type="bold">
-                  {t("createActivity")}
-                </Text>
-                <Text size="description" type="regular">
-                  {t("addCustomActivity")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                props.navigation.push("ItineraryStack", {
-                  screen: "customFlight",
-                  params: {
-                    itineraryId: itineraryId,
-                    dayId: idDay,
-                    startDate: datadetail?.itinerary_detail?.start_date,
-                    endDate: EndTimeConverter(
-                      datadetail?.itinerary_detail?.end_date
-                    ),
-                  },
-                });
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Flights height={25} width={25} />
-              </View>
-              <View style={{ marginBottom: 5 }}>
-                <Text size="label" type="bold">
-                  {t("Flight")}
-                </Text>
-                <Text size="description" type="regular">
-                  {t("addFlightDetail")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                props.navigation.push("ItineraryStack", {
-                  screen: "customStay",
-                  params: {
-                    itineraryId: itineraryId,
-                    dayId: idDay,
-                    startDate: datadetail?.itinerary_detail?.start_date,
-                    endDate: EndTimeConverter(
-                      datadetail?.itinerary_detail?.end_date
-                    ),
-                  },
-                });
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Stay height={25} width={25} />
-              </View>
-              <View>
-                <Text size="label" type="bold">
-                  {t("Stay")}
-                </Text>
-                <Text size="description" type="regular">
-                  {t("addPlaceName")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                dispatch(setItinerary(props.route.params));
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("AccountStack", {
-                      screen: "Wishlist",
-                      params: {
-                        IdItinerary: itineraryId,
-                        datadayaktif: datadayaktif,
-                        dataDes:
-                          datadetail && datadetail.itinerary_detail
-                            ? datadetail
-                            : null,
-                        datadayaktif: datadayaktif,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
-                        from: "itinerary_wishlist",
-                      },
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("AccountStack", {
-                      screen: "Wishlist",
-                      params: {
-                        IdItinerary: itineraryId,
-                        datadayaktif: datadayaktif,
-                        dataDes:
-                          datadetail && datadetail.itinerary_detail
-                            ? datadetail
-                            : null,
-                        datadayaktif: datadayaktif,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
-                        from: "itinerary_wishlist",
-                      },
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                borderRadius: 5,
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Love height={15} width={15} />
-              </View>
-              <View style={{ marginBottom: 5 }}>
-                <Text size="label" type="bold">
-                  {t("myWishlist")}
-                </Text>
-                <Text size="description" type="regular">
-                  {t("addFromWishtlist")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("ItinGoogle", {
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("ItinGoogle", {
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              style={{
-                marginVertical: 2.5,
-                width: "100%",
-                height: Dimensions.get("screen").width * 0.2,
-                // borderBottomWidth: 1,
-                // borderBottomColor: "#d1d1d1",
-                borderRadius: 5,
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 40,
-                  width: 40,
-                  borderRadius: 25,
-                  backgroundColor: "#f3f3f3",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <Google height={15} width={15} />
-              </View>
-              <View style={{ marginBottom: 5 }}>
-                <Text size="label" type="bold">
-                  {t("searchFromGoogle")}
-                </Text>
-                <Text size="description" type="regular">
-                  {t("addDestinationGoogle")}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              width: Dimensions.get("window").width,
-              backgroundColor: "white",
-              borderTopWidth: 1,
-              borderColor: "#F0F0F0",
-              shadowColor: "#F0F0F0",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 1,
-
-              shadowRadius: 2,
-              elevation: 3,
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <Button
-              color="tertiary"
-              type="circle"
-              style={{
-                borderRadius: 0,
-                width: "15%",
-                height: 56,
-                fontSize: 18,
-              }}
-              onPress={() => {
-                props.navigation.navigate("ChatStack", {
-                  screen: "GroupRoom",
-                  params: {
-                    room_id: itineraryId,
-                    name: dta ? dta.name : null,
-                    picture: Cover,
-                    is_itinerary: true,
-                  },
-                });
-              }}
-            >
-              <Chatnew width={20} height={20} />
-              <Text size="small" style={{ color: "black" }}>
-                {t("Chat")}
-              </Text>
-            </Button>
-            <Button
-              onPress={() => {
-                setModalcustom(false);
-                let maxjam = datadayaktif.total_hours.split(":");
-                let jam = parseFloat(maxjam[0]);
-                let menit = parseFloat(maxjam[1]);
-                if (jam < 24) {
-                  if (jam < 23) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itineraryId,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                      idcity:
-                        dataList &&
-                        dataList?.length > 0 &&
-                        dataList[dataList.length - 1].id_city
-                          ? dataList[dataList.length - 1].id_city
-                          : datadetail.itinerary_detail.city.id,
-                      idcountries: datadetail.itinerary_detail.country.id,
-                    });
-                  } else if (jam === 23 && menit === 0) {
-                    props.navigation.push("itindest", {
-                      IdItinerary: itineraryId,
-                      token: token,
-                      datadayaktif: datadayaktif,
-                      dataDes:
-                        datadetail && datadetail.itinerary_detail
-                          ? datadetail
-                          : null,
-                      lat: datadetail.itinerary_detail.city.latitude,
-                      long: datadetail.itinerary_detail.city.longitude,
-                      idcity:
-                        dataList &&
-                        dataList?.length > 0 &&
-                        dataList[dataList.length - 1].id_city
-                          ? dataList[dataList.length - 1].id_city
-                          : datadetail.itinerary_detail.city.id,
-                      idcountries: datadetail.itinerary_detail.country.id,
-                    });
-                  } else {
-                    Alert.alert(t("alertjam"));
-                  }
-                } else {
-                  Alert.alert(t("alertjam"));
-                }
-              }}
-              text={t("addDestination")}
-              size="large"
-              style={{
-                borderRadius: 0,
-                width: "40%",
-                height: 56,
-                fontSize: 18,
-              }}
-            ></Button>
-
             <View
               style={{
-                height: "100%",
-                width: "45%",
+                width: Dimensions.get("window").width,
+                backgroundColor: "white",
+                borderTopWidth: 1,
+                borderColor: "#F0F0F0",
+                shadowColor: "#F0F0F0",
+                shadowOffset: { width: 2, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                elevation: 3,
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
+                paddingBottom: Platform.OS === "ios" ? (Notch ? 20 : 0) : 0,
               }}
             >
               <Button
-                text=""
-                size="large"
                 color="tertiary"
                 type="circle"
                 style={{
-                  opacity: 0.5,
                   borderRadius: 0,
-                  width: "50%",
+                  width: "15%",
                   height: 56,
                   fontSize: 18,
                 }}
+                onPress={() => {
+                  props.navigation.navigate("ChatStack", {
+                    screen: "GroupRoom",
+                    params: {
+                      room_id: itineraryId,
+                      name: dta ? dta.name : null,
+                      picture: Cover,
+                      is_itinerary: true,
+                    },
+                  });
+                }}
               >
-                <Plus width={20} height={20} />
-                <Text size="small" style={{ color: "#209fae" }}>
-                  {t("addOption")}
+                <Chatnew width={20} height={20} />
+                <Text size="small" style={{ color: "black" }}>
+                  {t("Chat")}
                 </Text>
               </Button>
               <Button
                 onPress={() => {
-                  completePlan();
                   setModalcustom(false);
+                  let maxjam = datadayaktif.total_hours.split(":");
+                  let jam = parseFloat(maxjam[0]);
+                  let menit = parseFloat(maxjam[1]);
+                  if (jam < 24) {
+                    if (jam < 23) {
+                      dispatch(
+                        setItinerary({
+                          ...props.route.params,
+                          id_city: dataList
+                            ? dataList[dataList.length - 1].id_city
+                            : null,
+                          city_name: dataList
+                            ? dataList[dataList.length - 1].city
+                            : null,
+                        })
+                      );
+                      props.navigation.push("itindest", {
+                        IdItinerary: itineraryId,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                        idcity:
+                          dataList &&
+                          dataList?.length > 0 &&
+                          dataList[dataList.length - 1].id_city
+                            ? dataList[dataList.length - 1].id_city
+                            : datadetail.itinerary_detail.city.id,
+                        idcountries: datadetail.itinerary_detail.country.id,
+                      });
+                    } else if (jam === 23 && menit === 0) {
+                      dispatch(
+                        setItinerary({
+                          ...props.route.params,
+                          id_city: dataList
+                            ? dataList[dataList.length - 1].id_city
+                            : null,
+                          city_name: dataList
+                            ? dataList[dataList.length - 1].city
+                            : null,
+                        })
+                      );
+                      props.navigation.push("itindest", {
+                        IdItinerary: itineraryId,
+                        token: token,
+                        datadayaktif: datadayaktif,
+                        dataDes:
+                          datadetail && datadetail.itinerary_detail
+                            ? datadetail
+                            : null,
+                        lat: datadetail.itinerary_detail.city.latitude,
+                        long: datadetail.itinerary_detail.city.longitude,
+                        idcity:
+                          dataList &&
+                          dataList?.length > 0 &&
+                          dataList[dataList.length - 1].id_city
+                            ? dataList[dataList.length - 1].id_city
+                            : datadetail.itinerary_detail.city.id,
+                        idcountries: datadetail.itinerary_detail.country.id,
+                      });
+                    } else {
+                      Alert.alert(t("alertjam"));
+                    }
+                  } else {
+                    Alert.alert(t("alertjam"));
+                  }
                 }}
-                text=""
+                text={t("addDestination")}
                 size="large"
-                variant="transparent"
-                type="circle"
                 style={{
                   borderRadius: 0,
-                  width: "50%",
+                  width: "40%",
                   height: 56,
                   fontSize: 18,
                 }}
-              >
-                <Disketpink width={20} height={20} />
-                <Text size="small" style={{ color: "#d75995" }}>
-                  {t("completePlan")}
-                </Text>
-              </Button>
-            </View>
-          </View>
-        </Modal>
+              ></Button>
 
-        <Modal
-          onBackdropPress={() => {
-            setModal(false);
-          }}
-          onRequestClose={() => setModal(false)}
-          onDismiss={() => setModal(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modal}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <View
+              <View
+                style={{
+                  height: "100%",
+                  width: "45%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  text=""
+                  size="large"
+                  color="tertiary"
+                  type="circle"
+                  style={{
+                    opacity: 0.5,
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Plus width={20} height={20} />
+                  <Text size="small" style={{ color: "#209fae" }}>
+                    {t("addOption")}
+                  </Text>
+                </Button>
+                <Button
+                  onPress={() => {
+                    completePlan();
+                    setModalcustom(false);
+                  }}
+                  text=""
+                  size="large"
+                  variant="transparent"
+                  type="circle"
+                  style={{
+                    borderRadius: 0,
+                    width: "50%",
+                    height: 56,
+                    fontSize: 18,
+                  }}
+                >
+                  <Disketpink width={20} height={20} />
+                  <Text size="small" style={{ color: "#d75995" }}>
+                    {t("completePlan")}
+                  </Text>
+                </Button>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal
+            onBackdropPress={() => {
+              setModal(false);
+            }}
+            onRequestClose={() => setModal(false)}
+            onDismiss={() => setModal(false)}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modal}
             style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 10,
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+              alignContent: "center",
             }}
           >
             <View
               style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 10,
               }}
             >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("EditNotes")}
-              </Text>
-              <Pressable
-                onPress={() => setModal(false)}
+              <View
                 style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                // borderColor: "#D1D1D1",
-                // width: width - 140,
-                marginVertical: 20,
-                // alignSelf: "center",
-                // // borderRadius: 5,
-                // backgroundColor: "#f6f6f6",
-              }}
-            >
-              <Textarea
-                style={{
-                  width: width - 140,
-                  marginVertical: 20,
-                  borderRadius: 5,
-                  fontFamily: "Lato-Regular",
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
                   backgroundColor: "#f6f6f6",
-                  alignSelf: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
                 }}
-                rowSpan={5}
-                placeholder={t("inputNotes")}
-                value={textinput}
-                bordered
-                maxLength={160}
-                onChangeText={(text) => setInput(text)}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                paddingHorizontal: 15,
-                marginBottom: 20,
-              }}
-            >
-              <Button
-                onPress={() => setModal(false)}
-                size="medium"
-                color="transparant"
-                text={t("cancel")}
-              ></Button>
-              <Button
-                onPress={() => saveNotes()}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("EditNotes")}
+                </Text>
+                <Pressable
+                  onPress={() => setModal(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View
                 style={{
-                  marginLeft: 10,
+                  // borderColor: "#D1D1D1",
+                  // width: width - 140,
+                  marginVertical: 20,
+                  // alignSelf: "center",
+                  // // borderRadius: 5,
+                  // backgroundColor: "#f6f6f6",
                 }}
-                color="primary"
-                text={t("submit")}
-              ></Button>
+              >
+                <Textarea
+                  style={{
+                    width: width - 140,
+                    marginVertical: 20,
+                    borderRadius: 5,
+                    fontFamily: "Lato-Regular",
+                    backgroundColor: "#f6f6f6",
+                    alignSelf: "center",
+                  }}
+                  rowSpan={5}
+                  placeholder={t("inputNotes")}
+                  value={textinput}
+                  bordered
+                  maxLength={160}
+                  onChangeText={(text) => setInput(text)}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  paddingHorizontal: 15,
+                  marginBottom: 20,
+                }}
+              >
+                <Button
+                  onPress={() => setModal(false)}
+                  size="medium"
+                  color="transparant"
+                  text={t("cancel")}
+                ></Button>
+                <Button
+                  onPress={() => saveNotes()}
+                  style={{
+                    marginLeft: 10,
+                  }}
+                  color="primary"
+                  text={t("submit")}
+                ></Button>
+              </View>
             </View>
-          </View>
 
-          {/* <View
+            {/* <View
             style={{
               width: Dimensions.get("screen").width - 20,
               backgroundColor: "white",
@@ -6125,159 +6178,278 @@ export default function ItineraryDetail(props) {
               </Text>
             </TouchableOpacity>
           </View> */}
-        </Modal>
+          </Modal>
 
-        {/* modaldates */}
-        <Modal
-          onBackdropPress={() => {
-            setModaldate(false);
-          }}
-          onRequestClose={() => setModaldate(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modaldate}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <View
+          {/* modaldates */}
+          <Modal
+            onBackdropPress={() => {
+              setModaldate(false);
+            }}
+            onRequestClose={() => setModaldate(false)}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modaldate}
             style={{
-              width: Dimensions.get("screen").width - 80,
-              backgroundColor: "white",
-              paddingVertical: Platform.OS === "ios" ? 10 : 30,
-              paddingHorizontal: 20,
-              alignContent: "center",
+              justifyContent: "center",
               alignItems: "center",
-              borderRadius: 5,
+              alignSelf: "center",
+              alignContent: "center",
             }}
           >
-            <Text size="label">{t("setTimeForActivity")}</Text>
-            <Text size="title" type="bold">
-              {dataList[indexinput]?.name}
-            </Text>
-
             <View
               style={{
-                marginTop: 10,
-                backgroundColor: "#f3f3f3",
-                padding: 15,
+                width: Dimensions.get("screen").width - 80,
+                backgroundColor: "white",
+                paddingVertical: Platform.OS === "ios" ? 10 : 30,
+                paddingHorizontal: 20,
+                alignContent: "center",
+                alignItems: "center",
                 borderRadius: 5,
               }}
             >
-              <Text
-                size="label"
-                // type="bold"
-                style={{ alignSelf: "center" }}
-              >
-                {t("From")}
+              <Text size="label">{t("setTimeForActivity")}</Text>
+              <Text size="title" type="bold">
+                {dataList[indexinput]?.name}
               </Text>
+
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
+                  marginTop: 10,
+                  backgroundColor: "#f3f3f3",
+                  padding: 15,
+                  borderRadius: 5,
                 }}
               >
-                <View style={{ width: "40%" }}>
-                  <Picker
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    iosHeader="Select Hours"
-                    note
-                    mode="dropdown"
-                    selectedValue={jamstart}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
+                <Text
+                  size="label"
+                  // type="bold"
+                  style={{ alignSelf: "center" }}
+                >
+                  {t("From")}
+                </Text>
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <View style={{ width: "40%" }}>
+                    <Picker
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      iosHeader="Select Hours"
+                      note
+                      mode="dropdown"
+                      selectedValue={jamstart}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={
+                        (itemValue, itemIndex) => (
+                          setjamstart(itemValue), setjamend(itemValue)
+                        )
+                        // setjamend(itemValue))
+                      }
+                    >
+                      {indexdate == 0 || typeactivity !== "" ? (
+                        jams.map((item, index) => {
+                          return (
+                            <Picker.Item key={item} label={item} value={item} />
+                          );
+                        })
+                      ) : (
+                        <Picker.Item
+                          key={jamstart}
+                          label={jamstart}
+                          value={jamstart}
+                        />
+                      )}
+                    </Picker>
+                  </View>
+
+                  <View
                     style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
+                      width: "5%",
+                      alignItems: "center",
+                      // alignContent: "flex-end",
                     }}
-                    onValueChange={
-                      (itemValue, itemIndex) => (
-                        setjamstart(itemValue), setjamend(itemValue)
-                      )
-                      // setjamend(itemValue))
-                    }
                   >
-                    {indexdate == 0 || typeactivity !== "" ? (
-                      jams.map((item, index) => {
-                        return (
-                          <Picker.Item key={item} label={item} value={item} />
-                        );
-                      })
-                    ) : (
-                      <Picker.Item
-                        key={jamstart}
-                        label={jamstart}
-                        value={jamstart}
-                      />
-                    )}
-                  </Picker>
+                    <Text size="description" type="bold" style={{}}>
+                      :
+                    </Text>
+                  </View>
+                  <View style={{ width: "40%" }}>
+                    <Picker
+                      iosHeader="Select Minutes"
+                      headerBackButtonTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      note
+                      mode="dropdown"
+                      selectedValue={menitstart}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setmenitstart(itemValue)
+                      }
+                    >
+                      {indexdate == 0 || typeactivity !== "" ? (
+                        menits.map((item, index) => {
+                          return (
+                            <Picker.Item
+                              key={""}
+                              label={item + ""}
+                              value={item}
+                            />
+                          );
+                        })
+                      ) : (
+                        <Picker.Item
+                          key={menitstart}
+                          label={menitstart + ""}
+                          value={menitstart}
+                        />
+                      )}
+                    </Picker>
+                  </View>
                 </View>
+
+                <Text
+                  size="label"
+                  // type="bold"
+                  style={{ alignSelf: "center" }}
+                >
+                  {t("To")}
+                </Text>
 
                 <View
                   style={{
-                    width: "5%",
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
                     alignItems: "center",
-                    // alignContent: "flex-end",
                   }}
                 >
-                  <Text size="description" type="bold" style={{}}>
-                    :
-                  </Text>
-                </View>
-                <View style={{ width: "40%" }}>
-                  <Picker
-                    iosHeader="Select Minutes"
-                    headerBackButtonTextStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    note
-                    mode="dropdown"
-                    selectedValue={menitstart}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
+                  <View style={{ width: "40%" }}>
+                    <Picker
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      iosHeader="Select Hours"
+                      note
+                      mode="dropdown"
+                      selectedValue={jamend}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setjamend(itemValue)
+                      }
+                    >
+                      {jams.map((item, index) => {
+                        return (
+                          <Picker.Item key={item} label={item} value={item} />
+                        );
+                      })}
+                    </Picker>
+                  </View>
+
+                  <View
                     style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
+                      width: "5%",
+                      alignItems: "center",
+                      // alignContent: "flex-end",
                     }}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setmenitstart(itemValue)
-                    }
                   >
-                    {indexdate == 0 || typeactivity !== "" ? (
-                      menits.map((item, index) => {
+                    <Text size="description" type="bold" style={{}}>
+                      :
+                    </Text>
+                  </View>
+                  <View style={{ width: "40%" }}>
+                    <Picker
+                      iosHeader="Select Minutes"
+                      headerBackButtonTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      note
+                      mode="dropdown"
+                      selectedValue={menitend}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      iosIcon={
+                        <View>
+                          <Bottom />
+                        </View>
+                      }
+                      headerTitleStyle={{
+                        fontFamily: "Lato-Regular",
+                      }}
+                      style={{
+                        color: "#209fae",
+                        fontFamily: "Lato-Regular",
+                      }}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setmenitend(itemValue)
+                      }
+                    >
+                      {menits.map((item, index) => {
                         return (
                           <Picker.Item
                             key={""}
@@ -6285,1406 +6457,1239 @@ export default function ItineraryDetail(props) {
                             value={item}
                           />
                         );
-                      })
-                    ) : (
-                      <Picker.Item
-                        key={menitstart}
-                        label={menitstart + ""}
-                        value={menitstart}
-                      />
-                    )}
-                  </Picker>
+                      })}
+                    </Picker>
+                  </View>
                 </View>
               </View>
 
-              <Text
-                size="label"
-                // type="bold"
-                style={{ alignSelf: "center" }}
-              >
-                {t("To")}
-              </Text>
-
-              <View
+              <TouchableOpacity
+                onPress={() =>
+                  setTime(
+                    jamstart,
+                    menitstart,
+                    jamend,
+                    menitend,
+                    dataList,
+                    dataList[indexinput]?.order
+                  )
+                }
                 style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
+                  marginTop: 20,
+                  backgroundColor: "#209fae",
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderRadius: 5,
                 }}
               >
-                <View style={{ width: "40%" }}>
-                  <Picker
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    iosHeader="Select Hours"
-                    note
-                    mode="dropdown"
-                    selectedValue={jamend}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
-                    }}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setjamend(itemValue)
-                    }
-                  >
-                    {jams.map((item, index) => {
-                      return (
-                        <Picker.Item key={item} label={item} value={item} />
-                      );
-                    })}
-                  </Picker>
-                </View>
-
-                <View
+                <Text
+                  size="description"
+                  type="regular"
                   style={{
-                    width: "5%",
-                    alignItems: "center",
-                    // alignContent: "flex-end",
+                    color: "white",
                   }}
                 >
-                  <Text size="description" type="bold" style={{}}>
-                    :
+                  {t("save")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
+          {/* Modal Hapus Day */}
+          <Modalss
+            useNativeDriver={true}
+            visible={modalDelete}
+            onRequestClose={() => false}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalDelete(false)}
+              style={{
+                width: Dimensions.get("screen").width + 25,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                left: -21,
+              }}
+            />
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 140,
+                // marginHorizontal: 70,
+                alignSelf: "center",
+                backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignContent: "center",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 2.5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 140,
+                  justifyContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: 1,
+                    borderTopRightRadius: 5,
+                    borderTopLeftRadius: 5,
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                    {t("deleteActivity")}
                   </Text>
                 </View>
-                <View style={{ width: "40%" }}>
-                  <Picker
-                    iosHeader="Select Minutes"
-                    headerBackButtonTextStyle={{
-                      fontFamily: "Lato-Regular",
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    textAlign: "center",
+                    marginTop: 20,
+                    marginHorizontal: 10,
+                  }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("DeleteActivityfromItinerary")}
+                </Text>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
+                  <Button
+                    onPress={() => {
+                      deleteactivity(itineraryId, idactivity, types),
+                        setModalDelete(false);
                     }}
-                    note
-                    mode="dropdown"
-                    selectedValue={menitend}
-                    textStyle={{ fontFamily: "Lato-Regular" }}
-                    itemTextStyle={{
-                      fontFamily: "Lato-Regular",
+                    color="secondary"
+                    text={t("delete")}
+                  ></Button>
+                  <Button
+                    onPress={() => {
+                      setModalDelete(false);
                     }}
-                    itemStyle={{ fontFamily: "Lato-Regular" }}
-                    placeholderStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    iosIcon={
-                      <View>
-                        <Bottom />
-                      </View>
-                    }
-                    headerTitleStyle={{
-                      fontFamily: "Lato-Regular",
-                    }}
-                    style={{
-                      color: "#209fae",
-                      fontFamily: "Lato-Regular",
-                    }}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setmenitend(itemValue)
-                    }
-                  >
-                    {menits.map((item, index) => {
-                      return (
-                        <Picker.Item key={""} label={item + ""} value={item} />
-                      );
-                    })}
-                  </Picker>
+                    style={{ marginVertical: 7 }}
+                    variant="transparent"
+                    text={t("discard")}
+                  ></Button>
                 </View>
               </View>
             </View>
+          </Modalss>
+          {/* End of Modal Hapus */}
 
-            <TouchableOpacity
-              onPress={() =>
-                setTime(
-                  jamstart,
-                  menitstart,
-                  jamend,
-                  menitend,
-                  dataList,
-                  dataList[indexinput]?.order
-                )
-              }
-              style={{
-                marginTop: 20,
-                backgroundColor: "#209fae",
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                borderRadius: 5,
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{
-                  color: "white",
-                }}
-              >
-                {t("save")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        {/* Modal Hapus Day */}
-        <Modalss
-          useNativeDriver={true}
-          visible={modalDelete}
-          onRequestClose={() => false}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalDelete(false)}
-            style={{
-              width: Dimensions.get("screen").width + 25,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              left: -21,
-            }}
-          />
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 140,
-              // marginHorizontal: 70,
-              alignSelf: "center",
-              backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              alignContent: "center",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 2.5,
-            }}
+          {/* Modal Hapus Aktifitas */}
+          <Modalss
+            useNativeDriver={true}
+            visible={modalmenuday}
+            onRequestClose={() => setModalmenuday(false)}
+            transparent={true}
+            animationType="fade"
           >
+            <Pressable
+              onPress={() => setModalmenuday(false)}
+              style={{
+                width: Dimensions.get("screen").width + 25,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                left: -21,
+              }}
+            />
             <View
               style={{
-                backgroundColor: "white",
                 width: Dimensions.get("screen").width - 140,
+                // marginHorizontal: 70,
+                alignSelf: "center",
+                backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignContent: "center",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 2.5,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 140,
+                  justifyContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: 1,
+                    borderTopRightRadius: 5,
+                    borderTopLeftRadius: 5,
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                    {t("deleteDay")}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    textAlign: "center",
+                    marginTop: 20,
+                    marginHorizontal: 10,
+                  }}
+                  size="label"
+                  type="regular"
+                >
+                  {`${t("deleteDay")} ${datadayaktif?.day} ${t(
+                    "fromItinerary"
+                  )}`}
+                </Text>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
+                  <Button
+                    onPress={() => {
+                      _handledeleteDay(
+                        datadayaktif?.itinerary_id,
+                        datadayaktif?.id
+                      );
+                    }}
+                    color="secondary"
+                    text={t("delete")}
+                  ></Button>
+                  <Button
+                    onPress={() => {
+                      setModalmenuday(false);
+                    }}
+                    style={{ marginVertical: 7 }}
+                    variant="transparent"
+                    text={t("discard")}
+                  ></Button>
+                </View>
+              </View>
+            </View>
+          </Modalss>
+          {/* End of Modal Hapus */}
+
+          {/* Modal Delete Option Aktifitas */}
+
+          <Modalss
+            onBackdropPress={() => {
+              setModalmenu(false);
+            }}
+            onRequestClose={() => setModalmenu(false)}
+            onDismiss={() => setModalmenu(false)}
+            // animationIn="fadeIn"
+            // animationOut="fadeOut"
+            visible={modalmenu}
+            transparent={true}
+          >
+            <Pressable
+              onPress={() => setModalmenu(false)}
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
                 justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                alignSelf: "center",
+              }}
+            ></Pressable>
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                // backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignSelf: "center",
+                marginTop: Dimensions.get("screen").height / 2.5,
                 borderRadius: 5,
               }}
             >
               <View
                 style={{
-                  alignItems: "center",
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
-                  borderTopRightRadius: 5,
-                  borderTopLeftRadius: 5,
-                  backgroundColor: "#f6f6f6",
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 60,
+                  // paddingHorizontal: 20,
+
+                  borderRadius: 5,
                 }}
               >
-                <Text style={{ marginVertical: 15 }} size="title" type="bold">
-                  {t("deleteActivity")}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlign: "center",
-                  marginTop: 20,
-                  marginHorizontal: 10,
-                }}
-                size="label"
-                type="regular"
-              >
-                {t("DeleteActivityfromItinerary")}
-              </Text>
-              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
-                <Button
-                  onPress={() => {
-                    deleteactivity(itineraryId, idactivity, types),
-                      setModalDelete(false);
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    alignItems: "center",
+                    backgroundColor: "#f6f6f6",
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5,
                   }}
-                  color="secondary"
-                  text={t("delete")}
-                ></Button>
-                <Button
-                  onPress={() => {
-                    setModalDelete(false);
+                >
+                  <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                    {t("option")}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => setModalmenu(false)}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    width: 55,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 55,
                   }}
-                  style={{ marginVertical: 7 }}
-                  variant="transparent"
-                  text={t("discard")}
-                ></Button>
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+                {types !== "custom" && types !== "google" ? (
+                  <TouchableOpacity
+                    style={{
+                      paddingVertical: 15,
+                      alignItems: "center",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                    }}
+                    onPress={() => {
+                      // add to itin
+                      setModalmenu(false);
+                      props.navigation.push("ItineraryStack", {
+                        screen: "ItineraryPlaning",
+                        params: {
+                          idkiriman: idTarget,
+                          Position: types,
+                          data_from: "itinerary",
+                        },
+                      });
+                    }}
+                  >
+                    <Text size="label" type="regular">
+                      {t("addActivityToItinerary")}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+                <TouchableOpacity
+                  style={{
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setModalmenu(false);
+                    setModalDelete(true);
+                  }}
+                >
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{
+                      color: "#d75995",
+                      marginVertical: 15,
+                    }}
+                  >
+                    {t("delete")}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </Modalss>
-        {/* End of Modal Hapus */}
+          </Modalss>
+          {/* End of Modal Delete Option  */}
 
-        {/* Modal Hapus Aktifitas */}
-        <Modalss
-          useNativeDriver={true}
-          visible={modalmenuday}
-          onRequestClose={() => setModalmenuday(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalmenuday(false)}
-            style={{
-              width: Dimensions.get("screen").width + 25,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              left: -21,
+          {/* Modal Gallery/photo */}
+          <Modal
+            onBackdropPress={() => {
+              setmodalcover(false);
             }}
-          />
-          <View
+            onRequestClose={() => setmodalcover(false)}
+            onDismiss={() => setmodalcover(false)}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modalcover}
             style={{
-              width: Dimensions.get("screen").width - 140,
-              // marginHorizontal: 70,
-              alignSelf: "center",
-              backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
+              justifyContent: "center",
               alignItems: "center",
+              alignSelf: "center",
               alignContent: "center",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 2.5,
             }}
           >
+            <Pressable
+              onPress={() => setmodalcover(false)}
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                alignSelf: "center",
+              }}
+            ></Pressable>
             <View
               style={{
-                backgroundColor: "white",
-                width: Dimensions.get("screen").width - 140,
-                justifyContent: "center",
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                // backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignSelf: "center",
+                marginTop: Dimensions.get("screen").height / 10,
                 borderRadius: 5,
               }}
             >
               <View
                 style={{
-                  alignItems: "center",
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
-                  borderTopRightRadius: 5,
-                  borderTopLeftRadius: 5,
-                  backgroundColor: "#f6f6f6",
+                  backgroundColor: "white",
+                  borderRadius: 5,
                 }}
               >
-                <Text style={{ marginVertical: 15 }} size="title" type="bold">
-                  {t("deleteDay")}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlign: "center",
-                  marginTop: 20,
-                  marginHorizontal: 10,
-                }}
-                size="label"
-                type="regular"
-              >
-                {`${t("deleteDay")} ${datadayaktif?.day} ${t("fromItinerary")}`}
-              </Text>
-              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
-                <Button
-                  onPress={() => {
-                    _handledeleteDay(
-                      datadayaktif?.itinerary_id,
-                      datadayaktif?.id
-                    );
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#d1d1d1",
+                    alignItems: "center",
+                    backgroundColor: "#f6f6f6",
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5,
                   }}
-                  color="secondary"
-                  text={t("delete")}
-                ></Button>
-                <Button
-                  onPress={() => {
-                    setModalmenuday(false);
+                >
+                  <Text style={{ marginVertical: 15 }} type="bold" size="title">
+                    {t("option")}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => setmodalcover(false)}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    width: 55,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 55,
                   }}
-                  style={{ marginVertical: 7 }}
-                  variant="transparent"
-                  text={t("discard")}
-                ></Button>
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    width: Dimensions.get("screen").width - 100,
+                    borderBottomRightRadius: 5,
+                    borderBottomLeftRadius: 5,
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      paddingVertical: 20,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                    }}
+                    onPress={() => {
+                      pickcamera();
+                    }}
+                  >
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{ color: "#d75995" }}
+                    >
+                      {t("OpenCamera")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      paddingVertical: 20,
+                      alignSelf: "center",
+                    }}
+                    onPress={() => {
+                      pickGallery();
+                    }}
+                  >
+                    <Text size="description" type="regular" style={{}}>
+                      {t("OpenGallery")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modalss>
-        {/* End of Modal Hapus */}
+          </Modal>
 
-        {/* Modal Delete Option Aktifitas */}
-
-        <Modalss
-          onBackdropPress={() => {
-            setModalmenu(false);
-          }}
-          onRequestClose={() => setModalmenu(false)}
-          onDismiss={() => setModalmenu(false)}
-          // animationIn="fadeIn"
-          // animationOut="fadeOut"
-          visible={modalmenu}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => setModalmenu(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              alignSelf: "center",
+          <Modal
+            onBackdropPress={() => {
+              setmodalAlbum(false);
             }}
-          ></Pressable>
-          <View
+            onRequestClose={() => setmodalAlbum(false)}
+            onDismiss={() => setmodalAlbum(false)}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            isVisible={modalAlbum}
             style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              // backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
+              justifyContent: "center",
               alignItems: "center",
               alignSelf: "center",
-              marginTop: Dimensions.get("screen").height / 2.5,
-              borderRadius: 5,
+              alignContent: "center",
             }}
           >
             <View
               style={{
                 backgroundColor: "white",
                 width: Dimensions.get("screen").width - 60,
-                // paddingHorizontal: 20,
+                padding: 20,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                }}
+                onPress={() => {
+                  pickcameraAlbum();
+                }}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ color: "#d75995" }}
+                >
+                  {t("OpenCamera")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                }}
+                onPress={() => {
+                  pickGalleryAlbum();
+                }}
+              >
+                <Text size="description" type="regular" style={{}}>
+                  {t("OpenGallery")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
 
-                borderRadius: 5,
+          <Modalss
+            onBackdropPress={() => {
+              setmodalerrors(false);
+            }}
+            onRequestClose={() => setmodalerrors(false)}
+            onDismiss={() => setmodalerrors(false)}
+            // animationIn="fadeIn"
+            // animationOut="fadeOut"
+            visible={modalerrors}
+            transparent={true}
+          >
+            <Pressable
+              onPress={() => {
+                setmodalerrors(false);
+              }}
+              style={{
+                height: Dimensions.get("screen").height,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+                // opacity: 0.7,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                alignContent: "center",
               }}
             >
               <View
                 style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  alignItems: "center",
-                  backgroundColor: "#f6f6f6",
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "#F6F6F6",
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
-                }}
-              >
-                <Text style={{ marginVertical: 15 }} type="bold" size="title">
-                  {t("option")}
-                </Text>
-              </View>
-              <Pressable
-                onPress={() => setModalmenu(false)}
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  width: 55,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  alignItems: "center",
                   justifyContent: "center",
-                  alignItems: "center",
-                  height: 55,
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-              {types !== "custom" && types !== "google" ? (
-                <TouchableOpacity
-                  style={{
-                    paddingVertical: 15,
-                    alignItems: "center",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                  }}
-                  onPress={() => {
-                    // add to itin
-                    setModalmenu(false);
-                    props.navigation.push("ItineraryStack", {
-                      screen: "ItineraryPlaning",
-                      params: {
-                        idkiriman: idTarget,
-                        Position: types,
-                        data_from: "itinerary",
-                      },
-                    });
-                  }}
-                >
-                  <Text size="label" type="regular">
-                    {t("addActivityToItinerary")}
-                  </Text>
-                </TouchableOpacity>
-              ) : null}
-              <TouchableOpacity
-                style={{
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  setModalmenu(false);
-                  setModalDelete(true);
                 }}
               >
                 <Text
                   size="label"
-                  type="regular"
+                  type="bold"
                   style={{
-                    color: "#d75995",
-                    marginVertical: 15,
+                    marginTop: 13,
+                    marginBottom: 15,
                   }}
                 >
-                  {t("delete")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modalss>
-        {/* End of Modal Delete Option  */}
-
-        {/* Modal Gallery/photo */}
-        <Modal
-          onBackdropPress={() => {
-            setmodalcover(false);
-          }}
-          onRequestClose={() => setmodalcover(false)}
-          onDismiss={() => setmodalcover(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalcover}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <Pressable
-            onPress={() => setmodalcover(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              alignSelf: "center",
-            }}
-          ></Pressable>
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              // backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              alignSelf: "center",
-              marginTop: Dimensions.get("screen").height / 10,
-              borderRadius: 5,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#d1d1d1",
-                  alignItems: "center",
-                  backgroundColor: "#f6f6f6",
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
-                }}
-              >
-                <Text style={{ marginVertical: 15 }} type="bold" size="title">
-                  {t("option")}
+                  Oops
                 </Text>
               </View>
-              <Pressable
-                onPress={() => setmodalcover(false)}
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  width: 55,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 55,
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
               <View
                 style={{
                   backgroundColor: "white",
+                  alignItems: "center",
+                  alignContent: "center",
+                  // height: 100,
                   width: Dimensions.get("screen").width - 100,
-                  borderBottomRightRadius: 5,
+                  padding: 20,
                   borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    paddingVertical: 20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                  }}
-                  onPress={() => {
-                    pickcamera();
-                  }}
-                >
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{ color: "#d75995" }}
-                  >
-                    {t("OpenCamera")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    paddingVertical: 20,
-                    alignSelf: "center",
-                  }}
-                  onPress={() => {
-                    pickGallery();
-                  }}
-                >
-                  <Text size="description" type="regular" style={{}}>
-                    {t("OpenGallery")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        <Modal
-          onBackdropPress={() => {
-            setmodalAlbum(false);
-          }}
-          onRequestClose={() => setmodalAlbum(false)}
-          onDismiss={() => setmodalAlbum(false)}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          isVisible={modalAlbum}
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            alignSelf: "center",
-            alignContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 60,
-              padding: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                pickcameraAlbum();
-              }}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{ color: "#d75995" }}
-              >
-                {t("OpenCamera")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-              }}
-              onPress={() => {
-                pickGalleryAlbum();
-              }}
-            >
-              <Text size="description" type="regular" style={{}}>
-                {t("OpenGallery")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        <Modalss
-          onBackdropPress={() => {
-            setmodalerrors(false);
-          }}
-          onRequestClose={() => setmodalerrors(false)}
-          onDismiss={() => setmodalerrors(false)}
-          // animationIn="fadeIn"
-          // animationOut="fadeOut"
-          visible={modalerrors}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => {
-              setmodalerrors(false);
-            }}
-            style={{
-              height: Dimensions.get("screen").height,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
-              // opacity: 0.7,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                alignItems: "center",
-                alignContent: "center",
-                // height: 100,
-                width: Dimensions.get("screen").width - 100,
-                padding: 20,
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-              }}
-            >
-              <Errors height={100} width={100} />
-              <Text
-                type="bold"
-                size="label"
-                style={{
-                  marginTop: 20,
-                }}
-              >
-                {t("yourTripIsNotComplete")}
-              </Text>
-              <Text
-                // textAlign={"center"}
-                size="label"
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                {t("dayEmptyTrip")}
-              </Text>
-              <View
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#f3f3f3",
-                  padding: 15,
-                  borderRadius: 5,
-                }}
-              >
-                <Text size="label" style={{ textAlign: "center" }}>
-                  {t("activateThisTrip")}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setmodalerrors(false);
-                }}
-                style={{
-                  paddingTop: 20,
-                }}
-              >
+                <Errors height={100} width={100} />
                 <Text
                   type="bold"
                   size="label"
                   style={{
-                    color: "#209fae",
+                    marginTop: 20,
                   }}
                 >
-                  {t("understand")}
+                  {t("yourTripIsNotComplete")}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modalss>
-
-        {/* modal alert trip belum aktif */}
-        <Modalss
-          onBackdropPress={() => {
-            setIndex(0);
-            setmodalTrip(false);
-          }}
-          onRequestClose={() => setmodalTrip(false)}
-          onDismiss={() => setmodalTrip(false)}
-          visible={modalTrip}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => {
-              setIndex(0);
-              setmodalTrip(false);
-            }}
-            style={{
-              height: Dimensions.get("screen").height,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
-              // opacity: 0.7,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                alignItems: "center",
-                alignContent: "center",
-                // height: 100,
-                width: Dimensions.get("screen").width - 100,
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-                paddingVertical: 20,
-                paddingHorizontal: 15,
-              }}
-            >
-              <Errors height={80} width={80} />
-              <Text
-                type="bold"
-                size="title"
-                style={{
-                  marginTop: 20,
-                  textAlign: "center",
-                }}
-              >
-                {t("TripnotStarted")}
-              </Text>
-              <Text
-                // textAlign={"center"}
-                size="label"
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                {t("dayEmptyTrip")}
-              </Text>
-              <View
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#f3f3f3",
-                  padding: 20,
-                }}
-              >
-                <Text size="label" style={{ textAlign: "center" }}>
-                  {t("dayEmptyTrip")}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setIndex(0);
-                  setmodalTrip(false);
-                }}
-                style={{
-                  paddingTop: 20,
-                }}
-              >
                 <Text
-                  type="bold"
-                  size="label"
-                  style={{
-                    color: "#209fae",
-                  }}
-                >
-                  {t("understand")}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modalss>
-
-        {/* modal alert trip belum aktif */}
-        <Modalss
-          onBackdropPress={() => {
-            setmodalerrors(false);
-          }}
-          onRequestClose={() => setmodalTrip(false)}
-          onDismiss={() => setmodalTrip(false)}
-          visible={modalTrip}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => {
-              setmodalTrip(false);
-            }}
-            style={{
-              height: Dimensions.get("screen").height,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "'rgba(0, 0, 0, 0.7)'",
-              // opacity: 0.7,
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              alignContent: "center",
-            }}
-          >
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                alignItems: "center",
-                alignContent: "center",
-                // height: 100,
-                width: Dimensions.get("screen").width - 100,
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-                paddingVertical: 20,
-                paddingHorizontal: 15,
-              }}
-            >
-              <Errors height={80} width={80} />
-              <Text
-                type="bold"
-                size="title"
-                style={{
-                  marginTop: 20,
-                }}
-              >
-                {t("TripnotStarted")}
-              </Text>
-              <Text
-                // textAlign={"center"}
-                size="label"
-                style={{
-                  textAlign: "center",
-                  width: "100%",
-                }}
-              >
-                {t("waittripongoing")}
-              </Text>
-              <View
-                style={{
-                  marginTop: 20,
-                  backgroundColor: "#f3f3f3",
-                  padding: 20,
-                }}
-              >
-                <Text
+                  // textAlign={"center"}
                   size="label"
                   style={{
                     textAlign: "center",
+                    width: "100%",
                   }}
                 >
-                  {t("addphotototrip")}
+                  {t("dayEmptyTrip")}
+                </Text>
+                <View
+                  style={{
+                    marginTop: 20,
+                    backgroundColor: "#f3f3f3",
+                    padding: 15,
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text size="label" style={{ textAlign: "center" }}>
+                    {t("activateThisTrip")}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setmodalerrors(false);
+                  }}
+                  style={{
+                    paddingTop: 20,
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="label"
+                    style={{
+                      color: "#209fae",
+                    }}
+                  >
+                    {t("understand")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </Modalss>
+
+          {/* modal alert trip belum aktif */}
+          <Modalss
+            onBackdropPress={() => {
+              setIndex(0);
+              setmodalTrip(false);
+            }}
+            onRequestClose={() => setmodalTrip(false)}
+            onDismiss={() => setmodalTrip(false)}
+            visible={modalTrip}
+            transparent={true}
+          >
+            <Pressable
+              onPress={() => {
+                setIndex(0);
+                setmodalTrip(false);
+              }}
+              style={{
+                height: Dimensions.get("screen").height,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+                // opacity: 0.7,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                alignContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "#F6F6F6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{
+                    marginTop: 13,
+                    marginBottom: 15,
+                  }}
+                >
+                  Oops
                 </Text>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setmodalTrip(false);
-                }}
+              <View
                 style={{
-                  paddingTop: 20,
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  alignContent: "center",
+                  // height: 100,
+                  width: Dimensions.get("screen").width - 100,
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  paddingVertical: 20,
+                  paddingHorizontal: 15,
+                }}
+              >
+                <Errors height={80} width={80} />
+                <Text
+                  type="bold"
+                  size="title"
+                  style={{
+                    marginTop: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  {t("TripnotStarted")}
+                </Text>
+                <Text
+                  // textAlign={"center"}
+                  size="label"
+                  style={{
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                >
+                  {t("dayEmptyTrip")}
+                </Text>
+                <View
+                  style={{
+                    marginTop: 20,
+                    backgroundColor: "#f3f3f3",
+                    padding: 20,
+                  }}
+                >
+                  <Text size="label" style={{ textAlign: "center" }}>
+                    {t("dayEmptyTrip")}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setIndex(0);
+                    setmodalTrip(false);
+                  }}
+                  style={{
+                    paddingTop: 20,
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="label"
+                    style={{
+                      color: "#209fae",
+                    }}
+                  >
+                    {t("understand")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </Modalss>
+
+          {/* modal alert trip belum aktif */}
+          <Modalss
+            onBackdropPress={() => {
+              setmodalerrors(false);
+            }}
+            onRequestClose={() => setmodalTrip(false)}
+            onDismiss={() => setmodalTrip(false)}
+            visible={modalTrip}
+            transparent={true}
+          >
+            <Pressable
+              onPress={() => {
+                setmodalTrip(false);
+              }}
+              style={{
+                height: Dimensions.get("screen").height,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "'rgba(0, 0, 0, 0.7)'",
+                // opacity: 0.7,
+                justifyContent: "center",
+                alignItems: "center",
+                alignSelf: "center",
+                alignContent: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "#F6F6F6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{
+                    marginTop: 13,
+                    marginBottom: 15,
+                  }}
+                >
+                  Oops
+                </Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  alignContent: "center",
+                  // height: 100,
+                  width: Dimensions.get("screen").width - 100,
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  paddingVertical: 20,
+                  paddingHorizontal: 15,
+                }}
+              >
+                <Errors height={80} width={80} />
+                <Text
+                  type="bold"
+                  size="title"
+                  style={{
+                    marginTop: 20,
+                  }}
+                >
+                  {t("TripnotStarted")}
+                </Text>
+                <Text
+                  // textAlign={"center"}
+                  size="label"
+                  style={{
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                >
+                  {t("waittripongoing")}
+                </Text>
+                <View
+                  style={{
+                    marginTop: 20,
+                    backgroundColor: "#f3f3f3",
+                    padding: 20,
+                  }}
+                >
+                  <Text
+                    size="label"
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {t("addphotototrip")}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setmodalTrip(false);
+                  }}
+                  style={{
+                    paddingTop: 20,
+                  }}
+                >
+                  <Text
+                    type="bold"
+                    size="label"
+                    style={{
+                      color: "#209fae",
+                    }}
+                  >
+                    {t("understand")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          </Modalss>
+
+          <Modalss
+            onBackdropPress={() => {
+              setSoon(false);
+            }}
+            onRequestClose={() => setSoon(false)}
+            onDismiss={() => setSoon(false)}
+            visible={soon}
+            transparent={true}
+          >
+            <Pressable
+              onPress={() => setSoon(false)}
+              style={{
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                borderRadius: 5,
+              }}
+            ></Pressable>
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 100,
+                marginHorizontal: 50,
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 2.5,
+              }}
+            >
+              <View
+                style={{
+                  // backgroundColor: "white",
+                  // width: Dimensions.get("screen").width - 100,
+                  padding: 20,
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <Image
+                  source={Bg_soon}
+                  style={{
+                    height: Dimensions.get("screen").width - 180,
+                    width: Dimensions.get("screen").width - 110,
+                    position: "absolute",
+                    borderRadius: 5,
+                  }}
+                />
+                <Text type="bold" size="h5">
+                  {t("comingSoon")}!
+                </Text>
+                <Text type="regular" size="label" style={{ marginTop: 5 }}>
+                  {t("soonUpdate")}.
+                </Text>
+                <Button
+                  text={"OK"}
+                  style={{
+                    marginTop: 20,
+                    width: Dimensions.get("screen").width - 300,
+                  }}
+                  type="box"
+                  onPress={() => setSoon(false)}
+                ></Button>
+              </View>
+            </View>
+          </Modalss>
+
+          {/* Modal Leave Trip */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalLeaveTrip}
+            onRequestClose={() => setModalLeaveTrip(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalLeaveTrip(false)}
+              style={{
+                width: Dimensions.get("screen").width + 25,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                left: -21,
+              }}
+            />
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 140,
+                alignSelf: "center",
+                backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignContent: "center",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 10,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 140,
+                  justifyContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: 1,
+                    borderTopRightRadius: 5,
+                    borderTopLeftRadius: 5,
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                    {t("leave")} {t("trip")}
+                  </Text>
+                </View>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
+                  <Button
+                    onPress={() => {
+                      _handleLeave(itineraryId), setModalLeaveTrip(false);
+                    }}
+                    color="secondary"
+                    text={t("leave")}
+                  ></Button>
+                  <Button
+                    onPress={() => {
+                      setModalLeaveTrip(false);
+                    }}
+                    style={{ marginVertical: 7 }}
+                    variant="transparent"
+                    text={t("discard")}
+                  ></Button>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
+          {/* Modal Delete Trip */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalDeleteTrip}
+            onRequestClose={() => setModalDeleteTrip(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalDeleteTrip(false)}
+              style={{
+                width: Dimensions.get("screen").width + 25,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+                left: -21,
+              }}
+            />
+            <View
+              style={{
+                width: Dimensions.get("screen").width - 140,
+                alignSelf: "center",
+                backgroundColor: "#FFF",
+                zIndex: 15,
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                alignContent: "center",
+                borderRadius: 5,
+                marginTop: Dimensions.get("screen").height / 10,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  width: Dimensions.get("screen").width - 140,
+                  justifyContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderBottomColor: "#d1d1d1",
+                    borderBottomWidth: 1,
+                    borderTopRightRadius: 5,
+                    borderTopLeftRadius: 5,
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
+                    {t("delete")} {t("trip")}
+                  </Text>
+                </View>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
+                  <Button
+                    onPress={() => {
+                      _handlehapus(itineraryId), setModalDeleteTrip(false);
+                    }}
+                    color="secondary"
+                    text={t("delete")}
+                  ></Button>
+                  <Button
+                    onPress={() => {
+                      setModalDeleteTrip(false);
+                    }}
+                    style={{ marginVertical: 7 }}
+                    variant="transparent"
+                    text={t("discard")}
+                  ></Button>
+                </View>
+              </View>
+            </View>
+          </Modal>
+          {/* modal titik tiga header */}
+          <Modalss
+            animationType="slide"
+            onBackdropPress={() => {
+              setshowside(false);
+            }}
+            onRequestClose={() => setshowside(false)}
+            onDismiss={() => setshowside(false)}
+            visible={showside}
+            style={{
+              justifyContent: "flex-end",
+              margin: 0,
+            }}
+            transparent={true}
+          >
+            <View
+              style={{
+                flexDirection: "column",
+                marginTop: "auto",
+                height:
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? Dimensions.get("screen").height * 0.45
+                      : Dimensions.get("screen").height * 0.55
+                    : Dimensions.get("screen").height * 0.45,
+                width: Dimensions.get("screen").width,
+                backgroundColor: "white",
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+              }}
+            >
+              {/* title */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: Dimensions.get("screen").width - 15,
+
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
                 }}
               >
                 <Text
                   type="bold"
-                  size="label"
+                  size="title"
                   style={{
-                    color: "#209fae",
+                    color: "#464646",
                   }}
                 >
-                  {t("understand")}
+                  Option
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Modalss>
-
-        <Modalss
-          onBackdropPress={() => {
-            setSoon(false);
-          }}
-          onRequestClose={() => setSoon(false)}
-          onDismiss={() => setSoon(false)}
-          visible={soon}
-          transparent={true}
-        >
-          <Pressable
-            onPress={() => setSoon(false)}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              borderRadius: 5,
-            }}
-          ></Pressable>
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 100,
-              marginHorizontal: 50,
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 2.5,
-            }}
-          >
-            <View
-              style={{
-                // backgroundColor: "white",
-                // width: Dimensions.get("screen").width - 100,
-                padding: 20,
-                paddingHorizontal: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <Image
-                source={Bg_soon}
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    backgroundColor: "with",
+                    height: 35,
+                    width: 32,
+                    top: 0,
+                    right: 0,
+                    justifyContent: "flex-end",
+                    alignContent: "flex-end",
+                    alignItems: "flex-start",
+                  }}
+                  onPress={() => setshowside(false)}
+                >
+                  <Xhitam height={15} width={15} />
+                </TouchableOpacity>
+              </View>
+              <View
                 style={{
-                  height: Dimensions.get("screen").width - 180,
-                  width: Dimensions.get("screen").width - 110,
-                  position: "absolute",
-                  borderRadius: 5,
+                  width: Dimensions.get("screen").width - 40,
+                  height: 1,
+                  borderWidth: 0.5,
+                  borderColor: "#d1d1d1",
+                  marginHorizontal: 20,
                 }}
               />
-              <Text type="bold" size="h5">
-                {t("comingSoon")}!
-              </Text>
-              <Text type="regular" size="label" style={{ marginTop: 5 }}>
-                {t("soonUpdate")}.
-              </Text>
-              <Button
-                text={"OK"}
-                style={{
-                  marginTop: 20,
-                  width: Dimensions.get("screen").width - 300,
-                }}
-                type="box"
-                onPress={() => setSoon(false)}
-              ></Button>
-            </View>
-          </View>
-        </Modalss>
-
-        {/* Modal Leave Trip */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalLeaveTrip}
-          onRequestClose={() => setModalLeaveTrip(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalLeaveTrip(false)}
-            style={{
-              width: Dimensions.get("screen").width + 25,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              left: -21,
-            }}
-          />
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 140,
-              alignSelf: "center",
-              backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              alignContent: "center",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 10,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                width: Dimensions.get("screen").width - 140,
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
+              {/* title */}
+              {/* isi */}
               <View
                 style={{
-                  alignItems: "center",
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
-                  borderTopRightRadius: 5,
-                  borderTopLeftRadius: 5,
-                  backgroundColor: "#f6f6f6",
+                  paddingHorizontal: 30,
+                  paddingTop: 10,
+                  // paddingVertical: 20,
+                  width: "100%",
+                  // justifyContent: "flex-start",
                 }}
               >
-                <Text style={{ marginVertical: 15 }} size="title" type="bold">
-                  {t("leave")} {t("trip")}
-                </Text>
-              </View>
-              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
-                <Button
-                  onPress={() => {
-                    _handleLeave(itineraryId), setModalLeaveTrip(false);
+                <View
+                  style={{
+                    height: "70%",
                   }}
-                  color="secondary"
-                  text={t("leave")}
-                ></Button>
-                <Button
-                  onPress={() => {
-                    setModalLeaveTrip(false);
-                  }}
-                  style={{ marginVertical: 7 }}
-                  variant="transparent"
-                  text={t("discard")}
-                ></Button>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Modal Delete Trip */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalDeleteTrip}
-          onRequestClose={() => setModalDeleteTrip(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalDeleteTrip(false)}
-            style={{
-              width: Dimensions.get("screen").width + 25,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-              left: -21,
-            }}
-          />
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 140,
-              alignSelf: "center",
-              backgroundColor: "#FFF",
-              zIndex: 15,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              alignContent: "center",
-              borderRadius: 5,
-              marginTop: Dimensions.get("screen").height / 10,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "white",
-                width: Dimensions.get("screen").width - 140,
-                justifyContent: "center",
-                borderRadius: 5,
-              }}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  borderBottomColor: "#d1d1d1",
-                  borderBottomWidth: 1,
-                  borderTopRightRadius: 5,
-                  borderTopLeftRadius: 5,
-                  backgroundColor: "#f6f6f6",
-                }}
-              >
-                <Text style={{ marginVertical: 15 }} size="title" type="bold">
-                  {t("delete")} {t("trip")}
-                </Text>
-              </View>
-              <View style={{ marginTop: 20, marginHorizontal: 15 }}>
-                <Button
-                  onPress={() => {
-                    _handlehapus(itineraryId), setModalDeleteTrip(false);
-                  }}
-                  color="secondary"
-                  text={t("delete")}
-                ></Button>
-                <Button
-                  onPress={() => {
-                    setModalDeleteTrip(false);
-                  }}
-                  style={{ marginVertical: 7 }}
-                  variant="transparent"
-                  text={t("discard")}
-                ></Button>
-              </View>
-            </View>
-          </View>
-        </Modal>
-        {/* modal titik tiga header */}
-        <Modalss
-          animationType="slide"
-          onBackdropPress={() => {
-            setshowside(false);
-          }}
-          onRequestClose={() => setshowside(false)}
-          onDismiss={() => setshowside(false)}
-          visible={showside}
-          style={{
-            justifyContent: "flex-end",
-            margin: 0,
-          }}
-          transparent={true}
-        >
-          <View
-            style={{
-              flexDirection: "column",
-              marginTop: "auto",
-              height:
-                Platform.OS === "ios"
-                  ? Notch
-                    ? Dimensions.get("screen").height * 0.45
-                    : Dimensions.get("screen").height * 0.55
-                  : Dimensions.get("screen").height * 0.45,
-              width: Dimensions.get("screen").width,
-              backgroundColor: "white",
-              borderTopLeftRadius: 15,
-              borderTopRightRadius: 15,
-            }}
-          >
-            {/* title */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: Dimensions.get("screen").width - 15,
-
-                paddingHorizontal: 30,
-                paddingVertical: 20,
-              }}
-            >
-              <Text
-                type="bold"
-                size="title"
-                style={{
-                  color: "#464646",
-                }}
-              >
-                Option
-              </Text>
-              <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  backgroundColor: "with",
-                  height: 35,
-                  width: 32,
-                  top: 0,
-                  right: 0,
-                  justifyContent: "flex-end",
-                  alignContent: "flex-end",
-                  alignItems: "flex-start",
-                }}
-                onPress={() => setshowside(false)}
-              >
-                <Xhitam height={15} width={15} />
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 40,
-                height: 1,
-                borderWidth: 0.5,
-                borderColor: "#d1d1d1",
-                marginHorizontal: 20,
-              }}
-            />
-            {/* title */}
-            {/* isi */}
-            <View
-              style={{
-                paddingHorizontal: 30,
-                paddingTop: 10,
-                // paddingVertical: 20,
-                width: "100%",
-                // justifyContent: "flex-start",
-              }}
-            >
-              <View
-                style={{
-                  height: "70%",
-                }}
-              >
-                {Anggota === "true" && statusUsers == true ? (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 5,
-                      alignItems: "center",
-                      marginVertical: 5,
-                    }}
-                    onPress={() => {
-                      props.navigation.push("SettingItin", {
-                        token: token,
-                        iditin: itineraryId,
-                        isPrivate:
-                          datadetail && datadetail.itinerary_detail
-                            ? datadetail.itinerary_detail.isprivate
-                            : false,
-                      }),
-                        setshowside(false);
-                    }}
-                  >
-                    <Settings height={20} width={20} />
-                    <Text
-                      size="label"
-                      type="regular"
+                >
+                  {Anggota === "true" && statusUsers == true ? (
+                    <TouchableOpacity
                       style={{
-                        marginLeft: 10,
+                        flexDirection: "row",
+                        width: "100%",
+                        paddingVertical: 5,
+                        alignItems: "center",
+                        marginVertical: 5,
+                      }}
+                      onPress={() => {
+                        props.navigation.push("SettingItin", {
+                          token: token,
+                          iditin: itineraryId,
+                          isPrivate:
+                            datadetail && datadetail.itinerary_detail
+                              ? datadetail.itinerary_detail.isprivate
+                              : false,
+                        }),
+                          setshowside(false);
                       }}
                     >
-                      {t("setting")}
-                    </Text>
-                  </TouchableOpacity>
-                ) : null}
+                      <Settings height={20} width={20} />
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 10,
+                        }}
+                      >
+                        {t("setting")}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null}
 
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 5,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    setshowside(false), setmodalcover(true);
-                  }}
-                >
-                  <Create height={20} width={20} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("EditCover")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 5,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    setshowside(false);
-                    props.navigation.navigate("detailItinerary", {
-                      data: datadetail,
-                    });
-                  }}
-                >
-                  <Help height={25} width={25} style={{ marginLeft: -5 }} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("Tripdetail")}
-                  </Text>
-                </TouchableOpacity>
-
-                {Anggota === "true" ? (
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,
@@ -7694,10 +7699,10 @@ export default function ItineraryDetail(props) {
                       alignItems: "center",
                     }}
                     onPress={() => {
-                      setModalLeaveTrip(true), setshowside(false);
+                      setshowside(false), setmodalcover(true);
                     }}
                   >
-                    <LeaveTrips height={20} width={20} />
+                    <Create height={20} width={20} />
 
                     <Text
                       size="label"
@@ -7706,12 +7711,106 @@ export default function ItineraryDetail(props) {
                         marginLeft: 10,
                       }}
                     >
-                      {t("leave")} {t("trip")}
+                      {t("EditCover")}
                     </Text>
                   </TouchableOpacity>
-                ) : null}
 
-                {Anggota === "true" && statusUsers == true ? (
+                  <TouchableOpacity
+                    style={{
+                      marginVertical: 5,
+                      flexDirection: "row",
+                      width: "100%",
+                      paddingVertical: 5,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setshowside(false);
+                      props.navigation.navigate("detailItinerary", {
+                        data: datadetail,
+                      });
+                    }}
+                  >
+                    <Help height={25} width={25} style={{ marginLeft: -5 }} />
+
+                    <Text
+                      size="label"
+                      type="regular"
+                      style={{
+                        marginLeft: 10,
+                      }}
+                    >
+                      {t("Tripdetail")}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {Anggota === "true" ? (
+                    <TouchableOpacity
+                      style={{
+                        marginVertical: 5,
+                        flexDirection: "row",
+                        width: "100%",
+                        paddingVertical: 5,
+                        alignItems: "center",
+                      }}
+                      onPress={() => {
+                        setModalLeaveTrip(true), setshowside(false);
+                      }}
+                    >
+                      <LeaveTrips height={20} width={20} />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 10,
+                        }}
+                      >
+                        {t("leave")} {t("trip")}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null}
+
+                  {Anggota === "true" && statusUsers == true ? (
+                    <TouchableOpacity
+                      style={{
+                        marginVertical: 5,
+                        flexDirection: "row",
+                        width: "100%",
+                        paddingVertical: 5,
+                        marginBottom: 10,
+                        alignItems: "center",
+                      }}
+                      onPress={() => {
+                        setModalDeleteTrip(true), setshowside(false);
+                      }}
+                    >
+                      <Delete height={20} width={20} />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 10,
+                          color: "#D75995",
+                        }}
+                      >
+                        {t("delete")} {t("trip")}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
+                <View style={{}}>
+                  <View
+                    style={{
+                      width: Dimensions.get("screen").width - 60,
+                      height: 1,
+                      marginTop: 10,
+                      marginBottom: 10,
+                      borderWidth: 0.5,
+                      borderColor: "#d1d1d1",
+                      // paddingHorizontal: 20,
+                    }}
+                  />
                   <TouchableOpacity
                     style={{
                       marginVertical: 5,
@@ -7722,214 +7821,175 @@ export default function ItineraryDetail(props) {
                       alignItems: "center",
                     }}
                     onPress={() => {
-                      setModalDeleteTrip(true), setshowside(false);
+                      props.navigation.push("BottomStack"), setshowside(false);
                     }}
                   >
-                    <Delete height={20} width={20} />
+                    <Home height={20} width={20} />
 
                     <Text
                       size="label"
                       type="regular"
                       style={{
                         marginLeft: 10,
-                        color: "#D75995",
                       }}
                     >
-                      {t("delete")} {t("trip")}
+                      {t("backToHome")}
                     </Text>
                   </TouchableOpacity>
-                ) : null}
-              </View>
-              <View style={{}}>
-                <View
-                  style={{
-                    width: Dimensions.get("screen").width - 60,
-                    height: 1,
-                    marginTop: 10,
-                    marginBottom: 10,
-                    borderWidth: 0.5,
-                    borderColor: "#d1d1d1",
-                    // paddingHorizontal: 20,
-                  }}
-                />
-                <TouchableOpacity
-                  style={{
-                    marginVertical: 5,
-                    flexDirection: "row",
-                    width: "100%",
-                    paddingVertical: 5,
-                    marginBottom: 10,
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    props.navigation.push("BottomStack"), setshowside(false);
-                  }}
-                >
-                  <Home height={20} width={20} />
-
-                  <Text
-                    size="label"
-                    type="regular"
-                    style={{
-                      marginLeft: 10,
-                    }}
-                  >
-                    {t("backToHome")}
-                  </Text>
-                </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modalss>
+          </Modalss>
 
-        <Modalss
-          useNativeDriver={true}
-          visible={aler.show}
-          onRequestClose={() => true}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setClose()}
-            style={{
-              width: Dimensions.get("screen").width,
-              height: Dimensions.get("screen").height,
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: Dimensions.get("screen").width - 100,
-              alignSelf: "center",
-              zIndex: 100,
-              marginTop: Dimensions.get("screen").height / 3,
-            }}
+          <Modalss
+            useNativeDriver={true}
+            visible={aler.show}
+            onRequestClose={() => true}
+            transparent={true}
+            animationType="fade"
           >
-            <View
+            <Pressable
+              onPress={() => setClose()}
               style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "#F6F6F6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                alignItems: "center",
-                justifyContent: "center",
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
               }}
-            >
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginTop: 13,
-                  marginBottom: 15,
-                }}
-              >
-                Oops
-              </Text>
-            </View>
+            />
             <View
               style={{
                 width: Dimensions.get("screen").width - 100,
-                backgroundColor: "white",
-                paddingTop: 20,
-                paddingHorizontal: 20,
-                // borderWidth: 1,
+                alignSelf: "center",
+                zIndex: 100,
+                marginTop: Dimensions.get("screen").height / 3,
               }}
             >
               <View
                 style={{
-                  width: "100%",
-                  justifyContent: "space-evenly",
-                  alignContent: "center",
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "#F6F6F6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
                   alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <Errors width={70} height={70} style={{ marginBottom: 15 }} />
                 <Text
                   size="label"
                   type="bold"
-                  style={{ marginBottom: 5, textAlign: "center" }}
+                  style={{
+                    marginTop: 13,
+                    marginBottom: 15,
+                  }}
                 >
-                  {t(aler.judul)}
+                  Oops
                 </Text>
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginBottom: 15, textAlign: "center" }}
-                >
-                  {t(aler.judulDetail)}
-                </Text>
-                {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
-                  <View
-                    style={{
-                      backgroundColor: "#F6F6F6",
-                      borderRadius: 5,
-                    }}
-                  >
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        color: "#464646",
-                        textAlign: "center",
-                        marginTop: 5,
-                        marginBottom: 7,
-                        marginHorizontal: 10,
-                      }}
-                    >
-                      {t(aler?.detail)}
-                    </Text>
-                  </View>
-                ) : null}
               </View>
-            </View>
-            <Pressable
-              onPress={() => showAlert({ ...aler, show: false })}
-              underlayColor="#F6F6F6"
-              style={{
-                width: Dimensions.get("screen").width - 100,
-                backgroundColor: "white",
-                alignItems: "center",
-                justifyContent: "center",
-                borderBottomLeftRadius: 5,
-                borderBottomRightRadius: 5,
-                paddingBottom: 5,
-                // paddingVertical: 15,
-                paddingTop: aler.detail.length === 0 ? 5 : 0,
-              }}
-            >
-              <Text
-                size="label"
-                type="bold"
+              <View
                 style={{
-                  marginTop: aler.detail.length > 0 ? 13 : 0,
-                  marginBottom: 15,
-                  color: "#209fae",
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "white",
+                  paddingTop: 20,
+                  paddingHorizontal: 20,
+                  // borderWidth: 1,
                 }}
               >
-                {t("understand")}
-              </Text>
-            </Pressable>
-          </View>
-        </Modalss>
-        {showside ? (
-          <Pressable
-            onPress={() => setshowside(false)}
-            style={{
-              width: Dimensions.get("screen").width + 25,
-              height: Dimensions.get("screen").height,
-              justifyContent: "center",
-              opacity: 0.7,
-              zIndex: 99999999,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          ></Pressable>
-        ) : null}
-      </View>
+                <View
+                  style={{
+                    width: "100%",
+                    justifyContent: "space-evenly",
+                    alignContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Errors width={70} height={70} style={{ marginBottom: 15 }} />
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ marginBottom: 5, textAlign: "center" }}
+                  >
+                    {t(aler.judul)}
+                  </Text>
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginBottom: 15, textAlign: "center" }}
+                  >
+                    {t(aler.judulDetail)}
+                  </Text>
+                  {aler?.detail?.length !== 0 && aler?.detail !== 0 ? (
+                    <View
+                      style={{
+                        backgroundColor: "#F6F6F6",
+                        borderRadius: 5,
+                      }}
+                    >
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          color: "#464646",
+                          textAlign: "center",
+                          marginTop: 5,
+                          marginBottom: 7,
+                          marginHorizontal: 10,
+                        }}
+                      >
+                        {t(aler?.detail)}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+              <Pressable
+                onPress={() => showAlert({ ...aler, show: false })}
+                underlayColor="#F6F6F6"
+                style={{
+                  width: Dimensions.get("screen").width - 100,
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  paddingBottom: 5,
+                  // paddingVertical: 15,
+                  paddingTop: aler.detail.length === 0 ? 5 : 0,
+                }}
+              >
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{
+                    marginTop: aler.detail.length > 0 ? 13 : 0,
+                    marginBottom: 15,
+                    color: "#209fae",
+                  }}
+                >
+                  {t("understand")}
+                </Text>
+              </Pressable>
+            </View>
+          </Modalss>
+          {showside ? (
+            <Pressable
+              onPress={() => setshowside(false)}
+              style={{
+                width: Dimensions.get("screen").width + 25,
+                height: Dimensions.get("screen").height,
+                justifyContent: "center",
+                opacity: 0.7,
+                zIndex: 99999999,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            ></Pressable>
+          ) : null}
+        </SafeAreaView>
+      </Fragment>
     );
   }
 

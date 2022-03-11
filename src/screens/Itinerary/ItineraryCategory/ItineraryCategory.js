@@ -870,7 +870,6 @@ export default function ItineraryCategory(props) {
               </View>
             )}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             refreshControl={
               <RefreshControl

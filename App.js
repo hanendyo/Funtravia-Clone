@@ -62,6 +62,7 @@ PushNotification.configure({
   onNotification: async function(notification) {
     console.log("NOTIFICATIONSS:", notification);
     notification.finish(PushNotificationIOS.FetchResult.NoData);
+
     if (notification.userInteraction == true) {
       await AsyncStorage.setItem(
         "dataNotification",
