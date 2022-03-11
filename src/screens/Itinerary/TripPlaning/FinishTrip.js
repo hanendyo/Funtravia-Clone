@@ -15,6 +15,7 @@ import { Kosong } from "../../../assets/svg";
 import { Text, CardItinerary, Button } from "../../../component";
 import { useTranslation } from "react-i18next";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import DeviceInfo from "react-native-device-info";
 
 export default function ActivePlan({
   token,
@@ -31,6 +32,7 @@ export default function ActivePlan({
 }) {
   const { height, width } = Dimensions.get("screen");
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -267,7 +269,7 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: 60,
+            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
             width: Dimensions.get("window").width,
             backgroundColor: "white",
             borderTopWidth: 1,
@@ -324,7 +326,7 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: 60,
+            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
             width: Dimensions.get("window").width,
             backgroundColor: "white",
             borderTopWidth: 1,
@@ -390,7 +392,7 @@ export default function ActivePlan({
           position: "absolute",
           left: 0,
           bottom: 0,
-          height: 60,
+          height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
           width: Dimensions.get("window").width,
           backgroundColor: "white",
           borderTopWidth: 1,

@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Text, Button, FunImage, FunVideo } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
-import { AcceptNotif } from "../../../assets/svg";
+import { AcceptNotif, Mark } from "../../../assets/svg";
 import AcceptInvitation from "../../../graphQL/Mutation/Notification/AcceptInvitation";
 import RejectInvitation from "../../../graphQL/Mutation/Notification/RejectInvitation";
 import IsRead from "../../../graphQL/Mutation/Notification/IsRead";
@@ -77,9 +77,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
       }
     },
   });
-
-  console.log("errornotif", errornotif);
-  console.log("datasnotif", datasnotif);
 
   const [mutationAllIsRead] = useMutation(IsReadAll, {
     context: {
@@ -371,7 +368,6 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     }
   };
   const handle_areaklik_like_itinerary = (data) => {
-    console.log("~ data", data);
     navigation.navigate("ItineraryStack", {
       screen: "itindetail",
       params: {
@@ -516,7 +512,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           onPress={() => handle_areaklik_buddy(item)}
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
-            borderBottomWidth: 0.5,
+            borderBottomWidth: 1,
             // borderWidth: 1,
             borderBottomColor: "#D1D1D1",
             width: Dimensions.get("screen").width,
@@ -1287,7 +1283,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           onPress={() => handle_areaklik_like_itinerary(item)}
           style={{
             backgroundColor: item?.isread == false ? "#EDF5F5" : "white",
-            borderBottomWidth: 0.5,
+            borderBottomWidth: 1,
             borderBottomColor: "#D1D1D1",
           }}
         >
@@ -1295,7 +1291,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
             style={{
               width: Dimensions.get("screen").width,
               paddingVertical: normalize(20),
-              paddingHorizontal: normalize(20),
+              paddingHorizontal: normalize(25),
               flexDirection: "row",
             }}
           >
@@ -1354,14 +1350,44 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
                 <Text size="description" type="regular">
                   {t("likeYourItinerary")}
                 </Text>
-                <Text type="bold" size="description">
-                  {` "${item.like_itinerary.itinerary.name}"`}
+
+                {item.like_itinerary.itinerary ? (
+                  <Text type="bold" size="description">
+                    {` "${item?.like_itinerary?.itinerary?.name}" `}
+                  </Text>
+                ) : null}
+
+                <Text
+                  type="regular"
+                  size="description"
+                  style={{ color: "#6C6C6C" }}
+                >
+                  {`${duration(item?.tgl_buat)}`}
                 </Text>
-                <Text type="regular" size="description">
-                  {`   ${duration(item.tgl_buat)}`}
-                </Text>
+
+                {!item.like_itinerary.itinerary && (
+                  <View
+                    style={{
+                      backgroundColor:
+                        item.isread == false ? "#FFFFFF" : "#F6F6F6",
+                      padding: 10,
+                      borderRadius: 5,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 15,
+                    }}
+                  >
+                    <Mark width={17} height={17} />
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                      }}
+                    >
+                      {t("thisTripHasBeenDeleted")}
+                    </Text>
+                  </View>
+                )}
               </View>
-              <View></View>
             </Pressable>
           </View>
         </Pressable>

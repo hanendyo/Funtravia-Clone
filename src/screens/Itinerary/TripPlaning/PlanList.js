@@ -13,6 +13,7 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import ListItinerary from "../../../graphQL/Query/Itinerary/listitinerary";
 import { useLazyQuery } from "@apollo/client";
 import ItineraryCount from "../../../graphQL/Query/Itinerary/ItineraryCount";
+import DeviceInfo from "react-native-device-info";
 
 export default function ActivePlan({
   props,
@@ -27,6 +28,7 @@ export default function ActivePlan({
   setting,
   autoRefetch,
 }) {
+  const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const { width, height } = Dimensions.get("screen");
   // let [rData, setData] = useState([]);
@@ -301,7 +303,7 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: 60,
+            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
             width: width,
             backgroundColor: "white",
             // marginVertical: 15,
@@ -372,7 +374,7 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: 60,
+            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
             width: width,
             backgroundColor: "white",
             // marginVertical: 15,
@@ -434,7 +436,7 @@ export default function ActivePlan({
           position: "absolute",
           left: 0,
           bottom: 0,
-          height: 60,
+          height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
           width: Dimensions.get("window").width,
           backgroundColor: "white",
           borderTopWidth: 1,

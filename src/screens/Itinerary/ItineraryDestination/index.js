@@ -15,25 +15,10 @@ import {
   BackHandler,
   StatusBar,
 } from "react-native";
-import {
-  Capital,
-  CardDestination,
-  CustomImage,
-  FunIcon,
-  FunImage,
-} from "../../../component";
+import { Capital, CardDestination } from "../../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
-  LikeRed,
-  LikeEmpty,
   Arrowbackwhite,
-  OptionsVertWhite,
-  Star,
-  PinHijau,
-  default_image,
-  LikeEmptynew,
-  Love,
-  FilterIcon,
   Search,
   Google,
   Xhitam,
@@ -58,6 +43,7 @@ import Continent from "../../../graphQL/Query/Countries/Continent";
 import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
 import filterDestinationV2 from "../../../graphQL/Query/Destination/Destinasifilter";
+import { useSelector } from "react-redux";
 
 export default function ItineraryDestination(props) {
   const { t, i18n } = useTranslation();
@@ -114,7 +100,7 @@ export default function ItineraryDestination(props) {
   const [showCountry, setshowCountry] = useState(false);
   const [showCity, setshowCity] = useState(false);
   const [keyword, setkeyword] = useState("");
-  const [dataKota, setdataKota] = useState();
+  const [dataKota, setdataKota] = useState("");
   const [dataNegara, setdataNegara] = useState();
 
   const {
@@ -159,6 +145,7 @@ export default function ItineraryDestination(props) {
       await setdataCountrys(xc);
     },
   });
+  const dataItinerary = useSelector((data) => data.itinerary);
   const [token, setToken] = useState(props.route.params.token);
   const [datadayaktif] = useState(props.route.params.datadayaktif);
   const [dataDes] = useState(props.route.params.dataDes);
@@ -194,7 +181,9 @@ export default function ItineraryDestination(props) {
     cities:
       props.route.params && props.route.params.idcity
         ? [props.route.params.idcity]
-        : [],
+        : dataItinerary
+        ? [dataItinerary.id_city]
+        : null,
     goodfor: [],
     facilities: [],
   });
@@ -216,10 +205,7 @@ export default function ItineraryDestination(props) {
       let datloop = [...datasearchlocation?.searchlocation_populer];
 
       for (var ix in datloop) {
-        if (
-          datloop[ix].id === props?.route?.params?.idcity
-          // || datloop[ix].id === props?.route?.params?.idcountries
-        ) {
+        if (datloop[ix].id === props?.route?.params?.idcity) {
           let dat = { ...datloop[ix] };
           dat.checked = true;
           await setdataKota(dat);
@@ -932,12 +918,7 @@ export default function ItineraryDestination(props) {
           >
             <Text type="bold">
               <Capital
-                text={
-                  dataKota?.name
-                    ? dataKota?.name
-                    : props?.route?.params?.dataDes?.itinerary_detail?.city
-                        ?.name
-                }
+                text={dataKota.name ?? dataItinerary.city_name ?? null}
               />
             </Text>
             <View

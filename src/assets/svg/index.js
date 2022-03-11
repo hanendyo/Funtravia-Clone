@@ -307,8 +307,10 @@ import CropIcon from "./files/cropIcon.svg";
 import Upload100 from "./files/Upload100.svg";
 import Backtotop from "./files/backtotop.svg";
 import Bottomsegitiga from "./files/bottomsegitiga";
+import Mark from "./files/mark";
 
 export {
+  Mark,
   PhotoGray,
   PinMapGreen,
   FileGray,

@@ -24,6 +24,7 @@ import ListItineraryFinish from "../../../graphQL/Query/Itinerary/listitineraryF
 import { useDispatch, useSelector } from "react-redux";
 import { setTokenApps, setSettingUser } from "../../../redux/action";
 import normalize from "react-native-normalize";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createMaterialTopTabNavigator();
 

@@ -55,6 +55,7 @@ import DeviceInfo from "react-native-device-info";
 export default function ItinerarySearchCategory(props) {
   let [actives, setActives] = useState("Itinerary");
   let { width, height } = Dimensions.get("screen");
+  const deviceId = DeviceInfo.getModel();
   const [modalLogin, setModalLogin] = useState(false);
   const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
@@ -1002,7 +1003,11 @@ export default function ItinerarySearchCategory(props) {
               onChangeText={(x) => setTextSearch(x)}
               onSubmitEditing={(x) => setTextSearch(x)}
               style={{
-                width: Platform.OS === "ios" ? (Notch ? "74%" : "72%") : "76%",
+                // width: Platform.OS === "ios" ? (Notch ? "74%" : "72%") : "74%",
+                width: Platform.select({
+                  ios: Notch ? "74%" : "72%",
+                  android: deviceId === "LYA-L29" ? "74%" : "77%",
+                }),
                 marginHorizontal: Platform.OS == "ios" ? 6 : 4,
                 padding: 0,
               }}
