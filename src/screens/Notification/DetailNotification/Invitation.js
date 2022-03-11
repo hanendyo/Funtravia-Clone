@@ -521,7 +521,7 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           <View
             style={{
               flexDirection: "row",
-              borderBottomWidth: 0.5,
+              borderBottomWidth: 0,
               borderBottomColor: "#D1D1D1",
               width: Dimensions.get("screen").width,
               paddingHorizontal: normalize(20),
