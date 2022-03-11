@@ -253,7 +253,7 @@ export default function ReoderDetail({ navigation, route }) {
       unit: unit,
     });
     let hasil = jarak / kecepatan;
-    let hasils = hasil + "";
+    let hasils = parseFloat(hasil).toFixed(2);
 
     let bahan = hasils.split(".");
 
@@ -265,10 +265,11 @@ export default function ReoderDetail({ navigation, route }) {
         ? " " + jam + " " + t("min")
         : hasil > 0.6
         ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
-        : " " + (jam - 60) + " " + t("min"))
+        : jam
+        ? " " + (jam - 60) + " " + t("min")
+        : "1" + " " + t("min"))
     );
   };
-
   const renderItem = ({ item, index, drag, isActive }) => {
     const x = listData.length - 1;
     return (
@@ -729,7 +730,7 @@ export default function ReoderDetail({ navigation, route }) {
           });
           // rumus hitung waktu
           let waktutemp = jarak / 50;
-          let waktu = waktutemp + "";
+          let waktu = parseFloat(waktutemp).toFixed(2);
           // pecah hasil waktu
           let split = waktu.split(".");
 
@@ -750,7 +751,7 @@ export default function ReoderDetail({ navigation, route }) {
               menittemp = split[1] - 60;
             } else {
               jamtemp = 0;
-              menittemp = split[1];
+              menittemp = split[1] ? split[1] : 1;
             }
           }
           let time = tempdata[y - 1].time;
