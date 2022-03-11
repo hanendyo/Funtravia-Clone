@@ -135,10 +135,6 @@ const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 0 : 0,
-  android: StatusBar.currentHeight - 40,
-});
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 17.5) / 4;
 const PullToRefreshDist = 150;
@@ -3635,7 +3631,7 @@ export default function ItineraryDetail(props) {
           contentContainerStyle={{
             paddingTop: HeaderHeight + TabBarHeight + 60,
             paddingHorizontal: tabIndex == 1 ? 5 : 15,
-            minHeight: height - SafeStatusBar + HeaderHeight + 60,
+            minHeight: height + HeaderHeight + 60,
             paddingBottom: 70,
             backgroundColor: "#F6F6F6",
           }}
@@ -5236,7 +5232,7 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               position: "absolute",
-              top: SafeStatusBar,
+              top: 0,
               zIndex: 99,
               opacity: textOpacity,
               flexDirection: "row",
@@ -5309,16 +5305,11 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               position: "absolute",
-              // top: SafeStatusBar,
               zIndex: 99,
               opacity: textOpacitys,
               flexDirection: "row",
               justifyContent: "space-between",
-              // alignContent: "center",
-              // alignItems: "center",
-              // marginHorizontal: 20,
               paddingHorizontal: 20,
-              // paddingTop: 5,
               height: 55,
               width: Dimensions.get("screen").width,
               backgroundColor: "#209fae",
