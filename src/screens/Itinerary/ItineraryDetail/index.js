@@ -553,10 +553,10 @@ export default function ItineraryDetail(props) {
     let jam = parseFloat(bahan[1]);
 
     return (
-      (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
+      (hasil.toFixed(0) >= 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
       (jam > 0 && jam < 60
         ? " " + jam + " " + t("min")
-        : hasil > 0.6
+        : hasil > 0.6 && hasil.toFixed(0) < 1
         ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
         : jam
         ? " " + (jam - 60) + " " + t("min")
@@ -1051,11 +1051,12 @@ export default function ItineraryDetail(props) {
           });
           // rumus hitung waktu
           let waktutemp = jarak / 50;
-          let waktu = waktutemp + "";
+          let waktu = parseFloat(waktutemp).toFixed(2);
           // pecah hasil waktu
           let split = waktu.split(".");
           let jamtemp = "";
           let menittemp = "";
+
           if (split[0] > 1) {
             jamtemp = split[1];
             if (split[1] > 0 && split[1] < 60) {
@@ -1067,7 +1068,7 @@ export default function ItineraryDetail(props) {
           } else {
             if (waktu > 0.6) {
               jamtemp = 1;
-              menittemp = split[1] - 60;
+              menittemp = split[1] > 60 ? split[1] - 60 : split[1];
             } else {
               jamtemp = 0;
               menittemp = split[1];
@@ -1115,7 +1116,8 @@ export default function ItineraryDetail(props) {
     let hasiljam = jampertama + durjam;
     let hasilmenit = menitpertama + durmin;
 
-    if (hasiljam <= 23) {
+    if (hasiljam < 23) {
+      console.log("HasilJam", hasiljam);
       let dataday = { ...datadayaktif };
 
       if (hasiljam === 23 && hasilmenit <= 59) {
@@ -1127,10 +1129,10 @@ export default function ItineraryDetail(props) {
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else {
-        Alert.alert("Waktu sudah melewati batas maksimal");
+        Alert.alert(t("AktivitasFull"));
       }
     } else {
-      Alert.alert("Waktu sudah melewati batas maksimal");
+      Alert.alert(t("AktivitasFull"));
     }
   };
 
@@ -1176,7 +1178,7 @@ export default function ItineraryDetail(props) {
       });
 
       if (loadingSave) {
-        Alert.alert("Loading!!");
+        // Alert.alert("Loading!!");
       }
       if (errorSave) {
         throw new Error("Error Input");
@@ -1295,7 +1297,7 @@ export default function ItineraryDetail(props) {
                 } else {
                   if (waktu > 0.6) {
                     jamtemp = 1;
-                    menittemp = split[1] - 60;
+                    menittemp = split[1] > 60 ? split[1] - 60 : split[1];
                   } else {
                     jamtemp = 0;
                     menittemp = split[1];

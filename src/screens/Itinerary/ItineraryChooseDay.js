@@ -1039,8 +1039,7 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-        console.log("datas", datas);
-        console.log("kiriman", Kiriman);
+
         if (x == dataSelected.length) {
           try {
             let response = await mutationSave({
@@ -1299,6 +1298,8 @@ export default function ItineraryChooseday(props) {
           x++;
         }
 
+        console.log("datas", datas);
+        console.log("kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let responseevent = await mutationSaveEvent({
@@ -1389,6 +1390,9 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
+
+        console.log("dtas", datas);
+        console.log("Kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let response = props.route.params.data_dest.event_id

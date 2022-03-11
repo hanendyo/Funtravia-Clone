@@ -11,6 +11,7 @@ import {
   Pressable,
   StyleSheet,
   Picker,
+  Alert,
 } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
 import {
@@ -639,6 +640,19 @@ export default function detailCustomItinerary(props) {
   ) => {
     await setModaldate(false);
 
+    var lastTime =
+      dataLists.length > 0 ? dataLists[dataLists.length - 1].time : "06:00:00";
+    let splitlastTime = lastTime.split(":");
+
+    let lastDuration =
+      dataLists.length > 0
+        ? dataLists[dataLists.length - 1].duration
+        : "01:00:00";
+    let splitlastDuration = lastDuration.split(":");
+    console.log("lastDuration", splitlastDuration[0]);
+    let jumlah =
+      parseFloat(splitlastTime[0]) + parseFloat(splitlastDuration[0]);
+
     let starttimes = jamstarts + ":" + menitstarts + ":00";
 
     let jams = parseFloat(jamends) - parseFloat(jamstarts);
@@ -660,7 +674,6 @@ export default function detailCustomItinerary(props) {
     }
     let datax = [...dataLists];
 
-    console.log("datax", datax);
     let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
@@ -743,7 +756,7 @@ export default function detailCustomItinerary(props) {
           });
           // rumus hitung waktu
           let waktutemp = jarak / 50;
-          let waktu = waktutemp + "";
+          let waktu = parseFloat(waktutemp).toFixed(2);
           // pecah hasil waktu
           let split = waktu.split(".");
           let jamtemp = "";
@@ -759,7 +772,7 @@ export default function detailCustomItinerary(props) {
           } else {
             if (waktu > 0.6) {
               jamtemp = 1;
-              menittemp = split[1] - 60;
+              menittemp = split[1] > 60 ? split[1] - 60 : split[1];
             } else {
               jamtemp = 0;
               menittemp = split[1];
@@ -810,8 +823,10 @@ export default function detailCustomItinerary(props) {
     let hasiljam = jampertama + durjam;
     let hasilmenit = menitpertama + durmin;
 
-    if (hasiljam <= 23) {
+    if (hasiljam < 23) {
       let dataday = { ...datadayaktif };
+
+      console.log("hasiljam", hasiljam);
 
       if (hasiljam === 23 && hasilmenit <= 59) {
         savetimeline(datax);
@@ -822,10 +837,10 @@ export default function detailCustomItinerary(props) {
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
       } else {
-        Alert.alert("Waktu sudah melewati batas maksimal");
+        Alert.alert(t("AktivitasFull"));
       }
     } else {
-      Alert.alert("Waktu sudah melewati batas maksimal");
+      Alert.alert(t("AktivitasFull"));
     }
   };
   // const SetTimeline = async (
