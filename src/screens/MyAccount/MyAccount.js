@@ -740,6 +740,7 @@ export default function MyAccount(props) {
             text={t("logout")}
             onPress={async () => {
               let pushTkn = await AsyncStorage.getItem("FCM_TOKEN");
+              console.log("~ pushTkn", pushTkn);
               try {
                 if (pushTkn == null || pushTkn == "") {
                   throw new Error("push token empty");
@@ -747,10 +748,11 @@ export default function MyAccount(props) {
                 let response = await mutationlogout({
                   variables: { token: pushTkn },
                 });
+                console.log("~ response", response);
 
-                if (response) {
+                if (response.data.logout.code == 200) {
                   await AsyncStorage.setItem("access_token", "");
-                  await AsyncStorage.setItem("setting", JSON.stringify({}));
+                  await AsyncStorage.setItem("setting", "");
                   dispatch(setTokenApps(null));
                   dispatch(setSettingUser(null));
 
@@ -758,18 +760,23 @@ export default function MyAccount(props) {
                   props.navigation.navigate("AuthStack", {
                     screen: "SplashScreen",
                   });
+                } else {
+                  RNToasty.Show({
+                    title: t("somethingwrong"),
+                    position: "bottom",
+                  });
                 }
               } catch (error) {
                 RNToasty.Show({
                   title: t("somethingwrong"),
                   position: "bottom",
                 });
-                await AsyncStorage.setItem("access_token", "");
-                await AsyncStorage.setItem("setting", JSON.stringify({}));
+                // await AsyncStorage.setItem("access_token", "");
+                // await AsyncStorage.setItem("setting", JSON.stringify({}));
                 // await LoadUserProfile();
-                props.navigation.navigate("AuthStack", {
-                  screen: "SplashScreen",
-                });
+                // props.navigation.navigate("AuthStack", {
+                //   screen: "SplashScreen",
+                // });
               }
             }}
             style={{
