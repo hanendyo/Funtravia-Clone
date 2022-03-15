@@ -740,7 +740,6 @@ export default function MyAccount(props) {
             text={t("logout")}
             onPress={async () => {
               let pushTkn = await AsyncStorage.getItem("FCM_TOKEN");
-              console.log("~ pushTkn", pushTkn);
               try {
                 if (pushTkn == null || pushTkn == "") {
                   throw new Error("push token empty");
@@ -748,7 +747,6 @@ export default function MyAccount(props) {
                 let response = await mutationlogout({
                   variables: { token: pushTkn },
                 });
-                console.log("~ response", response);
 
                 if (response.data.logout.code == 200) {
                   await AsyncStorage.setItem("access_token", "");

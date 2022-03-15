@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   Image,
 } from "react-native";
-import { Text, FunImageBackground, FunImage, FunVideo } from "../../component";
-import { AllPostWhite, AlbumFeed, Mute, Unmute } from "../../assets/svg";
+import { Text, FunImageBackground, FunVideo } from "../../component";
+import { AlbumFeed, Mute, Unmute } from "../../assets/svg";
 import { default_image } from "../../assets/png";
 const { width, height } = Dimensions.get("screen");
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ import Video from "react-native-video";
 
 export default function RenderAlbum({
   itinerary_id,
+  has_itinerary,
   data,
   props,
   play,
@@ -166,33 +167,28 @@ export default function RenderAlbum({
               // onPress={() =>
               //   data.itinerary !== null ? goToItinerary(data) : null
               // }
-              // onPress={() => {
-              //   token
-              //     ? props.navigation.push("ProfileStack", {
-              //         screen: " ",
-              //         params: {
-              //           id: data?.album?.id,
-              //           type: null,
-              //           token: token,
-              //           judul: data?.album?.title,
-              //         },
-              //       })
-              //     : setModalLogin(true);
-              // }}
-              onPress={() =>
-                data.itinerary !== null ? goToItinerary(data) : null
-              }
               onPress={() => {
                 token
-                  ? props.navigation.push("FeedStack", {
-                      screen: "TravelAlbumList",
-                      params: {
-                        itinerary_id,
-                        id: data?.album?.id,
-                        type: null,
-                        judul: data?.album?.title,
-                      },
-                    })
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "TravelAlbumList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                          user: data?.user?.id,
+                        },
+                      })
                   : setModalLogin(true);
               }}
               style={({ pressed }) => [
@@ -274,30 +270,28 @@ export default function RenderAlbum({
         >
           {data.album ? (
             <Pressable
-              // onPress={() => {
-              //   token
-              //     ? props.navigation.push("ProfileStack", {
-              //         screen: "albumdetail",
-              //         params: {
-              //           id: data?.album?.id,
-              //           type: null,
-              //           token: token,
-              //           judul: data?.album?.title,
-              //         },
-              //       })
-              //     : setModalLogin(true);
-              // }}
               onPress={() => {
                 token
-                  ? props.navigation.push("FeedStack", {
-                      screen: "TravelAlbumList",
-                      params: {
-                        itinerary_id,
-                        id: data?.album?.id,
-                        type: null,
-                        judul: data?.album?.title,
-                      },
-                    })
+                  ? has_itinerary
+                    ? props.navigation.push("FeedStack", {
+                        screen: "TravelAlbumList",
+                        params: {
+                          itinerary_id,
+                          id: data?.album?.id,
+                          type: null,
+                          judul: data?.album?.title,
+                        },
+                      })
+                    : props.navigation.push("ProfileStack", {
+                        screen: "albumdetail",
+                        params: {
+                          id: data?.album?.id,
+                          type: null,
+                          token: token,
+                          judul: data?.album?.title,
+                          user: data?.user?.id,
+                        },
+                      })
                   : setModalLogin(true);
               }}
               style={({ pressed }) => [

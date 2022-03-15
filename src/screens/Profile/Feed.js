@@ -1132,8 +1132,8 @@ export default function myfeed(props) {
             >
               {item.node.is_single == false ? (
                 <RenderAlbum
-                  itinerary_id={item?.node?.itinerary?.id}
-                  has_itinerary={item?.node?.itinerary?.id ? true : false}
+                  itinerary_id={item?.node?.album?.itinerary?.id}
+                  has_itinerary={item?.node?.album?.itinerary ? true : false}
                   data={item.node}
                   props={props}
                   play={play}
@@ -1145,8 +1145,8 @@ export default function myfeed(props) {
                 />
               ) : (
                 <RenderSinglePhoto
-                  itinerary_id={item?.node?.itinerary?.id}
-                  has_itinerary={item?.node?.itinerary?.id ? true : false}
+                  itinerary_id={item?.node?.album?.itinerary?.id}
+                  has_itinerary={item?.node?.album?.itinerary ? true : false}
                   data={item.node}
                   props={props}
                   play={play}
