@@ -4,10 +4,12 @@ import { PensilPutih } from "../../../assets/svg";
 import { Button, ModalLogin } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { RNToasty } from "react-native-toasty";
+import DeviceInfo from "react-native-device-info";
 
 export default function BottomButton({ routed, props, data, token, addTo }) {
   const { t, i18n } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
+  const Notch = DeviceInfo.hasNotch();
   let lengthartikel = data?.article_header.length + 1;
 
   const Ceklogin = () => {
@@ -49,7 +51,7 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
       ) : null}
       <View
         style={{
-          height: 60,
+          height: Platform.OS === "ios" ? (Notch ? 70 : 60) : 60,
           backgroundColor: "#FFF",
           width: Dimensions.get("screen").width,
           paddingHorizontal: 15,
@@ -61,7 +63,8 @@ export default function BottomButton({ routed, props, data, token, addTo }) {
           borderTopWidth: 1,
           borderColor: "#F1F1F1",
           justifyContent: "space-between",
-          paddingVertical: 10,
+          paddingTop: 10,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 20 : 10) : 10,
         }}
       >
         <Button

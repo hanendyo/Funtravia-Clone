@@ -908,5 +908,6 @@
   "typeGroupSubject": "Masukkan nama grup disini...",
   "typeMessage": "Tuliskan sebuah pesan",
   "Selected": " terpilih",
-  "deleteMessageSelected": "Apakah kamu akan menghapus "
+  "deleteMessageSelected": "Apakah kamu akan menghapus ",
+  "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus"
 }

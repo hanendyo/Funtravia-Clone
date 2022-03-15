@@ -231,7 +231,7 @@ export default function AddCommentLike({
         borderColor: "#f0f0f0",
         paddingVertical: 10,
         width: Dimensions.get("window").width,
-        backgroundColor: "white",
+        backgroundColor: "#FFF",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: arrayShadow.shadowOpacity,
         shadowRadius: arrayShadow.shadowRadius,
@@ -239,13 +239,13 @@ export default function AddCommentLike({
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
-        marginBottom: keyboardStatus
-          ? Platform.OS == "ios"
-            ? Notch
-              ? 5
-              : 5
-            : 0
-          : 0,
+        paddingBottom: keyboardStatus
+          ? 10
+          : Platform.OS === "ios"
+          ? Notch
+            ? 13
+            : 10
+          : 10,
       }}
     >
       <ModalLogin
