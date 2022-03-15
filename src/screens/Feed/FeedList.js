@@ -2157,8 +2157,10 @@ export default function FeedList({ props, token }) {
             >
               {item.node.is_single == false ? (
                 <RenderAlbum
-                  itinerary_id={item?.node?.itinerary?.id}
-                  has_itinerary={item?.node?.itinerary?.id ? true : false}
+                  itinerary_id={item?.node?.album?.itinerary?.id}
+                  has_itinerary={
+                    item?.node?.album?.itinerary?.id ? true : false
+                  }
                   data={item.node}
                   props={props}
                   play={play}
@@ -2170,8 +2172,10 @@ export default function FeedList({ props, token }) {
                 />
               ) : (
                 <RenderSinglePhoto
-                  itinerary_id={item?.node?.itinerary?.id}
-                  has_itinerary={item?.node?.itinerary?.id ? true : false}
+                  itinerary_id={item?.node?.album?.itinerary?.id}
+                  has_itinerary={
+                    item?.node?.album?.itinerary != null ? true : false
+                  }
                   data={item.node}
                   props={props}
                   play={play}
@@ -2333,7 +2337,7 @@ export default function FeedList({ props, token }) {
                   flexDirection: "row",
                 }}
               >
-                {item?.node?.album && item?.node?.album?.itinerary !== null ? (
+                {item?.node?.album && item?.node?.album?.itinerary != null ? (
                   <View>
                     <View
                       style={{

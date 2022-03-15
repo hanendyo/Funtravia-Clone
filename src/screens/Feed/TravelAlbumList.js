@@ -7,34 +7,25 @@ import {
   StyleSheet,
   View,
   Image,
-  TouchableOpacity,
-  StatusBar,
+  TouchableHighlight,
 } from "react-native";
 import { useSelector } from "react-redux";
 import {
-  Arrow,
   Arrowbackios,
   Arrowbackwhite,
-  ArrowRight,
-  ArrowRightBlue,
   ArrowRightHome,
+  PlayVideo,
 } from "../../assets/svg";
-import { Button, Text } from "../../component";
+import { Button, FunVideo, Text } from "../../component";
 import TravelAlbumListQuery from "../../graphQL/Query/Album/TravelAlbumList";
+import { useTranslation } from "react-i18next";
 
 export default function TravelAlbumList(props) {
+  const { t } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
   const [dataTravelAlbum, setDataTravelAlbum] = useState([]);
 
-  const [
-    travelAlbum,
-    {
-      loading: loadingAlbum,
-      data: dataAlbum,
-      error: errorAlbum,
-      networkStatus,
-    },
-  ] = useLazyQuery(TravelAlbumListQuery, {
+  const [travelAlbum] = useLazyQuery(TravelAlbumListQuery, {
     variables: {
       itinerary_id: props?.route?.params?.itinerary_id,
     },
@@ -63,10 +54,9 @@ export default function TravelAlbumList(props) {
     tabBarVisble: false,
     tabBarBadge: null,
     tabBarLabel: "Message",
-    // headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
-        {`Travel Album`}
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
+        Travel Album
       </Text>
     ),
     headerMode: "screen",
@@ -123,7 +113,6 @@ export default function TravelAlbumList(props) {
             flexDirection: "row",
             justifyContent: "space-between", //Centered horizontally
             alignItems: "center", //Centered vertically
-            flex: 1,
             paddingHorizontal: 20,
             width: Dimensions.get("screen").width,
           }}
@@ -133,13 +122,13 @@ export default function TravelAlbumList(props) {
             size={"label"}
             type={"bold"}
             style={{
-              width: Dimensions.get("screen").width - 120,
               marginRight: 10,
+              flex: 1,
             }}
           >
             {dataTravelAlbum?.name}
           </Text>
-          <Button
+          <TouchableHighlight
             onPress={() => {
               props.navigation.navigate("ItineraryStack", {
                 screen: "itindetail",
@@ -151,34 +140,27 @@ export default function TravelAlbumList(props) {
                 },
               });
             }}
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            //   onPress={() => props.navigation.goBack()}
-            style={{
-              height: 55,
-              flexDirection: "row",
-              alignItems: "center", //Centered vertically
-              width: 90,
-              height: 30,
-            }}
+            underlayColor="white"
           >
-            <Text
-              size={"label"}
+            <View
               style={{
-                color: "#209fae",
-                paddingRight: 15,
+                flexDirection: "row",
+                alignItems: "center",
+                height: "100%",
               }}
             >
-              View Trip
-            </Text>
-            <ArrowRightHome
-              height={12}
-              width={12}
-              style={{ left: -10 }}
-            ></ArrowRightHome>
-          </Button>
+              <Text
+                size={"label"}
+                style={{
+                  color: "#209fae",
+                  marginRight: 5,
+                }}
+              >
+                {t("viewTrip")}
+              </Text>
+              <ArrowRightHome height={12} width={12}></ArrowRightHome>
+            </View>
+          </TouchableHighlight>
         </View>
       </View>
       {/* LIST ALBUM */}
@@ -186,6 +168,7 @@ export default function TravelAlbumList(props) {
         <FlatList
           data={dataTravelAlbum?.album}
           keyExtractor={(item, index) => `${item}-${index}`}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => {
             return item && item.media.length > 0 ? (
               <View
@@ -204,32 +187,29 @@ export default function TravelAlbumList(props) {
                   style={{
                     height: 285,
                     width: Dimensions.get("screen").width - 50,
-                    justifyContent: "space-evenly",
+                    backgroundColor: "white",
                     alignSelf: "center",
                     borderRadius: 5,
-                    marginBottom: 10,
-                    borderWidth: 0.5,
-                    borderColor: "#d1d1d1",
+                    justifyContent: "space-evenly",
                     paddingVertical: 6,
-                    // shadow
-                    backgroundColor: Platform.OS === "ios" ? "#fff" : null,
-                    borderColor: "#ddd",
-                    shadowColor: Platform.OS === "ios" ? "#ddd" : "#fff",
+                    marginBottom: 10,
+                    shadowColor: "#000",
                     shadowOffset: {
-                      width: Platform.OS === "ios" ? 3 : 0,
-                      height: Platform.OS === "ios" ? 3 : 2,
+                      width: 0,
+                      height: 2,
                     },
-                    shadowOpacity: Platform.OS === "ios" ? 1 : 0.8,
-                    shadowRadius: Platform.OS === "ios" ? null : 40,
-                    elevation: Platform.OS === "ios" ? null : 4,
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
                   }}
                 >
                   {/* BIG IMAGE */}
                   {item && item.media[0] && item?.media[0].filepath ? (
-                    <TouchableOpacity
+                    <TouchableHighlight
+                      underlayColor="white"
                       onPress={() =>
-                        props.navigation.push("ProfileStack", {
-                          screen: "albumdetail",
+                        props.navigation.push("FeedStack", {
+                          screen: "AlbumDetailItinerary",
                           params: {
                             id: item?.id,
                             type: null,
@@ -238,17 +218,62 @@ export default function TravelAlbumList(props) {
                         })
                       }
                     >
-                      <Image
-                        source={{ uri: item.media[0].filepath }}
-                        style={{
-                          height: 150,
-                          width: Dimensions.get("screen").width - 65,
-                          justifyContent: "space-evenly",
-                          alignSelf: "center",
-                          borderRadius: 5,
-                        }}
-                      ></Image>
-                    </TouchableOpacity>
+                      <>
+                        {item.media[0].type == "image" ? (
+                          <Image
+                            source={{ uri: item.media[0].filepath }}
+                            style={{
+                              height: 150,
+                              width: Dimensions.get("screen").width - 65,
+                              justifyContent: "space-evenly",
+                              alignSelf: "center",
+                              borderRadius: 5,
+                            }}
+                          ></Image>
+                        ) : (
+                          <>
+                            <FunVideo
+                              source={{
+                                uri: item.media[0].filepath,
+                              }}
+                              posterResizeMode={"cover"}
+                              poster={item.media[0].filepath.replace(
+                                "output.m3u8",
+                                "thumbnail.png"
+                              )}
+                              paused={true}
+                              style={{
+                                width: Dimensions.get("screen").width - 65,
+                                height: 150,
+                                alignSelf: "center",
+                                borderRadius: 5,
+                              }}
+                              resizeMode="cover"
+                            />
+                            <View
+                              style={{
+                                position: "absolute",
+                                height: "100%",
+                                width: "95%",
+                                borderRadius: 5,
+                                alignSelf: "center",
+                                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                // opacity: 0.3,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                zIndex: 0,
+                              }}
+                            >
+                              <PlayVideo
+                                height={40}
+                                width={40}
+                                style={{ position: "relative", zIndex: 1 }}
+                              />
+                            </View>
+                          </>
+                        )}
+                      </>
+                    </TouchableHighlight>
                   ) : (
                     <View
                       style={{
@@ -273,11 +298,12 @@ export default function TravelAlbumList(props) {
                     }}
                   >
                     {item && item.media[1] && item?.media[1].filepath ? (
-                      <TouchableOpacity
+                      <TouchableHighlight
+                        underlayColor="white"
                         style={{ width: "32.5%" }}
                         onPress={() =>
-                          props.navigation.push("ProfileStack", {
-                            screen: "albumdetail",
+                          props.navigation.push("FeedStack", {
+                            screen: "AlbumDetailItinerary",
                             params: {
                               id: item?.id,
                               type: null,
@@ -286,16 +312,61 @@ export default function TravelAlbumList(props) {
                           })
                         }
                       >
-                        <Image
-                          source={{ uri: item.media[1].filepath }}
-                          style={{
-                            alignSelf: "center",
-                            height: 110,
-                            width: "100%",
-                            borderRadius: 5,
-                          }}
-                        ></Image>
-                      </TouchableOpacity>
+                        <>
+                          {item.media[1].type == "image" ? (
+                            <Image
+                              source={{ uri: item.media[1].filepath }}
+                              style={{
+                                height: 110,
+                                width: "100%",
+                                justifyContent: "space-evenly",
+                                alignSelf: "center",
+                                borderRadius: 5,
+                              }}
+                            ></Image>
+                          ) : (
+                            <>
+                              <FunVideo
+                                source={{
+                                  uri: item.media[1].filepath,
+                                }}
+                                posterResizeMode={"cover"}
+                                poster={item.media[1].filepath.replace(
+                                  "output.m3u8",
+                                  "thumbnail.png"
+                                )}
+                                paused={true}
+                                style={{
+                                  alignSelf: "center",
+                                  height: 110,
+                                  width: "100%",
+                                  borderRadius: 5,
+                                }}
+                                resizeMode="cover"
+                              />
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  height: "100%",
+                                  width: "95%",
+                                  borderRadius: 5,
+                                  alignSelf: "center",
+                                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  zIndex: 0,
+                                }}
+                              >
+                                <PlayVideo
+                                  height={25}
+                                  width={25}
+                                  style={{ position: "relative", zIndex: 1 }}
+                                />
+                              </View>
+                            </>
+                          )}
+                        </>
+                      </TouchableHighlight>
                     ) : (
                       <View
                         style={{
@@ -308,11 +379,12 @@ export default function TravelAlbumList(props) {
                       ></View>
                     )}
                     {item && item.media[2] && item?.media[2].filepath ? (
-                      <TouchableOpacity
+                      <TouchableHighlight
+                        underlayColor="white"
                         style={{ width: "32.5%" }}
                         onPress={() =>
-                          props.navigation.push("ProfileStack", {
-                            screen: "albumdetail",
+                          props.navigation.push("FeedStack", {
+                            screen: "AlbumDetailItinerary",
                             params: {
                               id: item?.id,
                               type: null,
@@ -321,16 +393,61 @@ export default function TravelAlbumList(props) {
                           })
                         }
                       >
-                        <Image
-                          source={{ uri: item.media[2].filepath }}
-                          style={{
-                            alignSelf: "center",
-                            height: 110,
-                            width: "100%",
-                            borderRadius: 5,
-                          }}
-                        ></Image>
-                      </TouchableOpacity>
+                        <>
+                          {item.media[2].type == "image" ? (
+                            <Image
+                              source={{ uri: item.media[2].filepath }}
+                              style={{
+                                height: 110,
+                                width: "100%",
+                                justifyContent: "space-evenly",
+                                alignSelf: "center",
+                                borderRadius: 5,
+                              }}
+                            ></Image>
+                          ) : (
+                            <>
+                              <FunVideo
+                                source={{
+                                  uri: item.media[2].filepath,
+                                }}
+                                posterResizeMode={"cover"}
+                                poster={item.media[2].filepath.replace(
+                                  "output.m3u8",
+                                  "thumbnail.png"
+                                )}
+                                paused={true}
+                                style={{
+                                  alignSelf: "center",
+                                  height: 110,
+                                  width: "100%",
+                                  borderRadius: 5,
+                                }}
+                                resizeMode="cover"
+                              />
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  height: "100%",
+                                  width: "95%",
+                                  borderRadius: 5,
+                                  alignSelf: "center",
+                                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  zIndex: 0,
+                                }}
+                              >
+                                <PlayVideo
+                                  height={25}
+                                  width={25}
+                                  style={{ position: "relative", zIndex: 1 }}
+                                />
+                              </View>
+                            </>
+                          )}
+                        </>
+                      </TouchableHighlight>
                     ) : (
                       <View
                         style={{
@@ -343,11 +460,12 @@ export default function TravelAlbumList(props) {
                       ></View>
                     )}
                     {item && item.media[3] && item?.media[3].filepath ? (
-                      <TouchableOpacity
+                      <TouchableHighlight
+                        underlayColor="white"
                         style={{ width: "32.5%" }}
                         onPress={() =>
-                          props.navigation.push("ProfileStack", {
-                            screen: "albumdetail",
+                          props.navigation.push("FeedStack", {
+                            screen: "AlbumDetailItinerary",
                             params: {
                               id: item?.id,
                               type: null,
@@ -356,28 +474,73 @@ export default function TravelAlbumList(props) {
                           })
                         }
                       >
-                        <Image
-                          source={{ uri: item.media[3].filepath }}
-                          style={{
-                            alignSelf: "center",
-                            height: 110,
-                            width: "100%",
-                            borderRadius: 5,
-                            opacity: item.media.length > 4 ? 0.2 : null,
-                          }}
-                        ></Image>
-                        {item.media.length > 4 ? (
-                          <Text
-                            style={{
-                              position: "absolute",
-                              alignSelf: "center",
-                              top: 45,
-                            }}
-                          >
-                            View all
-                          </Text>
-                        ) : null}
-                      </TouchableOpacity>
+                        <>
+                          {item.media[3].type == "image" ? (
+                            <Image
+                              source={{ uri: item.media[3].filepath }}
+                              style={{
+                                height: 110,
+                                width: "100%",
+                                justifyContent: "space-evenly",
+                                alignSelf: "center",
+                                borderRadius: 5,
+                              }}
+                            ></Image>
+                          ) : (
+                            <>
+                              <FunVideo
+                                source={{
+                                  uri: item.media[3].filepath,
+                                }}
+                                posterResizeMode={"cover"}
+                                poster={item.media[3].filepath.replace(
+                                  "output.m3u8",
+                                  "thumbnail.png"
+                                )}
+                                paused={true}
+                                style={{
+                                  alignSelf: "center",
+                                  height: 110,
+                                  width: "100%",
+                                  borderRadius: 5,
+                                }}
+                                resizeMode="cover"
+                              />
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  height: "100%",
+                                  width: "95%",
+                                  borderRadius: 5,
+                                  alignSelf: "center",
+                                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  zIndex: 0,
+                                }}
+                              >
+                                <PlayVideo
+                                  height={25}
+                                  width={25}
+                                  style={{ position: "relative", zIndex: 1 }}
+                                />
+                              </View>
+                            </>
+                          )}
+
+                          {item.media.length > 4 ? (
+                            <Text
+                              style={{
+                                position: "absolute",
+                                alignSelf: "center",
+                                top: 45,
+                              }}
+                            >
+                              View all
+                            </Text>
+                          ) : null}
+                        </>
+                      </TouchableHighlight>
                     ) : (
                       <View
                         style={{
@@ -412,7 +575,7 @@ export default function TravelAlbumList(props) {
 
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: "#e1e1e1",
+    backgroundColor: "#f6f6f6",
     height: Dimensions.get("screen").height,
   },
   viewTripParent: {
@@ -422,6 +585,6 @@ const styles = StyleSheet.create({
   listAlbumParent: {
     height: Dimensions.get("screen").height,
     marginTop: 5,
-    backgroundColor: "#e1e1e1",
+    backgroundColor: "#f6f6f6",
   },
 });
