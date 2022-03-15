@@ -778,7 +778,7 @@ export default function ReoderDetail({ navigation, route }) {
               ? `${newjam + 1}:${newmenit - 60}`
               : `${newjam}:${newmenit}`;
           if (jamtemp > 23) {
-            Alert.alert("Opss", "Aktivitas sudah melewati 24 jam", [
+            Alert.alert("Opss", t("AktivitasFull"), [
               {
                 text: "OK",
                 onPress: () =>
@@ -793,12 +793,6 @@ export default function ReoderDetail({ navigation, route }) {
                       },
                     })
                   ),
-                // navigation.navigate("ReorderDetail", {
-                //   head: route.params.head,
-                //   child: route.params.child,
-                //   active: route.params.active,
-                //   token: token,
-                // }),
               },
             ]);
           }

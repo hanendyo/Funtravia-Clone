@@ -909,5 +909,7 @@
   "typeMessage": "Tuliskan sebuah pesan",
   "Selected": " terpilih",
   "deleteMessageSelected": "Apakah kamu akan menghapus ",
-  "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus"
+  "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus",
+  "AlertTime" : "Waktu akhir tidak boleh kurang dari waktu awal",
+  "MaxSizeFile" : "Maksimal ukuran file 7mb"
 }

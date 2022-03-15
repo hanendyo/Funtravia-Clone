@@ -12,6 +12,7 @@ import {
   Pressable,
   StatusBar,
   NativeModules,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -263,20 +264,30 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      let files = new ReactNativeFile({
-        uri: res.uri,
-        name: res.name,
-        type: res.type,
-      });
 
-      let tempData = [...dataState.file];
-      tempData.push(files);
-      await setdataState((prevFile) => {
-        return {
-          ...prevFile,
-          ["file"]: tempData,
-        };
-      });
+      if (res.size <= 7000000) {
+        let files = new ReactNativeFile({
+          uri: res.uri,
+          name: res.name,
+          type: res.type,
+        });
+
+        let tempData = [...dataState.file];
+        tempData.push(files);
+        await setdataState((prevFile) => {
+          return {
+            ...prevFile,
+            ["file"]: tempData,
+          };
+        });
+      } else {
+        Alert.alert("Opss", t("MaxSizeFile"), [
+          {
+            text: "OK",
+            onPress: () => console.log("OK"),
+          },
+        ]);
+      }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
