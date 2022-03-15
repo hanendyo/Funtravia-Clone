@@ -173,13 +173,18 @@ export default function TravelAlbumList(props) {
             return item && item.media.length > 0 ? (
               <View
                 style={{
-                  height: 380,
                   width: Dimensions.get("screen").width,
                   backgroundColor: "white",
-                  justifyContent: "space-evenly",
+                  // borderWidth: 1,
+                  // borderColor: "red",
+                  paddingVertical: 10,
                 }}
               >
-                <Text size={"label"} type={"bold"} style={{ paddingLeft: 15 }}>
+                <Text
+                  size={"label"}
+                  type={"bold"}
+                  style={{ paddingLeft: 15, marginBottom: 10 }}
+                >
                   {item.title}
                 </Text>
                 {/* IMAGE PARENT */}
@@ -192,7 +197,6 @@ export default function TravelAlbumList(props) {
                     borderRadius: 5,
                     justifyContent: "space-evenly",
                     paddingVertical: 6,
-                    marginBottom: 10,
                     shadowColor: "#000",
                     shadowOffset: {
                       width: 0,
@@ -280,7 +284,7 @@ export default function TravelAlbumList(props) {
                         alignSelf: "center",
                         height: 150,
                         width: Dimensions.get("screen").width - 65,
-                        backgroundColor: "#e1e1e1",
+                        backgroundColor: "#f6f6f6",
                         borderRadius: 5,
                       }}
                     ></View>
@@ -373,7 +377,7 @@ export default function TravelAlbumList(props) {
                           alignSelf: "center",
                           height: 110,
                           width: "32.5%",
-                          backgroundColor: "#e1e1e1",
+                          backgroundColor: "#f6f6f6",
                           borderRadius: 5,
                         }}
                       ></View>
@@ -453,7 +457,7 @@ export default function TravelAlbumList(props) {
                         style={{
                           alignSelf: "center",
                           height: 110,
-                          backgroundColor: "#e1e1e1",
+                          backgroundColor: "#f6f6f6",
                           borderRadius: 5,
                           width: "32.5%",
                         }}
@@ -546,7 +550,7 @@ export default function TravelAlbumList(props) {
                         style={{
                           alignSelf: "center",
                           height: 110,
-                          backgroundColor: "#e1e1e1",
+                          backgroundColor: "#f6f6f6",
                           borderRadius: 5,
                           width: "32.5%",
                         }}
@@ -560,6 +564,7 @@ export default function TravelAlbumList(props) {
                     borderBottomWidth: 1,
                     alignSelf: "center",
                     borderBottomEndRadius: 10,
+                    paddingBottom: 30,
                     borderColor: "#d1d1d1",
                   }}
                 ></View>
@@ -567,7 +572,11 @@ export default function TravelAlbumList(props) {
             ) : null;
           }}
         />
-        <View style={{ height: Platform.OS == "ios" ? 140 : 170 }}></View>
+        <View
+          style={{
+            height: Platform.OS == "ios" ? 140 : 170,
+          }}
+        ></View>
       </Animated.View>
     </View>
   );
@@ -576,7 +585,6 @@ export default function TravelAlbumList(props) {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6f6f6",
-    height: Dimensions.get("screen").height,
   },
   viewTripParent: {
     height: 50,
@@ -585,6 +593,6 @@ const styles = StyleSheet.create({
   listAlbumParent: {
     height: Dimensions.get("screen").height,
     marginTop: 5,
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "#fff",
   },
 });
