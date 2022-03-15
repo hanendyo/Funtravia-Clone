@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   BackHandler,
+  NativeModules,
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import {
@@ -46,7 +47,7 @@ const TabBarHeight = 50;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
 const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
@@ -55,7 +56,7 @@ const HeaderHeight = Platform.select({
 import { useSelector } from "react-redux";
 
 export default function MovieLocation({ navigation, route }) {
-  const NotchAndro = StatusBar.currentHeight > 24;
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
   let [destinationMovie, setDestinationMovie] = useState();
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
@@ -680,7 +681,17 @@ export default function MovieLocation({ navigation, route }) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
+          // height: Platform.OS === "ios" ? normalize(55) : normalize(60),
+          height:
+            Platform.OS == "ios"
+              ? Notch
+                ? normalize(45)
+                : normalize(55)
+              : deviceId == "LYA-L29"
+              ? normalize(55)
+              : NotchAndro
+              ? normalize(55)
+              : normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -692,11 +703,21 @@ export default function MovieLocation({ navigation, route }) {
           paddingLeft: 60,
           backgroundColor: "#209FAE",
           opacity: titleOpacity,
+          // top:
+          //   Platform.OS == "ios"
+          //     ? SafeStatusBar
+          //     : NotchAndro
+          //     ? SafeStatusBar + 8
+          //     : SafeStatusBar,
           top:
             Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar
+                : SafeStatusBar
+              : deviceId == "LYA-L29"
               ? SafeStatusBar
               : NotchAndro
-              ? SafeStatusBar + 8
+              ? SafeStatusBar
               : SafeStatusBar,
         }}
       >
@@ -705,7 +726,7 @@ export default function MovieLocation({ navigation, route }) {
           type="bold"
           style={{
             color: "#fff",
-            marginBottom: NotchAndro ? 5 : 0,
+            // marginBottom: NotchAndro ? 0 : 0,
           }}
           numberOfLines={1}
         >
@@ -724,11 +745,19 @@ export default function MovieLocation({ navigation, route }) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? SafeStatusBar + 3
-                : SafeStatusBar
+                ? 45
+                : 45
+              : deviceId == "LYA-L29"
+              ? 23
               : NotchAndro
-              ? SafeStatusBar + 3
-              : SafeStatusBar,
+              ? 45
+              : 45,
+          // ? Notch
+          //   ? SafeStatusBar + 3
+          //   : SafeStatusBar
+          // : NotchAndro
+          // ? SafeStatusBar + 3
+          // : SafeStatusBar,
           left: 2,
           opacity: backOpacity,
         }}
@@ -767,11 +796,13 @@ export default function MovieLocation({ navigation, route }) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? SafeStatusBar + 1
-                : SafeStatusBar - 3
+                ? 45
+                : 45
+              : deviceId == "LYA-L29"
+              ? 23
               : NotchAndro
-              ? SafeStatusBar + 3
-              : SafeStatusBar - 3,
+              ? 45
+              : 45,
           opacity: backOpacitySecond,
         }}
       >
@@ -781,10 +812,9 @@ export default function MovieLocation({ navigation, route }) {
           }}
           style={{
             marginTop: 10,
-            marginLeft: 15,
-            borderRadius: 40,
-            height: 40,
-            width: 40,
+            marginLeft: 17,
+            height: 35,
+            width: 35,
             justifyContent: "center",
             alignItems: "center",
           }}

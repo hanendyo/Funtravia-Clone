@@ -47,7 +47,7 @@ export default function Feed(props) {
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingTop: Platform.OS == "ios" ? 10 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {

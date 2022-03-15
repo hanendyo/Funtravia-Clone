@@ -25,6 +25,7 @@ import {
   Picker,
   BackHandler,
   FlatList,
+  NativeModules,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
@@ -151,6 +152,11 @@ export default function ItineraryDetail(props) {
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
   );
+  const deviceId = DeviceInfo.getModel();
+  const SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: NativeModules.StatusBarManager.HEIGHT,
+  });
   /**
    * stats
    */
@@ -184,7 +190,6 @@ export default function ItineraryDetail(props) {
   let [datadayaktif, setdatadayaktifs] = useState(
     props.route.params.datadayaktif ? props.route.params.datadayaktif : {}
   );
-
   let [dataalbumaktif, setdataalbumaktif] = useState({});
   const [dataweather, setData] = useState({});
   const [icons, setIcons] = useState({
@@ -5233,7 +5238,12 @@ export default function ItineraryDetail(props) {
           <Animated.View
             style={{
               position: "absolute",
-              top: 0,
+              top:
+                Platform.OS == "ios"
+                  ? null
+                  : deviceId == "LYA-L29"
+                  ? SafeStatusBar + 15
+                  : SafeStatusBar,
               zIndex: 99,
               opacity: textOpacity,
               flexDirection: "row",
@@ -5311,6 +5321,7 @@ export default function ItineraryDetail(props) {
               flexDirection: "row",
               justifyContent: "space-between",
               paddingHorizontal: 20,
+              paddingTop: Platform.OS == "ios" ? 3 : null,
               height: 55,
               width: Dimensions.get("screen").width,
               backgroundColor: "#209fae",
@@ -5319,6 +5330,7 @@ export default function ItineraryDetail(props) {
             <Animated.View
               style={{
                 flexDirection: "row",
+                // marginBottom: Platform.OS == "ios" ? 5 : null,
               }}
             >
               <Button

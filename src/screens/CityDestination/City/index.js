@@ -16,6 +16,7 @@ import {
   ImageBackground,
   Modal as ModalRN,
   FlatList,
+  NativeModules,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
@@ -74,8 +75,10 @@ const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
+const deviceId = DeviceInfo.getModel();
+const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
@@ -925,7 +928,9 @@ export default function CityDetail(props) {
                             width: "25%",
                             alignContent: "center",
                             alignItems: "center",
-                            padding: 5,
+                            // padding: 10,
+                            paddingHorizontal: 10,
+                            paddingVertical: 10,
                           }}
                         >
                           <View
@@ -954,50 +959,56 @@ export default function CityDetail(props) {
                         </Ripple>
                       );
                     })}
-                <View
-                  style={{
-                    width: "100%",
-                    marginTop:
-                      tutup == true && render.destination_type.length > 7
-                        ? 10
-                        : 0,
+                {render.destination_type.length < 8 ? null : (
+                  <View
+                    style={{
+                      width: "100%",
+                      marginTop:
+                        tutup == false && render.destination_type.length > 8
+                          ? 10
+                          : 0,
 
-                    alignItems: "center",
-                    alignContent: "center",
-                  }}
-                >
-                  {tutup == true && render.destination_type.length > 7 ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        setTutup(false);
-                      }}
-                      style={{ flexDirection: "row" }}
-                    >
-                      <Text style={{ color: "#209FAE" }}>{t("showmore")} </Text>
-                      <Showmore
-                        height={12}
-                        width={12}
-                        style={{ marginTop: 3 }}
-                      />
-                    </TouchableOpacity>
-                  ) : null}
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    {tutup == false && render.destination_type.length > 8 ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setTutup(true);
+                        }}
+                        style={{ flexDirection: "row" }}
+                      >
+                        <Text style={{ color: "#209FAE" }}>
+                          {t("showless")}{" "}
+                        </Text>
+                        <Showless
+                          height={12}
+                          width={12}
+                          style={{ marginTop: 5 }}
+                        />
+                      </TouchableOpacity>
+                    ) : null}
 
-                  {tutup == false ? (
-                    <TouchableOpacity
-                      onPress={() => {
-                        setTutup(true);
-                      }}
-                      style={{ flexDirection: "row" }}
-                    >
-                      <Text style={{ color: "#209FAE" }}>{t("showless")} </Text>
-                      <Showless
-                        height={12}
-                        width={12}
-                        style={{ marginTop: 3 }}
-                      />
-                    </TouchableOpacity>
-                  ) : null}
-                </View>
+                    {tutup == true ? (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setTutup(false);
+                        }}
+                        style={{ flexDirection: "row" }}
+                      >
+                        <Text style={{ color: "#209FAE" }}>
+                          {t("showmore")}{" "}
+                        </Text>
+                        <Showmore
+                          height={12}
+                          width={12}
+                          style={{ marginTop: 5 }}
+                        />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                )}
               </View>
             </View>
           </View>
@@ -2335,7 +2346,7 @@ export default function CityDetail(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 4,
+          top: deviceId == "LYA-L29" ? SafeStatusBar : SafeStatusBar + 4,
           height: HeaderHeight - 4,
           width: "100%",
           alignItems: "center",

@@ -12,6 +12,7 @@ import {
   TextInput,
   StatusBar,
   ActivityIndicator,
+  NativeModules,
 } from "react-native";
 import { ReactNativeFile } from "apollo-upload-client";
 import {
@@ -55,8 +56,10 @@ import { useMutation } from "@apollo/client";
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
+const deviceId = DeviceInfo.getModel();
+const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 let { width, height } = Dimensions.get("screen");
 
 export default function GroupDetail(props) {
@@ -89,7 +92,7 @@ export default function GroupDetail(props) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE - 11],
     extrapolate: "clamp",
   });
 
@@ -1712,7 +1715,7 @@ export default function GroupDetail(props) {
           // top: 0,
           left: 0,
           right: 0,
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
           overflow: "hidden",
           height: HEADER_MAX_HEIGHT,
           transform: [{ translateY: headerTranslateY }],
@@ -1760,6 +1763,7 @@ export default function GroupDetail(props) {
               height: HEADER_MAX_HEIGHT,
               resizeMode: "cover",
               opacity: headerOpacity,
+
               // transform: [{ translateY: headerTranslateY }],
             }}
             source={
@@ -1781,12 +1785,16 @@ export default function GroupDetail(props) {
           position: "absolute",
           justifyContent: "flex-start",
           alignItems: "center",
-          left: 15,
+          // left: 15,
           zIndex: 999,
           // width: "80%",
           opacity: titleOpacity,
-          top: SafeStatusBar - 8,
-          marginTop: 22,
+          top: SafeStatusBar + 10,
+          // marginTop: 20,
+          paddingLeft: 15,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#209FAE",
+          height: 45,
         }}
       >
         <Pressable
@@ -1811,6 +1819,7 @@ export default function GroupDetail(props) {
             flexDirection: "row",
             width: "80%",
             justifyContent: "space-between",
+            marginTop: 4,
           }}
         >
           <Text

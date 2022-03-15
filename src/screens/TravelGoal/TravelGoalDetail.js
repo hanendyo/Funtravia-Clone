@@ -847,6 +847,7 @@ export default function TravelGoalDetail(props) {
             marginBottom: NotchAndro ? 0 : 5,
             marginTop: 4,
             marginLeft: 5,
+            width: "85%",
           }}
           numberOfLines={1}
         >
