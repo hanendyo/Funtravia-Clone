@@ -719,7 +719,7 @@ export default function CreateCustom(props) {
             {props.route.params?.dataParent ? null : (
               <>
                 <Text size="label" type="bold" style={{}}>
-                  {t("address")}
+                  {t("location")}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setModal(true)}
@@ -727,6 +727,7 @@ export default function CreateCustom(props) {
                     marginVertical: 10,
                     width: "100%",
                     // height: 30,
+
                     paddingHorizontal: 10,
                     borderWidth: 0.2,
                     borderRadius: 2,
@@ -757,7 +758,7 @@ export default function CreateCustom(props) {
                         // color: '#646464',
                       }}
                       autoCorrect={false}
-                      placeholder={t("searchAddress")}
+                      placeholder={t("searchLocation")}
                       value={Address}
                       onChangeText={onChange("address")}
                       keyboardType="default"
@@ -1087,7 +1088,7 @@ export default function CreateCustom(props) {
                 color: "white",
               }}
             >
-              {t("address")}
+              {t("location")}
             </Text>
           </View>
           <View

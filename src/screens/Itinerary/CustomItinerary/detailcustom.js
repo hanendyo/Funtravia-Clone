@@ -54,7 +54,7 @@ import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 
 export default function detailCustomItinerary(props) {
-  console.log("propsdetail", props);
+  console.log("props", props);
   const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
@@ -490,8 +490,6 @@ export default function detailCustomItinerary(props) {
             order++;
           }
 
-          console.log("dataX", Xdata);
-
           if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({
@@ -560,17 +558,27 @@ export default function detailCustomItinerary(props) {
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
       await setLoadingUploadFile(true);
+      if (res.size <= 7000000) {
+        let files = new ReactNativeFile({
+          uri: res.uri,
+          type: res.type,
+          name: res.name,
+        });
 
-      let files = new ReactNativeFile({
-        uri: res.uri,
-        type: res.type,
-        name: res.name,
-      });
-      let tempe = [...dataUpload];
-      tempe.push(files);
-      // await setdataUpload(tempe);
-      await handleUpload(tempe, id, sumber, res);
-      await setLoadingUploadFile(false);
+        let tempe = [...dataUpload];
+        tempe.push(files);
+        // await setdataUpload(tempe);
+        await handleUpload(tempe, id, sumber, res);
+        await setLoadingUploadFile(false);
+      } else {
+        await setLoadingUploadFile(false);
+        Alert.alert("Opss", t("MaxSizeFile"), [
+          {
+            text: "OK",
+            onPress: () => console.log("OK"),
+          },
+        ]);
+      }
     } catch (err) {
       setLoadingUploadFile(false);
       if (DocumentPicker.isCancel(err)) {
@@ -1125,10 +1133,7 @@ export default function detailCustomItinerary(props) {
 
       if (response.data) {
         if (response.data.upload_attach_custom.code !== 200) {
-          RNToasty.Show({
-            title: response.data.upload_attach_custom.message,
-            position: "bottom",
-          });
+          Alert.alert("" + response.data.upload_attach_custom.message);
         } else {
           if (sumber === "parent") {
             let datan = { ...dataParent };
@@ -2804,13 +2809,23 @@ export default function detailCustomItinerary(props) {
                     color: "#209fae",
                     fontFamily: "Lato-Regular",
                   }}
-                  onValueChange={(e) => setHourFrom(e)}
+                  onValueChange={(e) => {
+                    setHourFrom(e), sethourTo(e);
+                  }}
                 >
-                  {hour.map((item, index) => {
-                    return (
-                      <Picker.Item key={index} label={item} value={item} />
-                    );
-                  })}
+                  {props.route.params.indexdata == 0 ? (
+                    hour.map((item, index) => {
+                      return (
+                        <Picker.Item key={index} label={item} value={item} />
+                      );
+                    })
+                  ) : (
+                    <Picker.Item
+                      key={hourFrom}
+                      label={hourFrom}
+                      value={hourFrom}
+                    />
+                  )}
                 </Picker>
               </View>
 
@@ -2856,11 +2871,19 @@ export default function detailCustomItinerary(props) {
                   }}
                   onValueChange={(itemValue) => setminuteFrom(itemValue)}
                 >
-                  {minute.map((item, index) => {
-                    return (
-                      <Picker.Item key={index} label={item} value={item} />
-                    );
-                  })}
+                  {props.route.params.indexdata == 0 ? (
+                    minute.map((item, index) => {
+                      return (
+                        <Picker.Item key={index} label={item} value={item} />
+                      );
+                    })
+                  ) : (
+                    <Picker.Item
+                      key={minuteFrom}
+                      label={minuteFrom}
+                      value={minuteFrom}
+                    />
+                  )}
                 </Picker>
               </View>
             </View>
@@ -2908,14 +2931,22 @@ export default function detailCustomItinerary(props) {
                     color: "#209fae",
                     fontFamily: "Lato-Regular",
                   }}
-                  onValueChange={(item) =>
-                    sethourTo(item > hourFrom ? item : hourFrom)
-                  }
+                  onValueChange={(item) => {
+                    item <= hourFrom
+                      ? Alert.alert("Opss", t("AlertTime"), [
+                          {
+                            text: "OK",
+                            onPress: () => console.log("OK Pressed"),
+                          },
+                        ])
+                      : null,
+                      sethourTo(item >= hourFrom ? item : hourFrom);
+                  }}
                 >
                   {hour.map((item, index) => {
-                    return item >= hourFrom ? (
+                    return (
                       <Picker.Item key={index} label={item} value={item} />
-                    ) : null;
+                    );
                   })}
                 </Picker>
               </View>
@@ -2971,11 +3002,9 @@ export default function detailCustomItinerary(props) {
                   }
                 >
                   {minute.map((item, index) => {
-                    return hourFrom === hourTo && item > minuteFrom ? (
+                    return (
                       <Picker.Item key={""} label={item + ""} value={item} />
-                    ) : hourTo > hourFrom ? (
-                      <Picker.Item key={""} label={item + ""} value={item} />
-                    ) : null;
+                    );
                   })}
                 </Picker>
               </View>

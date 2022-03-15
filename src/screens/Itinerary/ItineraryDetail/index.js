@@ -1121,15 +1121,21 @@ export default function ItineraryDetail(props) {
     let hasiljam = jampertama + durjam;
     let hasilmenit = menitpertama + durmin;
 
-    if (hasiljam < 23) {
-      console.log("HasilJam", hasiljam);
+    let lastTime = datax[datax.length - 1].time;
+    let lastDuration = datax[datax.length - 1].duration;
+    let splitLastTime = lastTime.split(":");
+    let splitDuration = lastDuration.split(":");
+
+    let AlertTime = parseFloat(splitLastTime[0]) + parseFloat(splitDuration[0]);
+
+    if (AlertTime <= 23) {
       let dataday = { ...datadayaktif };
 
-      if (hasiljam === 23 && hasilmenit <= 59) {
+      if (AlertTime === 23 && splitLastTime[1] <= 59) {
         savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
-      } else if (hasiljam < 23) {
+      } else if (AlertTime <= 23) {
         savetimeline(datax);
         dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
         await setdatadayaktif(dataday);
@@ -4807,7 +4813,7 @@ export default function ItineraryDetail(props) {
                           id_city: dataList.length
                             ? dataList[dataList.length - 1].id_city
                             : null,
-                          city_name: dataList
+                          city_name: dataList.length
                             ? dataList[dataList.length - 1].city
                             : null,
                         })
@@ -6273,7 +6279,7 @@ export default function ItineraryDetail(props) {
                         // setjamend(itemValue))
                       }
                     >
-                      {indexdate == 0 || typeactivity !== "" ? (
+                      {indexdate == 0 ? (
                         jams.map((item, index) => {
                           return (
                             <Picker.Item key={item} label={item} value={item} />
@@ -6333,7 +6339,7 @@ export default function ItineraryDetail(props) {
                         setmenitstart(itemValue)
                       }
                     >
-                      {indexdate == 0 || typeactivity !== "" ? (
+                      {indexdate == 0 ? (
                         menits.map((item, index) => {
                           return (
                             <Picker.Item
@@ -6354,11 +6360,7 @@ export default function ItineraryDetail(props) {
                   </View>
                 </View>
 
-                <Text
-                  size="label"
-                  // type="bold"
-                  style={{ alignSelf: "center" }}
-                >
+                <Text size="label" style={{ alignSelf: "center" }}>
                   {t("To")}
                 </Text>
 
@@ -6397,9 +6399,19 @@ export default function ItineraryDetail(props) {
                         color: "#209fae",
                         fontFamily: "Lato-Regular",
                       }}
-                      onValueChange={(itemValue, itemIndex) =>
-                        setjamend(itemValue)
-                      }
+                      onValueChange={(itemValue, itemIndex) => {
+                        itemValue <= jamstart
+                          ? Alert.alert("Opss", t("AlertTime"), [
+                              {
+                                text: "OK",
+                                onPress: () => console.log("OK Pressed"),
+                              },
+                            ])
+                          : null,
+                          setjamend(
+                            itemValue >= jamstart ? itemValue : jamstart
+                          );
+                      }}
                     >
                       {jams.map((item, index) => {
                         return (

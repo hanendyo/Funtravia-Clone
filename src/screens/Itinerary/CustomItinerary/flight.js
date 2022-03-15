@@ -69,73 +69,6 @@ export default function detailCustomItinerary(props) {
     : false;
   const deviceId = DeviceInfo.getModel();
 
-  // const HeaderComponent = {
-  //   headerShown: true,
-  //   headerTransparent: false,
-  //   headerTintColor: "white",
-  //   headerTitle: "",
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //     height: Platform.OS == "ios" ? (Notch ? 100 : 75) : NotchAndro ? 100 : 75,
-  //   },
-  //   headerTitleStyle: {
-  //     fontFamily: "Lato-Bold",
-  //     fontSize: 16,
-  //     color: "white",
-  //   },
-  //   headerLeftContainerStyle: {
-  //     background: "#FFF",
-
-  //     marginLeft: 10,
-  //   },
-  //   headerLeft: () => (
-  //     <View
-  //       style={{
-  //         flexDirection: "row",
-  //         alignItems: "center",
-  //         // backgroundColor: "red",
-  //       }}
-  //     >
-  //       <Button
-  //         text={""}
-  //         size="medium"
-  //         type="circle"
-  //         variant="transparent"
-  //         onPress={() => props.navigation.goBack()}
-  //         style={{
-  //           height: 55,
-  //         }}
-  //       >
-  //         {Platform.OS == "ios" ? (
-  //           <Arrowbackios height={15} width={15}></Arrowbackios>
-  //         ) : (
-  //           <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //         )}
-  //       </Button>
-  //       <View
-  //         style={{
-  //           marginLeft: 10,
-  //         }}
-  //       >
-  //         <Text type="bold" size="title" style={{ color: "#fff" }}>
-  //           {t("AddFlightNumber")}
-  //         </Text>
-  //         <Text
-  //           style={{
-  //             color: "#fff",
-  //             fontSize: 14,
-  //           }}
-  //         >
-  //           {t("customActivity")}
-  //         </Text>
-  //       </View>
-  //     </View>
-  //   ),
-  // };
-
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -629,15 +562,24 @@ export default function detailCustomItinerary(props) {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      let files = new ReactNativeFile({
-        uri: res.uri,
-        type: res.type,
-        name: res.name,
-      });
+      if (res.size <= 7000000) {
+        let files = new ReactNativeFile({
+          uri: res.uri,
+          type: res.type,
+          name: res.name,
+        });
 
-      let tempData = [...attachment];
-      tempData.push(files);
-      await setAttachment(tempData);
+        let tempData = [...attachment];
+        tempData.push(files);
+        await setAttachment(tempData);
+      } else {
+        Alert.alert("Opss", t("MaxSizeFile"), [
+          {
+            text: "OK",
+            onPress: () => console.log("OK"),
+          },
+        ]);
+      }
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
