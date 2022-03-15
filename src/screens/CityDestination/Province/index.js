@@ -16,6 +16,7 @@ import {
   ImageBackground,
   FlatList,
   Modal as ModalRN,
+  NativeModules,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DetailProvince from "../../../graphQL/Query/Province/DetailProvince";
@@ -82,8 +83,11 @@ const HeaderHeight = 300;
 const Notch = DeviceInfo.hasNotch();
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
+const deviceId = DeviceInfo.getModel();
+const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
+
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
@@ -2749,7 +2753,7 @@ export default function ProvinceDetail(props) {
         //   style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 3,
+          top: deviceId == "LYA-L29" ? SafeStatusBar : SafeStatusBar + 3,
           height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",

@@ -16,6 +16,7 @@ import {
   ImageBackground,
   FlatList,
   Modal as ModalRN,
+  NativeModules,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
@@ -82,8 +83,10 @@ const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
+const deviceId = DeviceInfo.getModel();
+const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
 const PullToRefreshDist = 150;
 
@@ -2004,7 +2007,7 @@ export default function Country(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 3,
+          top: deviceId == "LYA-L29" ? SafeStatusBar : SafeStatusBar + 3,
           height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",
@@ -2588,7 +2591,6 @@ export default function Country(props) {
           alignContent: "center",
           alignItems: "center",
           marginHorizontal: 15,
-
           width: Dimensions.get("screen").width - 35,
         }}
       >

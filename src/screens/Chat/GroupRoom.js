@@ -15,6 +15,7 @@ import {
   Modal as ModalRN,
   Keyboard as onKeyboard,
   ActivityIndicator,
+  NativeModules,
 } from "react-native";
 import io from "socket.io-client";
 import {
@@ -111,7 +112,7 @@ export default function Room({ navigation, route }) {
       background: "#FFF",
       position: "absolute",
       zIndex: 999,
-      marginLeft: 10,
+      // marginLeft: 10,
     },
     headerLeft: () => (
       <View
@@ -208,9 +209,6 @@ export default function Room({ navigation, route }) {
         </Pressable>
       </View>
     ),
-    headerRightStyle: {
-      paddingRight: 20,
-    },
   };
 
   const [socket_connect, setSocketConnect] = useState(false);
@@ -291,11 +289,12 @@ export default function Room({ navigation, route }) {
               }}
               style={{
                 flexDirection: "row",
-                height: StatusBar.currentHeight,
+                height: Platform.OS == "ios" ? 45 : null,
                 alignItems: "center",
                 backgroundColor: "#209fae",
                 zIndex: 150,
                 flex: 1,
+                // borderWidth: 1,
               }}
             >
               <TouchableOpacity
@@ -328,11 +327,12 @@ export default function Room({ navigation, route }) {
               {/* Title Group */}
               <View
                 style={{
-                  height: "100%",
+                  height: 55,
                   flex: 1,
                   marginLeft: 10,
                   marginRight: 15,
                   marginBottom: 15,
+                  marginTop: Platform.OS == "ios" ? 27 : null,
                 }}
               >
                 <Text

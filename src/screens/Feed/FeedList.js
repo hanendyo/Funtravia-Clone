@@ -2070,7 +2070,7 @@ export default function FeedList({ props, token }) {
                             })
                         : setModalLogin(true);
                     }}
-                    size="title"
+                    size={Platform.OS == "ios" ? "label" : "title"}
                     type="bold"
                     numberOfLines={1}
                     style={{

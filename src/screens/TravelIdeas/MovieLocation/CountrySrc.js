@@ -11,6 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
+  NativeModules,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -37,7 +38,10 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import CountryListSrcMovie from "../../../graphQL/Query/Countries/CountryListSrcMovie";
 import ContinentList from "../../../graphQL/Query/Countries/ContinentList";
 import DeviceInfo from "react-native-device-info";
+import normalize from "react-native-normalize";
 const Notch = DeviceInfo.hasNotch();
+const deviceId = DeviceInfo.getModel();
+const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
 const SafeStatusBar = Platform.select({
   ios: Notch ? -50 : -20,
@@ -193,7 +197,16 @@ export default function CountrySrc({
             alignContent: "flex-end",
             backgroundColor: "#209fae",
             // height: HeightBar,
-            height: 55,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? normalize(45)
+                  : normalize(55)
+                : deviceId == "LYA-L29"
+                ? normalize(55)
+                : NotchAndro
+                ? normalize(55)
+                : normalize(55),
             width: Dimensions.get("screen").width,
             // marginTop: SafeStatusBar,
           }}
@@ -202,6 +215,7 @@ export default function CountrySrc({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              marginBottom: Platform.OS == "ios" ? null : 4,
             }}
           >
             <Button
@@ -218,11 +232,10 @@ export default function CountrySrc({
               )}
             </Button>
             <Text
-              size="label"
+              type="bold"
+              size="header"
               style={{
                 color: "white",
-                fontSize: 18,
-                fontFamily: "Lato-Bold",
               }}
             >
               {t("country")}
