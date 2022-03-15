@@ -1978,7 +1978,6 @@ export default function ItineraryDetail(props) {
 
     return (
       <Animated.View
-        pointerEvents="none"
         onLayout={() => cekAnggota(rD)}
         {...headerPanResponder.panHandlers}
         style={{

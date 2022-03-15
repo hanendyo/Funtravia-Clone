@@ -303,9 +303,9 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
+            height: Platform.OS === "ios" ? (Notch ? 70 : 60) : 60,
+            paddingBottom: Platform.OS === "ios" ? (Notch ? 10 : 0) : 0,
             width: width,
-            backgroundColor: "white",
             // marginVertical: 15,
             borderTopWidth: 1,
             borderColor: "#F0F0F0",
@@ -330,7 +330,7 @@ export default function ActivePlan({
             // }}
             style={{
               width: width - 40,
-              height: 40,
+              height: 50,
             }}
             text={t("CreateNewPlan")}
           />
@@ -374,7 +374,8 @@ export default function ActivePlan({
             position: "absolute",
             left: 0,
             bottom: 0,
-            height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
+            height: Platform.OS === "ios" ? (Notch ? 70 : 60) : 60,
+            paddingBottom: Platform.OS === "ios" ? (Notch ? 10 : 0) : 0,
             width: width,
             backgroundColor: "white",
             // marginVertical: 15,
@@ -436,7 +437,8 @@ export default function ActivePlan({
           position: "absolute",
           left: 0,
           bottom: 0,
-          height: Platform.OS === "ios" ? (Notch ? 80 : 60) : 60,
+          height: Platform.OS === "ios" ? (Notch ? 70 : 60) : 60,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 10 : 0) : 0,
           width: Dimensions.get("window").width,
           backgroundColor: "white",
           borderTopWidth: 1,

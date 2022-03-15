@@ -709,17 +709,16 @@ export default function CountrySrc({
           </View>
           <View
             style={{
-              flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 80,
-              position: "absolute",
-              bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -728,8 +727,6 @@ export default function CountrySrc({
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 10,
             }}
           >
             <Button

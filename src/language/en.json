@@ -910,5 +910,6 @@
   "typeGroupSubject": "Type group subject here...",
   "typeMessage": "Type a message",
   "Selected": " selected",
-  "deleteMessageSelected": "Do you want to delete "
+  "deleteMessageSelected": "Do you want to delete ",
+  "thisTripHasBeenDeleted": "This trip has been deleted"
 }

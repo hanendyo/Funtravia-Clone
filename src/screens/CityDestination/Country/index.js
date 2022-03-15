@@ -2110,27 +2110,6 @@ export default function Country(props) {
                 </View>
               </View>
             </View>
-            {/* <View
-              style={{
-                justifyContent: "center",
-                display: "flex",
-              }}
-            >
-              <Pressable
-                onPress={() => SetShareModal(true)}
-                style={{
-                  backgroundColor: "#F6F6F6",
-                  marginRight: 2,
-                  height: 30,
-                  width: 30,
-                  borderRadius: 17,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ShareBlack height={20} width={20} />
-              </Pressable>
-            </View> */}
           </View>
         </Animated.View>
       </Animated.View>
@@ -2147,7 +2126,6 @@ export default function Country(props) {
     return (
       <Animated.View
         {...headerPanResponder.panHandlers}
-        // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
           top: SafeStatusBar + 255,

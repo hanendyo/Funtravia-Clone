@@ -12,6 +12,7 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  Platform,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Text } from "../../component";
@@ -32,10 +33,12 @@ import { default_image } from "../../assets/png";
 import CheckBox from "@react-native-community/checkbox";
 import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
 
 export default function TravelGoalList(props) {
   const { t, i18n } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
+  const Notch = DeviceInfo.hasNotch();
   const [heights, setHeights] = useState(0);
   const HeaderComponent = {
     headerTransparent: false,
@@ -808,7 +811,7 @@ export default function TravelGoalList(props) {
         <View
           style={{
             // borderWidth: 1,
-            height: 50,
+            height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
             width: Dimensions.get("screen").width,
             backgroundColor: "#fff",
             flexDirection: "row",
@@ -818,6 +821,14 @@ export default function TravelGoalList(props) {
             justifyContent: "space-between",
             borderWidth: 1,
             borderColor: "#f6f6f6",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
           }}
         >
           <Button
