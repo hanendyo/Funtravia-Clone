@@ -2350,6 +2350,7 @@ export default function ItineraryDetail(props) {
             width: "20%",
             alignContent: "flex-end",
             alignItems: "flex-end",
+
             // paddingTop: 10,
             // paddingRight: 10,
           }}
@@ -2370,6 +2371,7 @@ export default function ItineraryDetail(props) {
               style={{
                 height: 25,
                 marginRight: 4.2,
+
                 // borderBottomWidth: 1,
                 // borderRightWidth: index && index > 0 ? 1 : 0,
                 borderRightWidth: index > 0 ? 0.5 : 0,
@@ -2395,7 +2397,7 @@ export default function ItineraryDetail(props) {
                     paddingVertical: 5,
                     paddingHorizontal: 5,
                     backgroundColor: "#daf0f2",
-                    // borderWidth: 1,
+
                     borderRadius: 5,
                     alignContent: "center",
                     alignItems: "center",
@@ -2464,6 +2466,7 @@ export default function ItineraryDetail(props) {
                     zIndex: 99,
                     height: 10,
                     width: 10,
+
                     marginLeft: 5,
                     marginTop: item.detail_accomodation ? 20 : 0,
                     borderRadius: 10,
@@ -2575,6 +2578,7 @@ export default function ItineraryDetail(props) {
                 style={{
                   flexDirection: "row",
                   width: "100%",
+
                   justifyContent: "space-between",
                 }}
               >
@@ -2842,7 +2846,8 @@ export default function ItineraryDetail(props) {
                       <View
                         style={{
                           flexDirection: "row",
-                          width: normalize(70),
+
+                          width: normalize(80),
                         }}
                       >
                         <Text style={{ marginBottom: 5, flexWrap: "wrap" }}>
@@ -2880,6 +2885,7 @@ export default function ItineraryDetail(props) {
                     style={{
                       height: 40,
                       width: 40,
+                      marginLeft: -10,
                       // borderWidth: 1,
                       justifyContent: "center",
                       alignItems: "flex-end",
@@ -3644,6 +3650,7 @@ export default function ItineraryDetail(props) {
             paddingTop: HeaderHeight + TabBarHeight + 60,
             paddingHorizontal: tabIndex == 1 ? 5 : 15,
             minHeight: height + HeaderHeight + 60,
+
             paddingBottom: 70,
             backgroundColor: "#F6F6F6",
           }}

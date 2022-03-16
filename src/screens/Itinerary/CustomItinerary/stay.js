@@ -304,7 +304,7 @@ export default function detailCustomItinerary(props) {
     title: props.route.params?.detail_accomodation
       ? props.route.params.detail_accomodation.hotel_name
       : "", // == hotel_name
-    icon: "gb_tour", //gb_tour
+    icon: "i-accomodation", //gb_tour
     qty: 1, //
     address: props.route.params?.address ? props.route.params.address : "", //wajib
     latitude: props.route.params?.latitude ? props.route.params.latitude : 0, //wajib
