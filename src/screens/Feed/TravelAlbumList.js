@@ -565,10 +565,10 @@ export default function TravelAlbumList(props) {
                 </View>
                 <View
                   style={{
-                    width: Dimensions.get("screen").width - 50,
+                    width: Dimensions.get("screen").width - 40,
                     borderBottomWidth: 1,
                     alignSelf: "center",
-                    borderBottomEndRadius: 10,
+                    // borderBottomEndRadius: 10,
                     paddingBottom: 30,
                     borderColor: "#d1d1d1",
                   }}
