@@ -36,7 +36,6 @@ import { StackActions } from "@react-navigation/native";
 import UpdateTimelines from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 
 export default function editCustomActivity(props) {
-  console.log("props", props);
   let [loading, setLoading] = useState(false);
   let token = props.route.params.token;
   let [dataList, setdataList] = useState(
@@ -268,8 +267,6 @@ export default function editCustomActivity(props) {
       longitude: detail.geometry.location.lng,
     });
   };
-
-  console.log("dataState", dataState);
 
   const UpdateTimeLine = async (idCustom) => {
     setLoading(true);
@@ -787,16 +784,16 @@ export default function editCustomActivity(props) {
                   alignItems: "center",
                 }}
               >
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     position: "absolute",
-                    top: 20,
-                    left: 20,
+                    top: -40,
+                    left: -160,
                   }}
                   // onPress={() => setModaldate(false)}
                 >
                   <Xhitam width={15} height={15} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <Text size="description" type="bold" style={{}}>
                   {t("Selecttime")}
                 </Text>
@@ -923,9 +920,9 @@ export default function editCustomActivity(props) {
           {/* address */}
           <View>
             <Text size="label" type="bold" style={{}}>
-              {t("address")}
+              {t("location")}
             </Text>
-            <TouchableOpacity
+            <Ripple
               onPress={() => setModal(true)}
               style={{
                 marginVertical: 10,
@@ -961,7 +958,7 @@ export default function editCustomActivity(props) {
                     // color: '#646464',
                   }}
                   autoCorrect={false}
-                  placeholder={t("searchAddress")}
+                  placeholder={t("searchLocation")}
                   value={dataState.address}
                   onChangeText={onChange("address")}
                   keyboardType="default"
@@ -982,7 +979,7 @@ export default function editCustomActivity(props) {
                   {t("enteraddres")}
                 </Text>
               ) : null}
-            </TouchableOpacity>
+            </Ripple>
           </View>
 
           <View>
@@ -1167,7 +1164,7 @@ export default function editCustomActivity(props) {
                 color: "white",
               }}
             >
-              {t("address")}
+              {t("location")}
             </Text>
           </View>
           {/* modal google */}

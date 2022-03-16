@@ -468,6 +468,7 @@ export default function ItineraryDay({
               flexDirection: "row",
               justifyContent: "space-between",
               paddingVertical: 20,
+
               paddingHorizontal: 40,
             }}
           >

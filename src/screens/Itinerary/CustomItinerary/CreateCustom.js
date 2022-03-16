@@ -26,6 +26,7 @@ import {
   New,
   Arrowbackios,
   CheckWhite,
+  Bottomsegitiga,
 } from "../../../assets/svg";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -34,6 +35,7 @@ import { Button, Text } from "../../../component";
 import { default_image } from "../../../assets/png";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
+import Ripple from "react-native-material-ripple";
 
 export default function CreateCustom(props) {
   const { t, i18n } = useTranslation();
@@ -110,6 +112,8 @@ export default function CreateCustom(props) {
   let [hour, sethour] = useState(1);
   let [minutes, setMinutes] = useState(0);
 
+  let [dataSplitIndex, setdataSplitIndex] = useState({});
+
   let [validate, setValidate] = useState({
     tittle: true,
     duration: true,
@@ -173,6 +177,15 @@ export default function CreateCustom(props) {
     } else {
       return true;
     }
+  };
+
+  const changeStateDuration = async () => {
+    await setdataSplitIndex({
+      ...dataSplitIndex,
+      duration: hour + ":" + minutes + ":00",
+    });
+
+    await setModaldate(false);
   };
 
   const masukan = (detail) => {
@@ -536,9 +549,9 @@ export default function CreateCustom(props) {
               flexDirection: "row",
               paddingVertical: 20,
               justifyContent: "space-between",
+
               alignItems: "center",
               alignContent: "center",
-              // borderWidth: 1,
             }}
           >
             <Text size="label" type="bold" style={{}}>
@@ -549,17 +562,91 @@ export default function CreateCustom(props) {
                 onPress={() => {
                   setModaldate(true);
                 }}
+                style={{
+                  flexDirection: "row",
+                }}
               >
-                <Text>
-                  {hour < 10 ? "0" + hour : hour} {t("hours")}
-                  {" : "}
-                  {minutes < 10 ? "0" + minutes : minutes} {t("minutes")}
-                </Text>
+                <View
+                  style={{
+                    width: 60,
+                    height: Platform.OS == "ios" ? 25 : 20,
+                    borderWidth: 0.5,
+
+                    alignItems: "center",
+                    borderColor: "#d1d1d1",
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      size="label"
+                      style={{
+                        color: "#209FAE",
+                      }}
+                    >
+                      {hour < 10 ? +hour : hour} {t("h")}
+                    </Text>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        paddingLeft: 8,
+                      }}
+                    >
+                      <Bottomsegitiga width={8} height={8} />
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    width: 60,
+                    height: Platform.OS == "ios" ? 25 : 20,
+                    marginLeft: 5,
+                    alignItems: "center",
+                    borderWidth: 0.5,
+                    borderColor: "#d1d1d1",
+                    backgroundColor: "#f6f6f6",
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text
+                      type="bold"
+                      size="label"
+                      style={{
+                        color: "#209FAE",
+                      }}
+                    >
+                      {minutes < 10 ? +minutes : minutes} {t("m")}
+                    </Text>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        paddingLeft: 8,
+                      }}
+                    >
+                      <Bottomsegitiga width={8} height={8} />
+                    </View>
+                  </View>
+                </View>
               </TouchableOpacity>
             </View>
+
+            {/* awal modal date */}
+
             <Modal
-              onRequestClose={() => setModaldate(false)}
-              onBackdropPress={() => setModaldate(false)}
+              // onRequestClose={() => setModaldate(false)}
+              // onBackdropPress={() => setModaldate(false)}
               animationIn="fadeIn"
               animationOut="fadeOut"
               isVisible={modaldate}
@@ -582,16 +669,16 @@ export default function CreateCustom(props) {
                   alignItems: "center",
                 }}
               >
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     position: "absolute",
                     top: 20,
                     left: 20,
                   }}
-                  onPress={() => setModaldate(false)}
+                  // onPress={() => setModaldate(false)}
                 >
                   <Xhitam width={15} height={15} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <Text size="description" type="bold" style={{}}>
                   {t("Selecttime")}
                 </Text>
@@ -646,7 +733,6 @@ export default function CreateCustom(props) {
                     style={{
                       width: "5%",
                       alignItems: "center",
-                      // alignContent: "flex-end",
                     }}
                   >
                     <Text size="description" type="bold" style={{}}>
@@ -692,8 +778,8 @@ export default function CreateCustom(props) {
                     </Picker>
                   </View>
                 </View>
-                <TouchableOpacity
-                  onPress={() => setModaldate(false)}
+                <Ripple
+                  onPress={() => changeStateDuration()}
                   style={{
                     marginTop: 20,
                     backgroundColor: "#209fae",
@@ -711,9 +797,10 @@ export default function CreateCustom(props) {
                   >
                     {t("Select")}
                   </Text>
-                </TouchableOpacity>
+                </Ripple>
               </View>
             </Modal>
+            {/* akhir modal date */}
           </View>
           <View style={{}}>
             {props.route.params?.dataParent ? null : (
@@ -721,11 +808,12 @@ export default function CreateCustom(props) {
                 <Text size="label" type="bold" style={{}}>
                   {t("location")}
                 </Text>
-                <TouchableOpacity
+                <Ripple
                   onPress={() => setModal(true)}
                   style={{
                     marginVertical: 10,
                     width: "100%",
+                    borderWidth: 1,
                     // height: 30,
 
                     paddingHorizontal: 10,
@@ -779,7 +867,7 @@ export default function CreateCustom(props) {
                       {t("enteraddres")}
                     </Text>
                   ) : null}
-                </TouchableOpacity>
+                </Ripple>
               </>
             )}
 

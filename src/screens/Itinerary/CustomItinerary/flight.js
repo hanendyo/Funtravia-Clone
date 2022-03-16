@@ -229,7 +229,7 @@ export default function detailCustomItinerary(props) {
   const duration = "01:00:00";
   const status = false;
   const qty = "1";
-  const icon = "gb-tour";
+  const icon = "i-airport_transfer";
   const totalPrice = "";
   const title = "Flight";
   const time = "00:00:00";

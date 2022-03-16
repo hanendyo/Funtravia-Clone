@@ -403,7 +403,7 @@ export default function ChoosePosition(props) {
                   />
                 ) : (
                   <FunIcon
-                    icon={item.icon === "gb-tour" ? item.icon : "i-tour"}
+                    icon={item.icon ? item.icon : "i-tour"}
                     height={50}
                     width={50}
                   />
