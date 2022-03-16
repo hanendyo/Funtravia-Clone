@@ -183,7 +183,7 @@ export default function TravelAlbumList(props) {
                 <Text
                   size={"label"}
                   type={"bold"}
-                  style={{ paddingLeft: 15, marginBottom: 10 }}
+                  style={{ paddingLeft: 20, marginBottom: 10 }}
                 >
                   {item.title}
                 </Text>
@@ -191,7 +191,7 @@ export default function TravelAlbumList(props) {
                 <View
                   style={{
                     height: 285,
-                    width: Dimensions.get("screen").width - 50,
+                    width: Dimensions.get("screen").width - 40,
                     backgroundColor: "white",
                     alignSelf: "center",
                     borderRadius: 5,
@@ -258,7 +258,7 @@ export default function TravelAlbumList(props) {
                               style={{
                                 position: "absolute",
                                 height: "100%",
-                                width: "95%",
+                                width: "93%",
                                 borderRadius: 5,
                                 alignSelf: "center",
                                 backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -533,15 +533,20 @@ export default function TravelAlbumList(props) {
                           )}
 
                           {item.media.length > 4 ? (
-                            <Text
+                            <View
                               style={{
                                 position: "absolute",
-                                alignSelf: "center",
-                                top: 45,
+                                height: "100%",
+                                width: "100%",
+                                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                                justifyContent: "center",
+                                alignItems: "center",
                               }}
                             >
-                              View all
-                            </Text>
+                              <Text type="bold" size="label">
+                                View all
+                              </Text>
+                            </View>
                           ) : null}
                         </>
                       </TouchableHighlight>
