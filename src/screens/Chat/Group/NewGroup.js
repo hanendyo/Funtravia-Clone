@@ -136,7 +136,16 @@ export default function NewGroup({ navigation, route }) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: deviceId == "LYA-L29" ? 8 : NotchAndro ? 2 : 5,
+              marginTop:
+                Platform.OS == "ios"
+                  ? Notch
+                    ? 3
+                    : 6
+                  : deviceId == "LYA-L29"
+                  ? 8
+                  : NotchAndro
+                  ? 2
+                  : 5,
             }}
           >
             <Text

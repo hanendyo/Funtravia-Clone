@@ -26,6 +26,7 @@ import {
   TextInput,
   Animated,
   ActivityIndicator,
+  NativeModules,
 } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -64,6 +65,7 @@ const boxWidth = Dimensions.get("screen").width / 1.09;
 export default function Trip(props) {
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
   // const HeaderComponent = {
   //   headerTransparent: false,
@@ -125,7 +127,8 @@ export default function Trip(props) {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
 
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
-      height: Platform.OS == "ios" ? StatusBar.currentHeight : null,
+      height:
+        Platform.OS == "ios" ? NativeModules.StatusBarManager.HEIGHT : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 7 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
@@ -1672,7 +1675,7 @@ export default function Trip(props) {
                 animationOut="slideOutRight"
                 isVisible={modaltravel}
                 style={{
-                  marginTop: 0,
+                  marginTop: NotchAndro ? 0 : 1,
                   marginBottom: -40,
                   backgroundColor: "#14646e",
                   justifyContent: "flex-end",

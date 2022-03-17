@@ -56,7 +56,7 @@ export default function TravelAlbumList(props) {
     tabBarLabel: "Message",
     headerTitle: (
       <Text size="header" type="bold" style={{ color: "#fff" }}>
-        Travel Album
+        {t("travelAlbum")}
       </Text>
     ),
     headerMode: "screen",
@@ -488,6 +488,7 @@ export default function TravelAlbumList(props) {
                                 justifyContent: "space-evenly",
                                 alignSelf: "center",
                                 borderRadius: 5,
+                                opacity: item.media.length > 4 ? 0.2 : null,
                               }}
                             ></Image>
                           ) : (
@@ -544,7 +545,7 @@ export default function TravelAlbumList(props) {
                               }}
                             >
                               <Text type="bold" size="label">
-                                View all
+                                {t("viewAll")}
                               </Text>
                             </View>
                           ) : null}

@@ -66,6 +66,8 @@ export default function Room({ navigation, route }) {
   const [init, setInit] = useState(true);
   const [button, setButton] = useState(true);
   const [loadingGroup, setLoadingGroup] = useState(true);
+  const deviceId = DeviceInfo.getModel();
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
   let [chat, setChat] = useState(null);
   let [message, setMessage] = useState([]);
@@ -203,12 +205,13 @@ export default function Room({ navigation, route }) {
               alignSelf: "center",
               paddingHorizontal: 10,
             }}
-          >
-            {/* {route.params.name} */}
-          </Text>
+          ></Text>
         </Pressable>
       </View>
     ),
+    // headerRightStyle: {
+    //   paddingRight: 20,
+    // },
   };
 
   const [socket_connect, setSocketConnect] = useState(false);
@@ -289,12 +292,11 @@ export default function Room({ navigation, route }) {
               }}
               style={{
                 flexDirection: "row",
-                height: Platform.OS == "ios" ? 45 : null,
+                height: Platform.OS == "ios" ? (Notch ? 45 : 45) : null,
                 alignItems: "center",
                 backgroundColor: "#209fae",
                 zIndex: 150,
                 flex: 1,
-                // borderWidth: 1,
               }}
             >
               <TouchableOpacity
@@ -324,15 +326,22 @@ export default function Room({ navigation, route }) {
                 />
               </TouchableOpacity>
 
-              {/* Title Group */}
               <View
                 style={{
-                  height: 55,
+                  height: "100%",
                   flex: 1,
                   marginLeft: 10,
                   marginRight: 15,
-                  marginBottom: 15,
-                  marginTop: Platform.OS == "ios" ? 27 : null,
+                  marginBottom:
+                    Platform.OS == "ios"
+                      ? Notch
+                        ? -3
+                        : -3
+                      : deviceId == "LYA-L29"
+                      ? 0
+                      : NotchAndro
+                      ? 10
+                      : 9,
                 }}
               >
                 <Text
@@ -378,7 +387,6 @@ export default function Room({ navigation, route }) {
                   </Text>
                 </View>
               </View>
-              {/* End Title Group */}
             </Pressable>
           </View>
         ),

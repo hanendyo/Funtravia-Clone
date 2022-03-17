@@ -86,7 +86,7 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 5 : 5) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 4 : 6) : null,
             }}
           >
             <Text type="bold" size="label" style={{ color: "#FFF" }}>
@@ -1020,7 +1020,7 @@ export default function detailCustomItinerary(props) {
               //   ? normalize(57)
               //   : normalize(43),
               width: Dimensions.get("screen").width,
-              marginTop: Platform.OS === "ios" ? 25 : -15,
+              marginTop: Platform.OS === "ios" ? (Notch ? 25 : 0) : -15,
             }}
           >
             <TouchableOpacity
@@ -1040,7 +1040,9 @@ export default function detailCustomItinerary(props) {
                 alignContent: "center",
                 paddingTop:
                   Platform.OS === "ios"
-                    ? 17
+                    ? Notch
+                      ? 17
+                      : 15
                     : deviceId == "LYA-L29"
                     ? 10
                     : NotchAndro
@@ -1078,7 +1080,9 @@ export default function detailCustomItinerary(props) {
                 // justifyContent: "center",
                 paddingTop:
                   Platform.OS === "ios"
-                    ? 14
+                    ? Notch
+                      ? 14
+                      : 12
                     : deviceId == "LYA-L29"
                     ? 8
                     : NotchAndro

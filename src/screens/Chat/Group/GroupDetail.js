@@ -58,7 +58,6 @@ const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
   android: NativeModules.StatusBarManager.HEIGHT,
 });
-const deviceId = DeviceInfo.getModel();
 const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 let { width, height } = Dimensions.get("screen");
 
@@ -82,6 +81,7 @@ export default function GroupDetail(props) {
   const [indexMediaView, setIndexMediaView] = useState(0);
   const [modalimageview, setModalimageview] = useState(false);
   const [mediaArray, setMediaArray] = useState([]);
+  const deviceId = DeviceInfo.getModel();
   let _menu = null;
 
   const HEADER_MAX_HEIGHT = normalize(240);
@@ -92,7 +92,7 @@ export default function GroupDetail(props) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE - 11],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE - 55],
     extrapolate: "clamp",
   });
 
@@ -104,7 +104,7 @@ export default function GroupDetail(props) {
 
   const titleTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, -8],
+    outputRange: [0, 0, 0],
     extrapolate: "clamp",
   });
   const titleOpacity = scrollY.interpolate({
@@ -957,101 +957,103 @@ export default function GroupDetail(props) {
             </View>
           </View>
           {mydata ? (
-            <FlatList
-              data={
-                dataDetail && dataDetail.buddy && dataDetail.buddy.length > 0
-                  ? dataDetail.buddy
-                  : null
-              }
-              scrollEnabled={false}
-              contentContainerStyle={{
-                backgroundColor: "#FFFFFF",
-                paddingBottom: 190,
-              }}
-              ListHeaderComponent={() =>
-                mydata && mydata.isadmin == true ? (
-                  <Pressable
-                    onPress={() => {
-                      dataDetail && dataDetail.type !== "itinerary"
-                        ? props.navigation.navigate("ChatStack", {
-                            screen: "AddMember",
-                            params: {
-                              dataBuddy: dataDetail.buddy,
-                              token: tokenApps,
-                              id_group: dataDetail.id,
-                            },
-                          })
-                        : props.navigation.navigate("ChatStack", {
-                            screen: "AddBuddy",
-                            params: {
-                              dataBuddy: dataDetail.buddy,
-                              token: tokenApps,
-                              iditin: dataDetail.id,
-                            },
-                          });
-                    }}
-                    style={{
-                      flexDirection: "row",
-                      paddingVertical: 10,
-                      borderBottomColor: "#EEEEEE",
-                      backgroundColor: "#FFFFFF",
-                      borderBottomWidth: 1,
-                      paddingHorizontal: 15,
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
+            <>
+              <FlatList
+                data={
+                  dataDetail && dataDetail.buddy && dataDetail.buddy.length > 0
+                    ? dataDetail.buddy
+                    : null
+                }
+                scrollEnabled={false}
+                contentContainerStyle={{
+                  backgroundColor: "#FFFFFF",
+                }}
+                ListHeaderComponent={() =>
+                  mydata && mydata.isadmin == true ? (
+                    <Pressable
+                      onPress={() => {
+                        dataDetail && dataDetail.type !== "itinerary"
+                          ? props.navigation.navigate("ChatStack", {
+                              screen: "AddMember",
+                              params: {
+                                dataBuddy: dataDetail.buddy,
+                                token: tokenApps,
+                                id_group: dataDetail.id,
+                              },
+                            })
+                          : props.navigation.navigate("ChatStack", {
+                              screen: "AddBuddy",
+                              params: {
+                                dataBuddy: dataDetail.buddy,
+                                token: tokenApps,
+                                iditin: dataDetail.id,
+                              },
+                            });
+                      }}
                       style={{
                         flexDirection: "row",
+                        paddingVertical: 10,
+                        borderBottomColor: "#EEEEEE",
+                        backgroundColor: "#FFFFFF",
+                        borderBottomWidth: 1,
+                        paddingHorizontal: 15,
+                        justifyContent: "space-between",
                         alignItems: "center",
                       }}
                     >
                       <View
-                        source={{ uri: default_image }}
                         style={{
-                          backgroundColor: "#DAF0F2",
-                          width: 50,
-                          height: 50,
-                          borderRadius: 25,
-                          justifyContent: "center",
+                          flexDirection: "row",
                           alignItems: "center",
                         }}
                       >
-                        <AddParticipant width={25} height={25} />
-                      </View>
-                      <View>
-                        <Text
-                          size="label"
-                          type="regular"
-                          style={{ marginLeft: 15 }}
+                        <View
+                          source={{ uri: default_image }}
+                          style={{
+                            backgroundColor: "#DAF0F2",
+                            width: 50,
+                            height: 50,
+                            borderRadius: 25,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
                         >
-                          {t("addParticipant")}
-                        </Text>
+                          <AddParticipant width={25} height={25} />
+                        </View>
+                        <View>
+                          <Text
+                            size="label"
+                            type="regular"
+                            style={{ marginLeft: 15 }}
+                          >
+                            {t("addParticipant")}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  </Pressable>
-                ) : null
-              }
-              renderItem={({ item, index }) => (
-                <RenderMemberList
-                  item={item}
-                  index={index}
-                  mydata={mydata}
-                  props={props}
-                  dataDetail={dataDetail}
-                  getUserAndToken={() => getUserAndToken()}
-                  token={tokenApps}
-                  setModalkick={(e) => setModalkick(e)}
-                  setModalmakeadmin={(e) => setModalmakeadmin(e)}
-                  setSelected={(e) => setSelected(e)}
-                  setIndexActive={(e) => setIndexActive(e)}
-                  setModalremoveadmin={(e) => setModalremoveadmin(e)}
-                  indexActive={indexActive}
-                />
-              )}
-              keyExtractor={(item) => item.id}
-            />
+                    </Pressable>
+                  ) : null
+                }
+                renderItem={({ item, index }) => (
+                  <RenderMemberList
+                    item={item}
+                    index={index}
+                    mydata={mydata}
+                    props={props}
+                    dataDetail={dataDetail}
+                    getUserAndToken={() => getUserAndToken()}
+                    token={tokenApps}
+                    setModalkick={(e) => setModalkick(e)}
+                    setModalmakeadmin={(e) => setModalmakeadmin(e)}
+                    setSelected={(e) => setSelected(e)}
+                    setIndexActive={(e) => setIndexActive(e)}
+                    setModalremoveadmin={(e) => setModalremoveadmin(e)}
+                    indexActive={indexActive}
+                  />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+              <View style={{ height: 100 }}></View>
+            </>
           ) : null}
         </View>
 
@@ -1763,7 +1765,6 @@ export default function GroupDetail(props) {
               height: HEADER_MAX_HEIGHT,
               resizeMode: "cover",
               opacity: headerOpacity,
-
               // transform: [{ translateY: headerTranslateY }],
             }}
             source={
@@ -1785,16 +1786,31 @@ export default function GroupDetail(props) {
           position: "absolute",
           justifyContent: "flex-start",
           alignItems: "center",
-          // left: 15,
           zIndex: 999,
           // width: "80%",
           opacity: titleOpacity,
-          top: SafeStatusBar + 10,
-          // marginTop: 20,
-          paddingLeft: 15,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar - 0.5
+                : SafeStatusBar - 0.5
+              : deviceId == "LYA-L29"
+              ? SafeStatusBar
+              : NotchAndro
+              ? SafeStatusBar
+              : SafeStatusBar,
+          backgroundColor: "#209fae",
+          height:
+            Platform.OS == "ios"
+              ? Notch
+                ? 45
+                : 45
+              : deviceId == "LYA-L29"
+              ? 55
+              : NotchAndro
+              ? 55
+              : 55,
           width: Dimensions.get("screen").width,
-          backgroundColor: "#209FAE",
-          height: 45,
         }}
       >
         <Pressable
@@ -1806,6 +1822,7 @@ export default function GroupDetail(props) {
             justifyContent: "center",
             alignItems: "center",
             marginRight: 20,
+            left: 15,
           }}
         >
           {Platform.OS == "ios" ? (
@@ -1819,7 +1836,6 @@ export default function GroupDetail(props) {
             flexDirection: "row",
             width: "80%",
             justifyContent: "space-between",
-            marginTop: 4,
           }}
         >
           <Text
@@ -1827,6 +1843,16 @@ export default function GroupDetail(props) {
             style={{
               color: "#fff",
               flex: 1,
+              top:
+                Platform.OS == "ios"
+                  ? Notch
+                    ? 2
+                    : 2
+                  : deviceId == "LYA-L29"
+                  ? 2
+                  : NotchAndro
+                  ? 0
+                  : 0,
             }}
             numberOfLines={1}
           >
@@ -1860,8 +1886,26 @@ export default function GroupDetail(props) {
               button={
                 <Pressable
                   style={{
-                    marginTop: 7,
-                    marginRight: 2,
+                    marginTop:
+                      Platform.OS == "ios"
+                        ? Notch
+                          ? 7
+                          : 5
+                        : deviceId == "LYA-L29"
+                        ? 7
+                        : NotchAndro
+                        ? 7
+                        : 3,
+                    marginRight:
+                      Platform.OS == "ios"
+                        ? Notch
+                          ? 5
+                          : 12
+                        : deviceId == "LYA-L29"
+                        ? 16
+                        : NotchAndro
+                        ? 0
+                        : 10,
                   }}
                   onPress={() => _menu.show()}
                 >
@@ -1899,12 +1943,20 @@ export default function GroupDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          width: width,
+          width: Dimensions.get("screen").width,
           position: "absolute",
           zIndex: 999,
-          top: SafeStatusBar,
+          top:
+            Platform.OS == "ios"
+              ? Notch
+                ? SafeStatusBar - 13
+                : SafeStatusBar - 13
+              : deviceId == "LYA-L29"
+              ? SafeStatusBar - 7
+              : NotchAndro
+              ? SafeStatusBar - 7
+              : 16,
           opacity: backHeaderOpacity,
-          marginTop: Platform.OS === "ios" ? 0 : 10,
         }}
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

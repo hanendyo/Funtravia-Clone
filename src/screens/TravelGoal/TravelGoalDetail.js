@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StatusBar,
   SafeAreaView,
+  NativeModules,
 } from "react-native";
 import {
   Button,
@@ -35,12 +36,7 @@ import Travelrelateds from "../../graphQL/Query/TravelGoal/TravelRelated";
 import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
 const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  // android: StatusBar.currentHeight,
-  android: normalize(28),
-  // android: normalize(38),
-});
+const nativeModulesHeight = NativeModules.StatusBarManager.HEIGHT;
 const deviceId = DeviceInfo.getModel();
 import { useSelector } from "react-redux";
 
@@ -685,12 +681,10 @@ export default function TravelGoalDetail(props) {
           backgroundColor: "#14646e",
           overflow: "hidden",
           height:
-            Platform.OS === "ios"
-              ? HEADER_MAX_HEIGHT - 5
-              : HEADER_MAX_HEIGHT - 5,
+            Platform.OS === "ios" ? HEADER_MAX_HEIGHT - 10 : HEADER_MAX_HEIGHT,
           transform: [{ translateY: headerTranslateY }],
           zIndex: 1,
-          top: SafeStatusBar,
+          top: NativeModules.StatusBarManager.HEIGHT,
         }}
       >
         <Animated.Image
@@ -722,7 +716,16 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(53) : normalize(55),
+          height:
+            Platform.OS === "ios"
+              ? Notch
+                ? nativeModulesHeight - 3
+                : nativeModulesHeight + 25
+              : deviceId == "LYA-L29"
+              ? normalize(55)
+              : NotchAndro
+              ? normalize(50)
+              : normalize(55),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -736,10 +739,12 @@ export default function TravelGoalDetail(props) {
           opacity: titleOpacity,
           top:
             Platform.OS === "ios"
-              ? SafeStatusBar - 3
+              ? nativeModulesHeight - 0.5
+              : deviceId == "LYA-L29"
+              ? nativeModulesHeight
               : NotchAndro
-              ? SafeStatusBar + 5
-              : SafeStatusBar - 6,
+              ? nativeModulesHeight
+              : nativeModulesHeight,
         }}
       >
         {/* <Text
@@ -763,18 +768,25 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: 100,
+          height:
+            Platform.OS === "ios"
+              ? Notch
+                ? normalize(45)
+                : normalize(55)
+              : normalize(55),
           width: 100,
           position: "absolute",
           zIndex: 999,
           top:
             Platform.OS == "ios"
               ? Notch
-                ? SafeStatusBar - 13
-                : SafeStatusBar - 18
+                ? nativeModulesHeight - 17
+                : nativeModulesHeight - 18
+              : deviceId == "LYA-L29"
+              ? normalize(10)
               : NotchAndro
-              ? SafeStatusBar - 3
-              : SafeStatusBar - 17,
+              ? normalize(26)
+              : normalize(10),
           opacity: backOpacity,
         }}
       >
@@ -806,7 +818,12 @@ export default function TravelGoalDetail(props) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(53) : normalize(55),
+          height:
+            Platform.OS === "ios"
+              ? Notch
+                ? normalize(45)
+                : normalize(55)
+              : normalize(55),
           flex: 1,
           alignItems: "flex-start",
           alignItems: "center",
@@ -817,10 +834,14 @@ export default function TravelGoalDetail(props) {
           flexDirection: "row",
           top:
             Platform.OS === "ios"
-              ? SafeStatusBar - 3
+              ? Notch
+                ? nativeModulesHeight - 2
+                : nativeModulesHeight - 5
+              : deviceId == "LYA-L29"
+              ? normalize(28)
               : NotchAndro
-              ? SafeStatusBar + 10
-              : SafeStatusBar - 6,
+              ? normalize(37)
+              : normalize(21),
         }}
       >
         <Pressable
@@ -845,7 +866,16 @@ export default function TravelGoalDetail(props) {
           style={{
             color: "#fff",
             marginBottom: NotchAndro ? 0 : 5,
-            marginTop: 4,
+            marginTop:
+              Platform.OS == "ios"
+                ? Notch
+                  ? 4
+                  : 5
+                : deviceId == "LYA-L29"
+                ? 0
+                : NotchAndro
+                ? 0
+                : 5,
             marginLeft: 5,
             width: "85%",
           }}
