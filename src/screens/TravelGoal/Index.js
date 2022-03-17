@@ -180,340 +180,341 @@ export default function TravelGoal(props) {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        backgroundColor: "#f6f6f6",
-      }}
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
-      style={{
-        flex: 1,
-        backgroundColor: "#f6f6f6",
-        // padding: 20,
-      }}
-    >
-      <View
+    <SafeAreaView style={{ flex: 1, marginBottom: -13 }}>
+      <ScrollView
+        contentContainerStyle={{
+          backgroundColor: "#f6f6f6",
+        }}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         style={{
-          padding: 20,
-          // flex: 1,
+          flex: 1,
+          backgroundColor: "#f6f6f6",
+          // padding: 20,
         }}
       >
-        {dataTop?.travelgoal_first ? (
-          <FunImageBackground
-            source={
-              dataTop?.travelgoal_first?.cover
-                ? { uri: dataTop?.travelgoal_first?.cover }
-                : null
-            }
-            style={{
-              height: Dimensions.get("screen").width * 0.35,
-              width: "100%",
-              borderRadius: 5,
-              backgroundColor: "#fff",
-            }}
-            imageStyle={{
-              height: Dimensions.get("screen").width * 0.35,
-              width: "100%",
-              borderRadius: 5,
-            }}
-          >
-            <Ripple
+        <View
+          style={{
+            padding: 20,
+            // flex: 1,
+          }}
+        >
+          {dataTop?.travelgoal_first ? (
+            <FunImageBackground
+              source={
+                dataTop?.travelgoal_first?.cover
+                  ? { uri: dataTop?.travelgoal_first?.cover }
+                  : null
+              }
               style={{
-                height: "100%",
+                height: Dimensions.get("screen").width * 0.35,
                 width: "100%",
-                justifyContent: "space-between",
+                borderRadius: 5,
+                backgroundColor: "#fff",
+              }}
+              imageStyle={{
+                height: Dimensions.get("screen").width * 0.35,
+                width: "100%",
                 borderRadius: 5,
               }}
-              onPress={() => {
-                props.navigation.push("TravelGoalDetail", {
-                  article_id: dataTop?.travelgoal_first?.id,
-                });
-              }}
             >
-              <View
+              <Ripple
                 style={{
-                  backgroundColor: "#E2ECF8",
-                  marginTop: 10,
-                  marginLeft: 10,
-                  borderRadius: 10,
-                  alignSelf: "flex-start",
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "space-between",
+                  borderRadius: 5,
+                }}
+                onPress={() => {
+                  props.navigation.push("TravelGoalDetail", {
+                    article_id: dataTop?.travelgoal_first?.id,
+                  });
                 }}
               >
-                <Text
-                  size="small"
+                <View
                   style={{
-                    color: "#209fae",
-                    marginTop: 2,
-                    marginBottom: 3,
-                    marginHorizontal: 10,
+                    backgroundColor: "#E2ECF8",
+                    marginTop: 10,
+                    marginLeft: 10,
+                    borderRadius: 10,
+                    alignSelf: "flex-start",
                   }}
                 >
-                  {dataTop?.travelgoal_first?.category?.name}
-                </Text>
-              </View>
-              <LinearGradient
-                colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-                style={{
-                  height: "50%",
-                  width: "100%",
-                  alignItems: "flex-start",
-                  alignContent: "flex-start",
-                  justifyContent: "flex-end",
-                  borderRadius: 5,
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                }}
-              >
-                <View>
-                  <Text type="bold" size="title" style={{ color: "white" }}>
-                    {dataTop?.travelgoal_first?.title}
-                  </Text>
                   <Text
-                    size="description"
-                    numberOfLines={1}
-                    style={{ color: "white" }}
-                  >
-                    {dataTop?.travelgoal_first?.description}
-                  </Text>
-                  <View
+                    size="small"
                     style={{
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
+                      color: "#209fae",
+                      marginTop: 2,
+                      marginBottom: 3,
+                      marginHorizontal: 10,
                     }}
                   >
-                    {dataTop?.travelgoal_first?.created_at ? (
-                      <Text
-                        type="light"
-                        size="description"
-                        style={{ color: "white" }}
-                      >
-                        {getdate(dataTop?.travelgoal_first?.created_at)}
-                      </Text>
-                    ) : null}
-                  </View>
+                    {dataTop?.travelgoal_first?.category?.name}
+                  </Text>
                 </View>
-              </LinearGradient>
-            </Ripple>
-          </FunImageBackground>
-        ) : null}
-        {/* Popular */}
-        {dataPopular.length > 0 ? (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "space-between",
-              marginVertical: 10,
-              marginTop: 20,
-            }}
-          >
+                <LinearGradient
+                  colors={["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"]}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  style={{
+                    height: "50%",
+                    width: "100%",
+                    alignItems: "flex-start",
+                    alignContent: "flex-start",
+                    justifyContent: "flex-end",
+                    borderRadius: 5,
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                  }}
+                >
+                  <View>
+                    <Text type="bold" size="title" style={{ color: "white" }}>
+                      {dataTop?.travelgoal_first?.title}
+                    </Text>
+                    <Text
+                      size="description"
+                      numberOfLines={1}
+                      style={{ color: "white" }}
+                    >
+                      {dataTop?.travelgoal_first?.description}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {dataTop?.travelgoal_first?.created_at ? (
+                        <Text
+                          type="light"
+                          size="description"
+                          style={{ color: "white" }}
+                        >
+                          {getdate(dataTop?.travelgoal_first?.created_at)}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                </LinearGradient>
+              </Ripple>
+            </FunImageBackground>
+          ) : null}
+          {/* Popular */}
+          {dataPopular.length > 0 ? (
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 alignContent: "center",
+                justifyContent: "space-between",
+                marginVertical: 10,
+                marginTop: 20,
               }}
             >
               <View
                 style={{
-                  height: 20,
-                  marginRight: 5,
-                  width: 7,
-                  backgroundColor: "#209fae",
-                  borderRadius: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
                 }}
-              ></View>
-              <Text type="bold" size="title">
-                {t("PopularArticle")}
-              </Text>
+              >
+                <View
+                  style={{
+                    height: 20,
+                    marginRight: 5,
+                    width: 7,
+                    backgroundColor: "#209fae",
+                    borderRadius: 5,
+                  }}
+                ></View>
+                <Text type="bold" size="title">
+                  {t("PopularArticle")}
+                </Text>
+              </View>
+              <View></View>
             </View>
-            <View></View>
-          </View>
-        ) : null}
-        {dataPopular.map((item, index) => {
-          return (
+          ) : null}
+          {dataPopular.map((item, index) => {
+            return (
+              <Ripple
+                key={index}
+                onPress={() => {
+                  props.navigation.push("TravelGoalDetail", {
+                    article_id: item.id,
+                  });
+                }}
+                style={{
+                  shadowOpacity: 0.5,
+                  shadowColor: "#d3d3d3",
+                  elevation: 3,
+                  flexDirection: "row",
+                  width: "100%",
+                  backgroundColor: "#fff",
+                  borderRadius: 5,
+                  justifyContent: "flex-start",
+                  padding: 10,
+                  marginVertical: 5,
+                }}
+              >
+                <Image
+                  source={item?.cover ? { uri: item?.cover } : default_image}
+                  style={{
+                    height: (Dimensions.get("screen").width - 60) * 0.25,
+                    width: (Dimensions.get("screen").width - 60) * 0.25,
+                    borderRadius: 5,
+                  }}
+                ></Image>
+                <View
+                  style={{
+                    paddingLeft: 10,
+                    width: (Dimensions.get("screen").width - 60) * 0.75,
+                    // borderWidth: 1,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      width: "100%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text size="small" type="light">
+                      {item?.category?.name}
+                    </Text>
+                    <Text size="small" type="light">
+                      {getdate(item?.created_at)}
+                    </Text>
+                  </View>
+                  <Text size="label" type="bold" style={{ marginTop: 3 }}>
+                    {item?.title}
+                  </Text>
+                  {item?.description ? (
+                    <Text
+                      size="description"
+                      type="light"
+                      numberOfLines={2}
+                      style={{
+                        textAlign: "left",
+                        marginTop: 3,
+                        lineHeight: normalize(14),
+                      }}
+                    >
+                      {item?.description}
+                    </Text>
+                  ) : null}
+                  {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
+                  12 min read
+                </Text> */}
+                </View>
+              </Ripple>
+            );
+          })}
+
+          {/* New */}
+          {dataNew.length > 0 ? (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "space-between",
+                marginVertical: 0,
+                marginTop: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 20,
+                    marginRight: 5,
+                    width: 7,
+                    backgroundColor: "#209fae",
+                    borderRadius: 5,
+                  }}
+                ></View>
+                <Text type="bold" size="title">
+                  {t("NewArticle")}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.push("TravelGoalList");
+                }}
+              >
+                <Text
+                  style={{ color: "#209fae" }}
+                  size="description"
+                  type="regular"
+                >
+                  {t("Seemore")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+        </View>
+        <FlatList
+          contentContainerStyle={{
+            paddingStart: 20,
+            paddingEnd: 10,
+            paddingBottom: 15,
+          }}
+          horizontal
+          nestedScrollEnabled
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          style={{}}
+          data={dataNew}
+          renderItem={({ item }) => (
             <Ripple
-              key={index}
               onPress={() => {
                 props.navigation.push("TravelGoalDetail", {
                   article_id: item.id,
                 });
               }}
               style={{
+                marginRight: 10,
                 shadowOpacity: 0.5,
                 shadowColor: "#d3d3d3",
                 elevation: 3,
-                flexDirection: "row",
-                width: "100%",
                 backgroundColor: "#fff",
+                width: (Dimensions.get("screen").width - 80) / 2,
                 borderRadius: 5,
-                justifyContent: "flex-start",
-                padding: 10,
-                marginVertical: 5,
               }}
             >
               <Image
                 source={item?.cover ? { uri: item?.cover } : default_image}
                 style={{
-                  height: (Dimensions.get("screen").width - 60) * 0.25,
-                  width: (Dimensions.get("screen").width - 60) * 0.25,
-                  borderRadius: 5,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  width: (Dimensions.get("screen").width - 80) / 2,
+                  height: (Dimensions.get("screen").height - 180) / 6,
                 }}
               ></Image>
               <View
                 style={{
-                  paddingLeft: 10,
-                  width: (Dimensions.get("screen").width - 60) * 0.75,
-                  // borderWidth: 1,
+                  width: "100%",
+                  padding: 10,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "100%",
-                    justifyContent: "space-between",
-                  }}
+                <Text type="light" size="small" style={{ marginBottom: 2 }}>
+                  {item?.category?.name}
+                </Text>
+                <Text
+                  type="bold"
+                  size="label"
+                  numberOfLines={1}
+                  style={{ marginBottom: 3 }}
                 >
-                  <Text size="small" type="light">
-                    {item?.category?.name}
-                  </Text>
-                  <Text size="small" type="light">
-                    {getdate(item?.created_at)}
-                  </Text>
-                </View>
-                <Text size="label" type="bold" style={{ marginTop: 3 }}>
                   {item?.title}
                 </Text>
-                {item?.description ? (
-                  <Text
-                    size="description"
-                    type="light"
-                    numberOfLines={2}
-                    style={{
-                      textAlign: "left",
-                      marginTop: 3,
-                      lineHeight: normalize(14),
-                    }}
-                  >
-                    {item?.description}
-                  </Text>
-                ) : null}
-                {/* <Text size="small" type="light" style={{ fontStyle: "italic" }}>
-                  12 min read
-                </Text> */}
-              </View>
-            </Ripple>
-          );
-        })}
-
-        {/* New */}
-        {dataNew.length > 0 ? (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              alignContent: "center",
-              justifyContent: "space-between",
-              marginVertical: 0,
-              marginTop: 20,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                alignContent: "center",
-              }}
-            >
-              <View
-                style={{
-                  height: 20,
-                  marginRight: 5,
-                  width: 7,
-                  backgroundColor: "#209fae",
-                  borderRadius: 5,
-                }}
-              ></View>
-              <Text type="bold" size="title">
-                {t("NewArticle")}
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.push("TravelGoalList");
-              }}
-            >
-              <Text
-                style={{ color: "#209fae" }}
-                size="description"
-                type="regular"
-              >
-                {t("Seemore")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-      </View>
-      <FlatList
-        contentContainerStyle={{
-          paddingStart: 20,
-          paddingEnd: 10,
-          paddingBottom: 15,
-        }}
-        horizontal
-        nestedScrollEnabled
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        style={{}}
-        data={dataNew}
-        renderItem={({ item }) => (
-          <Ripple
-            onPress={() => {
-              props.navigation.push("TravelGoalDetail", {
-                article_id: item.id,
-              });
-            }}
-            style={{
-              marginRight: 10,
-              shadowOpacity: 0.5,
-              shadowColor: "#d3d3d3",
-              elevation: 3,
-              backgroundColor: "#fff",
-              width: (Dimensions.get("screen").width - 80) / 2,
-              borderRadius: 5,
-            }}
-          >
-            <Image
-              source={item?.cover ? { uri: item?.cover } : default_image}
-              style={{
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                width: (Dimensions.get("screen").width - 80) / 2,
-                height: (Dimensions.get("screen").height - 180) / 6,
-              }}
-            ></Image>
-            <View
-              style={{
-                width: "100%",
-                padding: 10,
-              }}
-            >
-              <Text type="light" size="small" style={{ marginBottom: 2 }}>
-                {item?.category?.name}
-              </Text>
-              <Text
-                type="bold"
-                size="label"
-                numberOfLines={1}
-                style={{ marginBottom: 3 }}
-              >
-                {item?.title}
-              </Text>
-              {/* <Text
+                {/* <Text
                 type="light"
                 size="small"
                 style={{
@@ -522,16 +523,17 @@ export default function TravelGoal(props) {
               >
                 12 min read
               </Text> */}
-              <Text type="light" size="small">
-                {getdate(item.created_at)}
-              </Text>
-            </View>
-          </Ripple>
-        )}
-        // numColumns={2}
-        keyExtractor={(item) => item.id}
-      />
-    </ScrollView>
+                <Text type="light" size="small">
+                  {getdate(item.created_at)}
+                </Text>
+              </View>
+            </Ripple>
+          )}
+          // numColumns={2}
+          keyExtractor={(item) => item.id}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

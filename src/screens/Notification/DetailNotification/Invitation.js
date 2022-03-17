@@ -368,17 +368,19 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     }
   };
   const handle_areaklik_like_itinerary = (data) => {
-    navigation.navigate("ItineraryStack", {
-      screen: "itindetail",
-      params: {
-        itintitle: data.like_itinerary.itinerary.name,
-        country: data.like_itinerary.itinerary.id,
-        token: token,
-        status: "favorite",
-        index: 0,
-        data_from: "setting",
-      },
-    });
+    if (data.like_itinerary.itinerary) {
+      navigation.navigate("ItineraryStack", {
+        screen: "itindetail",
+        params: {
+          itintitle: data.like_itinerary.itinerary.name,
+          country: data.like_itinerary.itinerary.id,
+          token: token,
+          status: "favorite",
+          index: 0,
+          data_from: "setting",
+        },
+      });
+    }
     if (data.isread == false) {
       updateisread(data.ids);
     }
