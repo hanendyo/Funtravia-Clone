@@ -45,6 +45,7 @@ const ListPopulerGQL = gql`
         end_date
         isprivate
         status
+        like_show
         day {
           id
           day

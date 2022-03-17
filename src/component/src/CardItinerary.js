@@ -455,9 +455,7 @@ export default function CardItinerary({
                           <Newglobe height={20} width={20} />
                         )}
                       </View>
-                      {item?.status == "F" &&
-                      !item?.isprivate &&
-                      item?.user_created?.id !== setting?.user_id ? (
+                      {item?.like_show ? (
                         item.liked === false ? (
                           <TouchableOpacity
                             style={{
@@ -484,7 +482,6 @@ export default function CardItinerary({
                       type="black"
                       style={{}}
                       numberOfLines={2}
-                      style={{ marginTop: 3 }}
                     >
                       {item.name}
                     </Text>

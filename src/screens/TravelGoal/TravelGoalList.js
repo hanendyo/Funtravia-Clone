@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   StatusBar,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Text } from "../../component";
@@ -346,9 +347,10 @@ export default function TravelGoalList(props) {
   }, [props.navigation, modal]);
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
+        marginBottom: -13,
       }}
     >
       {/* mulai filter search */}
@@ -851,7 +853,7 @@ export default function TravelGoalList(props) {
           ></Button>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 
