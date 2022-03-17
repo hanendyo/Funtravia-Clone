@@ -7,12 +7,28 @@ import {
   RefreshControl,
   Platform,
   ActivityIndicator,
+  Modal,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, Button, FunImage, FunVideo } from "../../../component";
+import { Text, Button, FunImage, FunVideo, Capital } from "../../../component";
 import { default_image } from "../../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
-import { AcceptNotif, Mark } from "../../../assets/svg";
+import {
+  AcceptNotif,
+  AlbumGray,
+  Albumgreen,
+  CalendarBiru,
+  DurationGreen,
+  IdcardGreen,
+  LocationaoutlineGreen,
+  Mark,
+  Memberblue,
+  PinBiru,
+  UsersgroupGreen,
+  Xhitam,
+} from "../../../assets/svg";
 import AcceptInvitation from "../../../graphQL/Mutation/Notification/AcceptInvitation";
 import RejectInvitation from "../../../graphQL/Mutation/Notification/RejectInvitation";
 import IsRead from "../../../graphQL/Mutation/Notification/IsRead";
@@ -26,15 +42,34 @@ import DeviceInfo from "react-native-device-info";
 const deviceId = DeviceInfo.getModel();
 const Notch = DeviceInfo.hasNotch();
 import NotificationCursorBased from "../../../graphQL/Query/Notification/ListNotifikasiCursorBased";
-import { useQuery } from "@apollo/react-hooks";
-import { useSelector } from "react-redux";
+import { useQuery, useLazyQuery } from "@apollo/react-hooks";
+// import { useLazyQuery } from "@apollo/client";
 
-export default function Invitation({ navigation, token, readall, setreadall }) {
+import { useSelector } from "react-redux";
+import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
+import {
+  dateFormatBetween,
+  dateFormatMDY,
+  dateFormats,
+} from "../../../component/src/dateformatter";
+import Ripple from "react-native-material-ripple";
+
+export default function Invitation({
+  navigation,
+  token,
+  readall,
+  setreadall,
+  setshowSideModal,
+}) {
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const tokenApps = useSelector((data) => data.token);
   let [datanotif, SetDataNotif] = useState([]);
   let [dataNotifFailed, setDataNotifFailed] = useState([]);
+  let [itineraryId, setItineraryId] = useState(null);
+  let [showside, setshowside] = useState(false);
+  let [dataItinerary, setDataItinerary] = useState({});
+  let [dataItem, setdataItem] = useState({});
 
   const {
     data: datasnotif,
@@ -428,10 +463,11 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           title: t("youReject"),
           position: "bottom",
         })
-      : RNToasty.Show({
-          title: t("notRespondInvit"),
-          position: "bottom",
-        });
+      : showModalTrip(data?.itinerary_buddy?.itinerary_id, data);
+    // RNToasty.Show({
+    //     title: t("notRespondInvit"),
+    //     position: "bottom",
+    //   });
     if (data.isread == false) {
       updateisread(data.ids);
     }
@@ -507,6 +543,98 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
     }
   };
 
+  // const {
+  //   data: datadetail,
+  //   loading: loadingdetail,
+  //   error: errordetail,
+  //   refetch: refetchItinerary,
+  // } = useQuery(ItineraryDetails, {
+  //   context: {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: token,
+  //     },
+  //   },
+  //   variables: { id: itineraryId },
+  //   onCompleted: (res) => {
+  //     if (res) {
+  //   setshowside(true);
+  //     }
+  //   },
+  // });
+
+  const [
+    refetchItinerary,
+    { data: datadetail, loading: loadingdetail, error: errordetail },
+  ] = useLazyQuery(ItineraryDetails, {
+    fetchPolicy: "network-only",
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+    variables: { id: itineraryId },
+    onCompleted: (res) => {
+      if (res) {
+        setDataItinerary(res);
+      }
+    },
+  });
+
+  // set to show modal detail trip
+  const showModalTrip = async (itinerary_id, item) => {
+    await setItineraryId(itinerary_id);
+    await refetchItinerary();
+    await setshowside(true);
+    await setdataItem(item);
+    await setshowSideModal(true);
+  };
+
+  const dateFormatr = (date) => {
+    var x = date?.split(" ");
+    return date ? dateFormats(x[0]) : null;
+  };
+
+  const getDN = (start, end) => {
+    var x = start;
+    var y = end,
+      start = start.split(" ");
+    end = end.split(" ");
+    var date1 = new Date(start[0]);
+    var date2 = new Date(end[0]);
+    var Difference_In_Time = date2.getTime() - date1.getTime();
+    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    return (
+      <View style={{ flexDirection: "row" }}>
+        <Text
+          size="label"
+          type={"bold"}
+          style={
+            {
+              // color: "white",
+            }
+          }
+        >
+          {Difference_In_Days + 1} {t("days")}
+          {", "}
+        </Text>
+        <Text
+          size="label"
+          type={"bold"}
+          style={
+            {
+              // color: "white",
+            }
+          }
+        >
+          {Difference_In_Days} {t("nights")}
+        </Text>
+      </View>
+    );
+  };
+
   const RenderTrans = ({ item }) => {
     if (item.notification_type == "itinerary_buddy") {
       return (
@@ -523,180 +651,220 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
           <View
             style={{
               flexDirection: "row",
-              borderBottomWidth: 0,
+              // borderBottomWidth: 0,
               borderBottomColor: "#D1D1D1",
               width: Dimensions.get("screen").width,
               paddingHorizontal: normalize(20),
               paddingVertical: normalize(20),
             }}
           >
-            <Pressable
-              style={{
-                width: "15%",
-                alignContent: "flex-start",
-                marginLeft: Platform.select({
-                  ios: Notch ? -3 : 5,
-                  android: deviceId == "LYA-L29" ? -2 : 0,
-                }),
-              }}
-              onPress={() => {
-                navigation.push("ProfileStack", {
-                  screen: "otherprofile",
-                  params: {
-                    idUser: item?.itinerary_buddy?.userinvite?.id,
-                  },
-                });
-              }}
-            >
-              <FunImage
-                style={{
-                  height: 45,
-                  width: 45,
-                  alignSelf: "center",
-                  borderRadius: 25,
-                  resizeMode: "cover",
-                }}
-                source={
-                  item &&
-                  item.itinerary_buddy &&
-                  item?.itinerary_buddy?.userinvite &&
-                  item?.itinerary_buddy?.userinvite?.picture
-                    ? {
-                        uri: item?.itinerary_buddy?.userinvite?.picture,
-                      }
-                    : default_image
-                }
-              />
-            </Pressable>
             <View
               style={{
-                flexDirection: "column",
-                width: "83%",
-                paddingLeft: 10,
+                flexDirection: "row",
+                width: "85%",
               }}
             >
-              <View
+              <Pressable
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
+                  width: "15%",
+                  alignContent: "flex-start",
+                  marginLeft: Platform.select({
+                    ios: Notch ? -3 : 5,
+                    android: deviceId == "LYA-L29" ? -2 : 0,
+                  }),
+                }}
+                onPress={() => {
+                  navigation.push("ProfileStack", {
+                    screen: "otherprofile",
+                    params: {
+                      idUser: item?.itinerary_buddy?.userinvite?.id,
+                    },
+                  });
                 }}
               >
-                <Text
-                  type="bold"
-                  size="label"
+                <FunImage
                   style={{
-                    color: "#464646",
-                    marginBottom: 2,
+                    height: 45,
+                    width: 45,
+                    alignSelf: "center",
+                    borderRadius: 25,
+                    resizeMode: "cover",
                   }}
-                >
-                  {t("hi")} {setting?.user?.first_name}, {t("hiJoinTrip")}
-                </Text>
-              </View>
+                  source={
+                    item &&
+                    item.itinerary_buddy &&
+                    item?.itinerary_buddy?.userinvite &&
+                    item?.itinerary_buddy?.userinvite?.picture
+                      ? {
+                          uri: item?.itinerary_buddy?.userinvite?.picture,
+                        }
+                      : default_image
+                  }
+                />
+              </Pressable>
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  flexWrap: "wrap",
+                  flexDirection: "column",
+                  width: "83%",
+
+                  paddingLeft: 10,
                 }}
               >
-                <Text
-                  type="regular"
-                  size="description"
+                <View
                   style={{
-                    color: "#464646",
-                    marginBottom: 2,
-                    marginRight: 5,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {item?.itinerary_buddy?.userinvite?.first_name}{" "}
-                  {t("inviteToTrip")}
-                </Text>
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    // textAlign: "right",
-                    color: "#6c6c6c",
-
-                    // width: '30%',
-                    // fontSize: 15,
-                  }}
-                >
-                  {duration(item.tgl_buat)}
-                </Text>
-              </View>
-
-              {item.itinerary_buddy &&
-              item.itinerary_buddy.isconfrim == false &&
-              item.itinerary_buddy.accepted_at == null &&
-              item.itinerary_buddy.rejected_at == null ? (
+                  <Text
+                    type="bold"
+                    size="label"
+                    style={{
+                      color: "#464646",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {t("hi")} {setting?.user?.first_name}, {t("hiJoinTrip")}
+                  </Text>
+                </View>
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    paddingHorizontal: deviceId == "LYA-L29" ? 0 : 3,
-                    paddingTop: 5,
-                    marginBottom: 5,
-                    width: "100%",
-                    alignContent: "center",
-                    borderRadius: 5,
+                    flexWrap: "wrap",
                   }}
                 >
-                  <Button
-                    onPress={() => accept(item)}
-                    size="medium"
+                  <Text
+                    type="regular"
+                    size="description"
                     style={{
-                      fontFamily: "Lato-Regular",
-                      width: 100,
-                      height: 30,
+                      color: "#464646",
+                      marginBottom: 2,
+                      marginRight: 5,
                     }}
-                    color="primary"
-                    text={t("accept")}
-                  />
-                  <Button
-                    onPress={() => reject(item)}
-                    style={{
-                      width: 80,
-                      height: 30,
-                      // opacity: 100,
-                    }}
-                    size="medium"
-                    color="secondary"
-                    variant="transparent"
-                    text={t("reject")}
-                  />
-                </View>
-              ) : item.itinerary_buddy &&
-                item.itinerary_buddy.isconfrim == true &&
-                item.itinerary_buddy.accepted_at != null &&
-                item.itinerary_buddy.rejected_at == null ? (
-                <View style={{ flexDirection: "row", marginTop: 10 }}>
-                  <AcceptNotif width="20" height="20" />
+                  >
+                    {item?.itinerary_buddy?.userinvite?.first_name}{" "}
+                    {t("inviteToTrip")}
+                  </Text>
                   <Text
                     size="description"
                     type="regular"
+                    style={{
+                      // textAlign: "right",
+                      color: "#6c6c6c",
+
+                      // width: '30%',
+                      // fontSize: 15,
+                    }}
+                  >
+                    {duration(item.tgl_buat)}
+                  </Text>
+                </View>
+
+                {item.itinerary_buddy &&
+                item.itinerary_buddy.isconfrim == false &&
+                item.itinerary_buddy.accepted_at == null &&
+                item.itinerary_buddy.rejected_at == null ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      paddingHorizontal: deviceId == "LYA-L29" ? 0 : 3,
+                      paddingTop: 5,
+                      marginBottom: 5,
+                      width: "100%",
+                      alignContent: "center",
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Button
+                      onPress={() => accept(item)}
+                      size="medium"
+                      style={{
+                        fontFamily: "Lato-Regular",
+                        width: 100,
+                        height: 30,
+                      }}
+                      color="primary"
+                      text={t("accept")}
+                    />
+                    <Button
+                      onPress={() => reject(item)}
+                      style={{
+                        width: 80,
+                        height: 30,
+                        // opacity: 100,
+                      }}
+                      size="medium"
+                      color="secondary"
+                      variant="transparent"
+                      text={t("reject")}
+                    />
+                  </View>
+                ) : item.itinerary_buddy &&
+                  item.itinerary_buddy.isconfrim == true &&
+                  item.itinerary_buddy.accepted_at != null &&
+                  item.itinerary_buddy.rejected_at == null ? (
+                  <View style={{ flexDirection: "row", marginTop: 10 }}>
+                    <AcceptNotif width="20" height="20" />
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color: "#209FAE",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {t("youAccept")}
+                    </Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text
+                      size="description"
+                      type="regular"
+                      style={{
+                        color: "#D75995",
+                      }}
+                    >
+                      {t("youReject")}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+            {item.itinerary_buddy &&
+            item.itinerary_buddy.isconfrim == false &&
+            item.itinerary_buddy.accepted_at == null &&
+            item.itinerary_buddy.rejected_at == null ? (
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <Ripple
+                  onPress={() => {
+                    showModalTrip(item?.itinerary_buddy?.itinerary_id, item);
+                  }}
+                  style={{
+                    width: "100%",
+                    alignItems: "flex-end",
+                    // borderWidth: 1,
+                    height: 80,
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="bold"
                     style={{
                       color: "#209FAE",
-                      marginLeft: 5,
                     }}
                   >
-                    {t("youAccept")}
+                    {t("Detail")}
                   </Text>
-                </View>
-              ) : (
-                <View>
-                  <Text
-                    size="description"
-                    type="regular"
-                    style={{
-                      color: "#D75995",
-                    }}
-                  >
-                    {t("youReject")}
-                  </Text>
-                </View>
-              )}
-            </View>
+                </Ripple>
+              </View>
+            ) : null}
           </View>
         </Pressable>
       );
@@ -1406,6 +1574,377 @@ export default function Invitation({ navigation, token, readall, setreadall }) {
         backgroundColor: "#f6f6f6",
       }}
     >
+      {/* modal detail trip */}
+      <Modal
+        animationType="slide"
+        onBackdropPress={() => {
+          setshowside(false), setshowSideModal(false);
+        }}
+        onRequestClose={() => {
+          setshowside(false), setshowSideModal(false);
+        }}
+        onDismiss={() => {
+          setshowside(false), setshowSideModal(false);
+        }}
+        visible={showside}
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+        }}
+        transparent={true}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            marginTop: "auto",
+            // height:
+            //   Platform.OS === "ios"
+            //     ? Notch
+            //       ? Dimensions.get("screen").height * 0.7
+            //       : Dimensions.get("screen").height * 0.55
+            //     : Dimensions.get("screen").height * 0.45,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "white",
+            borderTopLeftRadius: 15,
+            borderTopRightRadius: 15,
+          }}
+        >
+          {/* title */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: Dimensions.get("screen").width - 15,
+
+              paddingHorizontal: 30,
+              paddingVertical: 20,
+            }}
+          >
+            <Text
+              type="bold"
+              size="title"
+              style={{
+                color: "#464646",
+              }}
+            >
+              {t("hi")} {setting?.user?.first_name}, {t("hiJoinTrip")}
+            </Text>
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                backgroundColor: "with",
+                height: 35,
+                width: 32,
+                top: 0,
+                right: 0,
+                justifyContent: "flex-end",
+                alignContent: "flex-end",
+                alignItems: "flex-start",
+              }}
+              onPress={() => {
+                setshowside(false), setshowSideModal(false);
+              }}
+            >
+              <Xhitam height={15} width={15} />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 40,
+              height: 1,
+              borderWidth: 0.5,
+              borderColor: "#d1d1d1",
+              marginHorizontal: 20,
+            }}
+          />
+          {/* title */}
+          {/* isi */}
+          <View
+            style={{
+              paddingHorizontal: 30,
+
+              width: "100%",
+            }}
+          >
+            {/* judul trip */}
+            <View
+              style={{
+                flexDirection: "row",
+                borderBottomWidth: 1,
+                paddingVertical: 10,
+                borderBottomColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <IdcardGreen width={30} height={30} />
+              </View>
+              <View
+                style={{
+                  width: "85%",
+                }}
+              >
+                <Text type="regular" size="label" style={{ marginBottom: 5 }}>
+                  {t("title") + " " + t("trip")}
+                </Text>
+                <Text type="bold" size="label">
+                  {dataItinerary?.itinerary_detail?.name}
+                </Text>
+              </View>
+            </View>
+            {/* kota destinasi */}
+            <View
+              style={{
+                flexDirection: "row",
+                borderBottomWidth: 1,
+                paddingVertical: 10,
+                borderBottomColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <LocationaoutlineGreen width={30} height={30} />
+              </View>
+              <View
+                style={{
+                  width: "85%",
+                }}
+              >
+                <Text type="regular" size="label">
+                  {t("City") + " " + t("destination")}
+                </Text>
+                <Text type="bold" size="label">
+                  {dataItinerary?.itinerary_detail?.city?.name}
+                </Text>
+              </View>
+            </View>
+            {/* Date */}
+            <View
+              style={{
+                flexDirection: "row",
+                borderBottomWidth: 1,
+                paddingVertical: 10,
+                borderBottomColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <CalendarBiru width={30} height={30} />
+              </View>
+              <View
+                style={{
+                  width: "85%",
+                }}
+              >
+                <Text type="regular" size="label">
+                  {t("date")}
+                </Text>
+                <Text type="bold" size="label">
+                  {dateFormatr(dataItinerary?.itinerary_detail?.start_date) +
+                    "  -  " +
+                    dateFormatr(dataItinerary?.itinerary_detail?.end_date)}
+                </Text>
+              </View>
+            </View>
+            {/* Duration */}
+            <View
+              style={{
+                flexDirection: "row",
+                borderBottomWidth: 1,
+                paddingVertical: 10,
+                borderBottomColor: "#d1d1d1",
+              }}
+            >
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <DurationGreen width={30} height={30} />
+              </View>
+              <View
+                style={{
+                  width: "85%",
+                }}
+              >
+                <Text type="regular" size="label">
+                  {t("duration")}
+                </Text>
+                <Text type="bold" size="label">
+                  {dataItinerary?.itinerary_detail?.start_date
+                    ? getDN(
+                        dataItinerary?.itinerary_detail?.start_date,
+                        dataItinerary?.itinerary_detail?.end_date
+                      )
+                    : null}
+                </Text>
+              </View>
+            </View>
+            {/* Travel Buddy */}
+            <View
+              style={{
+                flexDirection: "row",
+
+                paddingVertical: 10,
+              }}
+            >
+              <View
+                style={{
+                  width: "15%",
+                }}
+              >
+                <UsersgroupGreen width={30} height={30} />
+              </View>
+              <View
+                style={{
+                  width: "85%",
+                }}
+              >
+                <Text type="regular" size="label">
+                  {t("travelBuddy")}
+                </Text>
+                <View
+                  style={{
+                    paddingVertical: 5,
+                  }}
+                >
+                  <FlatList
+                    scrollEnabled={false}
+                    data={dataItinerary?.itinerary_detail?.buddy}
+                    numColumns={2}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          marginVertical: 10,
+                          flex: 1,
+                          flexDirection: "row",
+                          paddingHorizontal: 2,
+                          alignContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          source={
+                            item?.user?.picture
+                              ? { uri: item?.user?.picture }
+                              : default_image
+                          }
+                          style={{
+                            height: 30,
+                            width: 30,
+                            borderRadius: 15,
+                          }}
+                        />
+                        <Text
+                          size="label"
+                          type="bold"
+                          style={{ marginLeft: 5, width: 130 }}
+                          numberOfLines={1}
+                        >
+                          {item?.user?.first_name
+                            ? Capital({ text: item?.user?.first_name })
+                            : "User Funtravia"}
+                        </Text>
+                      </View>
+                    )}
+                    keyExtractor={(d) => "buddy" + d?.id}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+          {/* button */}
+          {dataItem.itinerary_buddy &&
+          dataItem.itinerary_buddy.isconfrim == false &&
+          dataItem.itinerary_buddy.accepted_at == null &&
+          dataItem.itinerary_buddy.rejected_at == null ? (
+            <View
+              style={{
+                paddingTop: 12,
+                paddingBottom: Platform.select({
+                  ios: Notch ? 25 : 12,
+                  android: 12,
+                }),
+
+                backgroundColor: "#FFFFFF",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+
+                elevation: 5,
+                // shadowColor: "#6F7273",
+
+                // shadowOffset: { width: 0, height: 2 },
+                // shadowOpacity: 1,
+                // shadowRadius: 2,
+                // elevation: 3,
+                borderTopWidth: 1,
+                borderTopColor: "#f6f6f6",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  paddingHorizontal: deviceId == "LYA-L29" ? 0 : 3,
+                  paddingTop: 5,
+
+                  marginBottom: 5,
+                  width: "100%",
+                  alignContent: "center",
+                  borderRadius: 5,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    reject(dataItem),
+                      setshowside(false),
+                      setshowSideModal(false);
+                  }}
+                  style={{
+                    width: Dimensions.get("screen").width / 2.5,
+                    height: 30,
+                    // opacity: 100,
+                  }}
+                  size="medium"
+                  color="secondary"
+                  variant="transparent"
+                  text={t("reject")}
+                />
+                <Button
+                  onPress={() => {
+                    accept(dataItem),
+                      setshowside(false),
+                      setshowSideModal(false);
+                  }}
+                  size="medium"
+                  style={{
+                    fontFamily: "Lato-Regular",
+                    width: Dimensions.get("screen").width / 2.5,
+                    height: 40,
+                  }}
+                  color="primary"
+                  text={t("accept")}
+                />
+              </View>
+            </View>
+          ) : null}
+        </View>
+      </Modal>
+      {/* end modal detail trip */}
       {datanotif && datanotif.length > 0 ? (
         <FlatList
           contentContainerStyle={{

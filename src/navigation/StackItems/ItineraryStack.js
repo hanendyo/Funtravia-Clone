@@ -1,5 +1,5 @@
 import React from "react";
-import {createStackNavigator} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Trip from "../../screens/Itinerary/TripPlaning/CreateTrip";
 import itindetail from "../../screens/Itinerary/ItineraryDetail";
 import ItinGoogle from "../../screens/Itinerary/ItinGoogle";
