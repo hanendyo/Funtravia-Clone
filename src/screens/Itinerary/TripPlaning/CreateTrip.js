@@ -128,9 +128,13 @@ export default function Trip(props) {
 
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height:
-        Platform.OS == "ios" ? NativeModules.StatusBarManager.HEIGHT : null,
+        Platform.OS == "ios"
+          ? Notch
+            ? NativeModules.StatusBarManager.HEIGHT
+            : 45
+          : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 7 : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 7 : 9) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
@@ -1675,7 +1679,7 @@ export default function Trip(props) {
                 animationOut="slideOutRight"
                 isVisible={modaltravel}
                 style={{
-                  marginTop: NotchAndro ? 0 : 1,
+                  marginTop: NotchAndro ? 0 : 0,
                   marginBottom: -40,
                   backgroundColor: "#14646e",
                   justifyContent: "flex-end",
@@ -1766,22 +1770,25 @@ export default function Trip(props) {
                         width: Dimensions.get("screen").width,
                         backgroundColor: "white",
                         paddingTop: 10,
-                        paddingHorizontal: 10,
+                        // paddingHorizontal: 10,
                         paddingBottom: 10,
+                        // borderWidth: 1,
                       }}
                     >
                       {withSelected.length > 0 ? (
                         <View
                           style={{
-                            paddingBottom: 10,
                             marginHorizontal: "3%",
+                            marginBottom: 1,
+                            paddingBottom: 5,
+                            // paddingTop: 6,
                             // borderWidth: 2
                           }}
                         >
                           <Text
                             type="regular"
                             size="description"
-                            style={{ paddingVertical: 10 }}
+                            style={{ paddingVertical: 5 }}
                           >
                             {t("with")} :
                           </Text>

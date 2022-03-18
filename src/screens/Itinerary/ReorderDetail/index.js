@@ -1041,12 +1041,16 @@ export default function ReoderDetail({ navigation, route }) {
               style={{
                 marginLeft: 15,
                 marginTop: deviceId == "LYA-L29" ? 10 : NotchAndro ? 2 : 5,
+                width: deviceId == "LYA-L29" ? 230 : NotchAndro ? 270 : 270,
               }}
             >
               <Text
                 type="bold"
                 size="title"
-                style={{ color: "#FFF", marginBottom: -3 }}
+                style={{
+                  color: "#FFF",
+                  marginBottom: -3,
+                }}
                 numberOfLines={1}
               >
                 {headData?.name ? headData.name : ""}

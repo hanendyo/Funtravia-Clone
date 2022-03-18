@@ -758,11 +758,11 @@ export default function Detail_movie(props) {
             Platform.OS == "ios"
               ? Notch
                 ? SafeStatusBar + 3
-                : SafeStatusBar - 5
+                : SafeStatusBar
               : deviceId == "LYA-L29"
               ? SafeStatusBar + 3
               : NotchAndro
-              ? SafeStatusBar + 4
+              ? SafeStatusBar + 6
               : SafeStatusBar,
           left: 2,
           opacity: backOpacity,
@@ -808,7 +808,7 @@ export default function Detail_movie(props) {
             Platform.OS == "ios"
               ? Notch
                 ? SafeStatusBar + 1
-                : SafeStatusBar - 8
+                : SafeStatusBar - 3
               : deviceId == "LYA-L29"
               ? SafeStatusBar
               : NotchAndro
