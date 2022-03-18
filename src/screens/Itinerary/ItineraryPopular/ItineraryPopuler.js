@@ -774,7 +774,6 @@ export default function ItineraryPopuler(props) {
               </View>
             )}
             keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             refreshControl={
               <RefreshControl

@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
+  Pressable,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { useQuery } from "@apollo/react-hooks";
@@ -20,6 +21,7 @@ export default function Notification(props) {
   const { t } = useTranslation();
   let [token, setToken] = useState(props.route.params.token);
   let [readall, setreadall] = useState(true);
+  let [showSideModal, setshowSideModal] = useState(false);
   const [routes] = useState([
     { key: "tab1", title: t("notification") },
     { key: "tab2", title: t("information") },
@@ -90,6 +92,7 @@ export default function Notification(props) {
           token={tokenApps}
           readall={readall}
           setreadall={(e) => setreadall(e)}
+          setshowSideModal={(e) => setshowSideModal(e)}
         />
       );
     } else if (route.key == "tab2") {
@@ -111,6 +114,20 @@ export default function Notification(props) {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      {showSideModal ? (
+        <Pressable
+          onPress={() => setshowSideModal(false)}
+          style={{
+            width: Dimensions.get("screen").width + 25,
+            height: Dimensions.get("screen").height,
+            justifyContent: "center",
+            opacity: 0.7,
+            zIndex: 99999999,
+            backgroundColor: "#000",
+            position: "absolute",
+          }}
+        ></Pressable>
+      ) : null}
       <TabView
         lazy={true}
         navigationState={{ index, routes }}

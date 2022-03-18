@@ -309,6 +309,10 @@ import Backtotop from "./files/backtotop.svg";
 import Bottomsegitiga from "./files/bottomsegitiga";
 import Mark from "./files/mark";
 import DeleteMessage from "./files/DeleteMessage";
+import DurationGreen from "./files/durationGreen";
+import IdcardGreen from "./files/idcardGreen";
+import LocationaoutlineGreen from "./files/locationaoutlineGreen";
+import UsersgroupGreen from "./files/usersgroupGreen";
 
 export {
   Mark,
@@ -622,4 +626,8 @@ export {
   Backtotop,
   Bottomsegitiga,
   DeleteMessage,
+  DurationGreen,
+  LocationaoutlineGreen,
+  IdcardGreen,
+  UsersgroupGreen,
 };
