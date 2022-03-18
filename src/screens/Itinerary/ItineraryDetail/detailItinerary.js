@@ -101,8 +101,6 @@ export default function DetailItinerary(props) {
     );
   };
 
-  console.log(props?.route?.params?.data?.itinerary_detail, "ini dia");
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
