@@ -28,8 +28,10 @@ import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchInput } from "../../redux/action";
+import DeviceInfo from "react-native-device-info";
 
 export default function ItineraryChooseday(props) {
+  const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   let [modalAlert, setmodalAlert] = useState(false);
@@ -133,7 +135,7 @@ export default function ItineraryChooseday(props) {
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 9 : 11) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {
@@ -1297,9 +1299,6 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-
-        console.log("datas", datas);
-        console.log("kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let responseevent = await mutationSaveEvent({
@@ -1390,9 +1389,6 @@ export default function ItineraryChooseday(props) {
           datas.push(dataSelected[i].id);
           x++;
         }
-
-        console.log("dtas", datas);
-        console.log("Kiriman", Kiriman);
         if (x == dataSelected.length) {
           try {
             let response = props.route.params.data_dest.event_id

@@ -157,6 +157,7 @@ export default function ItineraryDetail(props) {
     ios: Notch ? 48 : 20,
     android: NativeModules.StatusBarManager.HEIGHT,
   });
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
   /**
    * stats
    */
@@ -821,7 +822,12 @@ export default function ItineraryDetail(props) {
         setData(responseJson);
       }
     } catch (error) {
-      console.error(error);
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Get data error",
+        detail: error,
+      });
     }
   };
 
@@ -5255,8 +5261,10 @@ export default function ItineraryDetail(props) {
                 Platform.OS == "ios"
                   ? null
                   : deviceId == "LYA-L29"
-                  ? SafeStatusBar + 15
-                  : SafeStatusBar,
+                  ? SafeStatusBar - 27
+                  : NotchAndro
+                  ? SafeStatusBar - 45
+                  : SafeStatusBar - 27,
               zIndex: 99,
               opacity: textOpacity,
               flexDirection: "row",

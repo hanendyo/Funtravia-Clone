@@ -61,7 +61,7 @@ export default function ItinGoogle(props) {
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : 45,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 8 : 10,
+      paddingTop: Platform.OS == "ios" ? 8 : NotchAndro ? 10 : 7,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {

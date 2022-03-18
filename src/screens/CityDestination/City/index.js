@@ -850,7 +850,6 @@ export default function CityDetail(props) {
                           }}
                           style={{
                             width: "25%",
-
                             padding: 5,
                           }}
                         >
@@ -870,9 +869,6 @@ export default function CityDetail(props) {
                               />
                             </View>
                           ) : (
-                            // <View>
-
-                            // </View>
                             <View
                               style={{
                                 // height: 60,
@@ -926,26 +922,36 @@ export default function CityDetail(props) {
                           }}
                           style={{
                             width: "25%",
-                            alignContent: "center",
-                            alignItems: "center",
-                            // padding: 10,
-                            paddingHorizontal: 10,
-                            paddingVertical: 10,
+                            padding: 5,
                           }}
                         >
                           <View
                             style={{
-                              height: 80,
+                              // height: 60,
+                              marginVertical: 5,
                             }}
                           >
-                            <FunIcon
-                              icon={item.icon ? item.icon : "w-fog"}
-                              height={50}
-                              width={50}
+                            <View
                               style={{
-                                bottom: -3,
+                                height: 60,
+                                width: 60,
+                                borderRadius: 40,
+                                backgroundColor: "#F6F6F6",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                alignSelf: "center",
                               }}
-                            />
+                            >
+                              <FunIcon
+                                icon={item.icon ? item.icon : "w-fog"}
+                                height={50}
+                                width={50}
+                                style={{
+                                  bottom: -3,
+                                }}
+                              />
+                            </View>
+
                             <Text
                               size="description"
                               style={{

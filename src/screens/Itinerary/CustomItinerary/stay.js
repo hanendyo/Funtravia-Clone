@@ -147,7 +147,7 @@ export default function detailCustomItinerary(props) {
             style={{
               alignItems: "center",
               width: 200,
-              marginTop: Platform.OS === "ios" ? (Notch ? 6 : 5) : null,
+              marginTop: Platform.OS === "ios" ? (Notch ? 4 : 6) : null,
             }}
           >
             <Text type="bold" size="label" style={{ color: "#FFF" }}>
@@ -691,8 +691,12 @@ export default function detailCustomItinerary(props) {
         setLoadingApp(true);
       }
       if (error) {
-        console.log(error);
-        // throw new Error("Error input");
+        setAlertPopUp({
+          ...alertPopUp,
+          show: true,
+          judul: "Error input",
+          detail: error,
+        });
       }
       if (response.data) {
         setLoadingApp(false);
@@ -747,7 +751,12 @@ export default function detailCustomItinerary(props) {
         );
       }
     } catch (error) {
-      console.log(error);
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Get location error",
+        detail: error,
+      });
     }
   };
 
@@ -799,7 +808,12 @@ export default function detailCustomItinerary(props) {
         setLoadingApp(false);
       }
     } catch (error) {
-      console.error(error);
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: "Get nearby location error",
+        detail: error,
+      });
     }
   };
 
@@ -1509,12 +1523,14 @@ export default function detailCustomItinerary(props) {
                   alignContent: "center",
                   paddingTop:
                     Platform.OS === "ios"
-                      ? 14
+                      ? Notch
+                        ? 0
+                        : 4
                       : deviceId == "LYA-L29"
-                      ? 5
+                      ? 3
                       : NotchAndro
                       ? 2
-                      : 4,
+                      : 2,
                 }}
               >
                 {t("HotelName")}

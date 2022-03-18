@@ -15,6 +15,7 @@ import {
   Modal as ModalRN,
   ActivityIndicator,
   BackHandler,
+  NativeModules,
 } from "react-native";
 import {
   CustomImage,
@@ -61,6 +62,13 @@ export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
   let [modalShare, setModalShare] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
+  const Notch = DeviceInfo.hasNotch();
+  const deviceId = DeviceInfo.getModel();
+  const SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: StatusBar.currentHeight,
+  });
   const headerOpacity = yOffset.interpolate({
     inputRange:
       Platform.OS == "ios"
@@ -87,12 +95,6 @@ export default function EventDetail(props) {
     extrapolate: "clamp",
   });
 
-  let Notch = DeviceInfo.hasNotch();
-  let deviceId = DeviceInfo.getModel();
-  let SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
-  });
   const HeaderComponent = {
     headerShown: true,
     // title: "List Event",
@@ -101,7 +103,7 @@ export default function EventDetail(props) {
     headerTitle: "",
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#14646e",
+      // backgroundColor: "#14646e",
       elevation: 0,
       borderBottomWidth: 0,
     },
@@ -130,8 +132,12 @@ export default function EventDetail(props) {
                 ? deviceId === "iPhone 12 Pro"
                   ? 10
                   : 8
-                : 7
-              : 4,
+                : 2
+              : deviceId == "LYA-L29"
+              ? -5
+              : NotchAndro
+              ? 4
+              : -4,
         }}
       >
         <Animated.View
@@ -683,23 +689,26 @@ export default function EventDetail(props) {
       headerBackground: () => (
         <Animated.View
           style={{
-            backgroundColor: "#14646e",
             position: "absolute",
             left: 0,
 
             right: 0,
-            height:
-              Platform.OS == "ios"
-                ? Notch
-                  ? normalize(45)
-                  : normalize(20)
-                : normalize(45),
+            height: Platform.OS == "ios" ? (Notch ? 45 : 45) : normalize(55),
             // Platform.select({
             //   ios: Notch ? 100 : 70,
             //   android: deviceId == "CPH2127" ? 100 : 85,
             // }),
             flexDirection: "row",
-            top: 0,
+            top:
+              Platform.OS == "ios"
+                ? Notch
+                  ? -2
+                  : 0
+                : deviceId == "LYA-L29"
+                ? -28
+                : NotchAndro
+                ? -18
+                : -31,
             bottom: 0,
             opacity: headerOpacity,
           }}
@@ -713,13 +722,13 @@ export default function EventDetail(props) {
                   ? Notch
                     ? normalize(45)
                     : normalize(45)
-                  : normalize(45),
+                  : normalize(55),
               top:
                 Platform.OS == "ios"
                   ? Notch
                     ? normalize(45)
                     : normalize(20)
-                  : normalize(45),
+                  : normalize(55),
               backgroundColor: "#209fae",
             }}
           >
@@ -738,7 +747,16 @@ export default function EventDetail(props) {
                 style={{
                   height: 35,
                   width: 35,
-                  top: normalize(0),
+                  top:
+                    Platform.OS == "ios"
+                      ? Notch
+                        ? 1
+                        : -2
+                      : deviceId == "LYA-L29"
+                      ? 2
+                      : NotchAndro
+                      ? 5
+                      : 2,
                   // Platform.OS == "ios"
                   //   ? SafeStatusBar
                   //   : deviceId == "CPH2127"
@@ -761,7 +779,16 @@ export default function EventDetail(props) {
                 color: "#fff",
                 marginLeft: 10,
                 fontSize: 18,
-                top: normalize(13),
+                top:
+                  Platform.OS == "ios"
+                    ? Notch
+                      ? 14
+                      : 11
+                    : deviceId == "LYA-L29"
+                    ? 13
+                    : NotchAndro
+                    ? 16
+                    : 13,
                 // Platform.OS == "ios"
                 //   ? SafeStatusBar + 15
                 //   : deviceId == "CPH2127"

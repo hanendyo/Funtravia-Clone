@@ -751,7 +751,7 @@ export default function MovieLocation({ navigation, route }) {
               ? 23
               : NotchAndro
               ? 45
-              : 45,
+              : 27,
           // ? Notch
           //   ? SafeStatusBar + 3
           //   : SafeStatusBar
@@ -802,7 +802,7 @@ export default function MovieLocation({ navigation, route }) {
               ? 23
               : NotchAndro
               ? 45
-              : 45,
+              : 27,
           opacity: backOpacitySecond,
         }}
       >

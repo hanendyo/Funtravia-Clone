@@ -1113,7 +1113,7 @@ export default function CreateCustom(props) {
         hasBackdrop={false}
         isVisible={modals}
         style={{
-          backgroundColor: "#209fae",
+          backgroundColor: "#14646e",
 
           // backgroundColor: 'rgba(0, 0, 0, 0.25)',
           justifyContent: "flex-end",
@@ -1125,7 +1125,7 @@ export default function CreateCustom(props) {
         <KeyboardAvoidingView
           style={{
             flex: 1,
-            backgroundColor: "#209fae",
+            backgroundColor: "#14646e",
 
             width: Dimensions.get("screen").width,
             // height: '100%',
@@ -1142,10 +1142,10 @@ export default function CreateCustom(props) {
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
-              height: 50,
+              height: 45,
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 20 : -20,
+              marginTop: Platform.OS === "ios" ? 26 : -20,
             }}
           >
             <TouchableOpacity
@@ -1156,7 +1156,7 @@ export default function CreateCustom(props) {
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: 15,
+                paddingTop: 18,
                 // top: 20,
                 // left: 20,
               }}
