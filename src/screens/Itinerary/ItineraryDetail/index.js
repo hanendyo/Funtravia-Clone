@@ -148,6 +148,9 @@ export default function ItineraryDetail(props) {
   let { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const setting = useSelector((data) => data.setting);
+  const NotchAndro = NativeModules.StatusBarManager
+    ? NativeModules.StatusBarManager.HEIGHT > 24
+    : false;
   let [tambahan, setTambahan] = useState(55);
   let [HeaderHeight, setHeaderHeight] = useState(
     Dimensions.get("screen").height * (Notch ? 0.3 : 0.35)
@@ -157,7 +160,6 @@ export default function ItineraryDetail(props) {
     ios: Notch ? 48 : 20,
     android: NativeModules.StatusBarManager.HEIGHT,
   });
-  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
   /**
    * stats
    */
@@ -822,12 +824,7 @@ export default function ItineraryDetail(props) {
         setData(responseJson);
       }
     } catch (error) {
-      setAlertPopUp({
-        ...alertPopUp,
-        show: true,
-        judul: "Get data error",
-        detail: error,
-      });
+      console.error(error);
     }
   };
 
@@ -5261,10 +5258,10 @@ export default function ItineraryDetail(props) {
                 Platform.OS == "ios"
                   ? null
                   : deviceId == "LYA-L29"
-                  ? SafeStatusBar - 27
+                  ? -2
                   : NotchAndro
-                  ? SafeStatusBar - 45
-                  : SafeStatusBar - 27,
+                  ? -2
+                  : 0,
               zIndex: 99,
               opacity: textOpacity,
               flexDirection: "row",
@@ -5386,6 +5383,7 @@ export default function ItineraryDetail(props) {
                   // flexDirection: "row",
                   marginTop: Platform.OS == "ios" ? 2 : 6,
                   paddingRight: 20,
+                  width: Dimensions.get("screen").width / 1.5,
                 }}
               >
                 <Animated.Text

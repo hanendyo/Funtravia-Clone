@@ -215,7 +215,7 @@ export default function CountrySrc({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: Platform.OS == "ios" ? null : 4,
+              bottom: Platform.OS == "ios" ? (Notch ? null : 5) : 5,
             }}
           >
             <Button

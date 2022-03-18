@@ -1847,9 +1847,9 @@ export default function GroupDetail(props) {
                 Platform.OS == "ios"
                   ? Notch
                     ? 2
-                    : 2
+                    : -1
                   : deviceId == "LYA-L29"
-                  ? 2
+                  ? 1
                   : NotchAndro
                   ? 0
                   : 0,

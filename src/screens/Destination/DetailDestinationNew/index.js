@@ -128,7 +128,7 @@ const Index = (props) => {
           HeightWeb -
           StatusBar.currentHeight
         : NotchAndro
-        ? normalize(220) +
+        ? normalize(210) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -523,12 +523,12 @@ const Index = (props) => {
             qty: 1,
           },
         });
-        if (loadingLike) {
-          alert("Loading!!");
-        }
-        if (errorLike) {
-          throw new Error("Error Input");
-        }
+        // if (loadingLike) {
+        //   alert("Loading!!");
+        // }
+        // if (errorLike) {
+        //   throw new Error("Error Input");
+        // }
         if (response.data) {
           if (
             response.data.setDestination_wishlist.code === 200 ||
@@ -563,12 +563,12 @@ const Index = (props) => {
             destination_id: id,
           },
         });
-        if (loadingUnLike) {
-          alert("Loading!!");
-        }
-        if (errorUnLike) {
-          throw new Error("Error Input");
-        }
+        // if (loadingUnLike) {
+        //   alert("Loading!!");
+        // }
+        // if (errorUnLike) {
+        //   throw new Error("Error Input");
+        // }
         if (response.data) {
           if (
             response.data.unset_wishlist_destinasi.code === 200 ||
@@ -653,7 +653,7 @@ const Index = (props) => {
         }}
       >
         {dataDestination?.liked === true ? (
-          <Pressable
+          <TouchableOpacity
             style={{
               backgroundColor: "#F6F6F6",
               marginRight: 2,
@@ -667,15 +667,15 @@ const Index = (props) => {
             onPress={() => _unliked(dataDestination.id)}
           >
             <Love height={20} width={20} />
-          </Pressable>
+          </TouchableOpacity>
         ) : (
-          <Pressable
-            onPress={() =>
-              shareAction({
-                from: "destination",
-                target: dataDestination.id,
-              })
-            }
+          <TouchableOpacity
+            // onPress={() =>
+            //   shareAction({
+            //     from: "destination",
+            //     target: dataDestination.id,
+            //   })
+            // }
             style={{
               backgroundColor: "#F6F6F6",
               marginRight: 2,
@@ -686,9 +686,10 @@ const Index = (props) => {
               justifyContent: "center",
               marginRight: 5,
             }}
+            onPress={() => _liked(dataDestination.id)}
           >
             <LikeEmpty height={20} width={20} />
-          </Pressable>
+          </TouchableOpacity>
         )}
         <TouchableOpacity
           onPress={() =>
@@ -773,7 +774,7 @@ const Index = (props) => {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#14646e",
+          backgroundColor: "#209fae",
         }}
       >
         <Animated.Image
@@ -1133,7 +1134,7 @@ const Index = (props) => {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: kiriman.id,
                   token: tokenApps,
-                  Position: props.route.params?.Position ?? "destination",
+                  Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                   parent: props.route.params?.parent,
                 },
@@ -1158,7 +1159,7 @@ const Index = (props) => {
                   Iditinerary: props?.route?.params?.iditinerary,
                   Kiriman: data?.destinationById.id,
                   token: tokenApps,
-                  Position: props.route.params?.Position ?? "destination",
+                  Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
                   parent: props.route.params?.parent,
                 },
@@ -1993,7 +1994,7 @@ const Index = (props) => {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "center",
-                  paddingHorizontal: Platform.OS === "ios" ? 10 : null,
+                  paddingHorizontal: Platform.OS === "ios" ? 15 : null,
                 }}
               >
                 <Text
@@ -2010,8 +2011,6 @@ const Index = (props) => {
                           ? "#FFFFFF"
                           : "#209fae",
                       textTransform: "capitalize",
-                      width: "100%",
-                      textAlign: "center",
                     },
                   ]}
                 >
@@ -2134,7 +2133,7 @@ const Index = (props) => {
           <ActivityIndicator size="large" color="#209fae" />
         </View>
       ) : null}
-      <Satbar backgroundColor="#14646E" barStyle="light-content" />
+      <Satbar backgroundColor="#14646E" />
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -2164,7 +2163,7 @@ const Index = (props) => {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
           style={{
-            height: 52,
+            height: 50,
             // marginLeft: 8,
           }}
         >
@@ -2196,15 +2195,12 @@ const Index = (props) => {
           zIndex: 9999,
           opacity: hide.current,
           flexDirection: "row",
-          justifyContent: "space-between",
-          // alignContent: "center",
-          // alignItems: "center",
-          // marginHorizontal: 20,
-          paddingHorizontal: 20,
-          // paddingTop: 5,
+          // justifyContent: "space-between",
+          alignContent: "center",
+          alignItems: "center",
+          marginHorizontal: 20,
           height: 55,
-          width: Dimensions.get("screen").width,
-          backgroundColor: "#209fae",
+          width: Dimensions.get("screen").width - 40,
         }}
       >
         <Button
@@ -2214,7 +2210,7 @@ const Index = (props) => {
           variant="transparent"
           onPress={() => props.navigation.goBack()}
           style={{
-            height: 52,
+            height: 50,
             // marginLeft: 8,
           }}
         >
@@ -2242,7 +2238,6 @@ const Index = (props) => {
             // opacity: hide.current,
             color: "#fff",
             marginLeft: 10,
-            top: Platform.OS == "ios" ? 12 : deviceId == "LYA-L29" ? 13 : 12,
             // fontSize: 20,
             // fontFamily: "Lato-Bold",
           }}
@@ -2270,7 +2265,7 @@ const Index = (props) => {
           }}
         >
           {dataDestination?.liked === true ? (
-            <Pressable
+            <TouchableOpacity
               style={{
                 backgroundColor: "#F6F6F6",
                 marginRight: 2,
@@ -2284,15 +2279,15 @@ const Index = (props) => {
               onPress={() => _unliked(dataDestination.id)}
             >
               <Love height={20} width={20} />
-            </Pressable>
+            </TouchableOpacity>
           ) : (
-            <Pressable
-              onPress={() =>
-                shareAction({
-                  from: "destination",
-                  target: dataDestination.id,
-                })
-              }
+            <TouchableOpacity
+              // onPress={() =>
+              //   shareAction({
+              //     from: "destination",
+              //     target: dataDestination.id,
+              //   })
+              // }
               style={{
                 backgroundColor: "#F6F6F6",
                 marginRight: 2,
@@ -2303,9 +2298,10 @@ const Index = (props) => {
                 justifyContent: "center",
                 marginRight: 5,
               }}
+              onPress={() => _liked(dataDestination.id)}
             >
               <LikeEmpty height={20} width={20} />
-            </Pressable>
+            </TouchableOpacity>
           )}
           <TouchableOpacity
             onPress={() =>
@@ -2397,7 +2393,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 7,
+            width: Dimensions.get("screen").width / 8,
           }}
         >
           <Animated.View>
@@ -2446,7 +2442,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 7,
+            width: Dimensions.get("screen").width / 8,
           }}
         >
           <Animated.View>
@@ -2454,10 +2450,11 @@ const Index = (props) => {
               <Pressable
                 onPress={() => setModalSosial(true)}
                 style={{
-                  // height: layoutsWeb,
+                  height: layoutsWeb,
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  // marginVertical: 5,
                 }}
               >
                 <Text

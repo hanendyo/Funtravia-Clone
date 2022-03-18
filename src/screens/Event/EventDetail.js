@@ -53,7 +53,6 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
-import normalize from "react-native-normalize";
 
 export default function EventDetail(props) {
   const [modalLogin, setModalLogin] = useState(false);
@@ -62,13 +61,6 @@ export default function EventDetail(props) {
   let [showside, setshowside] = useState(false);
   let [modalShare, setModalShare] = useState(false);
   const yOffset = useRef(new Animated.Value(0)).current;
-  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
-  const Notch = DeviceInfo.hasNotch();
-  const deviceId = DeviceInfo.getModel();
-  const SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
-  });
   const headerOpacity = yOffset.interpolate({
     inputRange:
       Platform.OS == "ios"
@@ -95,6 +87,12 @@ export default function EventDetail(props) {
     extrapolate: "clamp",
   });
 
+  let Notch = DeviceInfo.hasNotch();
+  let deviceId = DeviceInfo.getModel();
+  let SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: NativeModules.StatusBarManager.HEIGHT,
+  });
   const HeaderComponent = {
     headerShown: true,
     // title: "List Event",
@@ -103,7 +101,7 @@ export default function EventDetail(props) {
     headerTitle: "",
     headerMode: "screen",
     headerStyle: {
-      // backgroundColor: "#14646e",
+      backgroundColor: "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
@@ -132,12 +130,8 @@ export default function EventDetail(props) {
                 ? deviceId === "iPhone 12 Pro"
                   ? 10
                   : 8
-                : 2
-              : deviceId == "LYA-L29"
-              ? -5
-              : NotchAndro
-              ? 4
-              : -4,
+                : 7
+              : 4,
         }}
       >
         <Animated.View
@@ -689,120 +683,74 @@ export default function EventDetail(props) {
       headerBackground: () => (
         <Animated.View
           style={{
+            backgroundColor: "#209FAE",
             position: "absolute",
             left: 0,
 
             right: 0,
-            height: Platform.OS == "ios" ? (Notch ? 45 : 45) : normalize(55),
-            // Platform.select({
-            //   ios: Notch ? 100 : 70,
-            //   android: deviceId == "CPH2127" ? 100 : 85,
-            // }),
+            // height: Platform.OS == "ios" ? 100 : 80,
+            height: Platform.select({
+              ios: Notch ? 100 : 70,
+              android: deviceId == "CPH2127" ? 100 : 85,
+            }),
             flexDirection: "row",
-            top:
-              Platform.OS == "ios"
-                ? Notch
-                  ? -2
-                  : 0
-                : deviceId == "LYA-L29"
-                ? -28
-                : NotchAndro
-                ? -18
-                : -31,
+            top: 0,
             bottom: 0,
             opacity: headerOpacity,
           }}
         >
-          <Animated.View
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              width: Dimensions.get("screen").width,
-              flexDirection: "row",
-              height:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? normalize(45)
-                    : normalize(45)
-                  : normalize(55),
-              top:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? normalize(45)
-                    : normalize(20)
-                  : normalize(55),
-              backgroundColor: "#209fae",
+              height: 50,
+              marginLeft: 18,
             }}
           >
-            <Button
-              text={""}
-              size="medium"
-              type="circle"
-              variant="transparent"
-              onPress={() => props.navigation.goBack()}
+            <Animated.View
               style={{
-                height: 50,
-                marginLeft: 18,
-              }}
-            >
-              <Animated.View
-                style={{
-                  height: 35,
-                  width: 35,
-                  top:
-                    Platform.OS == "ios"
-                      ? Notch
-                        ? 1
-                        : -2
-                      : deviceId == "LYA-L29"
-                      ? 2
-                      : NotchAndro
-                      ? 5
-                      : 2,
-                  // Platform.OS == "ios"
-                  //   ? SafeStatusBar
-                  //   : deviceId == "CPH2127"
-                  //   ? SafeStatusBar + 5
-                  //   : SafeStatusBar + 5,
-                  borderRadius: 30,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {Platform.OS == "ios" ? (
-                  <Arrowbackios height={15} width={15}></Arrowbackios>
-                ) : (
-                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-                )}
-              </Animated.View>
-            </Button>
-            <Animated.Text
-              style={{
-                color: "#fff",
-                marginLeft: 10,
-                fontSize: 18,
+                height: 35,
+                width: 35,
                 top:
                   Platform.OS == "ios"
-                    ? Notch
-                      ? 14
-                      : 11
-                    : deviceId == "LYA-L29"
-                    ? 13
-                    : NotchAndro
-                    ? 16
-                    : 13,
-                // Platform.OS == "ios"
-                //   ? SafeStatusBar + 15
-                //   : deviceId == "CPH2127"
-                //   ? SafeStatusBar + 16
-                //   : SafeStatusBar + 16,
-                fontFamily: "Lato-Bold",
+                    ? SafeStatusBar
+                    : deviceId == "CPH2127"
+                    ? SafeStatusBar + 5
+                    : SafeStatusBar + 5,
+                borderRadius: 30,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Truncate
-                text={dataevent?.name ? dataevent.name : ""}
-                length={35}
-              />
-            </Animated.Text>
-          </Animated.View>
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <Animated.Text
+            style={{
+              color: "#fff",
+              marginLeft: 10,
+              fontSize: 18,
+              top:
+                Platform.OS == "ios"
+                  ? SafeStatusBar + 15
+                  : deviceId == "CPH2127"
+                  ? SafeStatusBar + 16
+                  : SafeStatusBar + 16,
+              fontFamily: "Lato-Bold",
+            }}
+          >
+            <Truncate
+              text={dataevent?.name ? dataevent.name : ""}
+              length={35}
+            />
+          </Animated.Text>
         </Animated.View>
       ),
       headerTransparent: true,

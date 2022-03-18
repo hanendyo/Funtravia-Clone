@@ -11,6 +11,7 @@ import {
   View,
   Pressable,
   FlatList,
+  NativeModules,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { default_image } from "../../../assets/png";
@@ -24,7 +25,7 @@ import {
 import {
   Button,
   Text,
-  StatusBar as CustomStatusBar,
+  StatusBar as StaBar,
   Truncate,
 } from "../../../component";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,7 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 40;
 const SafeStatusBar = Platform.select({
   ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
+  android: NativeModules.StatusBarManager.HEIGHT,
 });
 
 const tab2ItemSize = (width - 40) / 3;
@@ -53,7 +54,7 @@ import { useSelector } from "react-redux";
 
 export default function Unesco({ navigation, route }) {
   // untuk hp yang layar camera dan sound misah dari layar utama
-  const NotchAndro = StatusBar.currentHeight > 24;
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
   let [tambahan, setTambahan] = useState(0);
   let [tambahanJudul, setTambahanJudul] = useState(0);
@@ -69,10 +70,10 @@ export default function Unesco({ navigation, route }) {
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(245) + tambahanJudul + tambahan - StatusBar.currentHeight
+        ? normalize(245) + tambahanJudul + tambahan - SafeStatusBar
         : NotchAndro
-        ? normalize(225) + tambahanJudul + tambahan - StatusBar.currentHeight
-        : normalize(210) + tambahanJudul + tambahan - StatusBar.currentHeight,
+        ? normalize(225) + tambahanJudul + tambahan - SafeStatusBar
+        : normalize(210) + tambahanJudul + tambahan - SafeStatusBar,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({
@@ -707,7 +708,7 @@ export default function Unesco({ navigation, route }) {
                 size="label"
                 type="regular"
               >
-                (1999)
+                {t("year")}: (1999)
               </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -1009,7 +1010,6 @@ export default function Unesco({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <CustomStatusBar backgroundColor="#14646e" barStyle="light-content" />
       {loadingPage ? (
         <View
           style={{
@@ -1025,6 +1025,7 @@ export default function Unesco({ navigation, route }) {
           <ActivityIndicator size="large" color="#209fae" />
         </View>
       ) : null}
+      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
       <CountrySrc
         selectedCountry={selectedCountry}
         SetselectedCountry={(e) => SetselectedCountry(e)}
@@ -1036,7 +1037,7 @@ export default function Unesco({ navigation, route }) {
       <Animated.View
         style={{
           position: "absolute",
-          top: SafeStatusBar,
+          top: Platform.OS == "ios" ? SafeStatusBar : SafeStatusBar,
           zIndex: 9999,
           opacity: hides.current,
           flexDirection: "row",
@@ -1089,12 +1090,11 @@ export default function Unesco({ navigation, route }) {
           opacity: hide.current,
           flexDirection: "row",
           justifyContent: "space-between",
-          // alignContent: "center",
-          // alignItems: "center",
+          alignContent: "center",
+          alignItems: "center",
           // marginHorizontal: 20,
           paddingHorizontal: 20,
-          // paddingTop: 5,
-          height: 55,
+          height: Platform.OS === "ios" ? 55 : 55,
           width: Dimensions.get("screen").width,
           backgroundColor: "#209fae",
         }}
@@ -1106,7 +1106,7 @@ export default function Unesco({ navigation, route }) {
           variant="transparent"
           onPress={() => navigation.goBack()}
           style={{
-            height: 55,
+            height: 50,
             // marginLeft: 8,
           }}
         >
@@ -1133,7 +1133,6 @@ export default function Unesco({ navigation, route }) {
             alignContent: "center",
             alignItems: "center",
             // padding: 10,
-            marginBottom: 1,
           }}
         >
           <Text
@@ -1167,7 +1166,7 @@ const styles = StyleSheet.create({
         ? Notch
           ? normalize(420) - 48
           : normalize(360) - 20
-        : normalize(340) - StatusBar.currentHeight,
+        : normalize(340) - SafeStatusBar,
     width: "100%",
     alignItems: "center",
     // justifyContent: "center",

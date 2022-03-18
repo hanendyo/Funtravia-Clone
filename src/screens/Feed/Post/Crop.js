@@ -32,6 +32,7 @@ import {
 } from "react-native-compressor";
 import Video from "react-native-video";
 import RNFS from "react-native-fs";
+import DeviceInfo from "react-native-device-info";
 
 export default function Crop(props) {
   const [data, setData] = useState(props?.route?.params?.data);
@@ -39,7 +40,7 @@ export default function Crop(props) {
   const [newRatio, setNewRatio] = useState("S");
   const [indexAktif, setIndexAktive] = useState(0);
   const tokenApps = useSelector((data) => data.token);
-
+  const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   let [loadVid, setLoadVid] = useState(false);
   let [modalDelete, setModalDelete] = useState(false);
@@ -60,9 +61,23 @@ export default function Crop(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 12) : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <Button

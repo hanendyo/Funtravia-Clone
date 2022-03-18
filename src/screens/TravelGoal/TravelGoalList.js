@@ -8,14 +8,14 @@ import {
   RefreshControl,
   Image,
   TextInput,
-  // TouchableOpacity,
+  TouchableOpacity,
   ScrollView,
   ActivityIndicator,
   StatusBar,
   Platform,
   SafeAreaView,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, Text } from "../../component";
 import { useTranslation } from "react-i18next";
 import {

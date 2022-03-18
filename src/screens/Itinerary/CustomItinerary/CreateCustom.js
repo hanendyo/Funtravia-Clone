@@ -36,9 +36,12 @@ import { default_image } from "../../../assets/png";
 import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
 import Ripple from "react-native-material-ripple";
+import DeviceInfo from "react-native-device-info";
 
 export default function CreateCustom(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
+  const deviceId = DeviceInfo.getModel();
 
   const HeaderComponent = {
     headerShown: true,
@@ -1142,10 +1145,10 @@ export default function CreateCustom(props) {
               alignItems: "center",
               alignContent: "center",
               backgroundColor: "#209fae",
-              height: 45,
+              height: Platform.OS == "ios" ? 45 : 55,
               width: Dimensions.get("screen").width,
               // marginBottom: 20,
-              marginTop: Platform.OS === "ios" ? 26 : -20,
+              marginTop: Platform.OS === "ios" ? (Notch ? 26 : 0) : -20,
             }}
           >
             <TouchableOpacity
@@ -1156,7 +1159,8 @@ export default function CreateCustom(props) {
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
-                paddingTop: 18,
+                paddingTop:
+                  Platform.OS == "ios" ? 18 : deviceId == "LYA-L29" ? 16 : 16,
                 // top: 20,
                 // left: 20,
               }}

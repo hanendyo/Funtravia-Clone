@@ -51,7 +51,7 @@ const SafeStatusBar = Platform.select({
 });
 const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
-  android: 305 - StatusBar.currentHeight,
+  android: 305 - NativeModules.StatusBarManager.HEIGHT,
 });
 import { useSelector } from "react-redux";
 
@@ -681,17 +681,7 @@ export default function MovieLocation({ navigation, route }) {
       <Animated.View
         style={{
           transform: [{ translateY: titleTranslateY }],
-          // height: Platform.OS === "ios" ? normalize(55) : normalize(60),
-          height:
-            Platform.OS == "ios"
-              ? Notch
-                ? normalize(45)
-                : normalize(55)
-              : deviceId == "LYA-L29"
-              ? normalize(55)
-              : NotchAndro
-              ? normalize(55)
-              : normalize(55),
+          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
           flex: 1,
           alignItems: "flex-start",
           justifyContent: "center",
@@ -703,17 +693,9 @@ export default function MovieLocation({ navigation, route }) {
           paddingLeft: 60,
           backgroundColor: "#209FAE",
           opacity: titleOpacity,
-          // top:
-          //   Platform.OS == "ios"
-          //     ? SafeStatusBar
-          //     : NotchAndro
-          //     ? SafeStatusBar + 8
-          //     : SafeStatusBar,
           top:
             Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar
-                : SafeStatusBar
+              ? SafeStatusBar
               : deviceId == "LYA-L29"
               ? SafeStatusBar
               : NotchAndro
@@ -726,7 +708,14 @@ export default function MovieLocation({ navigation, route }) {
           type="bold"
           style={{
             color: "#fff",
-            // marginBottom: NotchAndro ? 0 : 0,
+            marginTop:
+              Platform.OS == "ios"
+                ? 0
+                : deviceId == "LYA-L29"
+                ? 2
+                : NotchAndro
+                ? 0
+                : 0,
           }}
           numberOfLines={1}
         >
@@ -745,19 +734,13 @@ export default function MovieLocation({ navigation, route }) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? 45
-                : 45
+                ? SafeStatusBar + 3
+                : SafeStatusBar
               : deviceId == "LYA-L29"
-              ? 23
+              ? SafeStatusBar - 4
               : NotchAndro
-              ? 45
-              : 27,
-          // ? Notch
-          //   ? SafeStatusBar + 3
-          //   : SafeStatusBar
-          // : NotchAndro
-          // ? SafeStatusBar + 3
-          // : SafeStatusBar,
+              ? SafeStatusBar
+              : SafeStatusBar,
           left: 2,
           opacity: backOpacity,
         }}
@@ -796,13 +779,13 @@ export default function MovieLocation({ navigation, route }) {
           top:
             Platform.OS == "ios"
               ? Notch
-                ? 45
-                : 45
+                ? SafeStatusBar + 1
+                : SafeStatusBar - 3
               : deviceId == "LYA-L29"
-              ? 23
+              ? SafeStatusBar - 5
               : NotchAndro
-              ? 45
-              : 27,
+              ? SafeStatusBar - 3
+              : SafeStatusBar - 3,
           opacity: backOpacitySecond,
         }}
       >
@@ -812,9 +795,10 @@ export default function MovieLocation({ navigation, route }) {
           }}
           style={{
             marginTop: 10,
-            marginLeft: 17,
-            height: 35,
-            width: 35,
+            marginLeft: 15,
+            borderRadius: 40,
+            height: 40,
+            width: 40,
             justifyContent: "center",
             alignItems: "center",
           }}
