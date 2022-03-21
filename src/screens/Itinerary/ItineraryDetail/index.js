@@ -1131,6 +1131,7 @@ export default function ItineraryDetail(props) {
 
     let AlertTime = parseFloat(splitLastTime[0]) + parseFloat(splitDuration[0]);
 
+    console.log("AlertTime", AlertTime);
     if (AlertTime <= 23) {
       let dataday = { ...datadayaktif };
 
