@@ -84,10 +84,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -111,10 +111,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -147,10 +147,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -182,10 +182,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -217,10 +217,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text type="regular" size="description" numberOfLines={2}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " " + t("sendAMovie") + data_movie.name
               : t("sendAMovie") + data_movie.name
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " " + t("sendAMovie") + data_movie.name
             : Truncate({ text: datas.name }, { length: 8 }) +
               " " +
@@ -246,10 +246,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={2}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " " + t("sendAnEvent") + data_event.name
               : t("sendAnEvent") + data_event.name
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " " + t("sendAnEvent") + data_event.name
             : Truncate({ text: datas.name }, { length: 8 }) +
               " " +
@@ -271,10 +271,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text size="description" type="regular" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -306,10 +306,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={{}} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -340,10 +340,10 @@ export default function RecentChat({ data, style, room }) {
       >
         <Text style={style} size="description" numberOfLines={1}>
           {datas.chat == "personal"
-            ? datas.user_id == settingApps.user_id
+            ? datas.user_id == settingApps?.user_id
               ? t("you") + " : "
               : ""
-            : datas.user_id == settingApps.user_id
+            : datas.user_id == settingApps?.user_id
             ? t("you") + " : "
             : Truncate({ text: datas.name }, { length: 8 }) + " : "}
         </Text>
@@ -362,10 +362,10 @@ export default function RecentChat({ data, style, room }) {
   return (
     <Text style={style} size="description" numberOfLines={2}>
       {datas.chat == "personal"
-        ? datas.user_id == settingApps.user_id
+        ? datas.user_id == settingApps?.user_id
           ? t("you") + " : " + datas.text
           : datas.text
-        : datas.user_id == settingApps.user_id
+        : datas.user_id == settingApps?.user_id
         ? t("you") + " : " + datas.text
         : Truncate({ text: datas.name }, { length: 8 }) + " : " + datas.text}
     </Text>

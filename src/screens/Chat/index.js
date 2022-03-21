@@ -65,7 +65,7 @@ export default function Message({ navigation, route }) {
   const settingApps = useSelector((data) => data.setting);
   const { width, height } = Dimensions.get("screen");
   const { t } = useTranslation();
-  const [user, setUser] = useState(settingApps.user);
+  const [user, setUser] = useState(settingApps?.user);
   const [data, setData] = useState([]);
   const [dataRes, setDataRes] = useState([]);
   const [dataGroup, setDataGroup] = useState([]);
@@ -171,18 +171,22 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
+
     if (response.status != 500) {
       let dataResponse = await response.json();
       let sum = await dataResponse.reduce(
         (a, { count_newmassage }) => a + count_newmassage,
         0
       );
+
       dispatch(setCountMessage(sum));
       for (let i of dataResponse) {
         socket.emit("join", i.id);
       }
       await setData(dataResponse);
       await setDataRes(dataResponse);
+      await setLoading(false);
+    } else {
       await setLoading(false);
     }
   };
@@ -442,7 +446,7 @@ export default function Message({ navigation, route }) {
                         marginLeft: Platform.OS == "ios" ? 1 : 0,
                       }}
                     >
-                      {item.count}
+                      {item.count ? item.count : "0"}
                     </Text>
                   </View>
                 ) : null}
