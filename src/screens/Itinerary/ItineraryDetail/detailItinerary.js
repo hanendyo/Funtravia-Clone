@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Platform,
+  NativeModules,
 } from "react-native";
 import { Capital, Text } from "../../../component";
 import { Button } from "../../../component";
@@ -14,9 +15,12 @@ import { useTranslation } from "react-i18next";
 import { Arrowbackios, Arrowbackwhite } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import { dateFormats } from "../../../component/src/dateformatter";
+import DeviceInfo from "react-native-device-info";
 
 export default function DetailItinerary(props) {
   const { t, i18n } = useTranslation();
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -28,13 +32,22 @@ export default function DetailItinerary(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 8 : 9) : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
