@@ -14,6 +14,7 @@ import {
   FlatList,
   Animated,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import {
   NewGroup,
@@ -382,7 +383,7 @@ export default function ChatsearchPage({ navigation, route }) {
 
   const srcinpt = useRef();
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
       {/* <View style={{ flex: 1, borderRadius: 15 }}> */}
       <Modal
@@ -647,7 +648,7 @@ export default function ChatsearchPage({ navigation, route }) {
       /> */}
 
       {/* </View> */}
-    </View>
+    </SafeAreaView>
   );
 }
 

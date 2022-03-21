@@ -180,7 +180,7 @@ export default function TravelGoal(props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, marginBottom: -13 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={{
           backgroundColor: "#f6f6f6",

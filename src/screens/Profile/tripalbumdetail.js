@@ -8,6 +8,7 @@ import {
   RefreshControl,
   FlatList,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { Sharegreen, Arrowbackwhite, Arrowbackios } from "../../assets/svg";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -216,7 +217,7 @@ export default function tripalbumdetail(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "white",
@@ -397,6 +398,6 @@ export default function tripalbumdetail(props) {
         dataImage={dataImage}
         setClose={() => setModalss(!modalss)}
       />
-    </View>
+    </SafeAreaView>
   );
 }

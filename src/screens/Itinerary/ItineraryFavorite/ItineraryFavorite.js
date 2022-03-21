@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/client";
 import Favorite from "../../../graphQL/Query/Itinerary/ItineraryFavorite";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ItineraryFavorite(props) {
   const { t } = useTranslation();
@@ -121,7 +122,7 @@ export default function ItineraryFavorite(props) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingTop: -55 }}>
       <ModalRN
         useNativeDriver={true}
         visible={soon}
@@ -276,6 +277,6 @@ export default function ItineraryFavorite(props) {
           </View>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

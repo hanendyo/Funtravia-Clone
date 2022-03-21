@@ -12,6 +12,7 @@ import {
   Modal,
   TouchableOpacity,
   BackHandler,
+  SafeAreaView,
 } from "react-native";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import DeviceInfo from "react-native-device-info";
@@ -46,10 +47,6 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
 const HeaderHeight = width - 70;
 const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: StatusBar.currentHeight,
-});
 
 export default function Detail_movie(props) {
   const NotchAndro = StatusBar.currentHeight > 24;
@@ -351,494 +348,488 @@ export default function Detail_movie(props) {
     );
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <>
       <Satbar backgroundColor="#14646E" />
-      <ModalLogin
-        modalLogin={modalLogin}
-        setModalLogin={() => setModalLogin(false)}
-        props={props}
-      />
-
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT + normalize(20),
-          backgroundColor: "#fff",
-          paddingBottom: 20,
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "#FFF",
         }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
       >
-        <View
-          style={{
-            justifyContent: "flex-start",
-            paddingHorizontal: 20,
-            marginBottom: 15,
+        <ModalLogin
+          modalLogin={modalLogin}
+          setModalLogin={() => setModalLogin(false)}
+          props={props}
+        />
+
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop: HEADER_MAX_HEIGHT + normalize(20),
+            backgroundColor: "#fff",
+            paddingBottom: 20,
           }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
         >
           <View
             style={{
-              width: "100%",
-              marginBottom: 5,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              justifyContent: "flex-start",
+              paddingHorizontal: 20,
+              marginBottom: 15,
             }}
           >
-            <Text size="title" type="bold" style={{ marginBottom: 5, flex: 1 }}>
-              {movie_byid?.title}
-            </Text>
-            <TouchableOpacity
-              type="circle"
-              color="secondary"
+            <View
               style={{
-                alignSelf: "flex-end",
-                justifyContent: "center",
-                alignItems: "center",
+                width: "100%",
+                marginBottom: 5,
                 flexDirection: "row",
-                backgroundColor: "#F6F6F6",
-                height: 30,
-                width: 30,
-                borderRadius: 30,
-              }}
-              onPress={() => {
-                tokenApps ? setModalShare(true) : setModalLogin(true);
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <ShareBlack height={20} width={20} />
-            </TouchableOpacity>
+              <Text
+                size="title"
+                type="bold"
+                style={{ marginBottom: 5, flex: 1 }}
+              >
+                {movie_byid?.title}
+              </Text>
+              <TouchableOpacity
+                type="circle"
+                color="secondary"
+                style={{
+                  alignSelf: "flex-end",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  backgroundColor: "#F6F6F6",
+                  height: 30,
+                  width: 30,
+                  borderRadius: 30,
+                }}
+                onPress={() => {
+                  tokenApps ? setModalShare(true) : setModalLogin(true);
+                }}
+              >
+                <ShareBlack height={20} width={20} />
+              </TouchableOpacity>
+            </View>
+            <Text
+              type="regular"
+              size="label"
+              style={{
+                textAlign: "left",
+                lineHeight: 21,
+              }}
+            >
+              {movie_byid?.description}
+            </Text>
           </View>
-          <Text
-            type="regular"
-            size="label"
+          {movie_byid?.movie_destination?.map((item, index) => {
+            indeks = index;
+            return (
+              <View
+                key={index}
+                style={{
+                  width: Dimensions.get("screen").width,
+                  // marginBottom: 15,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginHorizontal: 20,
+                  }}
+                >
+                  <Text size="label" type="bold" style={{ marginBottom: 5 }}>
+                    {t("location") + " " + (index + 1)} :
+                  </Text>
+                  <Text
+                    size="label"
+                    type="bold"
+                    // style={{ marginHorizontal: 20, marginBottom: 5 }}
+                  >
+                    {" " + item.list_destination.name}
+                  </Text>
+                </View>
+                <FunImage
+                  source={
+                    item && item.image
+                      ? { uri: item.image }
+                      : { uri: item.list_destination.images[0].image }
+                  }
+                  style={{
+                    height: 150,
+                    width: Dimensions.get("screen").width - 30,
+                    marginHorizontal: 15,
+                    borderRadius: 5,
+                    marginBottom: 5,
+                  }}
+                />
+                <Text
+                  style={{ marginHorizontal: 20, marginBottom: 10 }}
+                  size="description"
+                  type="light"
+                >
+                  {item.description_image}
+                </Text>
+                <Text
+                  style={{
+                    marginHorizontal: 20,
+                    lineHeight: 22,
+                    marginBottom: 15,
+                  }}
+                  size="label"
+                  type="regular"
+                >
+                  {item.description}
+                </Text>
+              </View>
+            );
+          })}
+          {loadingmovie ? null : (
+            <View
+              style={{
+                backgroundColor: "#f6f6f6",
+                justifyContent: "center",
+                paddingHorizontal: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", marginBottom: 10, marginTop: 30 }}
+                size="label"
+                type="bold"
+              >
+                {t("batasText1")} {movie_byid?.title} {t("batasText2")}
+              </Text>
+              <Text
+                style={{ textAlign: "center", marginBottom: 30 }}
+                size="label"
+                type="regular"
+              >
+                {t("letsText")}
+              </Text>
+            </View>
+          )}
+          {listdestinasi_bymovie && listdestinasi_bymovie.length > 0 ? (
+            <CardDestination
+              data={listdestinasi_bymovie}
+              props={props}
+              setData={(e) => setlistdestinasi_bymovie(e)}
+              token={tokenApps}
+              dataFrom={"movie"}
+              dataFromId={movie_byid?.id}
+            />
+          ) : null}
+        </Animated.ScrollView>
+        <Modal
+          useNativeDriver={true}
+          visible={modalShare}
+          onRequestClose={() => setModalShare(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalShare(false)}
             style={{
-              textAlign: "left",
-              lineHeight: 21,
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 4,
             }}
           >
-            {movie_byid?.description}
-          </Text>
-        </View>
-        {movie_byid?.movie_destination?.map((item, index) => {
-          indeks = index;
-          return (
             <View
-              key={index}
               style={{
-                width: Dimensions.get("screen").width,
-                // marginBottom: 15,
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 100,
+                borderRadius: 5,
               }}
             >
               <View
                 style={{
-                  flexDirection: "row",
-                  marginHorizontal: 20,
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                  alignItems: "center",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                  justifyContent: "center",
                 }}
               >
-                <Text size="label" type="bold" style={{ marginBottom: 5 }}>
-                  {t("location") + " " + (index + 1)} :
-                </Text>
-                <Text
-                  size="label"
-                  type="bold"
-                  // style={{ marginHorizontal: 20, marginBottom: 5 }}
-                >
-                  {" " + item.list_destination.name}
+                <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                  {t("option")}
                 </Text>
               </View>
-              <FunImage
-                source={
-                  item && item.image
-                    ? { uri: item.image }
-                    : { uri: item.list_destination.images[0].image }
-                }
+              <Pressable
+                onPress={() => setModalShare(false)}
                 style={{
-                  height: 150,
-                  width: Dimensions.get("screen").width - 30,
-                  marginHorizontal: 15,
-                  borderRadius: 5,
-                  marginBottom: 5,
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 60,
                 }}
-              />
-              <Text
-                style={{ marginHorizontal: 20, marginBottom: 10 }}
-                size="description"
-                type="light"
               >
-                {item.description_image}
-              </Text>
-              <Text
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <Pressable
                 style={{
-                  marginHorizontal: 20,
-                  lineHeight: 22,
-                  marginBottom: 15,
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  // height: 50,
+                  borderColor: "#d1d1d1",
                 }}
-                size="label"
-                type="regular"
-              >
-                {item.description}
-              </Text>
-            </View>
-          );
-        })}
-        {loadingmovie ? null : (
-          <View
-            style={{
-              backgroundColor: "#f6f6f6",
-              justifyContent: "center",
-              paddingHorizontal: 15,
-            }}
-          >
-            <Text
-              style={{ textAlign: "center", marginBottom: 10, marginTop: 30 }}
-              size="label"
-              type="bold"
-            >
-              {t("batasText1")} {movie_byid?.title} {t("batasText2")}
-            </Text>
-            <Text
-              style={{ textAlign: "center", marginBottom: 30 }}
-              size="label"
-              type="regular"
-            >
-              {t("letsText")}
-            </Text>
-          </View>
-        )}
-        {listdestinasi_bymovie && listdestinasi_bymovie.length > 0 ? (
-          <CardDestination
-            data={listdestinasi_bymovie}
-            props={props}
-            setData={(e) => setlistdestinasi_bymovie(e)}
-            token={tokenApps}
-            dataFrom={"movie"}
-            dataFromId={movie_byid?.id}
-          />
-        ) : null}
-      </Animated.ScrollView>
-      <Modal
-        useNativeDriver={true}
-        visible={modalShare}
-        onRequestClose={() => setModalShare(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => setModalShare(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 4,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 100,
-              borderRadius: 5,
-            }}
-          >
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-                alignItems: "center",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                backgroundColor: "#f6f6f6",
-                justifyContent: "center",
-              }}
-            >
-              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
-                {t("option")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setModalShare(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: 55,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 60,
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <Pressable
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                // height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                setModalShare(false);
-                props.navigation.navigate("ChatStack", {
-                  screen: "SendToChat",
-                  params: {
-                    dataSend: {
-                      id: movie_byid?.id,
-                      cover: movie_byid?.cover,
-                      name: movie_byid?.title,
-                      description: movie_byid?.description,
+                onPress={() => {
+                  setModalShare(false);
+                  props.navigation.navigate("ChatStack", {
+                    screen: "SendToChat",
+                    params: {
+                      dataSend: {
+                        id: movie_byid?.id,
+                        cover: movie_byid?.cover,
+                        name: movie_byid?.title,
+                        description: movie_byid?.description,
+                      },
+                      title: t("MovieLocation"),
+                      tag_type: "tag_movie",
                     },
-                    title: t("MovieLocation"),
-                    tag_type: "tag_movie",
-                  },
-                });
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("Send")}...
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                // height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                setModalShare(false);
-                shareAction({
-                  from: "movie",
-                  target: movie_byid?.id,
-                });
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("shareTo")}...
-              </Text>
-            </Pressable>
-            <Pressable
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                setModalShare(false);
-                CopyLink({
-                  from: "movie",
-                  target: movie_byid?.id,
-                  success: t("successCopyLink"),
-                  failed: t("failedCopyLink"),
-                });
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("copyLink")}
-              </Text>
-            </Pressable>
+                  });
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("Send")}...
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  // height: 50,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  setModalShare(false);
+                  shareAction({
+                    from: "movie",
+                    target: movie_byid?.id,
+                  });
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("shareTo")}...
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  height: 50,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  setModalShare(false);
+                  CopyLink({
+                    from: "movie",
+                    target: movie_byid?.id,
+                    success: t("successCopyLink"),
+                    failed: t("failedCopyLink"),
+                  });
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("copyLink")}
+                </Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      {/* Image Background */}
+        {/* Image Background */}
 
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          backgroundColor: "#14646e",
-          overflow: "hidden",
-          height:
-            Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT - 8
-              : HEADER_MAX_HEIGHT - 5,
-          transform: [{ translateY: headerTranslateY }],
-          zIndex: 1,
-          top: SafeStatusBar,
-        }}
-      >
-        <Animated.Image
+        <Animated.View
+          pointerEvents="none"
           style={{
             position: "absolute",
-            top: 0,
             left: 0,
             right: 0,
-            width: null,
-            height: HEADER_MAX_HEIGHT,
-            resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslateY }],
+            backgroundColor: "#14646e",
+            overflow: "hidden",
+            height:
+              Platform.OS == "ios"
+                ? HEADER_MAX_HEIGHT - 8
+                : HEADER_MAX_HEIGHT - 5,
+            transform: [{ translateY: headerTranslateY }],
             zIndex: 1,
+            top: 0,
           }}
-          source={
-            movie_byid?.cover ? { uri: movie_byid?.cover } : default_image
-          }
-        />
-      </Animated.View>
-
-      {/*End Image Background */}
-
-      {/* Title Header */}
-
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
-          flex: 1,
-          alignItems: "flex-start",
-          justifyContent: "center",
-          position: "absolute",
-          left: 0,
-          right: -10,
-          bottom: 0,
-          zIndex: 999,
-          paddingLeft: 60,
-          backgroundColor: "#209FAE",
-          opacity: titleOpacity,
-          top:
-            Platform.OS == "ios"
-              ? SafeStatusBar
-              : NotchAndro
-              ? SafeStatusBar + 5
-              : SafeStatusBar,
-        }}
-      >
-        <Text
-          size="title"
-          style={{
-            color: "#fff",
-
-            // marginBottom:
-            //   Platform.OS == "android" ? (NotchAndro ? 5 : 0) : Notch ? 0 : 5,
-          }}
-          type="bold"
-          numberOfLines={1}
         >
-          {movie_byid?.title}
-        </Text>
-      </Animated.View>
+          <Animated.Image
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              width: null,
+              height: HEADER_MAX_HEIGHT,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslateY }],
+              zIndex: 1,
+            }}
+            source={
+              movie_byid?.cover ? { uri: movie_byid?.cover } : default_image
+            }
+          />
+        </Animated.View>
 
-      {/*End Title Header */}
+        {/*End Image Background */}
 
-      {/* Back Arrow One */}
-      {/* before scroll */}
+        {/* Title Header */}
 
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: 100,
-          width: 100,
-          position: "absolute",
-          zIndex: 999,
-          // top: SafeStatusBar,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 3
-                : SafeStatusBar
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar + 3
-              : NotchAndro
-              ? SafeStatusBar + 6
-              : SafeStatusBar,
-          left: 2,
-          opacity: backOpacity,
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            props.navigation.goBack();
-          }}
+        <Animated.View
           style={{
-            marginTop: 10,
-            marginLeft: 15,
-            backgroundColor: "rgba(0,0,0, 0.5)",
-            borderRadius: 35,
-            height: 35,
-            width: 35,
+            transform: [{ translateY: titleTranslateY }],
+            height: Platform.OS === "ios" ? normalize(55) : normalize(50),
+            flex: 1,
+            alignItems: "flex-start",
             justifyContent: "center",
-            alignItems: "center",
+            position: "absolute",
+            left: 0,
+            right: -10,
+            bottom: 0,
+            zIndex: 999,
+            paddingLeft: 60,
+            backgroundColor: "#209FAE",
+            opacity: titleOpacity,
+            top: 0,
           }}
         >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Pressable>
-      </Animated.View>
+          <Text
+            size="title"
+            style={{
+              color: "#fff",
 
-      {/* End Back Arrow One */}
+              // marginBottom:
+              //   Platform.OS == "android" ? (NotchAndro ? 5 : 0) : Notch ? 0 : 5,
+            }}
+            type="bold"
+            numberOfLines={1}
+          >
+            {movie_byid?.title}
+          </Text>
+        </Animated.View>
 
-      {/* Back Arrow Two */}
-      {/* after scroll */}
+        {/*End Title Header */}
 
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: 100,
-          width: 100,
-          position: "absolute",
-          zIndex: 999,
-          // top: SafeStatusBar,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 1
-                : SafeStatusBar - 3
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar
-              : NotchAndro
-              ? SafeStatusBar + 3
-              : SafeStatusBar - 3,
-          opacity: backOpacitySecond,
-        }}
-      >
-        <Pressable
-          onPress={() => props.navigation.goBack()}
+        {/* Back Arrow One */}
+        {/* before scroll */}
+
+        <Animated.View
           style={{
-            marginTop: 10,
-            marginLeft: 15,
-            borderRadius: 40,
-            height: 40,
-            width: 40,
-            justifyContent: "center",
-            alignItems: "center",
+            transform: [{ translateY: titleTranslateY }],
+            height: 100,
+            width: 100,
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            left: 2,
+            opacity: backOpacity,
           }}
         >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Pressable>
-      </Animated.View>
+          <Pressable
+            onPress={() => {
+              props.navigation.goBack();
+            }}
+            style={{
+              marginTop: 10,
+              marginLeft: 15,
+              backgroundColor: "rgba(0,0,0, 0.5)",
+              borderRadius: 35,
+              height: 35,
+              width: 35,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Pressable>
+        </Animated.View>
 
-      {/* End Back Arrow Two */}
-    </View>
+        {/* End Back Arrow One */}
+
+        {/* Back Arrow Two */}
+        {/* after scroll */}
+
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            height: 100,
+            width: 100,
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            opacity: backOpacitySecond,
+          }}
+        >
+          <Pressable
+            onPress={() => props.navigation.goBack()}
+            style={{
+              marginTop: 10,
+              marginLeft: 15,
+              borderRadius: 40,
+              height: 40,
+              width: 40,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Pressable>
+        </Animated.View>
+
+        {/* End Back Arrow Two */}
+      </SafeAreaView>
+    </>
   );
 }
 

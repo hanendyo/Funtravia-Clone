@@ -55,6 +55,7 @@ import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
 import { setSettingUser } from "../../redux/action";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SearchPg(props, { navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
@@ -496,6 +497,7 @@ export default function SearchPg(props, { navigation, route }) {
       },
     },
   });
+  const insets = useSafeAreaInsets();
 
   //BUAT FOLLOW UNFOLLOW FUNCTION
   const _unfollow = async (id, index) => {
@@ -1164,14 +1166,16 @@ export default function SearchPg(props, { navigation, route }) {
                     />
                   </View>
                 ) : destinationSearch.length > 0 ? (
-                  <CardDestination
-                    data={destinationSearch}
-                    props={props}
-                    setData={(e) => SetdestinationSearch(e)}
-                    token={tokenApps}
-                    dataFrom="search"
-                    searchInput={searchtext ? searchtext : null}
-                  />
+                  <View style={{ paddingBottom: insets.bottom + 30 }}>
+                    <CardDestination
+                      data={destinationSearch}
+                      props={props}
+                      setData={(e) => SetdestinationSearch(e)}
+                      token={tokenApps}
+                      dataFrom="search"
+                      searchInput={searchtext ? searchtext : null}
+                    />
+                  </View>
                 ) : (
                   <View style={{ marginTop: 30, alignItems: "center" }}>
                     <Text type="regular" size="label">

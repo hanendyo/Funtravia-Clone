@@ -9,6 +9,7 @@ import {
   BackHandler,
   ActivityIndicator,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -937,7 +938,7 @@ export default function myfeed(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
       }}
@@ -1865,6 +1866,6 @@ export default function myfeed(props) {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }

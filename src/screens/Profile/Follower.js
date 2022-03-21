@@ -22,6 +22,10 @@ import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
 import { RNToasty } from "react-native-toasty";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function Follower(props) {
   const token = useSelector((data) => data.token);
@@ -286,12 +290,14 @@ export default function Follower(props) {
       // setLoading(false);
     }
   };
+  const insets = useSafeAreaInsets();
 
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: "white",
+        paddingBottom: insets.bottom,
+        backgroundColor: "#FFF",
       }}
     >
       {/* <Loading show={loadin} /> */}

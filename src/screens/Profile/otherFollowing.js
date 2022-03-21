@@ -22,6 +22,7 @@ import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
 import FollowingQueryCursorBased from "../../graphQL/Query/Profile/otherFollowing";
 import { RNToasty } from "react-native-toasty";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Following(props) {
   const { t, i18n } = useTranslation();
@@ -298,9 +299,10 @@ export default function Following(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
+        paddingTop: -55,
         backgroundColor: "white",
       }}
     >
@@ -457,6 +459,6 @@ export default function Following(props) {
           ) : null
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }

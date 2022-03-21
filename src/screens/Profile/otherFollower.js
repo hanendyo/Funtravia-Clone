@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTokenApps } from "../../redux/action";
 import FollowerQueryCursorBased from "../../graphQL/Query/Profile/otherFollower";
 import { RNToasty } from "react-native-toasty";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Follower(props) {
   let dispatch = useDispatch();
@@ -302,9 +303,10 @@ export default function Follower(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
+        paddingTop: -55,
         backgroundColor: "white",
       }}
     >
@@ -461,6 +463,6 @@ export default function Follower(props) {
           ) : null
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }

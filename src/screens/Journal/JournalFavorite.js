@@ -26,6 +26,7 @@ import { useLazyQuery } from "@apollo/client";
 import { default_image } from "../../assets/png";
 import { dateFormatMonthYears } from "../../component/src/dateformatter";
 import Journal from "../../graphQL/Query/Journal/JournalFavorite";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function JournalFavorite(props) {
   const token = useSelector((data) => data.token);
@@ -132,7 +133,7 @@ export default function JournalFavorite(props) {
   }, [props.navigation]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingTop: -55, backgroundColor: "#FFF" }}>
       <View
         style={{
           backgroundColor: "#fff",
@@ -367,6 +368,6 @@ export default function JournalFavorite(props) {
           )}
         </View>
       )} */}
-    </View>
+    </SafeAreaView>
   );
 }

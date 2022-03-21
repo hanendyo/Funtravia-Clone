@@ -17,6 +17,7 @@ import {
   Modal as ModalRN,
   FlatList,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
@@ -73,10 +74,10 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const Notch = DeviceInfo.hasNotch();
 const HeaderHeight = 300;
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: NativeModules.StatusBarManager.HEIGHT,
-});
+// const SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: NativeModules.StatusBarManager.HEIGHT,
+// });
 const deviceId = DeviceInfo.getModel();
 const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 const tab1ItemSize = (width - 30) / 2;
@@ -2352,7 +2353,7 @@ export default function CityDetail(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: deviceId == "LYA-L29" ? SafeStatusBar : SafeStatusBar + 4,
+          top: deviceId == "LYA-L29" ? 0 : 4,
           height: HeaderHeight - 4,
           width: "100%",
           alignItems: "center",
@@ -2545,7 +2546,7 @@ export default function CityDetail(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 250,
+          top: 250,
           right: 20,
           alignItems: "center",
           justifyContent: "center",
@@ -2643,7 +2644,7 @@ export default function CityDetail(props) {
         ListHeaderComponent={() => <View style={{ height: 10 }} />}
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
-          minHeight: height - SafeStatusBar + HeaderHeight,
+          minHeight: height + HeaderHeight,
           paddingHorizontal: 15,
         }}
         showsHorizontalScrollIndicator={false}
@@ -2827,360 +2828,361 @@ export default function CityDetail(props) {
   let [loadings, setLoadings] = useState(true);
 
   return (
-    <View style={styles.container}>
-      {loadings ? (
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            position: "absolute",
-            backgroundColor: "#FFF",
-            zIndex: 1000000,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
+    <>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
-      {/* modal login */}
-      <ModalRN
-        useNativeDriver={true}
-        visible={modalLogin}
-        onRequestClose={() => true}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => setModalLogin(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 120,
-            marginHorizontal: 60,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            marginTop: Dimensions.get("screen").height / 3,
-            borderRadius: 5,
-          }}
-        >
+      <SafeAreaView style={styles.container}>
+        {loadings ? (
           <View
             style={{
-              backgroundColor: "white",
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              position: "absolute",
+              backgroundColor: "#FFF",
+              zIndex: 1000000,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#209fae" />
+          </View>
+        ) : null}
+        {/* modal login */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={modalLogin}
+          onRequestClose={() => true}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
               width: Dimensions.get("screen").width - 120,
+              marginHorizontal: 60,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              marginTop: Dimensions.get("screen").height / 3,
               borderRadius: 5,
             }}
           >
             <View
               style={{
-                backgroundColor: "#f6f6f6",
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 120,
                 borderRadius: 5,
-                alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  marginTop: 12,
-                  marginBottom: 15,
-                }}
-                size="title"
-                type="bold"
-              >
-                {t("LoginFirst")}
-              </Text>
-              <Pressable
-                onPress={() => setModalLogin(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-                marginHorizontal: 30,
-                marginBottom: 15,
-                marginTop: 12,
-              }}
-            >
-              <Text style={{ marginBottom: 5 }} size="title" type="bold">
-                {t("nextLogin")}
-              </Text>
-              <Text
-                style={{ textAlign: "center", lineHeight: 18 }}
-                size="label"
-                type="regular"
-              >
-                {t("textLogin")}
-              </Text>
-            </View>
-            <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
-              <Button
-                style={{ marginBottom: 5 }}
-                onPress={() => {
-                  setModalLogin(false);
-                  props.navigation.push("AuthStack", {
-                    screen: "LoginScreen",
-                  });
-                }}
-                type="icon"
-                text={t("signin")}
-              ></Button>
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 5,
                   alignItems: "center",
-                  marginVertical: 5,
                 }}
               >
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
-                  {t("or")}
-                </Text>
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-              </View>
-              <View style={{ alignItems: "center" }}>
                 <Text
-                  size="label"
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 15,
+                  }}
+                  size="title"
                   type="bold"
-                  style={{ color: "#209FAE" }}
+                >
+                  {t("LoginFirst")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalLogin(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  marginHorizontal: 30,
+                  marginBottom: 15,
+                  marginTop: 12,
+                }}
+              >
+                <Text style={{ marginBottom: 5 }} size="title" type="bold">
+                  {t("nextLogin")}
+                </Text>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 18 }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("textLogin")}
+                </Text>
+              </View>
+              <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
+                <Button
+                  style={{ marginBottom: 5 }}
                   onPress={() => {
                     setModalLogin(false);
                     props.navigation.push("AuthStack", {
-                      screen: "RegisterScreen",
+                      screen: "LoginScreen",
                     });
                   }}
+                  type="icon"
+                  text={t("signin")}
+                ></Button>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    marginVertical: 5,
+                  }}
                 >
-                  {t("createAkunLogin")}
-                </Text>
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                  <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                    {t("or")}
+                  </Text>
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ color: "#209FAE" }}
+                    onPress={() => {
+                      setModalLogin(false);
+                      props.navigation.push("AuthStack", {
+                        screen: "RegisterScreen",
+                      });
+                    }}
+                  >
+                    {t("createAkunLogin")}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </ModalRN>
-      {/* akhir modal login */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 52,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 15,
-
-          width: Dimensions.get("screen").width - 35,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
+        </ModalRN>
+        {/* akhir modal login */}
+        <Animated.View
           style={{
-            height: 50,
-            // marginLeft: 8,
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hides.current,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 52,
+            alignContent: "center",
+            alignItems: "center",
+            marginHorizontal: 15,
+
+            width: Dimensions.get("screen").width - 35,
           }}
         >
-          <Animated.View
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              height: 35,
-              width: 35,
+              height: 50,
+              // marginLeft: 8,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
 
-              borderRadius: 30,
+                borderRadius: 30,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <TouchableOpacity
+            onPress={(x) =>
+              props.navigation.push("SearchPg", {
+                idcity: dataCity?.CitiesInformation?.id,
+                searchInput: "",
+                locationname: listCity.name,
+                aktifsearch: true,
+              })
+            }
+            style={{
+              width: Dimensions.get("screen").width - 90,
               backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
+              flexDirection: "row",
+              alignContent: "center",
               alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <TouchableOpacity
-          onPress={(x) =>
-            props.navigation.push("SearchPg", {
-              idcity: dataCity?.CitiesInformation?.id,
-              searchInput: "",
-              locationname: listCity.name,
-              aktifsearch: true,
-            })
-          }
-          style={{
-            width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            flexDirection: "row",
-            alignContent: "center",
-            alignItems: "center",
-            height: 35,
-          }}
-        >
-          <Image
-            source={search_button}
-            style={{
-              height: 15,
-              width: 15,
-              resizeMode: "contain",
-              marginHorizontal: 10,
-            }}
-          ></Image>
-
-          <View
-            style={{
-              flex: 1,
-              marginRight: 10,
-            }}
-          >
-            <Text
-              size="readable"
-              type="regular"
-              style={{
-                color: "#FFFFFF",
-              }}
-              numberOfLines={1}
-            >
-              {listCity?.name ? t("searchin") + listCity.name : ""}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-
-          height: 55,
-          alignContent: "center",
-          alignItems: "center",
-          paddingLeft: 15,
-          paddingRight: 20,
-
-          width: Dimensions.get("screen").width,
-          backgroundColor: "#209fae",
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
               height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
             }}
           >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <TouchableOpacity
-          onPress={(x) =>
-            props.navigation.push("SearchPg", {
-              idcity: dataCity?.CitiesInformation?.id,
-              searchInput: "",
-              locationname: listCity.name,
-              aktifsearch: true,
-            })
-          }
+            <Image
+              source={search_button}
+              style={{
+                height: 15,
+                width: 15,
+                resizeMode: "contain",
+                marginHorizontal: 10,
+              }}
+            ></Image>
+
+            <View
+              style={{
+                flex: 1,
+                marginRight: 10,
+              }}
+            >
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  color: "#FFFFFF",
+                }}
+                numberOfLines={1}
+              >
+                {listCity?.name ? t("searchin") + listCity.name : ""}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* jika scrollheader, animated show */}
+        <Animated.View
           style={{
-            width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.3)",
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hide.current,
             flexDirection: "row",
+            justifyContent: "space-between",
+
+            height: 55,
             alignContent: "center",
             alignItems: "center",
-            height: 35,
+            paddingLeft: 15,
+            paddingRight: 20,
+
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#209fae",
           }}
         >
-          <Image
-            source={search_button}
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              height: 15,
-              width: 15,
-              resizeMode: "contain",
-              marginHorizontal: 10,
-            }}
-          ></Image>
-
-          <View
-            style={{
-              flex: 1,
-              marginRight: 10,
+              height: 50,
+              // marginLeft: 8,
             }}
           >
-            <Text
-              size="readable"
-              type="regular"
+            <Animated.View
               style={{
-                color: "#FFFFFF",
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              numberOfLines={1}
             >
-              {listCity?.name ? t("searchin") + listCity.name : ""}
-            </Text>
-          </View>
-        </TouchableOpacity>
-        {/* <Button
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <TouchableOpacity
+            onPress={(x) =>
+              props.navigation.push("SearchPg", {
+                idcity: dataCity?.CitiesInformation?.id,
+                searchInput: "",
+                locationname: listCity.name,
+                aktifsearch: true,
+              })
+            }
+            style={{
+              width: Dimensions.get("screen").width - 90,
+              backgroundColor: "rgba(0,0,0,0.3)",
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              height: 35,
+            }}
+          >
+            <Image
+              source={search_button}
+              style={{
+                height: 15,
+                width: 15,
+                resizeMode: "contain",
+                marginHorizontal: 10,
+              }}
+            ></Image>
+
+            <View
+              style={{
+                flex: 1,
+                marginRight: 10,
+              }}
+            >
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  color: "#FFFFFF",
+                }}
+                numberOfLines={1}
+              >
+                {listCity?.name ? t("searchin") + listCity.name : ""}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {/* <Button
           text={""}
           size="medium"
           type="circle"
@@ -3192,161 +3194,175 @@ export default function CityDetail(props) {
         >
           <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
         </Button> */}
-      </Animated.View>
+        </Animated.View>
 
-      {renderTabView()}
-      {renderHeader()}
-      {renderShare()}
-      {renderCustomRefresh()}
+        {renderTabView()}
+        {renderHeader()}
+        {renderShare()}
+        {renderCustomRefresh()}
 
-      {/* modal share */}
-      <ModalRN
-        useNativeDriver={true}
-        visible={sharemodal}
-        onRequestClose={() => SetShareModal(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => SetShareModal(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 3,
-          }}
+        {/* modal share */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={sharemodal}
+          onRequestClose={() => SetShareModal(false)}
+          transparent={true}
+          animationType="fade"
         >
+          <Pressable
+            onPress={() => SetShareModal(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
           <View
             style={{
-              backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
-              // paddingHorizontal: 20,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
               borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
             }}
           >
             <View
               style={{
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-                alignItems: "center",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                backgroundColor: "#f6f6f6",
-                // height: 50,
-                justifyContent: "center",
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 100,
+                // paddingHorizontal: 20,
+                borderRadius: 5,
               }}
             >
-              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
-                {t("option")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => SetShareModal(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: 55,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 60,
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                // height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                tokenApps
-                  ? (SetShareModal(false),
-                    // props.navigation.push("CountryStack", {
-                    //   screen: "SendCity",
-                    //   params: {
-                    //     city: dataCity.CitiesInformation,
-                    //   },
-                    // })
-                    props.navigation.navigate("ChatStack", {
-                      screen: "SendToChat",
-                      params: {
-                        dataSend: {
-                          id: dataCity?.CitiesInformation?.id,
-                          cover: dataCity?.CitiesInformation?.cover,
-                          name: dataCity?.CitiesInformation?.name,
-                          description: dataCity?.CitiesInformation?.description,
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                  alignItems: "center",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                  // height: 50,
+                  justifyContent: "center",
+                }}
+              >
+                <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                  {t("option")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => SetShareModal(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 60,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  // height: 50,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  tokenApps
+                    ? (SetShareModal(false),
+                      // props.navigation.push("CountryStack", {
+                      //   screen: "SendCity",
+                      //   params: {
+                      //     city: dataCity.CitiesInformation,
+                      //   },
+                      // })
+                      props.navigation.navigate("ChatStack", {
+                        screen: "SendToChat",
+                        params: {
+                          dataSend: {
+                            id: dataCity?.CitiesInformation?.id,
+                            cover: dataCity?.CitiesInformation?.cover,
+                            name: dataCity?.CitiesInformation?.name,
+                            description:
+                              dataCity?.CitiesInformation?.description,
+                          },
+                          title: "City",
+                          tag_type: "tag_city",
                         },
-                        title: "City",
-                        tag_type: "tag_city",
-                      },
-                    }))
-                  : (setModalLogin(true), SetShareModal(false));
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("send_to")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                shareAction({
-                  from: "city",
-                  target: dataCity?.CitiesInformation.id,
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("share")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                CopyLink({
-                  from: "city",
-                  target: dataCity?.CitiesInformation.id,
-                  success: t("successCopyLink"),
-                  failed: t("failedCopyLink"),
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
+                      }))
+                    : (setModalLogin(true), SetShareModal(false));
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("send_to")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  height: 50,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  shareAction({
+                    from: "city",
+                    target: dataCity?.CitiesInformation.id,
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("share")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  CopyLink({
+                    from: "city",
+                    target: dataCity?.CitiesInformation.id,
+                    success: t("successCopyLink"),
+                    failed: t("failedCopyLink"),
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("copyLink")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ModalRN>
-    </View>
+        </ModalRN>
+      </SafeAreaView>
+    </>
   );
 }
 

@@ -5265,7 +5265,7 @@ export default function ItineraryDetail(props) {
             flex: 1,
             backgroundColor: "#FFF",
             paddingTop: -50,
-            paddingBottom: -13,
+            // paddingBottom: -13,
           }}
         >
           <Animated.View
