@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StatusBar,
   SafeAreaView,
+  NativeModules,
 } from "react-native";
 import {
   Button,
@@ -43,9 +44,8 @@ const SafeStatusBar = Platform.select({
 });
 const deviceId = DeviceInfo.getModel();
 import { useSelector } from "react-redux";
-
 export default function TravelGoalDetail(props) {
-  const NotchAndro = StatusBar.currentHeight > 24;
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
   const { t, i18n } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
@@ -790,7 +790,7 @@ export default function TravelGoalDetail(props) {
                 ? SafeStatusBar - 8
                 : NotchAndro
                 ? SafeStatusBar - 3
-                : SafeStatusBar - 17,
+                : SafeStatusBar - 3,
             opacity: backOpacity,
           }}
         >
@@ -856,7 +856,14 @@ export default function TravelGoalDetail(props) {
             style={{
               color: "#fff",
               marginBottom: NotchAndro ? 0 : 5,
-              marginTop: Platform.OS === "ios" ? 4 : 0,
+              marginTop:
+                Platform.OS === "ios"
+                  ? 4
+                  : deviceId == "LYA-L29"
+                  ? 4
+                  : NotchAndro
+                  ? 0
+                  : 4,
               marginLeft: 5,
               width: "85%",
             }}
