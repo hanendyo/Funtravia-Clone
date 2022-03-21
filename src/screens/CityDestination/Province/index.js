@@ -17,6 +17,7 @@ import {
   FlatList,
   Modal as ModalRN,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import DetailProvince from "../../../graphQL/Query/Province/DetailProvince";
@@ -81,10 +82,10 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = Platform.OS == "ios" ? 44 : 40;
 const HeaderHeight = 300;
 const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: NativeModules.StatusBarManager.HEIGHT,
-});
+// const SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: NativeModules.StatusBarManager.HEIGHT,
+// });
 const deviceId = DeviceInfo.getModel();
 const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 
@@ -2758,7 +2759,7 @@ export default function ProvinceDetail(props) {
         //   style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: deviceId == "LYA-L29" ? SafeStatusBar : SafeStatusBar + 3,
+          top: deviceId == "LYA-L29" ? 0 : 3,
           height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",
@@ -2904,7 +2905,7 @@ export default function ProvinceDetail(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar + 255,
+          top: 255,
           right: 20,
           alignItems: "center",
           justifyContent: "center",
@@ -3001,7 +3002,7 @@ export default function ProvinceDetail(props) {
         contentContainerStyle={{
           paddingTop: HeaderHeight + TabBarHeight,
           paddingHorizontal: 15,
-          minHeight: height - SafeStatusBar + HeaderHeight,
+          minHeight: height + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -3189,263 +3190,264 @@ export default function ProvinceDetail(props) {
   let [loadings, setLoadings] = useState(true);
 
   return (
-    <View style={styles.container}>
-      {loadings ? (
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            position: "absolute",
-            backgroundColor: "#FFF",
-            zIndex: 1000000,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
+    <>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
-      <ModalRN
-        useNativeDriver={true}
-        visible={modalLogin}
-        onRequestClose={() => true}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => setModalLogin(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 120,
-            marginHorizontal: 60,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            marginTop: Dimensions.get("screen").height / 3,
-            borderRadius: 5,
-          }}
-        >
+      <SafeAreaView style={styles.container}>
+        {loadings ? (
           <View
             style={{
-              backgroundColor: "white",
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              position: "absolute",
+              backgroundColor: "#FFF",
+              zIndex: 1000000,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#209fae" />
+          </View>
+        ) : null}
+        <ModalRN
+          useNativeDriver={true}
+          visible={modalLogin}
+          onRequestClose={() => true}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalLogin(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
               width: Dimensions.get("screen").width - 120,
+              marginHorizontal: 60,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              marginTop: Dimensions.get("screen").height / 3,
               borderRadius: 5,
             }}
           >
             <View
               style={{
-                backgroundColor: "#f6f6f6",
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 120,
                 borderRadius: 5,
-                alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  marginTop: 12,
-                  marginBottom: 15,
-                }}
-                size="title"
-                type="bold"
-              >
-                {t("LoginFirst")}
-              </Text>
-              <Pressable
-                onPress={() => setModalLogin(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-                marginHorizontal: 30,
-                marginBottom: 15,
-                marginTop: 12,
-              }}
-            >
-              <Text style={{ marginBottom: 5 }} size="title" type="bold">
-                {t("nextLogin")}
-              </Text>
-              <Text
-                style={{ textAlign: "center", lineHeight: 18 }}
-                size="label"
-                type="regular"
-              >
-                {t("textLogin")}
-              </Text>
-            </View>
-            <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
-              <Button
-                style={{ marginBottom: 5 }}
-                onPress={() => {
-                  setModalLogin(false);
-                  props.navigation.push("AuthStack", {
-                    screen: "LoginScreen",
-                  });
-                }}
-                type="icon"
-                text={t("signin")}
-              ></Button>
               <View
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
+                  backgroundColor: "#f6f6f6",
+                  borderRadius: 5,
                   alignItems: "center",
-                  marginVertical: 5,
                 }}
               >
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-                <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
-                  {t("or")}
-                </Text>
-                <View
-                  style={{
-                    width: 50,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#d1d1d1",
-                    marginHorizontal: 10,
-                  }}
-                ></View>
-              </View>
-              <View style={{ alignItems: "center" }}>
                 <Text
-                  size="label"
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 15,
+                  }}
+                  size="title"
                   type="bold"
-                  style={{ color: "#209FAE" }}
+                >
+                  {t("LoginFirst")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalLogin(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  marginHorizontal: 30,
+                  marginBottom: 15,
+                  marginTop: 12,
+                }}
+              >
+                <Text style={{ marginBottom: 5 }} size="title" type="bold">
+                  {t("nextLogin")}
+                </Text>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 18 }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("textLogin")}
+                </Text>
+              </View>
+              <View style={{ marginHorizontal: 30, marginBottom: 30 }}>
+                <Button
+                  style={{ marginBottom: 5 }}
                   onPress={() => {
                     setModalLogin(false);
                     props.navigation.push("AuthStack", {
-                      screen: "RegisterScreen",
+                      screen: "LoginScreen",
                     });
                   }}
+                  type="icon"
+                  text={t("signin")}
+                ></Button>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    marginVertical: 5,
+                  }}
                 >
-                  {t("createAkunLogin")}
-                </Text>
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                  <Text style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+                    {t("or")}
+                  </Text>
+                  <View
+                    style={{
+                      width: 50,
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#d1d1d1",
+                      marginHorizontal: 10,
+                    }}
+                  ></View>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text
+                    size="label"
+                    type="bold"
+                    style={{ color: "#209FAE" }}
+                    onPress={() => {
+                      setModalLogin(false);
+                      props.navigation.push("AuthStack", {
+                        screen: "RegisterScreen",
+                      });
+                    }}
+                  >
+                    {t("createAkunLogin")}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </ModalRN>
+        </ModalRN>
 
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 15,
-          height: 52,
-          width: Dimensions.get("screen").width - 35,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
+        <Animated.View
           style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <TouchableOpacity
-          onPress={(x) =>
-            props.navigation.push("SearchPg", {
-              province_id: dataProvince?.province_detail_v2?.id,
-              searchInput: "",
-              locationname: lisProvince?.name,
-              aktifsearch: true,
-            })
-          }
-          style={{
-            width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hides.current,
             flexDirection: "row",
+            justifyContent: "space-between",
+            // borderWidth: 1,
             alignContent: "center",
             alignItems: "center",
-            height: 35,
+            marginHorizontal: 15,
+            height: 52,
+            width: Dimensions.get("screen").width - 35,
           }}
         >
-          <Image
-            source={search_button}
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              height: 15,
-              width: 15,
-              resizeMode: "contain",
-              marginHorizontal: 10,
+              height: 50,
+              // marginLeft: 8,
             }}
-          ></Image>
-
-          <View>
-            <Text
-              size="readable"
-              type="regular"
+          >
+            <Animated.View
               style={{
-                color: "#FFFFFF",
+                height: 35,
+                width: 35,
+
+                borderRadius: 30,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Truncate
-                text={
-                  lisProvince?.name ? t("searchin") + lisProvince?.name : ""
-                }
-                length={25}
-              />
-            </Text>
-          </View>
-        </TouchableOpacity>
-        {/* <Button
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <TouchableOpacity
+            onPress={(x) =>
+              props.navigation.push("SearchPg", {
+                province_id: dataProvince?.province_detail_v2?.id,
+                searchInput: "",
+                locationname: lisProvince?.name,
+                aktifsearch: true,
+              })
+            }
+            style={{
+              width: Dimensions.get("screen").width - 90,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              height: 35,
+            }}
+          >
+            <Image
+              source={search_button}
+              style={{
+                height: 15,
+                width: 15,
+                resizeMode: "contain",
+                marginHorizontal: 10,
+              }}
+            ></Image>
+
+            <View>
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  color: "#FFFFFF",
+                }}
+              >
+                <Truncate
+                  text={
+                    lisProvince?.name ? t("searchin") + lisProvince?.name : ""
+                  }
+                  length={25}
+                />
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {/* <Button
           text={""}
           size="medium"
           type="circle"
@@ -3469,94 +3471,94 @@ export default function ProvinceDetail(props) {
             <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
           </Animated.View>
         </Button> */}
-      </Animated.View>
+        </Animated.View>
 
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 55,
-          alignContent: "center",
-          alignItems: "center",
-          width: Dimensions.get("screen").width,
-          backgroundColor: "#209fae",
-          paddingLeft: 15,
-          paddingRight: 20,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
+        {/* jika scrollheader, animated show */}
+        <Animated.View
           style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <TouchableOpacity
-          onPress={(x) =>
-            props.navigation.push("SearchPg", {
-              province_id: dataProvince?.province_detail_v2?.id,
-              searchInput: "",
-              locationname: lisProvince?.name,
-              aktifsearch: true,
-            })
-          }
-          style={{
-            width: Dimensions.get("screen").width - 90,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hide.current,
             flexDirection: "row",
+            justifyContent: "space-between",
+            height: 55,
             alignContent: "center",
             alignItems: "center",
-            height: 35,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#209fae",
+            paddingLeft: 15,
+            paddingRight: 20,
           }}
         >
-          <Image
-            source={search_button}
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              height: 15,
-              width: 15,
-              resizeMode: "contain",
-              marginHorizontal: 10,
+              height: 50,
+              // marginLeft: 8,
             }}
-          ></Image>
-
-          <View>
-            <Text
-              size="readable"
-              type="regular"
+          >
+            <Animated.View
               style={{
-                color: "#FFFFFF",
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {t("searchin") + lisProvince?.name}
-            </Text>
-          </View>
-        </TouchableOpacity>
-        {/* <Button
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <TouchableOpacity
+            onPress={(x) =>
+              props.navigation.push("SearchPg", {
+                province_id: dataProvince?.province_detail_v2?.id,
+                searchInput: "",
+                locationname: lisProvince?.name,
+                aktifsearch: true,
+              })
+            }
+            style={{
+              width: Dimensions.get("screen").width - 90,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              height: 35,
+            }}
+          >
+            <Image
+              source={search_button}
+              style={{
+                height: 15,
+                width: 15,
+                resizeMode: "contain",
+                marginHorizontal: 10,
+              }}
+            ></Image>
+
+            <View>
+              <Text
+                size="readable"
+                type="regular"
+                style={{
+                  color: "#FFFFFF",
+                }}
+              >
+                {t("searchin") + lisProvince?.name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          {/* <Button
           text={""}
           size="medium"
           type="circle"
@@ -3568,266 +3570,172 @@ export default function ProvinceDetail(props) {
         >
           <OptionsVertWhite height={20} width={20}></OptionsVertWhite>
         </Button> */}
-      </Animated.View>
+        </Animated.View>
 
-      {renderTabView()}
-      {renderHeader()}
-      {renderShare()}
-      {renderCustomRefresh()}
+        {renderTabView()}
+        {renderHeader()}
+        {renderShare()}
+        {renderCustomRefresh()}
 
-      {/* modal share */}
-      <ModalRN
-        useNativeDriver={true}
-        visible={sharemodal}
-        onRequestClose={() => SetShareModal(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => SetShareModal(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 3,
-          }}
+        {/* modal share */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={sharemodal}
+          onRequestClose={() => SetShareModal(false)}
+          transparent={true}
+          animationType="fade"
         >
+          <Pressable
+            onPress={() => SetShareModal(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
           <View
             style={{
-              backgroundColor: "white",
               width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
               borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
             }}
           >
             <View
               style={{
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-                alignItems: "center",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                backgroundColor: "#f6f6f6",
-                justifyContent: "center",
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 100,
+                borderRadius: 5,
               }}
             >
-              <Text size="title" type="bold" style={{ marginVertical: 15 }}>
-                {t("option")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => SetShareModal(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: 55,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 60,
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                token
-                  ? (SetShareModal(false),
-                    // props.navigation.push("CountryStack", {
-                    //   screen: "SendProvince",
-                    //   params: {
-                    //     province: dataProvince.province_detail_v2,
-                    //   },
-                    // })
-                    props.navigation.navigate("ChatStack", {
-                      screen: "SendToChat",
-                      params: {
-                        dataSend: {
-                          id: dataProvince?.province_detail_v2?.id,
-                          cover: dataProvince?.province_detail_v2?.cover,
-                          name: dataProvince?.province_detail_v2?.name,
-                          description:
-                            dataProvince?.province_detail_v2?.description,
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                  alignItems: "center",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                  justifyContent: "center",
+                }}
+              >
+                <Text size="title" type="bold" style={{ marginVertical: 15 }}>
+                  {t("option")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => SetShareModal(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 60,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  token
+                    ? (SetShareModal(false),
+                      // props.navigation.push("CountryStack", {
+                      //   screen: "SendProvince",
+                      //   params: {
+                      //     province: dataProvince.province_detail_v2,
+                      //   },
+                      // })
+                      props.navigation.navigate("ChatStack", {
+                        screen: "SendToChat",
+                        params: {
+                          dataSend: {
+                            id: dataProvince?.province_detail_v2?.id,
+                            cover: dataProvince?.province_detail_v2?.cover,
+                            name: dataProvince?.province_detail_v2?.name,
+                            description:
+                              dataProvince?.province_detail_v2?.description,
+                          },
+                          title: t("province"),
+                          tag_type: "tag_province",
                         },
-                        title: t("province"),
-                        tag_type: "tag_province",
-                      },
-                    }))
-                  : (setModalLogin(true), SetShareModal(false));
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("send_to")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                height: 50,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                shareAction({
-                  from: "province",
-                  target: dataProvince?.province_detail_v2.id,
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("share")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderColor: "#d1d1d1",
-              }}
-              onPress={() => {
-                CopyLink({
-                  from: "province",
-                  target: dataProvince?.province_detail_v2.id,
-                  success: t("successCopyLink"),
-                  failed: t("failedCopyLink"),
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text size="label" type="regular" style={{ marginVertical: 15 }}>
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
+                      }))
+                    : (setModalLogin(true), SetShareModal(false));
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("send_to")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  height: 50,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  shareAction({
+                    from: "province",
+                    target: dataProvince?.province_detail_v2.id,
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("share")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#d1d1d1",
+                }}
+                onPress={() => {
+                  CopyLink({
+                    from: "province",
+                    target: dataProvince?.province_detail_v2.id,
+                    success: t("successCopyLink"),
+                    failed: t("failedCopyLink"),
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{ marginVertical: 15 }}
+                >
+                  {t("copyLink")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ModalRN>
-    </View>
-
-    // <View style={styles.container}>
-    //   <StaBar backgroundColor="#14646e" barStyle="light-content" />
-    //   <Animated.View
-    //     style={{
-    //       position: "absolute",
-    //       top: SafeStatusBar,
-    //       zIndex: 9999,
-    //       flexDirection: "row",
-    //       justifyContent: "space-between",
-    //       alignContent: "center",
-    //       alignItems: "center",
-    //       height: 55,
-    //       width: Dimensions.get("screen").width,
-    //     }}
-    //   >
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       onPress={() => props.navigation.goBack()}
-    //       style={{
-    //         height: 50,
-    //         marginLeft: 8,
-    //       }}
-    //     >
-    //       <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-    //     </Button>
-    //     <TouchableOpacity
-    //       onPress={(x) =>
-    //         props.navigation.push("SearchPg", {
-    //           province_id: dataProvince?.province_detail_v2.id,
-    //           searchInput: "",
-    //           locationname: lisProvince.name,
-    //           aktifsearch: true,
-    //         })
-    //       }
-    //       style={{
-    //         width: Dimensions.get("screen").width - 90,
-    //         backgroundColor: "rgba(0,0,0,0.2)",
-    //         flexDirection: "row",
-    //         alignContent: "center",
-    //         alignItems: "center",
-    //         padding: 10,
-    //       }}
-    //     >
-    //       <Image
-    //         source={search_button}
-    //         style={{
-    //           height: 20,
-    //           width: 20,
-    //           resizeMode: "contain",
-    //           marginHorizontal: 10,
-    //         }}
-    //       ></Image>
-    //       {/* <Input
-    //         value={search}
-    //         style={{
-    //           height: 20,
-    //           padding: 0,
-    //           textAlign: "left",
-    //           fontFamily: "Lato-Regular",
-    //           fontSize: 14,
-    //           color: "white",
-    //         }}
-    //         placeholderTextColor={"white"}
-    //         underlineColorAndroid="transparent"
-    //         onChangeText={(x) => setTextc(x)}
-    //         placeholder={"Search in " + lisProvince.name}
-    //         returnKeyType="search"
-    //         onSubmitEditing={(x) =>
-    //           props.navigation.push("SearchPg", {
-    //             idcity: dataProvince?.province_detail_v2.id,
-    //             searchInput: search,
-    //             aktifsearch: true,
-    //           })
-    //         }
-    //       /> */}
-    //       <Text
-    //         size="readable"
-    //         type="bold"
-    //         style={{
-    //           color: "#FFFFFF",
-    //         }}
-    //       >
-    //         {t("searchin") + lisProvince.name}
-    //       </Text>
-    //     </TouchableOpacity>
-    //     <Button
-    //       text={""}
-    //       size="medium"
-    //       type="circle"
-    //       variant="transparent"
-    //       // onPress={() => setshowside(true)}
-    //       style={{
-    //         height: 50,
-    //       }}
-    //     >
-    //       {/* <OptionsVertWhite height={20} width={20}></OptionsVertWhite> */}
-    //     </Button>
-    //   </Animated.View>
-
-    //   {renderTabView()}
-    //   {renderHeader()}
-    //   {renderCustomRefresh()}
-    // </View>
+        </ModalRN>
+      </SafeAreaView>
+    </>
   );
 }
 

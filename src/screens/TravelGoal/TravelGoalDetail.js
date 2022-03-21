@@ -177,13 +177,7 @@ export default function TravelGoalDetail(props) {
   return (
     <>
       <Satbar backgroundColor="#14646E" />
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: "#FFF",
-          marginBottom: -13,
-        }}
-      >
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
         <View
           style={{
             height: 10,

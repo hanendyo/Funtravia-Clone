@@ -28,6 +28,7 @@ import setCurrency from "../../graphQL/Mutation/Setting/setCurrency";
 import DeviceInfo from "react-native-device-info";
 import { useSelector, useDispatch } from "react-redux";
 import { setSettingUser } from "../../redux/action";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingCurrency(props) {
   let dispatch = useDispatch();
@@ -174,7 +175,13 @@ export default function SettingCurrency(props) {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        paddingTop: -55,
+      }}
+    >
       {datacurrency ? (
         <FlatList
           ref={slider}
@@ -246,6 +253,6 @@ export default function SettingCurrency(props) {
           </Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

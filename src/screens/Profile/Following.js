@@ -22,6 +22,7 @@ import { DefaultProfile } from "../../assets/png";
 import normalize from "react-native-normalize";
 import { useSelector } from "react-redux";
 import { RNToasty } from "react-native-toasty";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Following(props) {
   const token = useSelector((data) => data.token);
@@ -46,7 +47,7 @@ export default function Following(props) {
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
-      paddingBottom: Platform.OS == "ios" ? 15 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
@@ -289,18 +290,20 @@ export default function Following(props) {
       // setLoading(false);
     }
   };
+  const insets = useSafeAreaInsets();
 
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: "white",
+        paddingBottom: insets.bottom,
+        backgroundColor: "#FFF",
       }}
     >
       {/* <Loading show={loadin} /> */}
       <FlatList
         contentContainerStyle={{
-          marginTop: 5,
+          backgroundColor: "#FFF",
           justifyContent: "space-evenly",
         }}
         showsVerticalScrollIndicator={false}

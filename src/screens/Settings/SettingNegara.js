@@ -32,6 +32,7 @@ import Country from "../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
 import { useDispatch, useSelector } from "react-redux";
 import { setSettingUser } from "../../redux/action";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingNegara(props) {
   // let [token, setToken] = useState(props.route.params.token);
@@ -242,7 +243,13 @@ export default function SettingNegara(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        paddingTop: -55,
+      }}
+    >
       <View
         style={{
           alignContent: "center",
@@ -395,6 +402,6 @@ export default function SettingNegara(props) {
           </Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

@@ -347,12 +347,7 @@ export default function TravelGoalList(props) {
   }, [props.navigation, modal]);
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        marginBottom: -13,
-      }}
-    >
+    <SafeAreaView style={{ flex: 1 }}>
       {/* mulai filter search */}
       <View
         onLayout={(event) => {

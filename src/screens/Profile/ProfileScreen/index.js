@@ -73,13 +73,13 @@ const deviceId = DeviceInfo.getModel();
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = Platform.OS == "ios" ? 44 : 42;
+const TabBarHeight = Platform.OS == "ios" ? 49 : 42;
 
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
-let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.3;
+let HEADER_MAX_HEIGHT = Dimensions.get("screen").height * 0.4;
 let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -96,20 +96,20 @@ export default function OtherProfile(props) {
   let [soon, setSoon] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
 
-  const SafeStatusBar = Platform.select({
-    ios: Notch ? 42 : 20,
-    android: StatusBar.currentHeight,
-  });
+  // const SafeStatusBar = Platform.select({
+  //   ios: Notch ? 42 : 20,
+  //   android: StatusBar.currentHeight,
+  // });
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(301) + heightname + heightbio - 20
-      : normalize(335) + heightname + heightbio - 20,
+      ? normalize(281) + heightname + heightbio
+      : normalize(315) + heightname + heightbio - 20,
 
     android:
       deviceId == "LYA-L29"
         ? normalize(265) + heightname + heightbio - StatusBar.currentHeight
-        : normalize(300) + heightname + heightbio - StatusBar.currentHeight,
+        : normalize(310) + heightname + heightbio - StatusBar.currentHeight,
   });
 
   let [datas, setdatas] = useState(null);
@@ -940,18 +940,18 @@ export default function OtherProfile(props) {
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
+          top: 0,
           paddingTop: Platform.select({
-            ios: Notch ? 10 : 20,
+            ios: Notch ? 50 : 60,
             // android: 15,
             android:
               deviceId == "LYA-L29"
-                ? 25
+                ? 45
                 : deviceId == "CPH2127"
-                ? 10
+                ? 50
                 : NotchAndro
-                ? 18
-                : 20,
+                ? 58
+                : 60,
           }),
           paddingBottom: 3,
           // height: HeaderHeight,
@@ -959,7 +959,7 @@ export default function OtherProfile(props) {
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#14646e",
+          backgroundColor: "#FFF",
           opacity: imageOpacity,
         }}
       >
@@ -968,7 +968,7 @@ export default function OtherProfile(props) {
             width: "100%",
             // height: HeaderHeight,
             // borderWidth: 1,
-            top: SafeStatusBar,
+            top: 0,
             paddingTop: Platform.select({
               ios: Notch ? 10 : 20,
               android: 10,
@@ -1368,14 +1368,15 @@ export default function OtherProfile(props) {
 
     const handleOnEndReached = (e) => {};
 
-    // let heightTotal = HeaderHeight + SafeStatusBar + TabBarHeight - 55;
-
     let heightTotal = Platform.select({
       ios: Notch
-        ? HeaderHeight + SafeStatusBar + TabBarHeight - 55
-        : HeaderHeight + SafeStatusBar + TabBarHeight - 40,
+        ? HeaderHeight + TabBarHeight - 10
+        : HeaderHeight + TabBarHeight - 40,
       android:
-        HeaderHeight + SafeStatusBar + TabBarHeight - StatusBar.currentHeight,
+        HeaderHeight +
+        TabBarHeight -
+        StatusBar.currentHeight +
+        (deviceId === "LYA-L29" ? 20 : 40),
     });
 
     return (
@@ -1447,7 +1448,7 @@ export default function OtherProfile(props) {
           }),
 
           backgroundColor: "#f6f6f6",
-          minHeight: height - SafeStatusBar + HeaderHeight,
+          minHeight: height + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -1489,7 +1490,7 @@ export default function OtherProfile(props) {
   let scrollRef = useRef();
   // render tabbar
   const renderTabBar = (props) => {
-    let scrolltab = Platform.OS == "ios" ? 45 : 50;
+    let scrolltab = 50;
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [HeaderHeight, scrolltab],
@@ -1815,228 +1816,229 @@ export default function OtherProfile(props) {
 
   // render all source
   return (
-    <View style={styles.container}>
+    <>
       <StaBar backgroundColor="#14646e" barStyle="light-content" />
-
-      {/* header before scroll */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          // borderWidth: 1,
-          backgroundColor: "#209FAE",
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 52,
-          alignContent: "center",
-          alignItems: "center",
-          width: Dimensions.get("screen").width,
-        }}
-      >
-        <View
+      <SafeAreaView style={styles.container}>
+        {/* header before scroll */}
+        <Animated.View
           style={{
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            // borderWidth: 1,
+            backgroundColor: "#209FAE",
+            opacity: hides.current,
             flexDirection: "row",
-            justifyContent: "center",
-            marginHorizontal: -20,
+            justifyContent: "space-between",
+            height: 52,
+            alignContent: "center",
             alignItems: "center",
+            width: Dimensions.get("screen").width,
           }}
         >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
-            style={{
-              height: 50,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-          <Animated.Text
-            style={{
-              opacity: hides.current,
-              color: "#fff",
-              marginLeft: 10,
-              width: "70%",
-              textAlign: "left",
-              fontSize: 20,
-              fontFamily: "Lato-Bold",
-            }}
-          >
-            {t("profile")}
-          </Animated.Text>
-        </View>
-        {position && position === "other" ? (
           <View
             style={{
-              marginRight: 20,
-              flexDirection: "column",
-              alignItems: "flex-end",
+              flexDirection: "row",
+              justifyContent: "center",
+              marginHorizontal: -20,
+              alignItems: "center",
             }}
           >
-            <Ripple
-              onPress={() =>
-                _handlemessage(props.route.params.idUser, tokenApps)
-              }
+            <Button
               text={""}
               size="medium"
               type="circle"
               variant="transparent"
+              onPress={() => props.navigation.goBack()}
               style={{
-                zIndex: 99999999,
                 height: 50,
-                width: 50,
-
-                justifyContent: "center",
+              }}
+            >
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <Animated.Text
+              style={{
+                opacity: hides.current,
+                color: "#fff",
+                marginLeft: 10,
+                width: "70%",
+                textAlign: "left",
+                fontSize: 20,
+                fontFamily: "Lato-Bold",
+              }}
+            >
+              {t("profile")}
+            </Animated.Text>
+          </View>
+          {position && position === "other" ? (
+            <View
+              style={{
+                marginRight: 20,
+                flexDirection: "column",
                 alignItems: "flex-end",
               }}
             >
-              <Message height={20} width={20}></Message>
-            </Ripple>
-          </View>
-        ) : null}
-      </Animated.View>
-      {/* header after scroll */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          backgroundColor: "#209FAE",
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          height: 52,
-          alignContent: "center",
-          alignItems: "center",
-          width: Dimensions.get("screen").width,
-          paddingRight: position === "other" ? 0 : 20,
-        }}
-      >
-        <View
+              <Ripple
+                onPress={() =>
+                  _handlemessage(props.route.params.idUser, tokenApps)
+                }
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{
+                  zIndex: 99999999,
+                  height: 50,
+                  width: 50,
+
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}
+              >
+                <Message height={20} width={20}></Message>
+              </Ripple>
+            </View>
+          ) : null}
+        </Animated.View>
+        {/* header after scroll */}
+        <Animated.View
           style={{
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            backgroundColor: "#209FAE",
+            opacity: hide.current,
             flexDirection: "row",
-            justifyContent: "flex-start",
-            marginHorizontal: -20,
+            justifyContent: "space-between",
+            height: 52,
+            alignContent: "center",
             alignItems: "center",
-            flex: 1,
+            width: Dimensions.get("screen").width,
+            paddingRight: position === "other" ? 0 : 20,
           }}
         >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
+          <View
             style={{
-              height: 50,
-              marginRight: 10,
-              marginLeft: Platform.OS == "ios" ? (Notch ? 28 : 27) : 29,
-            }}
-          >
-            <Animated.View
-              style={{
-                height: 35,
-                width: 35,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-          <Animated.Image
-            source={
-              data?.user_profilebyid?.picture
-                ? { uri: data?.user_profilebyid?.picture }
-                : DefaultProfileSquare
-            }
-            style={{
-              width: width / 10,
-              height: width / 10,
-              borderRadius: width / 18,
-              borderWidth: 2,
-              borderColor: "#FFF",
-              marginRight: 10,
-              opacity: hide.current,
-            }}
-          />
-          <Animated.View
-            style={{
-              opacity: hide.current,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              marginHorizontal: -20,
+              alignItems: "center",
               flex: 1,
             }}
           >
-            <Text
-              type="bold"
-              size="title"
-              style={{
-                color: "#fff",
-              }}
-              numberOfLines={2}
-            >
-              {data?.user_profilebyid?.first_name}{" "}
-              {data?.user_profilebyid?.last_name
-                ? data?.user_profilebyid?.last_name
-                : ""}
-            </Text>
-          </Animated.View>
-        </View>
-        {position && position === "other" ? (
-          <View
-            style={{
-              marginRight: 20,
-              flexDirection: "column",
-              alignItems: "flex-end",
-            }}
-          >
-            <Ripple
-              onPress={() =>
-                _handlemessage(props.route.params.idUser, tokenApps)
-              }
+            <Button
               text={""}
               size="medium"
               type="circle"
               variant="transparent"
+              onPress={() => props.navigation.goBack()}
               style={{
-                zIndex: 99999999,
                 height: 50,
-                width: 50,
-
-                justifyContent: "center",
+                marginRight: 10,
+                marginLeft: Platform.OS == "ios" ? (Notch ? 28 : 27) : 29,
+              }}
+            >
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <Animated.Image
+              source={
+                data?.user_profilebyid?.picture
+                  ? { uri: data?.user_profilebyid?.picture }
+                  : DefaultProfileSquare
+              }
+              style={{
+                width: width / 10,
+                height: width / 10,
+                borderRadius: width / 18,
+                borderWidth: 2,
+                borderColor: "#FFF",
+                marginRight: 10,
+                opacity: hide.current,
+              }}
+            />
+            <Animated.View
+              style={{
+                opacity: hide.current,
+                flex: 1,
+              }}
+            >
+              <Text
+                type="bold"
+                size="title"
+                style={{
+                  color: "#fff",
+                }}
+                numberOfLines={2}
+              >
+                {data?.user_profilebyid?.first_name}{" "}
+                {data?.user_profilebyid?.last_name
+                  ? data?.user_profilebyid?.last_name
+                  : ""}
+              </Text>
+            </Animated.View>
+          </View>
+          {position && position === "other" ? (
+            <View
+              style={{
+                marginRight: 20,
+                flexDirection: "column",
                 alignItems: "flex-end",
               }}
             >
-              <Message height={20} width={20}></Message>
-            </Ripple>
-          </View>
-        ) : null}
-      </Animated.View>
-      {renderAlert()}
-      {renderTabView()}
-      {renderHeader(dataUser)}
-      {renderCustomRefresh()}
-    </View>
+              <Ripple
+                onPress={() =>
+                  _handlemessage(props.route.params.idUser, tokenApps)
+                }
+                text={""}
+                size="medium"
+                type="circle"
+                variant="transparent"
+                style={{
+                  zIndex: 99999999,
+                  height: 50,
+                  width: 50,
+
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}
+              >
+                <Message height={20} width={20}></Message>
+              </Ripple>
+            </View>
+          ) : null}
+        </Animated.View>
+        {renderAlert()}
+        {renderTabView()}
+        {renderHeader(dataUser)}
+        {/* {renderCustomRefresh()} */}
+      </SafeAreaView>
+    </>
   );
 }
 

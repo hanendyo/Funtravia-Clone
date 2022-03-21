@@ -34,10 +34,10 @@ const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
 const HeaderHeight = width + 5;
-const SafeStatusBar = Platform.select({
-  ios: 44,
-  android: StatusBar.currentHeight,
-});
+// const SafeStatusBar = Platform.select({
+//   ios: 44,
+//   android: StatusBar.currentHeight,
+// });
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
 
@@ -1282,7 +1282,7 @@ export function MyProfile({ navigation, route }) {
           onMomentumScrollEnd={onMomentumScrollEnd}
           contentContainerStyle={{
             paddingTop: HeaderHeight + TabBarHeight,
-            minHeight: height - SafeStatusBar + HeaderHeight,
+            minHeight: height + HeaderHeight,
             flex: flex,
           }}
           showsHorizontalScrollIndicator={false}
@@ -1300,7 +1300,7 @@ export function MyProfile({ navigation, route }) {
             alignItems: "center",
             alignContent: "center",
             paddingTop: HeaderHeight,
-            minHeight: height - SafeStatusBar + HeaderHeight,
+            minHeight: height + HeaderHeight,
           }}
         >
           <Kosong height={width} width={width} />

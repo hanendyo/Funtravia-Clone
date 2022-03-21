@@ -28,6 +28,7 @@ import {
 import { useTranslation } from "react-i18next";
 import Category from "../../graphQL/Query/Itinerary/ItineraryCategory";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Journal(props) {
   const { t } = useTranslation();
@@ -639,116 +640,128 @@ export default function Journal(props) {
   // }
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: "white" }}
-      stickyHeaderIndices={[1]}
-      showsVerticalScrollIndicator={false}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: -55,
+        marginBottom: -13,
+        backgroundColor: "#FFF",
+      }}
     >
-      {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
-      {/* ============================== Populer Journal ====================================================*/}
+      <ScrollView
+        style={{ flex: 1, backgroundColor: "white" }}
+        stickyHeaderIndices={[1]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
+        {/* ============================== Populer Journal ====================================================*/}
 
-      <View style={styles.container}>
-        <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
-          <Image
-            source={
-              data?.journal_most_populer?.firstimg
-                ? { uri: data?.journal_most_populer?.firstimg }
-                : default_image
-            }
-            style={styles.imageTop}
-          />
-          <View style={{ marginHorizontal: 15 }}>
-            <Text
-              style={styles.title}
-              size={"title"}
-              type={"bold"}
-              numberOfLines={2}
-            >
-              {data?.journal_most_populer?.title}
-            </Text>
-            <View style={styles.editor}>
-              <Image
-                style={{ width: 40, height: 40, borderRadius: 20 }}
-                source={
-                  data?.journal_most_populer?.userby?.picture
-                    ? { uri: data?.journal_most_populer?.userby?.picture }
-                    : logo_funtravia
-                }
-              />
+        <View style={styles.container}>
+          <Pressable onPress={() => JournalDetail(data?.journal_most_populer)}>
+            <Image
+              source={
+                data?.journal_most_populer?.firstimg
+                  ? { uri: data?.journal_most_populer?.firstimg }
+                  : default_image
+              }
+              style={styles.imageTop}
+            />
+            <View style={{ marginHorizontal: 15 }}>
+              <Text
+                style={styles.title}
+                size={"title"}
+                type={"bold"}
+                numberOfLines={2}
+              >
+                {data?.journal_most_populer?.title}
+              </Text>
+              <View style={styles.editor}>
+                <Image
+                  style={{ width: 40, height: 40, borderRadius: 20 }}
+                  source={
+                    data?.journal_most_populer?.userby?.picture
+                      ? { uri: data?.journal_most_populer?.userby?.picture }
+                      : logo_funtravia
+                  }
+                />
 
-              <View style={styles.dataEditor}>
-                <Text size={"title"} type={"bold"}>
-                  {data?.journal_most_populer?.userby?.first_name
-                    ? data?.journal_most_populer?.userby?.first_name
-                    : "Funtravia"}
-                </Text>
-                <Text size={"label"} type={"regular"} style={{ marginTop: 0 }}>
-                  {data?.journal_most_populer?.date
-                    ? dateFormatShortMonth(data?.journal_most_populer?.date)
-                    : null}
-                </Text>
+                <View style={styles.dataEditor}>
+                  <Text size={"title"} type={"bold"}>
+                    {data?.journal_most_populer?.userby?.first_name
+                      ? data?.journal_most_populer?.userby?.first_name
+                      : "Funtravia"}
+                  </Text>
+                  <Text
+                    size={"label"}
+                    type={"regular"}
+                    style={{ marginTop: 0 }}
+                  >
+                    {data?.journal_most_populer?.date
+                      ? dateFormatShortMonth(data?.journal_most_populer?.date)
+                      : null}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
-        </Pressable>
-      </View>
-      <View
-        style={{
-          height: 50,
-          marginLeft: 10,
-          marginTop: 10,
-          marginBottom: 9,
-          backgroundColor: "white",
-        }}
-      >
-        <FlatList
-          data={dataCategory?.category_journal}
-          contentContainerStyle={{
-            flexDirection: "row",
-            paddingRight: 15,
-            marginVertical: 5,
+          </Pressable>
+        </View>
+        <View
+          style={{
+            height: 50,
+            marginLeft: 10,
+            marginTop: 10,
+            marginBottom: 9,
+            backgroundColor: "white",
           }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <Pressable
-              onPress={() => {
-                props.navigation.navigate("JournalCategory", {
-                  category: item.id,
-                  index: index,
-                });
-                setIndexCategory(index);
-                setIdCategory(item?.id);
-              }}
-              style={{
-                paddingVertical: 8,
-                paddingHorizontal: 15,
-                backgroundColor: "#f6f6f6",
-                marginHorizontal: 3,
-                borderRadius: 5,
-              }}
-            >
-              <Text
-                // style={{
-                //   paddingVertical: 10,
-                //   paddingHorizontal: 15,
-                //   backgroundColor: "red",
-                //   marginHorizontal: 5,
-                // }}
-                size={"label"}
-                type={"bold"}
+        >
+          <FlatList
+            data={dataCategory?.category_journal}
+            contentContainerStyle={{
+              flexDirection: "row",
+              paddingRight: 15,
+              marginVertical: 5,
+            }}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <Pressable
+                onPress={() => {
+                  props.navigation.navigate("JournalCategory", {
+                    category: item.id,
+                    index: index,
+                  });
+                  setIndexCategory(index);
+                  setIdCategory(item?.id);
+                }}
+                style={{
+                  paddingVertical: 8,
+                  paddingHorizontal: 15,
+                  backgroundColor: "#f6f6f6",
+                  marginHorizontal: 3,
+                  borderRadius: 5,
+                }}
               >
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-        />
-      </View>
+                <Text
+                  // style={{
+                  //   paddingVertical: 10,
+                  //   paddingHorizontal: 15,
+                  //   backgroundColor: "red",
+                  //   marginHorizontal: 5,
+                  // }}
+                  size={"label"}
+                  type={"bold"}
+                >
+                  {item.name}
+                </Text>
+              </Pressable>
+            )}
+          />
+        </View>
 
-      {/* ============================== Top Contributor ====================================================*/}
+        {/* ============================== Top Contributor ====================================================*/}
 
-      {/* <View style={styles.topContributor}>
+        {/* <View style={styles.topContributor}>
 					<Text size={'label'} type={'bold'}>
 						Top Contributor
 					</Text>
@@ -799,8 +812,8 @@ export default function Journal(props) {
 						</TouchableOpacity>
 					</View>
 				</View> */}
-      {/* ============================== Type Journal ====================================================*/}
-      {/* <View style={styles.filterStyle}>
+        {/* ============================== Type Journal ====================================================*/}
+        {/* <View style={styles.filterStyle}>
 					<Pressable onPress={() => alert("Coming Soon")}>
 						<View style={styles.contentFilter}>
 							<Text style={{ padding: 10 }} size={'description'} type={'bold'}>
@@ -824,139 +837,142 @@ export default function Journal(props) {
 					</Pressable>
 				</View> */}
 
-      {/* ============================== List Journal ====================================================*/}
+        {/* ============================== List Journal ====================================================*/}
 
-      <View
-        style={{
-          flex: 1,
-          width: Dimensions.get("window").width,
-          paddingHorizontal: 15,
-          alignContent: "center",
-        }}
-      >
-        <FlatList
-          data={journal_list}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
-            <View>
-              <Pressable
-                style={{ flexDirection: "row" }}
-                onPress={() => JournalDetail(item)}
-              >
-                <Image
-                  source={
-                    item.firstimg ? { uri: item.firstimg } : default_image
-                  }
-                  style={{
-                    // width: 110,
-                    width: "25%",
-                    height: 110,
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    paddingVertical: 5,
-                    width: "75%",
-                    paddingLeft: 15,
-                    justifyContent: "space-between",
-                    // felx: 1,
-                  }}
+        <View
+          style={{
+            flex: 1,
+            width: Dimensions.get("window").width,
+            paddingHorizontal: 15,
+            alignContent: "center",
+          }}
+        >
+          <FlatList
+            data={journal_list}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <View>
+                <Pressable
+                  style={{ flexDirection: "row" }}
+                  onPress={() => JournalDetail(item)}
                 >
-                  <View>
-                    <Text
-                      style={{ color: "#209FAE" }}
-                      size={"description"}
-                      type={"bold"}
-                    >
-                      #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
-                    </Text>
-                    <Text
-                      size={"title"}
-                      type={"bold"}
-                      style={{
-                        color: "#3E3E3E",
-                        // marginTop: 5,
-                      }}
-                      numberOfLines={1}
-                    >
-                      {item.title}
-                      {/* <Truncate
+                  <Image
+                    source={
+                      item.firstimg ? { uri: item.firstimg } : default_image
+                    }
+                    style={{
+                      // width: 110,
+                      width: "25%",
+                      height: 110,
+                      borderRadius: 10,
+                    }}
+                  />
+                  <View
+                    style={{
+                      paddingVertical: 5,
+                      width: "75%",
+                      paddingLeft: 15,
+                      justifyContent: "space-between",
+                      // felx: 1,
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{ color: "#209FAE" }}
+                        size={"description"}
+                        type={"bold"}
+                      >
+                        #{item?.categori?.name.toLowerCase().replace(/ /g, "")}
+                      </Text>
+                      <Text
+                        size={"title"}
+                        type={"bold"}
+                        style={{
+                          color: "#3E3E3E",
+                          // marginTop: 5,
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.title}
+                        {/* <Truncate
 												text={item.title ? item.title : ""}
 												length={35}
 											/> */}
-                    </Text>
-                    <Text
-                      size={"label"}
-                      type={"regular"}
-                      style={{
-                        textAlign: "left",
-                        marginTop: 5,
-                        lineHeight: 18,
-                      }}
-                      numberOfLines={2}
-                    >
-                      {item.firsttxt}
-                      {/* <Truncate
+                      </Text>
+                      <Text
+                        size={"label"}
+                        type={"regular"}
+                        style={{
+                          textAlign: "left",
+                          marginTop: 5,
+                          lineHeight: 18,
+                        }}
+                        numberOfLines={2}
+                      >
+                        {item.firsttxt}
+                        {/* <Truncate
 												text={item.firsttxt ? item.firsttxt : ""}
 												length={110}
 											/> */}
-                    </Text>
-                  </View>
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        marginTop: 5,
-                      }}
-                    >
-                      <Text size={"description"} type={"regular"}>
-                        {dateFormatMonthYears(item.date)}
                       </Text>
+                    </View>
+                    <View>
                       <View
                         style={{
                           flexDirection: "row",
-                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 5,
                         }}
                       >
-                        <LikeEmpty width={12} height={12} />
-                        <Text
-                          style={{ marginLeft: 5 }}
-                          size={"description"}
-                          type={"regular"}
-                        >
-                          {item.article_response_count > 0
-                            ? item.article_response_count + " " + t("likeMany")
-                            : item.article_response_count + " " + t("like")}
+                        <Text size={"description"} type={"regular"}>
+                          {dateFormatMonthYears(item.date)}
                         </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <LikeEmpty width={12} height={12} />
+                          <Text
+                            style={{ marginLeft: 5 }}
+                            size={"description"}
+                            type={"regular"}
+                          >
+                            {item.article_response_count > 0
+                              ? item.article_response_count +
+                                " " +
+                                t("likeMany")
+                              : item.article_response_count + " " + t("like")}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-              <View
-                style={{
-                  marginVertical: 15,
-                  borderBottomColor: "#f6f6f6",
-                  borderBottomWidth: 1,
-                }}
+                </Pressable>
+                <View
+                  style={{
+                    marginVertical: 15,
+                    borderBottomColor: "#f6f6f6",
+                    borderBottomWidth: 1,
+                  }}
+                />
+              </View>
+            )}
+            keyExtractor={(item) => item.id}
+            refreshing={refreshing}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => Refresh()}
               />
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          refreshing={refreshing}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => Refresh()}
-            />
-          }
-          onEndReachedThreshold={1}
-          onEndReached={handleOnEndReached}
-        />
-      </View>
-    </ScrollView>
+            }
+            onEndReachedThreshold={1}
+            onEndReached={handleOnEndReached}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

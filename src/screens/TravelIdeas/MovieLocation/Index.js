@@ -45,10 +45,7 @@ const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 50;
 // const HeaderHeight = width - 100;
 const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: NativeModules.StatusBarManager.HEIGHT,
-});
+
 const HeaderHeight = Platform.select({
   ios: Notch ? 335 - 48 : 335 - 20,
   android: 305 - NativeModules.StatusBarManager.HEIGHT,
@@ -260,215 +257,63 @@ export default function MovieLocation({ navigation, route }) {
   });
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <>
       <Satbar backgroundColor="#14646E" />
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          marginTop: HEADER_MAX_HEIGHT - normalize(15),
-          // marginTop: HEADER_MAX_HEIGHT + normalize(30),
-          backgroundColor: "#fff",
-          paddingBottom: normalize(230),
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "#FFF",
         }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
       >
-        <CountrySrc
-          selectedCountry={selectedCountry}
-          SetselectedCountry={(e) => SetselectedCountry(e)}
-          modalshown={modalcountry}
-          setModelCountry={(e) => setModelCountry(e)}
-          navigation={navigation}
-        />
-        <View
-          style={{
-            paddingBottom: 20,
-            paddingHorizontal: 20,
-            backgroundColor: "#f6f6f6",
-            paddingTop: 40,
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            marginTop: HEADER_MAX_HEIGHT - normalize(15),
+            // marginTop: HEADER_MAX_HEIGHT + normalize(30),
+            backgroundColor: "#fff",
+            paddingBottom: normalize(230),
           }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
         >
-          <Text
-            size="title"
-            type="bold"
-            style={{
-              textAlign: "left",
-            }}
-          >
-            {t("textRecommendation")} {selectedCountry?.name}
-          </Text>
-          <Text
-            size="label"
-            type="regular"
-            style={{
-              textAlign: "left",
-            }}
-          >
-            {t("subTitleMovie")}
-          </Text>
-        </View>
-        {loadingDestinationMovie ? (
+          <CountrySrc
+            selectedCountry={selectedCountry}
+            SetselectedCountry={(e) => SetselectedCountry(e)}
+            modalshown={modalcountry}
+            setModelCountry={(e) => setModelCountry(e)}
+            navigation={navigation}
+          />
           <View
             style={{
-              height: 220,
-              width: Dimensions.get("screen").width - 30,
-              justifyContent: "center",
-              alignItems: "center",
+              paddingBottom: 20,
+              paddingHorizontal: 20,
+              backgroundColor: "#f6f6f6",
+              paddingTop: 40,
             }}
           >
-            <ActivityIndicator size="large" color="#209fae" />
-          </View>
-        ) : null}
-        <ImageSlider
-          key={"imagesliderjournalsdsd"}
-          images={
-            renderDestinationMovie ? spreadData(renderDestinationMovie) : []
-          }
-          style={{
-            backgroundColor: "#f6f6f6",
-          }}
-          customSlide={({ index, item, style, width }) => (
-            <View key={"ky" + index}>
-              {item.map((dataX, indeks) => {
-                return (
-                  <Pressable
-                    key={"jrnla" + indeks}
-                    onPress={() => {
-                      navigation.navigate("CountryStack", {
-                        screen: "CityDetail",
-                        params: {
-                          data: {
-                            city_id: dataX.id,
-                            city_name: dataX.name,
-                          },
-                          exParam: true,
-                        },
-                      });
-                    }}
-                    style={{
-                      marginHorizontal: 15,
-                      marginBottom: 10,
-                      flexDirection: "row",
-                      borderRadius: 5,
-                      width: width - 30,
-                      height: width * 0.22,
-                      backgroundColor: "#fff",
-                      shadowColor: "#000",
-                      shadowOffset: {
-                        width: 0,
-                        height: 1,
-                      },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 1.41,
-                      elevation: 2,
-                      padding: 10,
-                    }}
-                  >
-                    <Image
-                      style={{
-                        height: "100%",
-                        width: 70,
-                        borderRadius: 5,
-                        marginRight: 10,
-                      }}
-                      source={dataX ? { uri: dataX.cover } : null}
-                    />
-                    <View style={{ flex: 1, justifyContent: "space-around" }}>
-                      <Text
-                        size="title"
-                        type="bold"
-                        numberOfLines={1}
-                        style={{ lineHeight: 20 }}
-                      >
-                        {dataX.name}
-                      </Text>
-                      <Text
-                        size="label"
-                        type="regular"
-                        numberOfLines={2}
-                        style={{ lineHeight: 20 }}
-                      >
-                        {dataX.description}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </View>
-          )}
-          customButtons={(position, move) => (
-            <View
+            <Text
+              size="title"
+              type="bold"
               style={{
-                paddingTop: 10,
-                paddingBottom: 15,
-                alignContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
+                textAlign: "left",
               }}
             >
-              {(renderDestinationMovie
-                ? spreadData(renderDestinationMovie)
-                : []
-              ).map((image, index) => {
-                return (
-                  <TouchableHighlight
-                    key={"keys" + index}
-                    underlayColor="#f7f7f700"
-                  >
-                    <View
-                      style={{
-                        height: position === index ? 5 : 5,
-                        width: position === index ? 5 : 5,
-                        borderRadius: position === index ? 7 : 3,
-                        backgroundColor:
-                          position === index ? "#209fae" : "#d3d3d3",
-                        marginHorizontal: 3,
-                      }}
-                    ></View>
-                  </TouchableHighlight>
-                );
-              })}
-            </View>
-          )}
-        />
-        <View style={{ backgroundColor: "#fff", paddingVertical: 20 }}>
-          <View
-            style={{
-              marginHorizontal: 20,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <BlockDestination
-              height={20}
-              width={20}
-              style={{ marginLeft: -7 }}
-            />
-            <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
-              {t("insirationTravel")}
+              {t("textRecommendation")} {selectedCountry?.name}
+            </Text>
+            <Text
+              size="label"
+              type="regular"
+              style={{
+                textAlign: "left",
+              }}
+            >
+              {t("subTitleMovie")}
             </Text>
           </View>
-          <Text
-            size="label"
-            type="regular"
-            style={{
-              marginHorizontal: 20,
-              lineHeight: 20,
-              textAlign: "left",
-              marginTop: 15,
-            }}
-          >
-            {t("subInspirasiMovie")}
-          </Text>
-          {loadingfirst ? (
+          {loadingDestinationMovie ? (
             <View
               style={{
                 height: 220,
@@ -480,338 +325,469 @@ export default function MovieLocation({ navigation, route }) {
               <ActivityIndicator size="large" color="#209fae" />
             </View>
           ) : null}
-          {movie_most_populer &&
-            movie_most_populer.length > 0 &&
-            movie_most_populer.map((item, index) => {
-              return (
-                <Pressable
-                  onPress={() => {
-                    navigation.navigate("TravelIdeaStack", {
-                      screen: "Detail_movie",
-                      params: {
-                        movie_id: item.id,
-                      },
-                    });
-                  }}
-                  key={"key detail" + index}
-                  style={{
-                    height: 220,
-                    width: Dimensions.get("screen").width - 30,
-                    backgroundColor: "#fff",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 1,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 1.41,
-                    elevation: 2,
-                    marginHorizontal: 15,
-                    marginTop: 20,
-                    borderRadius: 5,
-                  }}
-                >
-                  <Image
-                    source={item ? { uri: item?.cover } : null}
-                    style={{
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                      height: "70%",
-                    }}
-                  />
-                  <View style={{ flex: 1, padding: 10 }}>
-                    <Text
-                      size="title"
-                      type="bold"
-                      numberOfLines={2}
-                      style={{ lineHeight: 20 }}
+          <ImageSlider
+            key={"imagesliderjournalsdsd"}
+            images={
+              renderDestinationMovie ? spreadData(renderDestinationMovie) : []
+            }
+            style={{
+              backgroundColor: "#f6f6f6",
+            }}
+            customSlide={({ index, item, style, width }) => (
+              <View key={"ky" + index}>
+                {item.map((dataX, indeks) => {
+                  return (
+                    <Pressable
+                      key={"jrnla" + indeks}
+                      onPress={() => {
+                        navigation.navigate("CountryStack", {
+                          screen: "CityDetail",
+                          params: {
+                            data: {
+                              city_id: dataX.id,
+                              city_name: dataX.name,
+                            },
+                            exParam: true,
+                          },
+                        });
+                      }}
+                      style={{
+                        marginHorizontal: 15,
+                        marginBottom: 10,
+                        flexDirection: "row",
+                        borderRadius: 5,
+                        width: width - 30,
+                        height: width * 0.22,
+                        backgroundColor: "#fff",
+                        shadowColor: "#000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 1,
+                        },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 1.41,
+                        elevation: 2,
+                        padding: 10,
+                      }}
                     >
-                      {t("titleInspirasiMovie1")} '{item?.title}'
-                      {t("titleInspirasiMovie2")}
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-        </View>
-      </Animated.ScrollView>
-      {/* Button Country */}
-      <Animated.View
-        style={{
-          width: "100%",
-          height: 50,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          zIndex: 2,
-          position: "absolute",
-          marginTop:
-            Platform.OS == "ios"
-              ? Notch
-                ? HEADER_MAX_HEIGHT + normalize(15)
-                : HEADER_MAX_HEIGHT - normalize(10)
-              : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT - normalize(8)
-              : NotchAndro
-              ? HEADER_MAX_HEIGHT + normalize(15)
-              : HEADER_MAX_HEIGHT + normalize(5),
-          opacity: backOpacity,
-          transform: [{ translateY: shareTranslateY }],
-        }}
-      >
-        <TouchableOpacity
-          type="circle"
-          color="secondary"
-          style={{
-            position: "absolute",
-            // width: Dimensions.get("screen").width / 2.5,
-            // right: 20,
-            zIndex: 20,
-            alignSelf: "center",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            backgroundColor: "#fff",
-            // height: 30,
-            // width: 100,
-            borderRadius: 30,
-            borderColor: "#d8d8d8",
-            borderWidth: 1,
-          }}
-          onPress={() => setModelCountry(true)}
-        >
-          {loadingcountry ? (
-            <ActivityIndicator
-              animating
-              size="small"
-              color="#209fae"
+                      <Image
+                        style={{
+                          height: "100%",
+                          width: 70,
+                          borderRadius: 5,
+                          marginRight: 10,
+                        }}
+                        source={dataX ? { uri: dataX.cover } : null}
+                      />
+                      <View style={{ flex: 1, justifyContent: "space-around" }}>
+                        <Text
+                          size="title"
+                          type="bold"
+                          numberOfLines={1}
+                          style={{ lineHeight: 20 }}
+                        >
+                          {dataX.name}
+                        </Text>
+                        <Text
+                          size="label"
+                          type="regular"
+                          numberOfLines={2}
+                          style={{ lineHeight: 20 }}
+                        >
+                          {dataX.description}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+            customButtons={(position, move) => (
+              <View
+                style={{
+                  paddingTop: 10,
+                  paddingBottom: 15,
+                  alignContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                {(renderDestinationMovie
+                  ? spreadData(renderDestinationMovie)
+                  : []
+                ).map((image, index) => {
+                  return (
+                    <TouchableHighlight
+                      key={"keys" + index}
+                      underlayColor="#f7f7f700"
+                    >
+                      <View
+                        style={{
+                          height: position === index ? 5 : 5,
+                          width: position === index ? 5 : 5,
+                          borderRadius: position === index ? 7 : 3,
+                          backgroundColor:
+                            position === index ? "#209fae" : "#d3d3d3",
+                          marginHorizontal: 3,
+                        }}
+                      ></View>
+                    </TouchableHighlight>
+                  );
+                })}
+              </View>
+            )}
+          />
+          <View style={{ backgroundColor: "#fff", paddingVertical: 20 }}>
+            <View
               style={{
-                paddingTop: 10,
-                paddingHorizontal: 10,
-              }}
-            />
-          ) : (
-            <Text
-              size="label"
-              type="bold"
-              style={{
-                marginRight: 10,
-                marginLeft: 20,
-                marginVertical: 10,
+                marginHorizontal: 20,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {selectedCountry?.name}
+              <BlockDestination
+                height={20}
+                width={20}
+                style={{ marginLeft: -7 }}
+              />
+              <Text size="title" type="bold" style={{ paddingBottom: 3 }}>
+                {t("insirationTravel")}
+              </Text>
+            </View>
+            <Text
+              size="label"
+              type="regular"
+              style={{
+                marginHorizontal: 20,
+                lineHeight: 20,
+                textAlign: "left",
+                marginTop: 15,
+              }}
+            >
+              {t("subInspirasiMovie")}
             </Text>
-          )}
-
-          <Select height={10} width={10} style={{ marginRight: 20 }} />
-        </TouchableOpacity>
-      </Animated.View>
-      {/* End Button Country */}
-      {/* Title Middle */}
-      <Animated.View
-        style={{
-          width: "100%",
-          height: 50,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          zIndex: 2,
-          position: "absolute",
-          marginTop:
-            Platform.OS == "ios"
-              ? Notch
-                ? HEADER_MAX_HEIGHT / 2
-                : HEADER_MAX_HEIGHT / 2
-              : deviceId == "LYA-L29"
-              ? HEADER_MAX_HEIGHT / 2
-              : HEADER_MAX_HEIGHT / 2,
-          opacity: backOpacity,
-          transform: [{ translateY: shareTranslateY }],
-        }}
-      >
-        <Text size="h5" type="black">
-          {t("filmLocation")}
-        </Text>
-        <Text size="description" type="regular">
-          {t("getVacation")}
-        </Text>
-      </Animated.View>
-      {/* End Title Middle */}
-      {/* Image Background */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          backgroundColor: "#14646e",
-          overflow: "hidden",
-          height:
-            Platform.OS == "ios"
-              ? HEADER_MAX_HEIGHT - 8
-              : HEADER_MAX_HEIGHT - 5,
-          transform: [{ translateY: headerTranslateY }],
-          zIndex: 1,
-          top: SafeStatusBar,
-        }}
-      >
-        <Animated.Image
+            {loadingfirst ? (
+              <View
+                style={{
+                  height: 220,
+                  width: Dimensions.get("screen").width - 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator size="large" color="#209fae" />
+              </View>
+            ) : null}
+            {movie_most_populer &&
+              movie_most_populer.length > 0 &&
+              movie_most_populer.map((item, index) => {
+                return (
+                  <Pressable
+                    onPress={() => {
+                      navigation.navigate("TravelIdeaStack", {
+                        screen: "Detail_movie",
+                        params: {
+                          movie_id: item.id,
+                        },
+                      });
+                    }}
+                    key={"key detail" + index}
+                    style={{
+                      height: 220,
+                      width: Dimensions.get("screen").width - 30,
+                      backgroundColor: "#fff",
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 1,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 1.41,
+                      elevation: 2,
+                      marginHorizontal: 15,
+                      marginTop: 20,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Image
+                      source={item ? { uri: item?.cover } : null}
+                      style={{
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        height: "70%",
+                      }}
+                    />
+                    <View style={{ flex: 1, padding: 10 }}>
+                      <Text
+                        size="title"
+                        type="bold"
+                        numberOfLines={2}
+                        style={{ lineHeight: 20 }}
+                      >
+                        {t("titleInspirasiMovie1")} '{item?.title}'
+                        {t("titleInspirasiMovie2")}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+          </View>
+        </Animated.ScrollView>
+        {/* Button Country */}
+        <Animated.View
           style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
             position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            width: null,
-            height: HEADER_MAX_HEIGHT,
-            resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslateY }],
-            zIndex: 1,
-          }}
-          source={
-            Banner?.banner_asset[0].filepath
-              ? { uri: Banner?.banner_asset[0].filepath }
-              : default_image
-          }
-        />
-      </Animated.View>
-      {/*End Image Background */}
-      {/* Title Header */}
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: Platform.OS === "ios" ? normalize(55) : normalize(50),
-          flex: 1,
-          alignItems: "flex-start",
-          justifyContent: "center",
-          position: "absolute",
-          left: 0,
-          right: -10,
-          bottom: 0,
-          zIndex: 999,
-          paddingLeft: 60,
-          backgroundColor: "#209FAE",
-          opacity: titleOpacity,
-          top:
-            Platform.OS == "ios"
-              ? SafeStatusBar
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar
-              : NotchAndro
-              ? SafeStatusBar
-              : SafeStatusBar,
-        }}
-      >
-        <Text
-          size="title"
-          type="bold"
-          style={{
-            color: "#fff",
+            zIndex: 2,
+            position: "absolute",
             marginTop:
               Platform.OS == "ios"
-                ? 0
+                ? Notch
+                  ? HEADER_MAX_HEIGHT - normalize(5)
+                  : HEADER_MAX_HEIGHT - normalize(10)
                 : deviceId == "LYA-L29"
-                ? 2
+                ? HEADER_MAX_HEIGHT - normalize(8)
                 : NotchAndro
-                ? 0
-                : 0,
+                ? HEADER_MAX_HEIGHT + normalize(15)
+                : HEADER_MAX_HEIGHT + normalize(5),
+            opacity: backOpacity,
+            transform: [{ translateY: shareTranslateY }],
           }}
-          numberOfLines={1}
         >
-          {t("filmLocation")}
-        </Text>
-      </Animated.View>
-      {/*End Title Header */}
-      {/* Back Arrow One */}
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: 100,
-          width: 100,
-          position: "absolute",
-          zIndex: 999,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 3
-                : SafeStatusBar
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar - 4
-              : NotchAndro
-              ? SafeStatusBar
-              : SafeStatusBar,
-          left: 2,
-          opacity: backOpacity,
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}
+          <TouchableOpacity
+            type="circle"
+            color="secondary"
+            style={{
+              position: "absolute",
+              // width: Dimensions.get("screen").width / 2.5,
+              // right: 20,
+              zIndex: 20,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+              backgroundColor: "#fff",
+              // height: 30,
+              // width: 100,
+              borderRadius: 30,
+              borderColor: "#d8d8d8",
+              borderWidth: 1,
+            }}
+            onPress={() => setModelCountry(true)}
+          >
+            {loadingcountry ? (
+              <ActivityIndicator
+                animating
+                size="small"
+                color="#209fae"
+                style={{
+                  paddingTop: 10,
+                  paddingHorizontal: 10,
+                }}
+              />
+            ) : (
+              <Text
+                size="label"
+                type="bold"
+                style={{
+                  marginRight: 10,
+                  marginLeft: 20,
+                  marginVertical: 10,
+                }}
+              >
+                {selectedCountry?.name}
+              </Text>
+            )}
+
+            <Select height={10} width={10} style={{ marginRight: 20 }} />
+          </TouchableOpacity>
+        </Animated.View>
+        {/* End Button Country */}
+        {/* Title Middle */}
+        <Animated.View
           style={{
-            marginTop: 10,
-            marginLeft: 15,
-            backgroundColor: "rgba(0,0,0, 0.5)",
-            borderRadius: 35,
-            height: 35,
-            width: 35,
+            width: "100%",
+            height: 50,
             justifyContent: "center",
             alignItems: "center",
+            position: "absolute",
+            zIndex: 2,
+            position: "absolute",
+            marginTop:
+              Platform.OS == "ios"
+                ? Notch
+                  ? HEADER_MAX_HEIGHT / 2
+                  : HEADER_MAX_HEIGHT / 2
+                : deviceId == "LYA-L29"
+                ? HEADER_MAX_HEIGHT / 2
+                : HEADER_MAX_HEIGHT / 2,
+            opacity: backOpacity,
+            transform: [{ translateY: shareTranslateY }],
           }}
         >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Pressable>
-      </Animated.View>
-      {/* End Back Arrow One */}
-      {/* Back Arrow Two */}
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          height: 100,
-          width: 100,
-          position: "absolute",
-          zIndex: 999,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar + 1
-                : SafeStatusBar - 3
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar - 5
-              : NotchAndro
-              ? SafeStatusBar - 3
-              : SafeStatusBar - 3,
-          opacity: backOpacitySecond,
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            navigation.goBack();
-          }}
+          <Text size="h5" type="black">
+            {t("filmLocation")}
+          </Text>
+          <Text size="description" type="regular">
+            {t("getVacation")}
+          </Text>
+        </Animated.View>
+        {/* End Title Middle */}
+        {/* Image Background */}
+        <Animated.View
+          pointerEvents="none"
           style={{
-            marginTop: 10,
-            marginLeft: 15,
-            borderRadius: 40,
-            height: 40,
-            width: 40,
-            justifyContent: "center",
-            alignItems: "center",
+            position: "absolute",
+            left: 0,
+            right: 0,
+            backgroundColor: "#14646e",
+            overflow: "hidden",
+            height:
+              Platform.OS == "ios"
+                ? HEADER_MAX_HEIGHT - 8
+                : HEADER_MAX_HEIGHT - 5,
+            transform: [{ translateY: headerTranslateY }],
+            zIndex: 1,
+            top: 0,
           }}
         >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Pressable>
-      </Animated.View>
-      {/* End Back Arrow Two */}
-    </View>
+          <Animated.Image
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              width: null,
+              height: HEADER_MAX_HEIGHT,
+              resizeMode: "cover",
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslateY }],
+              zIndex: 1,
+            }}
+            source={
+              Banner?.banner_asset[0].filepath
+                ? { uri: Banner?.banner_asset[0].filepath }
+                : default_image
+            }
+          />
+        </Animated.View>
+        {/*End Image Background */}
+        {/* Title Header */}
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            // height: Platform.OS === "ios" ? normalize(55) : normalize(60),
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? normalize(45)
+                  : normalize(55)
+                : deviceId == "LYA-L29"
+                ? normalize(55)
+                : NotchAndro
+                ? normalize(55)
+                : normalize(55),
+            flex: 1,
+            alignItems: "flex-start",
+            justifyContent: "center",
+            position: "absolute",
+            left: 0,
+            right: -10,
+            bottom: 0,
+            zIndex: 999,
+            paddingLeft: 60,
+            backgroundColor: "#209FAE",
+            opacity: titleOpacity,
+            top: 0,
+          }}
+        >
+          <Text
+            size="title"
+            type="bold"
+            style={{
+              color: "#fff",
+              // marginBottom: NotchAndro ? 0 : 0,
+            }}
+            numberOfLines={1}
+          >
+            {t("filmLocation")}
+          </Text>
+        </Animated.View>
+        {/*End Title Header */}
+        {/* Back Arrow One */}
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            height: 100,
+            width: 100,
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            left: 2,
+            opacity: backOpacity,
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={{
+              marginTop: 10,
+              marginLeft: 15,
+              backgroundColor: "rgba(0,0,0, 0.5)",
+              borderRadius: 35,
+              height: 35,
+              width: 35,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Pressable>
+        </Animated.View>
+        {/* End Back Arrow One */}
+        {/* Back Arrow Two */}
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            height: 100,
+            width: 100,
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            opacity: backOpacitySecond,
+          }}
+        >
+          <Pressable
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={{
+              marginTop: 10,
+              marginLeft: 17,
+              height: 35,
+              width: 35,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {Platform.OS == "ios" ? (
+              <Arrowbackios height={15} width={15}></Arrowbackios>
+            ) : (
+              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+            )}
+          </Pressable>
+        </Animated.View>
+        {/* End Back Arrow Two */}
+      </SafeAreaView>
+    </>
   );
 }
 

@@ -1513,7 +1513,7 @@ const Index = (props) => {
                     key={"mov" + index}
                     style={{
                       borderRadius: 10,
-                      borderWidth: 1,
+                      // borderWidth: 1,
                       borderColor: "#F3F3F3",
                       // height: 150,
                       marginBottom: 10,
@@ -2346,7 +2346,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 8,
+            width: Dimensions.get("screen").width / 7,
           }}
         >
           <Animated.View>
@@ -2398,7 +2398,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 8,
+            width: Dimensions.get("screen").width / 7,
           }}
         >
           <Animated.View>
@@ -2409,7 +2409,6 @@ const Index = (props) => {
                   height: layoutsOpen,
                   justifyContent: "center",
                   alignItems: "center",
-                  // borderWidth: 1,
                   height: "100%",
                 }}
               >
@@ -2447,7 +2446,7 @@ const Index = (props) => {
             opacity: hides.current,
             right: 20,
             alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 8,
+            width: Dimensions.get("screen").width / 7,
           }}
         >
           <Animated.View>

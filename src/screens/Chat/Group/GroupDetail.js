@@ -13,6 +13,7 @@ import {
   StatusBar,
   ActivityIndicator,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { ReactNativeFile } from "apollo-upload-client";
 import {
@@ -54,10 +55,11 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { useMutation } from "@apollo/client";
 
 const Notch = DeviceInfo.hasNotch();
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: NativeModules.StatusBarManager.HEIGHT,
-});
+// const SafeStatusBar = Platform.select({
+//   ios: Notch ? 48 : 20,
+//   android: NativeModules.StatusBarManager.HEIGHT,
+// });
+const deviceId = DeviceInfo.getModel();
 const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
 let { width, height } = Dimensions.get("screen");
 
@@ -97,7 +99,7 @@ export default function GroupDetail(props) {
   });
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -761,203 +763,203 @@ export default function GroupDetail(props) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <StatBar backgroundColor="#14646E" />
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-        contentContainerStyle={{
-          paddingTop: HEADER_MAX_HEIGHT,
-          // Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT - 10,
-          backgroundColor: "#FFF",
-          // paddingBottom: 20,
-        }}
-      >
-        <View
-          onLayout={(event) => {
-            setLayout(event.nativeEvent.layout);
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
+          contentContainerStyle={{
+            paddingTop: HEADER_MAX_HEIGHT,
+            // Platform.OS === "ios" ? HEADER_MAX_HEIGHT : HEADER_MAX_HEIGHT - 10,
+            backgroundColor: "#FFF",
+            // paddingBottom: 20,
           }}
         >
           <View
-            style={{
-              width: width,
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              justifyContent: "space-between",
-              alignItems: "center",
+            onLayout={(event) => {
+              setLayout(event.nativeEvent.layout);
             }}
           >
-            <Text
-              size="title"
-              type="bold"
-              numberOfLines={2}
+            <View
               style={{
-                color: "#000",
-                marginBottom: 15,
-                marginTop: 13,
-                flex: 1,
-                paddingRight: 10,
+                width: width,
+                paddingHorizontal: 15,
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              {dataDetail ? dataDetail.title : null}
-            </Text>
-            {dataDetail && dataDetail.type == "itinerary" ? (
-              <Pressable
-                onPress={() => goToItinerary(dataDetail)}
+              <Text
+                size="title"
+                type="bold"
+                numberOfLines={2}
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  alignItems: "center",
+                  color: "#000",
+                  marginBottom: 15,
+                  marginTop: 13,
+                  flex: 1,
+                  paddingRight: 10,
                 }}
               >
-                <ItineraryIcon
-                  style={{ marginRight: 5 }}
-                  height={20}
-                  width={20}
-                />
-                <Text type="bold" size="label" style={{ color: "#209fae" }}>
-                  {t("viewTrip")}
-                </Text>
-                <ArrowRightHome
-                  width={12}
-                  height={12}
+                {dataDetail ? dataDetail.title : null}
+              </Text>
+              {dataDetail && dataDetail.type == "itinerary" ? (
+                <Pressable
+                  onPress={() => goToItinerary(dataDetail)}
                   style={{
-                    marginTop: 5,
-                    marginLeft: 5,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
-                />
-              </Pressable>
-            ) : null}
+                >
+                  <ItineraryIcon
+                    style={{ marginRight: 5 }}
+                    height={20}
+                    width={20}
+                  />
+                  <Text type="bold" size="label" style={{ color: "#209fae" }}>
+                    {t("viewTrip")}
+                  </Text>
+                  <ArrowRightHome
+                    width={12}
+                    height={12}
+                    style={{
+                      marginTop: 5,
+                      marginLeft: 5,
+                    }}
+                  />
+                </Pressable>
+              ) : null}
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: "#f6f6f6",
-            height: 10,
-          }}
-        />
-        {/* <View
+          <View
+            style={{
+              backgroundColor: "#f6f6f6",
+              height: 10,
+            }}
+          />
+          {/* <View
           style={{
             backgroundColor: "#f6f6f6",
             height: 5,
           }}
         /> */}
 
-        <View
-          style={{
-            backgroundColor: "#FFFFFF",
-          }}
-        >
           <View
             style={{
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingBottom: 10,
-              paddingTop: 13,
-              // borderWidth: 1,
+              backgroundColor: "#FFFFFF",
             }}
           >
-            <Text size="label" type="bold" style={{}}>
-              {t("media")}
-            </Text>
-
-            <Pressable
-              onPress={() => {
-                setIndexMediaView(0);
-                setModalimageview(true);
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text type="bold" style={{ marginRight: 5 }}>
-                {media?.length}
-              </Text>
-              <Next width={12} height={12} />
-            </Pressable>
-          </View>
-          <FlatList
-            data={media}
-            contentContainerStyle={{
-              paddingHorizontal: 15,
-              paddingBottom: 15,
-            }}
-            horizontal={true}
-            renderItem={({ item, index }) => {
-              if (index <= 4) {
-                return (
-                  <Pressable
-                    style={
-                      {
-                        // borderWidth: 1,
-                      }
-                    }
-                    onPress={() => {
-                      setIndexMediaView(index);
-                      setModalimageview(true);
-                    }}
-                  >
-                    <FunImage
-                      source={{ uri: item.text }}
-                      style={{
-                        width: (width - 30) / 5 - 3,
-                        height: (width - 30) / 5 - 3,
-                        marginRight: 3,
-                      }}
-                    />
-                  </Pressable>
-                );
-              }
-            }}
-          />
-        </View>
-        <View
-          style={{
-            backgroundColor: "#f6f6f6",
-            height: 10,
-          }}
-        />
-        <View
-          style={{
-            backgroundColor: "#FFFFFF",
-          }}
-        >
-          <View
-            style={{
-              paddingHorizontal: 15,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingBottom: 10,
-              paddingTop: 13,
-              // borderWidth: 1,
-            }}
-          >
-            <Text size="label" type="bold" style={{}}>
-              {t("participants")}
-            </Text>
             <View
               style={{
+                paddingHorizontal: 15,
                 flexDirection: "row",
+                justifyContent: "space-between",
                 alignItems: "center",
+                paddingBottom: 10,
+                paddingTop: 13,
+                // borderWidth: 1,
               }}
             >
-              <Text type="bold">
-                {dataDetail?.buddy.length} {t("participants")}
+              <Text size="label" type="bold" style={{}}>
+                {t("media")}
               </Text>
+
+              <Pressable
+                onPress={() => {
+                  setIndexMediaView(0);
+                  setModalimageview(true);
+                }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text type="bold" style={{ marginRight: 5 }}>
+                  {media?.length}
+                </Text>
+                <Next width={12} height={12} />
+              </Pressable>
             </View>
+            <FlatList
+              data={media}
+              contentContainerStyle={{
+                paddingHorizontal: 15,
+                paddingBottom: 15,
+              }}
+              horizontal={true}
+              renderItem={({ item, index }) => {
+                if (index <= 4) {
+                  return (
+                    <Pressable
+                      style={
+                        {
+                          // borderWidth: 1,
+                        }
+                      }
+                      onPress={() => {
+                        setIndexMediaView(index);
+                        setModalimageview(true);
+                      }}
+                    >
+                      <FunImage
+                        source={{ uri: item.text }}
+                        style={{
+                          width: (width - 30) / 5 - 3,
+                          height: (width - 30) / 5 - 3,
+                          marginRight: 3,
+                        }}
+                      />
+                    </Pressable>
+                  );
+                }
+              }}
+            />
           </View>
-          {mydata ? (
-            <>
+          <View
+            style={{
+              backgroundColor: "#f6f6f6",
+              height: 10,
+            }}
+          />
+          <View
+            style={{
+              backgroundColor: "#FFFFFF",
+            }}
+          >
+            <View
+              style={{
+                paddingHorizontal: 15,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 10,
+                paddingTop: 13,
+                // borderWidth: 1,
+              }}
+            >
+              <Text size="label" type="bold" style={{}}>
+                {t("participants")}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text type="bold">
+                  {dataDetail?.buddy.length} {t("participants")}
+                </Text>
+              </View>
+            </View>
+            {mydata ? (
               <FlatList
                 data={
                   dataDetail && dataDetail.buddy && dataDetail.buddy.length > 0
@@ -967,6 +969,7 @@ export default function GroupDetail(props) {
                 scrollEnabled={false}
                 contentContainerStyle={{
                   backgroundColor: "#FFFFFF",
+                  paddingBottom: 190,
                 }}
                 ListHeaderComponent={() =>
                   mydata && mydata.isadmin == true ? (
@@ -1052,681 +1055,709 @@ export default function GroupDetail(props) {
                 )}
                 keyExtractor={(item) => item.id}
               />
-              <View style={{ height: 100 }}></View>
-            </>
-          ) : null}
-        </View>
-
-        {/* modal kick */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalkick}
-          onRequestClose={() => setModalkick(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalkick(false)}
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {`${t("delete")} ${t("member")}`}
-              </Text>
-              <Pressable
-                onPress={() => setModalkick(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
-              <Text
-                style={{ alignSelf: "center", textAlign: "center" }}
-                size="label"
-                type="regular"
-              >
-                {t("alertHapusMember")}
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 20,
-                marginBottom: 10,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    DeleteBuddy(selected.id, room);
-                  } else {
-                    _kickMember(selected.user_id);
-                  }
-                  setModalkick(false);
-                }}
-                color="secondary"
-                text={t("delete")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalkick(false);
-                }}
-                variant="transparent"
-                text={t("cancel")}
-                style={{ marginTop: 5 }}
-              ></Button>
-            </View>
+            ) : null}
           </View>
-        </Modal>
 
-        {/* modal make admin */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalmakeadmin}
-          onRequestClose={() => setModalmakeadmin(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalmakeadmin(false)}
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("makeAdmin")}
-              </Text>
-              <Pressable
-                onPress={() => setModalmakeadmin(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
-              <Text
-                style={{ alignSelf: "center", textAlign: "center" }}
-                size="label"
-                type="regular"
-              >
-                {t("alertMakeAdmin")}
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 20,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    SetAdminItinerary(selected.id, room);
-                  } else {
-                    _makeAdmin(selected.user_id);
-                  }
-                  setModalmakeadmin(false);
-                }}
-                color="primary"
-                text={t("makeAdmin")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalmakeadmin(false);
-                }}
-                // color="secondary"
-                variant="transparent"
-                text={t("cancel")}
-                style={{ marginTop: 5, marginBottom: 15 }}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
-
-        {/* modal remove_admin */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalremoveadmin}
-          onRequestClose={() => setModalremoveadmin(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalremoveadmin(false)}
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("removeAdmin")}
-              </Text>
-              <Pressable
-                onPress={() => setModalremoveadmin(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
-              <Text
-                style={{ alignSelf: "center", textAlign: "center" }}
-                size="label"
-                type="regular"
-              >
-                {t("alertRemoveAdmin")}
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 20,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    RemoveAdminItinerary(selected.id, room);
-                  } else {
-                    _removeAdmin(selected.user_id);
-                  }
-                  setModalremoveadmin(false);
-                }}
-                color="secondary"
-                text={t("removeAdmin")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalremoveadmin(false);
-                }}
-                // color="secondary"
-                variant="transparent"
-                text={t("cancel")}
-                style={{ marginTop: 5, marginBottom: 15 }}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
-
-        {/* modal rename */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalrename}
-          onRequestClose={() => setModalrename(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalrename(false)}
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("newGroupName")}
-              </Text>
-              <Pressable
-                onPress={() => setModalrename(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View
-              style={{
-                // borderColor: "#D1D1D1",
-                width: width - 140,
-                marginVertical: 20,
-                alignSelf: "center",
-                borderRadius: 5,
-                backgroundColor: "#f6f6f6",
-              }}
-            >
-              <TextInput
-                value={textName}
-                placeholder="Group name"
-                placeholderTextColor="#6C6C6C"
-                onChangeText={(text) => setTextName(text)}
-                maxLength={25}
-                style={
-                  Platform.OS == "ios"
-                    ? { maxHeight: 100, margin: 10 }
-                    : {
-                        maxHeight: 100,
-                        marginVertical: 5,
-                        marginHorizontal: 10,
-                        padding: 0,
-                      }
-                }
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                paddingHorizontal: 15,
-                marginBottom: 20,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  setModalrename(false);
-                  setTextName(dataDetail?.title);
-                }}
-                size="medium"
-                color="transparant"
-                text={t("cancel")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  _renameGroup(textName);
-                  setModalrename(false);
-                }}
-                style={{
-                  marginLeft: 10,
-                }}
-                color="primary"
-                text={t("submit")}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
-
-        {/* modal change cover */}
-        <Modal
-          onBackdropPress={() => {
-            setmodalCover(false);
-          }}
-          animationType="fade"
-          onRequestClose={() => setmodalCover(false)}
-          onDismiss={() => setmodalCover(false)}
-          visible={modalCover}
-          transparent={true}
-        >
-          <Pressable
-            style={{
-              width: width,
-              height: height,
-              alignSelf: "center",
-              backgroundColor: "#000",
-              opacity: 0.7,
-              position: "absolute",
-            }}
-            onPress={() => setmodalCover(false)}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("option")}
-              </Text>
-              <Pressable
-                onPress={() => setmodalCover(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-              }}
-              onPress={() => _changecoverCamera()}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginTop: 15, marginBottom: 18 }}
-              >
-                {t("OpenCamera")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                alignItems: "center",
-              }}
-              onPress={() => _changecoverGalery()}
-            >
-              <Text
-                size="description"
-                type="regular"
-                style={{ marginTop: 15, marginBottom: 18 }}
-              >
-                {t("OpenGallery")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        {/* modal left */}
-        <Modal
-          useNativeDriver={true}
-          visible={modalleft}
-          onRequestClose={() => setModalleft(false)}
-          transparent={true}
-          animationType="fade"
-        >
-          <Pressable
-            onPress={() => setModalleft(false)}
-            style={{
-              width: width,
-              height: height,
-              justifyContent: "center",
-              opacity: 0.7,
-              backgroundColor: "#000",
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              width: width - 100,
-              marginHorizontal: 50,
-              backgroundColor: "#FFF",
-              borderRadius: 5,
-              marginTop: height / 3,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                paddingHorizontal: 20,
-                backgroundColor: "#f6f6f6",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 13, marginBottom: 15 }}
-              >
-                {t("leftGroup")}
-              </Text>
-              <Pressable
-                onPress={() => setModalleft(false)}
-                style={{
-                  height: 50,
-                  width: 55,
-                  position: "absolute",
-                  right: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Xgray width={15} height={15} />
-              </Pressable>
-            </View>
-            <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
-              <Text
-                style={{ textAlign: "center", lineHeight: 20 }}
-                size="label"
-                type="regular"
-              >
-                {from == "itinerary"
-                  ? t("alertLeftGroupItinerary")
-                  : t("alertLeftGroup")}
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 20,
-              }}
-            >
-              <Button
-                onPress={() => {
-                  if (from == "itinerary") {
-                    _leftItinerary(room);
-                  } else {
-                    _leftGroup(room);
-                  }
-                  setModalleft(false);
-                }}
-                color="secondary"
-                text={t("exitGroup")}
-              ></Button>
-              <Button
-                onPress={() => {
-                  setModalleft(false);
-                }}
-                style={{ marginTop: 5, marginBottom: 10 }}
-                variant="transparent"
-                text={t("cancel")}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
-
-        {/* modal view image */}
-        <Modal
-          visible={modalimageview}
-          transparent={true}
-          onRequestClose={() => {
-            setModalimageview(false);
-          }}
-        >
-          <ImageViewer
-            imageUrls={mediaArray}
+          {/* modal kick */}
+          <Modal
             useNativeDriver={true}
-            // onSwipeDown={() => {
-            //   setModalimageview(false);
-            // }}
-            index={indexMediaView}
-            enablePreload={true}
-            // enableSwipeDown={true}
-            renderHeader={() => (
-              <Pressable
-                onPress={() => {
-                  setModalimageview(false);
+            visible={modalkick}
+            onRequestClose={() => setModalkick(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalkick(false)}
+              style={{
+                width: width,
+                height: height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
                 }}
               >
-                {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
-                <Text size="h5" styles={{ color: "white" }}>
-                  {" X "}
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {`${t("delete")} ${t("member")}`}
                 </Text>
-              </Pressable>
-            )}
-          />
-        </Modal>
-      </Animated.ScrollView>
+                <Pressable
+                  onPress={() => setModalkick(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+                <Text
+                  style={{ alignSelf: "center", textAlign: "center" }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("alertHapusMember")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  marginBottom: 10,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    if (from == "itinerary") {
+                      DeleteBuddy(selected.id, room);
+                    } else {
+                      _kickMember(selected.user_id);
+                    }
+                    setModalkick(false);
+                  }}
+                  color="secondary"
+                  text={t("delete")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalkick(false);
+                  }}
+                  variant="transparent"
+                  text={t("cancel")}
+                  style={{ marginTop: 5 }}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
 
-      {/* Image Background */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          // top: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: "#14646e",
-          overflow: "hidden",
-          height: HEADER_MAX_HEIGHT,
-          transform: [{ translateY: headerTranslateY }],
-          zIndex: 1,
-          top: SafeStatusBar,
-        }}
-      >
-        {loading ? (
-          <>
+          {/* modal make admin */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalmakeadmin}
+            onRequestClose={() => setModalmakeadmin(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalmakeadmin(false)}
+              style={{
+                width: width,
+                height: height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("makeAdmin")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalmakeadmin(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+                <Text
+                  style={{ alignSelf: "center", textAlign: "center" }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("alertMakeAdmin")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    if (from == "itinerary") {
+                      SetAdminItinerary(selected.id, room);
+                    } else {
+                      _makeAdmin(selected.user_id);
+                    }
+                    setModalmakeadmin(false);
+                  }}
+                  color="primary"
+                  text={t("makeAdmin")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalmakeadmin(false);
+                  }}
+                  // color="secondary"
+                  variant="transparent"
+                  text={t("cancel")}
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
+
+          {/* modal remove_admin */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalremoveadmin}
+            onRequestClose={() => setModalremoveadmin(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalremoveadmin(false)}
+              style={{
+                width: width,
+                height: height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("removeAdmin")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalremoveadmin(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+                <Text
+                  style={{ alignSelf: "center", textAlign: "center" }}
+                  size="label"
+                  type="regular"
+                >
+                  {t("alertRemoveAdmin")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    if (from == "itinerary") {
+                      RemoveAdminItinerary(selected.id, room);
+                    } else {
+                      _removeAdmin(selected.user_id);
+                    }
+                    setModalremoveadmin(false);
+                  }}
+                  color="secondary"
+                  text={t("removeAdmin")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalremoveadmin(false);
+                  }}
+                  // color="secondary"
+                  variant="transparent"
+                  text={t("cancel")}
+                  style={{ marginTop: 5, marginBottom: 15 }}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
+
+          {/* modal rename */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalrename}
+            onRequestClose={() => setModalrename(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalrename(false)}
+              style={{
+                width: width,
+                height: height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("newGroupName")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalrename(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  // borderColor: "#D1D1D1",
+                  width: width - 140,
+                  marginVertical: 20,
+                  alignSelf: "center",
+                  borderRadius: 5,
+                  backgroundColor: "#f6f6f6",
+                }}
+              >
+                <TextInput
+                  value={textName}
+                  placeholder="Group name"
+                  placeholderTextColor="#6C6C6C"
+                  onChangeText={(text) => setTextName(text)}
+                  maxLength={25}
+                  style={
+                    Platform.OS == "ios"
+                      ? { maxHeight: 100, margin: 10 }
+                      : {
+                          maxHeight: 100,
+                          marginVertical: 5,
+                          marginHorizontal: 10,
+                          padding: 0,
+                        }
+                  }
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  paddingHorizontal: 15,
+                  marginBottom: 20,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    setModalrename(false);
+                    setTextName(dataDetail?.title);
+                  }}
+                  size="medium"
+                  color="transparant"
+                  text={t("cancel")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    _renameGroup(textName);
+                    setModalrename(false);
+                  }}
+                  style={{
+                    marginLeft: 10,
+                  }}
+                  color="primary"
+                  text={t("submit")}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
+
+          {/* modal change cover */}
+          <Modal
+            onBackdropPress={() => {
+              setmodalCover(false);
+            }}
+            animationType="fade"
+            onRequestClose={() => setmodalCover(false)}
+            onDismiss={() => setmodalCover(false)}
+            visible={modalCover}
+            transparent={true}
+          >
+            <Pressable
+              style={{
+                width: width,
+                height: height,
+                alignSelf: "center",
+                backgroundColor: "#000",
+                opacity: 0.7,
+                position: "absolute",
+              }}
+              onPress={() => setmodalCover(false)}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("option")}
+                </Text>
+                <Pressable
+                  onPress={() => setmodalCover(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                }}
+                onPress={() => _changecoverCamera()}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginTop: 15, marginBottom: 18 }}
+                >
+                  {t("OpenCamera")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignItems: "center",
+                }}
+                onPress={() => _changecoverGalery()}
+              >
+                <Text
+                  size="description"
+                  type="regular"
+                  style={{ marginTop: 15, marginBottom: 18 }}
+                >
+                  {t("OpenGallery")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
+          {/* modal left */}
+          <Modal
+            useNativeDriver={true}
+            visible={modalleft}
+            onRequestClose={() => setModalleft(false)}
+            transparent={true}
+            animationType="fade"
+          >
+            <Pressable
+              onPress={() => setModalleft(false)}
+              style={{
+                width: width,
+                height: height,
+                justifyContent: "center",
+                opacity: 0.7,
+                backgroundColor: "#000",
+                position: "absolute",
+              }}
+            />
+            <View
+              style={{
+                width: width - 100,
+                marginHorizontal: 50,
+                backgroundColor: "#FFF",
+                borderRadius: 5,
+                marginTop: height / 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  paddingHorizontal: 20,
+                  backgroundColor: "#f6f6f6",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 13, marginBottom: 15 }}
+                >
+                  {t("leftGroup")}
+                </Text>
+                <Pressable
+                  onPress={() => setModalleft(false)}
+                  style={{
+                    height: 50,
+                    width: 55,
+                    position: "absolute",
+                    right: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+                <Text
+                  style={{ textAlign: "center", lineHeight: 20 }}
+                  size="label"
+                  type="regular"
+                >
+                  {from == "itinerary"
+                    ? t("alertLeftGroupItinerary")
+                    : t("alertLeftGroup")}
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Button
+                  onPress={() => {
+                    if (from == "itinerary") {
+                      _leftItinerary(room);
+                    } else {
+                      _leftGroup(room);
+                    }
+                    setModalleft(false);
+                  }}
+                  color="secondary"
+                  text={t("exitGroup")}
+                ></Button>
+                <Button
+                  onPress={() => {
+                    setModalleft(false);
+                  }}
+                  style={{ marginTop: 5, marginBottom: 10 }}
+                  variant="transparent"
+                  text={t("cancel")}
+                ></Button>
+              </View>
+            </View>
+          </Modal>
+
+          {/* modal view image */}
+          <Modal
+            visible={modalimageview}
+            transparent={true}
+            onRequestClose={() => {
+              setModalimageview(false);
+            }}
+          >
+            <SafeAreaView style={{ backgroundColor: "#000" }} />
+            <ImageViewer
+              imageUrls={mediaArray}
+              useNativeDriver={true}
+              // onSwipeDown={() => {
+              //   setModalimageview(false);
+              // }}
+              index={indexMediaView}
+              enablePreload={true}
+              // enableSwipeDown={true}
+              renderHeader={() => (
+                <Pressable
+                  onPress={() => {
+                    setModalimageview(false);
+                  }}
+                  // style={{ marginTop: 10 }}
+                >
+                  {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
+                  <Text size="h5" styles={{ color: "white" }}>
+                    {" X "}
+                  </Text>
+                </Pressable>
+              )}
+            />
+          </Modal>
+        </Animated.ScrollView>
+
+        {/* Image Background */}
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            // top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "#14646e",
+            overflow: "hidden",
+            height: HEADER_MAX_HEIGHT,
+            transform: [{ translateY: headerTranslateY }],
+            zIndex: 1,
+            top: 0,
+          }}
+        >
+          {loading ? (
+            <>
+              <Animated.Image
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  width: null,
+                  height: HEADER_MAX_HEIGHT,
+                  resizeMode: "cover",
+                  opacity: headerOpacity,
+                  // transform: [{ translateY: headerTranslateY }],
+                }}
+                source={default_image}
+              />
+              <ActivityIndicator
+                animating={true}
+                size="large"
+                color="#d1d1d1"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                }}
+              />
+            </>
+          ) : (
             <Animated.Image
               style={{
                 position: "absolute",
@@ -1737,240 +1768,49 @@ export default function GroupDetail(props) {
                 height: HEADER_MAX_HEIGHT,
                 resizeMode: "cover",
                 opacity: headerOpacity,
+
                 // transform: [{ translateY: headerTranslateY }],
               }}
-              source={default_image}
-            />
-            <ActivityIndicator
-              animating={true}
-              size="large"
-              color="#d1d1d1"
-              style={{
-                position: "absolute",
-                top: 0,
-                bottom: 0,
-                right: 0,
-                left: 0,
-              }}
-            />
-          </>
-        ) : (
-          <Animated.Image
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              width: null,
-              height: HEADER_MAX_HEIGHT,
-              resizeMode: "cover",
-              opacity: headerOpacity,
-              // transform: [{ translateY: headerTranslateY }],
-            }}
-            source={
-              dataDetail && dataDetail.link_picture
-                ? { uri: dataDetail?.link_picture }
-                : default_image
-            }
-          />
-        )}
-      </Animated.View>
-
-      {/* Title Header */}
-
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          flex: 1,
-          flexDirection: "row",
-          position: "absolute",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          zIndex: 999,
-          // width: "80%",
-          opacity: titleOpacity,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar - 0.5
-                : SafeStatusBar - 0.5
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar
-              : NotchAndro
-              ? SafeStatusBar
-              : SafeStatusBar,
-          backgroundColor: "#209fae",
-          height:
-            Platform.OS == "ios"
-              ? Notch
-                ? 45
-                : 45
-              : deviceId == "LYA-L29"
-              ? 55
-              : NotchAndro
-              ? 55
-              : 55,
-          width: Dimensions.get("screen").width,
-        }}
-      >
-        <Pressable
-          onPress={() => props.navigation.goBack()}
-          style={{
-            borderRadius: 40,
-            height: 40,
-            width: 40,
-            justifyContent: "center",
-            alignItems: "center",
-            marginRight: 20,
-            left: 15,
-          }}
-        >
-          {Platform.OS == "ios" ? (
-            <Arrowbackios height={15} width={15}></Arrowbackios>
-          ) : (
-            <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-          )}
-        </Pressable>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "80%",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            size="title"
-            style={{
-              color: "#fff",
-              flex: 1,
-              top:
-                Platform.OS == "ios"
-                  ? Notch
-                    ? 2
-                    : -1
-                  : deviceId == "LYA-L29"
-                  ? 1
-                  : NotchAndro
-                  ? 0
-                  : 0,
-            }}
-            numberOfLines={1}
-          >
-            {dataDetail ? dataDetail.title : null}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              width: 50,
-              justifyContent: "flex-end",
-            }}
-          >
-            {dataDetail && dataDetail.type !== "itinerary" ? (
-              <Pressable
-                onPress={() => {
-                  setModalrename();
-                }}
-                style={{
-                  width: 30,
-                  height: 30,
-                  marginRight: 28,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <PensilPutih width={18} height={18} />
-              </Pressable>
-            ) : null}
-            <Menu
-              ref={(ref) => (_menu = ref)}
-              button={
-                <Pressable
-                  style={{
-                    marginTop:
-                      Platform.OS == "ios"
-                        ? Notch
-                          ? 7
-                          : 5
-                        : deviceId == "LYA-L29"
-                        ? 7
-                        : NotchAndro
-                        ? 7
-                        : 3,
-                    marginRight:
-                      Platform.OS == "ios"
-                        ? Notch
-                          ? 5
-                          : 12
-                        : deviceId == "LYA-L29"
-                        ? 16
-                        : NotchAndro
-                        ? 0
-                        : 10,
-                  }}
-                  onPress={() => _menu.show()}
-                >
-                  <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
-                </Pressable>
+              source={
+                dataDetail && dataDetail.link_picture
+                  ? { uri: dataDetail?.link_picture }
+                  : default_image
               }
-              style={{
-                width: 200,
-              }}
-            >
-              <MenuItem
-                onPress={() => {
-                  _menu.hide(() => {
-                    setmodalCover(true);
-                  });
-                }}
-              >
-                {t("changeCoverGroup")}
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem
-                onPress={() => {
-                  _menu.hide(() => setModalleft(true));
-                }}
-              >
-                {t("leftGroup")}
-              </MenuItem>
-            </Menu>
-          </View>
-        </View>
-      </Animated.View>
+            />
+          )}
+        </Animated.View>
 
-      {/* Back Arrow */}
+        {/* Title Header */}
 
-      <Animated.View
-        style={{
-          transform: [{ translateY: titleTranslateY }],
-          width: Dimensions.get("screen").width,
-          position: "absolute",
-          zIndex: 999,
-          top:
-            Platform.OS == "ios"
-              ? Notch
-                ? SafeStatusBar - 13
-                : SafeStatusBar - 13
-              : deviceId == "LYA-L29"
-              ? SafeStatusBar - 7
-              : NotchAndro
-              ? SafeStatusBar - 7
-              : 16,
-          opacity: backHeaderOpacity,
-        }}
-      >
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            flex: 1,
+            flexDirection: "row",
+            position: "absolute",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            // left: 15,
+            zIndex: 999,
+            // width: "80%",
+            opacity: titleOpacity,
+            // top: 10,
+            // marginTop: 20,
+            paddingLeft: 15,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#209FAE",
+            height: 45,
+          }}
+        >
           <Pressable
             onPress={() => props.navigation.goBack()}
             style={{
-              marginTop: 15,
-              marginLeft: 15,
               borderRadius: 40,
               height: 40,
               width: 40,
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "rgba(0,0,0,0.6)",
+              marginRight: 20,
             }}
           >
             {Platform.OS == "ios" ? (
@@ -1981,77 +1821,187 @@ export default function GroupDetail(props) {
           </Pressable>
           <View
             style={{
-              marginTop: 14,
-              marginRight: 15,
-              borderRadius: 40,
-              height: 40,
-              width: 90,
-              justifyContent: "flex-end",
-              alignItems: "center",
               flexDirection: "row",
+              width: "80%",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            {dataDetail && dataDetail.type !== "itinerary" ? (
-              <Pressable
-                onPress={() => {
-                  setModalrename();
-                }}
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  borderRadius: 25,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 10,
-                }}
-              >
-                <PensilPutih width={18} height={18} />
-              </Pressable>
-            ) : null}
-
-            <Menu
-              ref={(ref) => (_menu = ref)}
-              button={
-                <Pressable
-                  style={{
-                    paddingHorizontal: 13,
-                    paddingVertical: 13,
-                    backgroundColor: "rgba(0, 0, 0, 0.6)",
-                    borderRadius: 20,
-                  }}
-                  onPress={() => _menu.show()}
-                >
-                  <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
-                </Pressable>
-              }
+            <Text
+              size="title"
               style={{
-                width: 200,
+                color: "#fff",
+                flex: 1,
+              }}
+              numberOfLines={1}
+            >
+              {dataDetail ? dataDetail.title : null}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                width: 67,
+                height: 30,
+                marginRight: 9,
               }}
             >
-              <MenuItem
-                onPress={() => {
-                  _menu.hide(() => {
-                    setmodalCover(true);
-                  });
+              {dataDetail && dataDetail.type !== "itinerary" ? (
+                <Pressable
+                  onPress={() => {
+                    setModalrename();
+                  }}
+                >
+                  <PensilPutih width={18} height={18} />
+                </Pressable>
+              ) : null}
+              <Menu
+                ref={(ref) => (_menu = ref)}
+                button={
+                  <Pressable
+                    style={{
+                      alignSelf: "center",
+                      marginLeft: 34,
+                    }}
+                    onPress={() => _menu.show()}
+                  >
+                    <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
+                  </Pressable>
+                }
+                style={{
+                  width: 200,
                 }}
               >
-                {t("changeCoverGroup")}
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem
-                onPress={() => {
-                  _menu.hide(() => setModalleft(true));
-                }}
-              >
-                {t("leftGroup")}
-              </MenuItem>
-            </Menu>
+                <MenuItem
+                  onPress={() => {
+                    _menu.hide(() => {
+                      setmodalCover(true);
+                    });
+                  }}
+                >
+                  {t("changeCoverGroup")}
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onPress={() => {
+                    _menu.hide(() => setModalleft(true));
+                  }}
+                >
+                  {t("leftGroup")}
+                </MenuItem>
+              </Menu>
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
 
-      {/* {dataDetail && dataDetail.type !== "itinerary" ? (
+        {/* Back Arrow */}
+
+        <Animated.View
+          style={{
+            transform: [{ translateY: titleTranslateY }],
+            width: width,
+            position: "absolute",
+            zIndex: 999,
+            top: 0,
+            opacity: backHeaderOpacity,
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Pressable
+              onPress={() => props.navigation.goBack()}
+              style={{
+                marginTop: 2,
+                marginLeft: 15,
+                borderRadius: 40,
+                height: 40,
+                width: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.6)",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Pressable>
+            <View
+              style={{
+                marginTop: 3,
+                marginRight: 15,
+                borderRadius: 40,
+                height: 40,
+                width: 90,
+                justifyContent: "flex-end",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              {dataDetail && dataDetail.type !== "itinerary" ? (
+                <Pressable
+                  onPress={() => {
+                    setModalrename();
+                  }}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    borderRadius: 25,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 10,
+                  }}
+                >
+                  <PensilPutih width={18} height={18} />
+                </Pressable>
+              ) : null}
+
+              <Menu
+                ref={(ref) => (_menu = ref)}
+                button={
+                  <Pressable
+                    style={{
+                      paddingHorizontal: 13,
+                      paddingVertical: 13,
+                      backgroundColor: "rgba(0, 0, 0, 0.6)",
+                      borderRadius: 20,
+                    }}
+                    onPress={() => _menu.show()}
+                  >
+                    <OptionsVertWhite height={15} width={15}></OptionsVertWhite>
+                  </Pressable>
+                }
+                style={{
+                  width: 200,
+                }}
+              >
+                <MenuItem
+                  onPress={() => {
+                    _menu.hide(() => {
+                      setmodalCover(true);
+                    });
+                  }}
+                >
+                  {t("changeCoverGroup")}
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem
+                  onPress={() => {
+                    _menu.hide(() => setModalleft(true));
+                  }}
+                >
+                  {t("leftGroup")}
+                </MenuItem>
+              </Menu>
+            </View>
+          </View>
+        </Animated.View>
+
+        {/* {dataDetail && dataDetail.type !== "itinerary" ? (
         <Animated.View
           style={{
             transform: [{ translateY: titleTranslateY }],
@@ -2082,6 +2032,7 @@ export default function GroupDetail(props) {
           </Pressable>
         </Animated.View>
       ) : null} */}
-    </View>
+      </SafeAreaView>
+    </>
   );
 }

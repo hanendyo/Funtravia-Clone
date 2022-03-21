@@ -11,6 +11,7 @@ import {
   Platform,
   BackHandler,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import {
   Sharegreen,
@@ -558,7 +559,7 @@ export default function albumdetail(props) {
   }
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "white",
@@ -1613,6 +1614,6 @@ export default function albumdetail(props) {
           deleteAlbum();
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }
