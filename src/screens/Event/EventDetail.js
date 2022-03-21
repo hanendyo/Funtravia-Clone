@@ -698,7 +698,7 @@ export default function EventDetail(props) {
                 android: deviceId == "CPH2127" ? 100 : 85,
               }),
               flexDirection: "row",
-              top: Platform.OS == "ios" ? 48 : 0,
+              top: Platform.OS == "ios" ? (Notch ? 48 : 20) : 0,
               bottom: 0,
               opacity: headerOpacity,
             }}
@@ -720,7 +720,9 @@ export default function EventDetail(props) {
                   width: 35,
                   top:
                     Platform.OS == "ios"
-                      ? 2
+                      ? Notch
+                        ? 2
+                        : 2
                       : deviceId == "CPH2127"
                       ? SafeStatusBar + 5
                       : SafeStatusBar + 5,

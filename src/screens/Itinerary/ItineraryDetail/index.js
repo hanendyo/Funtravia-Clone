@@ -581,7 +581,7 @@ export default function ItineraryDetail(props) {
     setStatus(
       dta.status === "D" ? "edit" : dta.status === "F" ? "finish" : "saved"
     );
-    datadetail.itinerary_detail.buddy.map((item, index) => {
+    datadetail?.itinerary_detail?.buddy.map((item, index) => {
       if (item.user_id === users?.id) {
         setStatusUsers(item.isadmin);
       }
@@ -859,13 +859,13 @@ export default function ItineraryDetail(props) {
 
           setdatadayaktif(
             indexnya !== 0
-              ? datadetail.itinerary_detail.day[indexnya - 1]
-              : datadetail.itinerary_detail.day[indexnya]
+              ? datadetail?.itinerary_detail?.day[indexnya - 1]
+              : datadetail?.itinerary_detail?.day[indexnya]
           );
           setidDay(
             indexnya !== 0
-              ? datadetail.itinerary_detail.day[indexnya - 1].id
-              : datadetail.itinerary_detail.day[indexnya].id
+              ? datadetail?.itinerary_detail?.day[indexnya - 1].id
+              : datadetail?.itinerary_detail?.day[indexnya].id
           );
 
           setIndexnya(indexnya !== 0 ? indexnya - 1 : indexnya);
@@ -1422,7 +1422,7 @@ export default function ItineraryDetail(props) {
   const completePlan = async () => {
     _Refresh();
     setloading(true);
-    for (var i of datadetail.itinerary_detail.day) {
+    for (var i of datadetail?.itinerary_detail?.day) {
       let x = i.total_hours.split(":");
       let y = parseFloat(x[0]);
       if (y < 1) {
@@ -1984,15 +1984,17 @@ export default function ItineraryDetail(props) {
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
-    datadetail.itinerary_detail.buddy.map((item, index) => {
-      if (item.user_id === users?.id) {
-        statususer = item.isadmin;
-      }
-    });
+    datadetail
+      ? datadetail?.itinerary_detail?.buddy.map((item, index) => {
+          if (item.user_id === users?.id) {
+            statususer = item.isadmin;
+          }
+        })
+      : null;
 
     return (
       <Animated.View
-        onLayout={() => cekAnggota(rD)}
+        onLayout={() => cekAnggota(rD ? rD : "D")}
         {...headerPanResponder.panHandlers}
         style={{
           transform: [{ translateY: y }],
@@ -2007,7 +2009,7 @@ export default function ItineraryDetail(props) {
         {/* image animated */}
 
         <Animated.Image
-          source={rD.cover ? { uri: rD.cover } : ItineraryKosong}
+          source={rD?.cover ? { uri: rD?.cover } : ItineraryKosong}
           style={{
             opacity: imageOpacity,
             width: "100%",
@@ -2061,7 +2063,11 @@ export default function ItineraryDetail(props) {
                   marginTop: 5,
                 }}
               >
-                {cekTanggal(datadetail?.itinerary_detail?.start_date) <= 180 ? (
+                {cekTanggal(
+                  datadetail?.itinerary_detail?.start_date
+                    ? datadetail?.itinerary_detail?.start_date
+                    : "1999-01-01"
+                ) <= 180 ? (
                   <Errorr width={15} height={15} style={{ marginRight: 5 }} />
                 ) : null}
                 <Text
@@ -2069,17 +2075,20 @@ export default function ItineraryDetail(props) {
                   type="bold"
                   style={{
                     color:
-                      cekTanggal(datadetail?.itinerary_detail?.start_date) <=
-                      180
+                      cekTanggal(
+                        datadetail?.itinerary_detail?.start_date
+                          ? datadetail?.itinerary_detail?.start_date
+                          : "1999-01-01"
+                      ) <= 180
                         ? "#D75995"
                         : "#6c6c6c",
                   }}
                 >
                   {/* {t("dates")} :{" "} */}
-                  {datadetail && datadetail.itinerary_detail
-                    ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                  {datadetail && datadetail?.itinerary_detail
+                    ? dateFormatr(datadetail?.itinerary_detail?.start_date) +
                       "  -  " +
-                      dateFormatr(datadetail.itinerary_detail.end_date)
+                      dateFormatr(datadetail?.itinerary_detail?.end_date)
                     : null}
                 </Text>
               </View>
@@ -2104,22 +2113,22 @@ export default function ItineraryDetail(props) {
               <Ripple
                 style={{
                   marginRight:
-                    datadetail.itinerary_detail.isprivate === false ? 10 : 6,
+                    datadetail?.itinerary_detail?.isprivate === false ? 10 : 6,
                 }}
                 onPress={() =>
                   statususer
                     ? props.navigation.push("ItineraryStack", {
                         screen: "editprivacy",
                         params: {
-                          isprivate: datadetail.itinerary_detail.isprivate,
-                          id: datadetail.itinerary_detail.id,
+                          isprivate: datadetail?.itinerary_detail?.isprivate,
+                          id: datadetail?.itinerary_detail?.id,
                           token: token,
                         },
                       })
                     : showAlert({ ...aler, show: true })
                 }
               >
-                {datadetail.itinerary_detail.isprivate == false ? (
+                {datadetail?.itinerary_detail?.isprivate == false ? (
                   <View
                     style={{
                       height: 25,
@@ -2150,8 +2159,8 @@ export default function ItineraryDetail(props) {
             </View>
           </View>
           {datadetail &&
-          datadetail.itinerary_detail &&
-          datadetail.itinerary_detail.isprivate === false ? (
+          datadetail?.itinerary_detail &&
+          datadetail?.itinerary_detail?.isprivate === false ? (
             <Button
               onPress={() =>
                 shareAction({
@@ -2188,26 +2197,26 @@ export default function ItineraryDetail(props) {
             backgroundColor: "white",
           }}
         >
-          {datadetail && datadetail.itinerary_detail ? (
+          {datadetail && datadetail?.itinerary_detail ? (
             <TouchableOpacity
               onPress={() => {
                 props.navigation.push("ItineraryBuddy", {
                   iditin:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.id
+                    datadetail && datadetail?.itinerary_detail
+                      ? datadetail?.itinerary_detail?.id
                       : null,
                   token: token ? token : null,
                   dataitin:
-                    datadetail && datadetail.itinerary_detail
+                    datadetail && datadetail?.itinerary_detail
                       ? datadetail
                       : null,
                   databuddy:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.buddy
+                    datadetail && datadetail?.itinerary_detail
+                      ? datadetail?.itinerary_detail?.buddy
                       : null,
                   created_by:
-                    datadetail && datadetail.itinerary_detail
-                      ? datadetail.itinerary_detail.created_by
+                    datadetail && datadetail?.itinerary_detail
+                      ? datadetail?.itinerary_detail?.created_by
                       : null,
                 });
               }}
@@ -2247,35 +2256,37 @@ export default function ItineraryDetail(props) {
                   flexDirection: "row",
                 }}
               >
-                {datadetail.itinerary_detail.buddy.map((value, i) => {
-                  if (i < 4) {
-                    return (
-                      <View key={i}>
-                        <Image
-                          source={
-                            value.user && value.user.picture
-                              ? {
-                                  uri: value.user.picture,
-                                }
-                              : default_image
-                          }
-                          defaultSource={default_image}
-                          style={{
-                            resizeMode: "cover",
-                            height: 30,
-                            width: 30,
-                            borderRadius: 15,
-                            marginLeft: -10,
-                            borderWidth: 1.5,
-                            borderColor: "#fff",
-                          }}
-                        />
-                      </View>
-                    );
-                  }
-                })}
+                {datadetail
+                  ? datadetail?.itinerary_detail?.buddy.map((value, i) => {
+                      if (i < 4) {
+                        return (
+                          <View key={i}>
+                            <Image
+                              source={
+                                value.user && value.user.picture
+                                  ? {
+                                      uri: value.user.picture,
+                                    }
+                                  : default_image
+                              }
+                              defaultSource={default_image}
+                              style={{
+                                resizeMode: "cover",
+                                height: 30,
+                                width: 30,
+                                borderRadius: 15,
+                                marginLeft: -10,
+                                borderWidth: 1.5,
+                                borderColor: "#fff",
+                              }}
+                            />
+                          </View>
+                        );
+                      }
+                    })
+                  : null}
 
-                {datadetail.itinerary_detail.buddy.length > 1 ? (
+                {datadetail?.itinerary_detail?.buddy.length > 1 ? (
                   <View
                     style={{
                       paddingLeft: 5,
@@ -2289,14 +2300,14 @@ export default function ItineraryDetail(props) {
                         ? t("you") +
                           " + " +
                           (parseFloat(
-                            datadetail.itinerary_detail.buddy.length
+                            datadetail?.itinerary_detail?.buddy.length
                           ) -
                             1)
                         : datadetail?.itinerary_detail?.buddy[0]?.user
                             ?.first_name +
                           " + " +
                           (parseFloat(
-                            datadetail.itinerary_detail.buddy.length
+                            datadetail?.itinerary_detail?.buddy.length
                           ) -
                             1)}{" "}
                       {t("others")}
@@ -2670,7 +2681,7 @@ export default function ItineraryDetail(props) {
                             idItin: itineraryId,
                             id: item.id,
                             idDay: idDay,
-                            nameitin: datadetail.itinerary_detail.name,
+                            nameitin: datadetail?.itinerary_detail?.name,
                             startDate: datadetail?.itinerary_detail?.start_date,
                             endDate: EndTimeConverter(
                               datadetail?.itinerary_detail?.end_date
@@ -2902,7 +2913,7 @@ export default function ItineraryDetail(props) {
                         idItin: itineraryId,
                         id: item.id,
                         idDay: idDay,
-                        nameitin: datadetail.itinerary_detail.name,
+                        nameitin: datadetail?.itinerary_detail?.name,
                         startDate: datadetail?.itinerary_detail?.start_date,
                         endDate: EndTimeConverter(
                           datadetail?.itinerary_detail?.end_date
@@ -3968,13 +3979,13 @@ export default function ItineraryDetail(props) {
                     _fetchItem(
                       dataList[0]
                         ? dataList[0].city
-                        : datadetail.itinerary_detail.city.name,
+                        : datadetail?.itinerary_detail?.city.name,
                       dataList[0]
                         ? dataList[0].latitude
-                        : datadetail.itinerary_detail.city.latitude,
+                        : datadetail?.itinerary_detail?.city.latitude,
                       dataList[0]
                         ? dataList[0].longitude
-                        : datadetail.itinerary_detail.city.longitude
+                        : datadetail?.itinerary_detail?.city.longitude
                     );
                   }}
                 >
@@ -4007,13 +4018,17 @@ export default function ItineraryDetail(props) {
                       <Truncate
                         text={getcity(
                           dataList,
-                          datadetail.itinerary_detail.city.name
+                          datadetail?.itinerary_detail?.city.name
                         ).toUpperCase()}
                         length={35}
                       />
                     ) : (
                       <Capital
-                        text={datadetail.itinerary_detail.city.name.toUpperCase()}
+                        text={
+                          datadetail?.itinerary_detail
+                            ? datadetail?.itinerary_detail?.city?.name.toUpperCase()
+                            : "A"
+                        }
                         length={35}
                       />
                     )}
@@ -4253,7 +4268,7 @@ export default function ItineraryDetail(props) {
             <Button
               onPress={() =>
                 props.navigation.navigate("ReorderDetail", {
-                  head: datadetail.itinerary_detail,
+                  head: datadetail?.itinerary_detail,
                   child: dataList,
                   active: datadayaktif,
                   token: token,
@@ -4506,13 +4521,13 @@ export default function ItineraryDetail(props) {
             />
           ) : (
             <ItineraryDay
-              dataitin={datadetail.itinerary_detail}
-              dataDay={datadetail.itinerary_detail.day}
+              dataitin={datadetail?.itinerary_detail}
+              dataDay={datadetail?.itinerary_detail?.day}
               props={props}
               token={token}
-              lat={datadetail.itinerary_detail.city.latitude}
-              long={datadetail.itinerary_detail.city.longitude}
-              kota={datadetail.itinerary_detail.city.name}
+              lat={datadetail?.itinerary_detail?.city.latitude}
+              long={datadetail?.itinerary_detail?.city.longitude}
+              kota={datadetail?.itinerary_detail?.city.name}
               iditinerary={itineraryId}
               getdata={() => setParamAdd(true)}
               dataAkhir={dataAkhir}
@@ -4520,7 +4535,7 @@ export default function ItineraryDetail(props) {
               setidDayz={(e) => setidDay(e)}
               GetTimeline={(e) => GetTimeline(e)}
               setCover={(e) => setCover(e)}
-              cover={datadetail.itinerary_detail.cover}
+              cover={datadetail?.itinerary_detail?.cover}
               datadayaktif={datadayaktif}
               setdatadayaktif={(e) => setdatadayaktif(e)}
               setLoading={(e) => setloading(e)}
@@ -4833,18 +4848,18 @@ export default function ItineraryDetail(props) {
                         token: token,
                         datadayaktif: datadayaktif,
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                         idcity:
                           dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
-                            : datadetail.itinerary_detail.city.id,
-                        idcountries: datadetail.itinerary_detail.country.id,
+                            : datadetail?.itinerary_detail?.city.id,
+                        idcountries: datadetail?.itinerary_detail?.country.id,
                       });
                     } else if (jam === 23 && menit === 0) {
                       dispatch(
@@ -4863,18 +4878,18 @@ export default function ItineraryDetail(props) {
                         token: token,
                         datadayaktif: datadayaktif,
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                         idcity:
                           dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
-                            : datadetail.itinerary_detail.city.id,
-                        idcountries: datadetail.itinerary_detail.country.id,
+                            : datadetail?.itinerary_detail?.city.id,
+                        idcountries: datadetail?.itinerary_detail?.country.id,
                       });
                     } else {
                       Alert.alert(t("alertjam"));
@@ -4975,8 +4990,8 @@ export default function ItineraryDetail(props) {
                 paddingHorizontal: 20,
               }}
             >
-              {datadetail && datadetail.itinerary_detail ? (
-                datadetail.itinerary_detail.liked == true ? (
+              {datadetail && datadetail?.itinerary_detail ? (
+                datadetail?.itinerary_detail?.liked == true ? (
                   <Button
                     onPress={() => _unliked()}
                     text=""
@@ -5060,8 +5075,8 @@ export default function ItineraryDetail(props) {
                 paddingHorizontal: 20,
               }}
             >
-              {datadetail && datadetail.itinerary_detail ? (
-                datadetail.itinerary_detail.liked == true ? (
+              {datadetail && datadetail?.itinerary_detail ? (
+                datadetail?.itinerary_detail?.liked == true ? (
                   <Button
                     onPress={() => _unliked()}
                     text=""
@@ -5232,7 +5247,9 @@ export default function ItineraryDetail(props) {
   }
 
   if (datadetail) {
-    let rData = datadetail.itinerary_detail;
+    let rData = datadetail?.itinerary_detail
+      ? datadetail?.itinerary_detail
+      : null;
     const yHeader = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
       outputRange: [HeaderHeight, 60],
@@ -5406,8 +5423,11 @@ export default function ItineraryDetail(props) {
                     paddingRight: 20,
                   }}
                 >
-                  {cekTanggal(datadetail?.itinerary_detail?.start_date) <=
-                  180 ? (
+                  {cekTanggal(
+                    datadetail?.itinerary_detail?.start_date
+                      ? datadetail?.itinerary_detail?.start_date
+                      : "1999-01-01"
+                  ) <= 180 ? (
                     <Errorx width={18} height={18} style={{ marginRight: 5 }} />
                   ) : null}
 
@@ -5421,10 +5441,10 @@ export default function ItineraryDetail(props) {
                     numberOfLines={1}
                   >
                     {/* {t("dates")} :{" "} */}
-                    {datadetail && datadetail.itinerary_detail
-                      ? dateFormatr(datadetail.itinerary_detail.start_date) +
+                    {datadetail && datadetail?.itinerary_detail
+                      ? dateFormatr(datadetail?.itinerary_detail?.start_date) +
                         "  -  " +
-                        dateFormatr(datadetail.itinerary_detail.end_date)
+                        dateFormatr(datadetail?.itinerary_detail?.end_date)
                       : null}
                   </Animated.Text>
                 </Animated.View>
@@ -5716,12 +5736,12 @@ export default function ItineraryDetail(props) {
                           IdItinerary: itineraryId,
                           datadayaktif: datadayaktif,
                           dataDes:
-                            datadetail && datadetail.itinerary_detail
+                            datadetail && datadetail?.itinerary_detail
                               ? datadetail
                               : null,
                           datadayaktif: datadayaktif,
-                          lat: datadetail.itinerary_detail.city.latitude,
-                          long: datadetail.itinerary_detail.city.longitude,
+                          lat: datadetail?.itinerary_detail?.city.latitude,
+                          long: datadetail?.itinerary_detail?.city.longitude,
                           from: "itinerary_wishlist",
                         },
                       });
@@ -5732,12 +5752,12 @@ export default function ItineraryDetail(props) {
                           IdItinerary: itineraryId,
                           datadayaktif: datadayaktif,
                           dataDes:
-                            datadetail && datadetail.itinerary_detail
+                            datadetail && datadetail?.itinerary_detail
                               ? datadetail
                               : null,
                           datadayaktif: datadayaktif,
-                          lat: datadetail.itinerary_detail.city.latitude,
-                          long: datadetail.itinerary_detail.city.longitude,
+                          lat: datadetail?.itinerary_detail?.city.latitude,
+                          long: datadetail?.itinerary_detail?.city.longitude,
                           from: "itinerary_wishlist",
                         },
                       });
@@ -5792,24 +5812,24 @@ export default function ItineraryDetail(props) {
                     if (jam < 23) {
                       props.navigation.push("ItinGoogle", {
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
                         token: token,
                         datadayaktif: datadayaktif,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                       });
                     } else if (jam === 23 && menit === 0) {
                       props.navigation.push("ItinGoogle", {
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
                         token: token,
                         datadayaktif: datadayaktif,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                       });
                     } else {
                       Alert.alert(t("alertjam"));
@@ -5919,18 +5939,18 @@ export default function ItineraryDetail(props) {
                         token: token,
                         datadayaktif: datadayaktif,
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                         idcity:
                           dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
-                            : datadetail.itinerary_detail.city.id,
-                        idcountries: datadetail.itinerary_detail.country.id,
+                            : datadetail?.itinerary_detail?.city.id,
+                        idcountries: datadetail?.itinerary_detail?.country.id,
                       });
                     } else if (jam === 23 && menit === 0) {
                       dispatch(
@@ -5949,18 +5969,18 @@ export default function ItineraryDetail(props) {
                         token: token,
                         datadayaktif: datadayaktif,
                         dataDes:
-                          datadetail && datadetail.itinerary_detail
+                          datadetail && datadetail?.itinerary_detail
                             ? datadetail
                             : null,
-                        lat: datadetail.itinerary_detail.city.latitude,
-                        long: datadetail.itinerary_detail.city.longitude,
+                        lat: datadetail?.itinerary_detail?.city.latitude,
+                        long: datadetail?.itinerary_detail?.city.longitude,
                         idcity:
                           dataList &&
                           dataList?.length > 0 &&
                           dataList[dataList.length - 1].id_city
                             ? dataList[dataList.length - 1].id_city
-                            : datadetail.itinerary_detail.city.id,
-                        idcountries: datadetail.itinerary_detail.country.id,
+                            : datadetail?.itinerary_detail?.city.id,
+                        idcountries: datadetail?.itinerary_detail?.country.id,
                       });
                     } else {
                       Alert.alert(t("alertjam"));
@@ -7699,8 +7719,8 @@ export default function ItineraryDetail(props) {
                           token: token,
                           iditin: itineraryId,
                           isPrivate:
-                            datadetail && datadetail.itinerary_detail
-                              ? datadetail.itinerary_detail.isprivate
+                            datadetail && datadetail?.itinerary_detail
+                              ? datadetail?.itinerary_detail?.isprivate
                               : false,
                         }),
                           setshowside(false);

@@ -92,6 +92,8 @@ export default function ItineraryBuddy(props) {
   let [datadetail, setDatadetail] = useState([]);
   let [search, setSearch] = useState("");
   let [users, setUser] = useState({});
+  let [AdminTrip, setAdminTrip] = useState(true);
+  let [seeBuddyNotAdmin, setSeeBuddyNotAdmin] = useState([]);
 
   const [
     GetListEvent,
@@ -108,6 +110,13 @@ export default function ItineraryBuddy(props) {
     variables: {
       itinerary_id: props.route.params.iditin,
       key: search,
+    },
+    onCompleted: async (value) => {
+      let Admin = value?.list_buddy.filter((x) => x.user_id == users.id);
+      await setAdminTrip(Admin[0].isadmin);
+      let FilterBuddy = value?.list_buddy.filter((i) => i.isconfrim == true);
+      console.log("FilterBuddy", FilterBuddy);
+      await setSeeBuddyNotAdmin(FilterBuddy);
     },
   });
 
@@ -388,6 +397,7 @@ export default function ItineraryBuddy(props) {
       <SafeAreaView
         style={{
           flex: 1,
+
           backgroundColor: "#FFFFFF",
         }}
       >
@@ -777,7 +787,7 @@ export default function ItineraryBuddy(props) {
                 </View>
               </Swipeout>
             );
-          } else {
+          } else if (value.isconfrim == true) {
             return (
               <View
                 style={{
@@ -910,6 +920,7 @@ export default function ItineraryBuddy(props) {
   };
 
   const _Refresh = React.useCallback(() => {
+    loadasync();
     setDatadetail([]);
     setRefreshing(true);
     GetListEvent();
@@ -917,7 +928,6 @@ export default function ItineraryBuddy(props) {
       RenderBuddy({ databuddy: datadetail });
       setRefreshing(false);
     });
-    loadasync();
   }, []);
 
   const GetTombolplus = ({ datanya }) => {
@@ -1015,7 +1025,9 @@ export default function ItineraryBuddy(props) {
             }}
           >
             {" "}
-            {dataAll && dataAll.list_buddy ? dataAll.list_buddy.length : 0}{" "}
+            {dataAll && dataAll.list_buddy && AdminTrip == true
+              ? dataAll.list_buddy.length
+              : seeBuddyNotAdmin?.length}
             {t("member")}
           </Text>
         </View>
