@@ -661,6 +661,7 @@ export default function detailCustomItinerary(props) {
     modalValidation();
   };
 
+  console.log("dataState", dataState);
   const submitDataAPI = async () => {
     try {
       setLoadingApp(true);
