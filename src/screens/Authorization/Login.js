@@ -247,7 +247,7 @@ export default function Login({ navigation, route }) {
       behavior={Platform.OS === "ios" ? "padding" : null}
       enabled
     >
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <StatusBar backgroundColor="#fff" barStyle="light-content" />
       <Peringatan
         aler={aler}
         setClose={() => showAlert({ ...aler, show: false })}
