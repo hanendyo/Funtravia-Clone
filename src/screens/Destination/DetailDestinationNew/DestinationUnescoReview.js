@@ -37,6 +37,7 @@ import { useMutation } from "@apollo/client";
 import ImageSlide from "../../../component/src/ImageSlide/index";
 import { StackActions } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
 
 export default function DestinationUnescoReview(props) {
   const { t } = useTranslation();
@@ -51,6 +52,7 @@ export default function DestinationUnescoReview(props) {
   let [gambar, setGambar] = useState([]);
   let [modalss, setModalss] = useState(false);
   let [loading, setloading] = useState(false);
+  const Notch = DeviceInfo.hasNotch();
 
   const HeaderComponent = {
     headerShown: true,
@@ -60,15 +62,24 @@ export default function DestinationUnescoReview(props) {
         {t("writeReview")}
       </Text>
     ),
-    // headerMode: "none",
+    headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
-      elevation: 0, // remove shadow on Android
-      shadowOpacity: 0, // remove shadow on iOS
-      borderBottomWidth: 0, // Just in case.
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+      elevation: 0,
+      borderBottomWidth: 0,
+    },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 8 : 8) : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

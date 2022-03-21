@@ -71,7 +71,7 @@ export default function World({ navigation }) {
   ];
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
-      <StatusBar backgroundColor="#14646E" barStyle="dark-content" />
+      <StatusBar backgroundColor="#14646E" barStyle="light-content" />
       <View
         style={{
           height: HeaderHeight,

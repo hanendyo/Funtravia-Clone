@@ -11,6 +11,7 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { default_image } from "../../../assets/png";
 import {
@@ -557,386 +558,388 @@ export default function CreatePost(props) {
     }
   };
   return (
-    <KeyboardAvoidingView
-      style={{
-        flex: 1,
-        backgroundColor: "#FFF",
-      }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      enabled
-    >
-      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
-      <View>
-        <View
-          style={{
-            backgroundColor: "#209FAE",
-            height: Platform.OS === "ios" ? (Notch ? 44 : 44) : 55,
-            flexDirection: "row",
-            alignItems: "center",
-            alignContent: "center",
-            justifyContent: "space-between",
-          }}
-        >
+    <>
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+          marginBottom: -90,
+        }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        enabled
+      >
+        <KeyboardAvoidingView style={{ flex: 1 }}>
           <View
             style={{
-              alignItems: "center",
-              marginLeft: 10,
-            }}
-          >
-            <Button
-              onPress={() => {
-                props?.navigation.goBack();
-                setIdAlbums("");
-                setAlbum("");
-              }}
-              type="circle"
-              variant="transparent"
-            >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Button>
-          </View>
-          <View
-            style={{
-              // flexDirection: "row",
-              // alignItems: "center",
-              width: Platform.OS == "android" ? "50%" : null,
-              // borderWidth: 2,
-              marginRight: Platform.OS == "android" ? 70 : 0,
-            }}
-          >
-            <Text
-              size="header"
-              type="bold"
-              style={{
-                color: "#fff",
-                marginLeft: Platform.OS == "ios" ? 20 : 0,
-              }}
-            >
-              {t("newPost")}
-            </Text>
-          </View>
-          <View
-            style={{
+              backgroundColor: "#209fae",
+              height: Platform.OS === "ios" ? (Notch ? 55 : 55) : 55,
               flexDirection: "row",
-              justifyContent: "flex-end",
               alignItems: "center",
               alignContent: "center",
-              height: 55,
+              justifyContent: "space-between",
             }}
           >
-            <Button
-              size="large"
-              text={t("postImage")}
-              onPress={() => SubmitData()}
-            />
-          </View>
-        </View>
-        <ScrollView
-          style={{ marginBottom: 90 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <Loading show={loadingok} />
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View
               style={{
-                bottom:
-                  Platform.OS === "ios" &&
-                  keyboardOffset < 300 &&
-                  keyboardOffset > 0
-                    ? props.route.params.type == "multi"
-                      ? 220
-                      : 120
-                    : keyboardOffset > 300
-                    ? props.route.params.type == "multi"
-                      ? 140
-                      : 40
-                    : 0,
-                backgroundColor: "#FFF",
-                paddingBottom: 20,
+                alignItems: "center",
+                marginLeft: 10,
               }}
             >
-              {ReviewResult()}
-              <KeyboardAvoidingView
+              <Button
+                onPress={() => {
+                  props?.navigation.goBack();
+                  setIdAlbums("");
+                  setAlbum("");
+                }}
+                type="circle"
+                variant="transparent"
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Button>
+            </View>
+            <View
+              style={{
+                // flexDirection: "row",
+                // alignItems: "center",
+                width: Platform.OS == "android" ? "50%" : null,
+                // borderWidth: 2,
+                marginRight: Platform.OS == "android" ? 70 : 0,
+              }}
+            >
+              <Text
+                size="header"
+                type="bold"
                 style={{
-                  flexDirection: "row",
-                  backgroundColor: "#ffffff",
-                  alignItems: "center",
-                  width: Dimensions.get("screen").width - 20,
-                  marginHorizontal: 10,
-                  marginTop: 10,
+                  color: "#fff",
+                  marginLeft: Platform.OS == "ios" ? 20 : 0,
                 }}
               >
-                <FunImage
-                  source={
-                    dataprofile &&
-                    (dataprofile.user_profile !== undefined ||
-                      dataprofile.user_profile !== null ||
-                      dataprofile.user_profile !== "")
-                      ? {
-                          uri: dataprofile.user_profile.picture,
-                        }
-                      : default_image
-                  }
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                    marginRight: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    backgroundColor: "#f6f6f6",
-                    // width: "77%",
-                    maxHeight: 60,
-                    minHeight: Platform.OS == "ios" ? 40 : 30,
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    flex: 1,
-                    justifyContent: "center",
-                  }}
-                >
-                  <TextInput
-                    autoCorrect={false}
-                    multiline
-                    placeholder={`${t("writeACaption")}...`}
-                    maxLength={1000}
-                    placeholderStyle={{ fontSize: 30 }}
-                    onChangeText={(text) => _setStatusText(text)}
-                    onSubmitEditing={(text) => _setStatusText(text)}
-                    value={statusText}
-                    style={{
-                      borderWidth: 0,
-                      width: "100%",
-                      marginBottom: Platform.OS == "ios" ? 5 : 0,
-                    }}
-                  />
-                </View>
-              </KeyboardAvoidingView>
+                {t("newPost")}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                alignContent: "center",
+                // height: 55,
+              }}
+            >
+              <Button
+                // size="large"
+                text={t("postImage")}
+                onPress={() => SubmitData()}
+              />
+            </View>
+          </View>
+          <ScrollView
+            style={{ marginBottom: 90 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <Loading show={loadingok} />
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View
                 style={{
-                  marginHorizontal: 15,
-                  paddingVertical: 5,
-                  borderBottomWidth: 1,
-                  borderColor: "#D1D1D1",
+                  bottom:
+                    Platform.OS === "ios" &&
+                    keyboardOffset < 300 &&
+                    keyboardOffset > 0
+                      ? props.route.params.type == "multi"
+                        ? 220
+                        : 120
+                      : keyboardOffset > 300
+                      ? props.route.params.type == "multi"
+                        ? 140
+                        : 40
+                      : 0,
+                  backgroundColor: "#FFF",
+                  paddingBottom: 20,
                 }}
               >
-                <Ripple
-                  activeOpacity={0.6}
-                  underlayColor="#FFF"
-                  onPress={() => {
-                    album
-                      ? null
-                      : props.navigation.navigate("FeedStack", {
-                          screen: "CreateListAlbum",
-                          params: {
-                            user_id: setting?.user_id,
-                            token: tokenApps,
-                            file: props.route.params.file,
-                            type: props.route.params.type,
-                            location: props.route.params.location,
-                            isAlbum: false,
-                            from: "createPost",
-                          },
-                        });
-                  }}
+                {ReviewResult()}
+                <KeyboardAvoidingView
                   style={{
-                    width: "100%",
-                    borderRadius: 5,
+                    flexDirection: "row",
+                    backgroundColor: "#ffffff",
+                    alignItems: "center",
+                    width: Dimensions.get("screen").width - 20,
+                    marginHorizontal: 10,
+                    marginTop: 10,
                   }}
                 >
+                  <FunImage
+                    source={
+                      dataprofile &&
+                      (dataprofile.user_profile !== undefined ||
+                        dataprofile.user_profile !== null ||
+                        dataprofile.user_profile !== "")
+                        ? {
+                            uri: dataprofile.user_profile.picture,
+                          }
+                        : default_image
+                    }
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 50,
+                      marginRight: 10,
+                    }}
+                  />
                   <View
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
+                      backgroundColor: "#f6f6f6",
+                      // width: "77%",
+                      maxHeight: 60,
+                      minHeight: Platform.OS == "ios" ? 40 : 30,
+                      borderRadius: 5,
+                      paddingHorizontal: 10,
+                      flex: 1,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <TextInput
+                      autoCorrect={false}
+                      multiline
+                      placeholder={`${t("writeACaption")}...`}
+                      maxLength={1000}
+                      placeholderStyle={{ fontSize: 30 }}
+                      onChangeText={(text) => _setStatusText(text)}
+                      onSubmitEditing={(text) => _setStatusText(text)}
+                      value={statusText}
+                      style={{
+                        borderWidth: 0,
+                        width: "100%",
+                        marginBottom: Platform.OS == "ios" ? 5 : 0,
+                      }}
+                    />
+                  </View>
+                </KeyboardAvoidingView>
+                <View
+                  style={{
+                    marginHorizontal: 15,
+                    paddingVertical: 5,
+                    borderBottomWidth: 1,
+                    borderColor: "#D1D1D1",
+                  }}
+                >
+                  <Ripple
+                    activeOpacity={0.6}
+                    underlayColor="#FFF"
+                    onPress={() => {
+                      album
+                        ? null
+                        : props.navigation.navigate("FeedStack", {
+                            screen: "CreateListAlbum",
+                            params: {
+                              user_id: setting?.user_id,
+                              token: tokenApps,
+                              file: props.route.params.file,
+                              type: props.route.params.type,
+                              location: props.route.params.location,
+                              isAlbum: false,
+                              from: "createPost",
+                            },
+                          });
+                    }}
+                    style={{
                       width: "100%",
                       borderRadius: 5,
                     }}
                   >
-                    <AlbumFeedBiru height={18} width={18} />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: "100%",
+                        borderRadius: 5,
+                      }}
+                    >
+                      <AlbumFeedBiru height={18} width={18} />
+                      <Text
+                        type="bold"
+                        size="description"
+                        style={{
+                          marginHorizontal: 5,
+                          marginTop: album ? 0 : 10,
+                          marginBottom: album ? 0 : 10,
+                        }}
+                      >
+                        {t("addAlbum")}
+                      </Text>
+                    </View>
+                  </Ripple>
+                  {album ? (
+                    <View
+                      style={{
+                        justifyContent: "space-between",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          flex: 1,
+                        }}
+                      >
+                        <Text
+                          numberOfLines={1}
+                          type="regular"
+                          size="description"
+                          style={{
+                            marginHorizontal: 5,
+                            marginVertical: 10,
+                          }}
+                        >
+                          {album + " Album " + "-"}{" "}
+                          {props?.route?.params?.title_album
+                            ? props?.route?.params?.title_album
+                            : null}
+                        </Text>
+                      </View>
+                      {!idAlbumsKiriman ? (
+                        <Xgrey
+                          style={{
+                            marginRight: 5,
+                          }}
+                          height="20"
+                          width="20"
+                          onPress={() => {
+                            setAlbum("");
+                            setIdAlbums("");
+                          }}
+                        />
+                      ) : null}
+                    </View>
+                  ) : null}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginHorizontal: 15,
+                    paddingVertical: 5,
+                    borderBottomWidth: 1,
+                    borderColor: "#D1D1D1",
+                  }}
+                >
+                  <Ripple
+                    onPress={() => setModellocation(true)}
+                    // onPress={() =>
+                    //   props.navigation.navigate("FeedStack", {
+                    //     screen: "LocationSelector",
+                    //   })
+                    // }
+                    style={{
+                      flexDirection: "row",
+                      borderRadius: 5,
+                      width: "92%",
+                      alignItems: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <PinHijau height={15} width={15} />
                     <Text
                       type="bold"
                       size="description"
                       style={{
                         marginHorizontal: 5,
-                        marginTop: album ? 0 : 10,
-                        marginBottom: album ? 0 : 10,
+                        marginVertical: 10,
                       }}
                     >
-                      {t("addAlbum")}
+                      {Location.address}
                     </Text>
-                  </View>
-                </Ripple>
-                {album ? (
-                  <View
-                    style={{
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
+                  </Ripple>
+                  {Location.latitude !== "" ? (
+                    <Ripple
+                      onPress={() => clearLoaction()}
                       style={{
-                        flex: 1,
+                        padding: 5,
+                        borderRadius: 10,
                       }}
                     >
-                      <Text
-                        numberOfLines={1}
-                        type="regular"
-                        size="description"
-                        style={{
-                          marginHorizontal: 5,
-                          marginVertical: 10,
-                        }}
-                      >
-                        {album + " Album " + "-"}{" "}
-                        {props?.route?.params?.title_album
-                          ? props?.route?.params?.title_album
-                          : null}
-                      </Text>
-                    </View>
-                    {!idAlbumsKiriman ? (
-                      <Xgrey
-                        style={{
-                          marginRight: 5,
-                        }}
-                        height="20"
-                        width="20"
-                        onPress={() => {
-                          setAlbum("");
-                          setIdAlbums("");
-                        }}
-                      />
-                    ) : null}
-                  </View>
-                ) : null}
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginHorizontal: 15,
-                  paddingVertical: 5,
-                  borderBottomWidth: 1,
-                  borderColor: "#D1D1D1",
-                }}
-              >
-                <Ripple
-                  onPress={() => setModellocation(true)}
-                  // onPress={() =>
-                  //   props.navigation.navigate("FeedStack", {
-                  //     screen: "LocationSelector",
-                  //   })
-                  // }
+                      <Xgrey height={20} width={20} />
+                    </Ripple>
+                  ) : null}
+                </View>
+                <View
                   style={{
+                    width: "100%",
+                    flexWrap: "wrap",
                     flexDirection: "row",
-                    borderRadius: 5,
-                    width: "92%",
-                    alignItems: "center",
-                    alignItems: "center",
+                    paddingHorizontal: 15,
+                    // borderWidth: 1,
                   }}
                 >
-                  <PinHijau height={15} width={15} />
-                  <Text
-                    type="bold"
-                    size="description"
-                    style={{
-                      marginHorizontal: 5,
-                      marginVertical: 10,
-                    }}
-                  >
-                    {Location.address}
-                  </Text>
-                </Ripple>
-                {Location.latitude !== "" ? (
-                  <Ripple
-                    onPress={() => clearLoaction()}
-                    style={{
-                      padding: 5,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Xgrey height={20} width={20} />
-                  </Ripple>
-                ) : null}
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  paddingHorizontal: 15,
-                  // borderWidth: 1,
-                }}
-              >
-                {Location.latitude === ""
-                  ? datanearby.map((value, index) => {
-                      return index < 5 ? (
-                        <View
-                          key={index}
-                          style={{
-                            width: "100%",
-                            height: 50,
-                          }}
-                        >
-                          <Pressable
-                            // key={index}
-                            onPress={() => _selectLocation(value)}
+                  {Location.latitude === ""
+                    ? datanearby.map((value, index) => {
+                        return index < 5 ? (
+                          <View
+                            key={index}
                             style={{
                               width: "100%",
-                              height: "100%",
-                              flexDirection: "row",
-                              alignItems: "center",
-                              // borderColor: "#e1e1e1",
-                              // borderBottomWidth: 1,
-                              // borderStyle: "dotted",
-                              // borderColor: "#209fae",
-                              // borderRadius: 5,
+                              height: 50,
                             }}
                           >
-                            <PinHijau
-                              height={15}
-                              width={15}
+                            <Pressable
+                              // key={index}
+                              onPress={() => _selectLocation(value)}
                               style={{
-                                marginLeft: 15,
-                              }}
-                            />
-                            <Text
-                              size="description"
-                              type="light"
-                              style={{
-                                marginLeft: 10,
+                                width: "100%",
+                                height: "100%",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                // borderColor: "#e1e1e1",
+                                // borderBottomWidth: 1,
+                                // borderStyle: "dotted",
+                                // borderColor: "#209fae",
+                                // borderRadius: 5,
                               }}
                             >
-                              {value.name}
-                            </Text>
-                          </Pressable>
-                          <DashedLine
-                            dashColor="#e1e1e1"
-                            dashThickness={1}
-                            dashGap={2}
-                            // dashStyle={{ borderRadius: 25 }}
-                          />
-                        </View>
-                      ) : null;
-                    })
-                  : null}
+                              <PinHijau
+                                height={15}
+                                width={15}
+                                style={{
+                                  marginLeft: 15,
+                                }}
+                              />
+                              <Text
+                                size="description"
+                                type="light"
+                                style={{
+                                  marginLeft: 10,
+                                }}
+                              >
+                                {value.name}
+                              </Text>
+                            </Pressable>
+                            <DashedLine
+                              dashColor="#e1e1e1"
+                              dashThickness={1}
+                              dashGap={2}
+                              // dashStyle={{ borderRadius: 25 }}
+                            />
+                          </View>
+                        ) : null;
+                      })
+                    : null}
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </ScrollView>
-        <LocationSelector
-          modals={modellocation}
-          setModellocation={(e) => setModellocation(e)}
-          masukan={(e) => _setLocation(e)}
-          datanearby={datanearby}
-          props={props}
-        />
-        {/* <CreateAlbum
+            </TouchableWithoutFeedback>
+          </ScrollView>
+          <LocationSelector
+            modals={modellocation}
+            setModellocation={(e) => setModellocation(e)}
+            masukan={(e) => _setLocation(e)}
+            datanearby={datanearby}
+            props={props}
+          />
+          {/* <CreateAlbum
           modalAlbum={modalAlbum}
           setModalAlbum={(e) => setModalAlbum(e)}
           user_id={setting?.user_id}
@@ -945,7 +948,8 @@ export default function CreatePost(props) {
           token={token}
           setIdAlbums={(e) => setIdAlbums(e)}
         /> */}
-      </View>
-    </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </>
   );
 }

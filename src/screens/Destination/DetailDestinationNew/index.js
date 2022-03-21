@@ -16,6 +16,7 @@ import {
   ScrollView,
   Modal as ModalRN,
   BackHandler,
+  NativeModules,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -74,7 +75,7 @@ let PullToRefreshDist = 150;
 import { useSelector } from "react-redux";
 
 const Index = (props) => {
-  const NotchAndro = StatusBar.currentHeight > 24;
+  const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
   const { t } = useTranslation();
   let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
@@ -118,7 +119,7 @@ const Index = (props) => {
           HeightAddress +
           HeightTime +
           HeightWeb -
-          StatusBar.currentHeight
+          NativeModules.StatusBarManager.HEIGHT
         : deviceId == "CPH2127"
         ? normalize(215) +
           HeightJudul +
@@ -126,7 +127,7 @@ const Index = (props) => {
           HeightAddress +
           HeightTime +
           HeightWeb -
-          StatusBar.currentHeight
+          NativeModules.StatusBarManager.HEIGHT
         : NotchAndro
         ? normalize(210) +
           HeightJudul +
@@ -134,19 +135,19 @@ const Index = (props) => {
           HeightAddress +
           HeightTime +
           HeightWeb -
-          StatusBar.currentHeight
+          NativeModules.StatusBarManager.HEIGHT
         : normalize(198) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
           HeightTime +
           HeightWeb -
-          StatusBar.currentHeight,
+          NativeModules.StatusBarManager.HEIGHT,
   });
 
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
-    android: StatusBar.currentHeight,
+    android: NativeModules.StatusBarManager.HEIGHT,
   });
 
   let [newHeight, setNewHeight] = useState(0);
@@ -774,7 +775,7 @@ const Index = (props) => {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#209fae",
+          backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209fae",
         }}
       >
         <Animated.Image
@@ -1945,13 +1946,13 @@ const Index = (props) => {
   const renderTabBar = (props) => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 55],
+      outputRange: [HeaderHeight, NotchAndro ? 55 : 45],
       extrapolateRight: "clamp",
     });
     return (
       <Animated.View
         style={{
-          top: 0,
+          top: NotchAndro ? 0 : 10,
           zIndex: 1,
           position: "absolute",
           transform: [{ translateY: y }],
@@ -2133,7 +2134,7 @@ const Index = (props) => {
           <ActivityIndicator size="large" color="#209fae" />
         </View>
       ) : null}
-      <Satbar backgroundColor="#14646E" />
+      <Satbar backgroundColor="#14646e" />
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
@@ -2195,12 +2196,16 @@ const Index = (props) => {
           zIndex: 9999,
           opacity: hide.current,
           flexDirection: "row",
-          // justifyContent: "space-between",
           alignContent: "center",
           alignItems: "center",
-          marginHorizontal: 20,
+          marginHorizontal: Platform.OS == "ios" ? null : 20,
+          paddingHorizontal: Platform.OS == "ios" ? 20 : null,
           height: 55,
-          width: Dimensions.get("screen").width - 40,
+          width:
+            Platform.OS == "ios"
+              ? Dimensions.get("screen").width
+              : Dimensions.get("screen").width - 40,
+          backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
         }}
       >
         <Button

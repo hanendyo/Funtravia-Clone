@@ -268,7 +268,7 @@ export default function Register({ navigation }) {
         backgroundColor: "#fff",
       }}
     >
-      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+      <StatusBar backgroundColor="#fff" barStyle="light-content" />
       <Peringatan
         aler={aler}
         setClose={() =>

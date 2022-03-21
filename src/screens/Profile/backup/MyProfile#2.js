@@ -71,7 +71,7 @@ export default function MyProfile({ navigation }) {
     let rData = data.user_profile;
     return (
       <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle="light-content" />
         <ScrollView
           nestedScrollEnabled
           // stickyHeaderIndices={[2]}

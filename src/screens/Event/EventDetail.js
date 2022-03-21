@@ -55,6 +55,12 @@ import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 
 export default function EventDetail(props) {
+  let Notch = DeviceInfo.hasNotch();
+  let deviceId = DeviceInfo.getModel();
+  let SafeStatusBar = Platform.select({
+    ios: Notch ? 48 : 20,
+    android: NativeModules.StatusBarManager.HEIGHT,
+  });
   const [modalLogin, setModalLogin] = useState(false);
   const { t, i18n } = useTranslation();
   const tokenApps = useSelector((data) => data.token);
@@ -87,12 +93,6 @@ export default function EventDetail(props) {
     extrapolate: "clamp",
   });
 
-  let Notch = DeviceInfo.hasNotch();
-  let deviceId = DeviceInfo.getModel();
-  let SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: NativeModules.StatusBarManager.HEIGHT,
-  });
   const HeaderComponent = {
     headerShown: true,
     // title: "List Event",
@@ -681,77 +681,82 @@ export default function EventDetail(props) {
   useEffect(() => {
     props.navigation.setOptions({
       headerBackground: () => (
-        <Animated.View
-          style={{
-            backgroundColor: "#209FAE",
-            position: "absolute",
-            left: 0,
-
-            right: 0,
-            // height: Platform.OS == "ios" ? 100 : 80,
-            height: Platform.select({
-              ios: Notch ? 100 : 70,
-              android: deviceId == "CPH2127" ? 100 : 85,
-            }),
-            flexDirection: "row",
-            top: 0,
-            bottom: 0,
-            opacity: headerOpacity,
-          }}
-        >
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => props.navigation.goBack()}
+        <>
+          {Platform.OS == "ios" ? (
+            <Satbar backgroundColor="#14646E" barStyle="light-content" />
+          ) : null}
+          <Animated.View
             style={{
-              height: 50,
-              marginLeft: 18,
+              backgroundColor: "#209fae",
+              position: "absolute",
+              left: 0,
+
+              right: 0,
+              // height: Platform.OS == "ios" ? 100 : 80,
+              height: Platform.select({
+                ios: Notch ? 55 : 55,
+                android: deviceId == "CPH2127" ? 100 : 85,
+              }),
+              flexDirection: "row",
+              top: Platform.OS == "ios" ? 48 : 0,
+              bottom: 0,
+              opacity: headerOpacity,
             }}
           >
-            <Animated.View
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => props.navigation.goBack()}
               style={{
-                height: 35,
-                width: 35,
-                top:
-                  Platform.OS == "ios"
-                    ? SafeStatusBar
-                    : deviceId == "CPH2127"
-                    ? SafeStatusBar + 5
-                    : SafeStatusBar + 5,
-                borderRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
+                height: 50,
+                marginLeft: 18,
               }}
             >
-              {Platform.OS == "ios" ? (
-                <Arrowbackios height={15} width={15}></Arrowbackios>
-              ) : (
-                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-              )}
-            </Animated.View>
-          </Button>
-          <Animated.Text
-            style={{
-              color: "#fff",
-              marginLeft: 10,
-              fontSize: 18,
-              top:
-                Platform.OS == "ios"
-                  ? SafeStatusBar + 15
-                  : deviceId == "CPH2127"
-                  ? SafeStatusBar + 16
-                  : SafeStatusBar + 16,
-              fontFamily: "Lato-Bold",
-            }}
-          >
-            <Truncate
-              text={dataevent?.name ? dataevent.name : ""}
-              length={35}
-            />
-          </Animated.Text>
-        </Animated.View>
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+                  top:
+                    Platform.OS == "ios"
+                      ? 2
+                      : deviceId == "CPH2127"
+                      ? SafeStatusBar + 5
+                      : SafeStatusBar + 5,
+                  borderRadius: 30,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Platform.OS == "ios" ? (
+                  <Arrowbackios height={15} width={15}></Arrowbackios>
+                ) : (
+                  <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+                )}
+              </Animated.View>
+            </Button>
+            <Animated.Text
+              style={{
+                color: "#fff",
+                marginLeft: 10,
+                fontSize: 18,
+                top:
+                  Platform.OS == "ios"
+                    ? 16
+                    : deviceId == "CPH2127"
+                    ? SafeStatusBar + 16
+                    : SafeStatusBar + 16,
+                fontFamily: "Lato-Bold",
+              }}
+            >
+              <Truncate
+                text={dataevent?.name ? dataevent.name : ""}
+                length={35}
+              />
+            </Animated.Text>
+          </Animated.View>
+        </>
       ),
       headerTransparent: true,
     });
@@ -928,7 +933,7 @@ export default function EventDetail(props) {
           </View>
         </View>
       </ModalRN>
-      <Satbar backgroundColor="#14646E" />
+      <Satbar backgroundColor="#14646E" barStyle="light-content" />
       <View
         style={{
           flex: 2,
@@ -1478,7 +1483,7 @@ export default function EventDetail(props) {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5,
-          paddingVertical: 15,
+          paddingVertical: Platform.OS == "ios" ? (Notch ? 20 : 15) : 15,
         }}
       >
         <View

@@ -93,7 +93,7 @@ export default function World({ navigation }) {
   ];
   return (
     <View style={{ flex: 1, backgroundColor: "#F6F6F6", paddingBottom: 50 }}>
-      <StatusBar backgroundColor="#14646e" barStyle="dark-content" />
+      <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       {/* backhandler */}
       <View
         style={{
