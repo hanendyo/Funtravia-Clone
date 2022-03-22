@@ -622,6 +622,8 @@ export default function Room({ navigation, route }) {
 
       setMessage(filteredList);
       setLoadingGroup(false);
+    } else {
+      setLoadingGroup(false);
     }
   };
 
@@ -954,6 +956,9 @@ export default function Room({ navigation, route }) {
             type={"group"}
             from={from}
             user={user}
+            setSelect={() => null}
+            select={null}
+            selectItem={() => null}
           />
           {user.id !== item.user_id ? (
             <Text size="small" style={{ marginLeft: 5 }}>

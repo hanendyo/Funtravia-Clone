@@ -103,7 +103,6 @@ export default function Room({ navigation, route }) {
   // });
   const [chat, setChat] = useState(null);
   const [message, setMessage] = useState([]);
-  console.log("~ message", message);
   const [bank_message, setBankMessage] = useState([]);
   const [indexmessage, setIndexmessage] = useState(0);
   const [customKeyboard, SetcustomKeyboard] = useState({
@@ -471,8 +470,6 @@ export default function Room({ navigation, route }) {
 
   let flatListRef = useRef();
 
-  console.log("~ messageAfterDelete", messageAfterDelete);
-
   const clearAllSelected = () => {
     let tempData = [...message];
     let tempClear = [];
@@ -789,15 +786,14 @@ export default function Room({ navigation, route }) {
           },
         }
       );
+
       let responseJson = await response.json();
       let history = await AsyncStorage.getItem("history_" + room);
       let init_local = await JSON.parse(history);
-      console.log("~ init_local", init_local);
       let init_data = await responseJson.data;
       if (init_data.length == 0 && init_local.length == 0) {
         setLoadingPersonal(false);
       }
-      console.log("~ init_data", init_data);
       let filteredList = [];
       if (init_local && init_data) {
         let merge = [...init_data, ...init_local];
@@ -971,7 +967,6 @@ export default function Room({ navigation, route }) {
       if (count.length == 0) {
         setSelect(false);
       }
-      console.log("~ tempDataAfter", tempDataAfter);
       setMessageAfterDelete(tempDataAfter);
       setCountSelected(count.length);
       setMessage(tempDataMessage);
