@@ -1466,7 +1466,7 @@ export default function detailCustomItinerary(props) {
                 //   ? normalize(57)
                 //   : normalize(50),
                 width: Dimensions.get("screen").width,
-                marginTop: Platform.OS === "ios" ? 0 : 0,
+                marginTop: Platform.OS === "ios" ? (Notch ? 0 : 2.5) : 0,
               }}
             >
               <TouchableOpacity
@@ -1487,7 +1487,9 @@ export default function detailCustomItinerary(props) {
                   alignContent: "center",
                   paddingTop:
                     Platform.OS === "ios"
-                      ? 17
+                      ? Notch
+                        ? 17
+                        : 15
                       : deviceId == "LYA-L29"
                       ? 12
                       : NotchAndro
@@ -1526,7 +1528,7 @@ export default function detailCustomItinerary(props) {
                     Platform.OS === "ios"
                       ? Notch
                         ? 0
-                        : 4
+                        : 0
                       : deviceId == "LYA-L29"
                       ? 3
                       : NotchAndro
