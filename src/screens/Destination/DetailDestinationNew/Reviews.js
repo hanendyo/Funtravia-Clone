@@ -77,10 +77,9 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
     extrapolate: "clamp",
   });
   return (
-    <View
+    <Animated.View
       style={{
         transform: [{ translateY: y }],
-        flex: 1,
         paddingBottom: 60,
       }}
     >
@@ -327,6 +326,6 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
           </Text>
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 }
