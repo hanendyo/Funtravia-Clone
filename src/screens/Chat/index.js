@@ -172,6 +172,8 @@ export default function Message({ navigation, route }) {
       },
     });
 
+    console.log("response", response);
+
     if (response.status != 500) {
       let dataResponse = await response.json();
       let sum = await dataResponse.reduce(
@@ -424,10 +426,10 @@ export default function Message({ navigation, route }) {
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>
-                {item.count != 0 ? (
+                {item.count != null || item.count != 0 ? (
                   <View
                     style={{
-                      backgroundColor: "#d75995",
+                      backgroundColor: item.count == 0 ? "#fff" : "#d75995",
                       marginLeft: 5,
                       height: 20,
                       minWidth: 20,
@@ -446,7 +448,7 @@ export default function Message({ navigation, route }) {
                         marginLeft: Platform.OS == "ios" ? 1 : 0,
                       }}
                     >
-                      {item.count ? item.count : "0"}
+                      {item.count ? item.count : 0}
                     </Text>
                   </View>
                 ) : null}

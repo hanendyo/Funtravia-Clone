@@ -1171,9 +1171,6 @@ export default function ChatTypelayout({
     let [scales, setScales] = useState("S");
     if (item && item.text) {
       Image.getSize(item.text, (width, height) => {
-        // console.log(
-        //   `The image dimensions are width = ${width}x height = ${height}`
-        // );
         if (width > height) {
           setScales("L");
         } else if (width < height) {
