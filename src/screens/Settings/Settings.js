@@ -215,7 +215,16 @@ export default function Settings(props) {
                 onPress={() => {
                   languageToggle("en"),
                     props?.navigation.setOptions({
-                      headerTitle: t("setting"),
+                      headerTitle: (
+                        <Text
+                          type="bold"
+                          size="header"
+                          style={{ color: "#fff" }}
+                        >
+                          {" "}
+                          {t("setting")}
+                        </Text>
+                      ),
                     });
                 }}
                 text={
@@ -239,7 +248,16 @@ export default function Settings(props) {
                 onPress={() => {
                   languageToggle("id"),
                     props?.navigation.setOptions({
-                      headerTitle: t("setting"),
+                      headerTitle: (
+                        <Text
+                          type="bold"
+                          size="header"
+                          style={{ color: "#fff" }}
+                        >
+                          {" "}
+                          {t("setting")}
+                        </Text>
+                      ),
                     });
                 }}
                 // text="Indonesia"

@@ -8,6 +8,7 @@ import {
   ScrollView,
   Pressable,
   StatusBar,
+  Platform,
 } from "react-native";
 import { Textarea } from "native-base";
 import { default_image } from "../../../assets/png";
@@ -28,9 +29,11 @@ import Swipeout from "react-native-swipeout";
 import { Button, Text, Loading, FunIcon, Distance } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/routers";
+import DeviceInfo from "react-native-device-info";
 
 export default function ChoosePosition(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
 
   const HeaderComponent = {
     headerShown: true,
@@ -1437,6 +1440,7 @@ export default function ChoosePosition(props) {
           style={{
             height: 60,
             width: Dimensions.get("screen").width,
+            marginBottom: Platform.OS === "ios" && Notch ? 10 : 0,
             alignContent: "center",
             flexDirection: "row",
             alignItems: "center",

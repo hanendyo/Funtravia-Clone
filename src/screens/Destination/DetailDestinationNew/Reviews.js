@@ -74,13 +74,12 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
   const y = scrollY.interpolate({
     inputRange: [0, HeaderHeight ? HeaderHeight : 420],
     outputRange: [0, 55],
-    extrapolateRight: "clamp",
+    extrapolate: "clamp",
   });
   return (
     <Animated.View
       style={{
         transform: [{ translateY: y }],
-
         paddingBottom: 60,
       }}
     >

@@ -528,69 +528,50 @@ export default function TripPlaning(props) {
       >
         <Tab.Screen
           name="Edit"
-          component={PlanComponent}
+          // component={PlanComponent}
           options={{ tabBarLabel: t("planList") }}
-        />
+        >
+          {rData && PlanComponent}
+        </Tab.Screen>
 
         <Tab.Screen
           name="Save"
-          component={ActiveComponent}
+          // component={ActiveComponent}
           options={{ tabBarLabel: t("activePlan") }}
-        />
+        >
+          {AData && ActiveComponent}
+        </Tab.Screen>
 
         <Tab.Screen
           name="Finish"
-          component={FinishComponent}
+          // component={FinishComponent}
           options={{ tabBarLabel: t("finishTrip") }}
-        />
+        >
+          {FData && FinishComponent}
+        </Tab.Screen>
       </Tab.Navigator>
     );
   } else {
-    const EmptyComponent = () => {
-      return <View />;
-    };
+    const EmptyComponent = () => <View />;
     return (
-      // <View
-      //   style={{
-      //     flex: 1,
-      //     alignItems: "center",
-      //     alignContent: "center",
-      //     justifyContent: "center",
-      //   }}
-      // >
-      //   {/* <ActivityIndicator animating={true} color="#209fae" size="large" /> */}
-      // </View>
-
       <Tab.Navigator
         backBehavior="none"
         initialRouteName="Edit"
-        // tabBarOptions={{
-        //   activeTintColor: "#209fae",
-        //   labelStyle: {
-        //     fontFamily: "Lato-Bold",
-        //   },
-        //   style: {
-        //     backgroundColor: "#ffff",
-        //   },
-        // }}
         tabBar={(props) => <MyTabBar {...props} count={planCount} />}
       >
         <Tab.Screen
           name="Edit"
           component={EmptyComponent}
-          // options={{ tabBarLabel: "Plan" }}
           options={{ tabBarLabel: t("planList") }}
         />
         <Tab.Screen
           name="Save"
           component={EmptyComponent}
-          // options={{ tabBarLabel: "Ongoing" }}
           options={{ tabBarLabel: t("activePlan") }}
         />
         <Tab.Screen
           name="Finish"
           component={EmptyComponent}
-          // options={{ tabBarLabel: "Finish" }}
           options={{ tabBarLabel: t("finishTrip") }}
         />
       </Tab.Navigator>

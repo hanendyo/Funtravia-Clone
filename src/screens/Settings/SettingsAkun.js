@@ -748,13 +748,13 @@ export default function SettingsAkun(props) {
                 onPress={() => {
                   setModalPhone(!modalPhone);
                 }}
-                onPress={() => {
-                  setModalPhone(false),
-                    props.navigation.navigate("SettingPhoneChange", {
-                      setting: setting,
-                      token: token,
-                    });
-                }}
+                // onPress={() => {
+                //   setModalPhone(false),
+                //     props.navigation.navigate("SettingPhoneChange", {
+                //       setting: setting,
+                //       token: token,
+                //     });
+                // }}
               >
                 {t("ChangePhoneNumber")}
               </Text>

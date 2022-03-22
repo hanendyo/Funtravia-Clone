@@ -978,9 +978,9 @@ export default function AllDestination(props) {
           paddingBottom: Platform.OS === "ios" ? 0 : 60,
         }}
         horizontal={false}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => "item_" + item.key}
         data={dataResult ? dataResult?.populer_city_destination_v2 : null}
-        renderItem={({ item }) => <RenderList item={item} />}
+        renderItem={({ item, index }) => <RenderList item={item} />}
         ListEmptyComponent={
           loading ? (
             <View style={{ marginTop: 15 }}>
