@@ -1070,6 +1070,7 @@ export default function CreateCustom(props) {
         style={{
           height: 60,
           width: Dimensions.get("screen").width,
+          marginBottom: Platform.OS === "ios" && Notch ? 10 : 0,
           alignContent: "center",
           alignItems: "center",
           justifyContent: "center",

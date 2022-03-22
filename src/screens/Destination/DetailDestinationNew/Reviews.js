@@ -74,13 +74,13 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
   const y = scrollY.interpolate({
     inputRange: [0, HeaderHeight ? HeaderHeight : 420],
     outputRange: [0, 55],
-    extrapolateRight: "clamp",
+    extrapolate: "clamp",
   });
   return (
-    <Animated.View
+    <View
       style={{
         transform: [{ translateY: y }],
-
+        flex: 1,
         paddingBottom: 60,
       }}
     >
@@ -327,6 +327,6 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
           </Text>
         </View>
       )}
-    </Animated.View>
+    </View>
   );
 }

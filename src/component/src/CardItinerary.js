@@ -31,6 +31,7 @@ import ItineraryUnliked from "../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import { RNToasty } from "react-native-toasty";
 import { StackActions } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
 
 export default function CardItinerary({
   data,
@@ -309,9 +310,11 @@ export default function CardItinerary({
                       : setModalLogin(true);
                   }}
                 >
-                  <Image
+                  <FastImage
                     source={
-                      item && item.cover ? { uri: item.cover } : ItineraryKosong
+                      item && item.cover
+                        ? { uri: item.cover, priority: "normal" }
+                        : ItineraryKosong
                     }
                     style={{
                       height: "100%",
@@ -346,7 +349,7 @@ export default function CardItinerary({
                       alignItems: "center",
                     }}
                   >
-                    <Image
+                    <FastImage
                       style={{
                         height: 30,
                         width: 30,
@@ -357,7 +360,10 @@ export default function CardItinerary({
                       }}
                       source={
                         item && item.user_created && item.user_created.picture
-                          ? { uri: item.user_created.picture }
+                          ? {
+                              uri: item.user_created.picture,
+                              priority: "normal",
+                            }
                           : default_profile
                       }
                     />

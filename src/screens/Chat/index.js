@@ -152,7 +152,7 @@ export default function Message({ navigation, route }) {
       getRoomGroup();
       getRoom();
     });
-    navigation.setOptions(HeaderComponent);
+
     socket.on("new_chat_group", (data) => {
       getRoomGroup();
     });
