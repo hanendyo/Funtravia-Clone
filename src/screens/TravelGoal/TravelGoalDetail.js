@@ -852,9 +852,9 @@ export default function TravelGoalDetail(props) {
               marginBottom: NotchAndro ? 0 : 5,
               marginTop:
                 Platform.OS === "ios"
-                  ? 4
+                  ? 0
                   : deviceId == "LYA-L29"
-                  ? 4
+                  ? 0
                   : NotchAndro
                   ? 0
                   : 4,

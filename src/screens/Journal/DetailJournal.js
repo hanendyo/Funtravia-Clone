@@ -130,7 +130,11 @@ export default function DetailJournal(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" type="bold" style={{ color: "#fff" }}>
+      <Text
+        size={Platform.OS == "ios" ? "title" : "header"}
+        type="bold"
+        style={{ color: "#fff" }}
+      >
         <Truncate
           text={dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
           length={Platform.OS === "ios" ? 30 : 30}
@@ -148,7 +152,7 @@ export default function DetailJournal(props) {
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 11) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
     headerLeftContainerStyle: {

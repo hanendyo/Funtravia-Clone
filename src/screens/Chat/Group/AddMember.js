@@ -22,9 +22,12 @@ import { RNToasty } from "react-native-toasty";
 import { CHATSERVER, RESTFULL_API } from "../../../config";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
+
 export default function AddMember(props) {
   const tokenApps = useSelector((data) => data.token);
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
 
   const HeaderComponent = {
     headerShown: true,
@@ -32,23 +35,27 @@ export default function AddMember(props) {
     headerTintColor: "#f0f0f0",
     headerTitle: (
       <Text size="header" style={{ color: "#fff" }}>
-        {t("addParticipant")}
+        {t("addParticipants")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
-    // headerTitleStyle: {
-    //   fontFamily: "Lato-Bold",
-    //   fontSize: 14,
-    //   color: "#f0f0f0",
-    // },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 8 : 9) : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -164,12 +171,20 @@ export default function AddMember(props) {
 
   const AddtoBuddy = async (value) => {
     var dataNews = [...dataNew];
-    dataNews.push(value.id);
-    setNew(dataNews);
+    if (dataNews.length > 148 - props.route.params.dataBuddy.length) {
+      RNToasty.Show({
+        title: t("maxMemberGroup"),
+        position: "bottom",
+      });
+    } else {
+      dataNews.push(value.id);
 
-    var filterdata = [...dataFilter];
-    filterdata.push(value);
-    setFilter(filterdata);
+      setNew(dataNews);
+
+      var filterdata = [...dataFilter];
+      filterdata.push(value);
+      setFilter(filterdata);
+    }
   };
 
   const DeleteBuddy = (value) => {
