@@ -73,7 +73,7 @@ export default function DestinationUnescoReview(props) {
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
-      paddingTop: Platform.OS == "ios" ? (Notch ? 8 : 8) : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 8 : 10) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
@@ -229,10 +229,6 @@ export default function DestinationUnescoReview(props) {
         }
       } catch (err) {
         setloading(false);
-        console.log(
-          "🚀 ~ file: DestinationUnescoReview.js ~ line 223 ~ upload ~ err",
-          err
-        );
         RNToasty.Show({
           title: t("fileToWriteReview"),
           position: "bottom",
@@ -279,10 +275,6 @@ export default function DestinationUnescoReview(props) {
           // });
         }
       } catch (err) {
-        console.log(
-          "🚀 ~ file: DestinationUnescoReview.js ~ line 269 ~ upload ~ err",
-          err
-        );
         setloading(false);
         RNToasty.Show({
           title: t("fileToWriteReview"),
