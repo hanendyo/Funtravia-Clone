@@ -942,7 +942,7 @@ export default function OtherProfile(props) {
           transform: [{ translateY: y }],
           top: 0,
           paddingTop: Platform.select({
-            ios: Notch ? 50 : 60,
+            ios: Notch ? 50 : 45,
             // android: 15,
             android:
               deviceId == "LYA-L29"
@@ -951,15 +951,15 @@ export default function OtherProfile(props) {
                 ? 50
                 : NotchAndro
                 ? 58
-                : 60,
+                : 40,
           }),
-          paddingBottom: 3,
+          marginBottom: 3,
           // height: HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#FFF",
+          backgroundColor: "#14646e",
           opacity: imageOpacity,
         }}
       >
