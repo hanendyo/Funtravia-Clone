@@ -31,6 +31,7 @@ import Category from "../../../graphQL/Query/Countries/Articlecategory";
 import { TextInput } from "react-native-gesture-handler";
 import { TabView } from "react-native-tab-view";
 import Ripple from "react-native-material-ripple";
+import DeviceInfo from "react-native-device-info";
 
 export default function ArtikelCategory(props) {
   let { t } = useTranslation();
@@ -48,6 +49,7 @@ export default function ArtikelCategory(props) {
   const [tabData] = useState(Array(1).fill(0));
   const [tabData1] = useState(Array(1).fill(0));
   const headerScrollY = useRef(new Animated.Value(0)).current;
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -55,17 +57,22 @@ export default function ArtikelCategory(props) {
     headerTitle: props.route.params.header,
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 18,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 12 : 12) : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
