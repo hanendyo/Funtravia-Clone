@@ -685,9 +685,6 @@ export default function ProfileSettings(props) {
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        contentContainerStyle={{
-          backgroundColor: "#f6f6f6",
-        }}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         style={

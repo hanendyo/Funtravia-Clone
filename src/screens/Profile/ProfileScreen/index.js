@@ -104,7 +104,7 @@ export default function OtherProfile(props) {
   const HeaderHeight = Platform.select({
     ios: Notch
       ? normalize(281) + heightname + heightbio
-      : normalize(315) + heightname + heightbio - 20,
+      : normalize(315) + heightname + heightbio,
 
     android:
       deviceId == "LYA-L29"
