@@ -72,7 +72,7 @@ export default function AddPassword(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-      position: "absolute",
+      // position: "absolute",
       zIndex: 999,
       marginLeft: 10,
     },
@@ -84,19 +84,12 @@ export default function AddPassword(props) {
         onPress={() => props.navigation.goBack()}
       >
         {Platform.OS == "ios" ? (
-          <Arrowbackios height={20} width={20} />
+          <Arrowbackios height={15} width={15} />
         ) : (
           <Arrowbackwhite height={20} width={20} />
         )}
       </Button>
     ),
-    headerLeftContainerStyle: {
-      paddingLeft: 10,
-    },
-
-    headerRight: () => {
-      return null;
-    },
   };
 
   const [

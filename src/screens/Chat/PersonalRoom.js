@@ -185,6 +185,27 @@ export default function Room({ navigation, route }) {
   }, []);
   const socket = useRef(null);
 
+  const backAction = () => {
+    select
+      ? clearAllSelected()
+      : route?.params?.fromNewChat == true
+      ? navigation.navigate("ChatScreen")
+      : navigation.goBack();
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, [backAction]);
+
+  useEffect(() => {
+    navigation.addListener("blur", () => {
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+    });
+  }, [backAction]);
+
   useEffect(() => {
     socket.current = io(CHATSERVER, {
       withCredentials: true,
