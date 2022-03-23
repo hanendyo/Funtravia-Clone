@@ -1,4 +1,4 @@
-export const SlideSatu = require("./files/SlideSatu.png");
+export const SlideSatu = require("./files/SignInSplashAndOnBoard.png");
 export const SlideDua = require("./files/SlideDua.png");
 export const SlideTiga = require("./files/SlideTiga.png");
 export const WhiteMascot = require("./files/WhiteMascot.png");
