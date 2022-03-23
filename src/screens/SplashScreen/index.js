@@ -84,7 +84,7 @@ export default function SplashScreen(props) {
             size="small"
             style={{
               flexDirection: "row",
-              backgroundColor: "#fff",
+              backgroundColor: "rgba(209, 209, 209, 0.45)",
               // opacity: 0.45,
               borderRadius: 30,
             }}
@@ -105,7 +105,7 @@ export default function SplashScreen(props) {
               size="description"
               type="bold"
               style={{
-                color: "black",
+                color: "#FFF",
                 // marginRight: 10,
                 justifyContent: "center",
                 marginBottom: 1,
@@ -124,7 +124,7 @@ export default function SplashScreen(props) {
           <View style={styles.secondary}>
             <Image source={WhiteMascot} style={styles.logoView} />
             <View style={styles.welcomeText}>
-              <Text size="h4" style={{ color: "#FFFF" }}>
+              <Text size="h3" style={{ color: "#FFFF", fontWeight: "900" }}>
                 {`TRAVEL\nNEVER BEEN\nTHIS EASY`}
               </Text>
             </View>
@@ -137,7 +137,7 @@ export default function SplashScreen(props) {
               <Button
                 style={{
                   marginVertical: 5,
-                  borderWidth: 1,
+                  // borderWidth: 1,
                   width: Dimensions.get("screen").width - 50,
                 }}
                 color="secondary"
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     alignSelf: "flex-start",
+    marginTop: 10,
   },
   logoView: {
     height: 150,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   textParagraph: {
-    marginTop: 5,
+    marginTop: 15,
     marginBottom: 20,
   },
 });

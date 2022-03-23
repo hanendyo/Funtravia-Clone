@@ -1269,7 +1269,7 @@ export default function Room({ navigation, route }) {
               keyboardOffset > 0
                 ? 275
                 : keyboardOffset > 300
-                ? 120
+                ? 325
                 : 13,
           }}
         >
