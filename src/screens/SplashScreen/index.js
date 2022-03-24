@@ -118,7 +118,8 @@ export default function SplashScreen(props) {
         <View
           style={{
             height: Dimensions.get("screen").height,
-            justifyContent: "center",
+            justifyContent: "flex-end",
+            paddingBottom: 100,
           }}
         >
           <View style={styles.secondary}>
