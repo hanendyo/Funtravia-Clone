@@ -252,7 +252,7 @@ export default function Invitation({
       setLoading(true);
       let response = await mutationRejectInvitation({
         variables: {
-          buddy_id: data.itinerary_buddy.id,
+          buddy_id: data?.itinerary_buddy?.id,
         },
       });
       if (response.data.reject_buddy.code != 200) {
@@ -319,7 +319,7 @@ export default function Invitation({
       setLoading(true);
       let response = await mutationAcceptInvitation({
         variables: {
-          buddy_id: data.itinerary_buddy.id,
+          buddy_id: data?.itinerary_buddy?.id,
         },
       });
 

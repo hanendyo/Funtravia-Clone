@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   FlatList,
@@ -46,6 +46,10 @@ export default function CardItinerary({
   const [modalLogin, setModalLogin] = useState(false);
   const token = useSelector((data) => data.token);
   const setting = useSelector((data) => data.setting);
+
+  useEffect(() => {
+    setDatas(data);
+  }, [data]);
 
   const getDN = (start, end, person, from) => {
     start = start.split(" ");

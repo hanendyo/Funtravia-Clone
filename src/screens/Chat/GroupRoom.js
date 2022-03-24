@@ -122,6 +122,7 @@ export default function Room({ navigation, route }) {
           flexDirection: "row",
           justifyContent: "center",
           alignContent: "center",
+
           alignItems: "center",
           marginVertical: 15,
         }}
@@ -153,16 +154,6 @@ export default function Room({ navigation, route }) {
               },
             });
           }}
-          // style={{
-          //   flexDirection: "row",
-          //   borderWidth: 10,
-          //   borderColor: "#209fae",
-          //   width: Dimensions.get("screen").width - 100,
-          //   height: 45,
-          //   alignItems: "center",
-          //   backgroundColor: "#209fae",
-          //   zIndex: 150,
-          // }}
         >
           <TouchableOpacity
             onPress={() => {
@@ -233,6 +224,7 @@ export default function Room({ navigation, route }) {
   const _sendmsg = async (chatData) => {
     await socket.current.emit("message", chatData);
   };
+
   const getDetailGroup = async (access_token) => {
     let response = await fetch(
       `${API_DOMAIN}/api/room/group/groupdetail?group_id=${route.params.room_id}&from=${route.params.from}`,
@@ -248,6 +240,9 @@ export default function Room({ navigation, route }) {
     let dataResponse = await response.json();
     if (dataResponse.status == true) {
       await setDatadetail(dataResponse.grup);
+      let FilterBuddy = dataResponse.grup.buddy.filter(
+        (i) => i.isconfrim == true
+      );
       let update_header = {
         headerLeft: () => (
           <View
@@ -369,6 +364,7 @@ export default function Room({ navigation, route }) {
                 <View
                   style={{
                     flex: 1,
+
                     flexWrap: "nowrap",
                   }}
                 >
@@ -381,7 +377,7 @@ export default function Room({ navigation, route }) {
                     }}
                     numberOfLines={1}
                   >
-                    {dataResponse.grup.buddy.map((item, index) => {
+                    {FilterBuddy.map((item, index) => {
                       return item.first_name + ", ";
                     })}
                   </Text>

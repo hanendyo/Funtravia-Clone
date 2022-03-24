@@ -474,6 +474,7 @@ export default function Trip(props) {
   };
 
   const setstart = async (x) => {
+    console.log("X", x);
     await setStartDate(x);
     await setEndDate(x);
     await setMinimum(x);
