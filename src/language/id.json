@@ -47,7 +47,7 @@
   "reenterPass": "Masukkan kembali Kata Sandi Baru",
   "submit": "Simpan",
   "skip": "Lewati",
-  "description": "Menikmati perjalanan Anda tidak pernah semudah dan memanjakan dengan Funtravia. Semuanya dilakukan di tangan Anda!",
+  "description": "Nikmati kemudahan bertravelling dengan Funtravia! Everything is done with your hands!",
   "signIn": "Masuk",
   "createYourAccount": "Buat Akun Anda",
   "hello": "Halo",
@@ -858,10 +858,10 @@
   "max50Char": "Maks. 50 karakter",
   "deleteFileCrop": "Ingin menghapus",
   "minFotoUpload": "Oops minimal upload 1 foto/video",
-  "description1": "Jika Anda termasuk orang yang sering melakukan perjalanan baik untuk bisnis ataupun liburan pribadi, menyusun rencana perjalanan sangatlah penting supaya tertata dengan rapi terjadwal.",
-  "description2": "Buatlah moment-moment berharga yang tak pernah terlupakan bersama temanmu,yang nanti menjadi sejarah.",
-  "description3": "Wujudkan perjalanan impianmu disini dengan berbagai destinasi yang menarik.",
-  "description4": "Menikmati perjalanan tak pernah semudah ini. Kini, hadir aplikasi Funtravia yg semakin memanjakan travelingmu. hanya dalam genggamanmu! Download on App Store & Google PlayMobile phone",
+  "description1": "Apakah kamu suka bertravelling? Rencanakan perjalananmu!",
+  "description2": "Abadikan moment dan perjalanan berhargamu.",
+  "description3": "Wujudkan perjalanan impianmu di berbagai tempat idaman!",
+  "description4": "Nikmati kemudahan bertravelling dengan Funtravia! Everything is done with your hands!",
   "fileTolarge": "File terlalu besar",
   "fileToWriteReview": "Gagal memberi ulasan",
   "searchByAccount": "Pencarian Berdasarkan akun",
@@ -910,6 +910,6 @@
   "Selected": " terpilih",
   "deleteMessageSelected": "Apakah kamu akan menghapus ",
   "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus",
-  "AlertTime" : "Waktu akhir tidak boleh kurang dari waktu awal",
-  "MaxSizeFile" : "Maksimal ukuran file 7mb"
+  "AlertTime": "Waktu akhir tidak boleh kurang dari waktu awal",
+  "MaxSizeFile": "Maksimal ukuran file 7mb"
 }

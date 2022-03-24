@@ -71,7 +71,7 @@ export default function OnBoardScreen(props) {
               width: width,
               resizeMode: "cover",
               backgroundColor: "#000",
-              opacity: index === 3 ? 1 : 0.25,
+              opacity: index === 3 ? 1 : 0.8,
             }}
             source={item.image}
           />
@@ -92,7 +92,7 @@ export default function OnBoardScreen(props) {
                 size="small"
                 style={{
                   flexDirection: "row",
-                  backgroundColor: "#fff",
+                  backgroundColor: "rgba(209, 209, 209, 0.45)",
                   // opacity: 0.45,
                   borderRadius: 30,
                 }}
@@ -113,7 +113,7 @@ export default function OnBoardScreen(props) {
                   size="description"
                   type="bold"
                   style={{
-                    color: "#000",
+                    color: "#FFF",
                     // marginRight: 10,
                     justifyContent: "center",
                     marginBottom: 1,
@@ -135,7 +135,14 @@ export default function OnBoardScreen(props) {
             }}
           >
             <View style={{ paddingHorizontal: 14, width: width }}>
-              <Text size="h4" type="bold" style={{ color: "#FFFF" }}>
+              {index === 3 ? (
+                <Image
+                  source={WhiteMascot}
+                  style={{ height: 150, width: 150, alignSelf: "flex-start" }}
+                />
+              ) : null}
+
+              <Text size="h3" style={{ color: "#FFFF", fontWeight: "900" }}>
                 {item.title}
               </Text>
             </View>

@@ -860,10 +860,10 @@
   "max50Char": "Max 50 characters",
   "deleteFileCrop": "Do you want to delete selected",
   "minFotoUpload": "Oops, at least upload 1 photo/video",
-  "description1": "If you are one of the people who travel often well for business or a private vacation, making a itinerary is very important so that neatly arranged scheduled.",
-  "description2": "Make precious moments that are never forgotten with your friends, who It will become history.",
-  "description3": "Make your dream trip here with a variety of interesting destinations.",
-  "description4": "Enjoying the journey has never been easier. Now, there is funtravia application. Which is increasingly spoiling your traveling. Just in your hands! Download on App Store & Google Play Mobile phone.",
+  "description1": "If you are one of the people who travel often; whether it be for a business or personal cause, making a well-planned itinerary is critical for a smooth-sailing journey.",
+  "description2": "Make precious and unforgettable travelling moments that will last a lifetime.",
+  "description3": "Make your dream trips come true here with an array of appealing destinations.",
+  "description4": "Enjoying your travelling journey has never been easier and spoiling with Funtravia. Everything is done with your hands!",
   "fileTolarge": "File is too big",
   "fileToWriteReview": "Failed to write a review",
   "searchByAccount": "Search By Account",
@@ -912,6 +912,6 @@
   "Selected": " selected",
   "deleteMessageSelected": "Do you want to delete ",
   "thisTripHasBeenDeleted": "This trip has been deleted",
-  "AlertTime" : "The end time cannot be less than the start time",
-  "MaxSizeFile" : "Maximum file size 7mb"
+  "AlertTime": "The end time cannot be less than the start time",
+  "MaxSizeFile": "Maximum file size 7mb"
 }
