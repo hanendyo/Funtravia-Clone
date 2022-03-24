@@ -1362,6 +1362,7 @@ export default function Room({ navigation, route }) {
                   : keyboardOffset > 300
                   ? 120
                   : 13,
+              justifyContent: "space-between",
             }}
           >
             {!keyboardOpenState ? (
@@ -1370,7 +1371,7 @@ export default function Room({ navigation, route }) {
                 type="circle"
                 size="medium"
                 variant="transparent"
-                style={{ width: 30, height: 30 }}
+                style={{ width: 35, height: 35 }}
                 // onPress={() => Alert.alert("Sticker Cooming Soon")}
                 // onPress={() => modals()}
                 // onPress={() => {
@@ -1502,10 +1503,13 @@ export default function Room({ navigation, route }) {
               Platform.OS === "ios" &&
               keyboardOffset < 300 &&
               keyboardOffset > 0
-                ? 275
+                ? Notch
+                  ? 275
+                  : 230
                 : keyboardOffset > 300
                 ? 120
                 : 13,
+            justifyContent: "space-between",
           }}
         >
           {!keyboardOpenState ? (
@@ -1515,10 +1519,10 @@ export default function Room({ navigation, route }) {
               size="medium"
               variant="transparent"
               style={{
-                width: 30,
-                height: 30,
-                marginLeft: 5,
-                marginRight: 10,
+                width: 40,
+                height: 40,
+                // marginLeft: 5,
+                // marginRight: 10,
               }}
               onPress={() => {
                 setShowKeyboardOffset(false);
@@ -1534,7 +1538,7 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="normal"
-              style={{ width: 30, height: 30, marginLeft: 5, marginRight: 10 }}
+              style={{ width: 35, height: 35, marginLeft: 5, marginRight: 10 }}
               onPress={() => {
                 setShowKeyboardOffset(true);
                 SetkeyboardOpenState(false);

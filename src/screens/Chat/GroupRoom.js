@@ -1139,6 +1139,7 @@ export default function Room({ navigation, route }) {
                   : keyboardOffset > 300
                   ? 120
                   : 13,
+              justifyContent: "space-between",
             }}
           >
             {!keyboardOpenState ? (
@@ -1263,10 +1264,13 @@ export default function Room({ navigation, route }) {
               Platform.OS === "ios" &&
               keyboardOffset < 300 &&
               keyboardOffset > 0
-                ? 275
+                ? Notch
+                  ? 275
+                  : 230
                 : keyboardOffset > 300
                 ? 325
                 : 13,
+            justifyContent: "space-between",
           }}
         >
           {!keyboardOpenState ? (
@@ -1275,14 +1279,14 @@ export default function Room({ navigation, route }) {
               type="circle"
               size="medium"
               variant="transparent"
-              style={{ width: 35, height: 35 }}
+              style={{ width: 40, height: 40 }}
               onPress={() => {
                 setShowKeyboardOffset(false);
                 dismissKeyboard();
                 SetkeyboardOpenState(true);
               }}
             >
-              <Emoticon height={35} width={35} />
+              <Emoticon height={30} width={30} />
             </Button>
           ) : (
             <Button

@@ -86,7 +86,7 @@ export default function Message({ navigation, route }) {
     tabBarVisble: false,
     tabBarBadge: null,
     tabBarLabel: "Message",
-    // headerTintColor: "white",
+    headerTintColor: "white",
     headerTitle: (
       <Text style={{ color: "#fff" }} size="header" type="bold">
         {t("Message")}
@@ -144,6 +144,10 @@ export default function Message({ navigation, route }) {
   // const socket = useRef(null);
 
   useEffect(() => {
+    navigation.setOptions(HeaderComponent);
+  }, [navigation]);
+
+  useEffect(() => {
     getUserAndToken();
     navigation.addListener("focus", () => {
       if (dataRes.length == 0 || dataRes.length == 0) {
@@ -171,8 +175,6 @@ export default function Message({ navigation, route }) {
         "Content-Type": "application/json",
       },
     });
-
-    console.log("response", response);
 
     if (response.status != 500) {
       let dataResponse = await response.json();
