@@ -128,6 +128,8 @@ export default function GroupDetail(props) {
   });
 
   let [mydata, setMydata] = useState();
+  let [AdminTrip, setAdminTrip] = useState(true);
+  let [seeBuddyNotAdmin, setSeeBuddyNotAdmin] = useState([]);
 
   const getDetailGroup = async (access_token, data_setting) => {
     setLoading(true);
@@ -144,12 +146,28 @@ export default function GroupDetail(props) {
     );
     let dataResponse = await response.json();
     if (dataResponse.status == true) {
+      console.log("response", dataResponse);
+
       await setDatadetail(dataResponse.grup);
       await setTextName(dataResponse.grup.title);
       var inde = dataResponse.grup.buddy.findIndex(
         (k) => k["user_id"] === data_setting.user.id
       );
       await setMydata(dataResponse.grup.buddy[inde]);
+
+      // check user is admin or not
+      let Admin = dataResponse.grup.buddy.filter(
+        (x) => x.user_id == mydata?.user_id
+      );
+
+      await setAdminTrip(Admin[0]?.isadmin);
+
+      // cek buddy yang sudah confirm true trip
+      let FilterBuddy = dataResponse.grup.buddy.filter(
+        (i) => i.isconfrim == true
+      );
+      console.log("Filter", FilterBuddy);
+      await setSeeBuddyNotAdmin(FilterBuddy);
       await setLoading(false);
     } else {
       await setLoading(false);
@@ -174,6 +192,11 @@ export default function GroupDetail(props) {
   useEffect(() => {
     getUserAndToken();
   }, []);
+
+  useEffect(() => {
+    getUserAndToken();
+  }, [AdminTrip]);
+
   // useEffect(() => {
   //   const unsubscribe = props.navigation.addListener("focus", () => {
   //     getUserAndToken();
@@ -762,6 +785,7 @@ export default function GroupDetail(props) {
     }
   };
 
+  console.log("seeBudyy", seeBuddyNotAdmin);
   return (
     <>
       <StatBar backgroundColor="#14646E" />
@@ -955,16 +979,22 @@ export default function GroupDetail(props) {
                 }}
               >
                 <Text type="bold">
-                  {dataDetail?.buddy.length} {t("participants")}
+                  {dataDetail && dataDetail?.buddy && AdminTrip == true
+                    ? dataDetail?.buddy.length
+                    : seeBuddyNotAdmin?.length}{" "}
+                  {t("participants")}
                 </Text>
               </View>
             </View>
             {mydata ? (
               <FlatList
                 data={
-                  dataDetail && dataDetail.buddy && dataDetail.buddy.length > 0
+                  dataDetail &&
+                  dataDetail.buddy &&
+                  dataDetail.buddy.length > 0 &&
+                  AdminTrip == true
                     ? dataDetail.buddy
-                    : null
+                    : seeBuddyNotAdmin
                 }
                 scrollEnabled={false}
                 contentContainerStyle={{

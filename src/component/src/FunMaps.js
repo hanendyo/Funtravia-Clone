@@ -68,7 +68,8 @@ export default function FunMaps({
       </View>
     );
   }
-
+  console.log("status", status);
+  console.log("error", error);
   if (status) {
     return (
       <>
@@ -104,7 +105,7 @@ export default function FunMaps({
           }}
         /> */}
         <SvgCssUri
-          uri={path}
+          uri={url}
           width={width ? width : 50}
           height={height ? height : 50}
           fill={fill ? fill : "#464646"}
