@@ -58,18 +58,29 @@ export default function JournalComment(props) {
     headerShown: true,
     headerTransparent: false,
     headerTintColor: "white",
+    headerMode: "screen",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("comments")}
       </Text>
     ),
     headerStyle: {
-      backgroundColor: "#209fae",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (

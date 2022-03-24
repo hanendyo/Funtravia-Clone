@@ -12,7 +12,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, Button, FunImage, FunVideo, Capital } from "../../../component";
+import {
+  Text,
+  Button,
+  FunImage,
+  FunVideo,
+  Capital,
+  Loading,
+} from "../../../component";
 import { default_image } from "../../../assets/png";
 import { useMutation } from "@apollo/react-hooks";
 import {
@@ -70,6 +77,7 @@ export default function Invitation({
   let [showside, setshowside] = useState(false);
   let [dataItinerary, setDataItinerary] = useState({});
   let [dataItem, setdataItem] = useState({});
+  let [loading, setLoading] = useState(false);
 
   const {
     data: datasnotif,
@@ -124,20 +132,24 @@ export default function Invitation({
 
   const _readAll = async () => {
     try {
-      let tempDataNotif = [...datanotif];
-      let tempData = [];
-      for (var i in tempDataNotif) {
-        let tempDataIndex = { ...tempDataNotif[i] };
-        let tempDataNode = { ...tempDataIndex.node };
-        tempDataNode.isread = true;
-        tempDataIndex.node = tempDataNode;
-        tempData.push(tempDataIndex);
-      }
-      setreadall(false);
-      SetDataNotif(tempData);
+      setLoading(true);
       let response = await mutationAllIsRead();
       if (response.data.read_all_notif.code != 200) {
+        await setLoadiing(false);
         throw new Error(response.data.read_all_notif.message);
+      } else {
+        let tempDataNotif = [...datanotif];
+        let tempData = [];
+        for (var i in tempDataNotif) {
+          let tempDataIndex = { ...tempDataNotif[i] };
+          let tempDataNode = { ...tempDataIndex.node };
+          tempDataNode.isread = true;
+          tempDataIndex.node = tempDataNode;
+          tempData.push(tempDataIndex);
+        }
+        setreadall(false);
+        SetDataNotif(tempData);
+        setLoading(false);
       }
     } catch (error) {
       SetDataNotif(dataNotifFailed);
@@ -146,6 +158,7 @@ export default function Invitation({
         title: "Something wrong",
         position: "bottom",
       });
+      setLoading(false);
     }
   };
 
@@ -160,26 +173,30 @@ export default function Invitation({
 
   const _follow = async (id, notif_id) => {
     try {
-      let tempDataNotif = [...datanotif];
-      let index = tempDataNotif.findIndex((k) => k.node["ids"] === notif_id);
-      let tempData = { ...tempDataNotif[index] };
-      let tempDataNode = { ...tempDataNotif[index].node };
-      let tempDataFollow = { ...tempDataNode.follow_user };
-      let tempDataUser = { ...tempDataFollow.user };
-      tempDataUser.status_following = true;
-      tempDataFollow.user = tempDataUser;
-      tempDataNode.follow_user = tempDataFollow;
-      tempDataNode.isread = true;
-      tempData.node = tempDataNode;
-      tempDataNotif.splice(index, 1, tempData);
-      SetDataNotif(tempDataNotif);
+      setLoading(true);
       let response = await FollowMutation({
         variables: {
           id: id,
         },
       });
       if (response.data.follow_user.code != 200) {
+        await setLoadiing(false);
         throw new Error(response.data.follow_user.message);
+      } else {
+        let tempDataNotif = [...datanotif];
+        let index = tempDataNotif.findIndex((k) => k.node["ids"] === notif_id);
+        let tempData = { ...tempDataNotif[index] };
+        let tempDataNode = { ...tempDataNotif[index].node };
+        let tempDataFollow = { ...tempDataNode.follow_user };
+        let tempDataUser = { ...tempDataFollow.user };
+        tempDataUser.status_following = true;
+        tempDataFollow.user = tempDataUser;
+        tempDataNode.follow_user = tempDataFollow;
+        tempDataNode.isread = true;
+        tempData.node = tempDataNode;
+        tempDataNotif.splice(index, 1, tempData);
+        SetDataNotif(tempDataNotif);
+        setLoading(false);
       }
     } catch (error) {
       let tempDataNotif = [...datanotif];
@@ -199,6 +216,7 @@ export default function Invitation({
         title: t("failFollow") + tempDataUser.first_name,
         position: "bottom",
       });
+      setLoading(false);
     }
   };
 
@@ -231,46 +249,49 @@ export default function Invitation({
 
   const reject = async (data) => {
     try {
-      updateisread(data.ids);
-      var dt = new Date();
-      let rejected_at = `${dt
-        .getFullYear()
-        .toString()
-        .padStart(4, "0")}-${(dt.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${dt
-        .getDate()
-        .toString()
-        .padStart(2, "0")} ${dt
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${dt
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}:${dt
-        .getSeconds()
-        .toString()
-        .padStart(2, "0")}`;
-      let tempDataNotif = [...datanotif];
-      let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
-      let tempDataIndex = { ...tempDataNotif[index] };
-      let tempDataNode = { ...tempDataIndex.node };
-      let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
-      tempDataBuddy.isconfrim = true;
-      tempDataBuddy.rejected_at = rejected_at;
-      tempDataNode.itinerary_buddy = tempDataBuddy;
-      tempDataNode.isread = true;
-      tempDataIndex.node = tempDataNode;
-      tempDataNotif.splice(index, 1, tempDataIndex);
-      SetDataNotif(tempDataNotif);
+      setLoading(true);
       let response = await mutationRejectInvitation({
         variables: {
           buddy_id: data.itinerary_buddy.id,
         },
       });
-
       if (response.data.reject_buddy.code != 200) {
+        await setLoading(false);
         throw new Error(response.data.reject_buddy.message);
+      } else {
+        updateisread(data.ids);
+        var dt = new Date();
+        let rejected_at = `${dt
+          .getFullYear()
+          .toString()
+          .padStart(4, "0")}-${(dt.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${dt
+          .getDate()
+          .toString()
+          .padStart(2, "0")} ${dt
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${dt
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${dt
+          .getSeconds()
+          .toString()
+          .padStart(2, "0")}`;
+        let tempDataNotif = [...datanotif];
+        let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
+        let tempDataIndex = { ...tempDataNotif[index] };
+        let tempDataNode = { ...tempDataIndex.node };
+        let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
+        tempDataBuddy.isconfrim = true;
+        tempDataBuddy.rejected_at = rejected_at;
+        tempDataNode.itinerary_buddy = tempDataBuddy;
+        tempDataNode.isread = true;
+        tempDataIndex.node = tempDataNode;
+        tempDataNotif.splice(index, 1, tempDataIndex);
+        SetDataNotif(tempDataNotif);
+        setLoading(false);
       }
     } catch (error) {
       let tempDataNotif = [...datanotif];
@@ -289,43 +310,13 @@ export default function Invitation({
         title: t("failSomethingwrong"),
         position: "bottom",
       });
+      setLoading(false);
     }
   };
 
   const accept = async (data) => {
     try {
-      updateisread(data.ids);
-      var dt = new Date();
-      let accepted_at = `${dt
-        .getFullYear()
-        .toString()
-        .padStart(4, "0")}-${(dt.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${dt
-        .getDate()
-        .toString()
-        .padStart(2, "0")} ${dt
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${dt
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}:${dt
-        .getSeconds()
-        .toString()
-        .padStart(2, "0")}`;
-      let tempDataNotif = [...datanotif];
-      let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
-      let tempDataIndex = { ...tempDataNotif[index] };
-      let tempDataNode = { ...tempDataIndex.node };
-      let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
-      tempDataBuddy.isconfrim = true;
-      tempDataBuddy.accepted_at = accepted_at;
-      tempDataNode.itinerary_buddy = tempDataBuddy;
-      tempDataNode.isread = true;
-      tempDataIndex.node = tempDataNode;
-      tempDataNotif.splice(index, 1, tempDataIndex);
-      SetDataNotif(tempDataNotif);
+      setLoading(true);
       let response = await mutationAcceptInvitation({
         variables: {
           buddy_id: data.itinerary_buddy.id,
@@ -333,7 +324,42 @@ export default function Invitation({
       });
 
       if (response.data.confrim_buddy.code != 200) {
+        await setLoading(false);
         throw new Error(response.data.confrim_buddy.message);
+      } else {
+        updateisread(data.ids);
+        var dt = new Date();
+        let accepted_at = `${dt
+          .getFullYear()
+          .toString()
+          .padStart(4, "0")}-${(dt.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${dt
+          .getDate()
+          .toString()
+          .padStart(2, "0")} ${dt
+          .getHours()
+          .toString()
+          .padStart(2, "0")}:${dt
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${dt
+          .getSeconds()
+          .toString()
+          .padStart(2, "0")}`;
+        let tempDataNotif = [...datanotif];
+        let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
+        let tempDataIndex = { ...tempDataNotif[index] };
+        let tempDataNode = { ...tempDataIndex.node };
+        let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
+        tempDataBuddy.isconfrim = true;
+        tempDataBuddy.accepted_at = accepted_at;
+        tempDataNode.itinerary_buddy = tempDataBuddy;
+        tempDataNode.isread = true;
+        tempDataIndex.node = tempDataNode;
+        tempDataNotif.splice(index, 1, tempDataIndex);
+        SetDataNotif(tempDataNotif);
+        setLoading(false);
       }
     } catch (error) {
       let tempDataNotif = [...datanotif];
@@ -352,11 +378,13 @@ export default function Invitation({
         title: t("failSomethingwrong"),
         position: "bottom",
       });
+      setLoading(false);
     }
   };
 
   const updateisread = async (notif_id) => {
     try {
+      setLoading(true);
       let response = await mutationIsRead({
         variables: {
           notif_id: notif_id,
@@ -364,6 +392,7 @@ export default function Invitation({
       });
 
       if (response.data.update_read.code != 200) {
+        await setLoadiing(false);
         throw new Error(response.data.update_read.message);
       }
     } catch (error) {
@@ -371,6 +400,7 @@ export default function Invitation({
         title: "Something wrong",
         position: "bottom",
       });
+      setLoadiing(false);
     }
   };
 
@@ -445,25 +475,31 @@ export default function Invitation({
   };
 
   const handle_areaklik_buddy = (data) => {
-    data.itinerary_buddy.isconfrim == true &&
-    data.itinerary_buddy.accepted_at != null
-      ? navigation.navigate("ItineraryStack", {
-          screen: "itindetail",
-          params: {
-            itintitle: "",
-            country: data.itinerary_buddy.itinerary_id,
-            dateitin: "",
-            token: token,
-            status: "saved",
-          },
-        })
-      : data.itinerary_buddy.isconfrim == true &&
-        data.itinerary_buddy.rejected_at != null
-      ? RNToasty.Show({
+    data?.itinerary_buddy
+      ? data.itinerary_buddy.isconfrim == true &&
+        data.itinerary_buddy.accepted_at != null
+        ? navigation.navigate("ItineraryStack", {
+            screen: "itindetail",
+            params: {
+              itintitle: "",
+              country: data.itinerary_buddy.itinerary_id,
+              dateitin: "",
+              token: token,
+              status: "saved",
+            },
+          })
+        : data.itinerary_buddy.isconfrim == true &&
+          data.itinerary_buddy.rejected_at != null
+        ? RNToasty.Show({
+            title: t("youReject"),
+            position: "bottom",
+          })
+        : showModalTrip(data?.itinerary_buddy?.itinerary_id, data)
+      : RNToasty.Show({
           title: t("youReject"),
           position: "bottom",
-        })
-      : showModalTrip(data?.itinerary_buddy?.itinerary_id, data);
+        });
+
     // RNToasty.Show({
     //     title: t("notRespondInvit"),
     //     position: "bottom",
@@ -633,6 +669,38 @@ export default function Invitation({
         </Text>
       </View>
     );
+  };
+
+  const onUpdate = (prev, { fetchMoreResult }) => {
+    if (!fetchMoreResult) return prev;
+    const { pageInfo } = fetchMoreResult.list_notification_cursor_based;
+    const edges = [
+      ...prev.list_notification_cursor_based.edges,
+      ...fetchMoreResult.list_notification_cursor_based.edges,
+    ];
+    const feedback = Object.assign({}, prev, {
+      list_notification_cursor_based: {
+        __typename: prev.list_notification_cursor_based.__typename,
+        pageInfo,
+        edges,
+      },
+    });
+
+    return feedback;
+  };
+  const handleOnEndReached = () => {
+    if (
+      datasnotif?.list_notification_cursor_based.pageInfo.hasNextPage &&
+      !loadingnotif
+    ) {
+      return fetchMore({
+        updateQuery: onUpdate,
+        variables: {
+          first: 10,
+          after: datasnotif?.list_notification_cursor_based.pageInfo.endCursor,
+        },
+      });
+    }
   };
 
   const RenderTrans = ({ item }) => {
@@ -1574,6 +1642,7 @@ export default function Invitation({
         backgroundColor: "#f6f6f6",
       }}
     >
+      <Loading show={loading} />
       {/* modal detail trip */}
       <Modal
         animationType="slide"
@@ -1614,7 +1683,7 @@ export default function Invitation({
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              width: Dimensions.get("screen").width - 15,
+              width: Dimensions.get("screen").width - 16,
 
               paddingHorizontal: 30,
               paddingVertical: 20,
@@ -1847,7 +1916,7 @@ export default function Invitation({
                         <Text
                           size="label"
                           type="bold"
-                          style={{ marginLeft: 5, width: 130 }}
+                          style={{ marginLeft: 5, width: 105 }}
                           numberOfLines={1}
                         >
                           {item?.user?.first_name
@@ -1905,6 +1974,7 @@ export default function Invitation({
                   marginBottom: 5,
                   width: "100%",
                   alignContent: "center",
+                  justifyContent: "space-evenly",
                   borderRadius: 5,
                 }}
               >
@@ -1916,7 +1986,7 @@ export default function Invitation({
                   }}
                   style={{
                     width: Dimensions.get("screen").width / 2.5,
-                    height: 30,
+                    height: 40,
                     // opacity: 100,
                   }}
                   size="medium"
@@ -1964,41 +2034,7 @@ export default function Invitation({
           }
           initialNumToRender={20}
           onEndReachedThreshold={1}
-          onEndReached={() => {
-            if (
-              datasnotif?.list_notification_cursor_based.pageInfo.hasNextPage &&
-              !loadingnotif
-            ) {
-              return fetchMore({
-                updateQuery: (prev, { fetchMoreResult }) => {
-                  if (!fetchMoreResult) return prev;
-                  const {
-                    pageInfo,
-                  } = fetchMoreResult.list_notification_cursor_based;
-                  const edges = [
-                    ...prev.list_notification_cursor_based.edges,
-                    ...fetchMoreResult.list_notification_cursor_based.edges,
-                  ];
-                  const feedback = Object.assign({}, prev, {
-                    list_notification_cursor_based: {
-                      __typename:
-                        prev.list_notification_cursor_based.__typename,
-                      pageInfo,
-                      edges,
-                    },
-                  });
-
-                  return feedback;
-                },
-                variables: {
-                  first: 10,
-                  after:
-                    datasnotif?.list_notification_cursor_based.pageInfo
-                      .endCursor,
-                },
-              });
-            }
-          }}
+          onEndReached={handleOnEndReached}
           ListFooterComponent={
             loadingnotif ? (
               <View
