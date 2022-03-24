@@ -121,7 +121,7 @@ export default function ItineraryBuddy(props) {
       let Admin = value?.list_buddy.filter((x) => x.user_id == users.id);
       await setAdminTrip(Admin[0].isadmin);
       let FilterBuddy = value?.list_buddy.filter((i) => i.isconfrim == true);
-      console.log("FilterBuddy", FilterBuddy);
+
       await setSeeBuddyNotAdmin(FilterBuddy);
     },
   });

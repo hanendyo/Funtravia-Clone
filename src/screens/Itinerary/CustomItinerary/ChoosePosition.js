@@ -203,6 +203,7 @@ export default function ChoosePosition(props) {
 
   const RenderItinerary = ({ item, index }) => {
     const x = datatimeline.length - 1;
+
     if (item.stat === "new") {
       return (
         <Swipeout
@@ -593,7 +594,7 @@ export default function ChoosePosition(props) {
             // pecah hasil waktu
             let split = waktu.split(".");
 
-            let jamtemp = "";
+            var jamtemp = "";
             let menittemp = "";
 
             if (split[0] > 1) {
@@ -633,21 +634,6 @@ export default function ChoosePosition(props) {
               menitotal > 59
                 ? `${newjam + 1}:${newmenit - 60}`
                 : `${newjam}:${newmenit}`;
-
-            if (jamtemp > 23) {
-              Alert.alert("Opss", "Aktivitas sudah melewati 24 jam", [
-                {
-                  text: "OK",
-                  onPress: () => console.log("ok"),
-                  // navigation.navigate("ReorderDetail", {
-                  //   head: route.params.head,
-                  //   child: route.params.child,
-                  //   active: route.params.active,
-                  //   token: token,
-                  // }),
-                },
-              ]);
-            }
           }
 
           tempdata[y].time = hitungDuration({
@@ -658,14 +644,33 @@ export default function ChoosePosition(props) {
         x++;
         order++;
       }
-      if ((x = tempdata.length)) {
-        setDatatimeline(tempdata);
+      if (jamtemp > 23) {
+        Alert.alert("Opss", t("AktivitasFull"), [
+          {
+            text: "OK",
+            onPress: () => {
+              setDatatimeline(props.route.params.datatimeline),
+                props.navigation.goBack();
+            },
+          },
+        ]);
+      } else {
+        if ((x = tempdata.length)) {
+          setDatatimeline(tempdata);
+        }
       }
 
-      console.log("dataTimeline", datatimeline);
       setjammax(jumlah + ":00:00");
     } else {
-      Alert.alert(t("AktivitasFull"));
+      Alert.alert("Opss", t("AktivitasFull"), [
+        {
+          text: "OK",
+          onPress: () => {
+            setDatatimeline(props.route.params.datatimeline),
+              props.navigation.goBack();
+          },
+        },
+      ]);
     }
   };
 

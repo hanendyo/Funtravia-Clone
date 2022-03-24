@@ -265,7 +265,7 @@ export default function Invitation({
       SetDataNotif(tempDataNotif);
       let response = await mutationRejectInvitation({
         variables: {
-          buddy_id: data.itinerary_buddy.id,
+          buddy_id: data?.itinerary_buddy?.id,
         },
       });
 
@@ -328,7 +328,7 @@ export default function Invitation({
       SetDataNotif(tempDataNotif);
       let response = await mutationAcceptInvitation({
         variables: {
-          buddy_id: data.itinerary_buddy.id,
+          buddy_id: data?.itinerary_buddy?.id,
         },
       });
 
@@ -445,20 +445,20 @@ export default function Invitation({
   };
 
   const handle_areaklik_buddy = (data) => {
-    data.itinerary_buddy.isconfrim == true &&
-    data.itinerary_buddy.accepted_at != null
+    data?.itinerary_buddy?.isconfrim == true &&
+    data?.itinerary_buddy?.accepted_at != null
       ? navigation.navigate("ItineraryStack", {
           screen: "itindetail",
           params: {
             itintitle: "",
-            country: data.itinerary_buddy.itinerary_id,
+            country: data?.itinerary_buddy?.itinerary_id,
             dateitin: "",
             token: token,
             status: "saved",
           },
         })
-      : data.itinerary_buddy.isconfrim == true &&
-        data.itinerary_buddy.rejected_at != null
+      : data?.itinerary_buddy?.isconfrim == true &&
+        data?.itinerary_buddy?.rejected_at != null
       ? RNToasty.Show({
           title: t("youReject"),
           position: "bottom",
