@@ -789,20 +789,47 @@ export default function CustomItinerary(props) {
                         }}
                       >
                         <TouchableOpacity
-                          onPress={() =>
-                            props.navigation.navigate("ChoosePosition", {
-                              idItin: idItin,
-                              idDay: idDay,
-                              token: token,
-                              datatimeline: datatimeline,
-                              jammax: total_hours,
-                              dataCustom: item,
-                              itintitle: itintitle,
-                              dateitin: dateitin,
-                              datadayaktif: datadayaktif,
-                              dataList: props.route?.params?.dataList,
-                            })
-                          }
+                          onPress={() => {
+                            if (props.route.params.dataParent) {
+                              props.navigation.navigate("CreateCustom", {
+                                token: token,
+                                idItin: idItin,
+                                idDay: idDay,
+                                datatimeline: datatimeline,
+                                jammax: total_hours,
+                                itintitle: itintitle,
+                                dateitin: dateitin,
+                                datadayaktif: datadayaktif,
+                                dataParent: props.route.params.dataParent,
+                              });
+                            } else {
+                              props.navigation.navigate("CreateCustom", {
+                                token: token,
+                                idItin: idItin,
+                                idDay: idDay,
+                                datatimeline: datatimeline,
+                                jammax: total_hours,
+                                itintitle: itintitle,
+                                dateitin: dateitin,
+                                datadayaktif: datadayaktif,
+                                dataChild: item,
+                              });
+                            }
+                          }}
+                          // onPress={() =>
+                          //   props.navigation.navigate("ChoosePosition", {
+                          //     idItin: idItin,
+                          //     idDay: idDay,
+                          //     token: token,
+                          //     datatimeline: datatimeline,
+                          //     jammax: total_hours,
+                          //     dataCustom: item,
+                          //     itintitle: itintitle,
+                          //     dateitin: dateitin,
+                          //     datadayaktif: datadayaktif,
+                          //     dataList: props.route?.params?.dataList,
+                          //   })
+                          // }
                           style={{
                             width: Dimensions.get("screen").width - 40,
                             justifyContent: "center",

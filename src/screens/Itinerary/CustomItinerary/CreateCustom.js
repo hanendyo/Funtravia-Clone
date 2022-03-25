@@ -17,7 +17,7 @@ import Modal from "react-native-modal";
 import { useMutation } from "@apollo/react-hooks";
 import { Item, Label, Input, Textarea } from "native-base";
 import CheckBox from "@react-native-community/checkbox";
-import { FunDocument, Truncate } from "../../../component";
+import { FunDocument, Peringatan, Truncate } from "../../../component";
 import {
   Arrowbackwhite,
   Xhitam,
@@ -39,6 +39,7 @@ import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
 
 export default function CreateCustom(props) {
+  console.log("props", props);
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const deviceId = DeviceInfo.getModel();
@@ -104,16 +105,25 @@ export default function CreateCustom(props) {
   let datatimeline = props.route.params.datatimeline;
   let jammax = props.route.params.jammax;
   let datadayaktif = props.route.params.datadayaktif;
-  let [title, setTitle] = useState("");
-  let [Address, setAddress] = useState(props.route.params?.dataParent?.address);
+  let [title, setTitle] = useState(props?.route?.params?.dataChild?.title);
+  let [Address, setAddress] = useState(
+    props.route.params?.dataParent?.address
+      ? props.route.params?.dataParent?.address
+      : null
+  );
+
   let [Lat, setLat] = useState(props.route.params?.dataParent?.latitude);
   let [Long, setLong] = useState(props.route.params?.dataParent?.longitude);
   let [DetailAddress, setDetailAddress] = useState(
     props.route.params?.dataParent?.address
   );
 
-  let [hour, sethour] = useState(1);
-  let [minutes, setMinutes] = useState(0);
+  let [PropsDuration, setPropsDuration] = useState(
+    props?.route?.params?.dataChild?.duration?.split(":")
+  );
+
+  let [hour, sethour] = useState(PropsDuration ? PropsDuration[0] : 1);
+  let [minutes, setMinutes] = useState(PropsDuration ? PropsDuration[1] : 0);
 
   let [dataSplitIndex, setdataSplitIndex] = useState({});
 
@@ -215,6 +225,31 @@ export default function CreateCustom(props) {
       ...validate,
       [name]: check,
     });
+  };
+
+  //  Alert
+  let [alertPopUp, setAlertPopUp] = useState({
+    show: false,
+    judul: "",
+    detail: "",
+  });
+
+  const CheckValidation = () => {
+    if (title == null || title == "") {
+      setValidate({ ...validate, ["tittle"]: false });
+    } else if (Address == null || Address == "") {
+      setValidate({ ...validate, ["address"]: false });
+    }
+    if (title == null || title == "" || Address == null || Address == "") {
+      setAlertPopUp({
+        ...alertPopUp,
+        show: true,
+        judul: t("someFormFieldIsEmpty"),
+        detail: "",
+      });
+    } else {
+      _Next();
+    }
   };
 
   const _Next = async () => {
@@ -1021,49 +1056,50 @@ export default function CreateCustom(props) {
               </Text>
             </View>
           </View>
-
-          <Pressable
-            onPress={() => setcheck(!cheked)}
-            style={{
-              flexDirection: "row",
-              paddingVertical: 5,
-              // borderWidth: 1,
-              justifyContent: "flex-start",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <CheckBox
-              onCheckColor="#FFF"
-              lineWidth={2}
-              onFillColor="#209FAE"
-              onTintColor="#209FAE"
-              boxType={"square"}
+          {props?.route?.params?.dataChild == null ? (
+            <Pressable
+              onPress={() => setcheck(!cheked)}
               style={{
-                alignSelf: "center",
-                width: Platform.select({
-                  ios: 30,
-                  android: 35,
-                }),
-                transform: Platform.select({
-                  ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
-                  android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
-                }),
-              }}
-              value={cheked}
-              onValueChange={(check) => setcheck(check)}
-            />
-            <Text
-              size="small"
-              type="regular"
-              style={{
-                marginLeft: 20,
-                // marginTop: 10,
+                flexDirection: "row",
+                paddingVertical: 5,
+                // borderWidth: 1,
+                justifyContent: "flex-start",
+                alignItems: "center",
+                alignContent: "center",
               }}
             >
-              {t("saveActivity")}
-            </Text>
-          </Pressable>
+              <CheckBox
+                onCheckColor="#FFF"
+                lineWidth={2}
+                onFillColor="#209FAE"
+                onTintColor="#209FAE"
+                boxType={"square"}
+                style={{
+                  alignSelf: "center",
+                  width: Platform.select({
+                    ios: 30,
+                    android: 35,
+                  }),
+                  transform: Platform.select({
+                    ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                    android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+                  }),
+                }}
+                value={cheked}
+                onValueChange={(check) => setcheck(check)}
+              />
+              <Text
+                size="small"
+                type="regular"
+                style={{
+                  marginLeft: 20,
+                  // marginTop: 10,
+                }}
+              >
+                {t("saveActivity")}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       </ScrollView>
       <View
@@ -1080,19 +1116,20 @@ export default function CreateCustom(props) {
       >
         <TouchableOpacity
           onPress={() => {
-            if (
-              title !== "" &&
-              validate.tittle === true &&
-              Address !== "" &&
-              validate.address === true &&
-              DetailAddress !== "" &&
-              validate.detail === true &&
-              (hour !== 0 || minutes !== 0)
-            ) {
-              _Next();
-            } else {
-              Alert.alert(t("pleaseenter"));
-            }
+            // if (
+            //   title !== "" &&
+            //   title !== null &&
+            //   validate.tittle === true &&
+            //   Address !== "" &&
+            //   validate.address === true &&
+            //   DetailAddress !== "" &&
+            //   validate.detail === true &&
+            //   (hour !== 0 || minutes !== 0)
+            // ) {
+            CheckValidation();
+            // } else {
+            //   Alert.alert(t("pleaseenter"));
+            // }
           }}
           style={{
             height: 40,
@@ -1109,6 +1146,15 @@ export default function CreateCustom(props) {
           </Text>
         </TouchableOpacity>
       </View>
+      <Peringatan
+        aler={alertPopUp}
+        setClose={() =>
+          setAlertPopUp({
+            ...alertPopUp,
+            show: false,
+          })
+        }
+      />
 
       <Modal
         onRequestClose={() => setModal(false)}

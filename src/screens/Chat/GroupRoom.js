@@ -243,6 +243,8 @@ export default function Room({ navigation, route }) {
       let FilterBuddy = dataResponse.grup.buddy.filter(
         (i) => i.isconfrim == true
       );
+      console.log("filterBuddy", FilterBuddy);
+      console.log(dataResponse.grup.buddy);
       let update_header = {
         headerLeft: () => (
           <View
@@ -377,9 +379,13 @@ export default function Room({ navigation, route }) {
                     }}
                     numberOfLines={1}
                   >
-                    {FilterBuddy.map((item, index) => {
-                      return item.first_name + ", ";
-                    })}
+                    {FilterBuddy.length > 0
+                      ? FilterBuddy.map((item, index) => {
+                          return item.first_name + ", ";
+                        })
+                      : dataResponse.grup.buddy.map((item, index) => {
+                          return item.first_name + ", ";
+                        })}
                   </Text>
                 </View>
               </View>
