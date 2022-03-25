@@ -1,7 +1,7 @@
 import { gql } from "apollo-boost";
 const CityItinerary = gql`
-  query($id: ID!) {
-    itinerary_populer_by_city(city_id: $id) {
+  query($city_id: ID!) {
+    itinerary_populer_by_city(city_id: $city_id) {
       id
       name
       country {

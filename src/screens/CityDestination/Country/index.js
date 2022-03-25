@@ -24,16 +24,8 @@ import CitiesInformation from "../../../graphQL/Query/Cities/Citiesdetail";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Arrowbackwhite,
-  OptionsVertWhite,
-  PinWhite,
   LikeEmpty,
-  Showmore,
-  Showless,
   PinHijau,
-  Calendargrey,
-  User,
-  TravelAlbum,
-  TravelStories,
   LikeRed,
   Logofuntravianew,
   ShareBlack,
@@ -67,15 +59,20 @@ import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
 import likedJournal from "../../../graphQL/Mutation/Journal/likedJournal";
 import unlikedJournal from "../../../graphQL/Mutation/Journal/unlikedJournal";
-import LinearGradient from "react-native-linear-gradient";
 import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
-import { RNToasty } from "react-native-toasty";
 import DeviceInfo from "react-native-device-info";
 import categoryArticle from "../../../graphQL/Query/Countries/Articlecategory";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
+import {
+  setFactCountry,
+  setJournalCountry,
+  setJournalProvince,
+  setPackageCountry,
+  setPackageProvince,
+} from "../../../redux/action";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -98,6 +95,7 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function Country(props) {
   const [modalLogin, setModalLogin] = useState(false);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
   // let [token, setToken] = useState("");
   const token = useSelector((data) => data.token);
   let [search, setTextc] = useState("");
@@ -116,7 +114,11 @@ export default function Country(props) {
   let years = new Date().getFullYear();
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(1).fill(0));
+  // const [routes, setRoutes] = useState(Array(1).fill(0));
+  const listCountry = useSelector(
+    (data) => data.country.packageDetail.listCountry
+  );
+  const routes = useSelector((data) => data.country.packageDetail.tab);
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -144,7 +146,7 @@ export default function Country(props) {
 
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0.5, 0],
+    outputRange: [1, 1, 0],
     extrapolate: "clamp",
   });
 
@@ -165,8 +167,12 @@ export default function Country(props) {
   );
 
   useEffect(() => {
-    refreshData();
-
+    if (listCountry?.id !== props.route.params.data?.id) {
+      setLoadings(true);
+      getPackageDetail();
+      getJournal();
+      getCountryfact();
+    }
     const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation]);
@@ -200,42 +206,43 @@ export default function Country(props) {
     };
   }, [routes, tabIndex]);
 
-  const refreshData = async () => {
-    await getJournal();
-    await getPackageDetail();
-    await getCountryfact();
-  };
+  // const refreshData = async () => {
+  //   await getJournal();
+  //   await getPackageDetail();
+  //   await getCountryfact();
+  // };
 
-  const [getPackageDetail, { loading, data, error }] = useLazyQuery(
-    CountrisInformation,
-    {
-      fetchPolicy: "network-only",
-      variables: {
-        id: props.route.params.data.id,
+  const [
+    getPackageDetail,
+    { loading: loadingCountry, data, error },
+  ] = useLazyQuery(CountrisInformation, {
+    fetchPolicy: "network-only",
+    variables: {
+      id: props.route.params.data.id,
+    },
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
       },
-      context: {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      },
-      onCompleted: () => {
-        let tab = [{ key: "general", title: "General" }];
+    },
+    onCompleted: () => {
+      let tab = [{ key: "general", title: "General" }];
 
-        data?.country_detail?.article_header.map((item, index) => {
-          tab.push({
-            key: item.title,
-            title: item.title,
-            data: item.content,
-          });
+      data?.country_detail?.article_header.map((item, index) => {
+        tab.push({
+          key: item.title,
+          title: item.title,
+          data: item.content,
         });
+      });
+      dispatch(setPackageCountry([data?.country_detail, tab]));
+      setLoadings(false);
+    },
+  });
 
-        setRoutes(tab);
-      },
-    }
-  );
-
-  let [list_journal, setListJournal] = useState({});
+  // let [list_journal, setListJournal] = useState({});
+  const list_journal = useSelector((data) => data.country.journalCountry);
   const [
     getJournal,
     { loading: loadingJournal, data: dataJournal, error: errorJournal },
@@ -251,13 +258,13 @@ export default function Country(props) {
       },
     },
     onCompleted: () => {
-      setListJournal(dataJournal?.journal_by_country);
+      // setListJournal(dataJournal?.journal_by_country);
+      dispatch(setJournalCountry(dataJournal?.journal_by_country));
     },
   });
 
   // get article country facts
-
-  let [countryfact, setCountryfact] = useState([]);
+  const countryfact = useSelector((data) => data.country.countryFact);
   const [
     getCountryfact,
     {
@@ -277,7 +284,7 @@ export default function Country(props) {
       },
     },
     onCompleted: () => {
-      setCountryfact(datacountryfact?.category_article_bycountry);
+      dispatch(setFactCountry(datacountryfact?.category_article_bycountry));
     },
   });
 
@@ -601,7 +608,7 @@ export default function Country(props) {
   // Render General
   const RenderGeneral = ({ item, index }) => {
     let render = [];
-    render = data && data?.country_detail ? data?.country_detail : null;
+    render = listCountry ?? null;
     let renderjournal = [];
     renderjournal = list_journal;
 
@@ -2008,7 +2015,7 @@ export default function Country(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: deviceId == "LYA-L29" ? 0 : 3,
+          top: deviceId == "LYA-L29" ? 0 : 0,
           height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",
@@ -2035,20 +2042,20 @@ export default function Country(props) {
           setClose={(e) => setshowside(false)}
         />
 
-        <Animated.Image
+        <FastImage
           style={{
             width: "100%",
             height: "82%",
             resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
           source={
-            data && data?.country_detail?.cover
-              ? { uri: data?.country_detail?.cover }
-              : default_image
+            listCountry?.cover ? { uri: listCountry.cover } : default_image
           }
+          resizeMode={FastImage.resizeMode.cover}
         />
+
         <Animated.View
           style={{
             // height: 55,
@@ -2058,8 +2065,8 @@ export default function Country(props) {
             justifyContent: "flex-end",
             alignItems: "center",
             alignContent: "center",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <View
@@ -2077,12 +2084,10 @@ export default function Country(props) {
               }}
             >
               <Text size="title" type="bold">
-                {data && data?.country_detail ? (
+                {listCountry ? (
                   <Truncate
                     text={Capital({
-                      text: data?.country_detail?.name
-                        ? data?.country_detail?.name
-                        : "",
+                      text: listCountry?.name ? listCountry?.name : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -2107,9 +2112,7 @@ export default function Country(props) {
                 >
                   <PinHijau height={14} width={14} />
                   <Text size="label" type="regular" style={{ marginLeft: 5 }}>
-                    {data && data?.country_detail
-                      ? data?.country_detail?.continent?.name
-                      : "-"}
+                    {listCountry ? listCountry?.continent?.name : "-"}
                   </Text>
                 </View>
               </View>
@@ -2147,7 +2150,7 @@ export default function Country(props) {
             alignItems: "center",
             alignContent: "center",
             opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -2405,13 +2408,13 @@ export default function Country(props) {
     });
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoadings(false);
+  //   }, 2000);
+  // }, []);
 
-  let [loadings, setLoadings] = useState(true);
+  let [loadings, setLoadings] = useState(loadingCountry);
 
   return (
     <>
@@ -2628,9 +2631,9 @@ export default function Country(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                idcountry: data?.country_detail?.id,
+                idcountry: listCountry?.id,
                 searchInput: "",
-                locationname: data?.country_detail?.name,
+                locationname: listCountry?.name,
                 aktifsearch: true,
               })
             }
@@ -2663,9 +2666,7 @@ export default function Country(props) {
               >
                 <Truncate
                   text={
-                    data?.country_detail?.name
-                      ? t("searchin") + data?.country_detail?.name
-                      : ""
+                    listCountry?.name ? t("searchin") + listCountry?.name : ""
                   }
                   length={25}
                 />
@@ -2697,6 +2698,20 @@ export default function Country(props) {
           </Animated.View>
         </Button> */}
         </Animated.View>
+
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" && Notch ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
 
         {/* jika scrollheader, animated show */}
         <Animated.View
@@ -2748,9 +2763,9 @@ export default function Country(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                idcountry: data?.country_detail?.id,
+                idcountry: listCountry?.id,
                 searchInput: "",
-                locationname: data?.country_detail?.name,
+                locationname: listCountry?.name,
                 aktifsearch: true,
               })
             }
@@ -2783,9 +2798,7 @@ export default function Country(props) {
               >
                 <Truncate
                   text={
-                    data?.country_detail?.name
-                      ? t("searchin") + data?.country_detail?.name
-                      : ""
+                    listCountry?.name ? t("searchin") + listCountry?.name : ""
                   }
                   length={25}
                 />
@@ -2897,10 +2910,10 @@ export default function Country(props) {
                         screen: "SendToChat",
                         params: {
                           dataSend: {
-                            id: data?.country_detail?.id,
-                            cover: data?.country_detail?.cover,
-                            name: data?.country_detail?.name,
-                            description: data?.country_detail?.description,
+                            id: listCountry?.id,
+                            cover: listCountry?.cover,
+                            name: listCountry?.name,
+                            description: listCountry?.description,
                           },
                           title: t("country"),
                           tag_type: "tag_country",
@@ -2927,7 +2940,7 @@ export default function Country(props) {
                 onPress={() => {
                   shareAction({
                     from: "country",
-                    target: data?.country_detail?.id,
+                    target: listCountry?.id,
                   });
                   SetShareModal(false);
                 }}
@@ -2949,7 +2962,7 @@ export default function Country(props) {
                 onPress={() => {
                   CopyLink({
                     from: "country",
-                    target: data?.country_detail?.id,
+                    target: listCountry?.id,
                     success: t("successCopyLink"),
                     failed: t("failedCopyLink"),
                   });

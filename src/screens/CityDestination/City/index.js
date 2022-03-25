@@ -55,7 +55,6 @@ import {
 } from "../../../component";
 import { Tab, Tabs } from "native-base";
 import CityJournal from "../../../graphQL/Query/Cities/JournalCity";
-import CityItinerary from "../../../graphQL/Query/Cities/ItineraryCity";
 import { useTranslation } from "react-i18next";
 import Ripple from "react-native-material-ripple";
 import ImageSlider from "react-native-image-slider";
@@ -66,7 +65,14 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setItineraryCity,
+  setJournalCity,
+  setPackageCity,
+} from "../../../redux/action";
+import FastImage from "react-native-fast-image";
+import CityItinerary from "../../../graphQL/Query/Cities/ItineraryCity";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -89,13 +95,13 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function CityDetail(props) {
+  const dispatch = useDispatch();
+  const listCity = useSelector((data) => data.city.packageDetail.listCity);
   const { t, i18n } = useTranslation();
   const settingApps = useSelector((data) => data.setting);
   const tokenApps = useSelector((data) => data.token);
-
   const [modalLogin, setModalLogin] = useState(false);
   let [showside, setshowside] = useState(false);
-  let [dataevent, setdataevent] = useState({ event: [], month: "" });
   const [sharemodal, SetShareModal] = useState(false);
   let Bln = new Date().getMonth();
   let Bln1 = 0;
@@ -104,13 +110,14 @@ export default function CityDetail(props) {
   } else {
     Bln1 = Bln + 1;
   }
-  // let Bln1 = Bln + 1;
   let years = new Date().getFullYear();
 
   let datenow = years + "-" + Bln1;
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(1).fill(0));
+  const routes = useSelector((data) => data.city.packageDetail.tab);
+  const dataevent = useSelector((data) => data.city.packageDetail.event);
+  const list_journal = useSelector((data) => data.city.journalCity);
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -212,14 +219,18 @@ export default function CityDetail(props) {
   };
 
   useEffect(() => {
-    refreshData();
-    setTimeout(() => {
-      setLoadings(false);
-    }, 4000);
-    const Journalitinerarydata = props.navigation.addListener("focus", () => {
+    // refreshData();
+    if (listCity?.id !== props.route.params?.data?.city_id) {
+      setLoadings(true);
+      getPackageDetail();
       getJournalCity();
-      getItineraryCity;
-    });
+    }
+    getItineraryCity();
+
+    const Journalitinerarydata = props.navigation.addListener(
+      "focus",
+      () => {}
+    );
     return Journalitinerarydata;
   }, [props.navigation, tokenApps]);
 
@@ -252,13 +263,13 @@ export default function CityDetail(props) {
     };
   }, [routes, tabIndex]);
 
-  const refreshData = async () => {
-    await getPackageDetail();
-    await getJournalCity();
-    await getItineraryCity();
-  };
+  // const refreshData = async () => {
+  //   await getPackageDetail();
+  //   await getJournalCity();
+  //   await getItineraryCity();
+  // };
 
-  let [listCity, setListCity] = useState([]);
+  // let [listCity, setListCity] = useState([]);
 
   const [
     getPackageDetail,
@@ -275,10 +286,9 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: async () => {
-      await setListCity(dataCity?.CitiesInformation);
       let tab = [{ key: "general", title: "General" }];
 
-      await dataCity?.CitiesInformation?.article_header.map((item, index) => {
+      await dataCity.CitiesInformation?.article_header.map((item, index) => {
         tab.push({
           key: item.title,
           title: item.titlloadingCitye,
@@ -286,18 +296,19 @@ export default function CityDetail(props) {
         });
       });
 
-      await setRoutes(tab);
       let loop = 0;
       let eventavailable = [];
-      if (dataCity?.CitiesInformation?.event) {
-        dataCity?.CitiesInformation?.event.map((item, index) => {
+      if (dataCity.CitiesInformation?.event) {
+        dataCity.CitiesInformation?.event.map((item, index) => {
           if (item.month == datenow) {
             eventavailable = item;
           }
         });
       }
-      await setdataevent(eventavailable);
-      await getJournalCity();
+      dispatch(
+        setPackageCity([dataCity.CitiesInformation, tab, eventavailable])
+      );
+      setLoadings(false);
     },
   });
 
@@ -312,7 +323,7 @@ export default function CityDetail(props) {
     }
   };
 
-  let [list_journal, setList_journal] = useState({});
+  // let [list_journal, setList_journal] = useState({});
   const [
     getJournalCity,
     { loading: loadingjournal, data: dataJournal, error: errorjournal },
@@ -328,18 +339,19 @@ export default function CityDetail(props) {
       },
     },
     onCompleted: () => {
-      setList_journal(dataJournal?.journal_by_city);
+      dispatch(setJournalCity(dataJournal?.journal_by_city));
     },
   });
 
-  let [list_populer, setList_populer] = useState({});
+  // let [list_populer, setList_populer] = useState({});
+  const list_populer = useSelector((data) => data.city.itineraryCity);
   const [
     getItineraryCity,
     { loading: loadingitinerary, data: dataItinerary, error: errorItinerary },
   ] = useLazyQuery(CityItinerary, {
     fetchPolicy: "network-only",
     variables: {
-      id: props.route.params.data.city_id,
+      city_id: props.route.params.data.city_id,
     },
     context: {
       headers: {
@@ -347,8 +359,8 @@ export default function CityDetail(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
-      setList_populer(dataItinerary?.itinerary_populer_by_city);
+    onCompleted: async () => {
+      dispatch(setItineraryCity(dataItinerary?.itinerary_populer_by_city));
     },
   });
 
@@ -497,7 +509,12 @@ export default function CityDetail(props) {
 
   // liked journal
   const _likedjournal = async (id, index, item) => {
-    let fiindex = await list_journal.findIndex((k) => k["id"] === id);
+    // let fiindex = await list_journal.findIndex((k) => k["id"] === id);
+    // let journalLiked = list_journal[fiindex];
+    // journalLiked.liked = true;
+    // let tempJournal = list_journal;
+    // tempJournal[fiindex] = journalLiked
+
     if (tokenApps) {
       try {
         let response = await mutationlikedJournal({
@@ -695,10 +712,7 @@ export default function CityDetail(props) {
   // RenderGeneral
   const RenderGeneral = ({}) => {
     let render = [];
-    render =
-      dataCity && dataCity?.CitiesInformation
-        ? dataCity?.CitiesInformation
-        : null;
+    render = listCity ? listCity : null;
 
     let renderjournal = [];
     renderjournal = list_journal;
@@ -1251,7 +1265,7 @@ export default function CityDetail(props) {
             >
               {renderjournal ? (
                 <ImageSlider
-                  key={"imagesliderjournalsdsd"}
+                  // key={"imagesliderjournalsdsd"}
                   images={renderjournal ? spreadData(renderjournal) : []}
                   style={{
                     borderTopLeftRadius: 5,
@@ -1939,14 +1953,14 @@ export default function CityDetail(props) {
                   flexDirection: "row",
                 }}
               >
-                {}
                 {render?.event
                   ? render?.event.map((item, index) => {
                       return (
                         <Ripple
                           key={"keyevent1" + index}
                           onPress={() => {
-                            setdataevent(item);
+                            // dispatch(item);
+                            dispatch(setPackageCity([listCity, routes, item]));
                           }}
                           style={{
                             backgroundColor:
@@ -2060,7 +2074,7 @@ export default function CityDetail(props) {
                 props={props}
                 token={tokenApps}
                 setting={settingApps}
-                setData={(e) => setList_populer(e)}
+                setData={(e) => dispatch(setItineraryCity(e))}
               />
             ) : null}
           </View>
@@ -2343,7 +2357,7 @@ export default function CityDetail(props) {
   const renderHeader = () => {
     const y = scrollY.interpolate({
       inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 55],
+      outputRange: [0, -HeaderHeight + 50],
       extrapolateRight: "clamp",
       // extrapolate: 'clamp',
     });
@@ -2353,7 +2367,7 @@ export default function CityDetail(props) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: deviceId == "LYA-L29" ? 0 : 4,
+          top: deviceId == "LYA-L29" ? 0 : 0,
           height: HeaderHeight - 4,
           width: "100%",
           alignItems: "center",
@@ -2380,7 +2394,7 @@ export default function CityDetail(props) {
           setClose={(e) => setshowside(false)}
         />
 
-        <Animated.Image
+        {/* <Animated.Image
           style={{
             width: "100%",
             height: "82%",
@@ -2389,10 +2403,21 @@ export default function CityDetail(props) {
             transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataCity && dataCity?.CitiesInformation?.cover
-              ? { uri: dataCity?.CitiesInformation?.cover }
-              : default_image
+            listCity && listCity.cover ? { uri: listCity.cover } : default_image
           }
+        /> */}
+        <FastImage
+          style={{
+            width: "100%",
+            height: "82%",
+            resizeMode: "cover",
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
+          }}
+          source={
+            listCity && listCity.cover ? { uri: listCity.cover } : default_image
+          }
+          resizeMode={FastImage.resizeMode.cover}
         />
         <Animated.View
           style={{
@@ -2403,8 +2428,8 @@ export default function CityDetail(props) {
             justifyContent: "flex-end",
             alignItems: "center",
             alignContent: "center",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <View
@@ -2427,7 +2452,7 @@ export default function CityDetail(props) {
                 }}
               >
                 <Text size="header" type="black" numberOfLines={1}>
-                  {dataCity?.CitiesInformation?.name}
+                  {listCity?.name}
                 </Text>
               </View>
 
@@ -2449,9 +2474,7 @@ export default function CityDetail(props) {
                 >
                   <PinHijau height={14} width={14} />
                   <Text size="label" type="regular" style={{ marginLeft: 5 }}>
-                    {dataCity && dataCity?.CitiesInformation
-                      ? dataCity?.CitiesInformation?.countries?.name
-                      : "-"}
+                    {listCity ? listCity.countries.name : "-"}
                   </Text>
                 </View>
                 <View
@@ -2474,10 +2497,7 @@ export default function CityDetail(props) {
                       {t("cityof") +
                         " " +
                         Capital({
-                          text:
-                            dataCity && dataCity?.CitiesInformation
-                              ? dataCity?.CitiesInformation.province.name
-                              : "-",
+                          text: listCity ? listCity.province.name : "-",
                         })}
                       {/* <Truncate
                         text={
@@ -2504,10 +2524,7 @@ export default function CityDetail(props) {
                     >
                       {t("cityof")}{" "}
                       {Capital({
-                        text:
-                          dataCity && dataCity?.CitiesInformation
-                            ? dataCity?.CitiesInformation?.province.name
-                            : "-",
+                        text: listCity ? listCity.province.name : "-",
                       })}
                       {/* <Truncate
                         text={
@@ -2561,7 +2578,7 @@ export default function CityDetail(props) {
             alignItems: "center",
             alignContent: "center",
             opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -2825,7 +2842,7 @@ export default function CityDetail(props) {
 
   /// Skeletonanimated
 
-  let [loadings, setLoadings] = useState(true);
+  let [loadings, setLoadings] = useState(loadingCity);
 
   return (
     <>
@@ -2838,7 +2855,7 @@ export default function CityDetail(props) {
               height: Dimensions.get("screen").height,
               position: "absolute",
               backgroundColor: "#FFF",
-              zIndex: 1000000,
+              zIndex: 100,
               justifyContent: "center",
               alignItems: "center",
             }}
@@ -3044,7 +3061,7 @@ export default function CityDetail(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                idcity: dataCity?.CitiesInformation?.id,
+                idcity: listCity?.id,
                 searchInput: "",
                 locationname: listCity.name,
                 aktifsearch: true,
@@ -3089,12 +3106,27 @@ export default function CityDetail(props) {
           </TouchableOpacity>
         </Animated.View>
 
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" && Notch ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
+
         {/* jika scrollheader, animated show */}
         <Animated.View
           style={{
             position: "absolute",
+            // top: -50,
             top: 0,
-            zIndex: 9999,
+            zIndex: 99,
             opacity: hide.current,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -3139,7 +3171,7 @@ export default function CityDetail(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                idcity: dataCity?.CitiesInformation?.id,
+                idcity: listCity.id,
                 searchInput: "",
                 locationname: listCity.name,
                 aktifsearch: true,
@@ -3290,11 +3322,10 @@ export default function CityDetail(props) {
                         screen: "SendToChat",
                         params: {
                           dataSend: {
-                            id: dataCity?.CitiesInformation?.id,
-                            cover: dataCity?.CitiesInformation?.cover,
-                            name: dataCity?.CitiesInformation?.name,
-                            description:
-                              dataCity?.CitiesInformation?.description,
+                            id: listCity.id,
+                            cover: listCity.cover,
+                            name: listCity.name,
+                            description: listCity.description,
                           },
                           title: "City",
                           tag_type: "tag_city",
@@ -3321,7 +3352,7 @@ export default function CityDetail(props) {
                 onPress={() => {
                   shareAction({
                     from: "city",
-                    target: dataCity?.CitiesInformation.id,
+                    target: listCity.id,
                   });
                   SetShareModal(false);
                 }}
@@ -3343,7 +3374,7 @@ export default function CityDetail(props) {
                 onPress={() => {
                   CopyLink({
                     from: "city",
-                    target: dataCity?.CitiesInformation.id,
+                    target: listCity.id,
                     success: t("successCopyLink"),
                     failed: t("failedCopyLink"),
                   });
