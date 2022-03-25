@@ -76,11 +76,11 @@ export default function SearchPg(props, { navigation, route }) {
 
   const myStateRef = React.useRef(aktifsearch);
   const fromotherpage = React.useRef(
-    searchRdx.aktifsearch ?? props.route.params?.aktifsearch ?? null
+    searchRdx?.aktifsearch ?? props.route.params?.aktifsearch ?? null
   );
   let [recent, setRecent] = useState([]);
   let [aktifsearch, setAktifSearch] = useState(
-    searchRdx.aktifsearch ?? props.route.params.aktifsearch ?? null
+    searchRdx?.aktifsearch ?? props.route.params?.aktifsearch ?? null
   );
 
   let { width, height } = Dimensions.get("screen");

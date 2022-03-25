@@ -75,7 +75,9 @@ import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlik
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { Props } from "react-native-image-zoom-viewer/built/image-viewer.type";
 import DeviceInfo from "react-native-device-info";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
+import { setPackageProvince } from "../../../redux/action";
 
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
@@ -110,16 +112,20 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function ProvinceDetail(props) {
+  console.log("props", props.route.params.data);
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
   const token = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
   const [modalLogin, setModalLogin] = useState(false);
   let [search, setTextc] = useState("");
   let [showside, setshowside] = useState(false);
-  let [dataevent, setdataevent] = useState({ event: [], month: "" });
+  // let [dataevent, setdataevent] = useState({ event: [], month: "" });
+  const dataevent = useSelector((data) => data.province.packageDetail.event);
 
   const [tabIndex, setIndex] = useState(0);
-  const [routes, setRoutes] = useState(Array(1).fill(0));
+  // const [routes, setRoutes] = useState(Array(1).fill(0));
+  const routes = useSelector((data) => data.province.packageDetail.tab);
   const [canScroll, setCanScroll] = useState(true);
   const [tabGeneral] = useState(Array(1).fill(0));
   const [tab2Data] = useState(Array(1).fill(0));
@@ -218,12 +224,14 @@ export default function ProvinceDetail(props) {
   };
 
   useEffect(() => {
-    refreshData();
-
-    const Journaldata = props.navigation.addListener("focus", () => {
+    if (lisProvince?.id !== props.route.params.data.id) {
+      setLoadings(true);
+      getPackageDetail();
       getJournalCity();
-      getItineraryCity;
-    });
+    }
+    getItineraryCity();
+
+    const Journaldata = props.navigation.addListener("focus", () => {});
     return Journaldata;
   }, [props.navigation, token]);
 
@@ -256,13 +264,10 @@ export default function ProvinceDetail(props) {
     };
   }, [routes, tabIndex]);
 
-  const refreshData = async () => {
-    await getPackageDetail();
-    await getJournalCity();
-    await getItineraryCity();
-  };
-
-  let [lisProvince, setlisProvince] = useState([]);
+  // let [lisProvince, setlisProvince] = useState([]);
+  const lisProvince = useSelector(
+    (data) => data.province.packageDetail.listProvince
+  );
 
   // get detail province
   const [
@@ -280,7 +285,7 @@ export default function ProvinceDetail(props) {
       },
     },
     onCompleted: () => {
-      setlisProvince(dataProvince?.province_detail_v2);
+      // setlisProvince(dataProvince?.province_detail_v2);
       let tab = [{ key: "general", title: "General" }];
 
       dataProvince?.province_detail_v2.article_header.map((item, index) => {
@@ -291,7 +296,7 @@ export default function ProvinceDetail(props) {
         });
       });
 
-      setRoutes(tab);
+      // setRoutes(tab);
 
       let loop = 0;
       let eventavailable = [];
@@ -302,7 +307,15 @@ export default function ProvinceDetail(props) {
           }
         });
       }
-      setdataevent(eventavailable);
+
+      dispatch(
+        setPackageProvince([
+          dataProvince?.province_detail_v2,
+          tab,
+          eventavailable,
+        ])
+      );
+      setLoadings(false);
     },
   });
 
@@ -376,7 +389,7 @@ export default function ProvinceDetail(props) {
   ] = useLazyQuery(ItineraryProvince, {
     fetchPolicy: "network-only",
     variables: {
-      id: props.route.params.data.isListGliding,
+      province_id: props.route.params.data.id,
     },
     context: {
       headers: {
@@ -390,6 +403,7 @@ export default function ProvinceDetail(props) {
   if (dataItinerary && dataItinerary.itinerary_populer_by_province) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
+  console.log("list_populer", dataItinerary, errorItinerary);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -708,10 +722,7 @@ export default function ProvinceDetail(props) {
   // RenderGeneral
   const RenderGeneral = ({}) => {
     let render = [];
-    render =
-      dataProvince && dataProvince?.province_detail_v2
-        ? dataProvince?.province_detail_v2
-        : null;
+    render = lisProvince ? lisProvince : null;
 
     let renderjournal = [];
     renderjournal = list_journal;
@@ -1939,7 +1950,9 @@ export default function ProvinceDetail(props) {
                         <Ripple
                           key={"keyevent1" + index}
                           onPress={() => {
-                            setdataevent(item);
+                            dispatch(
+                              setPackageProvince([lisProvince, routes, item])
+                            );
                           }}
                           style={{
                             backgroundColor:
@@ -2759,7 +2772,7 @@ export default function ProvinceDetail(props) {
         //   style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: deviceId == "LYA-L29" ? 0 : 3,
+          top: deviceId == "LYA-L29" ? 0 : 0,
           height: HeaderHeight - 3,
           width: "100%",
           alignItems: "center",
@@ -2786,19 +2799,20 @@ export default function ProvinceDetail(props) {
           setClose={(e) => setshowside(false)}
         />
 
-        <Animated.Image
+        <FastImage
           style={{
             width: "100%",
             height: "82%",
             resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
           source={
-            dataProvince && dataProvince?.province_detail_v2.cover
-              ? { uri: dataProvince?.province_detail_v2.cover }
+            lisProvince && lisProvince.cover
+              ? { uri: lisProvince.cover }
               : default_image
           }
+          resizeMode={FastImage.resizeMode.cover}
         />
         <Animated.View
           style={{
@@ -2809,8 +2823,8 @@ export default function ProvinceDetail(props) {
             justifyContent: "flex-end",
             alignItems: "center",
             alignContent: "center",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <View
@@ -2828,12 +2842,10 @@ export default function ProvinceDetail(props) {
               }}
             >
               <Text size="title" type="bold">
-                {dataProvince && dataProvince?.province_detail_v2 ? (
+                {lisProvince && lisProvince ? (
                   <Truncate
                     text={Capital({
-                      text: dataProvince?.province_detail_v2?.name
-                        ? dataProvince?.province_detail_v2?.name
-                        : "",
+                      text: lisProvince.name ? lisProvince.name : "",
                     })}
                     length={20}
                   ></Truncate>
@@ -2858,9 +2870,7 @@ export default function ProvinceDetail(props) {
                 >
                   <PinHijau height={12} width={12} />
                   <Text size="label" type="regular" style={{ marginLeft: 10 }}>
-                    {dataProvince && dataProvince?.province_detail_v2
-                      ? dataProvince?.province_detail_v2?.countries?.name
-                      : "-"}
+                    {lisProvince ? lisProvince?.countries?.name : "-"}
                   </Text>
                 </View>
               </View>
@@ -2920,7 +2930,7 @@ export default function ProvinceDetail(props) {
             alignItems: "center",
             alignContent: "center",
             opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <Pressable
@@ -3181,13 +3191,13 @@ export default function ProvinceDetail(props) {
     });
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoadings(false);
+  //   }, 2000);
+  // }, []);
 
-  let [loadings, setLoadings] = useState(true);
+  let [loadings, setLoadings] = useState(loadingProvince);
 
   return (
     <>
@@ -3405,7 +3415,7 @@ export default function ProvinceDetail(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                province_id: dataProvince?.province_detail_v2?.id,
+                province_id: lisProvince.id,
                 searchInput: "",
                 locationname: lisProvince?.name,
                 aktifsearch: true,
@@ -3473,6 +3483,20 @@ export default function ProvinceDetail(props) {
         </Button> */}
         </Animated.View>
 
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" && Notch ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
+
         {/* jika scrollheader, animated show */}
         <Animated.View
           style={{
@@ -3521,7 +3545,7 @@ export default function ProvinceDetail(props) {
           <TouchableOpacity
             onPress={(x) =>
               props.navigation.push("SearchPg", {
-                province_id: dataProvince?.province_detail_v2?.id,
+                province_id: lisProvince.id,
                 searchInput: "",
                 locationname: lisProvince?.name,
                 aktifsearch: true,
@@ -3663,11 +3687,10 @@ export default function ProvinceDetail(props) {
                         screen: "SendToChat",
                         params: {
                           dataSend: {
-                            id: dataProvince?.province_detail_v2?.id,
-                            cover: dataProvince?.province_detail_v2?.cover,
-                            name: dataProvince?.province_detail_v2?.name,
-                            description:
-                              dataProvince?.province_detail_v2?.description,
+                            id: lisProvince.id,
+                            cover: lisProvince.cover,
+                            name: lisProvince.name,
+                            description: lisProvince.description,
                           },
                           title: t("province"),
                           tag_type: "tag_province",
