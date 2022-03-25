@@ -121,6 +121,15 @@ export default function Invitation({
     },
   });
 
+  const Refresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetchnotif();
+    wait(1000).then(() => {
+      setRefreshing(false);
+      // refetchnotif();
+    });
+  }, []);
+
   const [mutationAllIsRead] = useMutation(IsReadAll, {
     context: {
       headers: {
@@ -514,14 +523,6 @@ export default function Invitation({
       setTimeout(resolve, timeout);
     });
   };
-
-  const Refresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(1000).then(() => {
-      setRefreshing(false);
-      refetchnotif();
-    });
-  }, []);
 
   const [setting, setSetting] = useState(null);
 
