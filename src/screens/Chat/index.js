@@ -87,11 +87,11 @@ export default function Message({ navigation, route }) {
     tabBarBadge: null,
     tabBarLabel: "Message",
     headerTintColor: "white",
-    headerTitle: (
-      <Text style={{ color: "#fff" }} size="header" type="bold">
-        {t("Message")}
-      </Text>
-    ),
+    // headerTitle: (
+    //   <Text style={{ color: "#fff" }} size="header" type="bold">
+    //     {t("Message")}
+    //   </Text>
+    // ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
@@ -141,14 +141,9 @@ export default function Message({ navigation, route }) {
     cek_koneksi();
   }, [connection_check]);
 
-  // const socket = useRef(null);
-
-  useEffect(() => {
-    navigation.setOptions(HeaderComponent);
-  }, [navigation]);
-
   useEffect(() => {
     getUserAndToken();
+    navigation.setOptions(HeaderComponent);
     navigation.addListener("focus", () => {
       if (dataRes.length == 0 || dataRes.length == 0) {
         getUserAndToken();
