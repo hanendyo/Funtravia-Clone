@@ -39,7 +39,7 @@ import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
 
 export default function CreateCustom(props) {
-  console.log("props", props);
+
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const deviceId = DeviceInfo.getModel();

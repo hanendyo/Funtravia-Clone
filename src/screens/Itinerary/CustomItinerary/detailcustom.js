@@ -52,6 +52,10 @@ import normalize from "react-native-normalize";
 import moment from "moment";
 import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
+import {
+  dateFormatHari,
+  dateFormats,
+} from "../../../component/src/dateformatter";
 
 export default function detailCustomItinerary(props) {
   console.log("props", props);
@@ -325,13 +329,82 @@ export default function detailCustomItinerary(props) {
           var order = 1;
           for (var y in Xdata) {
             Xdata[y].order = order;
-
             if (Xdata[y - 1]) {
+              // longitude & latitude index sebelum custom
+              let LongBefore = Xdata[y - 1].longitude;
+              let LatBefore = Xdata[y - 1].latitude;
+              // longitude & latitude index custom
+              let LongCurrent = Xdata[y].longitude;
+              let LatCurrent = Xdata[y].latitude;
+              if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+                var newtime = Xdata[y - 1].time;
+              } else {
+                // rumus hitung jarak
+                let jarak = Distance({
+                  lat1: LatBefore,
+                  lon1: LongBefore,
+                  lat2: LatCurrent,
+                  lon2: LongCurrent,
+                  unit: "km",
+                });
+                // rumus hitung waktu
+                let waktutemp = jarak / 50;
+                let waktu = waktutemp + "";
+                // pecah hasil waktu
+                let split = waktu.split(".");
+
+                let jamtemp = "";
+                let menittemp = "";
+
+                if (split[0] > 1) {
+                  jamtemp = split[1];
+                  if (split[1] > 0 && split[1] < 60) {
+                    menittemp = split[1];
+                  } else {
+                    jamtemp = split[0] + 1;
+                    menittemp = split[1] - 60;
+                  }
+                } else {
+                  if (waktu > 0.6) {
+                    jamtemp = 1;
+                    menittemp = split[1] - 60;
+                  } else {
+                    jamtemp = 0;
+                    menittemp = split[1];
+                  }
+                }
+                let time = Xdata[y - 1].time;
+                let splittime = time.split(":");
+                // let durasitemp = `${jamtemp}:${menittemp}`;
+                let durationold = Xdata[y - 1].duration;
+                let splitdurations = durationold.split(":");
+
+                //menit total untuk mendapatkan menit yang lebih dari 59
+                let menitotal =
+                  parseFloat(splittime[1]) +
+                  parseFloat(splitdurations[1]) +
+                  parseFloat(menittemp);
+
+                let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+                let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+                var newtime =
+                  menitotal > 59
+                    ? `${newjam + 1}:${newmenit - 60}`
+                    : `${newjam}:${newmenit}`;
+              }
+
               Xdata[y].time = hitungDuration({
-                startt: Xdata[y - 1].time,
+                startt: newtime,
                 dur: Xdata[y - 1].duration,
               });
+              // tmpData.push(order);
             }
+            // if (Xdata[y - 1]) {
+            //   Xdata[y].time = hitungDuration({
+            //     startt: Xdata[y - 1].time,
+            //     dur: Xdata[y - 1].duration,
+            //   });
+            // }
             x++;
             order++;
           }
@@ -1061,6 +1134,7 @@ export default function detailCustomItinerary(props) {
       setModalMore(false);
     }
   };
+  console.log("dataChild", dataChildEdit);
 
   const handleEditChild = () => {
     if (dataChildEdit.detail_flight) {
@@ -1096,10 +1170,10 @@ export default function detailCustomItinerary(props) {
         attachment: dataChildEdit.attachment,
         latitude: dataChildEdit.latitude,
         longitude: dataChildEdit.longitude,
-        startDate: dataChildEdit.route.params.startDate,
-        endDate: dataChildEdit.route.params.endDate,
-        order: dataChildEdit.route.params.indexdata,
-        time: dataChildEdit.route.params.time,
+        startDate: dataChildEdit.detail_accomodation.checkin,
+        endDate: dataChildEdit.detail_accomodation.checkout,
+        order: dataChildEdit.index,
+        time: dataChildEdit.time,
         note: dataChildEdit.note,
       }),
         setmodalMoreChild(false);
@@ -1320,9 +1394,12 @@ export default function detailCustomItinerary(props) {
   };
 
   const bukamodalmenuchild = (item) => {
+    console.log("item", item);
     setdataChildEdit(item);
     setmodalMoreChild(true);
   };
+
+  // console.log("dataChild", dataChild);
 
   return (
     <View
@@ -1402,6 +1479,7 @@ export default function detailCustomItinerary(props) {
                 marginTop: 15,
                 marginLeft: 15,
                 borderRadius: 5,
+
                 backgroundColor: "#fff",
                 elevation: 3,
                 shadowColor: "#d3d3d3",
@@ -1414,6 +1492,7 @@ export default function detailCustomItinerary(props) {
                 style={{
                   flexDirection: "row",
                   paddingHorizontal: 15,
+
                   paddingVertical: 10,
                   borderBottomColor: "#f1f1f1",
                   borderBottomWidth: 0.5,
@@ -1503,73 +1582,268 @@ export default function detailCustomItinerary(props) {
                   borderBottomWidth: item.notes ? 0.5 : 0,
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                  }}
-                >
+                {item.detail_flight || item.detail_accomodation ? (
                   <View
                     style={{
-                      marginRight: 40,
+                      paddingVertical: 10,
+
+                      borderBottomColor: "#f1f1f1",
+                      borderBottomWidth: 0.5,
                     }}
                   >
-                    <Text>{t("duration")} :</Text>
-                    <View
-                      style={{
-                        marginTop: 10,
-                        //   width: "80%",
-                        paddingVertical: 5,
-                        paddingHorizontal: 10,
-                        backgroundColor: "#daf0f2",
-                        borderRadius: 5,
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text type="bold">
-                        {Getdurasi(item.duration ? item.duration : "00:00:00")}
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <Text>{t("time")} :</Text>
-                    <View
-                      style={{
-                        marginTop: 10,
-                        //   width: "80%",
-                        paddingVertical: 5,
-                        paddingHorizontal: 10,
-                        backgroundColor: "#daf0f2",
-                        borderRadius: 5,
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity>
-                        {item.time ? (
-                          <GetStartTime startt={item.time} />
-                        ) : (
-                          <Text size="description" type="bold">
-                            00:00
+                    {item.detail_flight ? (
+                      <View style={styles.ViewDepArr}>
+                        <View style={styles.DepArrContainer}>
+                          <Text type="light">{t("Departure")}</Text>
+                          <Text type="bold">
+                            {dateFormatHari(
+                              item.detail_flight.departure.split(" ")[0]
+                            )}
+                            {", "}
+                            {dateFormats(
+                              item.detail_flight.departure.split(" ")[0]
+                            )}
                           </Text>
-                        )}
-                      </TouchableOpacity>
+                          {/* <Text type="bold">
+                        {dataParent.detail_flight.departure
+                          .split(" ")[1]
+                          .substring(0, 5)}
+                      </Text> */}
+                          {item.time ? (
+                            <GetStartTime startt={dataParent.time} />
+                          ) : (
+                            <Text size="description" type="bold">
+                              00:00
+                            </Text>
+                          )}
+                        </View>
+                        <View style={styles.DepArrContainer}>
+                          <Text type="light">{t("Arrival")}</Text>
+                          <Text type="bold">
+                            {dateFormatHari(
+                              item.detail_flight.arrival.split(" ")[0]
+                            )}
+                            {", "}
+                            {dateFormats(
+                              item.detail_flight.arrival.split(" ")[0]
+                            )}
+                          </Text>
+                          {/* <Text type="bold">
+                        {dataParent.detail_flight.arrival
+                          .split(" ")[1]
+                          .substring(0, 5)}
+                      </Text> */}
+                          {item.duration ? (
+                            <GetEndTime
+                              startt={item.time ? item.time : "00:00"}
+                              dur={item.duration ? item.duration : "00:00"}
+                            />
+                          ) : (
+                            <Text size="description" type="bold">
+                              00:00
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={styles.ViewDepArr}>
+                        <View style={styles.CheckContainer}>
+                          <Text type="light">{t("checkIn")}</Text>
+                          <Text type="bold">
+                            {dateFormatHari(
+                              item.detail_accomodation.checkin.split(" ")[0]
+                            )}
+                            {", "}
+                            {dateFormats(
+                              item.detail_accomodation.checkin.split(" ")[0]
+                            )}
+                          </Text>
+                        </View>
+                        <View style={styles.CheckContainer}>
+                          <Text type="light">{t("checkOut")}</Text>
+                          <Text type="bold">
+                            {dateFormatHari(
+                              item.detail_accomodation.checkout.split(" ")[0]
+                            )}
+                            {", "}
+                            {dateFormats(
+                              item.detail_accomodation.checkout.split(" ")[0]
+                            )}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                    {item.detail_flight ? (
+                      <>
+                        <View style={styles.FlightContainerMap}>
+                          <View
+                            style={{
+                              justifyContent: "space-between",
+                              width: "85%",
+                            }}
+                          >
+                            <Text type="light" style={{ marginBottom: 3 }}>
+                              {t("From")}
+                            </Text>
+                            <Text type="bold">{item.detail_flight.from}</Text>
+                          </View>
+                          <TouchableOpacity
+                            onPress={() => {
+                              Linking.openURL(
+                                Platform.OS == "ios"
+                                  ? `maps:0,0?q=${item.detail_flight.from}@${item.detail_flight?.latitude_departure},${item.detail_flight?.longitude_departure}`
+                                  : `geo:0,0?q=${item.detail_flight?.latitude_departure},${item.detail_flight?.longitude_departure}(${item.detail_flight.from})`
+                              );
+                            }}
+                            style={{ alignSelf: "center", marginHorizontal: 5 }}
+                          >
+                            <PinMapGreen width={30} height={30} />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.FlightContainerMap}>
+                          <View
+                            style={{
+                              justifyContent: "space-between",
+                              width: "85%",
+                            }}
+                          >
+                            <Text type="light" style={{ marginBottom: 3 }}>
+                              {t("To")}
+                            </Text>
+                            <Text type="bold">
+                              {item.detail_flight.destination}
+                            </Text>
+                          </View>
+                          <TouchableOpacity
+                            onPress={() => {
+                              Linking.openURL(
+                                Platform.OS == "ios"
+                                  ? `maps:0,0?q=${item.detail_flight.destination}@${item.detail_flight?.latitude_arrival},${item.detail_flight?.longitude_arrival}`
+                                  : `geo:0,0?q=${item.detail_flight?.latitude_arrival},${item.detail_flight?.longitude_arrival}(${item.detail_flight.destination})`
+                              );
+                            }}
+                            style={{ alignSelf: "center", marginHorizontal: 5 }}
+                          >
+                            <PinMapGreen width={30} height={30} />
+                          </TouchableOpacity>
+                        </View>
+                      </>
+                    ) : null}
 
-                      <TouchableOpacity>
-                        {item.duration ? (
-                          <GetEndTime
-                            startt={item.time ? item.time : "00:00"}
-                            dur={item.duration ? item.duration : "00:00"}
-                          />
-                        ) : (
-                          <Text size="description" type="bold">
-                            00:00
-                          </Text>
-                        )}
-                      </TouchableOpacity>
+                    {item?.detail_flight ? (
+                      <View style={styles.FlightContainer}>
+                        <Text type="light">{t("PassengerName")}</Text>
+                        <Text type="bold">
+                          {item?.detail_flight?.guest_name
+                            ? item?.detail_flight?.guest_name
+                            : "-"}
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    {item?.detail_accomodation ? (
+                      <View style={styles.FlightContainer}>
+                        <Text type="light">{t("Guest Name")}</Text>
+                        <Text type="bold">
+                          {item?.detail_accomodation?.guest_name
+                            ? item?.detail_accomodation?.guest_name
+                            : "-"}
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    {item?.detail_flight ? (
+                      <View style={styles.FlightContainer}>
+                        <Text type="light">{t("bookingRef")}</Text>
+                        <Text type="bold">
+                          {item?.detail_flight?.booking_ref
+                            ? item?.detail_flight?.booking_ref
+                            : "-"}
+                        </Text>
+                      </View>
+                    ) : null}
+                    {item?.detail_accomodation ? (
+                      <View style={styles.FlightContainer}>
+                        <Text type="light">{t("bookingRef")}</Text>
+                        <Text type="bold">
+                          {item?.detail_accomodation?.booking_ref
+                            ? item?.detail_accomodation?.booking_ref
+                            : "-"}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                    }}
+                  >
+                    <View
+                      style={{
+                        marginRight: 40,
+                      }}
+                    >
+                      <Text>{t("duration")} :</Text>
+                      <View
+                        style={{
+                          marginTop: 10,
+                          //   width: "80%",
+                          paddingVertical: 5,
+                          paddingHorizontal: 10,
+                          backgroundColor: "#daf0f2",
+                          borderRadius: 5,
+                          alignContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text type="bold">
+                          {Getdurasi(
+                            item.duration ? item.duration : "00:00:00"
+                          )}
+                        </Text>
+                      </View>
+                    </View>
+                    <View>
+                      <Text>{t("time")} :</Text>
+                      <View
+                        style={{
+                          marginTop: 10,
+                          //   width: "80%",
+                          paddingVertical: 5,
+                          paddingHorizontal: 10,
+                          backgroundColor: "#daf0f2",
+                          borderRadius: 5,
+                          alignContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <TouchableOpacity>
+                          {item.time ? (
+                            <GetStartTime startt={item.time} />
+                          ) : (
+                            <Text size="description" type="bold">
+                              00:00
+                            </Text>
+                          )}
+                        </TouchableOpacity>
+
+                        <TouchableOpacity>
+                          {item.duration ? (
+                            <GetEndTime
+                              startt={item.time ? item.time : "00:00"}
+                              dur={item.duration ? item.duration : "00:00"}
+                            />
+                          ) : (
+                            <Text size="description" type="bold">
+                              00:00
+                            </Text>
+                          )}
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </View>
+                )}
               </View>
 
               {item.note ? (
@@ -1851,7 +2125,13 @@ export default function detailCustomItinerary(props) {
                     <View style={styles.DepArrContainer}>
                       <Text type="light">{t("Departure")}</Text>
                       <Text type="bold">
-                        {dataParent.detail_flight.departure.split(" ")[0]}
+                        {dateFormatHari(
+                          dataParent.detail_flight.departure.split(" ")[0]
+                        )}
+                        {", "}
+                        {dateFormats(
+                          dataParent.detail_flight.departure.split(" ")[0]
+                        )}
                       </Text>
                       {/* <Text type="bold">
                         {dataParent.detail_flight.departure
@@ -1869,7 +2149,13 @@ export default function detailCustomItinerary(props) {
                     <View style={styles.DepArrContainer}>
                       <Text type="light">{t("Arrival")}</Text>
                       <Text type="bold">
-                        {dataParent.detail_flight.arrival.split(" ")[0]}
+                        {dateFormatHari(
+                          dataParent.detail_flight.arrival.split(" ")[0]
+                        )}
+                        {", "}
+                        {dateFormats(
+                          dataParent.detail_flight.arrival.split(" ")[0]
+                        )}
                       </Text>
                       {/* <Text type="bold">
                         {dataParent.detail_flight.arrival
@@ -1895,13 +2181,25 @@ export default function detailCustomItinerary(props) {
                     <View style={styles.CheckContainer}>
                       <Text type="light">{t("checkIn")}</Text>
                       <Text type="bold">
-                        {dataParent.detail_accomodation.checkin.split(" ")[0]}
+                        {dateFormatHari(
+                          dataParent.detail_accomodation.checkin.split(" ")[0]
+                        )}
+                        {", "}
+                        {dateFormats(
+                          dataParent.detail_accomodation.checkin.split(" ")[0]
+                        )}
                       </Text>
                     </View>
                     <View style={styles.CheckContainer}>
                       <Text type="light">{t("checkOut")}</Text>
                       <Text type="bold">
-                        {dataParent.detail_accomodation.checkout.split(" ")[0]}
+                        {dateFormatHari(
+                          dataParent.detail_accomodation.checkout.split(" ")[0]
+                        )}
+                        {", "}
+                        {dateFormats(
+                          dataParent.detail_accomodation.checkout.split(" ")[0]
+                        )}
                       </Text>
                     </View>
                   </View>
@@ -2445,6 +2743,7 @@ export default function detailCustomItinerary(props) {
               backgroundColor: "white",
               width: Dimensions.get("screen").width - 60,
               // paddingHorizontal: 20,
+
               borderRadius: 5,
             }}
           >

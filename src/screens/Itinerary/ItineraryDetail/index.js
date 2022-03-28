@@ -606,10 +606,10 @@ export default function ItineraryDetail(props) {
       ),
     });
     if (anggota !== -1) {
-      setAnggota("true");
+      setAnggota(true);
       return true;
     } else {
-      setAnggota("false");
+      setAnggota(false);
       return false;
     }
   };
@@ -1131,7 +1131,6 @@ export default function ItineraryDetail(props) {
 
     let AlertTime = parseFloat(splitLastTime[0]) + parseFloat(splitDuration[0]);
 
-    console.log("AlertTime", AlertTime);
     if (AlertTime <= 23) {
       let dataday = { ...datadayaktif };
 
@@ -1259,7 +1258,11 @@ export default function ItineraryDetail(props) {
       }
       if (response.data) {
         if (response.data.delete_activity.code !== 200) {
-          throw new Error(response.data.delete_activity.message);
+          console.log(
+            "Error Delete Activity",
+            response.data.delete_activity.message
+          );
+          // throw new Error(response.data.delete_activity.message);
         }
 
         var Xdata = [...dataList];
@@ -1361,7 +1364,11 @@ export default function ItineraryDetail(props) {
               }
               if (response.data) {
                 if (response.data.update_timeline.code !== 200) {
-                  throw new Error(response.data.update_timeline.message);
+                  console.log(
+                    "Error Save Time line pada delete activity",
+                    response.data.update_timeline.message
+                  );
+                  // throw new Error(response.data.update_timeline.message);
                 }
                 GetTimelin();
               }
@@ -2297,7 +2304,7 @@ export default function ItineraryDetail(props) {
                     }}
                   >
                     <Text size="small" type="bold" numberOfLines={1}>
-                      {Anggota === "true"
+                      {Anggota
                         ? t("you") +
                           " + " +
                           (parseFloat(
@@ -2324,7 +2331,7 @@ export default function ItineraryDetail(props) {
                     }}
                   >
                     <Text size="small" type="bold" numberOfLines={1}>
-                      {Anggota === "true"
+                      {Anggota
                         ? "You"
                         : datadetail?.itinerary_detail?.buddy[0]?.user
                             ?.first_name}
@@ -2420,7 +2427,7 @@ export default function ItineraryDetail(props) {
                 >
                   <TouchableOpacity
                     onPress={() =>
-                      status !== "saved" && Anggota === "true"
+                      status !== "saved" && Anggota
                         ? openModaldate(
                             index,
                             item.time ? item.time : "00:00:00",
@@ -2440,7 +2447,7 @@ export default function ItineraryDetail(props) {
 
                   <TouchableOpacity
                     onPress={() => {
-                      status !== "saved" && Anggota === "true"
+                      status !== "saved" && Anggota
                         ? openModaldate(
                             index,
                             item.time ? item.time : "00:00:00",
@@ -2788,7 +2795,7 @@ export default function ItineraryDetail(props) {
                     ) : null}
                   </TouchableOpacity>
                 </View>
-                {status !== "saved" && Anggota === "true" ? (
+                {status !== "saved" && Anggota ? (
                   <Button
                     size="small"
                     text=""
@@ -2941,7 +2948,7 @@ export default function ItineraryDetail(props) {
                 {item.note ? (
                   <TouchableOpacity
                     onPress={() =>
-                      status == "edit" && Anggota === "true"
+                      status == "edit" && Anggota
                         ? bukaModal(item.note, index)
                         : null
                     }
@@ -2962,10 +2969,10 @@ export default function ItineraryDetail(props) {
                       {item.note}
                     </Text>
                   </TouchableOpacity>
-                ) : status == "edit" && Anggota === "true" ? (
+                ) : status == "edit" && Anggota ? (
                   <TouchableOpacity
                     onPress={() =>
-                      status == "edit" && Anggota === "true"
+                      status == "edit" && Anggota
                         ? bukaModal(null, index)
                         : null
                     }
@@ -3127,35 +3134,38 @@ export default function ItineraryDetail(props) {
                 marginTop: 10,
               }}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.navigate("FeedStack", {
-                    screen: "Post",
-                    params: {
-                      id_album: item.id,
-                      id_itin: itineraryId,
-                      title_album: item.title,
+              {Anggota ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    props.navigation.navigate("FeedStack", {
+                      screen: "Post",
+                      params: {
+                        id_album: item.id,
+                        id_itin: itineraryId,
+                        title_album: item.title,
 
-                      album: "Itinerary",
-                    },
-                  });
-                }}
-                style={{
-                  alignContent: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#d0d0d0",
-                  alignItems: "center",
-                  width: tab2ItemSize,
-                  height: tab2ItemSize,
-                  borderWidth: item.posted.length < 1 ? 1 : 0,
-                  borderColor: "#d1d1d1",
+                        album: "Itinerary",
+                      },
+                    });
+                  }}
+                  style={{
+                    alignContent: "center",
+                    justifyContent: "center",
+                    backgroundColor: "#d0d0d0",
+                    alignItems: "center",
+                    width: tab2ItemSize,
+                    height: tab2ItemSize,
+                    borderWidth: item.posted.length < 1 ? 1 : 0,
+                    borderColor: "#d1d1d1",
 
-                  marginRight: 2.5,
-                  marginBottom: 2.5,
-                }}
-              >
-                <CameraIcon height={35} width={35} />
-              </TouchableOpacity>
+                    marginRight: 2.5,
+                    marginBottom: 2.5,
+                  }}
+                >
+                  <CameraIcon height={35} width={35} />
+                </TouchableOpacity>
+              ) : null}
+
               {item.posted.length > 0
                 ? item.posted.map((data, i) => {
                     return data.is_posted === true ? (
@@ -3294,7 +3304,7 @@ export default function ItineraryDetail(props) {
           ) : item.album.length - 1 > 0 ? (
             item.album.map((data, i) => {
               if (data.id === "camera") {
-                if (Anggota == "true") {
+                if (Anggota) {
                   return (
                     <TouchableOpacity
                       onPress={() => {
@@ -4230,7 +4240,7 @@ export default function ItineraryDetail(props) {
                         </Text>
                       </View>
                     ) : null}
-                    {status == "edit" && Anggota === "true" ? (
+                    {status == "edit" && Anggota ? (
                       <Button
                         size="small"
                         text=""
@@ -4255,7 +4265,7 @@ export default function ItineraryDetail(props) {
         />
         {route.key === "tab1" &&
         status === "edit" &&
-        Anggota === "true" &&
+        Anggota &&
         dataList &&
         dataList.length > 0 ? (
           <Animated.View
@@ -4658,7 +4668,7 @@ export default function ItineraryDetail(props) {
 
   const renderMenuBottom = (dta) => {
     switch (Anggota) {
-      case "true":
+      case true:
         return status && status === "saved" ? (
           tabIndex == 0 ? (
             <View
@@ -5045,7 +5055,7 @@ export default function ItineraryDetail(props) {
             </View>
           </View>
         );
-      case "false":
+      case false:
         return (
           <View
             style={{
@@ -7706,7 +7716,7 @@ export default function ItineraryDetail(props) {
                     height: "70%",
                   }}
                 >
-                  {Anggota === "true" && statusUsers == true ? (
+                  {Anggota && statusUsers == true ? (
                     <TouchableOpacity
                       style={{
                         flexDirection: "row",
@@ -7739,31 +7749,32 @@ export default function ItineraryDetail(props) {
                       </Text>
                     </TouchableOpacity>
                   ) : null}
-
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 5,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      setshowside(false), setmodalcover(true);
-                    }}
-                  >
-                    <Create height={20} width={20} />
-
-                    <Text
-                      size="label"
-                      type="regular"
+                  {Anggota ? (
+                    <TouchableOpacity
                       style={{
-                        marginLeft: 10,
+                        marginVertical: 5,
+                        flexDirection: "row",
+                        width: "100%",
+                        paddingVertical: 5,
+                        alignItems: "center",
+                      }}
+                      onPress={() => {
+                        setshowside(false), setmodalcover(true);
                       }}
                     >
-                      {t("EditCover")}
-                    </Text>
-                  </TouchableOpacity>
+                      <Create height={20} width={20} />
+
+                      <Text
+                        size="label"
+                        type="regular"
+                        style={{
+                          marginLeft: 10,
+                        }}
+                      >
+                        {t("EditCover")}
+                      </Text>
+                    </TouchableOpacity>
+                  ) : null}
 
                   <TouchableOpacity
                     style={{
@@ -7793,7 +7804,7 @@ export default function ItineraryDetail(props) {
                     </Text>
                   </TouchableOpacity>
 
-                  {Anggota === "true" ? (
+                  {Anggota ? (
                     <TouchableOpacity
                       style={{
                         marginVertical: 5,
@@ -7820,7 +7831,7 @@ export default function ItineraryDetail(props) {
                     </TouchableOpacity>
                   ) : null}
 
-                  {Anggota === "true" && statusUsers == true ? (
+                  {Anggota && statusUsers == true ? (
                     <TouchableOpacity
                       style={{
                         marginVertical: 5,
