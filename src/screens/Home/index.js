@@ -51,6 +51,7 @@ import { CHATSERVER } from "../../config";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home(props) {
+  console.log("~ props", props);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const tokenApps = useSelector((data) => data.token);
@@ -211,16 +212,17 @@ export default function Home(props) {
 
   useEffect(() => {
     if (
-      props.route.params.shareid &&
-      props.route.params.shareid !== "undefined"
+      props.route.params &&
+      props.route.params?.shareid &&
+      props.route.params?.shareid !== "undefined"
     ) {
       setLoadingModal(true);
-      NavigateAction(props.navigation, props.route.params.shareid);
+      NavigateAction(props.navigation, props.route.params?.shareid);
       setTimeout(() => {
         setLoadingModal(false);
       }, 3000);
     }
-  }, [props.route.params?.shareid]);
+  }, [props.route.params]);
 
   let currentCount = 0;
   const backAction = useCallback(() => {
@@ -607,13 +609,13 @@ export default function Home(props) {
     outputRange: ["#FFF", "#f9f9f9"],
   });
 
-  if (loadingModal) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="#209FAE" />
-      </View>
-    );
-  }
+  // if (loadingModal) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center" }}>
+  //       <ActivityIndicator size="large" color="#209FAE" />
+  //     </View>
+  //   );
+  // }
 
   let [timeNotification, setTimeNotification] = useState(true);
 
@@ -622,7 +624,10 @@ export default function Home(props) {
       setTimeNotification(false);
     }, 1000);
   }, []);
-  if (notifApps && timeNotification) {
+  if (
+    (notifApps && timeNotification) ||
+    (props.route.params?.shareid && loadingModal)
+  ) {
     return (
       <View
         style={{
