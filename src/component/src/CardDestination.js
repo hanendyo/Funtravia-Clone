@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   FlatList,
@@ -42,6 +42,7 @@ export default function CardDestination({
   searchInput,
   sebelum,
 }) {
+  console.log("Data", data);
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
   const [
@@ -102,6 +103,10 @@ export default function CardDestination({
       setModalLogin(true);
     }
   };
+
+  // useEffect(() => {
+  //   setData(data);
+  // }, [data]);
 
   const _unlikedAnother = async (id, index) => {
     if (token) {
@@ -245,7 +250,7 @@ export default function CardDestination({
                     id: item?.id,
                     name: item?.name,
                     token: token,
-                    iditinerary: props.route.params.IdItinerary,
+                    iditinerary: props?.route?.params?.IdItinerary,
                     Position: "itinerary_destination",
                   })
                 }

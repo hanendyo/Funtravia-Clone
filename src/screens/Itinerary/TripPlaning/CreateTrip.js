@@ -1313,6 +1313,7 @@ export default function Trip(props) {
                   alignItems: "center",
                   alignSelf: "center",
                   alignContent: "center",
+
                   width: Dimensions.get("screen").width,
                   paddingHorizontal: 20,
                 }}
