@@ -49,25 +49,29 @@ export default function EditPost(props) {
   const [modalLogin, setModalLogin] = useState(false);
   const tokenApps = useSelector((data) => data.token);
   const HeaderComponent = {
-    title: (
-      <Text size="header" type="bold" style={{ color: "#fff" }}>
-        {t("newPost")}
-      </Text>
-    ),
+    headerShown: true,
+    transparent: false,
     headerTintColor: "white",
     headerTitle: "",
-    headerTransparent: true,
-    headerShown: true,
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
+    },
+    headerLeftContainerStyle: {
+      background: "#FFF",
+      position: "absolute",
+      zIndex: 999,
+      marginLeft: 10,
     },
     headerLeft: () => (
       <TouchableOpacity
@@ -80,7 +84,7 @@ export default function EditPost(props) {
         }}
         style={{
           width: 90,
-          marginLeft: 25,
+          marginLeft: 10,
         }}
       >
         <View
@@ -183,7 +187,7 @@ export default function EditPost(props) {
             SubmitData(data);
           }}
           style={{
-            paddingRight: 10,
+            marginRight: 25,
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
@@ -191,14 +195,9 @@ export default function EditPost(props) {
         >
           <Text
             allowFontScaling={false}
-            style={{
-              color: "#FFF",
-              // fontWeight: 'bold',
-              fontFamily: "Lato-Bold",
-              fontSize: 14,
-              marginHorizontal: 10,
-              marginVertical: 10,
-            }}
+            type="bold"
+            size="title"
+            style={{ color: "#fff", marginHorizontal: 10, marginVertical: 10 }}
           >
             {t("save")}
           </Text>
@@ -368,141 +367,85 @@ export default function EditPost(props) {
       behavior={Platform.OS === "ios" ? "padding" : null}
       style={{ flex: 1, backgroundColor: "#F6F6F6" }}
     >
-      <StatusBar backgroundColor="#209FAE" barStyle="light-content" />
       <ModalLogin
         modalLogin={modalLogin}
         setModalLogin={() => setModalLogin(false)}
         props={props}
       />
-      <View style={{ backgroundColor: "#209FAE", height: 55 }}>
+      <ScrollView style={{ flex: 1 }}>
         <View
+          showsVerticalScrollIndicator={false}
           style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            alignContent: "center",
-            height: 55,
+            backgroundColor: "white",
+            marginHorizontal: 10,
+            marginTop: 10,
+            paddingTop: -80,
+            // marginBottom: Platform.OS == "ios" ? 100 : null,
+            borderTopStartRadius: 15,
+            borderTopStartRadius: 15,
+            borderBottomStartRadius: 15,
+            borderBottomEndRadius: 15,
+            height: Dimensions.get("window").height / 1.2,
           }}
         >
-          {/* <TouchableOpacity
-            onPress={() => {
-              SubmitData();
-            }}
-            style={{
-              paddingRight: 10,
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-              borderWidth: 1,
-            }}
-          >
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "#FFF",
-                // fontWeight: 'bold',
-                fontFamily: "Lato-Bold",
-                fontSize: 14,
-                marginHorizontal: 10,
-                marginVertical: 10,
-              }}
-            >
-              SAVE
-            </Text>
-            <CheckWhite width={20} height={20} />
-          </TouchableOpacity> */}
-        </View>
-      </View>
-      <ScrollView
-        style={{
-          backgroundColor: "white",
-          marginHorizontal: 10,
-          marginTop: 10,
-          paddingTop: -80,
-
-          borderTopStartRadius: 15,
-          borderTopEndRadius: 15,
-          height: Dimensions.get("window").height,
-        }}
-      >
-        <Loading show={loadingok} />
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View
-            style={
-              {
-                // flex: 1,
-                // justifyContent: 'flex-start',
-              }
-            }
-          >
+          <Loading show={loadingok} />
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                marginVertical: 15,
-                // justifyContent: 'space-evenly',
-                alignContent: "center",
-              }}
+              style={
+                {
+                  // flex: 1,
+                  // justifyContent: 'flex-start',
+                }
+              }
             >
-              <FunImage
-                isTouchable
-                onPress={null}
-                style={{
-                  height: 35,
-                  width: 35,
-                  borderRadius: 35,
-                  alignSelf: "center",
-                  marginLeft: 15,
-                  resizeMode: "cover",
-                }}
-                source={{ uri: dataPost?.user?.picture }}
-              />
               <View
                 style={{
-                  justifyContent: "center",
-                  marginHorizontal: 10,
-                  maxWidth: "80%",
+                  width: "100%",
+                  flexDirection: "row",
+                  marginVertical: 15,
+                  // justifyContent: 'space-evenly',
+                  alignContent: "center",
                 }}
               >
-                <Text
+                <FunImage
+                  isTouchable
+                  onPress={null}
                   style={{
-                    fontFamily: "Lato-Bold",
-                    fontSize: 14,
-                    // marginTop: 7,
+                    height: 35,
+                    width: 35,
+                    borderRadius: 35,
+                    alignSelf: "center",
+                    marginLeft: 15,
+                    resizeMode: "cover",
                   }}
-                  numberOfLines={1}
-                >
-                  {dataPost && dataPost.user ? dataPost.user.first_name : null}{" "}
-                  {dataPost.user.last_name ? dataPost.user.last_name : null}
-                </Text>
+                  source={{ uri: dataPost?.user?.picture }}
+                />
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
+                    justifyContent: "center",
+                    marginHorizontal: 10,
+                    maxWidth: "80%",
                   }}
                 >
                   <Text
                     style={{
-                      fontFamily: "Lato-Regular",
-                      fontSize: 10,
+                      fontFamily: "Lato-Bold",
+                      fontSize: 14,
                       // marginTop: 7,
                     }}
+                    numberOfLines={1}
                   >
-                    {/* {duration(dataPost.created_at)} */}
-                    {props?.route?.params?.time}
+                    {dataPost && dataPost.user
+                      ? dataPost.user.first_name
+                      : null}{" "}
+                    {dataPost.user.last_name ? dataPost.user.last_name : null}
                   </Text>
-                  {dataPost && dataPost.location_name ? (
-                    <View
-                      style={{
-                        marginHorizontal: 5,
-                        backgroundColor: "black",
-                        height: 4,
-                        width: 4,
-                        borderRadius: 2,
-                      }}
-                    ></View>
-                  ) : null}
-                  {dataPost && dataPost.location_name ? (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
                     <Text
                       style={{
                         fontFamily: "Lato-Regular",
@@ -510,12 +453,34 @@ export default function EditPost(props) {
                         // marginTop: 7,
                       }}
                     >
-                      <Truncate text={dataPost.location_name} length={40} />
+                      {/* {duration(dataPost.created_at)} */}
+                      {props?.route?.params?.time}
                     </Text>
-                  ) : null}
+                    {dataPost && dataPost.location_name ? (
+                      <View
+                        style={{
+                          marginHorizontal: 5,
+                          backgroundColor: "black",
+                          height: 4,
+                          width: 4,
+                          borderRadius: 2,
+                        }}
+                      ></View>
+                    ) : null}
+                    {dataPost && dataPost.location_name ? (
+                      <Text
+                        style={{
+                          fontFamily: "Lato-Regular",
+                          fontSize: 10,
+                          // marginTop: 7,
+                        }}
+                      >
+                        <Truncate text={dataPost.location_name} length={40} />
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-              {/* <TouchableOpacity
+                {/* <TouchableOpacity
                 style={{
                   position: "absolute",
                   right: 15,
@@ -524,39 +489,39 @@ export default function EditPost(props) {
               >
                 <OptionsVertBlack height={20} width={20} />
               </TouchableOpacity> */}
-            </View>
-            <View
-              style={{
-                width: Dimensions.get("screen").width - 20,
-                paddingHorizontal: 20,
-              }}
-            >
-              {dataPost.is_single === false ? (
-                <RenderAlbum
-                  data={dataPost}
-                  props={props}
-                  play={dataPost.id}
-                  muted={muted}
-                  setMuted={(e) => setMuted(e)}
-                  isFocused={isFocused}
-                  token={tokenApps}
-                  setModalLogin={(e) => setModalLogin(e)}
-                />
-              ) : (
-                <RenderSinglePhoto
-                  data={dataPost}
-                  props={props}
-                  play={dataPost.id}
-                  muted={muted}
-                  setMuted={(e) => setMuted(e)}
-                  isFocused={isFocused}
-                  token={tokenApps}
-                  setModalLogin={(e) => setModalLogin(e)}
-                />
-              )}
-            </View>
+              </View>
+              <View
+                style={{
+                  width: Dimensions.get("screen").width - 20,
+                  paddingHorizontal: 20,
+                }}
+              >
+                {dataPost.is_single === false ? (
+                  <RenderAlbum
+                    data={dataPost}
+                    props={props}
+                    play={dataPost.id}
+                    muted={muted}
+                    setMuted={(e) => setMuted(e)}
+                    isFocused={isFocused}
+                    token={tokenApps}
+                    setModalLogin={(e) => setModalLogin(e)}
+                  />
+                ) : (
+                  <RenderSinglePhoto
+                    data={dataPost}
+                    props={props}
+                    play={dataPost.id}
+                    muted={muted}
+                    setMuted={(e) => setMuted(e)}
+                    isFocused={isFocused}
+                    token={tokenApps}
+                    setModalLogin={(e) => setModalLogin(e)}
+                  />
+                )}
+              </View>
 
-            {/* <AutoHeightImage
+              {/* <AutoHeightImage
               width={Dimensions.get("window").width}
               source={
                 dataPost && dataPost.assets[0].filepath
@@ -564,38 +529,40 @@ export default function EditPost(props) {
                   : default_image
               }
             /> */}
-            {/* </View> */}
+              {/* </View> */}
 
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 40,
-                backgroundColor: "#ffffff",
-                borderBottomColor: "#209FAE",
-                // borderWidth: 1,
-                borderBottomWidth: 1,
-                marginHorizontal: 15,
-                // height: Dimensions.get('screen').height / 3,
-              }}
-            >
-              <TextInput
-                autoCorrect={false}
-                multiline
-                placeholder={"Write a caption.."}
-                maxLength={255}
+              <View
                 style={{
-                  paddingVertical: 10,
-                  width: (Dimensions.get("screen").width * 80) / 100,
-                  // borderBottomColor: '#f0f0f0f0',
-                  // borderBottomWidth: 1,
+                  flexDirection: "row",
+                  marginTop: 40,
+                  backgroundColor: "#ffffff",
+                  borderBottomColor: "#209FAE",
+                  // borderWidth: 1,
+                  borderBottomWidth: 1,
+                  marginHorizontal: 15,
+                  // height: Dimensions.get('screen').height / 3,
                 }}
-                onChangeText={(text) => _setStatusText(text)}
-                value={statusText}
-              />
+              >
+                <TextInput
+                  autoCorrect={false}
+                  multiline
+                  placeholder={"Write a caption.."}
+                  maxLength={255}
+                  style={{
+                    paddingVertical: 10,
+                    width: (Dimensions.get("screen").width * 80) / 100,
+                    // borderBottomColor: '#f0f0f0f0',
+                    // borderBottomWidth: 1,
+                  }}
+                  onChangeText={(text) => _setStatusText(text)}
+                  value={statusText}
+                />
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </View>
       </ScrollView>
+
       <LocationSelector
         modals={modellocation}
         setModellocation={(e) => setModellocation(e)}

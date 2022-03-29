@@ -74,7 +74,6 @@ import RemoveAlbum from "../../../graphQL/Mutation/Album/RemoveAlbum";
 import { useSelector } from "react-redux";
 
 export default function Comments(props) {
-  console.log("~ props", props);
   const updateDataPost = props?.route?.params?.updateDataPost;
   const from = props?.route?.params?.from;
   const Notch = DeviceInfo.hasNotch();

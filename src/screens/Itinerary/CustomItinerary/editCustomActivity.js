@@ -134,18 +134,22 @@ export default function editCustomActivity(props) {
     headerTitle: "",
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      fontFamily: "Lato-Bold",
-      fontSize: 14,
-      color: "white",
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : 1,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -176,6 +180,7 @@ export default function editCustomActivity(props) {
         <View
           style={{
             marginLeft: 10,
+            marginBottom: 1,
           }}
         >
           <Text type="bold" size="title" style={{ color: "#fff" }}>

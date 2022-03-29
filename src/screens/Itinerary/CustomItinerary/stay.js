@@ -1669,10 +1669,12 @@ export default function detailCustomItinerary(props) {
                     paddingHorizontal: 10,
                   },
                   textInput: {
+                    marginTop: 3,
                     marginLeft: 0,
                     marginRight: 0,
                     padding: 0,
-                    height: 38,
+                    paddingTop: 2,
+                    height: 35,
                     color: "#5d5d5d",
                     fontSize: 14,
                     fontFamily: "Lato-Regular",
