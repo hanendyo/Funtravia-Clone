@@ -55,6 +55,7 @@ import Geolocation from "react-native-geolocation-service";
 import { useSelector } from "react-redux";
 import { RNToasty } from "react-native-toasty";
 import normalize from "react-native-normalize";
+import { API_KEY } from "../../../config";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -85,7 +86,7 @@ export default function detailCustomItinerary(props) {
           <View
             style={{
               alignItems: "center",
-              width: 200,
+              width: 250,
               marginTop: Platform.OS === "ios" ? (Notch ? 4 : 6) : null,
             }}
           >
@@ -1105,7 +1106,7 @@ export default function detailCustomItinerary(props) {
           >
             <GooglePlacesAutocomplete
               query={{
-                key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+                key: API_KEY,
                 language: t("googleLocationLang"), // language of the results
               }}
               fetchDetails={true}
@@ -1234,10 +1235,12 @@ export default function detailCustomItinerary(props) {
                   // border,
                 },
                 textInput: {
+                  marginTop: 3,
                   marginLeft: 0,
                   marginRight: 0,
                   padding: 0,
-                  height: 38,
+                  paddingTop: 2,
+                  height: 35,
                   color: "#5d5d5d",
                   fontSize: 14,
                   fontFamily: "Lato-Regular",
