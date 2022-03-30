@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { CustomImage } from "../../../component";
 import { Text } from "../../../component";
@@ -25,32 +26,39 @@ import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails"
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
+import DeviceInfo from "react-native-device-info";
 
 export default function AddBuddy(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     headerShown: true,
-    title: "",
     headerTransparent: false,
-    headerTintColor: "#f0f0f0",
+    headerTintColor: "white",
     headerTitle: (
-      <Text type="bold" style={{ color: "#fff", fontSize: normalize(18) }}>
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
         {t("addtravelBuddy")}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
-    },
-    headerLRightContainerStyle: {
-      background: "#FFF",
-      marginRight: 10,
     },
     headerLeft: () => (
       <Button
@@ -468,7 +476,7 @@ export default function AddBuddy(props) {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "#FFFFFF",
@@ -556,13 +564,13 @@ export default function AddBuddy(props) {
           position: "absolute",
           left: 0,
           bottom: 0,
-          height: 60,
+          height: Platform.OS === "ios" ? (Notch ? 70 : 60) : 60,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 10 : 0) : 0,
           width: Dimensions.get("window").width,
-          backgroundColor: "#FFFFFF",
-          paddingVertical: 10,
-          borderTopWidth: 1.5,
-          borderColor: "#f6f6f6",
-          shadowColor: "#FFFFFF",
+          backgroundColor: "white",
+          borderTopWidth: 1,
+          borderColor: "#F0F0F1",
+          shadowColor: "#F0F0F0",
           shadowOffset: { width: 2, height: 2 },
           shadowOpacity: 1,
           shadowRadius: 2,
@@ -582,6 +590,6 @@ export default function AddBuddy(props) {
           }}
         ></Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

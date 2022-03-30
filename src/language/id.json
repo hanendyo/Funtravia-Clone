@@ -911,5 +911,6 @@
   "deleteMessageSelected": "Apakah kamu akan menghapus ",
   "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus",
   "AlertTime": "Waktu akhir tidak boleh kurang dari waktu awal",
-  "MaxSizeFile": "Maksimal ukuran file 7mb"
+  "MaxSizeFile": "Maksimal ukuran file 7mb",
+  "editPrivacy": "Edit Privasi"
 }
