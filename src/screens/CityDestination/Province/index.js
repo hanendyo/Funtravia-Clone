@@ -3483,8 +3483,8 @@ export default function ProvinceDetail(props) {
         </Button> */}
         </Animated.View>
 
-        {/* Status bar untuk notch */}
-        {Platform.OS === "ios" && Notch ? (
+        {/* Status bar iOS */}
+        {Platform.OS === "ios" ? (
           <View
             style={{
               position: "absolute",

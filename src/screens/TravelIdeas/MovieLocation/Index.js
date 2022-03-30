@@ -616,10 +616,10 @@ export default function MovieLocation({ navigation, route }) {
             position: "absolute",
             zIndex: 2,
             position: "absolute",
-            marginTop:
+            top:
               Platform.OS == "ios"
                 ? Notch
-                  ? HEADER_MAX_HEIGHT / 2
+                  ? HEADER_MAX_HEIGHT / 3
                   : HEADER_MAX_HEIGHT / 2
                 : deviceId == "LYA-L29"
                 ? HEADER_MAX_HEIGHT / 2
@@ -770,7 +770,7 @@ export default function MovieLocation({ navigation, route }) {
               navigation.goBack();
             }}
             style={{
-              marginTop: 10,
+              marginTop: 8,
               marginLeft: 17,
               height: 35,
               width: 35,

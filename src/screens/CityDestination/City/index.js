@@ -3017,7 +3017,7 @@ export default function CityDetail(props) {
           style={{
             position: "absolute",
             top: 0,
-            zIndex: 9999,
+            zIndex: 9,
             opacity: hides.current,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -3106,8 +3106,8 @@ export default function CityDetail(props) {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* Status bar untuk notch */}
-        {Platform.OS === "ios" && Notch ? (
+        {/* Hide Status bar untuk notch */}
+        {Platform.OS === "ios" ? (
           <View
             style={{
               position: "absolute",

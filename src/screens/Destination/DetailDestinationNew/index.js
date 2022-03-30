@@ -17,6 +17,7 @@ import {
   Modal as ModalRN,
   BackHandler,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import {
   Arrowbackwhite,
@@ -72,11 +73,15 @@ import normalize from "react-native-normalize";
 const deviceId = DeviceInfo.getModel();
 
 let PullToRefreshDist = 150;
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import FastImage from "react-native-fast-image";
+import { setAnotherDes, setFetchDest } from "../../../redux/action";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Index = (props) => {
   const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   let tokenApps = useSelector((data) => data.token);
   const [modalLogin, setModalLogin] = useState(false);
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
@@ -145,10 +150,10 @@ const Index = (props) => {
           NativeModules.StatusBarManager.HEIGHT,
   });
 
-  let SafeStatusBar = Platform.select({
-    ios: Notch ? 48 : 20,
-    android: NativeModules.StatusBarManager.HEIGHT,
-  });
+  // let SafeStatusBar = Platform.select({
+  //   ios: Notch ? 48 : 20,
+  //   android: NativeModules.StatusBarManager.HEIGHT,
+  // });
 
   let [newHeight, setNewHeight] = useState(0);
   let scrollRef = useRef();
@@ -158,6 +163,7 @@ const Index = (props) => {
   );
 
   const [routes, setRoutes] = useState(Array(100).fill(0));
+  // const routes = useSelector((data) => data.detailDestination.data.tab);
   const [canScroll, setCanScroll] = useState(true);
   const [tab1Data] = useState(Array(40).fill(0));
   const [tab2Data] = useState(Array(30).fill(0));
@@ -176,7 +182,11 @@ const Index = (props) => {
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
   // let [dataDestination, setDataDestination] = useState(data);
-  let [dataDestination, setDataDestination] = useState();
+  let [dataDestination, setDataDestination] = useState(null);
+  // const dataDestination = useSelector(
+  //   (data) => data.detailDestination.data.dataDestination
+  // );
+  console.log("dataDestination", dataDestination);
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState({});
@@ -210,10 +220,15 @@ const Index = (props) => {
       setRoutes(tab);
 
       setDataDestination(data?.destinationById);
+      // dispatch(setFetchDest([data?.destinationById, tab]));
+      setLoadings(false);
     },
   });
 
   let [anotherDes, setAnotherDes] = useState([]);
+  // const anotherDes = useSelector(
+  //   (data) => data.detailDestination.anotherDestination
+  // );
 
   const [
     fetchDataAnotherDes,
@@ -233,6 +248,7 @@ const Index = (props) => {
     },
     onCompleted: () => {
       setAnotherDes(dataDesAnother?.destination_another_place);
+      // dispatch(setAnotherDes(dataDesAnother?.destination_another_place));
     },
   });
 
@@ -477,6 +493,7 @@ const Index = (props) => {
   };
 
   const loadAsync = async () => {
+    setLoadings(true);
     await fetchData();
     await fetchDataAnotherDes();
   };
@@ -599,22 +616,22 @@ const Index = (props) => {
 
   let hide = React.useRef(
     scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
+      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 1, 1],
       extrapolate: "clamp",
     })
   );
   let hides = React.useRef(
     scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [1, 0],
-      extrapolate: "clamp",
+      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+      outputRange: [1, 1, 0],
+      extrapolateRight: "clamp",
     })
   );
 
   const imageOpacity = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0.5, 0],
+    outputRange: [1, 1, 0],
     extrapolate: "clamp",
   });
 
@@ -637,7 +654,7 @@ const Index = (props) => {
     <Animated.View
       style={{
         transform: [{ translateY: x }],
-        top: SafeStatusBar,
+        top: 0,
         height: HeaderHeight + Dimensions.get("screen").height / 10,
         width: "100%",
         position: "absolute",
@@ -771,33 +788,34 @@ const Index = (props) => {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
+          top: 0,
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
           backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209fae",
         }}
       >
-        <Animated.Image
+        <FastImage
           style={{
             width: "100%",
             height: 200,
             resizeMode: "cover",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
           source={
             dataDestination?.cover
               ? { uri: dataDestination?.cover }
               : default_image
           }
+          resizeMode={FastImage.resizeMode.cover}
         />
         <Animated.View
           style={{
             width: Dimensions.get("screen").width,
             backgroundColor: "#FFFFFF",
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           {/* Judul dan bintang review */}
@@ -922,7 +940,7 @@ const Index = (props) => {
                   </Text>
                 </View>
               ) : null}
-              {data?.destinationById?.movie_location?.length > 0 ? (
+              {dataDestination.movie_location?.length > 0 ? (
                 <View
                   style={{
                     flexDirection: "row",
@@ -1158,7 +1176,7 @@ const Index = (props) => {
                 screen: "ItineraryChooseday",
                 params: {
                   Iditinerary: props?.route?.params?.iditinerary,
-                  Kiriman: data?.destinationById.id,
+                  Kiriman: dataDestination.id,
                   token: tokenApps,
                   Position: "destination",
                   datadayaktif: props.route.params.datadayaktif,
@@ -1169,7 +1187,7 @@ const Index = (props) => {
           : props.navigation.navigate("ItineraryStack", {
               screen: "ItineraryPlaning",
               params: {
-                idkiriman: data?.destinationById?.id,
+                idkiriman: dataDestination?.id,
                 Position: "destination",
                 data_from: props.route.params?.parent ?? "detail_destination",
                 token: tokenApps,
@@ -1932,7 +1950,7 @@ const Index = (props) => {
           paddingTop: HeaderHeight + TabBarHeight,
           // paddingHorizontal: 10,
           backgroundColor: "#FFF",
-          minHeight: height - SafeStatusBar + HeaderHeight,
+          minHeight: height + HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
@@ -2104,780 +2122,495 @@ const Index = (props) => {
     });
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoadings(false);
-    }, 2900);
-  }),
-    [];
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoadings(false);
+  //   }, 2900);
+  // }),
+  //   [];
 
-  let [loadings, setLoadings] = useState(true);
+  let [loadings, setLoadings] = useState(loading);
 
   // if (loadings) {
   //   return <IndexSkeleton />;
   // }
 
   return (
-    <View style={styles.container}>
-      {loadings ? (
-        <View
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            position: "absolute",
-            backgroundColor: "#FFF",
-            zIndex: 1000000,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
+    <>
       <Satbar backgroundColor="#14646e" />
-      <ModalLogin
-        modalLogin={modalLogin}
-        setModalLogin={() => setModalLogin(false)}
-        props={props}
-      />
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          // justifyContent: "space-between",
-          // borderWidth: 1,
-
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: Platform.OS == "ios" ? null : 20,
-          paddingHorizontal: Platform.OS == "ios" ? 20 : null,
-          height: 55,
-          width:
-            Platform.OS == "ios"
-              ? Dimensions.get("screen").width
-              : Dimensions.get("screen").width - 40,
-          backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => props.navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <Text
-          size="header"
-          type="bold"
-          style={{
-            flex: 1,
-            // opacity: hide.current,
-            color: "#fff",
-            marginLeft: 10,
-            // fontSize: 20,
-            // fontFamily: "Lato-Bold",
-          }}
-        >
-          {dataDestination?.name}
-        </Text>
-      </Animated.View>
-      {/* Button Like and Share*/}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar + 200 + HeightJudul / 4,
-          right: 20,
-          zIndex: 9999,
-          alignItems: "flex-end",
-          transform: [{ translateY: yButtonLikeShare }],
-          opacity: hides.current,
-          height: 55,
-        }}
-      >
-        <Animated.View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          {dataDestination?.liked === true ? (
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#F6F6F6",
-                marginRight: 2,
-                height: 34,
-                width: 34,
-                borderRadius: 17,
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 5,
-              }}
-              onPress={() => _unliked(dataDestination.id)}
-            >
-              <Love height={20} width={20} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              // onPress={() =>
-              //   shareAction({
-              //     from: "destination",
-              //     target: dataDestination.id,
-              //   })
-              // }
-              style={{
-                backgroundColor: "#F6F6F6",
-                marginRight: 2,
-                height: 34,
-                width: 34,
-                borderRadius: 17,
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 5,
-              }}
-              onPress={() => _liked(dataDestination.id)}
-            >
-              <LikeEmpty height={20} width={20} />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            onPress={() =>
-              // shareAction({
-              //   from: "destination",
-              //   target: dataDestination.id,
-              // })
-              tokenApps ? SetShareModal(true) : setModalLogin(true)
-            }
-            style={{
-              backgroundColor: "#F6F6F6",
-              marginRight: 2,
-              height: 34,
-              width: 34,
-              borderRadius: 17,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ShareBlack height={20} width={20} />
-          </TouchableOpacity>
-        </Animated.View>
-      </Animated.View>
-      {/* location icon */}
-      {HeightAddress > 0 ? (
-        <Animated.View
-          style={{
-            position: "absolute",
-            top:
-              SafeStatusBar +
-              200 +
-              HeightJudul +
-              Heightunesco +
-              HeightAddress / 10,
-            zIndex: 100,
-            transform: [{ translateY: yButtonLikeShare }],
-            opacity: hides.current,
-            right: 20,
-            alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 7,
-          }}
-        >
-          <Animated.View>
-            {data?.destinationById?.address ? (
-              <Ripple
-                style={{
-                  height: layoutsAddress,
-                  justifyContent: "flex-end",
-                  alignItems: "flex-end",
-                  height: "100%",
-                }}
-                onPress={() => {
-                  Linking.openURL(
-                    Platform.OS == "ios"
-                      ? "maps://app?daddr=" +
-                          data?.destinationById?.latitude +
-                          "+" +
-                          data?.destinationById?.longitude
-                      : "google.navigation:q=" +
-                          data?.destinationById?.latitude +
-                          "+" +
-                          data?.destinationById?.longitude
-                  );
-                }}
-              >
-                <Mapsborder
-                  height="25"
-                  width="25"
-                  style={{ marginVertical: 3 }}
-                />
-              </Ripple>
-            ) : null}
-          </Animated.View>
-        </Animated.View>
-      ) : null}
-      {HeightTime > 0 ? (
-        <Animated.View
-          style={{
-            position: "absolute",
-            top:
-              SafeStatusBar +
-              200 +
-              HeightJudul +
-              Heightunesco +
-              HeightAddress +
-              HeightTime / 20,
-            transform: [{ translateY: yButtonLikeShare }],
-            zIndex: 100,
-            opacity: hides.current,
-            right: 20,
-            alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 7,
-          }}
-        >
-          <Animated.View>
-            {data?.destinationById?.openat ? (
-              <Pressable
-                onPress={() => setModalTime(true)}
-                style={{
-                  height: layoutsOpen,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    color: "#209FAE",
-                    // borderWidth: 1,
-                    marginVertical: 8,
-                  }}
-                >
-                  {t("more")}
-                </Text>
-              </Pressable>
-            ) : null}
-          </Animated.View>
-        </Animated.View>
-      ) : null}
-
-      {HeightWeb > 0 ? (
-        <Animated.View
-          style={{
-            position: "absolute",
-            top:
-              SafeStatusBar +
-              200 +
-              HeightJudul +
-              Heightunesco +
-              HeightAddress +
-              HeightTime +
-              HeightWeb / 15,
-            transform: [{ translateY: yButtonLikeShare }],
-            zIndex: 100,
-            opacity: hides.current,
-            right: 20,
-            alignItems: "flex-end",
-            width: Dimensions.get("screen").width / 7,
-          }}
-        >
-          <Animated.View>
-            {data?.destinationById?.website ? (
-              <Pressable
-                onPress={() => setModalSosial(true)}
-                style={{
-                  height: layoutsWeb,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  // marginVertical: 5,
-                }}
-              >
-                <Text
-                  size="description"
-                  type="regular"
-                  style={{
-                    color: "#209FAE",
-
-                    marginVertical: 8,
-                  }}
-                >
-                  {t("more")}
-                </Text>
-              </Pressable>
-            ) : null}
-          </Animated.View>
-        </Animated.View>
-      ) : null}
-
-      {renderTabView()}
-      {renderHeader()}
-      {renderCustomRefresh()}
-      {/* BottomButton */}
-      {!loadings ? (
-        <BottomButton
-          routed={tabIndex}
-          props={props}
-          data={data?.destinationById}
-          token={tokenApps}
-          addTo={addToPlan}
-        />
-      ) : null}
-
-      {/* Modal Activiy */}
-      <ActivityModal
-        setModalActivity={(e) => setModalActivity(e)}
-        modals={modalActivity}
-        data={data?.destinationById}
-      />
-
-      {/* Modal Facility */}
-      <FacilityModal
-        setModalFacility={(e) => setModalFacility(e)}
-        modals={modalFacility}
-        data={data?.destinationById}
-      />
-
-      {/* Modal Service */}
-      <ServiceModal
-        setModalService={(e) => setModalService(e)}
-        modals={modalService}
-        data={data?.destinationById}
-      />
-
-      {/* Modal Time */}
-      <ModalRN
-        useNativeDriver={true}
-        visible={modalTime}
-        onRequestClose={() => setModalTime(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => setModalTime(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        />
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 120,
-            marginHorizontal: 60,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 3,
-          }}
-        >
+      <View style={styles.container}>
+        {loadings ? (
           <View
             style={{
-              backgroundColor: "white",
-              borderRadius: 5,
-              width: Dimensions.get("screen").width - 120,
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              position: "absolute",
+              backgroundColor: "#FFF",
+              zIndex: 1000000,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <View
-              style={{
-                backgroundColor: "#f6f6f6",
-                alignItems: "center",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 12, marginBottom: 15 }}
-              >
-                {t("OperationTime")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setModalTime(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: 55,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 50,
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <View style={{ marginHorizontal: 20 }}>
-              {data && data.destinationById && data.destinationById.openat ? (
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginBottom: 18, marginTop: 15 }}
-                >
-                  {data?.destinationById?.openat}
-                </Text>
-              ) : (
-                <Text>-</Text>
-              )}
-            </View>
+            {/* Status bar untuk notch */}
+            {Platform.OS === "ios" ? (
+              <View
+                style={{
+                  position: "absolute",
+                  top: -50,
+                  width: Dimensions.get("screen").width,
+                  height: 50,
+                  backgroundColor: "#14646E",
+                  zIndex: 100,
+                }}
+              />
+            ) : null}
+            <ActivityIndicator size="large" color="#209fae" />
           </View>
-        </View>
-      </ModalRN>
-      {/* End Modal Time */}
-
-      {/* End Modal Website */}
-
-      <ModalRN
-        useNativeDriver={true}
-        visible={modalSosial}
-        onRequestClose={() => setModalSosial(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => setModalSosial(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.7,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
+        ) : null}
+        <ModalLogin
+          modalLogin={modalLogin}
+          setModalLogin={() => setModalLogin(false)}
+          props={props}
         />
-        <View
+        <Animated.View
           style={{
-            width: Dimensions.get("screen").width - 120,
-            marginHorizontal: 60,
-            backgroundColor: "#FFF",
-            zIndex: 15,
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hides.current,
             flexDirection: "row",
-            justifyContent: "space-around",
+            // justifyContent: "space-between",
+            // borderWidth: 1,
+
+            alignContent: "center",
             alignItems: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 3,
+            marginHorizontal: 20,
+            height: 55,
+            width: Dimensions.get("screen").width - 40,
           }}
         >
-          <View
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
             style={{
-              backgroundColor: "white",
-              borderRadius: 5,
-              width: Dimensions.get("screen").width - 120,
+              height: 50,
+              // marginLeft: 8,
             }}
           >
-            <View
+            <Animated.View
               style={{
-                backgroundColor: "#f6f6f6",
-                alignItems: "center",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-              }}
-            >
-              <Text
-                size="title"
-                type="bold"
-                style={{ marginTop: 12, marginBottom: 15 }}
-              >
-                {t("information")}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setModalSosial(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                width: 55,
+                height: 35,
+                width: 35,
+
+                borderRadius: 30,
+                backgroundColor: "rgba(0,0,0,0.5)",
                 justifyContent: "center",
                 alignItems: "center",
-                height: 50,
               }}
             >
-              <Xgray width={15} height={15} />
-            </Pressable>
-            <Pressable
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+        </Animated.View>
+
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
+
+        {/* jika scrollheader, animated show */}
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 0,
+            zIndex: 9999,
+            opacity: hide.current,
+            flexDirection: "row",
+            alignContent: "center",
+            alignItems: "center",
+            marginHorizontal: Platform.OS == "ios" ? null : 20,
+            paddingHorizontal: Platform.OS == "ios" ? 20 : null,
+            height: 55,
+            width:
+              Platform.OS == "ios"
+                ? Dimensions.get("screen").width
+                : Dimensions.get("screen").width - 40,
+            backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+          }}
+        >
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => props.navigation.goBack()}
+            style={{
+              height: 50,
+              // marginLeft: 8,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <Text
+            size="header"
+            type="bold"
+            style={{
+              flex: 1,
+              // opacity: hide.current,
+              color: "#fff",
+              marginLeft: 10,
+              // fontSize: 20,
+              // fontFamily: "Lato-Bold",
+            }}
+          >
+            {dataDestination?.name}
+          </Text>
+        </Animated.View>
+        {/* Button Like and Share*/}
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 200 + HeightJudul / 4,
+            right: 20,
+            zIndex: 9999,
+            alignItems: "flex-end",
+            transform: [{ translateY: yButtonLikeShare }],
+            opacity: hides.current,
+            height: 55,
+          }}
+        >
+          <Animated.View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            {dataDestination?.liked === true ? (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  marginRight: 2,
+                  height: 34,
+                  width: 34,
+                  borderRadius: 17,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 5,
+                }}
+                onPress={() => _unliked(dataDestination.id)}
+              >
+                <Love height={20} width={20} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                // onPress={() =>
+                //   shareAction({
+                //     from: "destination",
+                //     target: dataDestination.id,
+                //   })
+                // }
+                style={{
+                  backgroundColor: "#F6F6F6",
+                  marginRight: 2,
+                  height: 34,
+                  width: 34,
+                  borderRadius: 17,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 5,
+                }}
+                onPress={() => _liked(dataDestination.id)}
+              >
+                <LikeEmpty height={20} width={20} />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
               onPress={() =>
-                Linking.openURL(`tel:${data.destinationById.phone1}`)
+                // shareAction({
+                //   from: "destination",
+                //   target: dataDestination.id,
+                // })
+                tokenApps ? SetShareModal(true) : setModalLogin(true)
               }
               style={{
-                flexDirection: "row",
+                backgroundColor: "#F6F6F6",
+                marginRight: 2,
+                height: 34,
+                width: 34,
+                borderRadius: 17,
                 alignItems: "center",
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
-                paddingHorizontal: 20,
+                justifyContent: "center",
               }}
             >
-              <TeleponHitam
-                height={15}
-                width={15}
-                style={{ marginBottom: 18, marginTop: 15 }}
-              />
-              {data &&
-              data.destinationById &&
-              data.destinationById.phone1 &&
-              data.destinationById.phone1 !== "null" ? (
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
-                >
-                  {data.destinationById.phone1}
-                </Text>
-              ) : (
-                <Text style={{ marginLeft: 10 }}>-</Text>
-              )}
-            </Pressable>
-            <Pressable
-              onPress={async () => {
-                const supported = await Linking.canOpenURL(
-                  data.destinationById.website
-                );
-                if (supported) {
-                  await Linking.openURL(`${data.destinationById.website}`);
-                } else {
-                  RNToasty.Show({
-                    title: `Don't know how to open this URL: ${url}`,
-                    position: "bottom",
-                  });
-                }
-              }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderBottomColor: "#d1d1d1",
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-              }}
-            >
-              <WebsiteHitam
-                height={15}
-                width={15}
-                style={{ marginBottom: 18, marginTop: 15 }}
-              />
-              {data &&
-              data.destinationById &&
-              data.destinationById.website &&
-              data.destinationById.website !== "null" ? (
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
-                >
-                  {data.destinationById.website}
-                </Text>
-              ) : (
-                <Text style={{ marginLeft: 10 }}>-</Text>
-              )}
-            </Pressable>
-            <Pressable
-              onPress={async () => {
-                const supported = await Linking.canOpenURL(
-                  data.destinationById.instagram
-                );
-                if (supported) {
-                  await Linking.openURL(`${data.destinationById.instagram}`);
-                } else {
-                  RNToasty.Show({
-                    title: `Don't know how to open this URL: ${data.destinationById.instagram}`,
-                    position: "bottom",
-                  });
-                }
-              }}
-              style={{
-                flexDirection: "row",
-                paddingHorizontal: 20,
-                alignItems: "center",
-              }}
-            >
-              <InstagramHitam
-                height={15}
-                width={15}
-                style={{ marginBottom: 18, marginTop: 15 }}
-              />
-              {data &&
-              data.destinationById &&
-              data.destinationById.instagram &&
-              data.destinationById.instagram !== "null" ? (
-                <Text
-                  size="label"
-                  type="regular"
-                  style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
-                >
-                  {data.destinationById.instagram}
-                </Text>
-              ) : (
-                <Text style={{ marginLeft: 10 }}>-</Text>
-              )}
-            </Pressable>
-          </View>
-        </View>
-      </ModalRN>
-      {/* End Modal Website */}
-
-      {/* Modal Share */}
-      <ModalRN
-        useNativeDriver={true}
-        visible={sharemodal}
-        onRequestClose={() => SetShareModal(false)}
-        transparent={true}
-        animationType="fade"
-      >
-        <Pressable
-          onPress={() => SetShareModal(false)}
-          style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
-            justifyContent: "center",
-            opacity: 0.8,
-            borderWidth: 1,
-            backgroundColor: "#000",
-            position: "absolute",
-          }}
-        ></Pressable>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 100,
-            marginHorizontal: 50,
-            backgroundColor: "#FFF",
-            zIndex: 15,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            alignContent: "center",
-            borderRadius: 5,
-            marginTop: Dimensions.get("screen").height / 3,
-          }}
-        >
-          <View
+              <ShareBlack height={20} width={20} />
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
+        {/* location icon */}
+        {HeightAddress > 0 ? (
+          <Animated.View
             style={{
-              backgroundColor: "white",
-              width: Dimensions.get("screen").width - 100,
-              // paddingVertical: 10,
-              // paddingHorizontal: 20,
-              justifyContent: "center",
-              alignContent: "center",
-              alignItems: "center",
-              borderRadius: 5,
+              position: "absolute",
+              top: 200 + HeightJudul + Heightunesco + HeightAddress / 10,
+              zIndex: 100,
+              transform: [{ translateY: yButtonLikeShare }],
+              opacity: hides.current,
+              right: 20,
+              alignItems: "flex-end",
+              width: Dimensions.get("screen").width / 7,
             }}
           >
-            <Pressable
-              onPress={() => SetShareModal(false)}
-              style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                height: 60,
-                width: 60,
-                alignContent: "center",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Xgray width={15} height={15} />
-            </Pressable>
+            <Animated.View>
+              {dataDestination?.address ? (
+                <Ripple
+                  style={{
+                    height: layoutsAddress,
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    height: "100%",
+                  }}
+                  onPress={() => {
+                    Linking.openURL(
+                      Platform.OS == "ios"
+                        ? "maps://app?daddr=" +
+                            dataDestination?.latitude +
+                            "+" +
+                            dataDestination?.longitude
+                        : "google.navigation:q=" +
+                            dataDestination?.latitude +
+                            "+" +
+                            dataDestination?.longitude
+                    );
+                  }}
+                >
+                  <Mapsborder
+                    height="25"
+                    width="25"
+                    style={{ marginVertical: 3 }}
+                  />
+                </Ripple>
+              ) : null}
+            </Animated.View>
+          </Animated.View>
+        ) : null}
+        {HeightTime > 0 ? (
+          <Animated.View
+            style={{
+              position: "absolute",
+              top:
+                200 +
+                HeightJudul +
+                Heightunesco +
+                HeightAddress +
+                HeightTime / 20,
+              transform: [{ translateY: yButtonLikeShare }],
+              zIndex: 100,
+              opacity: hides.current,
+              right: 20,
+              alignItems: "flex-end",
+              width: Dimensions.get("screen").width / 7,
+            }}
+          >
+            <Animated.View>
+              {dataDestination?.openat ? (
+                <Pressable
+                  onPress={() => setModalTime(true)}
+                  style={{
+                    height: layoutsOpen,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#209FAE",
+                      // borderWidth: 1,
+                      marginVertical: 8,
+                    }}
+                  >
+                    {t("more")}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </Animated.View>
+          </Animated.View>
+        ) : null}
+
+        {HeightWeb > 0 ? (
+          <Animated.View
+            style={{
+              position: "absolute",
+              top:
+                200 +
+                HeightJudul +
+                Heightunesco +
+                HeightAddress +
+                HeightTime +
+                HeightWeb / 15,
+              transform: [{ translateY: yButtonLikeShare }],
+              zIndex: 100,
+              opacity: hides.current,
+              right: 20,
+              alignItems: "flex-end",
+              width: Dimensions.get("screen").width / 7,
+            }}
+          >
+            <Animated.View>
+              {dataDestination?.website ? (
+                <Pressable
+                  onPress={() => setModalSosial(true)}
+                  style={{
+                    height: layoutsWeb,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                    // marginVertical: 5,
+                  }}
+                >
+                  <Text
+                    size="description"
+                    type="regular"
+                    style={{
+                      color: "#209FAE",
+
+                      marginVertical: 8,
+                    }}
+                  >
+                    {t("more")}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </Animated.View>
+          </Animated.View>
+        ) : null}
+
+        {renderTabView()}
+        {renderHeader()}
+        {renderCustomRefresh()}
+        {/* BottomButton */}
+        {!loadings ? (
+          <BottomButton
+            routed={tabIndex}
+            props={props}
+            data={dataDestination}
+            token={tokenApps}
+            addTo={addToPlan}
+          />
+        ) : null}
+
+        {/* Modal Activiy */}
+        <ActivityModal
+          setModalActivity={(e) => setModalActivity(e)}
+          modals={modalActivity}
+          data={dataDestination}
+        />
+
+        {/* Modal Facility */}
+        <FacilityModal
+          setModalFacility={(e) => setModalFacility(e)}
+          modals={modalFacility}
+          data={dataDestination}
+        />
+
+        {/* Modal Service */}
+        <ServiceModal
+          setModalService={(e) => setModalService(e)}
+          modals={modalService}
+          data={dataDestination}
+        />
+
+        {/* Modal Time */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={modalTime}
+          onRequestClose={() => setModalTime(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalTime(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 120,
+              marginHorizontal: 60,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
             <View
               style={{
-                paddingHorizontal: 20,
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-                backgroundColor: "#f6f6f6",
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-                borderBottomColor: "#d1d1d1",
-                borderBottomWidth: 1,
+                backgroundColor: "white",
+                borderRadius: 5,
+                width: Dimensions.get("screen").width - 120,
               }}
             >
-              <Text
-                type="bold"
-                size="title"
+              <View
                 style={{
-                  marginBottom: 15,
-                  marginTop: 12,
+                  backgroundColor: "#f6f6f6",
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
                 }}
               >
-                {t("share")}
-              </Text>
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 12, marginBottom: 15 }}
+                >
+                  {t("OperationTime")}
+                </Text>
+              </View>
               <Pressable
-                onPress={() => SetShareModal(false)}
+                onPress={() => setModalTime(false)}
                 style={{
                   position: "absolute",
                   right: 0,
@@ -2889,124 +2622,432 @@ const Index = (props) => {
               >
                 <Xgray width={15} height={15} />
               </Pressable>
+              <View style={{ marginHorizontal: 20 }}>
+                {data && data.destinationById && data.destinationById.openat ? (
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginBottom: 18, marginTop: 15 }}
+                  >
+                    {dataDestination?.openat}
+                  </Text>
+                ) : (
+                  <Text>-</Text>
+                )}
+              </View>
             </View>
-            <TouchableOpacity
-              style={{
-                // paddingVertical: 10,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                SetShareModal(false);
-                // props.navigation.navigate("SendDestination", {
-                //   destination: dataDestination,
-                // });
-                props.navigation.navigate("ChatStack", {
-                  screen: "SendToChat",
-                  params: {
-                    dataSend: {
-                      id: dataDestination?.id,
-                      cover: dataDestination?.cover,
-                      name: dataDestination?.name,
-                      description: dataDestination?.description,
-                      rating: dataDestination?.rating,
-                      destination_type: dataDestination?.destination_type,
-                      cities: dataDestination?.cities,
-                      images: dataDestination?.images,
-                    },
-                    title: t("destination"),
-                    tag_type: "tag_destination",
-                  },
-                });
-              }}
-            >
-              <Text
-                size="label"
-                type="regular"
-                style={{
-                  marginTop: 15,
-                  marginBottom: 18,
-                }}
-              >
-                {t("send_to")}...
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                // paddingVertical: 10,
-                paddingHorizontal: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                shareAction({
-                  from: "destination",
-                  target: dataDestination.id,
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text
-                size="label"
-                type="regular"
-                style={{
-                  marginTop: 12,
-                  marginBottom: 15,
-                }}
-              >
-                {t("shareTo")}...
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 20,
-                width: "100%",
-                justifyContent: "center",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-              onPress={() => {
-                CopyLink({
-                  from: "destination",
-                  target: dataDestination.id,
-                  success: t("successCopyLink"),
-                  failed: t("failedCopyLink"),
-                });
-                SetShareModal(false);
-              }}
-            >
-              <Text
-                size="label"
-                type="regular"
-                style={{
-                  marginTop: 15,
-                  marginBottom: 18,
-                }}
-              >
-                {t("copyLink")}
-              </Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </ModalRN>
+        </ModalRN>
+        {/* End Modal Time */}
 
-      {/* Modal Share */}
-    </View>
+        {/* End Modal Website */}
+
+        <ModalRN
+          useNativeDriver={true}
+          visible={modalSosial}
+          onRequestClose={() => setModalSosial(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => setModalSosial(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          />
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 120,
+              marginHorizontal: 60,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                borderRadius: 5,
+                width: Dimensions.get("screen").width - 120,
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#f6f6f6",
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                }}
+              >
+                <Text
+                  size="title"
+                  type="bold"
+                  style={{ marginTop: 12, marginBottom: 15 }}
+                >
+                  {t("information")}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => setModalSosial(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  width: 55,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 50,
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <Pressable
+                onPress={() =>
+                  Linking.openURL(`tel:${data.destinationById.phone1}`)
+                }
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                  paddingHorizontal: 20,
+                }}
+              >
+                <TeleponHitam
+                  height={15}
+                  width={15}
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                />
+                {data &&
+                data.destinationById &&
+                data.destinationById.phone1 &&
+                data.destinationById.phone1 !== "null" ? (
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
+                  >
+                    {data.destinationById.phone1}
+                  </Text>
+                ) : (
+                  <Text style={{ marginLeft: 10 }}>-</Text>
+                )}
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  const supported = await Linking.canOpenURL(
+                    data.destinationById.website
+                  );
+                  if (supported) {
+                    await Linking.openURL(`${data.destinationById.website}`);
+                  } else {
+                    RNToasty.Show({
+                      title: `Don't know how to open this URL: ${url}`,
+                      position: "bottom",
+                    });
+                  }
+                }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderBottomColor: "#d1d1d1",
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 1,
+                }}
+              >
+                <WebsiteHitam
+                  height={15}
+                  width={15}
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                />
+                {data &&
+                data.destinationById &&
+                data.destinationById.website &&
+                data.destinationById.website !== "null" ? (
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
+                  >
+                    {data.destinationById.website}
+                  </Text>
+                ) : (
+                  <Text style={{ marginLeft: 10 }}>-</Text>
+                )}
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  const supported = await Linking.canOpenURL(
+                    data.destinationById.instagram
+                  );
+                  if (supported) {
+                    await Linking.openURL(`${data.destinationById.instagram}`);
+                  } else {
+                    RNToasty.Show({
+                      title: `Don't know how to open this URL: ${data.destinationById.instagram}`,
+                      position: "bottom",
+                    });
+                  }
+                }}
+                style={{
+                  flexDirection: "row",
+                  paddingHorizontal: 20,
+                  alignItems: "center",
+                }}
+              >
+                <InstagramHitam
+                  height={15}
+                  width={15}
+                  style={{ marginBottom: 18, marginTop: 15 }}
+                />
+                {data &&
+                data.destinationById &&
+                data.destinationById.instagram &&
+                data.destinationById.instagram !== "null" ? (
+                  <Text
+                    size="label"
+                    type="regular"
+                    style={{ marginLeft: 10, marginBottom: 18, marginTop: 15 }}
+                  >
+                    {data.destinationById.instagram}
+                  </Text>
+                ) : (
+                  <Text style={{ marginLeft: 10 }}>-</Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+        </ModalRN>
+        {/* End Modal Website */}
+
+        {/* Modal Share */}
+        <ModalRN
+          useNativeDriver={true}
+          visible={sharemodal}
+          onRequestClose={() => SetShareModal(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <Pressable
+            onPress={() => SetShareModal(false)}
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.8,
+              borderWidth: 1,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          ></Pressable>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+              marginHorizontal: 50,
+              backgroundColor: "#FFF",
+              zIndex: 15,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              alignContent: "center",
+              borderRadius: 5,
+              marginTop: Dimensions.get("screen").height / 3,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                width: Dimensions.get("screen").width - 100,
+                // paddingVertical: 10,
+                // paddingHorizontal: 20,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Pressable
+                onPress={() => SetShareModal(false)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: 60,
+                  width: 60,
+                  alignContent: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Xgray width={15} height={15} />
+              </Pressable>
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#f6f6f6",
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  borderBottomColor: "#d1d1d1",
+                  borderBottomWidth: 1,
+                }}
+              >
+                <Text
+                  type="bold"
+                  size="title"
+                  style={{
+                    marginBottom: 15,
+                    marginTop: 12,
+                  }}
+                >
+                  {t("share")}
+                </Text>
+                <Pressable
+                  onPress={() => SetShareModal(false)}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    width: 55,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 50,
+                  }}
+                >
+                  <Xgray width={15} height={15} />
+                </Pressable>
+              </View>
+              <TouchableOpacity
+                style={{
+                  // paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  SetShareModal(false);
+                  // props.navigation.navigate("SendDestination", {
+                  //   destination: dataDestination,
+                  // });
+                  props.navigation.navigate("ChatStack", {
+                    screen: "SendToChat",
+                    params: {
+                      dataSend: {
+                        id: dataDestination?.id,
+                        cover: dataDestination?.cover,
+                        name: dataDestination?.name,
+                        description: dataDestination?.description,
+                        rating: dataDestination?.rating,
+                        destination_type: dataDestination?.destination_type,
+                        cities: dataDestination?.cities,
+                        images: dataDestination?.images,
+                      },
+                      title: t("destination"),
+                      tag_type: "tag_destination",
+                    },
+                  });
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 18,
+                  }}
+                >
+                  {t("send_to")}...
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  // paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  shareAction({
+                    from: "destination",
+                    target: dataDestination.id,
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 15,
+                  }}
+                >
+                  {t("shareTo")}...
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  paddingHorizontal: 20,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  CopyLink({
+                    from: "destination",
+                    target: dataDestination.id,
+                    success: t("successCopyLink"),
+                    failed: t("failedCopyLink"),
+                  });
+                  SetShareModal(false);
+                }}
+              >
+                <Text
+                  size="label"
+                  type="regular"
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 18,
+                  }}
+                >
+                  {t("copyLink")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ModalRN>
+
+        {/* Modal Share */}
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: useSafeAreaInsets.top,
   },
   // header: {
   //   height: HeaderHeight,

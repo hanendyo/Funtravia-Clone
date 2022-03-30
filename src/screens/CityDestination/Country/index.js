@@ -2699,8 +2699,8 @@ export default function Country(props) {
         </Button> */}
         </Animated.View>
 
-        {/* Status bar untuk notch */}
-        {Platform.OS === "ios" && Notch ? (
+        {/* Status bar untuk ios */}
+        {Platform.OS === "ios" ? (
           <View
             style={{
               position: "absolute",
