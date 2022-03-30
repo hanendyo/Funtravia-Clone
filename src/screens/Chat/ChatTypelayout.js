@@ -55,12 +55,17 @@ export default function ChatTypelayout({
 }) {
   const tokenApps = useSelector((data) => data.token);
   const [loading, setloading] = useState(true);
+  let [angel, setAngel] = useState(0);
+  let videoView = useRef(null);
+  const { t } = useTranslation();
+  const playerRef = useRef(null);
+  const [modalss, setModalss] = useState(false);
+  const [count, setCount] = useState(0);
   let Notch = DeviceInfo.hasNotch();
   let SafeStatusBar = Platform.select({
     ios: Notch ? 48 : 20,
     android: 0,
   });
-  let [angel, setAngel] = useState(0);
 
   const rotate = (angles) => {
     const nextAngle = angel + angles;
@@ -168,11 +173,6 @@ export default function ChatTypelayout({
       // });
     }
   };
-  let videoView = useRef(null);
-  const { t } = useTranslation();
-  const playerRef = useRef(null);
-  const [modalss, setModalss] = useState(false);
-  const [count, setCount] = useState(0);
 
   // let count = 0;
   useEffect(() => {
@@ -1168,15 +1168,15 @@ export default function ChatTypelayout({
 
   // att_image_layout
   if (item.type == "att_image") {
-    let [scales, setScales] = useState("S");
+    let scales = "S";
     if (item && item.text) {
       Image.getSize(item.text, (width, height) => {
         if (width > height) {
-          setScales("L");
+          scales = "L";
         } else if (width < height) {
-          setScales("P");
+          scales = "P";
         } else {
-          setScales("S");
+          scales = "S";
         }
       });
     }

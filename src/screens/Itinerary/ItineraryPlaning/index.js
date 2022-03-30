@@ -39,6 +39,7 @@ import Ripple from "react-native-material-ripple";
 import { StackActions } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DeviceInfo from "react-native-device-info";
 
 const arrayShadow = {
   shadowOffset: { width: 0, height: 1 },
@@ -48,6 +49,7 @@ const arrayShadow = {
 };
 
 export default function listItinPlaning(props) {
+  const Notch = DeviceInfo.hasNotch();
   const { t, i18n } = useTranslation();
   let [modalLogin, setModalLogin] = useState(false);
   const HeaderComponent = {
@@ -62,13 +64,22 @@ export default function listItinPlaning(props) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
-
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -575,19 +586,22 @@ export default function listItinPlaning(props) {
 
       <View
         style={{
-          height: 60,
-          width: Dimensions.get("window").width,
-          backgroundColor: "white",
-          paddingVertical: 10,
+          position: "absolute",
+          bottom: 0,
+          height: Platform.OS === "ios" ? (Notch ? 75 : 60) : 60,
+          backgroundColor: "#FFF",
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 15,
+          shadowOffset: { width: 1, height: 1 },
+          shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+          shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+          elevation: Platform.OS == "ios" ? 3 : 3.5,
+          flexDirection: "row",
           borderTopWidth: 1,
-          borderColor: "#F0F0F0",
-          shadowColor: "#F0F0F0",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 1,
-          shadowRadius: 2,
-          elevation: 3,
-          alignItems: "center",
-          justifyContent: "center",
+          borderColor: "#F1F1F1",
+          justifyContent: "space-between",
+          paddingTop: 10,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 20 : 10) : 10,
         }}
       >
         <Button
@@ -597,9 +611,7 @@ export default function listItinPlaning(props) {
               screen: "Trip",
             })
           }
-          style={{
-            width: Dimensions.get("window").width - 60,
-          }}
+          style={{ height: "100%", width: "100%" }}
           text={t("createYourPlan")}
         />
       </View>

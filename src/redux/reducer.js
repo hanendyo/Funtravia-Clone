@@ -17,6 +17,8 @@ import {
   SET_PACKAGE_COUNTRY,
   SET_JOURNAL_COUNTRY,
   SET_FACT_COUNTRY,
+  SET_FETCH_DESTINATION,
+  SET_ANOTHER_DESTINATION,
 } from "./tipe";
 
 const initData = {
@@ -54,6 +56,13 @@ const initData = {
     },
     journalProvince: null,
     countryFact: [],
+  },
+  detailDestination: {
+    data: {
+      dataDestination: null,
+      tab: Array(1).fill(0),
+    },
+    anotherDestination: [],
   },
 };
 
@@ -135,6 +144,26 @@ export const reducerApps = (state = initData, action) => {
       return {
         ...state,
         country: { ...state.country, countryFact: action.data },
+      };
+
+    case SET_FETCH_DESTINATION:
+      return {
+        ...state,
+        detailDestination: {
+          ...state.detailDestination,
+          data: {
+            dataDestination: action.data[0],
+            tab: action.data[1],
+          },
+        },
+      };
+    case SET_ANOTHER_DESTINATION:
+      return {
+        ...state,
+        detailDestination: {
+          ...state.detailDestination,
+          anotherDestination: action.data,
+        },
       };
     default:
       return state;

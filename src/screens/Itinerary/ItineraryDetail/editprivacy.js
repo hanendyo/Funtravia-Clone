@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { FlatList, Pressable, View, Alert } from "react-native";
+import { FlatList, Pressable, View, Alert, Dimensions } from "react-native";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -23,26 +23,33 @@ export default function editprivacy(props) {
   const token = useSelector((data) => data.token);
   const HeaderComponent = {
     headerShown: true,
-    title: (
-      <Text size="header" style={{ color: "#fff" }}>
-        {t("edit privacy")}
-      </Text>
-    ),
     headerTransparent: false,
     headerTintColor: "white",
-    headerTitle: t("edit") + " " + t("privacy"),
+    headerTitle: (
+      <Text type="bold" size="header" style={{ color: "#fff" }}>
+        {t("editPrivacy")}
+      </Text>
+    ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#209FAE",
+      backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
       elevation: 0,
       borderBottomWidth: 0,
     },
+    headerTitleStyle: {
+      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      height: Platform.OS == "ios" ? 45 : null,
+      textAlign: Platform.OS == "ios" ? "center" : null,
+      paddingTop: Platform.OS == "ios" ? 8 : null,
+      paddingBottom: Platform.OS == "ios" ? 15 : null,
+    },
     headerLeftContainerStyle: {
       background: "#FFF",
+      // position: "absolute",
+      zIndex: 999,
       marginLeft: 10,
     },
-
-    headerRightStyle: {},
     headerLeft: () => (
       <Button
         text={""}
