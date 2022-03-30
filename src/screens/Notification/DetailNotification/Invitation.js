@@ -134,7 +134,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -144,20 +144,21 @@ export default function Invitation({
       setLoading(true);
       let response = await mutationAllIsRead();
       if (response.data.read_all_notif.code != 200) {
-        await setLoadiing(false);
+        await setLoading(false);
         throw new Error(response.data.read_all_notif.message);
       } else {
-        let tempDataNotif = [...datanotif];
-        let tempData = [];
-        for (var i in tempDataNotif) {
-          let tempDataIndex = { ...tempDataNotif[i] };
-          let tempDataNode = { ...tempDataIndex.node };
-          tempDataNode.isread = true;
-          tempDataIndex.node = tempDataNode;
-          tempData.push(tempDataIndex);
-        }
+        // let tempDataNotif = [...datanotif];
+        // let tempData = [];
+        // for (var i in tempDataNotif) {
+        //   let tempDataIndex = { ...tempDataNotif[i] };
+        //   let tempDataNode = { ...tempDataIndex.node };
+        //   tempDataNode.isread = true;
+        //   tempDataIndex.node = tempDataNode;
+        //   tempData.push(tempDataIndex);
+        // }
         setreadall(false);
-        SetDataNotif(tempData);
+        // SetDataNotif(tempData);
+        refetchnotif();
         setLoading(false);
       }
     } catch (error) {
@@ -175,7 +176,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -189,22 +190,23 @@ export default function Invitation({
         },
       });
       if (response.data.follow_user.code != 200) {
-        await setLoadiing(false);
+        await setLoading(false);
         throw new Error(response.data.follow_user.message);
       } else {
-        let tempDataNotif = [...datanotif];
-        let index = tempDataNotif.findIndex((k) => k.node["ids"] === notif_id);
-        let tempData = { ...tempDataNotif[index] };
-        let tempDataNode = { ...tempDataNotif[index].node };
-        let tempDataFollow = { ...tempDataNode.follow_user };
-        let tempDataUser = { ...tempDataFollow.user };
-        tempDataUser.status_following = true;
-        tempDataFollow.user = tempDataUser;
-        tempDataNode.follow_user = tempDataFollow;
-        tempDataNode.isread = true;
-        tempData.node = tempDataNode;
-        tempDataNotif.splice(index, 1, tempData);
-        SetDataNotif(tempDataNotif);
+        // let tempDataNotif = [...datanotif];
+        // let index = tempDataNotif.findIndex((k) => k.node["ids"] === notif_id);
+        // let tempData = { ...tempDataNotif[index] };
+        // let tempDataNode = { ...tempDataNotif[index].node };
+        // let tempDataFollow = { ...tempDataNode.follow_user };
+        // let tempDataUser = { ...tempDataFollow.user };
+        // tempDataUser.status_following = true;
+        // tempDataFollow.user = tempDataUser;
+        // tempDataNode.follow_user = tempDataFollow;
+        // tempDataNode.isread = true;
+        // tempData.node = tempDataNode;
+        // tempDataNotif.splice(index, 1, tempData);
+        // SetDataNotif(tempDataNotif);
+        refetchnotif();
         setLoading(false);
       }
     } catch (error) {
@@ -233,7 +235,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -242,7 +244,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -251,7 +253,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
   });
@@ -269,37 +271,38 @@ export default function Invitation({
         throw new Error(response.data.reject_buddy.message);
       } else {
         updateisread(data.ids);
-        var dt = new Date();
-        let rejected_at = `${dt
-          .getFullYear()
-          .toString()
-          .padStart(4, "0")}-${(dt.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${dt
-          .getDate()
-          .toString()
-          .padStart(2, "0")} ${dt
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${dt
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${dt
-          .getSeconds()
-          .toString()
-          .padStart(2, "0")}`;
-        let tempDataNotif = [...datanotif];
-        let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
-        let tempDataIndex = { ...tempDataNotif[index] };
-        let tempDataNode = { ...tempDataIndex.node };
-        let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
-        tempDataBuddy.isconfrim = true;
-        tempDataBuddy.rejected_at = rejected_at;
-        tempDataNode.itinerary_buddy = tempDataBuddy;
-        tempDataNode.isread = true;
-        tempDataIndex.node = tempDataNode;
-        tempDataNotif.splice(index, 1, tempDataIndex);
-        SetDataNotif(tempDataNotif);
+        // var dt = new Date();
+        // let rejected_at = `${dt
+        //   .getFullYear()
+        //   .toString()
+        //   .padStart(4, "0")}-${(dt.getMonth() + 1)
+        //   .toString()
+        //   .padStart(2, "0")}-${dt
+        //   .getDate()
+        //   .toString()
+        //   .padStart(2, "0")} ${dt
+        //   .getHours()
+        //   .toString()
+        //   .padStart(2, "0")}:${dt
+        //   .getMinutes()
+        //   .toString()
+        //   .padStart(2, "0")}:${dt
+        //   .getSeconds()
+        //   .toString()
+        //   .padStart(2, "0")}`;
+        // let tempDataNotif = [...datanotif];
+        // let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
+        // let tempDataIndex = { ...tempDataNotif[index] };
+        // let tempDataNode = { ...tempDataIndex.node };
+        // let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
+        // tempDataBuddy.isconfrim = true;
+        // tempDataBuddy.rejected_at = rejected_at;
+        // tempDataNode.itinerary_buddy = tempDataBuddy;
+        // tempDataNode.isread = true;
+        // tempDataIndex.node = tempDataNode;
+        // tempDataNotif.splice(index, 1, tempDataIndex);
+        // SetDataNotif(tempDataNotif);
+        refetchnotif();
         setLoading(false);
       }
     } catch (error) {
@@ -337,37 +340,38 @@ export default function Invitation({
         throw new Error(response.data.confrim_buddy.message);
       } else {
         updateisread(data.ids);
-        var dt = new Date();
-        let accepted_at = `${dt
-          .getFullYear()
-          .toString()
-          .padStart(4, "0")}-${(dt.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${dt
-          .getDate()
-          .toString()
-          .padStart(2, "0")} ${dt
-          .getHours()
-          .toString()
-          .padStart(2, "0")}:${dt
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${dt
-          .getSeconds()
-          .toString()
-          .padStart(2, "0")}`;
-        let tempDataNotif = [...datanotif];
-        let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
-        let tempDataIndex = { ...tempDataNotif[index] };
-        let tempDataNode = { ...tempDataIndex.node };
-        let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
-        tempDataBuddy.isconfrim = true;
-        tempDataBuddy.accepted_at = accepted_at;
-        tempDataNode.itinerary_buddy = tempDataBuddy;
-        tempDataNode.isread = true;
-        tempDataIndex.node = tempDataNode;
-        tempDataNotif.splice(index, 1, tempDataIndex);
-        SetDataNotif(tempDataNotif);
+        // var dt = new Date();
+        // let accepted_at = `${dt
+        //   .getFullYear()
+        //   .toString()
+        //   .padStart(4, "0")}-${(dt.getMonth() + 1)
+        //   .toString()
+        //   .padStart(2, "0")}-${dt
+        //   .getDate()
+        //   .toString()
+        //   .padStart(2, "0")} ${dt
+        //   .getHours()
+        //   .toString()
+        //   .padStart(2, "0")}:${dt
+        //   .getMinutes()
+        //   .toString()
+        //   .padStart(2, "0")}:${dt
+        //   .getSeconds()
+        //   .toString()
+        //   .padStart(2, "0")}`;
+        // let tempDataNotif = [...datanotif];
+        // let index = tempDataNotif.findIndex((k) => k.node["ids"] == data.ids);
+        // let tempDataIndex = { ...tempDataNotif[index] };
+        // let tempDataNode = { ...tempDataIndex.node };
+        // let tempDataBuddy = { ...tempDataNode.itinerary_buddy };
+        // tempDataBuddy.isconfrim = true;
+        // tempDataBuddy.accepted_at = accepted_at;
+        // tempDataNode.itinerary_buddy = tempDataBuddy;
+        // tempDataNode.isread = true;
+        // tempDataIndex.node = tempDataNode;
+        // tempDataNotif.splice(index, 1, tempDataIndex);
+        // SetDataNotif(tempDataNotif);
+        refetchnotif();
         setLoading(false);
       }
     } catch (error) {
@@ -401,7 +405,7 @@ export default function Invitation({
       });
 
       if (response.data.update_read.code != 200) {
-        await setLoadiing(false);
+        await setLoading(false);
         throw new Error(response.data.update_read.message);
       }
     } catch (error) {
@@ -409,7 +413,7 @@ export default function Invitation({
         title: "Something wrong",
         position: "bottom",
       });
-      setLoadiing(false);
+      setLoading(false);
     }
   };
 
@@ -448,7 +452,7 @@ export default function Invitation({
         params: {
           itintitle: data.like_itinerary.itinerary.name,
           country: data.like_itinerary.itinerary.id,
-          token: token,
+          token: tokenApps,
           status: "favorite",
           index: 0,
           data_from: "setting",
@@ -493,7 +497,7 @@ export default function Invitation({
               itintitle: "",
               country: data.itinerary_buddy.itinerary_id,
               dateitin: "",
-              token: token,
+              token: tokenApps,
               status: "saved",
             },
           })
@@ -608,7 +612,7 @@ export default function Invitation({
     context: {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        Authorization: tokenApps,
       },
     },
     variables: { id: itineraryId },
@@ -695,11 +699,11 @@ export default function Invitation({
       !loadingnotif
     ) {
       return fetchMore({
-        updateQuery: onUpdate,
         variables: {
           first: 10,
           after: datasnotif?.list_notification_cursor_based.pageInfo.endCursor,
         },
+        updateQuery: onUpdate,
       });
     }
   };

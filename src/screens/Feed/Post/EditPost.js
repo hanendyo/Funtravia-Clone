@@ -31,6 +31,7 @@ import RenderSinglePhoto from "../RenderSinglePhoto";
 import RenderAlbum from "../RenderAlbumItinerary";
 import { useIsFocused } from "@react-navigation/native";
 import { CommonActions } from "@react-navigation/native";
+import DeviceInfo from "react-native-device-info";
 
 const PostEdit = gql`
   mutation($post_id: ID!, $caption: String) {
@@ -44,6 +45,7 @@ const PostEdit = gql`
 `;
 
 export default function EditPost(props) {
+  const Notch = DeviceInfo.hasNotch();
   const from = props.route.params.from;
   const { t, i18n } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -382,10 +384,15 @@ export default function EditPost(props) {
             paddingTop: -80,
             // marginBottom: Platform.OS == "ios" ? 100 : null,
             borderTopStartRadius: 15,
-            borderTopStartRadius: 15,
+            borderTopEndRadius: 15,
             borderBottomStartRadius: 15,
             borderBottomEndRadius: 15,
-            height: Dimensions.get("window").height / 1.2,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("window").height / 1.2
+                  : Dimensions.get("window").height
+                : Dimensions.get("window").height / 1.2,
           }}
         >
           <Loading show={loadingok} />

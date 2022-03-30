@@ -688,7 +688,7 @@ export default function Detail_movie(props) {
             overflow: "hidden",
             height:
               Platform.OS == "ios"
-                ? HEADER_MAX_HEIGHT - 8
+                ? HEADER_MAX_HEIGHT - 10
                 : HEADER_MAX_HEIGHT - 5,
             transform: [{ translateY: headerTranslateY }],
             zIndex: 1,
@@ -721,7 +721,7 @@ export default function Detail_movie(props) {
         <Animated.View
           style={{
             transform: [{ translateY: titleTranslateY }],
-            height: Platform.OS === "ios" ? normalize(55) : normalize(50),
+            height: Platform.OS === "ios" ? normalize(45) : normalize(50),
             flex: 1,
             alignItems: "flex-start",
             justifyContent: "center",
@@ -733,7 +733,7 @@ export default function Detail_movie(props) {
             paddingLeft: 60,
             backgroundColor: "#209FAE",
             opacity: titleOpacity,
-            top: 0,
+            top: Platform.OS === "ios" ? 1 : 0,
           }}
         >
           <Text
@@ -773,7 +773,7 @@ export default function Detail_movie(props) {
               props.navigation.goBack();
             }}
             style={{
-              marginTop: 10,
+              marginTop: Platform.OS == "ios" ? 7 : 10,
               marginLeft: 15,
               backgroundColor: "rgba(0,0,0, 0.5)",
               borderRadius: 35,
@@ -810,8 +810,8 @@ export default function Detail_movie(props) {
           <Pressable
             onPress={() => props.navigation.goBack()}
             style={{
-              marginTop: 10,
-              marginLeft: 15,
+              marginTop: Platform.OS == "ios" ? 5 : 10,
+              marginLeft: Platform.OS == "ios" ? 14 : 10,
               borderRadius: 40,
               height: 40,
               width: 40,

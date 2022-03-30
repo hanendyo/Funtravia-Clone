@@ -3107,6 +3107,7 @@ export default function CityDetail(props) {
         </Animated.View>
 
         {/* Hide Status bar untuk notch */}
+        {/* Status bar untuk notch */}
         {Platform.OS === "ios" ? (
           <View
             style={{
