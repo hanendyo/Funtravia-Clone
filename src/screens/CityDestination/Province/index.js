@@ -112,7 +112,6 @@ let HEADER_MIN_HEIGHT = 55;
 let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function ProvinceDetail(props) {
-  console.log("props", props.route.params.data);
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const token = useSelector((data) => data.token);
@@ -403,7 +402,6 @@ export default function ProvinceDetail(props) {
   if (dataItinerary && dataItinerary.itinerary_populer_by_province) {
     list_populer = dataItinerary.itinerary_populer_by_province;
   }
-  console.log("list_populer", dataItinerary, errorItinerary);
 
   const headerPanResponder = useRef(
     PanResponder.create({
@@ -3484,6 +3482,7 @@ export default function ProvinceDetail(props) {
         </Animated.View>
 
         {/* Status bar iOS */}
+        {/* Status bar untuk notch */}
         {Platform.OS === "ios" ? (
           <View
             style={{

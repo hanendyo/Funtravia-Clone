@@ -54,10 +54,10 @@ import { useSelector } from "react-redux";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 
+const Notch = DeviceInfo.hasNotch();
 export default function Room({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
-  const Notch = DeviceInfo.hasNotch();
   const { width, height } = Dimensions.get("screen");
   const [modal_camera, setmodalCamera] = useState(false);
   const [room, setRoom] = useState(route.params.room_id);
@@ -243,8 +243,6 @@ export default function Room({ navigation, route }) {
       let FilterBuddy = dataResponse.grup.buddy.filter(
         (i) => i.isconfrim == true
       );
-      console.log("filterBuddy", FilterBuddy);
-      console.log(dataResponse.grup.buddy);
       let update_header = {
         headerLeft: () => (
           <View
@@ -973,7 +971,7 @@ export default function Room({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor="#14646E" barStyle="light-content" />
 
       <ModalRN
@@ -1272,9 +1270,9 @@ export default function Room({ navigation, route }) {
               keyboardOffset > 0
                 ? Notch
                   ? 275
-                  : 230
+                  : 270
                 : keyboardOffset > 300
-                ? 325
+                ? 335
                 : 13,
             justifyContent: "space-between",
           }}
@@ -1384,7 +1382,7 @@ export default function Room({ navigation, route }) {
           </Button>
         </KeyboardAvoidingView>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -1393,6 +1391,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F3F3F3",
     justifyContent: "flex-end",
+    marginBottom: Platform.OS == "ios" && Notch ? 10 : null,
   },
   item: {
     marginVertical: moderateScale(1, 1),
