@@ -96,6 +96,7 @@ export const dateFormatMonthYears = (date) => {
 };
 
 export const dateFormats = (date) => {
+  
   let monthNames = [
     "Jan",
     "Feb",
@@ -111,6 +112,7 @@ export const dateFormats = (date) => {
     "Dec",
   ];
   let formattedDate = new Date(date);
+  console.log("Date", formattedDate);
   let newDate =
     formattedDate.getDate().toString() +
     " " +

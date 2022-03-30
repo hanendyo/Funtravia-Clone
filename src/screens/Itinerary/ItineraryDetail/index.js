@@ -3100,7 +3100,7 @@ export default function ItineraryDetail(props) {
 
   const renderAlbum = ({ item, index }) => {
     return grid !== 1 ? (
-      item.id === dataalbumaktif?.id ? (
+      item?.id === dataalbumaktif?.id ? (
         <View
           style={{
             width: "100%",
@@ -3257,6 +3257,7 @@ export default function ItineraryDetail(props) {
       <View
         style={{
           width: "100%",
+          borderWidth: 1,
         }}
       >
         <View
@@ -3554,7 +3555,7 @@ export default function ItineraryDetail(props) {
 
   const spreadData = (rData) => {
     let result = [];
-    rData?.itinerary_album_list_v2?.album.map((dataS, index) => {
+    rData?.itinerary_album_list_v2?.album?.map((dataS, index) => {
       let tempdata = {
         posted: [],
         unposted: [{ id: "camera" }],
@@ -3578,6 +3579,7 @@ export default function ItineraryDetail(props) {
       }
       result.push(tempdata);
     });
+
     return result;
   };
 
@@ -3610,6 +3612,7 @@ export default function ItineraryDetail(props) {
   };
 
   const renderScene = ({ route }) => {
+    console.log("Route", route.key);
     const focused = route.key === routes[tabIndex].key;
     let numCols;
     let data;

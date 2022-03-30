@@ -75,7 +75,7 @@ export default function Albumheader({
     setitemName(item.title);
     setalbumId(item.id);
 
-    if (Anggota === "true") {
+    if (Anggota) {
       setmodalDeleteAlbum(true);
     }
   };
@@ -291,7 +291,7 @@ export default function Albumheader({
           </Menu>
         )}
         ListFooterComponent={
-          Anggota === "true" ? (
+          Anggota ? (
             <Pressable
               onPress={() => {
                 setModalcreate(true);
