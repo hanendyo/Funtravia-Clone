@@ -913,5 +913,6 @@
   "deleteMessageSelected": "Do you want to delete ",
   "thisTripHasBeenDeleted": "This trip has been deleted",
   "AlertTime": "The end time cannot be less than the start time",
-  "MaxSizeFile": "Maximum file size 7mb"
+  "MaxSizeFile": "Maximum file size 7mb",
+  "editPrivacy": "Edit Privacy"
 }
