@@ -12,6 +12,7 @@ import {
   Pressable,
   FlatList,
   NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { default_image } from "../../../assets/png";
@@ -42,10 +43,6 @@ const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 40;
-const SafeStatusBar = Platform.select({
-  ios: Notch ? 48 : 20,
-  android: NativeModules.StatusBarManager.HEIGHT,
-});
 
 const tab2ItemSize = (width - 40) / 3;
 const PullToRefreshDist = 150;
@@ -70,10 +67,10 @@ export default function Unesco({ navigation, route }) {
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(245) + tambahanJudul + tambahan - SafeStatusBar
+        ? normalize(245) + tambahanJudul + tambahan
         : NotchAndro
-        ? normalize(225) + tambahanJudul + tambahan - SafeStatusBar
-        : normalize(210) + tambahanJudul + tambahan - SafeStatusBar,
+        ? normalize(225) + tambahanJudul + tambahan
+        : normalize(210) + tambahanJudul + tambahan,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({
@@ -466,7 +463,7 @@ export default function Unesco({ navigation, route }) {
         // style={[styles.header, { transform: [{ translateY: y }] }]}
         style={{
           transform: [{ translateY: y }],
-          top: SafeStatusBar,
+          top: 0,
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
@@ -480,8 +477,8 @@ export default function Unesco({ navigation, route }) {
               width: "100%",
               height: 200,
               resizeMode: "cover",
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
+              // opacity: imageOpacity,
+              // transform: [{ translateY: imageTranslate }],
             }}
             source={{ uri: Banner.banner_asset[0].filepath }}
           />
@@ -491,8 +488,8 @@ export default function Unesco({ navigation, route }) {
               width: "100%",
               height: 200,
               resizeMode: "cover",
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }],
+              // opacity: imageOpacity,
+              // transform: [{ translateY: imageTranslate }],
             }}
             source={default_image}
           />
@@ -504,8 +501,8 @@ export default function Unesco({ navigation, route }) {
             width: Dimensions.get("screen").width,
             backgroundColor: "#FFFFFF",
 
-            opacity: imageOpacity,
-            transform: [{ translateY: imageTranslate }],
+            // opacity: imageOpacity,
+            // transform: [{ translateY: imageTranslate }],
           }}
         >
           <View
@@ -789,7 +786,7 @@ export default function Unesco({ navigation, route }) {
           onMomentumScrollEnd={onMomentumScrollEnd}
           contentContainerStyle={{
             paddingTop: HeaderHeight + TabBarHeight,
-            minHeight: height - SafeStatusBar + HeaderHeight,
+            minHeight: height + HeaderHeight,
             flex: flex,
             backgroundColor: "#F6F6F6",
           }}
@@ -827,7 +824,7 @@ export default function Unesco({ navigation, route }) {
             alignItems: "center",
             alignContent: "center",
             paddingTop: HeaderHeight,
-            minHeight: height - SafeStatusBar + HeaderHeight,
+            minHeight: height + HeaderHeight,
           }}
         >
           {loadingcountry && loading ? (
@@ -1009,156 +1006,173 @@ export default function Unesco({ navigation, route }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {loadingPage ? (
-        <View
+    <>
+      <StaBar backgroundColor="#14646e" barStyle="light-content" />
+      <SafeAreaView style={styles.container}>
+        {loadingPage ? (
+          <View
+            style={{
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+              position: "absolute",
+              backgroundColor: "#FFF",
+              zIndex: 1000000,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#209fae" />
+          </View>
+        ) : null}
+        <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+        <CountrySrc
+          selectedCountry={selectedCountry}
+          SetselectedCountry={(e) => SetselectedCountry(e)}
+          modalshown={modalcountry}
+          setModelCountry={(e) => setModelCountry(e)}
+          navigation={navigation}
+        />
+
+        <Animated.View
           style={{
-            width: Dimensions.get("screen").width,
-            height: Dimensions.get("screen").height,
             position: "absolute",
-            backgroundColor: "#FFF",
-            zIndex: 1000000,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#209fae" />
-        </View>
-      ) : null}
-      <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
-      <CountrySrc
-        selectedCountry={selectedCountry}
-        SetselectedCountry={(e) => SetselectedCountry(e)}
-        modalshown={modalcountry}
-        setModelCountry={(e) => setModelCountry(e)}
-        navigation={navigation}
-      />
-
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: Platform.OS == "ios" ? SafeStatusBar : SafeStatusBar,
-          zIndex: 9999,
-          opacity: hides.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          // borderWidth: 1,
-          alignContent: "center",
-          alignItems: "center",
-          marginHorizontal: 20,
-          height: 55,
-          width: Dimensions.get("screen").width - 40,
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              borderRadius: 30,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-      </Animated.View>
-
-      {/* jika scrollheader, animated show */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: SafeStatusBar,
-          zIndex: 9999,
-          opacity: hide.current,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignContent: "center",
-          alignItems: "center",
-          // marginHorizontal: 20,
-          paddingHorizontal: 20,
-          height: Platform.OS === "ios" ? 55 : 55,
-          width: Dimensions.get("screen").width,
-          backgroundColor: "#209fae",
-        }}
-      >
-        <Button
-          text={""}
-          size="medium"
-          type="circle"
-          variant="transparent"
-          onPress={() => navigation.goBack()}
-          style={{
-            height: 50,
-            // marginLeft: 8,
-          }}
-        >
-          <Animated.View
-            style={{
-              height: 35,
-              width: 35,
-
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Animated.View>
-        </Button>
-        <View
-          style={{
-            width: Dimensions.get("screen").width - 95,
+            top: 0,
+            zIndex: 9999,
+            opacity: hides.current,
             flexDirection: "row",
+            justifyContent: "space-between",
+            // borderWidth: 1,
             alignContent: "center",
             alignItems: "center",
-            // padding: 10,
+            marginHorizontal: 20,
+            height: 55,
+            width: Dimensions.get("screen").width - 40,
           }}
         >
-          <Text
-            size="title"
-            type="bold"
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => navigation.goBack()}
             style={{
-              color: "#FFFFFF",
+              height: 50,
+              // marginLeft: 8,
             }}
           >
-            {t("UnescoTitle")}
-          </Text>
-        </View>
-      </Animated.View>
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
 
-      {/* {renderNavigation()} */}
-      {renderTabView()}
-      {renderHeader()}
-      {renderCustomRefresh()}
-    </View>
+                borderRadius: 30,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+        </Animated.View>
+
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
+
+        {/* jika scrollheader, animated show */}
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 0,
+            zIndex: 99,
+            opacity: hide.current,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "center",
+            alignItems: "center",
+            // marginHorizontal: 20,
+            paddingHorizontal: 20,
+            height: Platform.OS === "ios" ? 55 : 55,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#209fae",
+          }}
+        >
+          <Button
+            text={""}
+            size="medium"
+            type="circle"
+            variant="transparent"
+            onPress={() => navigation.goBack()}
+            style={{
+              height: 50,
+              // marginLeft: 8,
+            }}
+          >
+            <Animated.View
+              style={{
+                height: 35,
+                width: 35,
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
+            </Animated.View>
+          </Button>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 95,
+              flexDirection: "row",
+              alignContent: "center",
+              alignItems: "center",
+              // padding: 10,
+            }}
+          >
+            <Text
+              size="title"
+              type="bold"
+              style={{
+                color: "#FFFFFF",
+              }}
+            >
+              {t("UnescoTitle")}
+            </Text>
+          </View>
+        </Animated.View>
+
+        {/* {renderNavigation()} */}
+        {renderTabView()}
+        {renderHeader()}
+        {renderCustomRefresh()}
+      </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#F6F6F6",
   },
   header: {
     height:
@@ -1166,7 +1180,7 @@ const styles = StyleSheet.create({
         ? Notch
           ? normalize(420) - 48
           : normalize(360) - 20
-        : normalize(340) - SafeStatusBar,
+        : normalize(340),
     width: "100%",
     alignItems: "center",
     // justifyContent: "center",

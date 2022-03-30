@@ -2051,30 +2051,27 @@ export default function ItineraryChooseday(props) {
       </ScrollView>
       <View
         style={{
-          zIndex: 999,
           position: "absolute",
-          left: 0,
           bottom: 0,
-          height: 60,
-          width: Dimensions.get("window").width,
-          backgroundColor: "white",
-          paddingVertical: 10,
+          height: Platform.OS === "ios" ? (Notch ? 75 : 60) : 60,
+          backgroundColor: "#FFF",
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 15,
+          shadowOffset: { width: 1, height: 1 },
+          shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+          shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+          elevation: Platform.OS == "ios" ? 3 : 3.5,
+          flexDirection: "row",
           borderTopWidth: 1,
-          borderColor: "#F0F0F0",
-          shadowColor: "#F0F0F0",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 1,
-          shadowRadius: 2,
-          elevation: 3,
-          alignItems: "center",
-          justifyContent: "center",
+          borderColor: "#F1F1F1",
+          justifyContent: "space-between",
+          paddingTop: 10,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 20 : 10) : 10,
         }}
       >
         <Button
           onPress={() => saveData()}
-          style={{
-            width: Dimensions.get("window").width - 40,
-          }}
+          style={{ height: "100%", width: "100%" }}
           text={t("next")}
         />
       </View>

@@ -22,6 +22,8 @@ import {
   SET_JOURNAL_COUNTRY,
   SET_ITINERARY_COUNTRY,
   SET_FACT_COUNTRY,
+  SET_ANOTHER_DESTINATION,
+  SET_FETCH_DESTINATION,
 } from "./tipe";
 
 export const setTokenApps = (token) => ({
@@ -107,5 +109,15 @@ export const setJournalCountry = (input) => ({
 
 export const setFactCountry = (input) => ({
   type: SET_FACT_COUNTRY,
+  data: input,
+});
+
+export const setAnotherDes = (input) => ({
+  type: SET_ANOTHER_DESTINATION,
+  data: input,
+});
+
+export const setFetchDest = (input) => ({
+  type: SET_FETCH_DESTINATION,
   data: input,
 });

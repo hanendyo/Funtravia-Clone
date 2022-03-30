@@ -73,7 +73,7 @@ const deviceId = DeviceInfo.getModel();
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
 const { width, height } = Dimensions.get("screen");
-const TabBarHeight = Platform.OS == "ios" ? 49 : 42;
+const TabBarHeight = Platform.OS == "ios" ? 49 : 44;
 
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 40) / 3;
@@ -100,16 +100,17 @@ export default function OtherProfile(props) {
   //   ios: Notch ? 42 : 20,
   //   android: StatusBar.currentHeight,
   // });
+  console.log("height", heightname, heightbio);
 
   const HeaderHeight = Platform.select({
     ios: Notch
-      ? normalize(281) + heightname + heightbio
+      ? normalize(305) + heightname + heightbio
       : normalize(315) + heightname + heightbio,
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(265) + heightname + heightbio - StatusBar.currentHeight
-        : normalize(310) + heightname + heightbio - StatusBar.currentHeight,
+        ? normalize(265) + heightname + heightbio
+        : normalize(300) + heightname + heightbio,
   });
 
   let [datas, setdatas] = useState(null);
@@ -941,26 +942,14 @@ export default function OtherProfile(props) {
         style={{
           transform: [{ translateY: y }],
           top: 0,
-          paddingTop: Platform.select({
-            ios: Notch ? 50 : 45,
-            // android: 15,
-            android:
-              deviceId == "LYA-L29"
-                ? 45
-                : deviceId == "CPH2127"
-                ? 50
-                : NotchAndro
-                ? 58
-                : 40,
-          }),
-          marginBottom: 3,
+          // paddingBottom: 3,
           // height: HeaderHeight,
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
           position: "absolute",
-          backgroundColor: "#14646e",
-          opacity: imageOpacity,
+          backgroundColor: "#FFF",
+          // opacity: imageOpacity,
         }}
       >
         <Animated.View
@@ -968,14 +957,28 @@ export default function OtherProfile(props) {
             width: "100%",
             // height: HeaderHeight,
             // borderWidth: 1,
+            // borderBottomColor: "#FFF",
             top: 0,
+            // paddingTop: Platform.select({
+            //   ios: Notch ? 10 : 20,
+            //   android: 10,
+            // }),
             paddingTop: Platform.select({
-              ios: Notch ? 10 : 20,
-              android: 10,
+              ios: Notch ? 60 : 65,
+              // android: 15,
+              android:
+                deviceId == "LYA-L29"
+                  ? 55
+                  : deviceId == "CPH2127"
+                  ? 60
+                  : NotchAndro
+                  ? 52
+                  : 50,
             }),
-
-            backgroundColor: "#fff",
-            opacity: imageOpacity,
+            paddingBottom: Platform.OS === "ios" ? 15 : 5,
+            zIndex: 99,
+            backgroundColor: "#FFF",
+            // opacity: imageOpacity,
             justifyContent: "center",
           }}
         >
@@ -1006,7 +1009,7 @@ export default function OtherProfile(props) {
                   borderColor: "#FFF",
                   top: 5,
                   zIndex: 1,
-                  opacity: imageOpacitys,
+                  // opacity: imageOpacitys,
                   transform: [{ scale: imageTrans }],
                 }}
               />
@@ -1039,7 +1042,7 @@ export default function OtherProfile(props) {
                 alignContent: "center",
                 justifyContent: "center",
                 alignSelf: "center",
-                opacity: opacityfrom1,
+                // opacity: opacityfrom1,
               }}
             >
               <Text
@@ -1248,6 +1251,7 @@ export default function OtherProfile(props) {
             <Text
               onTextLayout={(x) => {
                 let line = x.nativeEvent.lines.length;
+                console.log("line", line);
                 if (line == 0) {
                   Platform.select({
                     ios: Notch ? setHeightBio(0) : setHeightBio(0),
@@ -1261,7 +1265,7 @@ export default function OtherProfile(props) {
                     android:
                       deviceId == "LYA-L29"
                         ? setHeightBio(70)
-                        : setHeightBio(48),
+                        : setHeightBio(15),
                   });
                 }
 
@@ -1281,7 +1285,7 @@ export default function OtherProfile(props) {
                     android:
                       deviceId == "LYA-L29"
                         ? setHeightBio(100)
-                        : setHeightBio(77),
+                        : setHeightBio(57),
                   });
                 }
 
@@ -1291,7 +1295,7 @@ export default function OtherProfile(props) {
                     android:
                       deviceId == "LYA-L29"
                         ? setHeightBio(120)
-                        : setHeightBio(86),
+                        : setHeightBio(76),
                   });
                 }
 
@@ -1301,7 +1305,7 @@ export default function OtherProfile(props) {
                     android:
                       deviceId == "LYA-L29"
                         ? setHeightBio(140)
-                        : setHeightBio(105),
+                        : setHeightBio(85),
                   });
                 }
               }}
@@ -1880,7 +1884,7 @@ export default function OtherProfile(props) {
                 fontFamily: "Lato-Bold",
               }}
             >
-              {t("profile")}
+              {/* {t("profile")} */}
             </Animated.Text>
           </View>
           {position && position === "other" ? (
@@ -1913,6 +1917,20 @@ export default function OtherProfile(props) {
             </View>
           ) : null}
         </Animated.View>
+
+        {/* Status bar untuk notch */}
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
         {/* header after scroll */}
         <Animated.View
           style={{
@@ -1920,7 +1938,7 @@ export default function OtherProfile(props) {
             top: 0,
             zIndex: 9999,
             backgroundColor: "#209FAE",
-            opacity: hide.current,
+            // opacity: hide.current,
             flexDirection: "row",
             justifyContent: "space-between",
             height: 52,
