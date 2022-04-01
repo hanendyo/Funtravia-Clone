@@ -16,7 +16,6 @@ import { Star } from "../../../assets/svg";
 import { default_image } from "../../../assets/png";
 import { useQuery } from "@apollo/client";
 import DestinationById from "../../../graphQL/Query/Destination/DestinationById";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ripple from "react-native-material-ripple";
 import ImageSlide from "../../../component/src/ImageSlide";
 import { useTranslation } from "react-i18next";
@@ -70,16 +69,9 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
     await setModalss(true);
   };
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const y = scrollY.interpolate({
-    inputRange: [0, HeaderHeight ? HeaderHeight : 420],
-    outputRange: [0, 55],
-    extrapolate: "clamp",
-  });
   return (
-    <Animated.View
+    <View
       style={{
-        transform: [{ translateY: y }],
         paddingBottom: 60,
       }}
     >
@@ -95,7 +87,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
         setClose={() => setModalss(false)}
       />
       {data?.destinationById?.review.length > 0 ? (
-        <View style={{ paddingTop: 20 }}>
+        <Animated.View style={{ paddingTop: 20 }}>
           {data?.destinationById?.review.map((item, index) => {
             let set = [1, 2, 3, 4, 5];
             return (
@@ -313,7 +305,7 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
               </View>
             );
           })}
-        </View>
+        </Animated.View>
       ) : (
         <View
           style={{
@@ -326,6 +318,6 @@ export default function Reviews({ props, id, HeaderHeight, token }) {
           </Text>
         </View>
       )}
-    </Animated.View>
+    </View>
   );
 }

@@ -22,6 +22,7 @@ import { ItineraryKosong } from "../../../assets/png";
 import { Text } from "../../../component";
 import normalize from "react-native-normalize";
 import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 // import { useSelector } from "react-redux";
 
 export default function Trip(
@@ -366,13 +367,7 @@ export default function Trip(
                   )
                 ) : null}
               </View>
-              <Text
-                size="title"
-                type="black"
-                style={{}}
-                numberOfLines={2}
-                style={{ marginTop: 3 }}
-              >
+              <Text size="title" type="black" style={{}} numberOfLines={2}>
                 {item.name}
               </Text>
               <View
@@ -414,6 +409,7 @@ export default function Trip(
                   height={14}
                   style={{
                     marginRight: 5,
+                    bottom: 3,
                   }}
                 />
                 <Text
@@ -435,7 +431,7 @@ export default function Trip(
                   height={14}
                   style={{ marginRight: 5 }}
                 />
-                <Text size="description" type="regular">
+                <Text size="description" type="regular" style={{ bottom: 3 }}>
                   {item && item.buddy ? item.buddy.length : "0"} person
                 </Text>
               </View>

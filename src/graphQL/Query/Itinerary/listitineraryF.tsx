@@ -10,6 +10,7 @@ const ListItinerary = gql`
       end_date
       isprivate
       status
+      like_show
       liked
       country {
         id

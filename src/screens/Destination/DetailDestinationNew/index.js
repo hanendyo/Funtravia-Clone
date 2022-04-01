@@ -186,7 +186,6 @@ const Index = (props) => {
   // const dataDestination = useSelector(
   //   (data) => data.detailDestination.data.dataDestination
   // );
-  console.log("dataDestination", dataDestination);
   let [more, setMore] = useState(false);
   let [lines, setLines] = useState(3);
   let [dataAnother, setDataAnother] = useState({});
@@ -1758,13 +1757,20 @@ const Index = (props) => {
   };
 
   const renderReview = ({ item, props }) => {
+    let y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
     return (
-      <Reviews
-        id={item?.id}
-        props={props}
-        HeaderHeight={HeaderHeight}
-        token={tokenApps}
-      />
+      <Animated.View style={{ transform: [{ translateY: y }] }}>
+        <Reviews
+          id={item?.id}
+          props={props}
+          HeaderHeight={HeaderHeight}
+          token={tokenApps}
+        />
+      </Animated.View>
     );
   };
 
@@ -1950,7 +1956,7 @@ const Index = (props) => {
           paddingTop: HeaderHeight + TabBarHeight,
           // paddingHorizontal: 10,
           backgroundColor: "#FFF",
-          minHeight: height + HeaderHeight,
+          minHeight: HeaderHeight,
         }}
         showsHorizontalScrollIndicator={false}
         data={data}
