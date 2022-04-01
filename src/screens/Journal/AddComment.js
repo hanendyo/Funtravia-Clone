@@ -6,7 +6,7 @@ import {
   KeyboardAvoidingView,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Text } from "../../component";
 import { useTranslation } from "react-i18next";
@@ -67,6 +67,22 @@ export default function AddComment({
     },
   });
 
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const comment = async (id, text) => {
     Keyboard.dismiss();
     if (token && text !== "") {
@@ -116,18 +132,37 @@ export default function AddComment({
       behavior={Platform.OS == "ios" ? "height" : "height"}
       // keyboardVerticalOffset={Notch ? 15 : 65}
       style={{
+        paddingHorizontal: 20,
+        flexDirection: "row",
+        borderWidth: 1,
+        borderColor: "#f0f0f0",
+        paddingVertical: 10,
         width: Dimensions.get("window").width,
-
-        paddingHorizontal: 10,
+        backgroundColor: "#FFF",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: arrayShadow.shadowOpacity,
+        shadowRadius: arrayShadow.shadowRadius,
+        elevation: arrayShadow.elevation,
+        paddingBottom: keyboardStatus
+          ? 10
+          : Platform.OS === "ios"
+          ? Notch
+            ? 13
+            : 10
+          : 10,
       }}
     >
       <View
         style={{
-          backgroundColor: "#ffffff",
-          borderBottomRightRadius: 15,
-          borderBottomLeftRadius: 15,
-          paddingVertical: 10,
-          marginVertical: 5,
+          backgroundColor: "#f6f6f6",
+          borderRadius: 30,
+          width: Dimensions.get("window").width * 0.9,
+          marginBottom: Platform.OS === "ios" ? (keyboardStatus ? 5 : 8) : 0,
+          minHeight: Dimensions.get("window").width * 0.1,
+          maxHeight: Dimensions.get("window").width * 0.3,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 5,
         }}
       >
         <View

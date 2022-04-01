@@ -272,6 +272,7 @@ export default function CardItinerary({
                             status: "favorite",
                             index: 0,
                             data_from: "setting",
+                            like_show: item?.like_show ?? null,
                           },
                         })
                     : setModalLogin(true)
@@ -309,6 +310,7 @@ export default function CardItinerary({
                               country: item.id,
                               token: token,
                               status: "favorite",
+                              like_show: item?.like_show ?? null,
                             },
                           })
                       : setModalLogin(true);
