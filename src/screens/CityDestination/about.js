@@ -564,7 +564,16 @@ export default function about(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item?.title ? item.title : ""} length={14} />
+                  <Truncate
+                    text={item?.title ? item.title : ""}
+                    length={
+                      props.navigationState.routes.length <= 2
+                        ? 17
+                        : props.navigationState.routes.length > 2
+                        ? 12
+                        : null
+                    }
+                  />
                 </Text>
               </View>
             </Ripple>
