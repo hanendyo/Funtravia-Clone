@@ -85,6 +85,8 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default function OtherProfile(props) {
   const tokenApps = useSelector((data) => data.token);
+  const user = useSelector((data) => data.setting);
+  // console.log("settingUser", user);
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
@@ -100,7 +102,6 @@ export default function OtherProfile(props) {
   //   ios: Notch ? 42 : 20,
   //   android: StatusBar.currentHeight,
   // });
-  console.log("height", heightname, heightbio);
 
   const HeaderHeight = Platform.select({
     ios: Notch
@@ -779,7 +780,14 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: (datatrip) => {
-      setdataTrip(datatrip?.user_tripbyid);
+      let fetchResult = [...datatrip?.user_tripbyid];
+      let tempData = [];
+      for (let data of fetchResult) {
+        if (data.isprivate === false) {
+          tempData.push(data);
+        }
+      }
+      setdataTrip(tempData);
     },
   });
 
@@ -798,6 +806,7 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: () => {
+      console.log("datatripX", datatripX?.user_trip);
       setdataTrip(datatripX?.user_trip);
     },
   });
@@ -1251,7 +1260,7 @@ export default function OtherProfile(props) {
             <Text
               onTextLayout={(x) => {
                 let line = x.nativeEvent.lines.length;
-                console.log("line", line);
+
                 if (line == 0) {
                   Platform.select({
                     ios: Notch ? setHeightBio(0) : setHeightBio(0),
@@ -2063,7 +2072,7 @@ export default function OtherProfile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#F6F6F6",
   },
 
   Image: {

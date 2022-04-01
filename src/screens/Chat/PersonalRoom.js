@@ -71,12 +71,12 @@ const keyboards = [
     icon: Emoticon,
   },
 ];
+const Notch = DeviceInfo.hasNotch();
 
 export default function Room({ navigation, route }) {
   const tokenApps = useSelector((data) => data.token);
   const settingApps = useSelector((data) => data.setting);
   const deviceId = DeviceInfo.getModel();
-  const Notch = DeviceInfo.hasNotch();
   const { t } = useTranslation();
   const playerRef = useRef(null);
   const [modal_camera, setmodalCamera] = useState(false);
@@ -1155,7 +1155,7 @@ export default function Room({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
       <Toast ref={toastRef} />
       {loadingPersonal ? (
@@ -1505,9 +1505,9 @@ export default function Room({ navigation, route }) {
               keyboardOffset > 0
                 ? Notch
                   ? 275
-                  : 230
+                  : 270
                 : keyboardOffset > 300
-                ? 120
+                ? 335
                 : 13,
             justifyContent: "space-between",
           }}
@@ -1914,7 +1914,7 @@ export default function Room({ navigation, route }) {
         </View>
       </Modal>
       {/* End Modal Comming Soon */}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -1925,6 +1925,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#fff",
     backgroundColor: "#F3F3F3",
     justifyContent: "space-between",
+    marginBottom: Platform.OS == "ios" && Notch ? 10 : null,
   },
   item: {
     marginVertical: moderateScale(1, 1),

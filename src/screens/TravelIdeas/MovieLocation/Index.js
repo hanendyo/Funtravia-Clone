@@ -770,7 +770,7 @@ export default function MovieLocation({ navigation, route }) {
               navigation.goBack();
             }}
             style={{
-              marginTop: 8,
+              marginTop: Platform.OS === "ios" ? 7 : 10,
               marginLeft: 17,
               height: 35,
               width: 35,

@@ -1006,119 +1006,71 @@ export default function Home(props) {
                   borderColor: "#209FAE",
                   borderWidth: 0.5,
                   backgroundColor: "#FFFFFF",
-                  alignContent: "center",
-                  alignItems: "center",
-                  alignSelf: "center",
                   justifyContent: "center",
                   padding: 10,
                 }}
               >
                 <View
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    justifyContent: "center",
                     flexDirection: "row",
-                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 5,
                   }}
                 >
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignContent: "center",
-                      height: "100%",
-                      width: "100%",
+                  <TouchableOpacity
+                    style={styles.statView}
+                    onPress={() => {
+                      tokenApps
+                        ? props.navigation.navigate("BottomStack", {
+                            screen: "TripBottomPlaning",
+                            params: { screen: "TripPlaning" },
+                          })
+                        : setModalLogin(true);
                     }}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        width: Dimensions.get("window").width - 60,
-                      }}
-                    >
-                      <TouchableOpacity
-                        style={styles.statView}
-                        onPress={() => {
-                          tokenApps
-                            ? props.navigation.navigate("BottomStack", {
-                                screen: "TripBottomPlaning",
-                                params: { screen: "TripPlaning" },
-                              })
-                            : setModalLogin(true);
-                        }}
-                      >
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={styles.statNumber}
-                        >
-                          {data ? data.count_my_itinerary : "-"}
-                        </Text>
-                        <Text
-                          size="label"
-                          type="regular"
-                          style={styles.statLabel}
-                        >
-                          {t("Itinerary")}
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.statView}
-                        onPress={() => {
-                          tokenApps
-                            ? props.navigation.navigate("ProfileStack", {
-                                screen: "FollowerPage",
-                                params: { token: tokenApps },
-                              })
-                            : setModalLogin(true);
-                        }}
-                      >
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={styles.statNumber}
-                        >
-                          {data ? data.count_follower : "-"}
-                        </Text>
-                        <Text
-                          size="label"
-                          type="regular"
-                          style={styles.statLabel}
-                        >
-                          {t("followers")}
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.statView}
-                        onPress={() => {
-                          tokenApps
-                            ? props.navigation.navigate("ProfileStack", {
-                                screen: "FollowingPage",
-                                params: { token: tokenApps },
-                              })
-                            : setModalLogin(true);
-                        }}
-                      >
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={styles.statNumber}
-                        >
-                          {data ? data.count_following : "-"}
-                        </Text>
-                        <Text
-                          size="label"
-                          type="regular"
-                          style={styles.statLabel}
-                        >
-                          {t("following")}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                    <Text size="label" type="bold" style={styles.statNumber}>
+                      {data ? data.count_my_itinerary : "-"}
+                    </Text>
+                    <Text size="label" type="regular" style={styles.statLabel}>
+                      {t("Itinerary")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.statView}
+                    onPress={() => {
+                      tokenApps
+                        ? props.navigation.navigate("ProfileStack", {
+                            screen: "FollowerPage",
+                            params: { token: tokenApps },
+                          })
+                        : setModalLogin(true);
+                    }}
+                  >
+                    <Text size="label" type="bold" style={styles.statNumber}>
+                      {data ? data.count_follower : "-"}
+                    </Text>
+                    <Text size="label" type="regular" style={styles.statLabel}>
+                      {t("followers")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.statView}
+                    onPress={() => {
+                      tokenApps
+                        ? props.navigation.navigate("ProfileStack", {
+                            screen: "FollowingPage",
+                            params: { token: tokenApps },
+                          })
+                        : setModalLogin(true);
+                    }}
+                  >
+                    <Text size="label" type="bold" style={styles.statNumber}>
+                      {data ? data.count_following : "-"}
+                    </Text>
+                    <Text size="label" type="regular" style={styles.statLabel}>
+                      {t("following")}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

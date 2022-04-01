@@ -5004,7 +5004,9 @@ export default function ItineraryDetail(props) {
                 paddingHorizontal: 20,
               }}
             >
-              {datadetail && datadetail?.itinerary_detail ? (
+              {datadetail &&
+              datadetail?.itinerary_detail &&
+              props.route.params?.like_show ? (
                 datadetail?.itinerary_detail?.liked == true ? (
                   <Button
                     onPress={() => _unliked()}
