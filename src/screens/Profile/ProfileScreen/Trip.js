@@ -25,8 +25,11 @@ import { RNToasty } from "react-native-toasty";
 import { useSelector } from "react-redux";
 // import { useSelector } from "react-redux";
 
-export default function Trip(
-  { tokenApps, props, item, index },
+export default function Trip({
+  tokenApps,
+  props,
+  item,
+  index,
   undefined,
   setting,
   data,
@@ -37,8 +40,8 @@ export default function Trip(
   setdataTrip,
   mutationliked,
   mutationUnliked,
-  users
-) {
+  users,
+}) {
   const getDN = (start, end) => {
     start = start.split(" ");
     end = end.split(" ");

@@ -325,6 +325,7 @@ export default function PracticalInformation(props) {
       <Animated.FlatList
         scrollToOverflowEnabled={true}
         {...listPanResponder.panHandlers}
+        keyExtractor={(item) => item.key}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -602,6 +603,7 @@ export default function PracticalInformation(props) {
           data={props.navigationState.routes}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.key}
           style={{
             backgroundColor: "#DAF0F2",
             borderBottomWidth: 1,
@@ -653,7 +655,7 @@ export default function PracticalInformation(props) {
                     },
                   ]}
                 >
-                  <Truncate text={item?.title ? item.title : ""} length={12} />
+                  {item?.title ?? ""}
                 </Text>
               </View>
             </Ripple>

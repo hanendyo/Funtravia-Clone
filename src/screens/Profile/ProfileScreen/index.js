@@ -86,7 +86,6 @@ let HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default function OtherProfile(props) {
   const tokenApps = useSelector((data) => data.token);
   const user = useSelector((data) => data.setting);
-  // console.log("settingUser", user);
   const [dataPost, setdataPost] = useState([]);
   const [dataFeedBased, setdataFeedBased] = useState([]);
   const [dataalbums, setdataalbums] = useState([]);
@@ -97,11 +96,6 @@ export default function OtherProfile(props) {
   const [canScroll, setCanScroll] = useState(true);
   let [soon, setSoon] = useState(false);
   let [modalLogin, setModalLogin] = useState(false);
-
-  // const SafeStatusBar = Platform.select({
-  //   ios: Notch ? 42 : 20,
-  //   android: StatusBar.currentHeight,
-  // });
 
   const HeaderHeight = Platform.select({
     ios: Notch
@@ -780,14 +774,16 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: (datatrip) => {
-      let fetchResult = [...datatrip?.user_tripbyid];
-      let tempData = [];
-      for (let data of fetchResult) {
-        if (data.isprivate === false) {
-          tempData.push(data);
+      if (datatrip) {
+        let fetchResult = [...datatrip?.user_tripbyid];
+        let tempData = [];
+        for (let data of fetchResult) {
+          if (data.isprivate === false) {
+            tempData.push(data);
+          }
         }
+        setdataTrip(tempData);
       }
-      setdataTrip(tempData);
     },
   });
 
@@ -806,7 +802,6 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: () => {
-      console.log("datatripX", datatripX?.user_trip);
       setdataTrip(datatripX?.user_trip);
     },
   });
@@ -909,25 +904,35 @@ export default function OtherProfile(props) {
 
   // render post
   const renderPost = (tabPost, e) => {
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     if (tabPost === 0) {
       return (
-        <Post
-          item={e.item}
-          navigation={e.props.navigation}
-          user={dataUser}
-          dataPost={dataPost}
-        />
+        <Animated.View style={{ transform: [{ translateY: y }] }}>
+          <Post
+            item={e.item}
+            navigation={e.props.navigation}
+            user={dataUser}
+            dataPost={dataPost}
+          />
+        </Animated.View>
       );
     } else if (tabPost === 1) {
       return (
-        <Albums
-          item={e.item}
-          index={e.index}
-          props={e.props}
-          token={tokenApps}
-          user={props.route.params.idUser}
-          deletedAlbumId={props.route.params.deleted_album_id}
-        />
+        <Animated.View style={{ transform: [{ translateY: y }] }}>
+          <Albums
+            item={e.item}
+            index={e.index}
+            props={e.props}
+            token={tokenApps}
+            user={props.route.params.idUser}
+            deletedAlbumId={props.route.params.deleted_album_id}
+          />
+        </Animated.View>
       ); // return Albums(e);
     } else {
       return Tags(e);
@@ -1269,53 +1274,53 @@ export default function OtherProfile(props) {
                 }
 
                 if (line == 1) {
-                  Platform.select({
-                    ios: Notch ? setHeightBio(25) : setHeightBio(20),
-                    android:
-                      deviceId == "LYA-L29"
-                        ? setHeightBio(70)
-                        : setHeightBio(15),
-                  });
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? setHeightBio(15)
+                      : setHeightBio(13)
+                    : deviceId === "LYA-L29"
+                    ? setHeightBio(51)
+                    : setHeightBio(15);
                 }
 
                 if (line == 2) {
-                  Platform.select({
-                    ios: Notch ? setHeightBio(45) : setHeightBio(37),
-                    android:
-                      deviceId == "LYA-L29"
-                        ? setHeightBio(80)
-                        : setHeightBio(63),
-                  });
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? setHeightBio(40)
+                      : setHeightBio(37)
+                    : deviceId === "LYA-L29"
+                    ? setHeightBio(68)
+                    : setHeightBio(36);
                 }
 
                 if (line == 3) {
-                  Platform.select({
-                    ios: Notch ? setHeightBio(65) : setHeightBio(50),
-                    android:
-                      deviceId == "LYA-L29"
-                        ? setHeightBio(100)
-                        : setHeightBio(57),
-                  });
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? setHeightBio(60)
+                      : setHeightBio(50)
+                    : deviceId === "LYA-L29"
+                    ? setHeightBio(85)
+                    : setHeightBio(57);
                 }
 
                 if (line == 4) {
-                  Platform.select({
-                    ios: Notch ? setHeightBio(83) : setHeightBio(67),
-                    android:
-                      deviceId == "LYA-L29"
-                        ? setHeightBio(120)
-                        : setHeightBio(76),
-                  });
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? setHeightBio(80)
+                      : setHeightBio(67)
+                    : deviceId === "LYA-L29"
+                    ? setHeightBio(110)
+                    : setHeightBio(76);
                 }
 
                 if (line == 5) {
-                  Platform.select({
-                    ios: Notch ? setHeightBio(120) : setHeightBio(125),
-                    android:
-                      deviceId == "LYA-L29"
-                        ? setHeightBio(140)
-                        : setHeightBio(85),
-                  });
+                  Platform.OS === "ios"
+                    ? Notch
+                      ? setHeightBio(95)
+                      : setHeightBio(90)
+                    : deviceId === "LYA-L29"
+                    ? setHeightBio(130)
+                    : setHeightBio(85);
                 }
               }}
               type="regular"
@@ -1342,6 +1347,12 @@ export default function OtherProfile(props) {
     let renderItem;
     let paddingHorizontal;
     let capHeight = 0;
+    const y = scrollY.interpolate({
+      inputRange: [0, HeaderHeight],
+      outputRange: [0, 55],
+      extrapolateRight: "clamp",
+    });
+
     switch (route.key) {
       case "tab1":
         numCols = tabPost === 2 ? 3 : 1;
@@ -1352,27 +1363,43 @@ export default function OtherProfile(props) {
       case "tab2":
         numCols = 1;
         data = dataReview;
-        renderItem = (e) => Review(e, onSelect, props, tokenApps, t, capHeight);
+        renderItem = (e) => (
+          <Animated.View style={{ transform: [{ translateY: y }] }}>
+            <Review
+              item={e.item}
+              index={e.index}
+              onSelect={onSelect}
+              props={props}
+              capHeight={capHeight}
+              t={t}
+            />
+          </Animated.View>
+        );
         paddingHorizontal = 0;
         break;
       case "tab3":
         numCols = 1;
         data = dataTrip;
-        renderItem = (e) =>
-          Trip(
-            e,
-            capHeight,
-            setting,
-            data,
-            modalLogin,
-            setModalLogin,
-            setSoon,
-            dataTrip,
-            setdataTrip,
-            mutationliked,
-            mutationUnliked,
-            users
-          );
+        renderItem = (e) => (
+          <Animated.View style={{ transform: [{ translateY: y }] }}>
+            <Trip
+              tokenApps={e.tokenApps}
+              props={e.props}
+              item={e.item}
+              index={e.index}
+              users={users}
+              mutationliked={mutationliked}
+              mutationUnliked={mutationUnliked}
+              setdataTrip={setdataTrip}
+              dataTrip={dataTrip}
+              setSoon={setSoon}
+              modalLogin={modalLogin}
+              setModalLogin={setModalLogin}
+              data={data}
+              setting={setting}
+            />
+          </Animated.View>
+        );
         paddingHorizontal = 15;
         break;
       default:
@@ -1381,16 +1408,26 @@ export default function OtherProfile(props) {
 
     const handleOnEndReached = (e) => {};
 
-    let heightTotal = Platform.select({
-      ios: Notch
-        ? HeaderHeight + TabBarHeight - 10
-        : HeaderHeight + TabBarHeight - 40,
-      android:
-        HeaderHeight +
-        TabBarHeight -
-        StatusBar.currentHeight +
-        (deviceId === "LYA-L29" ? 20 : 40),
-    });
+    // let heightTotal = Platform.select({
+    //   ios: Notch
+    //     ? HeaderHeight + TabBarHeight - 10
+    //     : HeaderHeight + TabBarHeight - 40,
+    //   android:
+    //     HeaderHeight +
+    //     TabBarHeight -
+    //     StatusBar.currentHeight +
+    //     (deviceId === "LYA-L29" ? 20 : 40),
+    // });
+
+    let heightTotal =
+      Platform.OS === "ios"
+        ? Notch
+          ? HeaderHeight + TabBarHeight - 10
+          : HeaderHeight + TabBarHeight - 15
+        : HeaderHeight +
+          TabBarHeight -
+          StatusBar.currentHeight +
+          (deviceId === "LYA-L29" ? 20 : 40);
 
     return (
       <Animated.FlatList
@@ -1837,7 +1874,7 @@ export default function OtherProfile(props) {
           style={{
             position: "absolute",
             top: 0,
-            zIndex: 9999,
+            zIndex: 1000,
             // borderWidth: 1,
             backgroundColor: "#209FAE",
             opacity: hides.current,
@@ -1891,9 +1928,10 @@ export default function OtherProfile(props) {
                 textAlign: "left",
                 fontSize: 20,
                 fontFamily: "Lato-Bold",
+                zIndex: 100,
               }}
             >
-              {/* {t("profile")} */}
+              {t("profile")}
             </Animated.Text>
           </View>
           {position && position === "other" ? (
@@ -1945,7 +1983,7 @@ export default function OtherProfile(props) {
           style={{
             position: "absolute",
             top: 0,
-            zIndex: 9999,
+            zIndex: 100,
             backgroundColor: "#209FAE",
             // opacity: hide.current,
             flexDirection: "row",
@@ -2072,7 +2110,7 @@ export default function OtherProfile(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F6F6",
+    backgroundColor: "#FFF",
   },
 
   Image: {

@@ -229,6 +229,7 @@ export default function aboutcountry(props) {
           paddingHorizontal: 15,
         }}
         data={data}
+        keyExtractor={(item) => item.key}
         renderItem={renderItem}
       />
     );
@@ -505,6 +506,7 @@ export default function aboutcountry(props) {
       >
         <FlatList
           key={"listtabbar"}
+          keyExtractor={(item) => item.key}
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
@@ -559,8 +561,9 @@ export default function aboutcountry(props) {
                       textTransform: "capitalize",
                     },
                   ]}
+                  numberOfLines={1}
                 >
-                  <Truncate text={item?.title ? item.title : ""} length={12} />
+                  {item?.title ?? ""}
                 </Text>
               </View>
             </Ripple>

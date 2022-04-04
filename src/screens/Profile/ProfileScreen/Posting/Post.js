@@ -42,7 +42,7 @@ export default function Posts({ item, navigation, user, dataPost }) {
           flexDirection: "row",
           width: width - 20,
           marginHorizontal: 10,
-          // transform: [{ translateY: y }],
+          transform: [{ translateY: y }],
         }}
       >
         <Pressable

@@ -733,7 +733,7 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <Root>
         <View
           style={{
@@ -1644,9 +1644,10 @@ export default function SearchPg(props, { navigation, route }) {
             </>
           )
         ) : (
-          <View
+          <ScrollView
             style={{
-              paddingVertical: 20,
+              paddingVertical: 10,
+              marginTop: 10,
             }}
           >
             {/* recent */}
@@ -1781,6 +1782,7 @@ export default function SearchPg(props, { navigation, route }) {
                 alignContent: "flex-end",
                 marginBottom: 10,
                 marginHorizontal: 15,
+                marginTop: 10,
               }}
             >
               <Text
@@ -1907,6 +1909,7 @@ export default function SearchPg(props, { navigation, route }) {
                 <FlatList
                   contentContainerStyle={{
                     marginTop: 5,
+                    paddingBottom: 25,
                     // justifyContent: "space-evenly",
                     paddingHorizontal: 15,
                   }}
@@ -2011,7 +2014,7 @@ export default function SearchPg(props, { navigation, route }) {
                 />
               </View>
             ) : null}
-          </View>
+          </ScrollView>
         )}
       </Root>
     </SafeAreaView>
