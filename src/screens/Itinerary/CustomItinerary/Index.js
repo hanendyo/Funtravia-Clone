@@ -530,7 +530,7 @@ export default function CustomItinerary(props) {
               </Text>
             </TouchableOpacity>
           </View>
-          <View
+          {/* <View
             style={{
               width: Dimensions.get("screen").width,
               paddingHorizontal: 20,
@@ -641,7 +641,7 @@ export default function CustomItinerary(props) {
                 </View>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <View
             style={{

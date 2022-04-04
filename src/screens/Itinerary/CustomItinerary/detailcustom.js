@@ -567,6 +567,8 @@ export default function detailCustomItinerary(props) {
             order++;
           }
 
+          console.log("dataX", Xdata);
+
           if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({

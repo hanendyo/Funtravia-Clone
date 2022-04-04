@@ -473,14 +473,13 @@ export default function Trip(props) {
     }
   };
 
-  const setstart = async (x) => {
-    console.log("X", x);
-    await setStartDate(x);
-    await setEndDate(x);
-    await setMinimum(x);
+  const setstart = async (data) => {
+    await setStartDate(data);
+    await setEndDate(data);
+    await setMinimum(data);
     await setModal(false);
     {
-      endDate ? setdur(x, endDate) : null;
+      endDate ? setdur(data, endDate) : null;
     }
   };
 
@@ -1474,7 +1473,7 @@ export default function Trip(props) {
                     <Input
                       autoCorrect={false}
                       editable={false}
-                      value={startDate ? dateFormats(startDate) : ""}
+                      value={startDate ? startDate : ""}
                       style={{
                         fontFamily: "Lato-Regular",
                         fontSize: 16,

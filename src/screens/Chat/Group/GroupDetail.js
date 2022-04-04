@@ -84,6 +84,7 @@ export default function GroupDetail(props) {
   const [modalimageview, setModalimageview] = useState(false);
   const [mediaArray, setMediaArray] = useState([]);
   const deviceId = DeviceInfo.getModel();
+  const [typeGroup, setTypeGroup] = useState(null);
   let _menu = null;
 
   const HEADER_MAX_HEIGHT = normalize(240);
@@ -147,7 +148,7 @@ export default function GroupDetail(props) {
     let dataResponse = await response.json();
     if (dataResponse.status == true) {
       console.log("response", dataResponse);
-
+      await setTypeGroup(dataResponse.grup.type);
       await setDatadetail(dataResponse.grup);
       await setTextName(dataResponse.grup.title);
       var inde = dataResponse.grup.buddy.findIndex(
@@ -166,7 +167,6 @@ export default function GroupDetail(props) {
       let FilterBuddy = dataResponse.grup.buddy.filter(
         (i) => i.isconfrim == true
       );
-      console.log("Filter", FilterBuddy);
       await setSeeBuddyNotAdmin(FilterBuddy);
       await setLoading(false);
     } else {
@@ -178,6 +178,8 @@ export default function GroupDetail(props) {
       }
     }
   };
+
+  console.log("TypeGroup", typeGroup);
 
   const getUserAndToken = async () => {
     if (settingApps) {
@@ -430,6 +432,7 @@ export default function GroupDetail(props) {
       }
     } catch (error) {
       // setloading(false);
+      console.log("error", error);
       RNToasty.Show({
         duration: 1,
         title: "error : someting wrong!",
@@ -724,6 +727,7 @@ export default function GroupDetail(props) {
         });
       }
     } catch (error) {
+      console.log("errorItinerary", error);
       RNToasty.Show({
         duration: 1,
         title: "error : someting wrong!",
@@ -979,9 +983,16 @@ export default function GroupDetail(props) {
                 }}
               >
                 <Text type="bold">
-                  {dataDetail && dataDetail?.buddy && AdminTrip == true
+                  {typeGroup == "itinerary" && AdminTrip == true
                     ? dataDetail?.buddy.length
-                    : seeBuddyNotAdmin?.length}{" "}
+                    : typeGroup == "itinerary" && AdminTrip == false
+                    ? seeBuddyNotAdmin?.length
+                    : dataDetail?.buddy.length}
+                  {/* {dataDetail && dataDetail?.buddy && AdminTrip == true
+                    ? dataDetail?.buddy.length
+                    : // : dataDetail && dataDetail?.buddy && AdminTrip == false
+                      // ? dataDetail?.buddy.length
+                      seeBuddyNotAdmin?.length}{" "} */}
                   {t("participants")}
                 </Text>
               </View>
@@ -989,12 +1000,11 @@ export default function GroupDetail(props) {
             {mydata ? (
               <FlatList
                 data={
-                  dataDetail &&
-                  dataDetail.buddy &&
-                  dataDetail.buddy.length > 0 &&
-                  AdminTrip == true
-                    ? dataDetail.buddy
-                    : seeBuddyNotAdmin
+                  typeGroup == "itinerary" && AdminTrip == true
+                    ? dataDetail?.buddy
+                    : typeGroup == "itinerary" && AdminTrip == false
+                    ? seeBuddyNotAdmin
+                    : dataDetail?.buddy
                 }
                 scrollEnabled={false}
                 contentContainerStyle={{

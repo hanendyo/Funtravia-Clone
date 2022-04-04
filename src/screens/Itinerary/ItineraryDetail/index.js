@@ -1350,6 +1350,8 @@ export default function ItineraryDetail(props) {
             order++;
           }
 
+          console.log("Xdata", Xdata);
+
           if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({
@@ -1373,6 +1375,7 @@ export default function ItineraryDetail(props) {
                 GetTimelin();
               }
             } catch (error) {
+              console.log("errorTimeline", error);
               Alert.alert("" + error);
             }
           }
@@ -1382,6 +1385,7 @@ export default function ItineraryDetail(props) {
         setModalDelete(false);
       }
     } catch (error) {
+      console.log("errorXdata", error);
       Alert.alert("" + error);
       setModalDelete(false);
     }
@@ -3100,7 +3104,7 @@ export default function ItineraryDetail(props) {
 
   const renderAlbum = ({ item, index }) => {
     return grid !== 1 ? (
-      item.id === dataalbumaktif?.id ? (
+      item?.id === dataalbumaktif?.id ? (
         <View
           style={{
             width: "100%",
@@ -3257,6 +3261,7 @@ export default function ItineraryDetail(props) {
       <View
         style={{
           width: "100%",
+          borderWidth: 1,
         }}
       >
         <View
@@ -3554,7 +3559,7 @@ export default function ItineraryDetail(props) {
 
   const spreadData = (rData) => {
     let result = [];
-    rData?.itinerary_album_list_v2?.album.map((dataS, index) => {
+    rData?.itinerary_album_list_v2?.album?.map((dataS, index) => {
       let tempdata = {
         posted: [],
         unposted: [{ id: "camera" }],
@@ -3578,6 +3583,7 @@ export default function ItineraryDetail(props) {
       }
       result.push(tempdata);
     });
+
     return result;
   };
 
@@ -4708,6 +4714,7 @@ export default function ItineraryDetail(props) {
                       name: dta ? dta.name : null,
                       picture: Cover,
                       is_itinerary: true,
+                      from: "itinerary",
                     },
                   });
                 }}
@@ -4827,6 +4834,7 @@ export default function ItineraryDetail(props) {
                       name: dta ? dta.name : null,
                       picture: Cover,
                       is_itinerary: true,
+                      from: "itinerary",
                     },
                   });
                 }}
