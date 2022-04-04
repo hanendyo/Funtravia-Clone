@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Picker,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { useMutation } from "@apollo/react-hooks";
 import {
@@ -58,7 +59,6 @@ import {
 } from "../../../component/src/dateformatter";
 
 export default function detailCustomItinerary(props) {
-  console.log("props", props);
   const { t, i18n } = useTranslation();
   const indexinput = props.route.params.indexdata;
   const Notch = DeviceInfo.hasNotch();
@@ -1408,7 +1408,7 @@ export default function detailCustomItinerary(props) {
   // console.log("dataChild", dataChild);
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         justifyContent: "space-between",
@@ -3346,7 +3346,7 @@ export default function detailCustomItinerary(props) {
           </TouchableOpacity>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

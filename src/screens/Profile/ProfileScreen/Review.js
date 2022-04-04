@@ -29,14 +29,15 @@ import DeviceInfo from "react-native-device-info";
 
 const Notch = DeviceInfo.hasNotch();
 
-export default function Review(
-  { item, index },
+export default function Review({
+  item,
+  index,
   onSelect,
   props,
   token,
   t,
-  capHeight
-) {
+  capHeight,
+}) {
   return (
     <View
       style={{

@@ -10,6 +10,7 @@ import {
   RefreshControl,
   Keyboard,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { CustomImage, Text, Truncate, StatusBar } from "../../component";
@@ -292,453 +293,318 @@ export default function Feed(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+    <>
       <StatusBar backgroundColor="#14646e" barStyle="light-content" />
-      <View style={{ backgroundColor: "#209FAE" }}>
-        <View
-          style={{
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 15,
-            marginVertical: 5,
-            // borderWidth: 1,
-            height: 50,
-            zIndex: 5,
-            flexDirection: "row",
-            width: Dimensions.get("screen").width,
-          }}
-        >
-          <Pressable
-            onPress={() => _BackHandler()}
-            style={({ pressed }) => [
-              {
-                height: 40,
-                width: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 20,
-                marginLeft: -10,
-                backgroundColor: pressed ? "#178b99" : "#209FAE",
-              },
-            ]}
-          >
-            {Platform.OS == "ios" ? (
-              <Arrowbackios height={15} width={15}></Arrowbackios>
-            ) : (
-              <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-            )}
-          </Pressable>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <View style={{ backgroundColor: "#209FAE" }}>
           <View
             style={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: 2,
-              flex: 1,
-              paddingHorizontal: 10,
-
-              flexDirection: "row",
-              alignItems: "center",
               alignContent: "center",
-              height: 35,
-              borderWidth: 1,
-              borderColor: "#e8e8e8",
-              // width: Dimensions.get("screen").width - 55,
-            }}
-          >
-            <Magnifying width={15} height={15} style={{ marginRight: 10 }} />
-            <TextInput
-              value={searchtext}
-              onChangeText={(e) => _searchHandle(e)}
-              onFocus={() => showsearchpage(true)}
-              placeholder={t("SearchFeed")}
-              placeholderTextColor="#464646"
-              style={{
-                height: 35,
-                padding: 0,
-                flex: 1,
-              }}
-            />
-            {searchtext ? (
-              <TouchableOpacity
-                onPress={() => {
-                  SetSearchtext("");
-                }}
-              >
-                <Xblue
-                  width="20"
-                  height="20"
-                  style={
-                    {
-                      // alignSelf: "center",
-                    }
-                  }
-                />
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </View>
-      </View>
-
-      {aktifsearch == true ? (
-        <>
-          <View
-            style={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingHorizontal: 15,
+              marginVertical: 5,
+              // borderWidth: 1,
+              height: 50,
+              zIndex: 5,
               flexDirection: "row",
-              backgroundColor: "#fff",
-              borderWidth: 1,
-              borderColor: "#EEEEEE",
-              paddingHorizontal: 10,
+              width: Dimensions.get("screen").width,
             }}
           >
-            <TouchableOpacity
-              onPress={() => {
-                setActiveSrc("account");
-              }}
-              style={{
-                // width: width / 2,
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: active_src == "account" ? 3 : 0,
-                borderBottomColor:
-                  active_src == "account" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
-                backgroundColor: "#FFFFFF",
-                paddingHorizontal: 10,
-                marginHorizontal: 10,
-              }}
-            >
-              <Text
-                size="title"
-                type={active_src == "account" ? "bold" : "bold"}
-                style={{
-                  color: active_src == "account" ? "#209FAE" : "#D1D1D1",
-                }}
-              >
-                {t("account")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setActiveSrc("tag");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: active_src == "tag" ? 3 : 0,
-                borderBottomColor: active_src == "tag" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
-                backgroundColor: "#FFFFFF",
-                paddingHorizontal: 10,
-                marginHorizontal: 10,
-              }}
-            >
-              <Text
-                size="title"
-                type={active_src == "tag" ? "bold" : "bold"}
-                style={{
-                  color: active_src == "tag" ? "#209FAE" : "#D1D1D1",
-                }}
-              >
-                {t("tag")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setActiveSrc("places");
-              }}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                borderBottomWidth: active_src == "places" ? 3 : 0,
-                borderBottomColor:
-                  active_src == "places" ? "#209FAE" : "#EEEEEE",
-                paddingVertical: 15,
-                backgroundColor: "#FFFFFF",
-                paddingHorizontal: 10,
-                marginHorizontal: 10,
-              }}
-            >
-              <Text
-                size="title"
-                type={active_src == "places" ? "bold" : "bold"}
-                style={{
-                  color: active_src == "places" ? "#209FAE" : "#D1D1D1",
-                }}
-              >
-                {t("places")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {active_src === "account" ? (
-            loadingSrcuser ? (
-              <View
-                style={{
-                  flex: 1,
-                  width: width,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator
-                  animating={loadingSrcuser}
-                  size="large"
-                  color="#209fae"
-                />
-              </View>
-            ) : (
-              <FlatList
-                data={user_search_feed}
-                renderItem={({ item, index }) => (
-                  <Pressable
-                    onPress={() => {
-                      item.id !== setting?.user?.id
-                        ? props.navigation.push("ProfileStack", {
-                            screen: "otherprofile",
-                            params: {
-                              idUser: item.id,
-                              token: tokenApps,
-                            },
-                          })
-                        : props.navigation.push("ProfileStack", {
-                            screen: "ProfileTab",
-                          });
-                    }}
-                    style={{
-                      flexDirection: "row",
-                      paddingVertical: 15,
-                      marginHorizontal: 15,
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#EEEEEE",
-                      alignContent: "center",
-                    }}
-                  >
-                    <CustomImage
-                      customStyle={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 15,
-                        alignSelf: "center",
-                        marginLeft: 15,
-                      }}
-                      customImageStyle={{
-                        resizeMode: "cover",
-                        borderRadius: 50,
-                      }}
-                      source={{
-                        uri: item.picture ? item.picture : default_image,
-                      }}
-                    />
-                    <View
-                      style={{
-                        paddingHorizontal: 10,
-                      }}
-                    >
-                      <Text type="bold">
-                        {item.first_name} {item?.last_name}
-                      </Text>
-                      <Text>@{item.username}</Text>
-                    </View>
-                  </Pressable>
-                )}
-                ListHeaderComponent={
-                  !searchtext ? (
-                    <View style={{ marginTop: 20, alignItems: "center" }}>
-                      {/* <Text>{t("searchByAccount")}</Text> */}
-                    </View>
-                  ) : user_search_feed && user_search_feed.length == 0 ? (
-                    <View style={{ marginTop: 20, alignItems: "center" }}>
-                      <Text>{t("noData")}</Text>
-                    </View>
-                  ) : null
-                }
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-              />
-            )
-          ) : null}
-          {active_src === "tag" && searchtext ? (
             <Pressable
-              onPress={() => {
-                Searchbytag(searchtext);
-              }}
-              style={{
-                flexDirection: "row",
-                paddingVertical: 15,
-                marginHorizontal: 15,
-                borderBottomWidth: 1,
-                borderBottomColor: "#EEEEEE",
-                alignContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View
-                style={{
+              onPress={() => _BackHandler()}
+              style={({ pressed }) => [
+                {
                   height: 40,
                   width: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
                   borderRadius: 20,
-                  alignSelf: "center",
-                  marginLeft: 15,
-                  backgroundColor: "#DAF0F2",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text size="h5">#</Text>
-              </View>
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                }}
-              >
-                <Text type="bold">#{searchtext}</Text>
-              </View>
+                  marginLeft: -10,
+                  backgroundColor: pressed ? "#178b99" : "#209FAE",
+                },
+              ]}
+            >
+              {Platform.OS == "ios" ? (
+                <Arrowbackios height={15} width={15}></Arrowbackios>
+              ) : (
+                <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
+              )}
             </Pressable>
-          ) : null}
-          {active_src === "places" ? (
-            loadinglocation == true ? (
-              <View
-                style={{
-                  flex: 1,
-                  width: width,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator
-                  color="#209fae"
-                  animating={loadingPost}
-                  size="large"
-                />
-              </View>
-            ) : (
-              <FlatList
-                data={datalocation}
-                renderItem={({ item, index }) => (
-                  <Pressable
-                    onPress={() => {
-                      _get_search_bylocation(item);
-                    }}
-                    style={{
-                      flexDirection: "row",
-                      paddingVertical: 15,
-                      marginHorizontal: 15,
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#EEEEEE",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
-                      style={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 20,
-                        alignSelf: "center",
-                        marginLeft: 15,
-                        backgroundColor: "#DAF0F2",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Pinloc width={15} height={15} />
-                    </View>
-                    <View
-                      style={{
-                        paddingHorizontal: 10,
-                      }}
-                    >
-                      <Text type="bold">
-                        {item.structured_formatting.main_text}
-                      </Text>
-                      {item.structured_formatting &&
-                      item.structured_formatting.secondary_text ? (
-                        <Text>
-                          <Truncate
-                            text={item.structured_formatting.secondary_text}
-                            length={50}
-                          />
-                        </Text>
-                      ) : null}
-                    </View>
-                  </Pressable>
-                )}
-                ListHeaderComponent={
-                  !searchtext ? (
-                    <View style={{ marginTop: 20, alignItems: "center" }}>
-                      {/* <Text>{t("searchByLocation")}</Text> */}
-                    </View>
-                  ) : datalocation && datalocation.length == 0 ? (
-                    <View style={{ marginTop: 20, alignItems: "center" }}>
-                      <Text>{t("noData")}</Text>
-                    </View>
-                  ) : null
-                }
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-              />
-            )
-          ) : null}
-        </>
-      ) : (
-        <>
-          <View
-            style={{
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              borderColor: "#EEEEEE",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Ripple
-              onPress={() => {
-                setActive("personal");
-              }}
+            <View
               style={{
-                alignContent: "center",
-                alignItems: "center",
-                paddingVertical: 15,
                 backgroundColor: "#FFFFFF",
+                borderRadius: 2,
+                flex: 1,
+                paddingHorizontal: 10,
+
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
+                height: 35,
+                borderWidth: 1,
+                borderColor: "#e8e8e8",
+                // width: Dimensions.get("screen").width - 55,
+              }}
+            >
+              <Magnifying width={15} height={15} style={{ marginRight: 10 }} />
+              <TextInput
+                value={searchtext}
+                onChangeText={(e) => _searchHandle(e)}
+                onFocus={() => showsearchpage(true)}
+                placeholder={t("SearchFeed")}
+                placeholderTextColor="#464646"
+                style={{
+                  height: 35,
+                  padding: 0,
+                  flex: 1,
+                }}
+              />
+              {searchtext ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    SetSearchtext("");
+                  }}
+                >
+                  <Xblue
+                    width="20"
+                    height="20"
+                    style={
+                      {
+                        // alignSelf: "center",
+                      }
+                    }
+                  />
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </View>
+        </View>
+
+        {aktifsearch == true ? (
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderWidth: 1,
+                borderColor: "#EEEEEE",
                 paddingHorizontal: 10,
               }}
             >
-              <Text
-                size="title"
-                type={active == "personal" ? "bold" : "bold"}
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveSrc("account");
+                }}
                 style={{
-                  color: active == "personal" ? "#209FAE" : "#D1D1D1",
+                  // width: width / 2,
+                  alignContent: "center",
+                  alignItems: "center",
+                  borderBottomWidth: active_src == "account" ? 3 : 0,
+                  borderBottomColor:
+                    active_src == "account" ? "#209FAE" : "#EEEEEE",
+                  paddingVertical: 15,
+                  backgroundColor: "#FFFFFF",
+                  paddingHorizontal: 10,
+                  marginHorizontal: 10,
                 }}
               >
-                {t("allPost")}
-              </Text>
-            </Ripple>
-          </View>
-          <FlatList
-            data={feed_post_populer_paging}
-            renderItem={({ item, index }) => (
-              <RenderGrid item={item} index={index} props={props} grid />
-            )}
-            style={{
-              marginHorizontal: 10,
-            }}
-            keyExtractor={(item) => item[0].id}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                searchByTag
-                onRefresh={() => _refresh()}
-              />
-            }
-            onEndReachedThreshold={1}
-            ListFooterComponent={
-              loadingPost ? (
+                <Text
+                  size="title"
+                  type={active_src == "account" ? "bold" : "bold"}
+                  style={{
+                    color: active_src == "account" ? "#209FAE" : "#D1D1D1",
+                  }}
+                >
+                  {t("account")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveSrc("tag");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  borderBottomWidth: active_src == "tag" ? 3 : 0,
+                  borderBottomColor:
+                    active_src == "tag" ? "#209FAE" : "#EEEEEE",
+                  paddingVertical: 15,
+                  backgroundColor: "#FFFFFF",
+                  paddingHorizontal: 10,
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text
+                  size="title"
+                  type={active_src == "tag" ? "bold" : "bold"}
+                  style={{
+                    color: active_src == "tag" ? "#209FAE" : "#D1D1D1",
+                  }}
+                >
+                  {t("tag")}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveSrc("places");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  borderBottomWidth: active_src == "places" ? 3 : 0,
+                  borderBottomColor:
+                    active_src == "places" ? "#209FAE" : "#EEEEEE",
+                  paddingVertical: 15,
+                  backgroundColor: "#FFFFFF",
+                  paddingHorizontal: 10,
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text
+                  size="title"
+                  type={active_src == "places" ? "bold" : "bold"}
+                  style={{
+                    color: active_src == "places" ? "#209FAE" : "#D1D1D1",
+                  }}
+                >
+                  {t("places")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {active_src === "account" ? (
+              loadingSrcuser ? (
                 <View
                   style={{
+                    flex: 1,
                     width: width,
                     justifyContent: "center",
                     alignItems: "center",
-                    marginTop: 10,
+                  }}
+                >
+                  <ActivityIndicator
+                    animating={loadingSrcuser}
+                    size="large"
+                    color="#209fae"
+                  />
+                </View>
+              ) : (
+                <FlatList
+                  data={user_search_feed}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => {
+                        item.id !== setting?.user?.id
+                          ? props.navigation.push("ProfileStack", {
+                              screen: "otherprofile",
+                              params: {
+                                idUser: item.id,
+                                token: tokenApps,
+                              },
+                            })
+                          : props.navigation.push("ProfileStack", {
+                              screen: "ProfileTab",
+                            });
+                      }}
+                      style={{
+                        flexDirection: "row",
+                        paddingVertical: 15,
+                        marginHorizontal: 15,
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#EEEEEE",
+                        alignContent: "center",
+                      }}
+                    >
+                      <CustomImage
+                        customStyle={{
+                          height: 40,
+                          width: 40,
+                          borderRadius: 15,
+                          alignSelf: "center",
+                          marginLeft: 15,
+                        }}
+                        customImageStyle={{
+                          resizeMode: "cover",
+                          borderRadius: 50,
+                        }}
+                        source={{
+                          uri: item.picture ? item.picture : default_image,
+                        }}
+                      />
+                      <View
+                        style={{
+                          paddingHorizontal: 10,
+                        }}
+                      >
+                        <Text type="bold">
+                          {item.first_name} {item?.last_name}
+                        </Text>
+                        <Text>@{item.username}</Text>
+                      </View>
+                    </Pressable>
+                  )}
+                  ListHeaderComponent={
+                    !searchtext ? (
+                      <View style={{ marginTop: 20, alignItems: "center" }}>
+                        {/* <Text>{t("searchByAccount")}</Text> */}
+                      </View>
+                    ) : user_search_feed && user_search_feed.length == 0 ? (
+                      <View style={{ marginTop: 20, alignItems: "center" }}>
+                        <Text>{t("noData")}</Text>
+                      </View>
+                    ) : null
+                  }
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={false}
+                />
+              )
+            ) : null}
+            {active_src === "tag" && searchtext ? (
+              <Pressable
+                onPress={() => {
+                  Searchbytag(searchtext);
+                }}
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 15,
+                  marginHorizontal: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#EEEEEE",
+                  alignContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    alignSelf: "center",
+                    marginLeft: 15,
+                    backgroundColor: "#DAF0F2",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text size="h5">#</Text>
+                </View>
+                <View
+                  style={{
+                    paddingHorizontal: 10,
+                  }}
+                >
+                  <Text type="bold">#{searchtext}</Text>
+                </View>
+              </Pressable>
+            ) : null}
+            {active_src === "places" ? (
+              loadinglocation == true ? (
+                <View
+                  style={{
+                    flex: 1,
+                    width: width,
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <ActivityIndicator
@@ -747,12 +613,150 @@ export default function Feed(props) {
                     size="large"
                   />
                 </View>
-              ) : null
-            }
-            onEndReached={handleOnEndReached}
-          />
-        </>
-      )}
-    </View>
+              ) : (
+                <FlatList
+                  data={datalocation}
+                  renderItem={({ item, index }) => (
+                    <Pressable
+                      onPress={() => {
+                        _get_search_bylocation(item);
+                      }}
+                      style={{
+                        flexDirection: "row",
+                        paddingVertical: 15,
+                        marginHorizontal: 15,
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#EEEEEE",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: 40,
+                          width: 40,
+                          borderRadius: 20,
+                          alignSelf: "center",
+                          marginLeft: 15,
+                          backgroundColor: "#DAF0F2",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Pinloc width={15} height={15} />
+                      </View>
+                      <View
+                        style={{
+                          paddingHorizontal: 10,
+                        }}
+                      >
+                        <Text type="bold">
+                          {item.structured_formatting.main_text}
+                        </Text>
+                        {item.structured_formatting &&
+                        item.structured_formatting.secondary_text ? (
+                          <Text>
+                            <Truncate
+                              text={item.structured_formatting.secondary_text}
+                              length={50}
+                            />
+                          </Text>
+                        ) : null}
+                      </View>
+                    </Pressable>
+                  )}
+                  ListHeaderComponent={
+                    !searchtext ? (
+                      <View style={{ marginTop: 20, alignItems: "center" }}>
+                        {/* <Text>{t("searchByLocation")}</Text> */}
+                      </View>
+                    ) : datalocation && datalocation.length == 0 ? (
+                      <View style={{ marginTop: 20, alignItems: "center" }}>
+                        <Text>{t("noData")}</Text>
+                      </View>
+                    ) : null
+                  }
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={false}
+                />
+              )
+            ) : null}
+          </>
+        ) : (
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderColor: "#EEEEEE",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Ripple
+                onPress={() => {
+                  setActive("personal");
+                }}
+                style={{
+                  alignContent: "center",
+                  alignItems: "center",
+                  paddingVertical: 15,
+                  backgroundColor: "#FFFFFF",
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text
+                  size="title"
+                  type={active == "personal" ? "bold" : "bold"}
+                  style={{
+                    color: active == "personal" ? "#209FAE" : "#D1D1D1",
+                  }}
+                >
+                  {t("allPost")}
+                </Text>
+              </Ripple>
+            </View>
+            <FlatList
+              data={feed_post_populer_paging}
+              renderItem={({ item, index }) => (
+                <RenderGrid item={item} index={index} props={props} grid />
+              )}
+              style={{
+                marginHorizontal: 10,
+              }}
+              keyExtractor={(item) => item[0].id}
+              showsVerticalScrollIndicator={false}
+              refreshing={refreshing}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  searchByTag
+                  onRefresh={() => _refresh()}
+                />
+              }
+              onEndReachedThreshold={1}
+              ListFooterComponent={
+                loadingPost ? (
+                  <View
+                    style={{
+                      width: width,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 10,
+                    }}
+                  >
+                    <ActivityIndicator
+                      color="#209fae"
+                      animating={loadingPost}
+                      size="large"
+                    />
+                  </View>
+                ) : null
+              }
+              onEndReached={handleOnEndReached}
+            />
+          </>
+        )}
+      </SafeAreaView>
+    </>
   );
 }
