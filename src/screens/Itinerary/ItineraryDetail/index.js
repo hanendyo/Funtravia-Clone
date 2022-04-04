@@ -1350,6 +1350,8 @@ export default function ItineraryDetail(props) {
             order++;
           }
 
+          console.log("Xdata", Xdata);
+
           if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({
@@ -1373,6 +1375,7 @@ export default function ItineraryDetail(props) {
                 GetTimelin();
               }
             } catch (error) {
+              console.log("errorTimeline", error);
               Alert.alert("" + error);
             }
           }
@@ -1382,6 +1385,7 @@ export default function ItineraryDetail(props) {
         setModalDelete(false);
       }
     } catch (error) {
+      console.log("errorXdata", error);
       Alert.alert("" + error);
       setModalDelete(false);
     }
@@ -3612,7 +3616,6 @@ export default function ItineraryDetail(props) {
   };
 
   const renderScene = ({ route }) => {
-    console.log("Route", route.key);
     const focused = route.key === routes[tabIndex].key;
     let numCols;
     let data;
@@ -4711,6 +4714,7 @@ export default function ItineraryDetail(props) {
                       name: dta ? dta.name : null,
                       picture: Cover,
                       is_itinerary: true,
+                      from: "itinerary",
                     },
                   });
                 }}
@@ -4830,6 +4834,7 @@ export default function ItineraryDetail(props) {
                       name: dta ? dta.name : null,
                       picture: Cover,
                       is_itinerary: true,
+                      from: "itinerary",
                     },
                   });
                 }}

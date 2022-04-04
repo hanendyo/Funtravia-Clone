@@ -473,13 +473,13 @@ export default function Trip(props) {
     }
   };
 
-  const setstart = async (x) => {
+  const setstart = async (data) => {
     await setStartDate(data);
     await setEndDate(data);
     await setMinimum(data);
     await setModal(false);
     {
-      endDate ? setdur(x, endDate) : null;
+      endDate ? setdur(data, endDate) : null;
     }
   };
 

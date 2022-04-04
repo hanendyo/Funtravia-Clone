@@ -221,6 +221,7 @@ export default function ChatsearchPage({ navigation, route }) {
   };
 
   const _searchHandle = (text) => {
+    console.log("data", data);
     // if (active == "personal") {
     SetSearchtext(text);
     if (text !== "") {

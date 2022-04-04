@@ -466,6 +466,17 @@ export default function detailCustomItinerary(props) {
     }
   };
 
+  console.log("day_id", dayId);
+  console.log("icon", icon);
+  console.log("lat_arr", lat);
+  console.log("long_arr", long);
+  console.log("latDep", latDep);
+  console.log("longDep", longDep);
+  console.log("TIme", time);
+  console.log("Duration", duration);
+  console.log("Token", token);
+  console.log("depature", timeDeparture, "arrival", timeArrival);
+
   const mutationInput = async () => {
     try {
       setLoadingApp(true);
