@@ -1798,6 +1798,7 @@ export default function ProvinceDetail(props) {
                         alignItems: "center",
                         justifyContent: "flex-end",
                       }}
+                      key={`image-${index}`}
                       imageStyle={{
                         borderTopLeftRadius: 10,
                         borderTopRightRadius: 10,

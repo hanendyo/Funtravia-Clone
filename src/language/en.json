@@ -914,5 +914,6 @@
   "thisTripHasBeenDeleted": "This trip has been deleted",
   "AlertTime": "The end time cannot be less than the start time",
   "MaxSizeFile": "Maximum file size 7mb",
-  "editPrivacy": "Edit Privacy"
+  "editPrivacy": "Edit Privacy",
+  "group": "Group"
 }

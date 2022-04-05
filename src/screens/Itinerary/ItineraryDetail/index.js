@@ -302,7 +302,7 @@ export default function ItineraryDetail(props) {
     try {
       await _Refresh();
     } catch (error) {
-      Alert.alert("Error: ", error);
+      Alert.alert("Error:", "No Internet Connection");
     }
   };
   let [Anggota, setAnggota] = useState(null);
