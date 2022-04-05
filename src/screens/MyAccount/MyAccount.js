@@ -397,7 +397,9 @@ export default function MyAccount(props) {
                 {userData && userData.last_name ? userData.last_name : null}
               </Text>
               <Text size="label" type="regular">
-                @{userData && userData.username ? userData.username : null}
+                {userData && userData.first_name
+                  ? `@${userData?.username}`
+                  : null}
               </Text>
               <Pressable
                 onPress={() => {

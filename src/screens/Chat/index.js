@@ -313,7 +313,7 @@ export default function Message({ navigation, route }) {
   );
   const [routes] = React.useState([
     { key: "personal", title: "Chat", count: countPesan },
-    { key: "group", title: "Group", count: countPesanGroup },
+    { key: t("group"), title: "Group", count: countPesanGroup },
   ]);
 
   const renderScene = ({ route }) => {
@@ -342,11 +342,6 @@ export default function Message({ navigation, route }) {
   let scrollRef = useRef();
 
   const renderTabBar = (props) => {
-    // const y = scrollY.interpolate({
-    //   inputRange: [0, HeaderHeight],
-    //   outputRange: [HeaderHeight, 55],
-    //   extrapolateRight: "clamp",
-    // });
     let state = [...props.navigationState.routes];
     for (var i of state) {
       if (i.key == "personal") {

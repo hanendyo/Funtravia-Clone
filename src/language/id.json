@@ -566,8 +566,8 @@
   "changeCoverGroup": "Ganti Cover Photo",
   "leftGroup": "Keluar Grup",
   "viewTrip": "Lihat Perjalanan",
-  "alertLeftGroup": "Apakah Anda yakin meninggalkan group ini?",
-  "alertLeftGroupItinerary": "Apakah Anda yakin meninggalkan group ini? Jika anda keluar maka dari Itinerary akan keluar juga!",
+  "alertLeftGroup": "Apakah Anda yakin meninggalkan grup ini?",
+  "alertLeftGroupItinerary": "Apakah Anda yakin meninggalkan grup ini? Jika anda keluar maka dari Itinerary akan keluar juga!",
   "exitGroup": "Keluar Grup",
   "readAll": "Tandai semua sudah dibaca",
   "leave": "Tinggalkan",
@@ -624,7 +624,7 @@
   "Guest Name": "Nama Tamu",
   "PassengerName": "Nama Penumpang",
   "guestNameOptional": "Nama Tamu (Opsional)",
-  "passengerNameOptional": "Nama Penumpang (Optional)",
+  "passengerNameOptional": "Nama Penumpang (Opsional)",
   "BookingRef": "Referensi Pemesanan",
   "bookingRefOptional": "Referensi Pemesanan (Opsional)",
   "bookingCodeOptional": "Kode Pemesanan (Optional)",
@@ -889,7 +889,7 @@
   "to": "Ke",
   "googleLocationLang": "id",
   "likeYourItinerary": "Menyukai perjalanan ",
-  "createGroupRequired": "Judul group wajib diisi",
+  "createGroupRequired": "Judul grup wajib diisi",
   "sendAnEvent": "Kirim event : ",
   "sendAMovie": "Kirim lokasi film : ",
   "unescoWorldHeritage": "Warisan Dunia UNESCO",
@@ -912,5 +912,6 @@
   "thisTripHasBeenDeleted": "Perjalanan ini telah dihapus",
   "AlertTime": "Waktu akhir tidak boleh kurang dari waktu awal",
   "MaxSizeFile": "Maksimal ukuran file 7mb",
-  "editPrivacy": "Edit Privasi"
+  "editPrivacy": "Edit Privasi",
+  "group": "Grup"
 }

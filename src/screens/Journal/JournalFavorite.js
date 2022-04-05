@@ -307,7 +307,7 @@ export default function JournalFavorite(props) {
               </View>
             ) : null
           }
-          keyExtractor={(item) => item?.travel_journal?.id}
+          keyExtractor={(item) => item?.travel_journal_id}
           nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}

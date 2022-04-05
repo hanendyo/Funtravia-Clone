@@ -44,9 +44,11 @@ import Countryss from "../../../graphQL/Query/Countries/CountryListSrc";
 import { RNToasty } from "react-native-toasty";
 import filterDestinationV2 from "../../../graphQL/Query/Destination/Destinasifilter";
 import { useSelector } from "react-redux";
+import DeviceInfo from "react-native-device-info";
 
 export default function ItineraryDestination(props) {
   const { t, i18n } = useTranslation();
+  const Notch = DeviceInfo.hasNotch();
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -1423,16 +1425,16 @@ export default function ItineraryDestination(props) {
           {/* bagian bawah */}
           <View
             style={{
-              // flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 70,
-
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -1441,8 +1443,6 @@ export default function ItineraryDestination(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 10,
             }}
           >
             <Button

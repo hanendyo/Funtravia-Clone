@@ -68,8 +68,6 @@ export default function FunMaps({
       </View>
     );
   }
-  console.log("status", status);
-  console.log("error", error);
   if (status) {
     return (
       <>
