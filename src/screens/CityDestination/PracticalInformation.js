@@ -584,8 +584,10 @@ export default function PracticalInformation(props) {
                       textTransform: "capitalize",
                     },
                   ]}
+                  numberOfLines={1}
                 >
-                  <Truncate text={item?.title ? item.title : ""} length={14} />
+                  {item?.title ?? ""}
+                  {/* <Truncate text={item?.title ? item.title : ""} length={14} /> */}
                 </Text>
               </View>
             </Ripple>

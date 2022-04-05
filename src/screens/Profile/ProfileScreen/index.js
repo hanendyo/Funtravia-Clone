@@ -1485,16 +1485,16 @@ export default function OtherProfile(props) {
           paddingBottom: Platform.select({
             ios:
               tabIndex === 0
-                ? heightTotal + 100
+                ? heightTotal + 140
                 : tabIndex === 1
-                ? heightTotal + 20
-                : heightTotal + 10,
+                ? heightTotal + 60
+                : heightTotal + 50,
             android:
               tabIndex === 0
-                ? heightTotal + 70
+                ? heightTotal + 110
                 : tabIndex === 1
-                ? heightTotal + 5
-                : heightTotal - 20,
+                ? heightTotal + 45
+                : heightTotal,
           }),
 
           backgroundColor: "#f6f6f6",

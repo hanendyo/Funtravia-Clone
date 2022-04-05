@@ -306,7 +306,7 @@ export default function ItineraryDay({
           ) : null
         }
         ListFooterComponent={
-          status === "edit" && Anggota === "true" ? (
+          status === "edit" && Anggota ? (
             <Ripple
               onPress={() => addButton()}
               style={{

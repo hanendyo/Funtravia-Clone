@@ -129,6 +129,7 @@ export default function CustomItinerary(props) {
   let [total_hours, settotal_hours] = useState(null);
 
   const spreadtimeline = async (req) => {
+    console.log("req", req);
     let xdata = [];
     let parent_id = null;
 

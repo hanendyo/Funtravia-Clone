@@ -2743,7 +2743,9 @@ export default function ItineraryDetail(props) {
                               </Text> */}
                               {item.time ? (
                                 <GetStartTime
-                                  startt={item.time}
+                                  startt={
+                                    item?.detail_flight?.departure.split(" ")[1]
+                                  }
                                   type="regular"
                                   size="description"
                                 />
@@ -2912,7 +2914,7 @@ export default function ItineraryDetail(props) {
                       height: 40,
                       width: 40,
                       marginLeft: -10,
-                      // borderWidth: 1,
+
                       justifyContent: "center",
                       alignItems: "flex-end",
                       alignContent: "flex-end",
