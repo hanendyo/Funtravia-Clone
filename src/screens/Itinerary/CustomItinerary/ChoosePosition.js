@@ -549,6 +549,8 @@ export default function ChoosePosition(props) {
       parseFloat(splitlastDuration[0]) +
       parseFloat(jambaru[0]);
 
+    console.log("jumlah", jumlah);
+
     if (jumlah <= 23) {
       inputan["stat"] = "new";
       inputan["type"] = "custom";
@@ -570,6 +572,7 @@ export default function ChoosePosition(props) {
         }
 
         if (tempdata[y - 1]) {
+          console.log("TempData", tempdata[y - 1]);
           // longitude & latitude index sebelum custom
           let LongBefore = tempdata[y - 1].longitude;
           let LatBefore = tempdata[y - 1].latitude;
@@ -614,6 +617,8 @@ export default function ChoosePosition(props) {
                 menittemp = split[1] ? split[1] : 1;
               }
             }
+
+            console.log("jamtemp", jamtemp);
 
             let time = tempdata[y - 1].time;
             let splittime = time.split(":");

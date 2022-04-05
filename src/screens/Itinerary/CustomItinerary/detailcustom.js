@@ -2145,7 +2145,11 @@ export default function detailCustomItinerary(props) {
                           .substring(0, 5)}
                       </Text> */}
                       {dataParent.time ? (
-                        <GetStartTime startt={dataParent.time} />
+                        <GetStartTime
+                          startt={
+                            dataParent.detail_flight.departure.split(" ")[1]
+                          }
+                        />
                       ) : (
                         <Text size="description" type="bold">
                           00:00
@@ -2419,11 +2423,18 @@ export default function detailCustomItinerary(props) {
                     >
                       <TouchableOpacity
                         onPress={() =>
-                          OpenModaldate(dataParent.time, dataParent.duration)
+                          OpenModaldate(
+                            dataParent.detail_flight.departure.split(" ")[1],
+                            dataParent.duration
+                          )
                         }
                       >
                         {dataParent.time ? (
-                          <GetStartTime startt={dataParent.time} />
+                          <GetStartTime
+                            startt={
+                              dataParent.detail_flight.departure.split(" ")[1]
+                            }
+                          />
                         ) : (
                           <Text size="description" type="bold">
                             00:00

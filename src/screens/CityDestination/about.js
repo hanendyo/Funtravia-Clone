@@ -563,8 +563,9 @@ export default function about(props) {
                       textTransform: "capitalize",
                     },
                   ]}
+                  numberOfLines={1}
                 >
-                  <Truncate
+                  {/* <Truncate
                     text={item?.title ? item.title : ""}
                     length={
                       props.navigationState.routes.length <= 2
@@ -573,7 +574,8 @@ export default function about(props) {
                         ? 12
                         : null
                     }
-                  />
+                  /> */}
+                  {item?.title ?? ""}
                 </Text>
               </View>
             </Ripple>
