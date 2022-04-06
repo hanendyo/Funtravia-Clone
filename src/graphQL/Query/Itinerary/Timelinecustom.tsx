@@ -19,6 +19,21 @@ const Timeline = gql`
 				images
 				status
 				icon
+				detail_flight{
+					id
+					title
+					departure
+					arrival
+					from
+					latitude_departure
+					longitude_departure
+					latitude_arrival
+					longitude_arrival
+					destination
+					guest_name
+					booking_ref
+					carrier
+				}
 			}
 			total_hours
 		}

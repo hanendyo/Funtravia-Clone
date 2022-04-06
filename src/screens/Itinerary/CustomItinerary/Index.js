@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import {
   View,
   Dimensions,
@@ -14,24 +14,24 @@ import {
   SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
+import {useLazyQuery, useMutation} from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
   ArrowRight,
   Delete,
 } from "../../../assets/svg";
-import { Bg_soon } from "../../../assets/png";
+import {Bg_soon} from "../../../assets/png";
 import Timeline from "../../../graphQL/Query/Itinerary/Timelinecustom";
 import ListCustom from "../../../graphQL/Query/Itinerary/ListSavedCustom";
 import hapuscustomsaved from "../../../graphQL/Mutation/Itinerary/Deletecustomactivitysaved";
 import Swipeout from "react-native-swipeout";
-import { Button, Text, Loading } from "../../../component";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import {Button, Text, Loading} from "../../../component";
+import {useTranslation} from "react-i18next";
+import {useSelector} from "react-redux";
 
 export default function CustomItinerary(props) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   let [soon, setSoon] = useState(false);
 
   const HeaderComponent = {
@@ -40,7 +40,7 @@ export default function CustomItinerary(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" style={{color: "#fff"}}>
         {t("customActivity")}
       </Text>
     ),
@@ -107,7 +107,7 @@ export default function CustomItinerary(props) {
 
   const [
     GetTimeline,
-    { data: datati, loading: loadingtimeline, error: errortimeline },
+    {data: datati, loading: loadingtimeline, error: errortimeline},
   ] = useLazyQuery(Timeline, {
     fetchPolicy: "network-only",
     context: {
@@ -116,8 +116,9 @@ export default function CustomItinerary(props) {
         Authorization: token,
       },
     },
-    variables: { id: idDay },
+    variables: {id: idDay},
     onCompleted: () => {
+      console.log("datati", datati);
       setcustome_timeline(datati?.custome_timeline);
       settotal_hours(datati?.custome_timeline?.total_hours);
       spreadtimeline(datati?.custome_timeline?.timeline);
@@ -134,7 +135,7 @@ export default function CustomItinerary(props) {
     let parent_id = null;
 
     for (var index in req) {
-      let datas = { ...req[index] };
+      let datas = {...req[index]};
       // datas["id"] = req[index].name;
       if (
         req[index - 1] &&
@@ -155,7 +156,7 @@ export default function CustomItinerary(props) {
 
   const [
     GetListCustom,
-    { data: dataSaved, loading: loadingSaved, error: errorSaved },
+    {data: dataSaved, loading: loadingSaved, error: errorSaved},
   ] = useLazyQuery(ListCustom, {
     fetchPolicy: "network-only",
     context: {
@@ -168,7 +169,7 @@ export default function CustomItinerary(props) {
 
   const [
     mutatuindeleted,
-    { loading: loadingdelete, data: datadelete, error: errordelete },
+    {loading: loadingdelete, data: datadelete, error: errordelete},
   ] = useMutation(hapuscustomsaved, {
     context: {
       headers: {
@@ -178,7 +179,7 @@ export default function CustomItinerary(props) {
     },
   });
 
-  const GetDuration = ({ data }) => {
+  const GetDuration = ({data}) => {
     var potong = data.split(":");
     return potong[0] + " h : " + potong[1] + " m";
   };
@@ -290,7 +291,7 @@ export default function CustomItinerary(props) {
             <Text type="bold" size="h5">
               {t("comingSoon")}!
             </Text>
-            <Text type="regular" size="label" style={{ marginTop: 5 }}>
+            <Text type="regular" size="label" style={{marginTop: 5}}>
               {t("soonUpdate")}.
             </Text>
             <Button
@@ -317,7 +318,7 @@ export default function CustomItinerary(props) {
   }, [props.navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: "#FFF"}}>
       <ScrollView
         style={{
           flex: 1,
@@ -367,7 +368,7 @@ export default function CustomItinerary(props) {
                 justifyContent: "space-between",
               }}
             >
-              <View style={{ alignContent: "center", alignItems: "center" }}>
+              <View style={{alignContent: "center", alignItems: "center"}}>
                 <View
                   style={{
                     width: 30,
@@ -404,7 +405,7 @@ export default function CustomItinerary(props) {
                   {t("addCustomActivity")}
                 </Text>
               </View>
-              <View style={{ alignContent: "center", alignItems: "center" }}>
+              <View style={{alignContent: "center", alignItems: "center"}}>
                 <View
                   style={{
                     width: 30,
@@ -434,7 +435,7 @@ export default function CustomItinerary(props) {
                   {t("inputdestinationdetail")}
                 </Text>
               </View>
-              <View style={{ alignContent: "center", alignItems: "center" }}>
+              <View style={{alignContent: "center", alignItems: "center"}}>
                 <View
                   style={{
                     width: 30,
@@ -472,7 +473,7 @@ export default function CustomItinerary(props) {
             paddingBottom: 10,
           }}
         >
-          <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
+          <View style={{width: Dimensions.get("screen").width, padding: 20}}>
             <Text
               size="title"
               type="bold"
@@ -519,7 +520,7 @@ export default function CustomItinerary(props) {
                 borderColor: "#209fae",
                 borderRadius: 5,
                 shadowColor: "#d3d3d3",
-                shadowOffset: { width: 2, height: 2 },
+                shadowOffset: {width: 2, height: 2},
                 shadowOpacity: 1,
                 shadowRadius: 2,
                 elevation: 2,
@@ -669,7 +670,7 @@ export default function CustomItinerary(props) {
                     item.longitude ===
                       props.route.params?.dataParent?.longitude ? (
                     <Swipeout
-                      style={{ backgroundColor: "white" }}
+                      style={{backgroundColor: "white"}}
                       left={swipeoutBtn(item.id)}
                     >
                       <View
@@ -706,7 +707,7 @@ export default function CustomItinerary(props) {
                             borderColor: "#d3d3d3",
                             backgroundColor: "white",
                             shadowColor: "#d3d3d3",
-                            shadowOffset: { width: 2, height: 2 },
+                            shadowOffset: {width: 2, height: 2},
                             shadowOpacity: 1,
                             shadowRadius: 2,
                             elevation: 2,
@@ -716,7 +717,7 @@ export default function CustomItinerary(props) {
                             paddingHorizontal: 20,
                           }}
                         >
-                          <View style={{ width: "70%" }}>
+                          <View style={{width: "70%"}}>
                             <Text
                               size="label"
                               type="bold"
@@ -727,7 +728,7 @@ export default function CustomItinerary(props) {
                               {item.title ? item.title : "-"}
                             </Text>
                           </View>
-                          <View style={{ width: "30%" }}>
+                          <View style={{width: "30%"}}>
                             <Text
                               size="label"
                               type="light"
@@ -776,7 +777,7 @@ export default function CustomItinerary(props) {
                 } else {
                   return (
                     <Swipeout
-                      style={{ backgroundColor: "white" }}
+                      style={{backgroundColor: "white"}}
                       left={swipeoutBtn(item.id)}
                     >
                       <View
@@ -840,7 +841,7 @@ export default function CustomItinerary(props) {
                             borderColor: "#d3d3d3",
                             backgroundColor: "white",
                             shadowColor: "#d3d3d3",
-                            shadowOffset: { width: 2, height: 2 },
+                            shadowOffset: {width: 2, height: 2},
                             shadowOpacity: 1,
                             shadowRadius: 2,
                             elevation: 2,
@@ -850,7 +851,7 @@ export default function CustomItinerary(props) {
                             paddingHorizontal: 20,
                           }}
                         >
-                          <View style={{ width: "70%" }}>
+                          <View style={{width: "70%"}}>
                             <Text
                               size="label"
                               type="bold"
@@ -861,7 +862,7 @@ export default function CustomItinerary(props) {
                               {item.title ? item.title : "-"}
                             </Text>
                           </View>
-                          <View style={{ width: "30%" }}>
+                          <View style={{width: "30%"}}>
                             <Text
                               size="label"
                               type="light"
