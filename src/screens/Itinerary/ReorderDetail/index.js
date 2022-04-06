@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -33,19 +33,19 @@ import {
   SavePutih,
 } from "../../../assets/svg";
 import DeviceInfo from "react-native-device-info";
-import {default_image} from "../../../assets/png";
+import { default_image } from "../../../assets/png";
 import DraggableFlatList from "react-native-draggable-flatlist";
-import {useMutation} from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
-import {useTranslation} from "react-i18next";
-import {StackActions} from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/native";
 import _ from "lodash";
 import Modal from "react-native-modal";
-import {RNToasty} from "react-native-toasty";
-import {useSelector} from "react-redux";
+import { RNToasty } from "react-native-toasty";
+import { useSelector } from "react-redux";
 
-export default function ReoderDetail({navigation, route}) {
-  const {t} = useTranslation();
+export default function ReoderDetail({ navigation, route }) {
+  const { t } = useTranslation();
   let [headData] = useState(route.params.head);
   let [listData, setListData] = useState([...route.params.child]);
   const token = useSelector((data) => data.token);
@@ -60,7 +60,7 @@ export default function ReoderDetail({navigation, route}) {
   );
   let [modalSave, setModalSave] = useState(false);
 
-  const [timeLine, {loading, data, error}] = useMutation(UpdateTimeline, {
+  const [timeLine, { loading, data, error }] = useMutation(UpdateTimeline, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export default function ReoderDetail({navigation, route}) {
                 backgroundColor: "#f6f6f6",
               }}
             >
-              <Text style={{marginVertical: 15}} size="title" type="bold">
+              <Text style={{ marginVertical: 15 }} size="title" type="bold">
                 {t("areyousure")}
               </Text>
             </View>
@@ -139,7 +139,7 @@ export default function ReoderDetail({navigation, route}) {
             >
               {t("alertHapusPost")}
             </Text> */}
-            <View style={{marginTop: 20, marginHorizontal: 10}}>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
               <Button
                 onPress={() => {
                   saveTimeLine();
@@ -152,7 +152,7 @@ export default function ReoderDetail({navigation, route}) {
                   setModalSave(false);
                   // navigation.goBack();
                 }}
-                style={{marginTop: 5, marginBottom: 8}}
+                style={{ marginTop: 5, marginBottom: 8 }}
                 variant="transparent"
                 text={t("discard")}
               ></Button>
@@ -207,7 +207,7 @@ export default function ReoderDetail({navigation, route}) {
     }
   };
 
-  const GetStartTime = ({startt}) => {
+  const GetStartTime = ({ startt }) => {
     var starttime = startt.split(":");
 
     return (
@@ -217,14 +217,18 @@ export default function ReoderDetail({navigation, route}) {
     );
   };
 
-  const GetEndTime = ({startt, dur}) => {
+  const GetEndTime = ({ startt, dur }) => {
     var duration = dur.split(":");
     var starttime = startt.split(":");
 
     var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
 
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-    if (menit > 59) {
+    if (menit == 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    } else if (menit != 60 && menit > 59) {
+      jam = jam + 1;
       menit = menit - 60;
     }
 
@@ -249,7 +253,34 @@ export default function ReoderDetail({navigation, route}) {
     );
   };
 
-  const HitungWaktu = ({lat1, lon1, lat2, lon2, unit, kecepatan}) => {
+  // const HitungWaktu = ({ lat1, lon1, lat2, lon2, unit, kecepatan }) => {
+  //   let jarak = Distance({
+  //     lat1: lat1,
+  //     lon1: lon1,
+  //     lat2: lat2,
+  //     lon2: lon2,
+  //     unit: unit,
+  //   });
+  //   let hasil = jarak / kecepatan;
+  //   let hasils = parseFloat(hasil).toFixed(2);
+
+  //   let bahan = hasils.split(".");
+
+  //   let jam = parseFloat(bahan[1]);
+
+  //   return (
+  //     (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
+  //     (jam > 0 && jam < 60
+  //       ? " " + jam + " " + t("min")
+  //       : hasil > 0.6
+  //       ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
+  //       : jam
+  //       ? " " + (jam - 60) + " " + t("min")
+  //       : "1" + " " + t("min"))
+  //   );
+  // };
+
+  const HitungWaktu = ({ lat1, lon1, lat2, lon2, unit, kecepatan }) => {
     let jarak = Distance({
       lat1: lat1,
       lon1: lon1,
@@ -265,17 +296,17 @@ export default function ReoderDetail({navigation, route}) {
     let jam = parseFloat(bahan[1]);
 
     return (
-      (hasil.toFixed(0) > 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
+      (hasil.toFixed(0) >= 1 ? hasil.toFixed(0) + " " + t("hr") : "") +
       (jam > 0 && jam < 60
         ? " " + jam + " " + t("min")
-        : hasil > 0.6
+        : hasil > 0.6 && hasil.toFixed(0) < 1
         ? "1" + t("hr") + " " + (bahan[1] - 60) + " " + t("min")
         : jam
         ? " " + (jam - 60) + " " + t("min")
         : "1" + " " + t("min"))
     );
   };
-  const renderItem = ({item, index, drag, isActive}) => {
+  const renderItem = ({ item, index, drag, isActive }) => {
     const x = listData.length - 1;
     return (
       <Pressable
@@ -366,7 +397,7 @@ export default function ReoderDetail({navigation, route}) {
               listData[index - 1] &&
               listData[index].latitude == listData[index - 1].latitude &&
               listData[index].longitude == listData[index - 1].longitude ? (
-                <View style={{width: 10, height: 10, marginLeft: 5}}></View>
+                <View style={{ width: 10, height: 10, marginLeft: 5 }}></View>
               ) : (
                 <View
                   style={{
@@ -378,7 +409,7 @@ export default function ReoderDetail({navigation, route}) {
                     backgroundColor: "#209fae",
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
@@ -439,7 +470,7 @@ export default function ReoderDetail({navigation, route}) {
                     backgroundColor: "#209fae",
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
@@ -468,7 +499,7 @@ export default function ReoderDetail({navigation, route}) {
                 padding: 10,
                 elevation: 3,
                 shadowColor: "#d3d3d3",
-                shadowOffset: {width: 2, height: 2},
+                shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
               }}
@@ -482,7 +513,9 @@ export default function ReoderDetail({navigation, route}) {
               >
                 {item.type !== "custom" ? (
                   <Image
-                    source={item.images ? {uri: item.images} : {uri: item.icon}}
+                    source={
+                      item.images ? { uri: item.images } : { uri: item.icon }
+                    }
                     defaultSource={default_image}
                     style={{
                       height: 30,
@@ -542,7 +575,7 @@ export default function ReoderDetail({navigation, route}) {
                     />
                   </View>
                 )}
-                <View style={{flex: 1, paddingHorizontal: 10}}>
+                <View style={{ flex: 1, paddingHorizontal: 10 }}>
                   <Text size="label" type="bold" style={{}}>
                     {item.name}
                   </Text>
@@ -606,7 +639,7 @@ export default function ReoderDetail({navigation, route}) {
                   paddingTop: item.note ? 5 : 0,
                 }}
               >
-                <View style={{flexDirection: "row", alignItems: "center"}}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   {/* <Pencilgreen width={10} height={10} /> */}
                   <Text
                     size="small"
@@ -661,12 +694,12 @@ export default function ReoderDetail({navigation, route}) {
                     alignItems: "center",
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
                 >
-                  <Mobil height={15} width={15} style={{marginRight: 10}} />
+                  <Mobil height={15} width={15} style={{ marginRight: 10 }} />
                   <Text type="bold">
                     {listData[index + 1].detail_flight
                       ? Distance({
@@ -869,12 +902,16 @@ export default function ReoderDetail({navigation, route}) {
     // saveTimeLine();
   };
 
-  const hitungDuration = ({start, duration}) => {
+  const hitungDuration = ({ start, duration }) => {
     duration = duration ? duration.split(":") : "00:00:00";
     let starttime = start ? start.split(":") : "00:00:00";
     let jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
     let menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-    if (menit > 59) {
+    if (menit == 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    } else if (menit != 60 && menit > 59) {
+      jam = jam + 1;
       menit = menit - 60;
     }
 
@@ -894,7 +931,7 @@ export default function ReoderDetail({navigation, route}) {
           text: "Yes",
           onPress: () => navigation.goBack(),
         },
-        {text: "No", onPress: () => console.log("OK Pressed")},
+        { text: "No", onPress: () => console.log("OK Pressed") },
       ]);
     } else {
       navigation.goBack();
@@ -1036,7 +1073,7 @@ export default function ReoderDetail({navigation, route}) {
             <Text
               type="bold"
               size="label"
-              style={{color: "#FFF"}}
+              style={{ color: "#FFF" }}
               numberOfLines={1}
             >
               {headData?.name ? headData.name : ""}
@@ -1045,7 +1082,7 @@ export default function ReoderDetail({navigation, route}) {
             <Text
               type="regular"
               size="description"
-              style={{color: "#FFF"}}
+              style={{ color: "#FFF" }}
             >{`Day ${dayData.day}`}</Text>
           </View>
         ) : null}
@@ -1073,7 +1110,7 @@ export default function ReoderDetail({navigation, route}) {
       marginLeft: 10,
     },
     headerLeft: () => (
-      <View style={{flexDirection: "row"}}>
+      <View style={{ flexDirection: "row" }}>
         <Button
           text={""}
           size="medium"
@@ -1114,7 +1151,7 @@ export default function ReoderDetail({navigation, route}) {
               <Text
                 type="regular"
                 size="label"
-                style={{color: "#FFF"}}
+                style={{ color: "#FFF" }}
               >{`Day ${dayData.day}`}</Text>
             </View>
           )}
@@ -1148,14 +1185,14 @@ export default function ReoderDetail({navigation, route}) {
     navigation.setOptions(HeaderComponent);
   }, []);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: "#F6F6F6"}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#F6F6F6" }}>
       {/* <StatusBar backgroundColor="#209FAE" barStyle="light-content" /> */}
       <DraggableFlatList
         data={listData}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
         keyExtractor={(item, index) => `draggable-item-${item.id}`}
-        onDragEnd={({data}) => handleDrag(data)}
+        onDragEnd={({ data }) => handleDrag(data)}
         contentContainerStyle={{
           padding: 15,
         }}

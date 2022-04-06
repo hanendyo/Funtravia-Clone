@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Dimensions,
@@ -10,10 +10,10 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
-import {Textarea} from "native-base";
-import {default_image} from "../../../assets/png";
+import { Textarea } from "native-base";
+import { default_image } from "../../../assets/png";
 import Modal from "react-native-modal";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import {
   Arrowbackios,
   Arrowbackwhite,
@@ -26,13 +26,13 @@ import SaveCustom from "../../../graphQL/Mutation/Itinerary/AddCustomNew";
 import SaveCustom2 from "../../../graphQL/Mutation/Itinerary/AddCustom";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import Swipeout from "react-native-swipeout";
-import {Button, Text, Loading, FunIcon, Distance} from "../../../component";
-import {useTranslation} from "react-i18next";
-import {StackActions} from "@react-navigation/routers";
+import { Button, Text, Loading, FunIcon, Distance } from "../../../component";
+import { useTranslation } from "react-i18next";
+import { StackActions } from "@react-navigation/routers";
 import DeviceInfo from "react-native-device-info";
 
 export default function ChoosePosition(props) {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
 
   const HeaderComponent = {
@@ -41,7 +41,7 @@ export default function ChoosePosition(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{color: "#fff"}}>
+      <Text size="header" style={{ color: "#fff" }}>
         {t("customActivity")}
       </Text>
     ),
@@ -112,7 +112,7 @@ export default function ChoosePosition(props) {
 
   const saveNotes = () => {
     var tempData = [...datatimeline];
-    let x = {...tempData[indexinput]};
+    let x = { ...tempData[indexinput] };
     x.note = textinput;
     tempData.splice(indexinput, 1, x);
 
@@ -121,7 +121,7 @@ export default function ChoosePosition(props) {
     setModal(false);
   };
 
-  const GetStartTime = ({startt}) => {
+  const GetStartTime = ({ startt }) => {
     var starttime = startt.split(":");
 
     return (
@@ -145,7 +145,7 @@ export default function ChoosePosition(props) {
     setModal(true);
   };
 
-  const GetEndTime = ({startt, dur}) => {
+  const GetEndTime = ({ startt, dur }) => {
     var duration = dur.split(":");
     var starttime = startt.split(":");
 
@@ -156,7 +156,11 @@ export default function ChoosePosition(props) {
     // }
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
 
-    if (menit >= 60) {
+    if (menit == 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    } else if (menit != 60 && menit > 59) {
+      jam = jam + 1;
       menit = menit - 60;
     }
 
@@ -202,13 +206,13 @@ export default function ChoosePosition(props) {
     ];
   };
 
-  const RenderItinerary = ({item, index}) => {
+  const RenderItinerary = ({ item, index }) => {
     const x = datatimeline.length - 1;
 
     if (item.stat === "new") {
       return (
         <Swipeout
-          style={{backgroundColor: "white"}}
+          style={{ backgroundColor: "white" }}
           left={swipeoutBtn(item.id)}
         >
           <View>
@@ -223,7 +227,7 @@ export default function ChoosePosition(props) {
                 justifyContent: "flex-start",
               }}
             >
-              <View style={{height: "100%", width: "25%", paddingTop: 10}}>
+              <View style={{ height: "100%", width: "25%", paddingTop: 10 }}>
                 <TouchableOpacity
                   style={{
                     alignItems: "center",
@@ -257,7 +261,7 @@ export default function ChoosePosition(props) {
                   )} */}
                 </TouchableOpacity>
               </View>
-              <View style={{height: "100%", width: "70%", paddingTop: 10}}>
+              <View style={{ height: "100%", width: "70%", paddingTop: 10 }}>
                 <View
                   style={{
                     width: "100%",
@@ -285,7 +289,7 @@ export default function ChoosePosition(props) {
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
-                  style={{width: "100%", paddingHorizontal: 10}}
+                  style={{ width: "100%", paddingHorizontal: 10 }}
                 >
                   <Text
                     size="label"
@@ -313,11 +317,11 @@ export default function ChoosePosition(props) {
                     </View>
                   ) : null}
                 </TouchableOpacity>
-                <View style={{paddingHorizontal: 10}}>
+                <View style={{ paddingHorizontal: 10 }}>
                   {item.note ? (
                     <TouchableOpacity
                       onPress={() => bukaModal(item.note, index)}
-                      style={{flexDirection: "row", alignItems: "center"}}
+                      style={{ flexDirection: "row", alignItems: "center" }}
                     >
                       <Pencilgreen width={10} height={10} />
                       <Text
@@ -336,7 +340,7 @@ export default function ChoosePosition(props) {
                   ) : (
                     <TouchableOpacity
                       onPress={() => bukaModal(null, index)}
-                      style={{flexDirection: "row", alignItems: "center"}}
+                      style={{ flexDirection: "row", alignItems: "center" }}
                     >
                       <Pencilgreen width={10} height={10} />
                       <Text
@@ -382,7 +386,7 @@ export default function ChoosePosition(props) {
               justifyContent: "flex-start",
             }}
           >
-            <View style={{height: "100%", width: "25%", paddingTop: 10}}>
+            <View style={{ height: "100%", width: "25%", paddingTop: 10 }}>
               <TouchableOpacity
                 style={{
                   alignItems: "center",
@@ -394,9 +398,9 @@ export default function ChoosePosition(props) {
                   <Image
                     source={
                       item.images
-                        ? {uri: item.images}
+                        ? { uri: item.images }
                         : item.icon
-                        ? {uri: item.icon}
+                        ? { uri: item.icon }
                         : default_image
                     }
                     style={{
@@ -415,7 +419,7 @@ export default function ChoosePosition(props) {
                 )}
               </TouchableOpacity>
             </View>
-            <View style={{height: "100%", width: "70%", paddingTop: 10}}>
+            <View style={{ height: "100%", width: "70%", paddingTop: 10 }}>
               <View
                 style={{
                   width: "100%",
@@ -442,7 +446,9 @@ export default function ChoosePosition(props) {
                   )}
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity style={{width: "100%", paddingHorizontal: 10}}>
+              <TouchableOpacity
+                style={{ width: "100%", paddingHorizontal: 10 }}
+              >
                 <Text
                   size="label"
                   type="bold"
@@ -469,11 +475,11 @@ export default function ChoosePosition(props) {
                   </View>
                 ) : null}
               </TouchableOpacity>
-              <View style={{paddingHorizontal: 10}}>
+              <View style={{ paddingHorizontal: 10 }}>
                 {item.note ? (
                   <TouchableOpacity
                     onPress={() => bukaModal(item.note, index)}
-                    style={{flexDirection: "row", alignItems: "center"}}
+                    style={{ flexDirection: "row", alignItems: "center" }}
                   >
                     <Pencilgreen width={10} height={10} />
                     <Text
@@ -492,7 +498,7 @@ export default function ChoosePosition(props) {
                 ) : (
                   <TouchableOpacity
                     onPress={() => bukaModal(null, index)}
-                    style={{flexDirection: "row", alignItems: "center"}}
+                    style={{ flexDirection: "row", alignItems: "center" }}
                   >
                     <Pencilgreen width={10} height={10} />
                     <Text
@@ -527,7 +533,7 @@ export default function ChoosePosition(props) {
   };
 
   const addHere = (index) => {
-    var inputan = {...dataInput};
+    var inputan = { ...dataInput };
     let jam = jammax.split(":");
     let jambaru = inputan.duration.split(":");
 
@@ -632,6 +638,7 @@ export default function ChoosePosition(props) {
             console.log("jamtemp", jamtemp);
 
             let time = tempdata[y - 1].time;
+
             let splittime = time.split(":");
             // let durasitemp = `${jamtemp}:${menittemp}`;
             let durationold = tempdata[y - 1].duration;
@@ -690,7 +697,7 @@ export default function ChoosePosition(props) {
     }
   };
 
-  const hitungDuration = ({startt, dur}) => {
+  const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
     var starttime = startt ? startt.split(":") : "06:00:00";
 
@@ -699,7 +706,11 @@ export default function ChoosePosition(props) {
     // 	jam = 24 - jam;
     // }
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
-    if (menit > 59) {
+    if (menit == 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    } else if (menit != 60 && menit > 59) {
+      jam = jam + 1;
       menit = menit - 60;
     }
 
@@ -713,7 +724,7 @@ export default function ChoosePosition(props) {
 
   const [
     mutationSaved,
-    {loading: loadingSaved, data: dataSaved, error: errorSaved},
+    { loading: loadingSaved, data: dataSaved, error: errorSaved },
   ] = useMutation(SaveCustom, {
     context: {
       headers: {
@@ -727,7 +738,7 @@ export default function ChoosePosition(props) {
 
   const [
     mutationSaved2,
-    {loading: loadingSaved2, data: dataSaved2, error: errorSaved2},
+    { loading: loadingSaved2, data: dataSaved2, error: errorSaved2 },
   ] = useMutation(SaveCustom2, {
     context: {
       headers: {
@@ -741,7 +752,7 @@ export default function ChoosePosition(props) {
 
   const [
     mutationSaveTimeline,
-    {loading: loadingSave, data: dataSave, error: errorSave},
+    { loading: loadingSave, data: dataSave, error: errorSave },
   ] = useMutation(UpdateTimeline, {
     context: {
       headers: {
@@ -998,7 +1009,7 @@ export default function ChoosePosition(props) {
               justifyContent: "space-between",
             }}
           >
-            <View style={{alignContent: "center", alignItems: "center"}}>
+            <View style={{ alignContent: "center", alignItems: "center" }}>
               <View
                 style={{
                   width: 30,
@@ -1028,7 +1039,7 @@ export default function ChoosePosition(props) {
                 {t("addCustomActivity")}
               </Text>
             </View>
-            <View style={{alignContent: "center", alignItems: "center"}}>
+            <View style={{ alignContent: "center", alignItems: "center" }}>
               <View
                 style={{
                   width: 30,
@@ -1059,7 +1070,7 @@ export default function ChoosePosition(props) {
                 {t("inputdestinationdetail")}
               </Text>
             </View>
-            <View style={{alignContent: "center", alignItems: "center"}}>
+            <View style={{ alignContent: "center", alignItems: "center" }}>
               <View
                 style={{
                   width: 30,
@@ -1121,7 +1132,7 @@ export default function ChoosePosition(props) {
             {t("selectitinerary")}
           </Text>
         </View>
-        <View style={{width: Dimensions.get("screen").width, padding: 20}}>
+        <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
           {datatimeline.length > 0 ? (
             datatimeline.map((item, index) => {
               if (props.route.params.dataParent) {
@@ -1522,7 +1533,7 @@ export default function ChoosePosition(props) {
               borderRadius: 5,
             }}
           >
-            <Text size="label" type="regular" style={{color: "white"}}>
+            <Text size="label" type="regular" style={{ color: "white" }}>
               {t("save")}
             </Text>
           </TouchableOpacity>
@@ -1571,7 +1582,7 @@ export default function ChoosePosition(props) {
             <Text
               size="title"
               type="bold"
-              style={{marginTop: 13, marginBottom: 15}}
+              style={{ marginTop: 13, marginBottom: 15 }}
             >
               {t("EditNotes")}
             </Text>
