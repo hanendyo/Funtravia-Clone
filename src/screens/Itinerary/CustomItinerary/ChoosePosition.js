@@ -635,7 +635,7 @@ export default function ChoosePosition(props) {
               }
             }
 
-            console.log("jamtemp", jamtemp);
+       
 
             let time = tempdata[y - 1].time;
 
