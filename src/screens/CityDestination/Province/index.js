@@ -1853,7 +1853,7 @@ export default function ProvinceDetail(props) {
                       ? dataevent?.event
                       : [default_image]
                     ).map((item, index) => (
-                      <View>
+                      <View key={index.toString()}>
                         {position == index ? (
                           <View
                             style={{

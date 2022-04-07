@@ -67,10 +67,10 @@ export default function Unesco({ navigation, route }) {
 
     android:
       deviceId == "LYA-L29"
-        ? normalize(245) + tambahanJudul + tambahan
-        : NotchAndro
         ? normalize(225) + tambahanJudul + tambahan
-        : normalize(210) + tambahanJudul + tambahan,
+        : NotchAndro
+        ? normalize(195) + tambahanJudul + tambahan
+        : normalize(190) + tambahanJudul + tambahan,
   });
 
   let [selectedCountry, SetselectedCountry] = useState({

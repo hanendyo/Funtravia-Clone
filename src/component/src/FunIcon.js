@@ -54,18 +54,18 @@ export default function FunIcon({
     return (
       <SvgCssUri
         uri={url}
-        width={width ? width : 50}
-        height={height ? height : 50}
-        fill={fill ? fill : "#464646"}
+        width={width ?? 50}
+        height={height ?? 50}
+        fill={fill ?? "#464646"}
       />
     );
   } else {
     return (
       <SvgCssUri
         uri={error ? url : path}
-        width={width ? width : 50}
-        height={height ? height : 50}
-        fill={fill ? fill : "#464646"}
+        width={width ?? 50}
+        height={height ?? 50}
+        fill={fill ?? "#464646"}
       />
     );
   }

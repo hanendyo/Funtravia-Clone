@@ -799,18 +799,24 @@ export default function Detail_movie(props) {
         <Animated.View
           style={{
             transform: [{ translateY: titleTranslateY }],
-            height: 100,
-            width: 100,
+            flexDirection: "row",
+            height: Platform.OS === "ios" ? normalize(45) : normalize(50),
+            flex: 1,
+            alignItems: "center",
             position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
             zIndex: 999,
+            backgroundColor: "#209FAE",
+            opacity: titleOpacity,
             top: 0,
-            opacity: backOpacitySecond,
           }}
         >
           <Pressable
             onPress={() => props.navigation.goBack()}
             style={{
-              marginTop: Platform.OS == "ios" ? 5 : 10,
+              marginTop: Platform.OS == "ios" ? 0 : 3,
               marginLeft: Platform.OS == "ios" ? 14 : 10,
               borderRadius: 40,
               height: 40,
@@ -825,6 +831,17 @@ export default function Detail_movie(props) {
               <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
             )}
           </Pressable>
+          <Text
+            size="title"
+            style={{
+              color: "#fff",
+              marginLeft: Platform.OS === "ios" ? 5 : 10,
+            }}
+            type="bold"
+            numberOfLines={1}
+          >
+            {movie_byid?.title}
+          </Text>
         </Animated.View>
 
         {/* End Back Arrow Two */}
