@@ -312,8 +312,8 @@ export default function Message({ navigation, route }) {
     route.params?.page ? route.params.page : 0
   );
   const [routes] = React.useState([
-    { key: "personal", title: "Chat", count: countPesan },
-    { key: t("group"), title: "Group", count: countPesanGroup },
+    { key: "personal", title: "Personal", count: countPesan },
+    { key: "group", title: t("group"), count: countPesanGroup },
   ]);
 
   const renderScene = ({ route }) => {
@@ -414,7 +414,7 @@ export default function Message({ navigation, route }) {
                   ]}
                 >
                   <Truncate
-                    text={item?.key ? item.key : ""}
+                    text={item?.title ?? ""}
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>

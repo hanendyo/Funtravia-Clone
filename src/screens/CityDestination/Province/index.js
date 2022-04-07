@@ -718,7 +718,7 @@ export default function ProvinceDetail(props) {
   };
 
   // RenderGeneral
-  const RenderGeneral = ({}) => {
+  const RenderGeneral = () => {
     let render = [];
     render = lisProvince ? lisProvince : null;
 
@@ -1775,11 +1775,11 @@ export default function ProvinceDetail(props) {
                     onPress={() => {
                       Goto(item);
                     }}
-                    key={index}
                     style={{
                       borderTopLeftRadius: 5,
                       borderTopRightRadius: 5,
                     }}
+                    key={dataevent.month}
                   >
                     <ImageBackground
                       source={
@@ -1798,7 +1798,6 @@ export default function ProvinceDetail(props) {
                         alignItems: "center",
                         justifyContent: "flex-end",
                       }}
-                      key={`image-${index}`}
                       imageStyle={{
                         borderTopLeftRadius: 10,
                         borderTopRightRadius: 10,

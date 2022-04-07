@@ -553,7 +553,7 @@ export default function MovieLocation({ navigation, route }) {
                 : NotchAndro
                 ? HEADER_MAX_HEIGHT + normalize(15)
                 : HEADER_MAX_HEIGHT + normalize(5),
-            opacity: backOpacity,
+            // opacity: backOpacity,
             transform: [{ translateY: shareTranslateY }],
           }}
         >
@@ -624,7 +624,7 @@ export default function MovieLocation({ navigation, route }) {
                 : deviceId == "LYA-L29"
                 ? HEADER_MAX_HEIGHT / 2
                 : HEADER_MAX_HEIGHT / 2,
-            opacity: backOpacity,
+            // opacity: backOpacity,
             transform: [{ translateY: shareTranslateY }],
           }}
         >
@@ -663,7 +663,7 @@ export default function MovieLocation({ navigation, route }) {
               width: null,
               height: HEADER_MAX_HEIGHT,
               resizeMode: "cover",
-              opacity: imageOpacity,
+              // opacity: imageOpacity,
               transform: [{ translateY: imageTranslateY }],
               zIndex: 1,
             }}
@@ -785,6 +785,18 @@ export default function MovieLocation({ navigation, route }) {
             )}
           </Pressable>
         </Animated.View>
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              position: "absolute",
+              top: -50,
+              width: Dimensions.get("screen").width,
+              height: 50,
+              backgroundColor: "#14646E",
+              zIndex: 100,
+            }}
+          />
+        ) : null}
         {/* End Back Arrow Two */}
       </SafeAreaView>
     </>

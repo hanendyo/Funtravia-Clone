@@ -32,8 +32,10 @@ import { Arrowbackwhite } from "../../assets/svg";
 import FastImage from "react-native-fast-image";
 import { Button, Text, Truncate, Capital, FunImage } from "../../component";
 import { useSelector } from "react-redux";
+import DevifeInfo from "react-native-device-info";
 
 export default function AllDestination(props) {
+  const Notch = DevifeInfo.hasNotch();
   const { t } = useTranslation();
   const token = useSelector((data) => data.token);
   const scrollY = useRef(new Animated.Value(1));
@@ -422,9 +424,9 @@ export default function AllDestination(props) {
                       marginLeft: 10,
                       width: Dimensions.get("window").width - 40,
                     }}
+                    key={i + item.name}
                   >
                     <TouchableOpacity
-                      key={i + item.name}
                       onPress={() => {
                         if (value.type == "province") {
                           props.navigation.navigate("CountryStack", {
@@ -920,17 +922,16 @@ export default function AllDestination(props) {
           </View>
           <View
             style={{
-              flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 80,
-              position: "absolute",
-              bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -939,8 +940,6 @@ export default function AllDestination(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 10,
             }}
           >
             <Button
@@ -978,9 +977,9 @@ export default function AllDestination(props) {
           paddingBottom: Platform.OS === "ios" ? 0 : 60,
         }}
         horizontal={false}
-        keyExtractor={(item) => "item_" + item.key}
+        keyExtractor={(item, index) => index.toString()}
         data={dataResult ? dataResult?.populer_city_destination_v2 : null}
-        renderItem={({ item, index }) => <RenderList item={item} />}
+        renderItem={({ item }) => <RenderList item={item} />}
         ListEmptyComponent={
           loading ? (
             <View style={{ marginTop: 15 }}>

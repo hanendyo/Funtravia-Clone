@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import { Text, Button } from "../../component";
 import { default_image } from "../../assets/png";
@@ -290,7 +291,7 @@ export default function JournalCategory(props) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <View
         style={{
           backgroundColor: "white",
@@ -600,6 +601,6 @@ export default function JournalCategory(props) {
           )}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
