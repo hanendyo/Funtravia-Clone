@@ -693,7 +693,10 @@ export default function AllDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS === "ios" && !Notch
+                ? Dimensions.get("screen").height * 0.55
+                : Dimensions.get("screen").height * 0.5,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopWidth: 1,
@@ -957,7 +960,7 @@ export default function AllDestination(props) {
           </View>
         </View>
       </Modal>
-      {totalCity === 0 && (
+      {/* {totalCity === 0 && (
         <View
           style={{
             alignSelf: "center",
@@ -968,7 +971,7 @@ export default function AllDestination(props) {
             {t("noData")}
           </Text>
         </View>
-      )}
+      )} */}
 
       <FlatList
         contentContainerStyle={{

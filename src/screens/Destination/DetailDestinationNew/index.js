@@ -83,10 +83,7 @@ const Index = (props) => {
   let AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
   let { width, height } = Dimensions.get("screen");
   let Notch = DeviceInfo.hasNotch();
-  let TabBarHeight = Platform.select({
-    ios: Notch ? 40 : 40,
-    android: 40,
-  });
+  let TabBarHeight = 40;
 
   // dinamis height tambahan header
   let [HeightJudul, setHeightJudul] = useState(0);
@@ -130,14 +127,14 @@ const Index = (props) => {
           HeightWeb -
           NativeModules.StatusBarManager.HEIGHT
         : NotchAndro
-        ? normalize(210) +
+        ? normalize(220) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
           HeightTime +
           HeightWeb -
           NativeModules.StatusBarManager.HEIGHT
-        : normalize(198) +
+        : normalize(208) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -2235,14 +2232,10 @@ const Index = (props) => {
             flexDirection: "row",
             alignContent: "center",
             alignItems: "center",
-            marginHorizontal: Platform.OS == "ios" ? null : 20,
-            paddingHorizontal: Platform.OS == "ios" ? 20 : null,
+            paddingHorizontal: 20,
             height: 55,
-            width:
-              Platform.OS == "ios"
-                ? Dimensions.get("screen").width
-                : Dimensions.get("screen").width - 40,
-            backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+            width: Dimensions.get("screen").width,
+            backgroundColor: "#209fae",
           }}
         >
           <Button

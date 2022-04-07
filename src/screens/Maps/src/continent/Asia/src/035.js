@@ -8,7 +8,6 @@ export default function Maps({
   defaultColor,
   setChange,
 }) {
-  console.log(subContinent.id, colorChange, defaultColor, setChange);
   const { width, height } = Dimensions.get("screen");
   return (
     <Svg
