@@ -95,7 +95,9 @@ export const dateFormatMonthYears = (date) => {
 };
 
 export const dateFormats = (date) => {
-  let dates = date.toString();
+  let dateChanged = date.replace(/\//g, "-");
+
+  // console.log("dateChange", dateChanged);
   let monthNames = [
     "Jan",
     "Feb",
@@ -110,7 +112,8 @@ export const dateFormats = (date) => {
     "Nov",
     "Dec",
   ];
-  let formattedDate = new Date(dates);
+  let formattedDate = new Date(dateChanged + "T00:00:00Z");
+  // console.log("formated", formattedDate);
   let newDate =
     formattedDate.getDate().toString() +
     " " +
@@ -176,7 +179,7 @@ export const dateMountFormats = (date) => {
     " " +
     monthNames[formattedDate.getMonth()];
   let newDay = dayName + " " + formattedDate.getFullYear().toString();
-  return { datemount: newDate, dayyear: newDay };
+  return {datemount: newDate, dayyear: newDay};
 };
 
 export const dateFormatBetween = (date_from, date_until) => {
