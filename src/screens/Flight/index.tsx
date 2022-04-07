@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 
-import { arrow_bot, arrow_top } from "../../../const/Png";
+// import { arrow_bot, arrow_top } from "../../../const/Png";
 import {
   Arrowbackwhite,
   FlightHeader,
@@ -795,7 +795,7 @@ export default function Flight(props) {
                             setState(tempdata);
                           }}
                         >
-                          <Image
+                          {/* <Image
                             style={{
                               width: 10,
                               height: 10,
@@ -804,7 +804,7 @@ export default function Flight(props) {
                               // marginLeft: -5,
                             }}
                             source={arrow_top}
-                          />
+                          /> */}
                         </TouchableOpacity>
 
                         <Input
@@ -913,7 +913,7 @@ export default function Flight(props) {
                             setState(tempdata);
                           }}
                         >
-                          <Image
+                          {/* <Image
                             style={{
                               width: 8,
                               height: 8,
@@ -922,7 +922,7 @@ export default function Flight(props) {
                               // marginLeft: -15,
                             }}
                             source={arrow_top}
-                          />
+                          /> */}
                         </TouchableOpacity>
                         <Input
                           style={{
@@ -1025,7 +1025,7 @@ export default function Flight(props) {
                             setState(tempdata);
                           }}
                         >
-                          <Image
+                          {/* <Image
                             style={{
                               width: 8,
                               height: 8,
@@ -1034,7 +1034,7 @@ export default function Flight(props) {
                               // marginLeft: -5,
                             }}
                             source={arrow_top}
-                          />
+                          /> */}
                         </TouchableOpacity>
                         <Input
                           style={{

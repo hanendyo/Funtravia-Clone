@@ -60,11 +60,7 @@ import { StackActions } from "@react-navigation/native";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import BottomButton from "./BottomButton";
-import ActivityModal from "./ActivityModal";
-import FacilityModal from "./FacilityModal";
-import ServiceModal from "./ServiceModal";
 import DeviceInfo from "react-native-device-info";
-import IndexSkeleton from "./IndexSkeleton";
 import { RNToasty } from "react-native-toasty";
 import { useTranslation } from "react-i18next";
 import ImageSlide from "../../../component/src/ImageSlide";
@@ -167,9 +163,9 @@ const Index = (props) => {
   const [canScroll, setCanScroll] = useState(true);
   const [tab1Data] = useState(Array(40).fill(0));
   const [tab2Data] = useState(Array(30).fill(0));
-  const [modalActivity, setModalActivity] = useState(false);
-  const [modalFacility, setModalFacility] = useState(false);
-  const [modalService, setModalService] = useState(false);
+  // const [modalActivity, setModalActivity] = useState(false);
+  // const [modalFacility, setModalFacility] = useState(false);
+  // const [modalService, setModalService] = useState(false);
   const [modalTime, setModalTime] = useState(false);
   const [modalSosial, setModalSosial] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -2128,18 +2124,7 @@ const Index = (props) => {
     });
   };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoadings(false);
-  //   }, 2900);
-  // }),
-  //   [];
-
   let [loadings, setLoadings] = useState(loading);
-
-  // if (loadings) {
-  //   return <IndexSkeleton />;
-  // }
 
   return (
     <>
@@ -2536,27 +2521,6 @@ const Index = (props) => {
             addTo={addToPlan}
           />
         ) : null}
-
-        {/* Modal Activiy */}
-        <ActivityModal
-          setModalActivity={(e) => setModalActivity(e)}
-          modals={modalActivity}
-          data={dataDestination}
-        />
-
-        {/* Modal Facility */}
-        <FacilityModal
-          setModalFacility={(e) => setModalFacility(e)}
-          modals={modalFacility}
-          data={dataDestination}
-        />
-
-        {/* Modal Service */}
-        <ServiceModal
-          setModalService={(e) => setModalService(e)}
-          modals={modalService}
-          data={dataDestination}
-        />
 
         {/* Modal Time */}
         <ModalRN
