@@ -1024,7 +1024,7 @@ export default function Unesco({ navigation, route }) {
             <ActivityIndicator size="large" color="#209fae" />
           </View>
         ) : null}
-        <StaBar barStyle="light-content" style={{ flex: 1, zIndex: 99999 }} />
+
         <CountrySrc
           selectedCountry={selectedCountry}
           SetselectedCountry={(e) => SetselectedCountry(e)}

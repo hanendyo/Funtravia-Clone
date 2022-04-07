@@ -653,7 +653,6 @@ export default function Journal(props) {
         stickyHeaderIndices={[1]}
         showsVerticalScrollIndicator={false}
       >
-        {/* <StaBar backgroundColor="#14646e" barStyle="light-content" /> */}
         {/* ============================== Populer Journal ====================================================*/}
 
         <View style={styles.container}>

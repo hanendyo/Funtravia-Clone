@@ -1081,7 +1081,6 @@ export default function ItineraryPopuler(props) {
                           type="regular"
                           style={{
                             textAlign: "center",
-                            paddingHorHorizontal: 5,
                           }}
                           numberOfLines={1}
                         >

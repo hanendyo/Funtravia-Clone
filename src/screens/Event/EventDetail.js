@@ -1470,40 +1470,29 @@ export default function EventDetail(props) {
       </Animated.ScrollView>
       <View
         style={{
-          flex: 2,
-          position: "absolute",
-          bottom: 0,
-          justifyContent: "space-evenly",
-
-          backgroundColor: "#ffffff",
-          width: screenWidth,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
-          paddingVertical: Platform.OS == "ios" ? (Notch ? 20 : 15) : 15,
+          height: Platform.OS === "ios" ? (Notch ? 75 : 60) : 60,
+          backgroundColor: "#FFF",
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 20,
+          shadowOffset: { width: 1, height: 1 },
+          shadowOpacity: Platform.OS == "ios" ? 0.22 : 2,
+          shadowRadius: Platform.OS == "ios" ? 2.22 : 1.0,
+          elevation: Platform.OS == "ios" ? 3 : 3.5,
+          flexDirection: "row",
+          borderTopWidth: 1,
+          borderColor: "#F1F1F1",
+          justifyContent: "space-between",
+          paddingTop: 10,
+          paddingBottom: Platform.OS === "ios" ? (Notch ? 20 : 10) : 10,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-          }}
-        >
+        <View style={{ height: "100%", width: "100%", alignSelf: "center" }}>
           <Button
             text={t("addToPlan")}
             size="medium"
             color="primary"
             type="box"
             onPress={() => addToPlan()}
-            style={{
-              width: (Dimensions.get("screen").width - 40) * 1,
-            }}
           />
         </View>
 

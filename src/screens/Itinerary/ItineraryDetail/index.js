@@ -2067,7 +2067,7 @@ export default function ItineraryDetail(props) {
         <Animated.Image
           source={rD?.cover ? { uri: rD?.cover } : ItineraryKosong}
           style={{
-            opacity: imageOpacity,
+            // opacity: imageOpacity,
             width: "100%",
             resizeMode: "cover",
             flex: 1,
@@ -2083,7 +2083,7 @@ export default function ItineraryDetail(props) {
             paddingBottom: 5,
             paddingTop: 10,
             backgroundColor: "#fff",
-            opacity: textOpacity,
+            // opacity: textOpacity,
             // alignItems: "center",
           }}
         >
@@ -2244,7 +2244,7 @@ export default function ItineraryDetail(props) {
         </Animated.View>
         <Animated.View
           style={{
-            opacity: imageOpacity,
+            // opacity: imageOpacity,
             // transform: [{ translateY: contentTranslate }],
             paddingVertical: 5,
             paddingHorizontal: 15,
@@ -5435,6 +5435,19 @@ export default function ItineraryDetail(props) {
             </Button>
           </Animated.View>
 
+          {Platform.OS === "ios" ? (
+            <View
+              style={{
+                position: "absolute",
+                top: -50,
+                width: Dimensions.get("screen").width,
+                height: 50,
+                backgroundColor: "#14646E",
+                zIndex: 100,
+              }}
+            />
+          ) : null}
+
           {/* jika scrollheader, animated show */}
           <Animated.View
             style={{
@@ -7719,12 +7732,6 @@ export default function ItineraryDetail(props) {
               style={{
                 flexDirection: "column",
                 marginTop: "auto",
-                height:
-                  Platform.OS === "ios"
-                    ? Notch
-                      ? Dimensions.get("screen").height * 0.45
-                      : Dimensions.get("screen").height * 0.55
-                    : Dimensions.get("screen").height * 0.45,
                 width: Dimensions.get("screen").width,
                 backgroundColor: "white",
                 borderTopLeftRadius: 15,
@@ -7788,11 +7795,7 @@ export default function ItineraryDetail(props) {
                   // justifyContent: "flex-start",
                 }}
               >
-                <View
-                  style={{
-                    height: "70%",
-                  }}
-                >
+                <View>
                   {Anggota && statusUsers == true ? (
                     <TouchableOpacity
                       style={{
@@ -7937,44 +7940,43 @@ export default function ItineraryDetail(props) {
                     </TouchableOpacity>
                   ) : null}
                 </View>
-                <View style={{}}>
-                  <View
+
+                <View
+                  style={{
+                    width: Dimensions.get("screen").width - 60,
+                    height: 1,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    borderWidth: 0.5,
+                    borderColor: "#d1d1d1",
+                    // paddingHorizontal: 20,
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    marginVertical: 5,
+                    flexDirection: "row",
+                    width: "100%",
+                    paddingVertical: 5,
+                    marginBottom: Platform.OS === "ios" && Notch ? 40 : 20,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    props.navigation.push("BottomStack"), setshowside(false);
+                  }}
+                >
+                  <Home height={20} width={20} />
+
+                  <Text
+                    size="label"
+                    type="regular"
                     style={{
-                      width: Dimensions.get("screen").width - 60,
-                      height: 1,
-                      marginTop: 10,
-                      marginBottom: 10,
-                      borderWidth: 0.5,
-                      borderColor: "#d1d1d1",
-                      // paddingHorizontal: 20,
-                    }}
-                  />
-                  <TouchableOpacity
-                    style={{
-                      marginVertical: 5,
-                      flexDirection: "row",
-                      width: "100%",
-                      paddingVertical: 5,
-                      marginBottom: 10,
-                      alignItems: "center",
-                    }}
-                    onPress={() => {
-                      props.navigation.push("BottomStack"), setshowside(false);
+                      marginLeft: 10,
                     }}
                   >
-                    <Home height={20} width={20} />
-
-                    <Text
-                      size="label"
-                      type="regular"
-                      style={{
-                        marginLeft: 10,
-                      }}
-                    >
-                      {t("backToHome")}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    {t("backToHome")}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Modalss>

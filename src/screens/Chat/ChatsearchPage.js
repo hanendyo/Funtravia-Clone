@@ -268,8 +268,8 @@ export default function ChatsearchPage({ navigation, route }) {
     route.params?.page ? route.params.page : 0
   );
   const [routes] = React.useState([
-    { key: "personal", title: "Chat" },
-    { key: "group", title: "Group" },
+    { key: "personal", title: "Personal" },
+    { key: "group", title: t("group") },
   ]);
 
   const renderScene = ({ route }) => {
@@ -370,7 +370,7 @@ export default function ChatsearchPage({ navigation, route }) {
                   ]}
                 >
                   <Truncate
-                    text={item?.key ? item.key : ""}
+                    text={item?.title ?? ""}
                     length={Platform.OS === "ios" ? 13 : 15}
                   />
                 </Text>

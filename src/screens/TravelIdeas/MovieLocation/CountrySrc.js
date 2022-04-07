@@ -448,7 +448,7 @@ export default function CountrySrc({
                 </View>
               ) : null
             }
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </SafeAreaView>
@@ -662,6 +662,7 @@ export default function CountrySrc({
                 {filterContinent &&
                   filterContinent.map((item, index) => (
                     <TouchableOpacity
+                      key={index.toString()}
                       onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
                         flexDirection: "row",

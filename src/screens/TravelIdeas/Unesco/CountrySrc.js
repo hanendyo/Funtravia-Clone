@@ -391,10 +391,10 @@ export default function CountrySrc({
             // contentContainerStyle={{
             //   borderWidth: 1,
             // }}
-            renderItem={({ item, index }) => {
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => {
               return (
                 <Pressable
-                  key={index.toString()}
                   onPress={() => hasil(item)}
                   style={({ pressed }) => [
                     {
@@ -457,7 +457,6 @@ export default function CountrySrc({
                 </Pressable>
               );
             }}
-            keyExtractor={(item) => item.id}
             ListHeaderComponent={
               loading ? (
                 <View style={{ alignItems: "center", marginTop: 20 }}>
@@ -674,6 +673,7 @@ export default function CountrySrc({
                 {continent_listfilter &&
                   continent_listfilter.map((item, index) => (
                     <TouchableOpacity
+                      key={index.toString()}
                       onPress={() => _handleCheck(item["id"], index, item)}
                       style={{
                         flexDirection: "row",
