@@ -535,43 +535,36 @@ export default function MovieLocation({ navigation, route }) {
           </View>
         </Animated.ScrollView>
         {/* Button Country */}
-        <Animated.View
+        <View
           style={{
             width: "100%",
             justifyContent: "center",
             alignItems: "center",
             position: "absolute",
-            zIndex: 2,
-            position: "absolute",
+            top: 0,
+            zIndex: 100,
             marginTop:
               Platform.OS == "ios"
                 ? Notch
-                  ? HEADER_MAX_HEIGHT - normalize(5)
-                  : HEADER_MAX_HEIGHT - normalize(10)
+                  ? HEADER_MAX_HEIGHT - normalize(30)
+                  : HEADER_MAX_HEIGHT - normalize(30)
                 : deviceId == "LYA-L29"
-                ? HEADER_MAX_HEIGHT - normalize(8)
+                ? HEADER_MAX_HEIGHT - normalize(30)
                 : NotchAndro
-                ? HEADER_MAX_HEIGHT + normalize(15)
-                : HEADER_MAX_HEIGHT + normalize(5),
-            // opacity: backOpacity,
-            transform: [{ translateY: shareTranslateY }],
+                ? HEADER_MAX_HEIGHT - normalize(30)
+                : HEADER_MAX_HEIGHT - normalize(25),
+            // transform: [{ translateY: shareTranslateY }],
           }}
         >
           <TouchableOpacity
             type="circle"
             color="secondary"
             style={{
-              position: "absolute",
-              // width: Dimensions.get("screen").width / 2.5,
-              // right: 20,
-              zIndex: 20,
               alignSelf: "center",
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
               backgroundColor: "#fff",
-              // height: 30,
-              // width: 100,
               borderRadius: 30,
               borderColor: "#d8d8d8",
               borderWidth: 1,
@@ -604,7 +597,7 @@ export default function MovieLocation({ navigation, route }) {
 
             <Select height={10} width={10} style={{ marginRight: 20 }} />
           </TouchableOpacity>
-        </Animated.View>
+        </View>
         {/* End Button Country */}
         {/* Title Middle */}
         <Animated.View

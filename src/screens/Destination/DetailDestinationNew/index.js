@@ -134,7 +134,7 @@ const Index = (props) => {
           HeightTime +
           HeightWeb -
           NativeModules.StatusBarManager.HEIGHT
-        : normalize(208) +
+        : normalize(198) +
           HeightJudul +
           Heightunesco +
           HeightAddress +
@@ -784,7 +784,7 @@ const Index = (props) => {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209fae",
+          backgroundColor: "#FFF",
         }}
       >
         <FastImage
@@ -2366,15 +2366,15 @@ const Index = (props) => {
             style={{
               position: "absolute",
               top: 200 + HeightJudul + Heightunesco + HeightAddress / 10,
-              zIndex: 100,
+              zIndex: 1,
               transform: [{ translateY: yButtonLikeShare }],
-              opacity: hides.current,
+              // opacity: hides.current,
               right: 20,
               alignItems: "flex-end",
               width: Dimensions.get("screen").width / 7,
             }}
           >
-            <Animated.View>
+            <View>
               {dataDestination?.address ? (
                 <Ripple
                   style={{
@@ -2404,7 +2404,7 @@ const Index = (props) => {
                   />
                 </Ripple>
               ) : null}
-            </Animated.View>
+            </View>
           </Animated.View>
         ) : null}
         {HeightTime > 0 ? (
@@ -2418,14 +2418,14 @@ const Index = (props) => {
                 HeightAddress +
                 HeightTime / 20,
               transform: [{ translateY: yButtonLikeShare }],
-              zIndex: 100,
-              opacity: hides.current,
+              zIndex: 1,
+              // opacity: hides.current,
               right: 20,
               alignItems: "flex-end",
               width: Dimensions.get("screen").width / 7,
             }}
           >
-            <Animated.View>
+            <View>
               {dataDestination?.openat ? (
                 <Pressable
                   onPress={() => setModalTime(true)}
@@ -2449,7 +2449,7 @@ const Index = (props) => {
                   </Text>
                 </Pressable>
               ) : null}
-            </Animated.View>
+            </View>
           </Animated.View>
         ) : null}
 
@@ -2465,14 +2465,14 @@ const Index = (props) => {
                 HeightTime +
                 HeightWeb / 15,
               transform: [{ translateY: yButtonLikeShare }],
-              zIndex: 100,
-              opacity: hides.current,
+              zIndex: 1,
+              // opacity: hides.current,
               right: 20,
               alignItems: "flex-end",
               width: Dimensions.get("screen").width / 7,
             }}
           >
-            <Animated.View>
+            <View>
               {dataDestination?.website ? (
                 <Pressable
                   onPress={() => setModalSosial(true)}
@@ -2497,7 +2497,7 @@ const Index = (props) => {
                   </Text>
                 </Pressable>
               ) : null}
-            </Animated.View>
+            </View>
           </Animated.View>
         ) : null}
 
