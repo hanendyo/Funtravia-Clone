@@ -841,15 +841,10 @@ export default function SearchListEventHome(props) {
           </Text>
         </View>
         {/* start */}
-        <View
-          keyboardShouldPersistTaps="handled"
-          style={{
-            marginBottom: Platform.OS == "ios" ? (Notch ? -40 : -30) : -40,
-          }}
-        >
+        <View keyboardShouldPersistTaps="handled" style={{}}>
           <Text
             style={{
-              paddingTop: 10,
+              paddingTop: Platform.OS === "ios" ? 10 : 0,
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
@@ -863,13 +858,12 @@ export default function SearchListEventHome(props) {
             style={{
               flexDirection: "row",
               paddingHorizontal: 10,
-              paddingTop: Platform.OS == "ios" ? 7 : null,
-              paddingBottom: Platform.OS == "ios" ? 15 : null,
+              paddingVertical: Platform.OS === "ios" ? 5 : 0,
+              height: Platform.OS === "ios" ? 30 : 40,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
-              height: "30%",
-              width: "100%",
+              backgroundColor: "#FFF",
             }}
           >
             <TextInput
@@ -920,14 +914,14 @@ export default function SearchListEventHome(props) {
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
-            marginBottom: Platform.OS == "ios" ? (Notch ? 5 : -20) : -10,
+            marginTop: 10,
           }}
         >
           <View
             style={{
               backgroundColor: "#d3d3d3",
               width: 2,
-              height: Platform.OS == "ios" ? (Notch ? 30 : 20) : 30,
+              height: 20,
             }}
           ></View>
         </View>
@@ -935,7 +929,7 @@ export default function SearchListEventHome(props) {
         <View>
           <Text
             style={{
-              paddingTop: 15,
+              // paddingTop: 15,
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
@@ -947,15 +941,15 @@ export default function SearchListEventHome(props) {
           </Text>
           <View
             style={{
+              position: "relative",
               flexDirection: "row",
               paddingHorizontal: 10,
-              paddingTop: Platform.OS == "ios" ? 7 : null,
-              paddingBottom: Platform.OS == "ios" ? 15 : null,
+              paddingVertical: Platform.OS === "ios" ? 5 : 0,
+              height: Platform.OS === "ios" ? 30 : 40,
               borderWidth: 1,
               borderColor: "#d3d3d3",
               alignItems: "center",
-              height: "30%",
-              width: "100%",
+              backgroundColor: "#FFF",
             }}
           >
             <TextInput
@@ -1000,35 +994,34 @@ export default function SearchListEventHome(props) {
                 />
               </TouchableOpacity>
             ) : null}
+            {(priceValue.min != "" ||
+              priceValue.min != 0 ||
+              priceValue.min != null ||
+              priceValue.min != undefined) &&
+            (priceValue.max == "" ||
+              priceValue.max == null ||
+              priceValue.max == undefined) ? null : parseInt(priceValue.min) >
+              parseInt(priceValue.max) ? (
+              <View
+                style={{
+                  width: "120%",
+                  position: "absolute",
+                  top: Platform.OS === "ios" ? 30 : 40,
+                }}
+              >
+                <Text
+                  type="regular"
+                  size="medium"
+                  style={{
+                    color: "#D75995",
+                  }}
+                >
+                  {"*" + t("priceWarning")}
+                </Text>
+              </View>
+            ) : null}
           </View>
         </View>
-        {(priceValue.min != "" ||
-          priceValue.min != 0 ||
-          priceValue.min != null ||
-          priceValue.min != undefined) &&
-        (priceValue.max == "" ||
-          priceValue.max == null ||
-          priceValue.max == undefined) ? null : parseInt(priceValue.min) >
-          parseInt(priceValue.max) ? (
-          <View
-            style={{
-              width: "100%",
-              marginTop:
-                Platform.OS == "ios" ? (Notch ? "-20%" : "-15%") : "-20%",
-            }}
-          >
-            <Text
-              type="regular"
-              size="medium"
-              style={{
-                color: "#D75995",
-                position: "absolute",
-              }}
-            >
-              {"*" + t("priceWarning")}
-            </Text>
-          </View>
-        ) : null}
       </View>
     );
   };
@@ -1668,9 +1661,9 @@ export default function SearchListEventHome(props) {
             height:
               Platform.OS == "ios"
                 ? Notch
-                  ? Dimensions.get("screen").height * 0.51
-                  : Dimensions.get("screen").height * 0.53
-                : Dimensions.get("screen").height * 0.5,
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,
@@ -1935,17 +1928,16 @@ export default function SearchListEventHome(props) {
           {/* button */}
           <View
             style={{
-              flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 80,
-              position: "absolute",
-              bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -1954,8 +1946,6 @@ export default function SearchListEventHome(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 10,
             }}
           >
             <Button

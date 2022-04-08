@@ -476,9 +476,9 @@ export default function CountrySrc({
             height:
               Platform.OS == "ios"
                 ? Notch
-                  ? Dimensions.get("screen").height * 0.51
-                  : Dimensions.get("screen").height * 0.53
-                : Dimensions.get("screen").height * 0.5,
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             borderTopRightRadius: 15,
             borderTopLeftRadius: 15,
