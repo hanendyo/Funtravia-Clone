@@ -38,6 +38,7 @@ import {
   Truncate,
   Peringatan,
   FunDocument,
+  Distance,
 } from "../../../component";
 import {Button, Text, Loading, FunIcon, Capital} from "../../../component";
 import {useTranslation} from "react-i18next";
@@ -56,6 +57,9 @@ import {useSelector} from "react-redux";
 import {RNToasty} from "react-native-toasty";
 import normalize from "react-native-normalize";
 import {API_KEY} from "../../../config";
+import moment from "moment";
+import UpdateTimelines from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
+import {StackActions} from "@react-navigation/native";
 // import { Input } from "native-base";
 // import { default_image } from "../../../assets/png";
 // import Upload from "../../../graphQL/Mutation/Itinerary/Uploadcustomsingle";
@@ -63,6 +67,10 @@ import {API_KEY} from "../../../config";
 // import Swipeout from "react-native-swipeout";
 
 export default function detailCustomItinerary(props) {
+  console.log("Props", props);
+  let [dataList, setdataList] = useState(
+    props.route.params.datalist ? props.route.params.datalist : []
+  );
   const {t, i18n} = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const NotchAndro = NativeModules.StatusBarManager
@@ -405,6 +413,277 @@ export default function detailCustomItinerary(props) {
     return unsubscribe;
   }, [props.navigation]);
 
+  const hitungDuration = ({startt, dur}) => {
+    var duration = dur ? dur.split(":") : "00:00:00";
+    var starttime = startt ? startt.split(":") : "00:00:00";
+
+    var jam = parseFloat(starttime[0]) + parseFloat(duration[0]);
+
+    var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
+
+    if (menit == 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    } else if (menit != 60 && menit > 59) {
+      jam = jam + 1;
+      menit = menit - 60;
+    }
+
+    return (
+      (jam < 10 ? "0" + (jam < 0 ? 0 : jam) : jam) +
+      ":" +
+      (menit < 10 ? "0" + menit : menit) +
+      ":00"
+    );
+  };
+
+  const [
+    mutationSaveTimeline,
+    {loading: loadingSave, data: dataSave, error: errorSave},
+  ] = useMutation(UpdateTimelines, {
+    context: {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    },
+  });
+
+  const UpdateTimeLine = async (idCustom, times, durationss, orders) => {
+    setLoadingApp(true);
+    let indexData = orders - 1;
+    // let dataNew = dataList.splice(indexData, 0, dataSplitIndex);
+
+    let starttimes = times;
+    let durations = durationss;
+
+    let jamends =
+      parseFloat(starttimes.split(":")[0]) +
+      parseFloat(durations.split(":")[0]);
+    let menitends =
+      parseFloat(starttimes.split(":")[1]) +
+      parseFloat(durations.split(":")[1]);
+
+    let datax = [...dataList];
+    let dataganti = {...datax[indexData]};
+
+    dataganti.time = starttimes;
+    dataganti.duration = durations;
+    dataganti.id = idCustom;
+
+    if (dataganti.detail_flight) {
+      let dateArr = dataganti.detail_flight.arrival.split(" ")[0];
+      let timeArr = dataganti.detail_flight.arrival.split(" ")[1];
+      let timeFinal = `${dateArr} ${jamends}:${menitends}:00`;
+
+      dataganti.detail_flight = {
+        ...dataganti.detail_flight,
+        arrival: timeFinal,
+      };
+    }
+
+    if (datax[parseFloat(indexData) - 1]) {
+      let timesebelum = hitungDuration({
+        startt: datax[parseFloat(indexData) - 1].time,
+        dur: datax[parseFloat(indexData) - 1].duration,
+      });
+
+      let timestartsebelum = datax[parseFloat(indexData) - 1].time.split(":");
+
+      timesebelum = timesebelum.split(":");
+      let bandingan = starttimes.split(":");
+
+      timestartsebelum = parseFloat(timestartsebelum[0]);
+      let jamsebelum = parseFloat(timesebelum[0]);
+      let jamsesesudah = parseFloat(bandingan[0]);
+
+      if (jamsesesudah > timestartsebelum) {
+        dataganti.time = hitungDuration({
+          startt: datax[parseFloat(indexData) - 1].time,
+          dur: datax[parseFloat(indexData) - 1].duration,
+        });
+      } else {
+        dataganti.time = hitungDuration({
+          startt: datax[parseFloat(indexData) - 1].time,
+          dur: datax[parseFloat(indexData) - 1].duration,
+        });
+      }
+    }
+
+    datax.splice(indexData, 1, dataganti);
+
+    console.log("dataX", datax);
+
+    var x = 0;
+    var order = 1;
+
+    for (var y in datax) {
+      let datareplace = {...datax[y]};
+      datareplace.order = order;
+      if (datax[y - 1]) {
+        if (datax[y - 1].detail_flight) {
+          // longitude & latitude index sebelum custom
+          var LongBefore = datax[y - 1].detail_flight.longitude_arrival;
+          var LatBefore = datax[y - 1].detail_flight.latitude_arrival;
+        } else {
+          var LongBefore = datax[y - 1].longitude;
+          var LatBefore = datax[y - 1].latitude;
+        }
+
+        if (datax[y].detail_flight) {
+          var LongCurrent = datax[y].detail_flight.longitude_departure;
+          var LatCurrent = datax[y].detail_flight.latitude_departure;
+        } else {
+          // longitude & latitude index custom
+          var LongCurrent = datax[y].longitude;
+          var LatCurrent = datax[y].latitude;
+        }
+        // // longitude & latitude index sebelum custom
+        // let LongBefore = datax[y - 1].longitude;
+        // let LatBefore = datax[y - 1].latitude;
+        // // longitude & latitude index custom
+        // let LongCurrent = datax[y].longitude;
+        // let LatCurrent = datax[y].latitude;
+        // // kondisi jika lokasi yang sama dan aktivitas berbeda
+        if (LongBefore == LongCurrent || LatBefore == LatCurrent) {
+          var newtime = datax[y - 1].time;
+        } else {
+          // rumus hitung jarak
+          let jarak = Distance({
+            lat1: LatBefore,
+            lon1: LongBefore,
+            lat2: LatCurrent,
+            lon2: LongCurrent,
+            unit: "km",
+          });
+          // rumus hitung waktu
+          let waktutemp = jarak / 50;
+          let waktu = waktutemp + "";
+          // pecah hasil waktu
+          let split = waktu.split(".");
+          let jamtemp = "";
+          let menittemp = "";
+          if (split[0] > 1) {
+            jamtemp = split[1];
+            if (split[1] > 0 && split[1] < 60) {
+              menittemp = split[1];
+            } else {
+              jamtemp = split[0] + 1;
+              menittemp = split[1] - 60;
+            }
+          } else {
+            if (waktu > 0.6) {
+              jamtemp = 1;
+              menittemp = split[1] - 60;
+            } else {
+              jamtemp = 0;
+              menittemp = split[1];
+            }
+          }
+          let time = datax[y - 1].time;
+          let splittime = time.split(":");
+          let durationold = datax[y - 1].duration;
+          let splitdurations = durationold.split(":");
+          //menit total untuk mendapatkan menit yang lebih dari 59
+          let menitotal =
+            parseFloat(splittime[1]) +
+            parseFloat(splitdurations[1]) +
+            parseFloat(menittemp);
+          // let durasitemp = `${jamtemp}:${menittemp}`;
+          let newjam = parseFloat(jamtemp) + parseFloat(splittime[0]);
+          let newmenit = parseFloat(menittemp) + parseFloat(splittime[1]);
+          var newtime =
+            menitotal > 59
+              ? `${newjam + 1}:${newmenit - 60}`
+              : `${newjam}:${newmenit}`;
+        }
+
+        datareplace.time = await hitungDuration({
+          startt: newtime,
+          dur: datax[y - 1].duration,
+        });
+        await datax.splice(y, 1, datareplace);
+      }
+
+      x++;
+      order++;
+    }
+    let sum = datax.reduce(
+      (itinerary, item) => itinerary.add(moment.duration(item.duration)),
+      moment.duration()
+    );
+
+    console.log("dataX", datax);
+    let jampert = datax[0].time.split(":");
+    let jampertama = parseFloat(jampert[0]);
+    let menitpertama = parseFloat(jampert[1]);
+    let durjam = Math.floor(sum.asHours());
+    let durmin = sum.minutes();
+    let hasiljam = jampertama + durjam;
+    let hasilmenit = menitpertama + durmin;
+
+    if (hasiljam <= 23) {
+      // let dataday = {...datadayaktif};
+
+      if (hasiljam === 23 && hasilmenit <= 59) {
+        savetimeline(datax);
+        // dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+        // await setdatadayaktif(dataday);
+      } else if (hasiljam < 23) {
+        savetimeline(datax);
+        // dataday["total_hours"] = "" + hasiljam + ":" + hasilmenit + ":00";
+        // await setdatadayaktif(dataday);
+      } else {
+        Alert.alert("Waktu sudah melewati batas maksimal");
+      }
+    } else {
+      Alert.alert("Waktu sudah melewati batas maksimal");
+    }
+  };
+
+  const savetimeline = async (datakiriman) => {
+    setLoadingApp(true);
+    try {
+      let response = await mutationSaveTimeline({
+        variables: {
+          idday: dayId[0],
+          value: JSON.stringify(datakiriman),
+        },
+      });
+
+      if (loadingSave) {
+        Alert.alert("Loading!!");
+      }
+      if (errorSave) {
+        throw new Error("Error Input");
+      }
+
+      if (response.data) {
+        if (response.data.update_timeline.code !== 200) {
+          throw new Error(response.data.update_timeline.message);
+        }
+        setLoadingApp(false);
+        props.navigation.dispatch(
+          StackActions.replace("ItineraryStack", {
+            screen: "itindetail",
+            params: {
+              itintitle: props?.route?.params?.itintitle,
+              country: props?.route?.params?.idItin,
+              token: props?.route?.params?.token,
+              dateitin: props?.route?.params?.dateitin,
+              datadayaktif: props?.route?.params?.datadayaktif,
+              status: "edit",
+            },
+          })
+        );
+      }
+    } catch (error) {
+      setLoadingApp(false);
+      console.log("errorTimeLine", error);
+      Alert.alert("" + error);
+    }
+  };
+
   const mutationUpdateFlight = async () => {
     try {
       setLoadingApp(true);
@@ -452,11 +731,18 @@ export default function detailCustomItinerary(props) {
         if (response.data.update_custom_flight.code !== 200) {
           throw new Error(response.data.update_custom_flight.message);
         } else {
-          props.navigation.navigate("itindetail");
+          await UpdateTimeLine(
+            response.data.update_custom_flight.data[0].id,
+            response.data.update_custom_flight.data[0].time,
+            response.data.update_custom_flight.data[0].duration,
+            response.data.update_custom_flight.data[0].order
+          );
+          // props.navigation.navigate("itindetail");
         }
       }
       setLoadingApp(false);
     } catch (error) {
+      console.log("error", error);
       RNToasty.Show({
         title: t("somethingwrong"),
         position: "bottom",
