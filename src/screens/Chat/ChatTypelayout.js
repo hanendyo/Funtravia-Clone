@@ -22,7 +22,7 @@ import {
 } from "../../assets/svg";
 import AnimatedPlayer from "react-native-animated-webp";
 import Svg, { Polygon } from "react-native-svg";
-import { moderateScale } from "react-native-size-matters";
+import { scale, moderateScale } from "react-native-size-matters";
 import { useTranslation } from "react-i18next";
 import { RESTFULL_API } from "../../config";
 import normalize from "react-native-normalize";
@@ -1479,7 +1479,9 @@ export default function ChatTypelayout({
     <View key={item.id}>
       {item.chat == "group" ? (
         item.user_id !== user_id && tmpRChat ? (
-          <Text style={{ marginBottom: 5 }}>{item.name}</Text>
+          <Text size="description" style={{ marginBottom: 5 }}>
+            {item.name}
+          </Text>
         ) : null
       ) : null}
       <View
@@ -1496,6 +1498,13 @@ export default function ChatTypelayout({
               },
         ]}
       >
+        {/* {item.chat == "group" ? (
+          item.user_id !== user_id && tmpRChat ? (
+            <Text size="description" type="bold" style={{ marginBottom: 5 }}>
+              {item.name}
+            </Text>
+          ) : null
+        ) : null} */}
         <Text
           size="description"
           style={{
@@ -1584,7 +1593,11 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   balloon: {
-    maxWidth: moderateScale(230, 2),
+    // maxWidth: moderateScale(230, 2),
+    maxWidth:
+      Platform.OS == "ios"
+        ? moderateScale(Dimensions.get("screen").width - 160, 1)
+        : moderateScale(Dimensions.get("screen").width - 120, 1),
     paddingHorizontal: moderateScale(10, 2),
     paddingTop: moderateScale(5, 2),
     paddingBottom: moderateScale(7, 2),

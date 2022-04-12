@@ -19,7 +19,7 @@ export default function FAQ(props) {
     // headerTransparent: true,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         FAQ
       </Text>
     ),
@@ -30,6 +30,7 @@ export default function FAQ(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

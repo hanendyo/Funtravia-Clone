@@ -137,8 +137,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCountMessage, setCountMessageGroup } from "../../redux/action";
 
 export default function BottomNavigationItems(props) {
+  let dispatch = useDispatch();
+  let tokenApps = useSelector((data) => data.token);
   const socket = io(CHATSERVER);
-  const dispatch = useDispatch();
+
   const countPesan = useSelector((data) => data.countMessage);
   const countPesanGroup = useSelector((data) => data.countMessageGroup);
   let hasil = countPesan + countPesanGroup;
@@ -148,7 +150,9 @@ export default function BottomNavigationItems(props) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: tokenApps
+          ? tokenApps
+          : `Bearer ${props.route.params.token}`,
         "Content-Type": "application/json",
       },
     });
@@ -174,7 +178,9 @@ export default function BottomNavigationItems(props) {
       method: "GET",
       headers: {
         Accept: "application/json",
-        Authorization: `Bearer ${props.route.params.token}`,
+        Authorization: tokenApps
+          ? tokenApps
+          : `Bearer ${props.route.params.token}`,
         "Content-Type": "application/json",
       },
     });
@@ -296,128 +302,132 @@ export default function BottomNavigationItems(props) {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <View>
-                {hasil > 99 ? (
-                  <View
-                    style={{
-                      backgroundColor: "#d75995",
-                      height: 20,
-                      minWidth: 20,
-                      borderRadius: 20,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: 5,
-                      position: "absolute",
-                      zIndex: 1,
-                      left: 15,
-                      top: -5,
-                      borderWidth: 1,
-                      borderColor: "#fff",
-                    }}
-                  >
-                    <Text
-                      type="bold"
+                {tokenApps ? (
+                  hasil > 99 ? (
+                    <View
                       style={{
-                        fontSize: 9,
-                        color: "#fff",
-                        marginBottom: Platform.OS == "ios" ? 0 : 1,
+                        backgroundColor: "#d75995",
+                        height: 20,
+                        minWidth: 20,
+                        borderRadius: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 5,
+                        position: "absolute",
+                        zIndex: 1,
+                        left: 15,
+                        top: -5,
+                        borderWidth: 1,
+                        borderColor: "#fff",
                       }}
                     >
-                      99+
-                    </Text>
-                  </View>
-                ) : countPesan > 0 || countPesanGroup > 0 ? (
-                  <View
-                    style={{
-                      backgroundColor: "#d75995",
-                      height: 20,
-                      minWidth: 20,
-                      borderRadius: 20,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: 5,
-                      position: "absolute",
-                      zIndex: 1,
-                      left: 15,
-                      top: -5,
-                      borderWidth: 1,
-                      borderColor: "#fff",
-                    }}
-                  >
-                    <Text
-                      type="bold"
+                      <Text
+                        type="bold"
+                        style={{
+                          fontSize: 9,
+                          color: "#fff",
+                          marginBottom: Platform.OS == "ios" ? 0 : 1,
+                        }}
+                      >
+                        99+
+                      </Text>
+                    </View>
+                  ) : countPesan > 0 || countPesanGroup > 0 ? (
+                    <View
                       style={{
-                        color: "#fff",
-                        marginBottom: Platform.OS == "ios" ? 0 : 1,
-                        fontSize: 9,
+                        backgroundColor: "#d75995",
+                        height: 20,
+                        minWidth: 20,
+                        borderRadius: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 5,
+                        position: "absolute",
+                        zIndex: 1,
+                        left: 15,
+                        top: -5,
+                        borderWidth: 1,
+                        borderColor: "#fff",
                       }}
                     >
-                      {countPesan + countPesanGroup}
-                    </Text>
-                  </View>
+                      <Text
+                        type="bold"
+                        style={{
+                          color: "#fff",
+                          marginBottom: Platform.OS == "ios" ? 0 : 1,
+                          fontSize: 9,
+                        }}
+                      >
+                        {countPesan + countPesanGroup}
+                      </Text>
+                    </View>
+                  ) : null
                 ) : null}
                 <ChatOn width="23" height="25" />
               </View>
             ) : (
               <View>
-                {hasil > 99 ? (
-                  <View
-                    style={{
-                      backgroundColor: "#d75995",
-                      height: 20,
-                      minWidth: 20,
-                      borderRadius: 20,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: 5,
-                      position: "absolute",
-                      zIndex: 1,
-                      left: 15,
-                      top: -5,
-                      borderWidth: 1,
-                      borderColor: "#fff",
-                    }}
-                  >
-                    <Text
-                      type="bold"
+                {tokenApps ? (
+                  hasil > 99 ? (
+                    <View
                       style={{
-                        color: "#fff",
-                        marginBottom: Platform.OS == "ios" ? 0 : 1,
-                        fontSize: 9,
+                        backgroundColor: "#d75995",
+                        height: 20,
+                        minWidth: 20,
+                        borderRadius: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 5,
+                        position: "absolute",
+                        zIndex: 1,
+                        left: 15,
+                        top: -5,
+                        borderWidth: 1,
+                        borderColor: "#fff",
                       }}
                     >
-                      99+
-                    </Text>
-                  </View>
-                ) : countPesan > 0 || countPesanGroup > 0 ? (
-                  <View
-                    style={{
-                      backgroundColor: "#d75995",
-                      height: 20,
-                      minWidth: 20,
-                      borderRadius: 20,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      paddingHorizontal: 5,
-                      position: "absolute",
-                      zIndex: 1,
-                      left: 15,
-                      top: -5,
-                      borderWidth: 1,
-                      borderColor: "#fff",
-                    }}
-                  >
-                    <Text
-                      type="bold"
-                      size="small"
+                      <Text
+                        type="bold"
+                        style={{
+                          color: "#fff",
+                          marginBottom: Platform.OS == "ios" ? 0 : 1,
+                          fontSize: 9,
+                        }}
+                      >
+                        99+
+                      </Text>
+                    </View>
+                  ) : countPesan > 0 || countPesanGroup > 0 ? (
+                    <View
                       style={{
-                        color: "#fff",
-                        marginBottom: Platform.OS == "ios" ? 0 : 1,
-                        fontSize: 9,
+                        backgroundColor: "#d75995",
+                        height: 20,
+                        minWidth: 20,
+                        borderRadius: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 5,
+                        position: "absolute",
+                        zIndex: 1,
+                        left: 15,
+                        top: -5,
+                        borderWidth: 1,
+                        borderColor: "#fff",
                       }}
                     >
-                      {countPesan + countPesanGroup}
-                    </Text>
-                  </View>
+                      <Text
+                        type="bold"
+                        size="small"
+                        style={{
+                          color: "#fff",
+                          marginBottom: Platform.OS == "ios" ? 0 : 1,
+                          fontSize: 9,
+                        }}
+                      >
+                        {countPesan + countPesanGroup}
+                      </Text>
+                    </View>
+                  ) : null
                 ) : null}
                 <ChatOff width="23" height="25" />
               </View>

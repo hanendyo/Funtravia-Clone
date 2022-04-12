@@ -15,8 +15,12 @@ import { Xblue } from "../../assets/svg";
 import { Text, Button } from "../../component";
 import { useTranslation } from "react-i18next";
 import { FlatList } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokenApps } from "../../redux/action";
 
 export default function SplashScreen(props) {
+  let dispatch = useDispatch();
   const { height, width } = Dimensions.get("screen");
   const { t } = useTranslation();
   const imageCarousel = [SlideSatu, SlideDua, SlideTiga];
@@ -24,10 +28,16 @@ export default function SplashScreen(props) {
   const STATUSBAR_HEIGHT = StatusBar.currentHeight;
   const APPBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
 
+  const loadAsync = async () => {
+    let tkn = await AsyncStorage.getItem("access_token");
+    dispatch(setTokenApps(tkn));
+  };
+
   useEffect(() => {
     props.navigation.setOptions({
       headerShown: false,
     });
+    loadAsync();
   }, []);
 
   const backAction = () => {

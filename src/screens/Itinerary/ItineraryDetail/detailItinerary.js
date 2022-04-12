@@ -26,7 +26,7 @@ export default function DetailItinerary(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {"" + t("Tripdetail")}
       </Text>
     ),
@@ -37,6 +37,7 @@ export default function DetailItinerary(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

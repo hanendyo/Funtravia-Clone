@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Xblue,
   Xgray,
@@ -32,11 +32,11 @@ import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import DatePicker from "react-native-modern-datepicker";
-import {getToday} from "react-native-modern-datepicker";
-import {dateFormats} from "../../../component/src/dateformatter";
-import {default_image} from "../../../assets/png";
-import {Item, Input, Label} from "native-base";
-import {useMutation, useLazyQuery, useQuery} from "@apollo/client";
+import { getToday } from "react-native-modern-datepicker";
+import { dateFormats } from "../../../component/src/dateformatter";
+import { default_image } from "../../../assets/png";
+import { Item, Input, Label } from "native-base";
+import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
 import CreateItinerary from "../../../graphQL/Mutation/Itinerary/CreateItinerary";
 import Country from "../../../graphQL/Query/Itinerary/Country";
 import City from "../../../graphQL/Query/Itinerary/City";
@@ -50,69 +50,28 @@ import {
   Peringatan,
   StatusBar,
 } from "../../../component";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import DropDownPicker from "react-native-dropdown-picker";
 import Category from "../../../graphQL/Query/Itinerary/ItineraryCategory";
-import {StackActions} from "@react-navigation/routers";
-import {gql} from "apollo-boost";
+import { StackActions } from "@react-navigation/routers";
+import { gql } from "apollo-boost";
 import Ripple from "react-native-material-ripple";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
 import CityCursorBased from "../../../graphQL/Query/Itinerary/CityCursorBased";
 
 const boxWidth = Dimensions.get("screen").width / 1.09;
 
 export default function Trip(props) {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const NotchAndro = NativeModules.StatusBarManager.HEIGHT > 24;
-
-  // const HeaderComponent = {
-  //   headerTransparent: false,
-  //   headerTintColor: "white",
-  //   headerTitle: (
-  //     <Text size="header" style={{ color: "#fff" }}>
-  //       {t("TripPlanning")}
-  //     </Text>
-  //   ),
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0, // remove shadow on Android
-  //     shadowOpacity: 0, // remove shadow on iOS
-  //     borderBottomWidth: 0, // Just in case.
-  //   },
-  //   headerLeftContainerStyle: {
-  //     background: "#FFF",
-
-  //     marginLeft: 10,
-  //   },
-  //   headerLeft: () => (
-  //     <Button
-  //       text={""}
-  //       size="medium"
-  //       type="circle"
-  //       variant="transparent"
-  //       // onPress={() => props.navigation.navigate("HomeScreen")}
-  //       onPress={() => props.navigation.goBack()}
-  //       style={{
-  //         height: 55,
-  //       }}
-  //     >
-  //       {Platform.OS == "ios" ? (
-  //         <Arrowbackios height={15} width={15}></Arrowbackios>
-  //       ) : (
-  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //       )}
-  //     </Button>
-  //   ),
-  // };
 
   const HeaderComponent = {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{color: "#fff"}}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("TripPlanning")}
       </Text>
     ),
@@ -125,7 +84,7 @@ export default function Trip(props) {
     },
     headerTitleStyle: {
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-
+      marginLeft: Platform.OS == "ios" ? null : -15,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height:
         Platform.OS == "ios"
@@ -164,7 +123,7 @@ export default function Trip(props) {
     ),
   };
 
-  let [aler, showAlert] = useState({show: false, judul: "", detail: ""});
+  let [aler, showAlert] = useState({ show: false, judul: "", detail: "" });
   let [country, setCountry] = useState("");
   let [countrys, setCountrys] = useState("");
   let [modalcountry, setModalcountry] = useState(false);
@@ -230,7 +189,7 @@ export default function Trip(props) {
 
   const [
     getkategori,
-    {data: dataCategory, loading: loadingCategory, error: errorCategory},
+    { data: dataCategory, loading: loadingCategory, error: errorCategory },
   ] = useLazyQuery(Category, {
     fetchPolicy: "network-only",
     context: {
@@ -250,7 +209,7 @@ export default function Trip(props) {
     },
   });
 
-  const [mutation, {loading, data, error}] = useMutation(CreateItinerary, {
+  const [mutation, { loading, data, error }] = useMutation(CreateItinerary, {
     context: {
       headers: {
         "Content-Type": "application/json",
@@ -260,7 +219,7 @@ export default function Trip(props) {
   });
   const [
     query,
-    {loading: loadingcountry, data: datacountry, error: errorcountry},
+    { loading: loadingcountry, data: datacountry, error: errorcountry },
   ] = useLazyQuery(Country, {
     fetchPolicy: "network-only",
     variables: {
@@ -318,7 +277,7 @@ export default function Trip(props) {
 
   const [
     querywith,
-    {loading: loadingwith, data: datawith, error: errorwith},
+    { loading: loadingwith, data: datawith, error: errorwith },
   ] = useLazyQuery(TravelWith, {
     variables: {
       fetchPolicy: "network-only",
@@ -547,9 +506,9 @@ export default function Trip(props) {
     // setModalAlert(true);
   };
 
-  const onUpdate = (prev, {fetchMoreResult}) => {
+  const onUpdate = (prev, { fetchMoreResult }) => {
     if (!fetchMoreResult) return prev;
-    const {pageInfo} = fetchMoreResult.city_search_cursor_based;
+    const { pageInfo } = fetchMoreResult.city_search_cursor_based;
     const edges = [
       ...prev.city_search_cursor_based.edges,
       ...fetchMoreResult.city_search_cursor_based.edges,
@@ -602,7 +561,7 @@ export default function Trip(props) {
       <Peringatan
         aler={aler}
         setClose={() =>
-          showAlert({...aler, show: false, judul: "", detail: ""})
+          showAlert({ ...aler, show: false, judul: "", detail: "" })
         }
       />
 
@@ -632,7 +591,7 @@ export default function Trip(props) {
               alignItems: "center",
               shadowColor: "#209fae",
 
-              shadowOffset: {width: 0, height: 1},
+              shadowOffset: { width: 0, height: 1 },
               shadowOpacity: Platform.OS == "ios" ? 0.22 : 0,
               shadowRadius: Platform.OS == "ios" ? 2.22 : 0,
               elevation: Platform.OS == "ios" ? 3 : 8,
@@ -864,7 +823,7 @@ export default function Trip(props) {
 
                         showsVerticalScrollIndicator={false}
                         data={countryData}
-                        renderItem={({item, index}) => (
+                        renderItem={({ item, index }) => (
                           <Ripple
                             key={index + "bruh"}
                             // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
@@ -939,10 +898,10 @@ export default function Trip(props) {
                         keyExtractor={(item) => item.id}
                       />
                       {/* biar bisa scroll ampe bawah */}
-                      <View style={{marginTop: 100}}></View>
+                      <View style={{ marginTop: 100 }}></View>
                     </>
                   ) : (
-                    <View style={{alignSelf: "center"}}>
+                    <View style={{ alignSelf: "center" }}>
                       <Text>{t("noData")}</Text>
                     </View>
                   )}
@@ -1169,7 +1128,7 @@ export default function Trip(props) {
                         // })}
                         showsVerticalScrollIndicator={false}
                         data={datacity.city_search_cursor_based.edges}
-                        renderItem={({item, index}) => (
+                        renderItem={({ item, index }) => (
                           <Ripple
                             key={`key-${index}`}
                             // onLayout={(e) => setRippleHeight(e.nativeEvent.layout.height)}
@@ -1247,10 +1206,10 @@ export default function Trip(props) {
                         }
                       />
                       {/* biar bisa scroll ampe bawah */}
-                      <View style={{marginTop: 100}}></View>
+                      <View style={{ marginTop: 100 }}></View>
                     </>
                   ) : (
-                    <View style={{alignSelf: "center"}}>
+                    <View style={{ alignSelf: "center" }}>
                       <Text>{t("noData")}</Text>
                     </View>
                   )}
@@ -1328,7 +1287,7 @@ export default function Trip(props) {
                   onDateChange={(x) => setstart(x)}
                   mode="calendar"
                   minuteInterval={30}
-                  style={{borderRadius: 10}}
+                  style={{ borderRadius: 10 }}
                 />
                 {/* </View> */}
               </Modal>
@@ -1382,7 +1341,7 @@ export default function Trip(props) {
                       alignItems: "center",
                     }}
                   >
-                    <View style={{width: "50%"}}>
+                    <View style={{ width: "50%" }}>
                       <Picker
                         iosIcon={
                           <View>
@@ -1393,10 +1352,10 @@ export default function Trip(props) {
                         note
                         mode="dropdown"
                         selectedValue={duration}
-                        textStyle={{fontFamily: "Lato-Regular"}}
-                        itemTextStyle={{fontFamily: "Lato-Regular"}}
-                        itemStyle={{fontFamily: "Lato-Regular"}}
-                        placeholderStyle={{fontFamily: "Lato-Regular"}}
+                        textStyle={{ fontFamily: "Lato-Regular" }}
+                        itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                        itemStyle={{ fontFamily: "Lato-Regular" }}
+                        placeholderStyle={{ fontFamily: "Lato-Regular" }}
                         headerTitleStyle={{
                           fontFamily: "Lato-Regular",
                         }}
@@ -1556,8 +1515,8 @@ export default function Trip(props) {
                   onClose={() => setOpens(0)}
                   items={dataCategories}
                   defaultValue={null}
-                  containerStyle={{height: 40}}
-                  style={{backgroundColor: "#fafafa"}}
+                  containerStyle={{ height: 40 }}
+                  style={{ backgroundColor: "#fafafa" }}
                   itemStyle={{
                     justifyContent: "flex-start",
                   }}
@@ -1610,7 +1569,7 @@ export default function Trip(props) {
                               <Image
                                 source={
                                   value.image
-                                    ? {uri: value.image}
+                                    ? { uri: value.image }
                                     : default_image
                                 }
                                 style={{
@@ -1653,7 +1612,7 @@ export default function Trip(props) {
                           type="regular"
                           size="description"
                           numberOfLines={2}
-                          style={{marginLeft: "5%"}}
+                          style={{ marginLeft: "5%" }}
                         >
                           {""}
                           {t("with")} {withSelected[0].name}{" "}
@@ -1725,6 +1684,7 @@ export default function Trip(props) {
                           alignContent: "center",
                           alignItems: "center",
                           flexDirection: "row",
+                          flex: 1,
                         }}
                       >
                         <TouchableOpacity
@@ -1741,32 +1701,40 @@ export default function Trip(props) {
                             ></Arrowbackwhite>
                           )}
                         </TouchableOpacity>
-                        <Text
-                          type={"bold"}
-                          size={"label"}
+                        <View
                           style={{
-                            color: "white",
-                            marginLeft: 10,
+                            flex: 1,
+                            // marginLeft: Platform.OS == "ios" ? null : 10,
+                            // alignItems: "center",
+                            alignItems:
+                              Platform.OS == "ios" ? "center" : "flex-start",
                           }}
                         >
-                          {t("SearchAccount")}
-                        </Text>
-                      </View>
-                      <View style={{height: 50, justifyContent: "center"}}>
-                        <Button
-                          // variant='bordered'
-                          color="secondary"
-                          onPress={() => setModaltravel(false)}
-                          text={t("save")}
-                          size="small"
-                          // type='circle'
-                          style={
-                            {
-                              // height: 50,
-                              // width: 80,
-                            }
-                          }
-                        ></Button>
+                          <Text
+                            type={"bold"}
+                            size={"title"}
+                            style={{
+                              color: "white",
+                              marginLeft: 15,
+                            }}
+                          >
+                            {t("SearchAccount")}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            height: 50,
+                            justifyContent: "center",
+                            marginRight: 5,
+                          }}
+                        >
+                          <Button
+                            color="secondary"
+                            onPress={() => setModaltravel(false)}
+                            text={t("save")}
+                            size="small"
+                          ></Button>
+                        </View>
                       </View>
                     </View>
                     {/* awal */}
@@ -1793,7 +1761,7 @@ export default function Trip(props) {
                           <Text
                             type="regular"
                             size="description"
-                            style={{paddingVertical: 5}}
+                            style={{ paddingVertical: 5 }}
                           >
                             {t("with")} :
                           </Text>
@@ -1825,7 +1793,7 @@ export default function Trip(props) {
                                   <Image
                                     source={
                                       item.image
-                                        ? {uri: item.image}
+                                        ? { uri: item.image }
                                         : default_image
                                     }
                                     style={{
@@ -2080,7 +2048,7 @@ export default function Trip(props) {
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item, index) => `${index}`}
                             data={datawith.search_travelwith}
-                            renderItem={({item}) => (
+                            renderItem={({ item }) => (
                               <TouchableOpacity
                                 style={{
                                   backgroundColor: "white",
@@ -2095,7 +2063,7 @@ export default function Trip(props) {
                                 <Image
                                   source={
                                     item.picture
-                                      ? {uri: item.picture}
+                                      ? { uri: item.picture }
                                       : default_image
                                   }
                                   style={{
@@ -2121,10 +2089,10 @@ export default function Trip(props) {
                             )}
                           />
                           {/* biar bisa scroll ampe bawah */}
-                          <View style={{marginTop: 100}}></View>
+                          <View style={{ marginTop: 100 }}></View>
                         </>
                       ) : (
-                        <View style={{alignSelf: "center"}}>
+                        <View style={{ alignSelf: "center" }}>
                           <Text>{t("noData")}</Text>
                         </View>
                       )}

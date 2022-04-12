@@ -78,7 +78,6 @@ PushNotification.configure({
     }
 
     let storage = JSON.parse(await AsyncStorage.getItem("dataNotification"));
-    console.log("~ storage", storage);
   },
 });
 
@@ -91,7 +90,6 @@ function App() {
   let [appToken, setAppToken] = useState(null);
   const [firstScreen, setFirstScreen] = useState(null);
   let [dataNotifikasi, setDataNotifikasi] = useState(null);
-  console.log("~ dataNotifikasi", dataNotifikasi);
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
@@ -177,7 +175,6 @@ function App() {
 
   const loadAsync = async () => {
     let notif = JSON.parse(await AsyncStorage.getItem("dataNotification"));
-    console.log("~ notif", notif);
     await setDataNotifikasi(notif);
   };
 

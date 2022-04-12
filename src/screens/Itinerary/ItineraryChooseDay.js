@@ -120,7 +120,7 @@ export default function ItineraryChooseday(props) {
     headerTransparent: false,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="title" style={{ color: "#fff" }}>
+      <Text size="title" type="bold" style={{ color: "#fff" }}>
         {t("chooseDay")}
       </Text>
     ),
@@ -131,6 +131,7 @@ export default function ItineraryChooseday(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
@@ -1587,8 +1588,9 @@ export default function ItineraryChooseday(props) {
   };
 
   const getchecked = (id) => {
-    var index = dataSelected.findIndex((k) => k["id"] === id);
-    if (index !== -1) {
+    let tempData = [...dataSelected];
+    var index = tempData.findIndex((k) => k["id"] === id);
+    if (index != -1) {
       return true;
     } else {
       return false;
@@ -1649,7 +1651,7 @@ export default function ItineraryChooseday(props) {
         }}
       >
         <CheckBox
-          onCheckColor="#FFF"
+          onCheckColor="#fff"
           lineWidth={2}
           onFillColor="#209FAE"
           onTintColor="#209FAE"
@@ -1665,15 +1667,24 @@ export default function ItineraryChooseday(props) {
               android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
             }),
           }}
-          onChange={() =>
+          // onChange={() =>
+          //   _handleCheck(
+          //     item.id,
+          //     item.day,
+          //     item.total_hours ? item.total_hours : "00:00:00",
+          //     item.date,
+          //     item.itinerary_id
+          //   )
+          // }
+          onValueChange={() => {
             _handleCheck(
               item.id,
               item.day,
               item.total_hours ? item.total_hours : "00:00:00",
               item.date,
               item.itinerary_id
-            )
-          }
+            );
+          }}
           value={getchecked(item.id)}
         />
         <Text

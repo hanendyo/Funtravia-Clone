@@ -35,12 +35,14 @@ export default function TravelIdeas(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : null,
       paddingTop: Platform.OS == "ios" ? 8 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
+      marginTop: Platform.OS == "ios" ? 0 : -5,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
