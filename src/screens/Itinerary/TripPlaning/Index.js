@@ -82,6 +82,7 @@ export default function TripPlaning(props) {
     headerTitle: (
       <Text
         size="header"
+        type="bold"
         style={{
           color: "#fff",
         }}
@@ -96,6 +97,7 @@ export default function TripPlaning(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

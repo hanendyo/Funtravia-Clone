@@ -43,6 +43,7 @@ export default function Follower(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
@@ -65,7 +66,6 @@ export default function Follower(props) {
         onPress={() => props.navigation.goBack()}
         style={{
           height: 55,
-          marginLeft: 5,
         }}
       >
         {Platform.OS == "ios" ? (

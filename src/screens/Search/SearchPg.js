@@ -102,10 +102,11 @@ export default function SearchPg(props, { navigation, route }) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -20,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
-      textAlign: Platform.OS == "ios" ? "center" : null,
+      textAlign: Platform.OS == "ios" ? "center" : "left",
       paddingTop: Platform.OS == "ios" ? 8 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
@@ -113,7 +114,7 @@ export default function SearchPg(props, { navigation, route }) {
       background: "#FFF",
       position: "absolute",
       zIndex: 999,
-      marginLeft: 10,
+      marginLeft: 15,
     },
     headerLeft: () => (
       <TouchableOpacity onPress={() => onBackPress()}>
@@ -127,20 +128,16 @@ export default function SearchPg(props, { navigation, route }) {
   };
 
   const loadAsync = async () => {
-    try {
-      let setsetting = await AsyncStorage.getItem("setting");
-      if (searchtext) {
-        await refetchSrcuser();
-        await refetchSrcLocation();
-      }
-      // setSetting(JSON.parse(setsetting));
-      // dispatch(setSettingUser(setsetting));
-      let recent_src = await AsyncStorage.getItem("recent_src");
-      if (recent_src) {
-        setRecent(JSON.parse(recent_src));
-      }
-    } catch (error) {
-      Alert.alert("Error: ", error);
+    let setsetting = await AsyncStorage.getItem("setting");
+    if (searchtext) {
+      await refetchSrcuser();
+      await refetchSrcLocation();
+    }
+    // setSetting(JSON.parse(setsetting));
+    // dispatch(setSettingUser(setsetting));
+    let recent_src = await AsyncStorage.getItem("recent_src");
+    if (recent_src) {
+      setRecent(JSON.parse(recent_src));
     }
   };
 
@@ -224,7 +221,7 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(arryrecent);
       await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
     } catch (error) {
-      Alert.alert("Error: ", error);
+      console.warn(error);
     }
   };
 
@@ -234,7 +231,7 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(arryrecent);
       await AsyncStorage.setItem("recent_src", JSON.stringify(arryrecent));
     } catch (error) {
-      Alert.alert("Error: ", error);
+      console.warn(error);
     }
   };
 
@@ -254,7 +251,7 @@ export default function SearchPg(props, { navigation, route }) {
       setRecent(ambil);
       await AsyncStorage.setItem("recent_src", JSON.stringify(ambil));
     } catch (error) {
-      Alert.alert("Error: ", error);
+      console.warn(error);
     }
   };
 
@@ -520,13 +517,9 @@ export default function SearchPg(props, { navigation, route }) {
           },
         });
 
-        if (errorUnfolMut) {
-          throw new Error("Error Input");
-        }
-
         if (response.data) {
           if (response.data.unfollow_user.code !== 200) {
-            throw new Error(response.data.unfollow_user.message);
+            console.warn(response.data.unfollow_user.message);
           }
 
           // Alert.alert('Succes');
@@ -578,13 +571,10 @@ export default function SearchPg(props, { navigation, route }) {
             id: id,
           },
         });
-        if (errorFollowMut) {
-          throw new Error("Error Input");
-        }
 
         if (response.data) {
           if (response.data.follow_user.code !== 200) {
-            throw new Error(response.data.follow_user.message);
+            console.warn(response.data.follow_user.message);
           }
         }
       } catch (error) {
@@ -661,7 +651,7 @@ export default function SearchPg(props, { navigation, route }) {
 
         if (response.data) {
           if (response.data.unfollow_user.code !== 200) {
-            throw new Error(response.data.unfollow_user.message);
+            console.warn(response.data.unfollow_user.message);
           }
         }
       } catch (error) {
@@ -699,12 +689,10 @@ export default function SearchPg(props, { navigation, route }) {
             id: id,
           },
         });
-        if (errorUnfolMut) {
-          throw new Error("Error Input");
-        }
+
         if (response.data) {
           if (response.data.follow_user.code !== 200) {
-            throw new Error(response.data.unfollow_user.message);
+            console.warn(response.data.unfollow_user.message);
           } else {
             // refetchRekomendasi();
           }
@@ -1036,10 +1024,10 @@ export default function SearchPg(props, { navigation, route }) {
                     ) : loadingSrcuser ? (
                       <View
                         style={{
-                          width: Dimensions.get("screen").width,
+                          width: width - 30,
                           justifyContent: "center",
                           alignItems: "center",
-                          marginBottom: 30,
+                          marginTop: 30,
                         }}
                       >
                         <ActivityIndicator
@@ -1129,13 +1117,10 @@ export default function SearchPg(props, { navigation, route }) {
                     ) : loadingLocation ? (
                       <View
                         style={{
-                          // position: 'absolute',
-                          // bottom:0,
-                          flex: 1,
-                          width: width,
+                          width: width - 20,
                           justifyContent: "center",
                           alignItems: "center",
-                          marginHorizontal: 15,
+                          marginTop: 30,
                         }}
                       >
                         <ActivityIndicator
@@ -1149,14 +1134,13 @@ export default function SearchPg(props, { navigation, route }) {
                 />
               )}
               {active_src === "destination" && searchtext ? (
-                loadingDestination == true ? (
+                loadingDestination ? (
                   <View
                     style={{
-                      flex: 1,
                       width: width,
                       justifyContent: "center",
                       alignItems: "center",
-                      marginHorizontal: 15,
+                      marginTop: 30,
                     }}
                   >
                     <ActivityIndicator
@@ -1184,24 +1168,16 @@ export default function SearchPg(props, { navigation, route }) {
                   </View>
                 )
               ) : null}
-              {active_src === "event" ? (
-                loadingEvent == true ? (
+              {active_src == "event" ? (
+                loadingEvent ? (
                   <View
                     style={{
-                      // position: 'absolute',
-                      // bottom:0,
-                      flex: 1,
-                      width: width,
                       justifyContent: "center",
                       alignItems: "center",
-                      marginHorizontal: 15,
+                      marginTop: 30,
                     }}
                   >
-                    <ActivityIndicator
-                      animating={loadingDestination}
-                      size="large"
-                      color="#209fae"
-                    />
+                    <ActivityIndicator size="large" color="#209fae" />
                   </View>
                 ) : event_search.length > 0 ? (
                   <CardEvents
@@ -1212,7 +1188,13 @@ export default function SearchPg(props, { navigation, route }) {
                     dataFrom="search"
                     searchInput={searchtext ? searchtext : null}
                   />
-                ) : null
+                ) : (
+                  <View style={{ marginTop: 30, alignItems: "center" }}>
+                    <Text type="regular" size="label">
+                      {t("noData")}
+                    </Text>
+                  </View>
+                )
               ) : null}
             </>
           ) : (
@@ -1603,22 +1585,16 @@ export default function SearchPg(props, { navigation, route }) {
                   />
                 )
               ) : null}
-              {active_src === "event" ? (
-                loadingEvent == true ? (
+              {active_src == "event" ? (
+                loadingEvent ? (
                   <View
                     style={{
-                      flex: 1,
-                      width: width,
                       justifyContent: "center",
                       alignItems: "center",
-                      marginHorizontal: 15,
+                      marginTop: 30,
                     }}
                   >
-                    <ActivityIndicator
-                      animating={loadingDestination}
-                      size="large"
-                      color="#209fae"
-                    />
+                    <ActivityIndicator size="large" color="#209fae" />
                   </View>
                 ) : event_search.length > 0 ? (
                   <CardEvents

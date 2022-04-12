@@ -72,10 +72,10 @@ export default function EventDetail(props) {
       Platform.OS == "ios"
         ? Notch
           ? deviceId === "iPhone 12 Pro"
-            ? [0, 120]
-            : [0, 80]
-          : [0, 80]
-        : [0, 120],
+            ? [100, 170] // [0, 120]
+            : [100, 170] //[0, 80]
+          : [100, 170] //[0, 80]
+        : [130, 220], //[0, 120],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
@@ -85,10 +85,10 @@ export default function EventDetail(props) {
       Platform.OS == "ios"
         ? Notch
           ? deviceId === "iPhone 12 Pro"
-            ? [0, 120]
-            : [0, 80]
-          : [0, 80]
-        : [0, 120],
+            ? [0, 100] //[0, 120]
+            : [0, 60] //[0, 80]
+          : [0, 60]
+        : [0, 100],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -112,7 +112,6 @@ export default function EventDetail(props) {
     },
     headerLeftContainerStyle: {
       background: "#FFF",
-
       marginLeft: 10,
     },
     headerLeft: () => (
@@ -128,10 +127,10 @@ export default function EventDetail(props) {
             Platform.OS == "ios"
               ? Notch
                 ? deviceId === "iPhone 12 Pro"
-                  ? 10
-                  : 8
+                  ? 32 //10
+                  : 30 //8
                 : 7
-              : 4,
+              : 8, //4
         }}
       >
         <Animated.View
@@ -155,20 +154,6 @@ export default function EventDetail(props) {
         </Animated.View>
       </Button>
     ),
-    // headerRight: () => (
-    //   <Button
-    //     text={""}
-    //     size="medium"
-    //     type="circle"
-    //     variant="transparent"
-    //     onPress={() => setshowside(true)}
-    //     style={{
-    //       height: 55,
-    //     }}
-    //   >
-    //     <OptionsVertWhite height={20} width={20} />
-    //   </Button>
-    // ),
   };
 
   let [dataevent, setDataEvent] = useState({});
@@ -701,6 +686,7 @@ export default function EventDetail(props) {
               top: Platform.OS == "ios" ? (Notch ? 48 : 20) : 0,
               bottom: 0,
               opacity: headerOpacity,
+              width: Dimensions.get("screen").width,
             }}
           >
             <Button
@@ -711,7 +697,7 @@ export default function EventDetail(props) {
               onPress={() => props.navigation.goBack()}
               style={{
                 height: 50,
-                marginLeft: 18,
+                marginLeft: 10,
               }}
             >
               <Animated.View
@@ -724,8 +710,8 @@ export default function EventDetail(props) {
                         ? 2
                         : 2
                       : deviceId == "CPH2127"
-                      ? SafeStatusBar + 5
-                      : SafeStatusBar + 5,
+                      ? SafeStatusBar + 2
+                      : SafeStatusBar + 3,
                   borderRadius: 30,
                   justifyContent: "center",
                   alignItems: "center",
@@ -738,25 +724,30 @@ export default function EventDetail(props) {
                 )}
               </Animated.View>
             </Button>
-            <Animated.Text
+            <View
               style={{
-                color: "#fff",
-                marginLeft: 10,
-                fontSize: 18,
-                top:
-                  Platform.OS == "ios"
-                    ? 16
-                    : deviceId == "CPH2127"
-                    ? SafeStatusBar + 16
-                    : SafeStatusBar + 16,
-                fontFamily: "Lato-Bold",
+                flex: 1,
               }}
             >
-              <Truncate
-                text={dataevent?.name ? dataevent.name : ""}
-                length={35}
-              />
-            </Animated.Text>
+              <Text
+                numberOfLines={1}
+                size="header"
+                style={{
+                  color: "#fff",
+                  marginHorizontal: 10,
+                  top:
+                    Platform.OS == "ios"
+                      ? 13
+                      : deviceId == "CPH2127"
+                      ? SafeStatusBar + 14
+                      : SafeStatusBar + 14,
+                  fontFamily: "Lato-Bold",
+                  textAlign: Platform.OS == "ios" ? "center" : "left",
+                }}
+              >
+                {dataevent?.name}
+              </Text>
+            </View>
           </Animated.View>
         </>
       ),

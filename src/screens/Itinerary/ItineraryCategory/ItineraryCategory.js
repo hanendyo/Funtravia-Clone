@@ -102,52 +102,6 @@ export default function ItineraryCategory(props) {
     // notifyOnNetworkStatusChange: true,
   });
 
-  // const unSelect = (id) => {
-  //   setDataType("");
-  // };
-  // const select = (id) => {
-  //   setDataType(id);
-  // };
-
-  // const HeaderComponent = {
-  //   headerShown: true,
-  //   headerTransparent: false,
-  //   headerTintColor: "white",
-  //   headerTitle: (
-  //     <Text size="header" type="bold" style={{ color: "#fff" }}>
-  //       {order == "populer" ? t("popularTrip") : t("newItinerary")}
-  //     </Text>
-  //   ),
-  //   headerMode: "screen",
-  //   headerStyle: {
-  //     backgroundColor: "#209FAE",
-  //     elevation: 0,
-  //     borderBottomWidth: 0,
-  //   },
-  //   headerLeftContainerStyle: {
-  //     background: "#FFF",
-  //     marginLeft: 10,
-  //   },
-  //   headerLeft: () => (
-  //     <Button
-  //       text={""}
-  //       size="medium"
-  //       type="circle"
-  //       variant="transparent"
-  //       onPress={() => props.navigation.goBack()}
-  //       style={{
-  //         height: 55,
-  //       }}
-  //     >
-  //       {Platform.OS == "ios" ? (
-  //         <Arrowbackios height={15} width={15}></Arrowbackios>
-  //       ) : (
-  //         <Arrowbackwhite height={20} width={20}></Arrowbackwhite>
-  //       )}
-  //     </Button>
-  //   ),
-  // };
-
   const HeaderComponent = {
     headerShown: true,
     headerTransparent: false,
@@ -164,6 +118,7 @@ export default function ItineraryCategory(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

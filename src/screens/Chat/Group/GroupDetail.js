@@ -101,8 +101,8 @@ export default function GroupDetail(props) {
   });
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
-    outputRange: [1, 0],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 1.5],
+    outputRange: [1, 1],
     extrapolate: "clamp",
   });
 
@@ -112,7 +112,7 @@ export default function GroupDetail(props) {
     extrapolate: "clamp",
   });
   const titleOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 1.5, HEADER_SCROLL_DISTANCE],
     outputRange: [0, 0, 1],
     extrapolate: "clamp",
   });
@@ -124,7 +124,7 @@ export default function GroupDetail(props) {
   });
 
   const backHeaderOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 5],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -1831,6 +1831,18 @@ export default function GroupDetail(props) {
 
         <Animated.View
           style={{
+            backgroundColor: "#14646e",
+            height: 50,
+            width: Dimensions.get("screen").width,
+            position: "absolute",
+            zIndex: 999,
+            flex: 1,
+            top: -50,
+          }}
+        ></Animated.View>
+
+        <Animated.View
+          style={{
             transform: [{ translateY: titleTranslateY }],
             flex: 1,
             flexDirection: "row",
@@ -1960,7 +1972,7 @@ export default function GroupDetail(props) {
             <Pressable
               onPress={() => props.navigation.goBack()}
               style={{
-                marginTop: 10,
+                marginTop: 15,
                 marginLeft: 15,
                 borderRadius: 40,
                 height: 40,
@@ -1978,7 +1990,7 @@ export default function GroupDetail(props) {
             </Pressable>
             <View
               style={{
-                marginTop: 10,
+                marginTop: 15,
                 marginRight: 15,
                 borderRadius: 40,
                 height: 40,
@@ -2000,7 +2012,7 @@ export default function GroupDetail(props) {
                     borderRadius: 25,
                     justifyContent: "center",
                     alignItems: "center",
-                    marginRight: 10,
+                    marginRight: 15,
                   }}
                 >
                   <PensilPutih width={18} height={18} />

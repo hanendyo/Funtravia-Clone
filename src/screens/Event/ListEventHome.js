@@ -206,7 +206,7 @@ export default function ListEventHome(props) {
   useEffect(() => {
     setTimeout(() => {
       setLoadingIndicator(false);
-    }, 4000);
+    }, 1000);
 
     // props.navigation.setOptions(HeaderComponent);
     // loadAsync();
@@ -2289,7 +2289,7 @@ export default function ListEventHome(props) {
 
   let hides = React.useRef(
     scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      inputRange: [0, HEADER_SCROLL_DISTANCE / 5],
       outputRange: [1, 0],
       extrapolate: "clamp",
     })
@@ -2297,8 +2297,12 @@ export default function ListEventHome(props) {
 
   let hide = React.useRef(
     scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
+      inputRange: [
+        0,
+        HEADER_SCROLL_DISTANCE + 150,
+        HEADER_SCROLL_DISTANCE + 200,
+      ],
+      outputRange: [0, 0, 1],
       extrapolate: "clamp",
     })
   );
@@ -2532,16 +2536,15 @@ export default function ListEventHome(props) {
         <Animated.View
           style={{
             position: "absolute",
-            top: 0,
+            top: 10,
             zIndex: 9999,
-            // opacity: hides.current,
+            opacity: hides.current,
             flexDirection: "row",
             justifyContent: "space-between",
             height: 52,
             alignContent: "center",
             alignItems: "center",
             marginHorizontal: 15,
-
             width: Dimensions.get("screen").width - 35,
           }}
         >
@@ -2632,7 +2635,7 @@ export default function ListEventHome(props) {
             // alignContent: "center",
             // alignItems: "center",
             // marginHorizontal: 20,
-            paddingHorizontal: 20,
+            paddingHorizontal: 15,
             // paddingTop: 5,
             height: 55,
             width: Dimensions.get("screen").width,
@@ -2642,6 +2645,9 @@ export default function ListEventHome(props) {
           <View
             style={{
               flexDirection: "row",
+              width: Dimensions.get("screen").width - 25,
+              // borderWidth: 2,
+              // borderColor: "red",
             }}
           >
             <Button
@@ -2652,17 +2658,15 @@ export default function ListEventHome(props) {
               onPress={() => props.navigation.goBack()}
               style={{
                 height: 53,
-                paddingRight: 10,
+                paddingRight: 15,
               }}
             >
               <Animated.View
                 style={{
                   height: 35,
                   width: 35,
-
                   justifyContent: "center",
                   alignItems: "center",
-                  // backgroundColor: "red",
                 }}
               >
                 {Platform.OS == "ios" ? (
@@ -2674,13 +2678,10 @@ export default function ListEventHome(props) {
             </Button>
             <View
               style={{
-                // width: Dimensions.get("screen").width - 100,
                 flexDirection: "row",
-                alignContent: "center",
                 alignItems: "center",
-                // padding: 10,
-                paddingTop: 0,
-                paddingLeft: 10,
+                justifyContent: Platform.OS == "ios" ? "center" : "flex-start",
+                flex: 1,
               }}
             >
               <Text
@@ -2693,38 +2694,38 @@ export default function ListEventHome(props) {
                 {t("event")}
               </Text>
             </View>
-          </View>
-          <Button
-            text={""}
-            size="medium"
-            type="circle"
-            variant="transparent"
-            onPress={() => {
-              props.navigation.navigate("searchListEventHome", {
-                idcity: null,
-                idcountries: country.id,
-                countryName: country.name,
-                eventList: null,
-                year: currentYear,
-              });
-            }}
-            style={{
-              height: 52,
-              // marginLeft: 8,
-            }}
-          >
-            <Animated.View
+            <Button
+              text={""}
+              size="medium"
+              type="circle"
+              variant="transparent"
+              onPress={() => {
+                props.navigation.navigate("searchListEventHome", {
+                  idcity: null,
+                  idcountries: country.id,
+                  countryName: country.name,
+                  eventList: null,
+                  year: currentYear,
+                });
+              }}
               style={{
-                height: 35,
-                width: 35,
-
-                justifyContent: "center",
-                alignItems: "center",
+                height: 52,
+                // marginLeft: 8,
               }}
             >
-              <SearchWhite width="20" height="20" />
-            </Animated.View>
-          </Button>
+              <Animated.View
+                style={{
+                  height: 35,
+                  width: 35,
+
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SearchWhite width="20" height="20" />
+              </Animated.View>
+            </Button>
+          </View>
         </Animated.View>
         {renderTabView()}
         {renderHeader()}

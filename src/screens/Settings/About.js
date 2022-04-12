@@ -7,27 +7,13 @@ import { useTranslation } from "react-i18next";
 
 export default function About(props) {
   const { t, i18n } = useTranslation();
-  // let [param, setParam] = useState(props.navigation.getParam('params'));
-  // const [Param, { data, loading, error }] = useLazyQuery(getParams, {
-  // 	// fetchPolicy: 'network-only',
-  // 	// context: {
-  // 	// 	headers: {
-  // 	// 		'Content-Type': 'application/json',
-  // 	// 		Authorization: token?`Bearer ${token}`:null,
-  // 	// 	},
-  // 	// },
-  // 	variables: { code: param },
-  // });
-  // useEffect(() => {
-  // 	Param();
-  // }, []);
   const INJECTEDJAVASCRIPT = `const meta = document.createElement('meta'); meta.setAttribute('content', 'width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);`;
   const HeaderComponent = {
     title: "",
     // headerTransparent: true,
     headerTintColor: "white",
     headerTitle: (
-      <Text size="header" style={{ color: "#fff" }}>
+      <Text size="header" type="bold" style={{ color: "#fff" }}>
         {t("aboutFuntravia")}
       </Text>
     ),
@@ -38,6 +24,7 @@ export default function About(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

@@ -72,6 +72,7 @@ export default function AddPasswordEmail(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      marginLeft: Platform.OS == "ios" ? null : -15,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
@@ -83,7 +84,7 @@ export default function AddPasswordEmail(props) {
       background: "#FFF",
       position: "absolute",
       zIndex: 999,
-      marginLeft: 10,
+      marginLeft: 15,
     },
     headerLeft: () => (
       <Button
