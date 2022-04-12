@@ -1515,9 +1515,12 @@ export default function detailCustomItinerary(props) {
                   //     : NotchAndro
                   //     ? normalize(18)
                   //     : normalize(15),
-                  left: 60,
+                  left: Platform.OS === "ios" ? 0 : 55,
+                  textAlign: Platform.OS === "ios" ? "center" : "left",
+                  width: Dimensions.get("screen").width,
+
                   fontFamily: "Lato-Bold",
-                  fontSize: 15,
+                  fontSize: 18,
                   color: "white",
                   // height: 50,
                   position: "absolute",

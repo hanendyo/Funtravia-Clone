@@ -1,6 +1,12 @@
-import {useLazyQuery, useMutation, useQuery} from "@apollo/client";
-import React, {useState, useEffect, useRef, useCallback, Fragment} from "react";
-import {useTranslation} from "react-i18next";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Fragment,
+} from "react";
+import { useTranslation } from "react-i18next";
 import {
   StyleSheet,
   View,
@@ -21,8 +27,8 @@ import {
   FlatList,
   NativeModules,
 } from "react-native";
-import {TabView, TabBar} from "react-native-tab-view";
-import {default_image, Bg_soon, ItineraryKosong} from "../../../assets/png";
+import { TabView, TabBar } from "react-native-tab-view";
+import { default_image, Bg_soon, ItineraryKosong } from "../../../assets/png";
 import {
   Settings,
   Arrowbackwhite,
@@ -85,7 +91,7 @@ import {
   FunVideo,
   Peringatan,
 } from "../../../component";
-import {rupiah} from "../../../component/src/Rupiah";
+import { rupiah } from "../../../component/src/Rupiah";
 
 import {
   dateFormatHari,
@@ -98,7 +104,7 @@ import ItineraryDay from "./itineraryday";
 import Albumheader from "./albumheader";
 import Modal from "react-native-modal";
 import DeleteDay from "../../../graphQL/Mutation/Itinerary/DeleteDay";
-import {Textarea} from "native-base";
+import { Textarea } from "native-base";
 import moment from "moment";
 import UpdateTimeline from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
 import DeleteActivity from "../../../graphQL/Mutation/Itinerary/DeleteActivity";
@@ -109,26 +115,26 @@ import ItineraryLiked from "../../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../../graphQL/Mutation/Itinerary/ItineraryUnlike";
 import Ripple from "react-native-material-ripple";
 import album from "../../../graphQL/Query/Itinerary/album";
-import {MenuProvider} from "react-native-popup-menu";
+import { MenuProvider } from "react-native-popup-menu";
 import ImagePicker from "react-native-image-crop-picker";
 import UploadfotoAlbum from "../../../graphQL/Mutation/Itinerary/Uploadalbum";
 import LeaveItinerary from "../../../graphQL/Mutation/Itinerary/LeaveItinerary";
 import ImageSlide from "../../../component/src/ImageSlide/sliderwithoutlist";
 import ImageSliders from "../../../component/src/ImageSlide/sliderPost";
 import Deleteitinerary from "../../../graphQL/Mutation/Itinerary/Deleteitinerary";
-import {StackActions} from "@react-navigation/routers";
+import { StackActions } from "@react-navigation/routers";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import {ReactNativeFile} from "apollo-upload-client";
+import { ReactNativeFile } from "apollo-upload-client";
 import DocumentPicker from "react-native-document-picker";
 import DeviceInfo from "react-native-device-info";
 import normalize from "react-native-normalize";
-import {useSelector, useDispatch} from "react-redux";
-import {setItinerary} from "../../../redux/action";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { useSelector, useDispatch } from "react-redux";
+import { setItinerary } from "../../../redux/action";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Notch = DeviceInfo.hasNotch();
 const AnimatedIndicator = Animated.createAnimatedComponent(ActivityIndicator);
-const {width, height} = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
 const TabBarHeight = 48;
 const tab1ItemSize = (width - 30) / 2;
 const tab2ItemSize = (width - 17.5) / 4;
@@ -139,7 +145,7 @@ const childrenWidth = width - 40;
 const childrenHeight = 60;
 
 export default function ItineraryDetail(props) {
-  let {t, i18n} = useTranslation();
+  let { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const setting = useSelector((data) => data.setting);
   const NotchAndro = NativeModules.StatusBarManager
@@ -165,9 +171,9 @@ export default function ItineraryDetail(props) {
     props.route.params.index ? props.route.params.index : 0
   );
   const [routes] = useState([
-    {key: "tab1", title: "Itinerary", active: true},
-    {key: "tab2", title: t("album"), active: true},
-    {key: "tab3", title: t("story"), active: false},
+    { key: "tab1", title: "Itinerary", active: true },
+    { key: "tab2", title: t("album"), active: true },
+    { key: "tab3", title: t("story"), active: false },
   ]);
   const [canScroll, setCanScroll] = useState(true);
   let [dataList, setDataListItem] = useState([]);
@@ -318,7 +324,7 @@ export default function ItineraryDetail(props) {
       },
     },
     pollInterval: 500,
-    variables: {id: itineraryId},
+    variables: { id: itineraryId },
   });
 
   const {
@@ -334,7 +340,7 @@ export default function ItineraryDetail(props) {
         Authorization: token,
       },
     },
-    variables: {itinerary_id: itineraryId},
+    variables: { itinerary_id: itineraryId },
   });
 
   const GetTimeline = async (id) => {
@@ -353,7 +359,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationdeleteItinerary,
-    {loading: loadingdelete, data: datadelete, error: errordelete},
+    { loading: loadingdelete, data: datadelete, error: errordelete },
   ] = useMutation(Deleteitinerary, {
     context: {
       headers: {
@@ -381,7 +387,7 @@ export default function ItineraryDetail(props) {
 
         props.navigation.navigate("BottomStack", {
           screen: "TripBottomPlaning",
-          params: {screen: "TripPlaning"},
+          params: { screen: "TripPlaning" },
         });
       }
 
@@ -394,7 +400,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationleaveitinerary,
-    {loading: loadingleave, data: dataleave, error: errorleave},
+    { loading: loadingleave, data: dataleave, error: errorleave },
   ] = useMutation(LeaveItinerary, {
     context: {
       headers: {
@@ -431,7 +437,7 @@ export default function ItineraryDetail(props) {
 
         props.navigation.navigate("BottomStack", {
           screen: "TripBottomPlaning",
-          params: {screen: "TripPlaning"},
+          params: { screen: "TripPlaning" },
         });
       }
 
@@ -448,7 +454,7 @@ export default function ItineraryDetail(props) {
     let parent_id = null;
 
     for (var index in req) {
-      let datas = {...req[index]};
+      let datas = { ...req[index] };
       // datas["id"] = req[index].name;
       if (
         req[index - 1] &&
@@ -470,7 +476,7 @@ export default function ItineraryDetail(props) {
 
   const [
     GetTimelin,
-    {data: datatimeline, loading: loadingtimeline, error: errortimeline},
+    { data: datatimeline, loading: loadingtimeline, error: errortimeline },
   ] = useLazyQuery(Timeline, {
     fetchPolicy: "network-only",
     context: {
@@ -479,7 +485,7 @@ export default function ItineraryDetail(props) {
         Authorization: token,
       },
     },
-    variables: {id: idDay},
+    variables: { id: idDay },
     onCompleted: (res) => {
       if (res) {
         setDataListItem(res?.day_timeline);
@@ -494,10 +500,10 @@ export default function ItineraryDetail(props) {
 
   const setdatadayaktif = (data) => {
     setdatadayaktifs(data);
-    props.navigation.setParams({datadayaktif: data});
+    props.navigation.setParams({ datadayaktif: data });
   };
 
-  const GetStartTime = ({startt, type = "bold", size = "description"}) => {
+  const GetStartTime = ({ startt, type = "bold", size = "description" }) => {
     var starttime = startt.split(":");
 
     return (
@@ -507,7 +513,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const GetEndTime = ({startt, dur, type = "bold", size = "description"}) => {
+  const GetEndTime = ({ startt, dur, type = "bold", size = "description" }) => {
     var duration = dur.split(":");
     var starttime = startt.split(":");
 
@@ -543,7 +549,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const HitungWaktu = ({lat1, lon1, lat2, lon2, unit, kecepatan}) => {
+  const HitungWaktu = ({ lat1, lon1, lat2, lon2, unit, kecepatan }) => {
     let jarak = Distance({
       lat1: lat1,
       lon1: lon1,
@@ -587,14 +593,14 @@ export default function ItineraryDetail(props) {
     let anggota = dta.buddy.findIndex((k) => k["user_id"] === users?.id);
     props.navigation.setOptions({
       headerRight: () => (
-        <View style={{flexDirection: "row"}}>
+        <View style={{ flexDirection: "row" }}>
           {anggota !== -1 ? (
             <Button
               text={""}
               size="medium"
               type="circle"
               variant="transparent"
-              style={{height: 55}}
+              style={{ height: 55 }}
               onPress={() => setshowside(true)}
             >
               <OptionsVertWhite height={20} width={20} />
@@ -614,7 +620,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationUploadCover,
-    {loading: loadingupload, data: dataupload, error: errorupload},
+    { loading: loadingupload, data: dataupload, error: errorupload },
   ] = useMutation(Updatecover, {
     context: {
       headers: {
@@ -796,7 +802,7 @@ export default function ItineraryDetail(props) {
     //     hasil += Capital({ text: namakota }) + " - ";
     //   }
     // }
-    hasil += Capital({text: data[0]?.city ? data[0]?.city : city});
+    hasil += Capital({ text: data[0]?.city ? data[0]?.city : city });
     return hasil;
   };
 
@@ -828,7 +834,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationDeleteDay,
-    {loading: Loadingdeleteday, data: datadeleteDay, error: errordeleteday},
+    { loading: Loadingdeleteday, data: datadeleteDay, error: errordeleteday },
   ] = useMutation(DeleteDay, {
     context: {
       headers: {
@@ -882,7 +888,7 @@ export default function ItineraryDetail(props) {
 
   const saveNotes = async () => {
     var tempData = [...dataList];
-    let x = {...tempData[indexinput]};
+    let x = { ...tempData[indexinput] };
     x.note = textinput;
     tempData.splice(indexinput, 1, x);
     await setDataListItem(tempData);
@@ -980,7 +986,7 @@ export default function ItineraryDetail(props) {
 
     let datax = [...dataLists];
 
-    let dataganti = {...datax[indexinput]};
+    let dataganti = { ...datax[indexinput] };
 
     dataganti.time = starttimes;
     dataganti.duration = durations;
@@ -1035,7 +1041,7 @@ export default function ItineraryDetail(props) {
     var order = 1;
 
     for (var y in datax) {
-      let datareplace = {...datax[y]};
+      let datareplace = { ...datax[y] };
       datareplace.order = order;
       if (datax[y - 1]) {
         if (datax[y - 1].detail_flight) {
@@ -1148,7 +1154,7 @@ export default function ItineraryDetail(props) {
     let AlertTime = parseFloat(splitLastTime[0]) + parseFloat(splitDuration[0]);
 
     if (AlertTime <= 23) {
-      let dataday = {...datadayaktif};
+      let dataday = { ...datadayaktif };
 
       if (AlertTime === 23 && splitLastTime[1] <= 59) {
         savetimeline(datax);
@@ -1166,7 +1172,7 @@ export default function ItineraryDetail(props) {
     }
   };
 
-  const hitungDuration = ({startt, dur}) => {
+  const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
     var starttime = startt ? startt.split(":") : "00:00:00";
 
@@ -1192,7 +1198,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationSaveTimeline,
-    {loading: loadingSave, data: dataSave, error: errorSave},
+    { loading: loadingSave, data: dataSave, error: errorSave },
   ] = useMutation(UpdateTimeline, {
     context: {
       headers: {
@@ -1456,7 +1462,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationChangestatus,
-    {loading: loadingchange, data: datachange, error: errorchange},
+    { loading: loadingchange, data: datachange, error: errorchange },
   ] = useMutation(ChangeStatus, {
     context: {
       headers: {
@@ -1515,7 +1521,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationliked,
-    {loading: loadingLike, data: dataLike, error: errorLike},
+    { loading: loadingLike, data: dataLike, error: errorLike },
   ] = useMutation(ItineraryLiked, {
     context: {
       headers: {
@@ -1527,7 +1533,7 @@ export default function ItineraryDetail(props) {
 
   const [
     mutationUnliked,
-    {loading: loadingUnLike, data: dataUnLike, error: errorUnLike},
+    { loading: loadingUnLike, data: dataUnLike, error: errorUnLike },
   ] = useMutation(ItineraryUnliked, {
     context: {
       headers: {
@@ -1815,11 +1821,11 @@ export default function ItineraryDetail(props) {
    */
   useEffect(() => {
     loadasync();
-    scrollY.addListener(({value}) => {
+    scrollY.addListener(({ value }) => {
       const curRoute = routes[tabIndex].key;
       listOffset.current[curRoute] = value;
     });
-    headerScrollY.addListener(({value}) => {
+    headerScrollY.addListener(({ value }) => {
       listRefArr.current.forEach((item) => {
         if (item.key !== routes[tabIndex].key) {
           return;
@@ -2047,7 +2053,7 @@ export default function ItineraryDetail(props) {
         onLayout={() => cekAnggota(rD ? rD : "D")}
         {...headerPanResponder.panHandlers}
         style={{
-          transform: [{translateY: y}],
+          transform: [{ translateY: y }],
           height: HeaderHeight,
           width: "100%",
           alignItems: "center",
@@ -2059,7 +2065,7 @@ export default function ItineraryDetail(props) {
         {/* image animated */}
 
         <Animated.Image
-          source={rD?.cover ? {uri: rD?.cover} : ItineraryKosong}
+          source={rD?.cover ? { uri: rD?.cover } : ItineraryKosong}
           style={{
             // opacity: imageOpacity,
             width: "100%",
@@ -2088,7 +2094,7 @@ export default function ItineraryDetail(props) {
               alignItems: "flex-start",
             }}
           >
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text
                 size="header"
                 type="black"
@@ -2118,7 +2124,7 @@ export default function ItineraryDetail(props) {
                     ? datadetail?.itinerary_detail?.start_date
                     : "1999-01-01"
                 ) <= 180 ? (
-                  <Errorr width={15} height={15} style={{marginRight: 5}} />
+                  <Errorr width={15} height={15} style={{ marginRight: 5 }} />
                 ) : null}
                 <Text
                   size="small"
@@ -2175,7 +2181,7 @@ export default function ItineraryDetail(props) {
                           token: token,
                         },
                       })
-                    : showAlert({...aler, show: true})
+                    : showAlert({ ...aler, show: true })
                 }
               >
                 {datadetail?.itinerary_detail?.isprivate == false ? (
@@ -2230,7 +2236,7 @@ export default function ItineraryDetail(props) {
               }}
             >
               <Sharegreen height={14} width={14} />
-              <Text size="small" style={{marginLeft: 5, color: "#209fae"}}>
+              <Text size="small" style={{ marginLeft: 5, color: "#209fae" }}>
                 {t("share")}
               </Text>
             </Button>
@@ -2394,7 +2400,7 @@ export default function ItineraryDetail(props) {
     return "" + awal[1].substring(0, 5) + " - " + akhir[1].substring(0, 5);
   };
 
-  const RenderItinerary = ({item, index}) => {
+  const RenderItinerary = ({ item, index }) => {
     const x = dataList && dataList.length - 1;
 
     return (
@@ -2538,7 +2544,7 @@ export default function ItineraryDetail(props) {
 
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
@@ -2606,7 +2612,7 @@ export default function ItineraryDetail(props) {
                     backgroundColor: "#209fae",
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
@@ -2635,7 +2641,7 @@ export default function ItineraryDetail(props) {
                 padding: 10,
                 elevation: 3,
                 shadowColor: "#d3d3d3",
-                shadowOffset: {width: 2, height: 2},
+                shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
               }}
@@ -2650,7 +2656,9 @@ export default function ItineraryDetail(props) {
               >
                 {item.type !== "custom" ? (
                   <Image
-                    source={item.images ? {uri: item.images} : {uri: item.icon}}
+                    source={
+                      item.images ? { uri: item.images } : { uri: item.icon }
+                    }
                     defaultSource={default_image}
                     style={{
                       height: 30,
@@ -2720,7 +2728,7 @@ export default function ItineraryDetail(props) {
                   }}
                 >
                   <TouchableOpacity
-                    style={{flex: 1, paddingHorizontal: 10}}
+                    style={{ flex: 1, paddingHorizontal: 10 }}
                     // onLongPress={status !== "saved" ? drag : null}
                     onPress={() => {
                       item.type === "custom"
@@ -2771,7 +2779,7 @@ export default function ItineraryDetail(props) {
                               <CalendarIcon
                                 width={15}
                                 height={15}
-                                style={{marginRight: 5}}
+                                style={{ marginRight: 5 }}
                               />
                               {/* <Text>
                                 {Formattime(
@@ -2823,7 +2831,7 @@ export default function ItineraryDetail(props) {
                               <CalendarIcon
                                 width={10}
                                 height={10}
-                                style={{marginRight: 5}}
+                                style={{ marginRight: 5 }}
                               />
                               <Text>
                                 {dateFormatMDY(
@@ -2877,7 +2885,9 @@ export default function ItineraryDetail(props) {
                           width: normalize(100),
                         }}
                       >
-                        <Text style={{marginBottom: 5}}>{t("bookingRef")}</Text>
+                        <Text style={{ marginBottom: 5 }}>
+                          {t("bookingRef")}
+                        </Text>
                         <Text> : </Text>
                         <Text type="bold">
                           {item?.detail_flight?.booking_ref}
@@ -2895,7 +2905,7 @@ export default function ItineraryDetail(props) {
                           width: normalize(100),
                         }}
                       >
-                        <Text style={{marginBottom: 5}}>
+                        <Text style={{ marginBottom: 5 }}>
                           {t("Guest Name")} :{" "}
                         </Text>
                         <Text type="bold">
@@ -2914,7 +2924,7 @@ export default function ItineraryDetail(props) {
                           width: normalize(80),
                         }}
                       >
-                        <Text style={{marginBottom: 5, flexWrap: "wrap"}}>
+                        <Text style={{ marginBottom: 5, flexWrap: "wrap" }}>
                           {t("bookingRef")}
                         </Text>
                         <Text> : </Text>
@@ -3077,12 +3087,12 @@ export default function ItineraryDetail(props) {
                     alignItems: "center",
                     elevation: 3,
                     shadowColor: "#d3d3d3",
-                    shadowOffset: {width: 2, height: 2},
+                    shadowOffset: { width: 2, height: 2 },
                     shadowOpacity: 1,
                     shadowRadius: 2,
                   }}
                 >
-                  <Mobil height={15} width={15} style={{marginRight: 10}} />
+                  <Mobil height={15} width={15} style={{ marginRight: 10 }} />
 
                   <Text type="bold">
                     {dataList[index + 1].detail_flight
@@ -3140,7 +3150,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const RenderAlbum = ({item, index}) => {
+  const RenderAlbum = ({ item, index }) => {
     return grid !== 1 ? (
       item?.id === dataalbumaktif?.id ? (
         <View
@@ -3224,7 +3234,9 @@ export default function ItineraryDetail(props) {
                             )}
                             paused={true}
                             key={"posted" + data.id}
-                            source={data.filepath ? {uri: data.filepath} : null}
+                            source={
+                              data.filepath ? { uri: data.filepath } : null
+                            }
                             muted={true}
                             // defaultSource={default_image}
                             style={{
@@ -3255,7 +3267,7 @@ export default function ItineraryDetail(props) {
                             <PlayVideo
                               width={15}
                               height={15}
-                              style={{margin: 10}}
+                              style={{ margin: 10 }}
                             />
                           </View>
                         </TouchableOpacity>
@@ -3269,7 +3281,7 @@ export default function ItineraryDetail(props) {
                             key={"posted" + data.id}
                             source={
                               data.filepath
-                                ? {uri: data.filepath}
+                                ? { uri: data.filepath }
                                 : default_image
                             }
                             // defaultSource={default_image}
@@ -3307,10 +3319,10 @@ export default function ItineraryDetail(props) {
             justifyContent: "space-between",
           }}
         >
-          <Text type="bold" style={{paddingVertical: 10}}>
+          <Text type="bold" style={{ paddingVertical: 10 }}>
             {item.title}
           </Text>
-          <Text type="bold" style={{paddingVertical: 10, marginRight: 5}}>
+          <Text type="bold" style={{ paddingVertical: 10, marginRight: 5 }}>
             {item.count} {item.count > 1 ? "photos" : "photo"}
           </Text>
         </View>
@@ -3391,7 +3403,7 @@ export default function ItineraryDetail(props) {
                       )}
                       paused={true}
                       key={"album" + data.id}
-                      source={data.filepath ? {uri: data.filepath} : null}
+                      source={data.filepath ? { uri: data.filepath } : null}
                       muted={true}
                       style={{
                         width: tab2ItemSize,
@@ -3413,7 +3425,11 @@ export default function ItineraryDetail(props) {
                         justifyContent: "flex-end",
                       }}
                     >
-                      <PlayVideo width={15} height={15} style={{margin: 10}} />
+                      <PlayVideo
+                        width={15}
+                        height={15}
+                        style={{ margin: 10 }}
+                      />
                     </View>
                   </TouchableOpacity>
                 ) : (
@@ -3425,7 +3441,7 @@ export default function ItineraryDetail(props) {
                     <FunImage
                       key={"album" + data.id}
                       source={
-                        data.filepath ? {uri: data.filepath} : default_image
+                        data.filepath ? { uri: data.filepath } : default_image
                       }
                       // defaultSource={default_image}
                       style={{
@@ -3477,7 +3493,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const RenderTab3Item = ({item, index}) => {
+  const RenderTab3Item = ({ item, index }) => {
     return (
       <View
         style={{
@@ -3495,7 +3511,7 @@ export default function ItineraryDetail(props) {
     );
   };
 
-  const renderLabel = ({route, focused}) => {
+  const renderLabel = ({ route, focused }) => {
     return (
       <Pressable
         style={{
@@ -3594,8 +3610,8 @@ export default function ItineraryDetail(props) {
     rData?.itinerary_album_list_v2?.album?.map((dataS, index) => {
       let tempdata = {
         posted: [],
-        unposted: [{id: "camera"}],
-        album: [{id: "camera"}],
+        unposted: [{ id: "camera" }],
+        album: [{ id: "camera" }],
         day: "",
         id: "",
         count: 0,
@@ -3647,7 +3663,7 @@ export default function ItineraryDetail(props) {
     return result;
   };
 
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     const focused = route.key === routes[tabIndex].key;
     let numCols;
     let data;
@@ -3662,7 +3678,7 @@ export default function ItineraryDetail(props) {
         numCols = 1;
         data = dataList ? dataList : [1, 2, 3];
         renderItem = (e) => (
-          <Animated.View style={{transform: [{translateY: y}]}}>
+          <Animated.View style={{ transform: [{ translateY: y }] }}>
             <RenderItinerary item={e.item} index={e.index} />
           </Animated.View>
         );
@@ -3671,7 +3687,7 @@ export default function ItineraryDetail(props) {
         numCols = 1;
         data = dataAlbum ? spreadData(dataAlbum) : [];
         renderItem = (e) => (
-          <Animated.View style={{transform: [{translateY: y}]}}>
+          <Animated.View style={{ transform: [{ translateY: y }] }}>
             <RenderAlbum item={e.item} index={e.index} />
           </Animated.View>
         );
@@ -3680,7 +3696,7 @@ export default function ItineraryDetail(props) {
         numCols = 3;
         data = tab3Data;
         renderItem = (e) => (
-          <Animated.View style={{transform: [{translateY: y}]}}>
+          <Animated.View style={{ transform: [{ translateY: y }] }}>
             <RenderTab3Item item={e.item} index={e.index} />{" "}
           </Animated.View>
         );
@@ -3714,11 +3730,11 @@ export default function ItineraryDetail(props) {
                   [
                     {
                       nativeEvent: {
-                        contentOffset: {y: scrollY},
+                        contentOffset: { y: scrollY },
                       },
                     },
                   ],
-                  {useNativeDriver: true}
+                  { useNativeDriver: true }
                 )
               : null
           }
@@ -3799,7 +3815,7 @@ export default function ItineraryDetail(props) {
                                 borderRadius: 15,
                               }}
                             ></View>
-                            <View style={{paddingHorizontal: 5}}>
+                            <View style={{ paddingHorizontal: 5 }}>
                               <View
                                 style={{
                                   width: 100,
@@ -3942,7 +3958,7 @@ export default function ItineraryDetail(props) {
                                 borderRadius: 15,
                               }}
                             ></View>
-                            <View style={{paddingHorizontal: 5}}>
+                            <View style={{ paddingHorizontal: 5 }}>
                               <View
                                 style={{
                                   width: 100,
@@ -4021,7 +4037,7 @@ export default function ItineraryDetail(props) {
           renderItem={renderItem}
           ListHeaderComponent={
             tabIndex == 0 && datadayaktif && datadayaktif.date ? (
-              <Animated.View style={{transform: [{translateY: y}]}}>
+              <Animated.View style={{ transform: [{ translateY: y }] }}>
                 <View
                   style={{
                     backgroundColor: "#fff",
@@ -4345,7 +4361,7 @@ export default function ItineraryDetail(props) {
               type="circle"
               style={{
                 shadowColor: "#464646",
-                shadowOffset: {width: 0, height: 1},
+                shadowOffset: { width: 0, height: 1 },
                 shadowOpacity: 1,
                 shadowRadius: 2,
                 elevation: 3,
@@ -4371,7 +4387,7 @@ export default function ItineraryDetail(props) {
 
     const scrollToIndexFailed = (error) => {
       const offset = error.averageItemLength * error.index;
-      ref.current.scrollToOffset({offset});
+      ref.current.scrollToOffset({ offset });
       setTimeout(
         () =>
           ref?.current?.scrollToIndex({
@@ -4386,7 +4402,7 @@ export default function ItineraryDetail(props) {
         style={{
           zIndex: 1,
           position: "absolute",
-          transform: [{translateY: y}],
+          transform: [{ translateY: y }],
           width: "100%",
         }}
       >
@@ -4402,7 +4418,7 @@ export default function ItineraryDetail(props) {
           onScrollToIndexFailed={(e) => {
             scrollToIndexFailed(e);
           }}
-          renderItem={({item, index}) => (
+          renderItem={({ item, index }) => (
             <Ripple
               key={"tabx" + index}
               onPress={() => {
@@ -4638,7 +4654,7 @@ export default function ItineraryDetail(props) {
           _tabIndex.current = id;
           _handletab(id);
         }}
-        navigationState={{index: tabIndex, routes}}
+        navigationState={{ index: tabIndex, routes }}
         renderScene={renderScene}
         renderTabBar={renderTabBar}
         initialLayout={{
@@ -4739,7 +4755,7 @@ export default function ItineraryDetail(props) {
                 borderTopWidth: 1,
                 borderColor: "#F0F0F0",
                 shadowColor: "#F0F0F0",
-                shadowOffset: {width: 2, height: 2},
+                shadowOffset: { width: 2, height: 2 },
                 shadowOpacity: 1,
 
                 shadowRadius: 2,
@@ -4771,7 +4787,7 @@ export default function ItineraryDetail(props) {
                 }}
               >
                 <ChatItinerary width={20} height={20} />
-                <Text size="small" style={{color: "#209FAE"}}>
+                <Text size="small" style={{ color: "#209FAE" }}>
                   {t("Chat")}
                 </Text>
               </Button>
@@ -4812,7 +4828,7 @@ export default function ItineraryDetail(props) {
                   }}
                 >
                   <Plusgrey width={20} height={20} />
-                  <Text size="small" style={{color: "#d3d3d3"}}>
+                  <Text size="small" style={{ color: "#d3d3d3" }}>
                     {t("addOption")}
                   </Text>
                 </Button>
@@ -4891,7 +4907,7 @@ export default function ItineraryDetail(props) {
                 }}
               >
                 <ChatItinerary width={20} height={20} />
-                <Text size="small" style={{color: "#209FAE"}}>
+                <Text size="small" style={{ color: "#209FAE" }}>
                   {t("Chat")}
                 </Text>
               </Button>
@@ -5003,7 +5019,7 @@ export default function ItineraryDetail(props) {
                   }}
                 >
                   <Plus width={20} height={20} />
-                  <Text size="small" style={{color: "#209fae"}}>
+                  <Text size="small" style={{ color: "#209fae" }}>
                     {t("addOption")}
                   </Text>
                 </Button>
@@ -5023,7 +5039,7 @@ export default function ItineraryDetail(props) {
                   }}
                 >
                   <Complete width={20} height={20} />
-                  <Text size="small" style={{color: "#d75995"}}>
+                  <Text size="small" style={{ color: "#d75995" }}>
                     {t("completePlan")}
                   </Text>
                 </Button>
@@ -5129,7 +5145,7 @@ export default function ItineraryDetail(props) {
               borderTopWidth: 1,
               borderColor: "#F0F0F0",
               shadowColor: "#F0F0F0",
-              shadowOffset: {width: 2, height: 2},
+              shadowOffset: { width: 2, height: 2 },
               shadowOpacity: 1,
               shadowRadius: 2,
               elevation: 3,
@@ -5358,9 +5374,9 @@ export default function ItineraryDetail(props) {
               // borderWidth: 1,
               alignContent: "center",
               alignItems: "center",
-              marginHorizontal: 20,
+              paddingHorizontal: 10,
               height: 55,
-              width: Dimensions.get("screen").width - 40,
+              width: Dimensions.get("screen").width,
             }}
           >
             <Button
@@ -5440,7 +5456,7 @@ export default function ItineraryDetail(props) {
               opacity: textOpacitys,
               flexDirection: "row",
               justifyContent: "space-between",
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
               paddingTop: Platform.OS == "ios" ? 3 : null,
               height: 55,
               width: Dimensions.get("screen").width,
@@ -5484,6 +5500,7 @@ export default function ItineraryDetail(props) {
                 style={{
                   // flexDirection: "row",
                   marginTop: Platform.OS == "ios" ? 2 : 6,
+                  marginLeft: 5,
                   paddingRight: 20,
                   width: Dimensions.get("screen").width / 1.5,
                 }}
@@ -5513,7 +5530,7 @@ export default function ItineraryDetail(props) {
                       ? datadetail?.itinerary_detail?.start_date
                       : "1999-01-01"
                   ) <= 180 ? (
-                    <Errorx width={18} height={18} style={{marginRight: 5}} />
+                    <Errorx width={18} height={18} style={{ marginRight: 5 }} />
                   ) : null}
 
                   <Animated.Text
@@ -5597,7 +5614,7 @@ export default function ItineraryDetail(props) {
               margin: 0,
             }}
           >
-            <View
+            <SafeAreaView
               style={{
                 backgroundColor: "white",
                 width: "100%",
@@ -5622,7 +5639,7 @@ export default function ItineraryDetail(props) {
                 <Text
                   size="title"
                   type="bold"
-                  style={{marginBottom: 15, marginTop: 13}}
+                  style={{ marginBottom: 15, marginTop: 13 }}
                 >
                   {t("addDestinationForm")}
                 </Text>
@@ -5640,7 +5657,7 @@ export default function ItineraryDetail(props) {
                   <Xhitam
                     width={15}
                     height={15}
-                    style={{alignSelf: "center"}}
+                    style={{ alignSelf: "center" }}
                   />
                 </Pressable>
               </View>
@@ -5700,7 +5717,7 @@ export default function ItineraryDetail(props) {
                 >
                   <PlusBlack height={15} width={15} />
                 </View>
-                <View style={{marginBottom: 5}}>
+                <View style={{ marginBottom: 5 }}>
                   <Text size="label" type="bold">
                     {t("createActivity")}
                   </Text>
@@ -5748,7 +5765,7 @@ export default function ItineraryDetail(props) {
                 >
                   <Flights height={25} width={25} />
                 </View>
-                <View style={{marginBottom: 5}}>
+                <View style={{ marginBottom: 5 }}>
                   <Text size="label" type="bold">
                     {t("Flight")}
                   </Text>
@@ -5878,7 +5895,7 @@ export default function ItineraryDetail(props) {
                 >
                   <Love height={15} width={15} />
                 </View>
-                <View style={{marginBottom: 5}}>
+                <View style={{ marginBottom: 5 }}>
                   <Text size="label" type="bold">
                     {t("myWishlist")}
                   </Text>
@@ -5948,7 +5965,7 @@ export default function ItineraryDetail(props) {
                 >
                   <Google height={15} width={15} />
                 </View>
-                <View style={{marginBottom: 5}}>
+                <View style={{ marginBottom: 5 }}>
                   <Text size="label" type="bold">
                     {t("searchFromGoogle")}
                   </Text>
@@ -5957,8 +5974,8 @@ export default function ItineraryDetail(props) {
                   </Text>
                 </View>
               </TouchableOpacity>
-            </View>
-            <View
+            </SafeAreaView>
+            {/* <View
               style={{
                 width: Dimensions.get("window").width,
                 backgroundColor: "white",
@@ -6133,7 +6150,7 @@ export default function ItineraryDetail(props) {
                   </Text>
                 </Button>
               </View>
-            </View>
+            </View> */}
           </Modal>
 
           <Modal
@@ -6176,7 +6193,7 @@ export default function ItineraryDetail(props) {
                 <Text
                   size="title"
                   type="bold"
-                  style={{marginTop: 13, marginBottom: 15}}
+                  style={{ marginTop: 13, marginBottom: 15 }}
                 >
                   {t("EditNotes")}
                 </Text>
@@ -6351,7 +6368,7 @@ export default function ItineraryDetail(props) {
                 <Text
                   size="label"
                   // type="bold"
-                  style={{alignSelf: "center"}}
+                  style={{ alignSelf: "center" }}
                 >
                   {t("From")}
                 </Text>
@@ -6364,7 +6381,7 @@ export default function ItineraryDetail(props) {
                     alignItems: "center",
                   }}
                 >
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosIcon={
                         <View>
@@ -6375,11 +6392,11 @@ export default function ItineraryDetail(props) {
                       note
                       mode="dropdown"
                       selectedValue={jamstart}
-                      textStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
                       itemTextStyle={{
                         fontFamily: "Lato-Regular",
                       }}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
                       placeholderStyle={{
                         fontFamily: "Lato-Regular",
                       }}
@@ -6424,7 +6441,7 @@ export default function ItineraryDetail(props) {
                       :
                     </Text>
                   </View>
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosHeader="Select Minutes"
                       headerBackButtonTextStyle={{
@@ -6433,11 +6450,11 @@ export default function ItineraryDetail(props) {
                       note
                       mode="dropdown"
                       selectedValue={menitstart}
-                      textStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
                       itemTextStyle={{
                         fontFamily: "Lato-Regular",
                       }}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
                       placeholderStyle={{
                         fontFamily: "Lato-Regular",
                       }}
@@ -6478,7 +6495,7 @@ export default function ItineraryDetail(props) {
                   </View>
                 </View>
 
-                <Text size="label" style={{alignSelf: "center"}}>
+                <Text size="label" style={{ alignSelf: "center" }}>
                   {t("To")}
                 </Text>
 
@@ -6491,7 +6508,7 @@ export default function ItineraryDetail(props) {
                     alignItems: "center",
                   }}
                 >
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosIcon={
                         <View>
@@ -6502,11 +6519,11 @@ export default function ItineraryDetail(props) {
                       note
                       mode="dropdown"
                       selectedValue={jamend}
-                      textStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
                       itemTextStyle={{
                         fontFamily: "Lato-Regular",
                       }}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
                       placeholderStyle={{
                         fontFamily: "Lato-Regular",
                       }}
@@ -6550,7 +6567,7 @@ export default function ItineraryDetail(props) {
                       :
                     </Text>
                   </View>
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosHeader="Select Minutes"
                       headerBackButtonTextStyle={{
@@ -6559,11 +6576,11 @@ export default function ItineraryDetail(props) {
                       note
                       mode="dropdown"
                       selectedValue={menitend}
-                      textStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
                       itemTextStyle={{
                         fontFamily: "Lato-Regular",
                       }}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
                       placeholderStyle={{
                         fontFamily: "Lato-Regular",
                       }}
@@ -6682,7 +6699,7 @@ export default function ItineraryDetail(props) {
                     backgroundColor: "#f6f6f6",
                   }}
                 >
-                  <Text style={{marginVertical: 15}} size="title" type="bold">
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
                     {t("deleteActivity")}
                   </Text>
                 </View>
@@ -6698,7 +6715,7 @@ export default function ItineraryDetail(props) {
                 >
                   {t("DeleteActivityfromItinerary")}
                 </Text>
-                <View style={{marginTop: 20, marginHorizontal: 15}}>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                   <Button
                     onPress={() => {
                       deleteactivity(itineraryId, idactivity, types),
@@ -6711,7 +6728,7 @@ export default function ItineraryDetail(props) {
                     onPress={() => {
                       setModalDelete(false);
                     }}
-                    style={{marginVertical: 7}}
+                    style={{ marginVertical: 7 }}
                     variant="transparent"
                     text={t("discard")}
                   ></Button>
@@ -6774,7 +6791,7 @@ export default function ItineraryDetail(props) {
                     backgroundColor: "#f6f6f6",
                   }}
                 >
-                  <Text style={{marginVertical: 15}} size="title" type="bold">
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
                     {t("deleteDay")}
                   </Text>
                 </View>
@@ -6792,7 +6809,7 @@ export default function ItineraryDetail(props) {
                     "fromItinerary"
                   )}`}
                 </Text>
-                <View style={{marginTop: 20, marginHorizontal: 15}}>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                   <Button
                     onPress={() => {
                       _handledeleteDay(
@@ -6807,7 +6824,7 @@ export default function ItineraryDetail(props) {
                     onPress={() => {
                       setModalmenuday(false);
                     }}
-                    style={{marginVertical: 7}}
+                    style={{ marginVertical: 7 }}
                     variant="transparent"
                     text={t("discard")}
                   ></Button>
@@ -6875,7 +6892,7 @@ export default function ItineraryDetail(props) {
                     borderTopRightRadius: 5,
                   }}
                 >
-                  <Text style={{marginVertical: 15}} type="bold" size="title">
+                  <Text style={{ marginVertical: 15 }} type="bold" size="title">
                     {t("option")}
                   </Text>
                 </View>
@@ -7002,7 +7019,7 @@ export default function ItineraryDetail(props) {
                     borderTopRightRadius: 5,
                   }}
                 >
-                  <Text style={{marginVertical: 15}} type="bold" size="title">
+                  <Text style={{ marginVertical: 15 }} type="bold" size="title">
                     {t("option")}
                   </Text>
                 </View>
@@ -7043,7 +7060,7 @@ export default function ItineraryDetail(props) {
                     <Text
                       size="description"
                       type="regular"
-                      style={{color: "#d75995"}}
+                      style={{ color: "#d75995" }}
                     >
                       {t("OpenCamera")}
                     </Text>
@@ -7100,7 +7117,7 @@ export default function ItineraryDetail(props) {
                 <Text
                   size="description"
                   type="regular"
-                  style={{color: "#d75995"}}
+                  style={{ color: "#d75995" }}
                 >
                   {t("OpenCamera")}
                 </Text>
@@ -7209,7 +7226,7 @@ export default function ItineraryDetail(props) {
                     borderRadius: 5,
                   }}
                 >
-                  <Text size="label" style={{textAlign: "center"}}>
+                  <Text size="label" style={{ textAlign: "center" }}>
                     {t("activateThisTrip")}
                   </Text>
                 </View>
@@ -7326,7 +7343,7 @@ export default function ItineraryDetail(props) {
                     padding: 20,
                   }}
                 >
-                  <Text size="label" style={{textAlign: "center"}}>
+                  <Text size="label" style={{ textAlign: "center" }}>
                     {t("dayEmptyTrip")}
                   </Text>
                 </View>
@@ -7528,7 +7545,7 @@ export default function ItineraryDetail(props) {
                 <Text type="bold" size="h5">
                   {t("comingSoon")}!
                 </Text>
-                <Text type="regular" size="label" style={{marginTop: 5}}>
+                <Text type="regular" size="label" style={{ marginTop: 5 }}>
                   {t("soonUpdate")}.
                 </Text>
                 <Button
@@ -7596,11 +7613,11 @@ export default function ItineraryDetail(props) {
                     backgroundColor: "#f6f6f6",
                   }}
                 >
-                  <Text style={{marginVertical: 15}} size="title" type="bold">
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
                     {t("leave")} {t("trip")}
                   </Text>
                 </View>
-                <View style={{marginTop: 20, marginHorizontal: 15}}>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                   <Button
                     onPress={() => {
                       _handleLeave(itineraryId), setModalLeaveTrip(false);
@@ -7612,7 +7629,7 @@ export default function ItineraryDetail(props) {
                     onPress={() => {
                       setModalLeaveTrip(false);
                     }}
-                    style={{marginVertical: 7}}
+                    style={{ marginVertical: 7 }}
                     variant="transparent"
                     text={t("discard")}
                   ></Button>
@@ -7673,11 +7690,11 @@ export default function ItineraryDetail(props) {
                     backgroundColor: "#f6f6f6",
                   }}
                 >
-                  <Text style={{marginVertical: 15}} size="title" type="bold">
+                  <Text style={{ marginVertical: 15 }} size="title" type="bold">
                     {t("delete")} {t("trip")}
                   </Text>
                 </View>
-                <View style={{marginTop: 20, marginHorizontal: 15}}>
+                <View style={{ marginTop: 20, marginHorizontal: 15 }}>
                   <Button
                     onPress={() => {
                       _handlehapus(itineraryId), setModalDeleteTrip(false);
@@ -7689,7 +7706,7 @@ export default function ItineraryDetail(props) {
                     onPress={() => {
                       setModalDeleteTrip(false);
                     }}
-                    style={{marginVertical: 7}}
+                    style={{ marginVertical: 7 }}
                     variant="transparent"
                     text={t("discard")}
                   ></Button>
@@ -7855,7 +7872,7 @@ export default function ItineraryDetail(props) {
                       });
                     }}
                   >
-                    <Help height={25} width={25} style={{marginLeft: -5}} />
+                    <Help height={25} width={25} style={{ marginLeft: -5 }} />
 
                     <Text
                       size="label"
@@ -8030,18 +8047,18 @@ export default function ItineraryDetail(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Errors width={70} height={70} style={{marginBottom: 15}} />
+                  <Errors width={70} height={70} style={{ marginBottom: 15 }} />
                   <Text
                     size="label"
                     type="bold"
-                    style={{marginBottom: 5, textAlign: "center"}}
+                    style={{ marginBottom: 5, textAlign: "center" }}
                   >
                     {t(aler.judul)}
                   </Text>
                   <Text
                     size="label"
                     type="regular"
-                    style={{marginBottom: 15, textAlign: "center"}}
+                    style={{ marginBottom: 15, textAlign: "center" }}
                   >
                     {t(aler.judulDetail)}
                   </Text>
@@ -8070,7 +8087,7 @@ export default function ItineraryDetail(props) {
                 </View>
               </View>
               <Pressable
-                onPress={() => showAlert({...aler, show: false})}
+                onPress={() => showAlert({ ...aler, show: false })}
                 underlayColor="#F6F6F6"
                 style={{
                   width: Dimensions.get("screen").width - 100,
@@ -8142,6 +8159,6 @@ const styles = StyleSheet.create({
     height: TabBarHeight,
   },
 
-  indicatormax: {backgroundColor: "#209FAE", height: 0},
-  indicatormin: {backgroundColor: "#209FAE", height: 2},
+  indicatormax: { backgroundColor: "#209FAE", height: 0 },
+  indicatormin: { backgroundColor: "#209FAE", height: 2 },
 });

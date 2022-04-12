@@ -107,7 +107,7 @@ export default function PracticalInformation(props) {
         index: props.route.params.indexcountry,
         animated: true,
       });
-    }, 3000);
+    }, 1000);
     refresh();
   }, []);
 
@@ -586,6 +586,13 @@ export default function PracticalInformation(props) {
       </View>
     );
   };
+
+  const getItemLayout = (data, index) => ({
+    length: 0,
+    offset: 138 * index,
+    index,
+  });
+
   const renderTabBar = (props) => {
     return (
       <Animated.View
@@ -600,6 +607,7 @@ export default function PracticalInformation(props) {
         <FlatList
           key={"listtabbar"}
           ref={scrollRef}
+          getItemLayout={getItemLayout}
           data={props.navigationState.routes}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -654,6 +662,7 @@ export default function PracticalInformation(props) {
                       textTransform: "capitalize",
                     },
                   ]}
+                  numberOfLines={1}
                 >
                   {item?.title ?? ""}
                 </Text>

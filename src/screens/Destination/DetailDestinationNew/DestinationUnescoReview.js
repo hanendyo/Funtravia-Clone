@@ -212,20 +212,21 @@ export default function DestinationUnescoReview(props) {
           setloading(false);
           setText("");
           setDefaultRate(0);
-          await props.navigation.dispatch(
-            StackActions.push("DestinationUnescoDetail", {
-              id: data.id,
-              name: data.name,
-              token: tokenApps,
-              indexscroll: 1,
-            })
-          );
-          // await props.navigation.push("DestinationUnescoDetail", {
-          //   id: data.id,
-          //   name: data.name,
-          //   token: tokenApps,
-          //   indexscroll: 1,
-          // });
+          // await props.navigation.dispatch(
+          //   StackActions.replace("DestinationUnescoDetail", {
+          //     id: data.id,
+          //     name: data.name,
+          //     token: tokenApps,
+          //     indexscroll: 1,
+          //   })
+          // );
+          await props.navigation.navigate("DestinationUnescoDetail", {
+            id: data.id,
+            name: data.name,
+            token: tokenApps,
+            indexscroll: 1,
+            from: "review",
+          });
         }
       } catch (err) {
         setloading(false);

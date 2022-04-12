@@ -135,25 +135,30 @@ export default function DetailJournal(props) {
         type="bold"
         style={{ color: "#fff" }}
       >
-        <Truncate
+        {/* <Truncate
           text={dataPopuler?.title ? dataPopuler?.title : dataPopuler?.name}
           length={Platform.OS === "ios" ? 30 : 30}
-        />
+        /> */}
+        {dataPopuler?.title ?? dataPopuler?.name}
       </Text>
     ),
     headerMode: "screen",
     headerStyle: {
       backgroundColor: Platform.OS == "ios" ? "#14646e" : "#209FAE",
+
       elevation: 0,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
-      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      backgroundColor: Platform.OS == "ios" ? "#209FAE" : null,
       height: Platform.OS == "ios" ? 45 : null,
-      textAlign: Platform.OS == "ios" ? "center" : null,
+      textAlign: Platform.OS == "ios" ? "center" : "left",
       paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 11) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
+      left: Platform.OS == "ios" ? 0 : -10,
+      paddingLeft:
+        Platform.OS == "ios" ? (dataPopuler?.title.length > 50 ? 60 : 45) : 0,
+      width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
     },
     headerLeftContainerStyle: {
       background: "#FFF",
