@@ -535,7 +535,7 @@ export default function AllDestination(props) {
                           size="label"
                           style={{ marginTop: 5 }}
                         >
-                          {value.description_type}
+                          {value.description_type.split(",", 3).join(", ")}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -694,9 +694,11 @@ export default function AllDestination(props) {
           style={{
             flexDirection: "column",
             height:
-              Platform.OS === "ios" && !Notch
-                ? Dimensions.get("screen").height * 0.55
-                : Dimensions.get("screen").height * 0.5,
+              Platform.OS === "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             // borderTopWidth: 1,

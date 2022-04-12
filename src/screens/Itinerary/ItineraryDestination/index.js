@@ -956,6 +956,7 @@ export default function ItineraryDestination(props) {
         }}
         onRequestClose={() => setshow(false)}
         onDismiss={() => setshow(false)}
+        avoidKeyboard={true}
         isVisible={show}
         style={{
           justifyContent: "flex-end",
@@ -965,7 +966,12 @@ export default function ItineraryDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             borderTopRightRadius: 15,
             borderTopLeftRadius: 15,
@@ -1480,6 +1486,7 @@ export default function ItineraryDestination(props) {
         }}
         onRequestClose={() => setshowCountry(false)}
         onDismiss={() => setshowCountry(false)}
+        avoidKeyboard={true}
         isVisible={showCountry}
         style={{
           justifyContent: "flex-end",
@@ -1489,7 +1496,12 @@ export default function ItineraryDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             borderTopRightRadius: 15,
             borderTopLeftRadius: 15,
@@ -1562,7 +1574,7 @@ export default function ItineraryDestination(props) {
                     }}
                     style={{
                       backgroundColor: "#f6f6f6",
-                      paddingBottom: 5,
+                      paddingBottom: 2,
                     }}
                     key={index}
                   >
@@ -1600,9 +1612,10 @@ export default function ItineraryDestination(props) {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  paddingTop: 15,
-                  paddingLeft: 15,
-                  paddingRight: 15,
+                  paddingVertical: Platform.OS === "ios" ? 9.5 : 8,
+                  paddingHorizontal: 15,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#F6F6F6",
                 }}
               >
                 <View
@@ -1705,18 +1718,16 @@ export default function ItineraryDestination(props) {
           {/* bagian bawah */}
           <View
             style={{
-              // flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 70,
-              // borderWidth: 1,
-              // position: "absolute",
-              // bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -1725,8 +1736,6 @@ export default function ItineraryDestination(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 15,
             }}
           >
             <Button
@@ -1746,6 +1755,7 @@ export default function ItineraryDestination(props) {
         }}
         onRequestClose={() => setshowCity(false)}
         onDismiss={() => setshowCity(false)}
+        avoidKeyboard={true}
         isVisible={showCity}
         style={{
           justifyContent: "flex-end",
@@ -1755,7 +1765,12 @@ export default function ItineraryDestination(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.6,
+            height:
+              Platform.OS == "ios"
+                ? Notch
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             borderTopRightRadius: 15,
             borderTopLeftRadius: 15,
@@ -1825,7 +1840,7 @@ export default function ItineraryDestination(props) {
                 <Pressable
                   style={{
                     backgroundColor: "#f6f6f6",
-                    paddingBottom: 5,
+                    paddingBottom: 2,
                   }}
                 >
                   <View
@@ -1859,9 +1874,11 @@ export default function ItineraryDestination(props) {
             <View style={{ flex: 1 }}>
               <View
                 style={{
-                  paddingTop: 15,
+                  paddingVertical: Platform.OS === "ios" ? 9.5 : 8,
                   paddingLeft: 15,
                   paddingRight: 15,
+                  borderBottomWidth: 2,
+                  borderBottomColor: "#F6F6F6",
                 }}
               >
                 <View
@@ -1969,18 +1986,16 @@ export default function ItineraryDestination(props) {
           {/* bagian bawah */}
           <View
             style={{
-              // flex: 1,
-              zIndex: 6,
-              flexDirection: "row",
-              height: 70,
-              // borderWidth: 1,
-              // position: "absolute",
-              // bottom: 0,
-              justifyContent: "space-around",
-              alignContent: "center",
-              alignItems: "center",
-              backgroundColor: "#ffffff",
+              height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
               width: Dimensions.get("screen").width,
+              backgroundColor: "#fff",
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingTop: 5,
+              // paddingBottom: 10,
+              justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: "#f6f6f6",
               shadowColor: "#000",
               shadowOffset: {
                 width: 0,
@@ -1989,8 +2004,6 @@ export default function ItineraryDestination(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              padding: 10,
-              paddingHorizontal: 15,
             }}
           >
             <Button

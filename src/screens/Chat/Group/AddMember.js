@@ -7,13 +7,21 @@ import {
   Image,
   ScrollView,
   Platform,
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { CustomImage } from "../../../component";
 import { Text } from "../../../component";
 import { Button, Truncate, Loading } from "../../../component";
 import { default_image, search_button } from "../../../assets/png";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import { Arrowbackios, Arrowbackwhite, WhiteCheck } from "../../../assets/svg";
+import {
+  Arrowbackios,
+  Arrowbackwhite,
+  Search,
+  WhiteCheck,
+  Xblue,
+} from "../../../assets/svg";
 import TravelWith from "../../../graphQL/Query/Itinerary/TravelWith";
 import ItineraryDetails from "../../../graphQL/Query/Itinerary/ItineraryDetails";
 import saveBuddy from "../../../graphQL/Mutation/Itinerary/AddBuddy";
@@ -201,6 +209,8 @@ export default function AddMember(props) {
     setNew(dataNews);
   };
 
+  const [dataResult, setDataResult] = useState([]);
+
   const [
     querywith,
     { loading: loadingwith, data: DataBuddy, error: errorwith },
@@ -215,6 +225,11 @@ export default function AddMember(props) {
         "Content-Type": "application/json",
         Authorization: tokenApps,
       },
+    },
+    onCompleted: () => {
+      if (DataBuddy && DataBuddy.search_travelwith) {
+        setDataResult(DataBuddy.search_travelwith);
+      }
     },
   });
 
@@ -238,6 +253,7 @@ export default function AddMember(props) {
             if (datafilters && datafilters.length) {
               return (
                 <View
+                  key={i}
                   style={{
                     opacity: 0.5,
                     flexDirection: "row",
@@ -283,7 +299,11 @@ export default function AddMember(props) {
                         numberOfLines={1}
                       >
                         <Truncate
-                          text={value.first_name + " " + value?.last_name}
+                          text={
+                            value.first_name +
+                            " " +
+                            (value?.last_name ? value.last_name : "")
+                          }
                           length={17}
                         />
                         {/* {value?.first_name} {value?.last_name} */}
@@ -361,7 +381,11 @@ export default function AddMember(props) {
                         numberOfLines={1}
                       >
                         <Truncate
-                          text={value.first_name + " " + value?.last_name}
+                          text={
+                            value.first_name +
+                            " " +
+                            (value?.last_name ? value.last_name : "")
+                          }
                           length={17}
                         />
                         {/* {value?.first_name} {value?.last_name} */}
@@ -439,7 +463,11 @@ export default function AddMember(props) {
                       numberOfLines={1}
                     >
                       <Truncate
-                        text={value.first_name + " " + value?.last_name}
+                        text={
+                          value.first_name +
+                          " " +
+                          (value?.last_name ? value.last_name : "")
+                        }
                         length={17}
                       />
                       {/* {value?.first_name} {value?.last_name} */}
@@ -534,34 +562,40 @@ export default function AddMember(props) {
                   // flex: 1,
                   flexDirection: "row",
                   alignItems: "center",
+                  paddingHorizontal: 10,
                 }}
               >
-                <View>
-                  <CustomImage
-                    source={search_button}
-                    customImageStyle={{ resizeMode: "cover" }}
-                    customStyle={{
-                      height: 15,
-                      width: 15,
-                      alignSelf: "center",
-                      zIndex: 100,
-                      marginHorizontal: 5,
-                    }}
-                  />
-                </View>
+                <Search width={15} height={15} style={{ marginRight: 5 }} />
 
                 <TextInput
-                  //   underlineColorAndroid="transparent"
+                  underlineColorAndroid="transparent"
                   placeholder={t("search")}
                   style={{
-                    width: "100%",
-                    fontFamily: "Lato-Regular",
-                    fontSize: 14,
-                    color: "#464646",
+                    width: "85%",
+                    // borderWidth: 1,
+                    marginLeft: 5,
+                    padding: 0,
                   }}
+                  placeholderTextColor="#464646"
                   value={search}
                   onChangeText={(text) => _setSearch(text)}
                 />
+                {search?.length ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearch("");
+                    }}
+                    style={{ marginLeft: 5 }}
+                  >
+                    <Xblue
+                      width="15"
+                      height="15"
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
           </View>
@@ -571,32 +605,46 @@ export default function AddMember(props) {
               flex: 1,
             }}
           >
-            {DataBuddy && DataBuddy.search_travelwith ? (
-              <RenderBuddy databuddy={DataBuddy.search_travelwith} />
-            ) : null}
+            {loadingwith ? (
+              <View style={{ alignItems: "center", marginTop: 20 }}>
+                <ActivityIndicator color={"#209fae"} size={"small"} />
+              </View>
+            ) : dataResult?.length ? (
+              <RenderBuddy databuddy={dataResult} />
+            ) : (
+              <Text
+                size="label"
+                type="bold"
+                style={{ marginTop: 20, alignSelf: "center" }}
+              >
+                {t("noData")}
+              </Text>
+            )}
+            {console.log("dataBuddy", dataResult)}
           </ScrollView>
         </View>
       </View>
       <View
         style={{
           zIndex: 999,
-          //   position: "absolute",
-          //   left: 0,
-          //   bottom: 0,
-          //   height: 60,
-          marginTop: 10,
-          width: Dimensions.get("window").width,
-          backgroundColor: "#FFFFFF",
-          //   paddingVertical: ,
-          borderTopWidth: 1,
-          borderColor: "#F0F0F0",
-          shadowColor: "#F0F0F0",
-          shadowOffset: { width: 2, height: 2 },
-          shadowOpacity: 1,
-          shadowRadius: 2,
-          elevation: 3,
-          alignItems: "center",
-          justifyContent: "center",
+          height: Platform.OS === "ios" ? (Notch ? 70 : 50) : 50,
+          width: Dimensions.get("screen").width,
+          backgroundColor: "#fff",
+          flexDirection: "row",
+          paddingHorizontal: 10,
+          paddingTop: 5,
+          // paddingBottom: 10,
+          justifyContent: "space-between",
+          borderWidth: 1,
+          borderColor: "#f6f6f6",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
         }}
       >
         <Button
@@ -606,8 +654,7 @@ export default function AddMember(props) {
           type="box"
           onPress={() => _save()}
           style={{
-            marginVertical: 15,
-            width: Dimensions.get("window").width - 40,
+            width: "100%",
           }}
         ></Button>
       </View>

@@ -1033,7 +1033,7 @@ export default function ItineraryBuddy(props) {
             {" "}
             {dataAll && dataAll.list_buddy && AdminTrip == true
               ? dataAll.list_buddy.length
-              : seeBuddyNotAdmin?.length}
+              : seeBuddyNotAdmin?.length}{" "}
             {t("member")}
           </Text>
         </View>
@@ -1109,8 +1109,16 @@ export default function ItineraryBuddy(props) {
             <RenderBuddy databuddy={dataAll.list_buddy} />
             <GetTombolplus datanya={dataAll.list_buddy} />
           </View>
-        ) : // ) : (
-        null}
+        ) : (
+          // ) : (
+          <Text
+            size="label"
+            type="bold"
+            style={{ alignSelf: "center", marginTop: 30 }}
+          >
+            {t("noData")}
+          </Text>
+        )}
       </ScrollView>
     </View>
   );

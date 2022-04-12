@@ -12,6 +12,7 @@ import {
   Image,
   Alert,
   BackHandler,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -186,7 +187,7 @@ export default function Login({ navigation, route }) {
     ),
     headerMode: "screen",
     headerStyle: {
-      backgroundColor: "#fff",
+      backgroundColor: "#FFF",
       elevation: 0, // remove shadow on Android
       shadowOpacity: 0, // remove shadow on iOS
       borderBottomWidth: 0, // Just in case.
@@ -239,155 +240,209 @@ export default function Login({ navigation, route }) {
   }, [backAction]);
 
   return (
-    <KeyboardAvoidingView
-      style={{
-        flex: 1,
-        backgroundColor: "#fff",
-      }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      enabled
-    >
-      <StatusBar backgroundColor="#fff" barStyle="light-content" />
-      <Peringatan
-        aler={aler}
-        setClose={() => showAlert({ ...aler, show: false })}
-      />
-      <ScrollView
-        style={[styles.main, { paddingTop: 40 }]}
-        showsVerticalScrollIndicator={false}
-        stickyHeaderIndices={[1]}
+    <>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+        // behavior={Platform.OS === "ios" ? "padding" : null}
+        // enabled
       >
-        <View
-          style={{
-            alignItems: "center",
-            bottom:
-              Platform.OS === "ios" &&
-              keyboardOffset < 300 &&
-              keyboardOffset > 0
-                ? 150
-                : 0,
-          }}
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        <Peringatan
+          aler={aler}
+          setClose={() => showAlert({ ...aler, show: false })}
+        />
+        <ScrollView
+          style={[styles.main, { paddingTop: 40 }]}
+          showsVerticalScrollIndicator={false}
+          stickyHeaderIndices={[1]}
         >
-          <View>
-            <CustomImage
-              source={mascot_black}
-              customStyle={{
-                height: 180,
-                width: 180,
-                alignSelf: "center",
-              }}
-            />
-
-            <View style={styles.titleText}>
-              <Text type="bold" size="h4">
-                {`${t("hello")},`}
-              </Text>
-            </View>
-            <View style={{ alignItems: "flex-start", marginBottom: 5 }}>
-              <FloatingInput
-                value={email}
-                onChangeText={onChange("email")}
-                customTextStyle={
-                  loginFailed === true && email.length === 0
-                    ? styles.inputTextStyleFailed
-                    : styles.inputTextStyle
-                }
-                keyboardType="email-address"
-                label="Email"
-                autoCapitalize="none"
-                onFocus={() => setLoginFailed(false)}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  position: "absolute",
-                  bottom: -15,
-                }}
-              >
-                {loginFailed === true && email.length === 0 ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                      marginRight: 5,
-                    }}
-                  >
-                    {t("emailRequired")}
-                  </Text>
-                ) : null}
-                {itemValid.email === false ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                    }}
-                  >
-                    {t("sampleEmail")}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
+          <KeyboardAvoidingView
+            style={{
+              alignItems: "center",
+              bottom:
+                Platform.OS === "ios" &&
+                keyboardOffset < 300 &&
+                keyboardOffset > 0
+                  ? 150
+                  : 0,
+            }}
+          >
             <View>
-              <View style={{ flexDirection: "row", marginTop: 5 }}>
+              <CustomImage
+                source={mascot_black}
+                customStyle={{
+                  height: 180,
+                  width: 180,
+                  alignSelf: "center",
+                }}
+              />
+
+              <View style={styles.titleText}>
+                <Text type="bold" size="h4">
+                  {`${t("hello")},`}
+                </Text>
+              </View>
+              <View style={{ alignItems: "flex-start", marginBottom: 5 }}>
                 <FloatingInput
-                  secureTextEntry={hidePasswd}
-                  value={password}
-                  onChangeText={(text) => setPassword(text)}
-                  label={t("password")}
+                  value={email}
+                  onChangeText={onChange("email")}
                   customTextStyle={
-                    loginFailed === true && password.length === 0
+                    loginFailed === true && email.length === 0
                       ? styles.inputTextStyleFailed
                       : styles.inputTextStyle
                   }
-                  keyboardType="default"
+                  keyboardType="email-address"
+                  label="Email"
+                  autoCapitalize="none"
+                  onFocus={() => setLoginFailed(false)}
                 />
-                <CustomImage
-                  source={hidePasswd ? show_password : hide_password}
-                  isTouchable={true}
-                  onPress={togglePassword}
-                  customStyle={{
-                    height: 25,
-                    width: 25,
+                <View
+                  style={{
+                    flexDirection: "row",
                     position: "absolute",
-                    top: 25,
-                    right: 0,
+                    bottom: -15,
                   }}
-                />
-                {loginFailed === true && password.length === 0 ? (
-                  <Text
-                    type="regular"
-                    size="small"
-                    style={{
-                      color: "#D75995",
-                      position: "absolute",
-                      bottom: -15,
-                    }}
-                  >
-                    {t("passwordRequired")}
-                  </Text>
-                ) : null}
+                >
+                  {loginFailed === true && email.length === 0 ? (
+                    <Text
+                      type="regular"
+                      size="small"
+                      style={{
+                        color: "#D75995",
+                        marginRight: 5,
+                      }}
+                    >
+                      {t("emailRequired")}
+                    </Text>
+                  ) : null}
+                  {itemValid.email === false ? (
+                    <Text
+                      type="regular"
+                      size="small"
+                      style={{
+                        color: "#D75995",
+                      }}
+                    >
+                      {t("sampleEmail")}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
+              <View>
+                <View style={{ flexDirection: "row", marginTop: 5 }}>
+                  <FloatingInput
+                    secureTextEntry={hidePasswd}
+                    value={password}
+                    onChangeText={(text) => setPassword(text)}
+                    label={t("password")}
+                    customTextStyle={
+                      loginFailed === true && password.length === 0
+                        ? styles.inputTextStyleFailed
+                        : styles.inputTextStyle
+                    }
+                    keyboardType="default"
+                  />
+                  <CustomImage
+                    source={hidePasswd ? show_password : hide_password}
+                    isTouchable={true}
+                    onPress={togglePassword}
+                    customStyle={{
+                      height: 25,
+                      width: 25,
+                      position: "absolute",
+                      top: 25,
+                      right: 0,
+                    }}
+                  />
+                  {loginFailed === true && password.length === 0 ? (
+                    <Text
+                      type="regular"
+                      size="small"
+                      style={{
+                        color: "#D75995",
+                        position: "absolute",
+                        bottom: -15,
+                      }}
+                    >
+                      {t("passwordRequired")}
+                    </Text>
+                  ) : null}
+                </View>
+              </View>
+              <TouchableOpacity onPress={forgotPwd}>
+                <Text size="description" style={styles.dividerText}>{`${t(
+                  "forgotPassword"
+                )}?`}</Text>
+              </TouchableOpacity>
+              <Button
+                style={{
+                  alignSelf: "center",
+                  width: Dimensions.get("window").width / 1.2,
+                  height: Dimensions.get("window").height / 15,
+                }}
+                color="secondary"
+                onPress={login}
+                text={t("signIn")}
+              />
             </View>
-            <TouchableOpacity onPress={forgotPwd}>
-              <Text size="description" style={styles.dividerText}>{`${t(
-                "forgotPassword"
-              )}?`}</Text>
-            </TouchableOpacity>
-            <Button
+            <View
               style={{
-                alignSelf: "center",
-                width: Dimensions.get("window").width / 1.2,
-                height: Dimensions.get("window").height / 15,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                paddingTop: 10,
               }}
-              color="secondary"
-              onPress={login}
-              text={t("signIn")}
-            />
-          </View>
+            >
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+              <Text style={styles.dividerText}>{t("or")}</Text>
+              <View
+                style={{
+                  width: 50,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#d1d1d1",
+                  marginHorizontal: 10,
+                }}
+              ></View>
+            </View>
+
+            <View style={{ flexDirection: "row" }}>
+              <CustomImage
+                source={logo_google}
+                isTouchable
+                onPress={() => externalLogIn("LoginGoogleScreen")}
+                customStyle={{
+                  marginHorizontal: 15,
+                  width: 50,
+                  height: 50,
+                }}
+              />
+              <CustomImage
+                source={logo_facebook}
+                isTouchable
+                onPress={() => externalLogIn("LoginFacebookScreen")}
+                customStyle={{
+                  marginHorizontal: 15,
+                  width: 50,
+                  height: 50,
+                }}
+              />
+            </View>
+          </KeyboardAvoidingView>
           <View
             style={{
+              width: "100%",
+              marginBottom: 40,
               flexDirection: "row",
               justifyContent: "center",
               alignContent: "center",
@@ -396,77 +451,26 @@ export default function Login({ navigation, route }) {
           >
             <View
               style={{
-                width: 50,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                marginHorizontal: 10,
+                marginVertical: 20,
+                marginHorizontal: 30,
+                flexDirection: "row",
+                justifyContent: "center",
               }}
-            ></View>
-            <Text style={styles.dividerText}>{t("or")}</Text>
-            <View
-              style={{
-                width: 50,
-                borderBottomWidth: 1,
-                borderBottomColor: "#d1d1d1",
-                marginHorizontal: 10,
-              }}
-            ></View>
+            >
+              <TouchableOpacity onPress={signUp}>
+                <Text style={styles.beforeSpecialText}>{t("dontHave")}</Text>
+                <Text style={styles.specialTextButton}>{t("signUp")}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          <View style={{ flexDirection: "row" }}>
-            <CustomImage
-              source={logo_google}
-              isTouchable
-              onPress={() => externalLogIn("LoginGoogleScreen")}
-              customStyle={{
-                marginHorizontal: 15,
-                width: 50,
-                height: 50,
-              }}
-            />
-            <CustomImage
-              source={logo_facebook}
-              isTouchable
-              onPress={() => externalLogIn("LoginFacebookScreen")}
-              customStyle={{
-                marginHorizontal: 15,
-                width: 50,
-                height: 50,
-              }}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            marginBottom: 40,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              marginVertical: 20,
-              marginHorizontal: 30,
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity onPress={signUp}>
-              <Text style={styles.beforeSpecialText}>{t("dontHave")}</Text>
-              <Text style={styles.specialTextButton}>{t("signUp")}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-      <Errors
-        modals={modalError}
-        setModals={(e) => setModalError(e)}
-        message={message}
-      />
-    </KeyboardAvoidingView>
+        </ScrollView>
+        <Errors
+          modals={modalError}
+          setModals={(e) => setModalError(e)}
+          message={message}
+        />
+      </SafeAreaView>
+    </>
   );
 }
 

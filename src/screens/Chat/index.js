@@ -327,6 +327,7 @@ export default function Message({ navigation, route }) {
             LongPressFunc(item, room_id);
           }}
           param="list"
+          loading={loading}
         />
       );
     } else if (route.key == "group") {
@@ -335,6 +336,7 @@ export default function Message({ navigation, route }) {
           dataGroupRes={dataGroupRes}
           navigation={navigation}
           param="list"
+          loading={loading}
         />
       );
     }

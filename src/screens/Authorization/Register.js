@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   BackHandler,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@apollo/react-hooks";
@@ -262,13 +263,13 @@ export default function Register({ navigation }) {
   }, []);
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: "#fff",
       }}
     >
-      <StatusBar backgroundColor="#fff" barStyle="light-content" />
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <Peringatan
         aler={aler}
         setClose={() =>
@@ -595,7 +596,7 @@ export default function Register({ navigation }) {
         <View
           style={{
             alignItems: "center",
-            marginBottom: 180,
+            marginBottom: 0,
           }}
         >
           <View
@@ -604,6 +605,7 @@ export default function Register({ navigation }) {
               justifyContent: "center",
               alignContent: "center",
               alignItems: "center",
+              marginBottom: 10,
             }}
           >
             <View
@@ -678,7 +680,7 @@ export default function Register({ navigation }) {
           }}
         />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

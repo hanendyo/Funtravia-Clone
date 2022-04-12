@@ -460,6 +460,21 @@ export default function NewGroup({ navigation, route }) {
                 // paddingBottom: 10,
               }
             }
+            ListFooterComponent={() => (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginTop: 20,
+                }}
+              >
+                {!loadingwith ? (
+                  <Text size="label" type="bold">
+                    {t("noData")}
+                  </Text>
+                ) : null}
+              </View>
+            )}
             showsVerticalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <TouchableOpacity
