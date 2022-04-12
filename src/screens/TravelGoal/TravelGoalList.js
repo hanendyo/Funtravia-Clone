@@ -607,7 +607,10 @@ export default function TravelGoalList(props) {
         <View
           style={{
             flexDirection: "column",
-            height: Dimensions.get("screen").height * 0.43,
+            height:
+              Platform.OS === "ios"
+                ? Dimensions.get("screen").height * 0.47
+                : Dimensions.get("screen").height * 0.4,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,

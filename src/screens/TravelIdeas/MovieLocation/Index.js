@@ -12,7 +12,6 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-  TouchableOpacity,
   SafeAreaView,
   BackHandler,
   NativeModules,
@@ -24,6 +23,7 @@ import {
   Arrowbackios,
   BlockDestination,
 } from "../../../assets/svg";
+
 import { Text, StatusBar as Satbar } from "../../../component";
 import { useTranslation } from "react-i18next";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
@@ -36,7 +36,10 @@ import BannerApps from "../../../graphQL/Query/Home/BannerApps";
 import DestinationMoviePopuler from "../../../graphQL/Query/TravelIdeas/DestinationMoviePopuler";
 import ImageSlider from "react-native-image-slider";
 import Ripple from "react-native-material-ripple";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 const deviceId = DeviceInfo.getModel();
 import normalize from "react-native-normalize";
 
@@ -534,70 +537,6 @@ export default function MovieLocation({ navigation, route }) {
               })}
           </View>
         </Animated.ScrollView>
-        {/* Button Country */}
-        <View
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            top: 0,
-            zIndex: 100,
-            marginTop:
-              Platform.OS == "ios"
-                ? Notch
-                  ? HEADER_MAX_HEIGHT - normalize(30)
-                  : HEADER_MAX_HEIGHT - normalize(30)
-                : deviceId == "LYA-L29"
-                ? HEADER_MAX_HEIGHT - normalize(30)
-                : NotchAndro
-                ? HEADER_MAX_HEIGHT - normalize(30)
-                : HEADER_MAX_HEIGHT - normalize(25),
-            // transform: [{ translateY: shareTranslateY }],
-          }}
-        >
-          <TouchableOpacity
-            type="circle"
-            color="secondary"
-            style={{
-              alignSelf: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              borderRadius: 30,
-              borderColor: "#d8d8d8",
-              borderWidth: 1,
-            }}
-            onPress={() => setModelCountry(true)}
-          >
-            {loadingcountry ? (
-              <ActivityIndicator
-                animating
-                size="small"
-                color="#209fae"
-                style={{
-                  paddingTop: 10,
-                  paddingHorizontal: 10,
-                }}
-              />
-            ) : (
-              <Text
-                size="label"
-                type="bold"
-                style={{
-                  marginRight: 10,
-                  marginLeft: 20,
-                  marginVertical: 10,
-                }}
-              >
-                {selectedCountry?.name}
-              </Text>
-            )}
-
-            <Select height={10} width={10} style={{ marginRight: 20 }} />
-          </TouchableOpacity>
-        </View>
         {/* End Button Country */}
         {/* Title Middle */}
         <Animated.View
@@ -609,15 +548,7 @@ export default function MovieLocation({ navigation, route }) {
             position: "absolute",
             zIndex: 2,
             position: "absolute",
-            top:
-              Platform.OS == "ios"
-                ? Notch
-                  ? HEADER_MAX_HEIGHT / 3
-                  : HEADER_MAX_HEIGHT / 2
-                : deviceId == "LYA-L29"
-                ? HEADER_MAX_HEIGHT / 2
-                : HEADER_MAX_HEIGHT / 2,
-            // opacity: backOpacity,
+            top: HEADER_MAX_HEIGHT / 2,
             transform: [{ translateY: shareTranslateY }],
           }}
         >
@@ -627,6 +558,63 @@ export default function MovieLocation({ navigation, route }) {
           <Text size="description" type="regular">
             {t("getVacation")}
           </Text>
+          {/* Button Country */}
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+              top:
+                HEADER_MIN_HEIGHT +
+                (Platform.OS === "ios"
+                  ? normalize(-5)
+                  : deviceId === "LYA-L29"
+                  ? normalize(0)
+                  : normalize(5)),
+            }}
+          >
+            <TouchableOpacity
+              type="circle"
+              color="secondary"
+              style={{
+                alignSelf: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                borderRadius: 30,
+                borderColor: "#d8d8d8",
+                borderWidth: 1,
+              }}
+              onPress={() => setModelCountry(true)}
+            >
+              {loadingcountry ? (
+                <ActivityIndicator
+                  animating
+                  size="small"
+                  color="#209fae"
+                  style={{
+                    padding: 10,
+                  }}
+                />
+              ) : (
+                <Text
+                  size="label"
+                  type="bold"
+                  style={{
+                    marginRight: 10,
+                    marginLeft: 20,
+                    marginVertical: 10,
+                  }}
+                >
+                  {selectedCountry?.name}
+                </Text>
+              )}
+
+              <Select height={10} width={10} style={{ marginRight: 20 }} />
+            </TouchableOpacity>
+          </View>
         </Animated.View>
         {/* End Title Middle */}
         {/* Image Background */}

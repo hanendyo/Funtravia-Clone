@@ -53,6 +53,7 @@ import DeviceInfo from "react-native-device-info";
 import { useSelector } from "react-redux";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { useMutation } from "@apollo/client";
+import FastImage from "react-native-fast-image";
 
 const Notch = DeviceInfo.hasNotch();
 // const SafeStatusBar = Platform.select({
@@ -95,7 +96,7 @@ export default function GroupDetail(props) {
 
   const headerTranslateY = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, -HEADER_SCROLL_DISTANCE - 55],
+    outputRange: [0, -HEADER_SCROLL_DISTANCE - 10],
     extrapolate: "clamp",
   });
 
@@ -111,8 +112,8 @@ export default function GroupDetail(props) {
     extrapolate: "clamp",
   });
   const titleOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
-    outputRange: [0, 1],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, 1],
     extrapolate: "clamp",
   });
 
@@ -123,7 +124,7 @@ export default function GroupDetail(props) {
   });
 
   const backHeaderOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 8],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
@@ -816,7 +817,7 @@ export default function GroupDetail(props) {
             <View
               style={{
                 width: width,
-                paddingHorizontal: 15,
+                padding: 15,
                 flexDirection: "row",
                 backgroundColor: "#fff",
                 justifyContent: "space-between",
@@ -829,8 +830,7 @@ export default function GroupDetail(props) {
                 numberOfLines={2}
                 style={{
                   color: "#000",
-                  marginBottom: 15,
-                  marginTop: 13,
+
                   flex: 1,
                   paddingRight: 10,
                 }}
@@ -887,13 +887,10 @@ export default function GroupDetail(props) {
           >
             <View
               style={{
-                paddingHorizontal: 15,
+                padding: 15,
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                paddingBottom: 10,
-                paddingTop: 13,
-                // borderWidth: 1,
               }}
             >
               <Text size="label" type="bold" style={{}}>
@@ -905,51 +902,66 @@ export default function GroupDetail(props) {
                   setIndexMediaView(0);
                   setModalimageview(true);
                 }}
+                disabled={media?.length ? false : true}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
                 <Text type="bold" style={{ marginRight: 5 }}>
-                  {media?.length}
+                  {media?.length ?? 0}
                 </Text>
-                <Next width={12} height={12} />
+                {media?.length ? <Next width={12} height={12} /> : null}
               </Pressable>
             </View>
-            <FlatList
-              data={media}
-              contentContainerStyle={{
-                paddingHorizontal: 15,
-                paddingBottom: 15,
-              }}
-              horizontal={true}
-              renderItem={({ item, index }) => {
-                if (index <= 4) {
-                  return (
-                    <Pressable
-                      style={
-                        {
-                          // borderWidth: 1,
+            {media && media?.length ? (
+              <FlatList
+                data={media}
+                contentContainerStyle={{
+                  padding: 15,
+                  paddingTop: 0,
+                }}
+                horizontal={true}
+                renderItem={({ item, index }) => {
+                  if (index <= 4) {
+                    return (
+                      <Pressable
+                        style={
+                          {
+                            // borderWidth: 1,
+                          }
                         }
-                      }
-                      onPress={() => {
-                        setIndexMediaView(index);
-                        setModalimageview(true);
-                      }}
-                    >
-                      <FunImage
+                        onPress={() => {
+                          setIndexMediaView(index);
+                          setModalimageview(true);
+                        }}
+                      >
+                        {/* <FunImage
                         source={{ uri: item.text }}
                         style={{
                           width: (width - 30) / 5 - 3,
                           height: (width - 30) / 5 - 3,
                           marginRight: 3,
                         }}
-                      />
-                    </Pressable>
-                  );
-                }
-              }}
-            />
+                      /> */}
+                        <FastImage
+                          source={{
+                            uri: item.text,
+                            priority: FastImage.priority.normal,
+                          }}
+                          resizeMode={FastImage.resizeMode.cover}
+                          style={{
+                            width: (width - 30) / 5 - 3,
+                            height: (width - 30) / 5 - 3,
+                            marginRight: 3,
+                          }}
+                        />
+                      </Pressable>
+                    );
+                  }
+                }}
+              />
+            ) : null}
           </View>
           <View
             style={{
@@ -983,17 +995,12 @@ export default function GroupDetail(props) {
                 }}
               >
                 <Text type="bold">
-                  {typeGroup == "itinerary" && AdminTrip == true
+                  {/* {typeGroup === "itinerary" && AdminTrip == true
                     ? dataDetail?.buddy.length
                     : typeGroup == "itinerary" && AdminTrip == false
                     ? seeBuddyNotAdmin?.length
-                    : dataDetail?.buddy.length}
-                  {/* {dataDetail && dataDetail?.buddy && AdminTrip == true
-                    ? dataDetail?.buddy.length
-                    : // : dataDetail && dataDetail?.buddy && AdminTrip == false
-                      // ? dataDetail?.buddy.length
-                      seeBuddyNotAdmin?.length}{" "} */}
-                  {t("participants")}
+                    : dataDetail?.buddy.length}{" "} */}
+                  {`${dataDetail?.buddy.length} ${t("participants")}`}
                 </Text>
               </View>
             </View>
@@ -1740,11 +1747,11 @@ export default function GroupDetail(props) {
                   onPress={() => {
                     setModalimageview(false);
                   }}
-                  // style={{ marginTop: 10 }}
+                  style={{ position: "relative" }}
                 >
                   {/* <Xwhite width={20} height={20} styles={{ margin: 10 }} /> */}
-                  <Text size="h5" styles={{ color: "white" }}>
-                    {" X "}
+                  <Text size="h5" styles={{ color: "white" }} type="bold">
+                    {" x "}
                   </Text>
                 </Pressable>
               )}
@@ -1953,7 +1960,7 @@ export default function GroupDetail(props) {
             <Pressable
               onPress={() => props.navigation.goBack()}
               style={{
-                marginTop: 2,
+                marginTop: 10,
                 marginLeft: 15,
                 borderRadius: 40,
                 height: 40,
@@ -1971,7 +1978,7 @@ export default function GroupDetail(props) {
             </Pressable>
             <View
               style={{
-                marginTop: 3,
+                marginTop: 10,
                 marginRight: 15,
                 borderRadius: 40,
                 height: 40,

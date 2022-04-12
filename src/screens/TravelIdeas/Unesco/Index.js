@@ -467,7 +467,7 @@ export default function Unesco({ navigation, route }) {
           height: HeaderHeight,
           width: "100%",
           position: "absolute",
-          backgroundColor: "#14646e",
+          backgroundColor: "#FFF",
         }}
         // pointerEvents="none"
       >
@@ -558,7 +558,7 @@ export default function Unesco({ navigation, route }) {
           style={{
             position: "absolute",
 
-            top: 175,
+            top: Platform.OS === "ios" ? 175 : 180,
 
             alignItems: "center",
             width: "100%",

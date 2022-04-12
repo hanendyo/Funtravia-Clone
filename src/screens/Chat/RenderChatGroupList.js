@@ -31,7 +31,12 @@ import { useTranslation } from "react-i18next";
 import RecentChat from "./RecentChat";
 
 const { width, height } = Dimensions.get("screen");
-export default function ChatGroupList({ dataGroupRes, navigation, param }) {
+export default function ChatGroupList({
+  dataGroupRes,
+  navigation,
+  param,
+  loading,
+}) {
   const { t } = useTranslation();
   const dateGroup = () => {
     let date = new Date().toLocaleDateString();
@@ -239,6 +244,17 @@ export default function ChatGroupList({ dataGroupRes, navigation, param }) {
                 </View>
               ) : null}
             </Pressable>
+          </View>
+        )}
+        ListFooterComponent={() => (
+          <View style={{ alignItems: "center", marginVertical: 30 }}>
+            {!loading ? (
+              dataGroupRes?.length ? null : (
+                <Text size="label" type="bold">
+                  {t("noData")}
+                </Text>
+              )
+            ) : null}
           </View>
         )}
         keyExtractor={(item) => item.id}

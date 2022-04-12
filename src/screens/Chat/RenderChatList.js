@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Dimensions, FlatList } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { Text, Button, FunImage } from "../../component";
 import {
   NewChat,
@@ -9,6 +15,7 @@ import {
   PinAbu,
 } from "../../assets/svg";
 import RecentChat from "./RecentChat";
+import { useTranslation } from "react-i18next";
 
 const { width, height } = Dimensions.get("screen");
 export default function ChatList({
@@ -17,7 +24,9 @@ export default function ChatList({
   navigation,
   LongPressFunc,
   param,
+  loading,
 }) {
+  const { t } = useTranslation();
   const change = (item) => {
     let change = item.sender_id === user.id ? item.receiver : item.sender;
     return change;
@@ -382,6 +391,17 @@ export default function ChatList({
                   ) : null}
                 </View>
               </TouchableOpacity>
+            ) : null}
+          </View>
+        )}
+        ListFooterComponent={() => (
+          <View style={{ alignItems: "center", marginVertical: 30 }}>
+            {!loading ? (
+              dataRes?.length ? null : (
+                <Text size="label" type="bold">
+                  {t("noData")}
+                </Text>
+              )
             ) : null}
           </View>
         )}

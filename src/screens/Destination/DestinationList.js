@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Dimensions,
-  // TouchableOpacity,
+  TouchableOpacity,
   Alert,
   Pressable,
   TextInput,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   StatusBar,
 } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import { Capital, CardDestination } from "../../component";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import {
@@ -1042,9 +1042,9 @@ export default function ItineraryDestination(props) {
             height:
               Platform.OS == "ios"
                 ? Notch
-                  ? Dimensions.get("screen").height * 0.51
-                  : Dimensions.get("screen").height * 0.53
-                : Dimensions.get("screen").height * 0.5,
+                  ? Dimensions.get("screen").height * 0.55
+                  : Dimensions.get("screen").height * 0.56
+                : Dimensions.get("screen").height * 0.47,
             width: Dimensions.get("screen").width,
             backgroundColor: "white",
             borderTopLeftRadius: 15,
