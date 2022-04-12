@@ -43,7 +43,7 @@ export default function aboutcountry(props) {
   const listOffset = useRef({});
   const _tabIndex = useRef(0);
   const isListGliding = useRef(false);
-  let scrollRef = useRef();
+  let scrollRef = useRef(0);
 
   const [canScroll, setCanScroll] = useState(true);
   const headerScrollY = useRef(new Animated.Value(0)).current;
@@ -109,7 +109,8 @@ export default function aboutcountry(props) {
         index: props.route.params.indexcountry,
         animated: true,
       });
-    }, 3000);
+    }, 1000);
+
     refresh();
   }, []);
 
@@ -172,8 +173,6 @@ export default function aboutcountry(props) {
     about = data?.list_about_article_country;
   }
 
-  // console.log("about", about);
-
   useEffect(() => {
     props.navigation.setOptions(HeaderComponent);
   }, []);
@@ -199,7 +198,6 @@ export default function aboutcountry(props) {
       <Animated.FlatList
         scrollToOverflowEnabled={true}
         {...listPanResponder.panHandlers}
-        // numColumns={numCols}
         ref={(ref) => {
           if (ref) {
             const found = listRefArr.current.find((e) => e.key === route.key);
@@ -492,6 +490,11 @@ export default function aboutcountry(props) {
       </View>
     );
   };
+  const getItemLayout = (data, index) => ({
+    length: 0,
+    offset: 138 * index,
+    index,
+  });
 
   const renderTabBar = (props) => {
     return (
@@ -516,6 +519,7 @@ export default function aboutcountry(props) {
             borderBottomWidth: 1,
             borderColor: "#d1d1d1",
           }}
+          getItemLayout={getItemLayout}
           renderItem={({ item, index }) => (
             <Ripple
               onPress={() => {

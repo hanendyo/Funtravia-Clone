@@ -169,8 +169,8 @@ export default function TravelGoalDetail(props) {
     extrapolate: "clamp",
   });
   const titleOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE - 10, HEADER_SCROLL_DISTANCE + 10],
-    outputRange: [0, 1.3, 1],
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 0, 1],
     extrapolate: "clamp",
   });
 
@@ -849,16 +849,23 @@ export default function TravelGoalDetail(props) {
             type="bold"
             style={{
               color: "#fff",
-              marginBottom: NotchAndro ? 0 : 5,
-              marginTop:
+              // marginBottom: NotchAndro ? 0 : 5,
+              // marginTop:
+              //   Platform.OS === "ios"
+              //     ? 0
+              //     : deviceId == "LYA-L29"
+              //     ? 0
+              //     : NotchAndro
+              //     ? 0
+              //     : 4,
+              top: Platform.OS === "ios" ? 0 : -1,
+              textAlign: Platform.OS === "ios" ? "center" : null,
+              marginLeft:
                 Platform.OS === "ios"
-                  ? 0
-                  : deviceId == "LYA-L29"
-                  ? 0
-                  : NotchAndro
-                  ? 0
-                  : 4,
-              marginLeft: 5,
+                  ? datadetail.title?.length > 30
+                    ? 5
+                    : -5
+                  : 10,
               width: "85%",
             }}
             numberOfLines={1}

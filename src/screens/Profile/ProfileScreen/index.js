@@ -774,7 +774,7 @@ export default function OtherProfile(props) {
       },
     },
     onCompleted: (datatrip) => {
-      if (datatrip) {
+      if (datatrip && datatrip.user_tripbyid?.length) {
         let fetchResult = [...datatrip?.user_tripbyid];
         let tempData = [];
         for (let data of fetchResult) {
@@ -805,31 +805,6 @@ export default function OtherProfile(props) {
       setdataTrip(datatripX?.user_trip);
     },
   });
-
-  // const likeTrue = async () => {
-  //   try {
-  //     let tempData = [...dataTrip];
-  //     var tempBuddy = [];
-  //     for (var i in tempData) {
-  //       let tempDataBuddy = [...tempData[i].buddy];
-  //       for (var i in tempDataBuddy) {
-  //         if (tempDataBuddy[i].user?.id == users?.id) {
-  //           tempDataBuddy[i].showLike = true;
-  //         } else {
-  //           tempDataBuddy[i].showLike = false;
-  //         }
-  //         tempBuddy.push(tempDataBuddy);
-  //       }
-
-  //     }
-  //   } catch (error) {
-  //     console.log("~ error", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   likeTrue();
-  // }, [dataTrip]);
 
   const loadAsync = async () => {
     let user = await AsyncStorage.getItem("setting");
@@ -1889,8 +1864,8 @@ export default function OtherProfile(props) {
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "center",
-              marginHorizontal: -20,
+              justifyContent: "flex-start",
+              marginHorizontal: 8,
               alignItems: "center",
             }}
           >
@@ -1923,9 +1898,9 @@ export default function OtherProfile(props) {
               style={{
                 opacity: hides.current,
                 color: "#fff",
-                marginLeft: 10,
-                width: "70%",
-                textAlign: "left",
+                // marginLeft: 10,
+                width: "83%",
+                textAlign: Platform.OS === "ios" ? "center" : "left",
                 fontSize: 20,
                 fontFamily: "Lato-Bold",
                 zIndex: 100,

@@ -116,9 +116,15 @@ export default function about(props) {
         index: props.route.params.indexcity,
         animated: true,
       });
-    }, 3000);
+    }, 1000);
     refresh();
   }, []);
+
+  const getItemLayout = (data, index) => ({
+    length: 0,
+    offset: 138 * index,
+    index,
+  });
 
   // useEffect(() => {
   //   setTimeout(() => {
@@ -512,6 +518,7 @@ export default function about(props) {
           ref={scrollRef}
           data={props.navigationState.routes}
           horizontal={true}
+          getItemLayout={getItemLayout}
           showsHorizontalScrollIndicator={false}
           style={{
             backgroundColor: "#DAF0F2",

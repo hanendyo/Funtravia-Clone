@@ -48,12 +48,13 @@ export default function TravelGoal(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
-      backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
+      backgroundColor: Platform.OS == "ios" ? "#209FAE" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,
-      textAlign: Platform.OS == "ios" ? "center" : null,
+      textAlign: Platform.OS == "ios" ? "center" : "left",
       paddingTop: Platform.OS == "ios" ? 8 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : 1,
+      marginLeft: Platform.OS == "ios" ? 0 : -15,
     },
     headerLeftContainerStyle: {
       background: "#FFF",

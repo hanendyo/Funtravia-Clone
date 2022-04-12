@@ -56,7 +56,7 @@ import ListDesAnother from "../../../graphQL/Query/Destination/ListDesAnother";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Reviews from "./Reviews";
-import { StackActions } from "@react-navigation/native";
+import { StackActions, useFocusEffect } from "@react-navigation/native";
 import Liked from "../../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../../graphQL/Mutation/Destination/UnLiked";
 import BottomButton from "./BottomButton";
@@ -493,9 +493,16 @@ const Index = (props) => {
   useEffect(() => {
     // props.navigation.setOptions(HeaderComponent);
     loadAsync();
-    const unsubscribe = props.navigation.addListener("focus", () => {});
+    if (props.route.params?.from === "review") {
+      fetchData();
+    }
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      if (props.route.params?.from === "review") {
+        fetchData();
+      }
+    });
     return unsubscribe;
-  }, [props.navigation]);
+  }, []);
 
   const [
     mutationliked,
@@ -2272,9 +2279,8 @@ const Index = (props) => {
               flex: 1,
               // opacity: hide.current,
               color: "#fff",
-              marginLeft: 10,
-              // fontSize: 20,
-              // fontFamily: "Lato-Bold",
+              marginLeft: Platform.OS === "ios" ? -25 : 15,
+              textAlign: Platform.OS === "ios" ? "center" : "left",
             }}
           >
             {dataDestination?.name}

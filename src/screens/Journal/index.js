@@ -57,6 +57,7 @@ export default function Journal(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      left: Platform.OS == "ios" ? 0 : -10,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
       height: Platform.OS == "ios" ? 45 : null,

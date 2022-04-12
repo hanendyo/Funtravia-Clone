@@ -835,7 +835,7 @@ export default function Detail_movie(props) {
             size="title"
             style={{
               color: "#fff",
-              marginLeft: Platform.OS === "ios" ? 5 : 10,
+              marginLeft: Platform.OS === "ios" ? 70 : 10,
             }}
             type="bold"
             numberOfLines={1}

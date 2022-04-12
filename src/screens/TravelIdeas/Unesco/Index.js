@@ -558,12 +558,12 @@ export default function Unesco({ navigation, route }) {
           style={{
             position: "absolute",
 
-            top: Platform.OS === "ios" ? 175 : 180,
+            top: Platform.OS === "ios" ? 175 : 178,
 
             alignItems: "center",
             width: "100%",
             height: normalize(44),
-            opacity: imageOpacity,
+            // opacity: imageOpacity,
           }}
         >
           <Pressable

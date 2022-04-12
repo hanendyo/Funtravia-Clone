@@ -70,10 +70,12 @@ export default function JournalComment(props) {
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
+      // paddingLeft: Platform.OS == "ios" ? null : -25,
       backgroundColor: Platform.OS == "ios" ? "#209fae" : null,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
+      left: Platform.OS == "ios" ? null : -10,
       height: Platform.OS == "ios" ? 45 : null,
-      textAlign: Platform.OS == "ios" ? "center" : null,
+      textAlign: Platform.OS == "ios" ? "center" : "left",
       paddingTop: Platform.OS == "ios" ? 8 : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
     },
