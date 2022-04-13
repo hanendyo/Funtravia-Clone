@@ -2253,6 +2253,7 @@ const Index = (props) => {
             onPress={() => props.navigation.goBack()}
             style={{
               height: 50,
+              zIndex: 9999,
               // marginLeft: 8,
             }}
           >

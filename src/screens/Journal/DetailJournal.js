@@ -156,8 +156,15 @@ export default function DetailJournal(props) {
       paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 11) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
       left: Platform.OS == "ios" ? 0 : -10,
+      paddingRight: 15,
       paddingLeft:
-        Platform.OS == "ios" ? (dataPopuler?.title.length > 50 ? 60 : 45) : 0,
+        Platform.OS == "ios"
+          ? dataPopuler?.title.length > 30 && dataPopuler?.title.length < 40
+            ? 50
+            : dataPopuler?.title.length > 40
+            ? 60
+            : 10
+          : 0,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
     },
     headerLeftContainerStyle: {
