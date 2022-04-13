@@ -680,7 +680,7 @@ export default function MovieLocation({ navigation, route }) {
             bottom: 0,
             zIndex: 999,
             paddingLeft: Platform.OS === "ios" ? 0 : 65,
-            paddingBottom: 2,
+            paddingBottom: Platform.OS === "ios" ? 2 : 5,
             backgroundColor: "#209FAE",
             opacity: titleOpacity,
             top: 0,

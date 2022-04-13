@@ -6157,6 +6157,7 @@ export default function ItineraryDetail(props) {
             onBackdropPress={() => {
               setModal(false);
             }}
+            avoidKeyboard={true}
             onRequestClose={() => setModal(false)}
             onDismiss={() => setModal(false)}
             animationIn="fadeIn"

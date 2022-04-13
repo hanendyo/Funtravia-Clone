@@ -836,7 +836,7 @@ export default function Detail_movie(props) {
             style={{
               color: "#fff",
               textAlign: Platform.OS === "ios" ? "center" : null,
-              top: Platform.OS === "ios" ? 0 : 1,
+              top: Platform.OS === "ios" ? 0 : 2,
               left:
                 Platform.OS === "ios"
                   ? movie_byid?.title?.length > 25
