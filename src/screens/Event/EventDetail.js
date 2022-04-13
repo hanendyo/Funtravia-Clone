@@ -663,6 +663,8 @@ export default function EventDetail(props) {
     t("December"),
   ];
 
+  let [widthName, setWidthName] = useState(0);
+
   useEffect(() => {
     props.navigation.setOptions({
       headerBackground: () => (
@@ -731,10 +733,16 @@ export default function EventDetail(props) {
             >
               <Text
                 numberOfLines={1}
+                onTextLayout={(e) => {
+                  setWidthName(e.nativeEvent?.lines[0]?.width);
+                }}
                 size="header"
                 style={{
                   color: "#fff",
-                  marginHorizontal: 10,
+                  // marginLeft: 10,
+                  marginRight: 25,
+                  marginLeft:
+                    Platform.OS == "ios" ? (widthName > 290 ? 0 : -20) : 10,
                   top:
                     Platform.OS == "ios"
                       ? 13
