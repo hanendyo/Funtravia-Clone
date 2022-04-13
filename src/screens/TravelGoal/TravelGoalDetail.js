@@ -849,15 +849,6 @@ export default function TravelGoalDetail(props) {
             type="bold"
             style={{
               color: "#fff",
-              // marginBottom: NotchAndro ? 0 : 5,
-              // marginTop:
-              //   Platform.OS === "ios"
-              //     ? 0
-              //     : deviceId == "LYA-L29"
-              //     ? 0
-              //     : NotchAndro
-              //     ? 0
-              //     : 4,
               top: Platform.OS === "ios" ? 0 : -1,
               textAlign: Platform.OS === "ios" ? "center" : null,
               marginLeft:
