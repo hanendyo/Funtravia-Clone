@@ -27,6 +27,8 @@ export default function CardEvents({
   dataFrom,
   searchInput,
   from,
+  recent_save,
+  searchtext,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -163,7 +165,8 @@ export default function CardEvents({
         }}
         renderItem={({ item, index }) => (
           <Pressable
-            onPress={() =>
+            onPress={() => {
+              recent_save(searchtext);
               props.navigation.navigate("eventdetail", {
                 event_id: item.id,
                 name: item.name,
@@ -173,8 +176,8 @@ export default function CardEvents({
                 from: from,
                 iditinerary: props.route.params?.IdItinerary,
                 datadayaktif: props.route.params?.datadayaktif,
-              })
-            }
+              });
+            }}
             key={index.toString()}
             style={{
               borderRadius: 5,
