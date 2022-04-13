@@ -956,7 +956,7 @@ export default function detailCustomItinerary(props) {
         }
       );
       let responseJson = await response.json();
-      if (responseJson.results && responseJson.results.length > 0) {
+      if (responseJson.results && responseJson.results?.length > 0) {
         let nearby = [];
         for (var i of responseJson.results) {
           if (!i.icon.includes("lodging")) {
@@ -1006,7 +1006,7 @@ export default function detailCustomItinerary(props) {
                 value={flightNumber}
                 onChangeText={setFlightNumber}
               />
-              {flightNumber.length === 0 &&
+              {flightNumber?.length === 0 &&
                 (!itemValid.flightNumber ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertFlight")}
@@ -1037,7 +1037,7 @@ export default function detailCustomItinerary(props) {
               }}
               style={styles.TextDateInput}
             />
-            {timeDepCheck.length === 0 &&
+            {timeDepCheck?.length === 0 &&
               (!itemValid.timeDepCheck ? (
                 <Text type="regular" size="small" style={styles.textAlert}>
                   {t("inputAlertDateTime")}
@@ -1083,7 +1083,7 @@ export default function detailCustomItinerary(props) {
               }}
               style={styles.TextDateInput}
             />
-            {timeArrCheck.length === 0 &&
+            {timeArrCheck?.length === 0 &&
               (!itemValid.timeArrCheck ? (
                 <Text type="regular" size="small" style={styles.textAlert}>
                   {t("inputAlertDateTime")}
@@ -1119,7 +1119,7 @@ export default function detailCustomItinerary(props) {
                 style={styles.textInputOneLine}
                 customInput
               />
-              {from.length === 0 &&
+              {from?.length === 0 &&
                 (!itemValid.from ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertLocation")}
@@ -1148,7 +1148,7 @@ export default function detailCustomItinerary(props) {
                 style={styles.textInputOneLineTo}
                 customInput
               />
-              {to.length === 0 &&
+              {to?.length === 0 &&
                 (!itemValid.to ? (
                   <Text type="regular" size="small" style={styles.textAlert}>
                     {t("inputAlertLocation")}
@@ -1334,6 +1334,7 @@ export default function detailCustomItinerary(props) {
                 //   : normalize(0),
                 paddingLeft: 10,
                 width: 50,
+                zIndex: 99,
                 position: "absolute",
                 alignItems: "center",
                 alignContent: "center",
@@ -1367,7 +1368,7 @@ export default function detailCustomItinerary(props) {
                 //   : NotchAndro
                 //   ? normalize(17)
                 //   : normalize(12),
-                left: Platform.OS === "ios" ? 0 : 55,
+                marginLeft: Platform.OS === "ios" ? 0 : 55,
                 textAlign: Platform.OS === "ios" ? "center" : "left",
                 width: Dimensions.get("screen").width,
                 fontFamily: "Lato-Regular",
