@@ -1484,6 +1484,7 @@ export default function detailCustomItinerary(props) {
                   position: "absolute",
                   alignItems: "center",
                   alignContent: "center",
+                  zIndex: 99,
                   paddingTop:
                     Platform.OS === "ios"
                       ? Notch

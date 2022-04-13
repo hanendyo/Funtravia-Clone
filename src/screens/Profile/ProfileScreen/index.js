@@ -1865,7 +1865,7 @@ export default function OtherProfile(props) {
             style={{
               flexDirection: "row",
               justifyContent: "flex-start",
-              marginHorizontal: 8,
+              marginHorizontal: 10,
               alignItems: "center",
             }}
           >
@@ -1898,8 +1898,8 @@ export default function OtherProfile(props) {
               style={{
                 opacity: hides.current,
                 color: "#fff",
-                // marginLeft: 10,
-                width: "83%",
+                marginLeft: Platform.OS === "ios" ? 0 : 5,
+                width: "82%",
                 textAlign: Platform.OS === "ios" ? "center" : "left",
                 fontSize: 20,
                 fontFamily: "Lato-Bold",
