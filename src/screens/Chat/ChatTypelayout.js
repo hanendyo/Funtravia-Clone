@@ -1479,9 +1479,19 @@ export default function ChatTypelayout({
     <View key={item.id}>
       {item.chat == "group" ? (
         item.user_id !== user_id && tmpRChat ? (
-          <Text size="description" style={{ marginBottom: 5 }}>
-            {item.name}
-          </Text>
+          <View
+            style={{
+              width: Dimensions.get("screen").width - 100,
+            }}
+          >
+            <Text
+              numberOfLines={1}
+              size="description"
+              style={{ marginBottom: 5, paddingRight: 30 }}
+            >
+              {item.name}asdasdasd
+            </Text>
+          </View>
         ) : null
       ) : null}
       <View
