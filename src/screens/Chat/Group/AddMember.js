@@ -620,7 +620,6 @@ export default function AddMember(props) {
                 {t("noData")}
               </Text>
             )}
-            {console.log("dataBuddy", dataResult)}
           </ScrollView>
         </View>
       </View>

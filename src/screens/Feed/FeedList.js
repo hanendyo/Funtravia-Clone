@@ -129,7 +129,7 @@ export default function FeedList({ props, token }) {
           index: index,
         });
       }
-    }, 200);
+    }, 1000);
   };
 
   const [

@@ -485,21 +485,17 @@ const Index = (props) => {
   };
 
   const loadAsync = async () => {
-    setLoadings(true);
     await fetchData();
     await fetchDataAnotherDes();
   };
 
   useEffect(() => {
     // props.navigation.setOptions(HeaderComponent);
+    setLoadings(true);
     loadAsync();
-    if (props.route.params?.from === "review") {
-      fetchData();
-    }
+
     const unsubscribe = props.navigation.addListener("focus", () => {
-      if (props.route.params?.from === "review") {
-        fetchData();
-      }
+      fetchData();
     });
     return unsubscribe;
   }, []);
