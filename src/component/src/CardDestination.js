@@ -41,6 +41,8 @@ export default function CardDestination({
   from,
   searchInput,
   sebelum,
+  recent_save,
+  searchtext,
 }) {
   const { t } = useTranslation();
   const [modalLogin, setModalLogin] = useState(false);
@@ -142,6 +144,7 @@ export default function CardDestination({
   };
 
   const addToPlan = (kiriman) => {
+    recent_save(searchtext);
     if (token) {
       if (kiriman) {
         props?.route?.params && props?.route?.params?.IdItinerary
@@ -244,15 +247,16 @@ export default function CardDestination({
                 </View>
               ) : null}
               <Pressable
-                onPress={() =>
+                onPress={() => {
+                  recent_save(searchtext);
                   props.navigation.push("DestinationUnescoDetail", {
                     id: item?.id,
                     name: item?.name,
                     token: token,
                     iditinerary: props?.route?.params?.IdItinerary,
                     Position: "itinerary_destination",
-                  })
-                }
+                  });
+                }}
                 key={"nir" + index}
                 style={{
                   borderWidth: 1,

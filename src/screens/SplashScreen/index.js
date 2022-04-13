@@ -61,7 +61,11 @@ export default function SplashScreen(props) {
 
   return (
     <View style={styles.main}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar
+        barStyle="light-content"
+        translucent={true}
+        backgroundColor={"rgba(255,255,255, 0)"}
+      />
       <FlatList
         ref={imageScroll}
         horizontal={true}
@@ -70,7 +74,13 @@ export default function SplashScreen(props) {
         keyExtractor={(item, index) => `key-${index}`}
         renderItem={({ item }) => {
           return (
-            <Image source={item} style={{ height: height, width: width }} />
+            <Image
+              source={item}
+              style={{
+                height: height,
+                width: width,
+              }}
+            />
           );
         }}
       />

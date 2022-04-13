@@ -1158,6 +1158,8 @@ export default function SearchPg(props, { navigation, route }) {
                       token={tokenApps}
                       dataFrom="search"
                       searchInput={searchtext ? searchtext : null}
+                      recent_save={(e) => recent_save(e)}
+                      searchtext={searchtext}
                     />
                   </View>
                 ) : (
@@ -1187,6 +1189,8 @@ export default function SearchPg(props, { navigation, route }) {
                     token={tokenApps}
                     dataFrom="search"
                     searchInput={searchtext ? searchtext : null}
+                    recent_save={(e) => recent_save(e)}
+                    searchtext={searchtext}
                   />
                 ) : (
                   <View style={{ marginTop: 30, alignItems: "center" }}>
