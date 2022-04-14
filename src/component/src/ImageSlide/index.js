@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   KeyboardAvoidingView,
+  SafeAreaView,
 } from "react-native";
 import Modal from "react-native-modal";
 import { next_putih, prev_putih } from "../../../assets/png";
@@ -110,7 +111,7 @@ export default function ImageSlide({
         alignContent: "center",
       }}
     >
-      <KeyboardAvoidingView
+      <SafeAreaView
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
@@ -336,7 +337,7 @@ export default function ImageSlide({
             showsHorizontalScrollIndicator={false}
           />
         </View>
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     </Modal>
   );
 }

@@ -82,10 +82,11 @@ export default function Image({
 
   return (
     <>
-      <RNImage
-        {...otherProps}
-        style={style}
+      <FastImage
         source={isUri ? { uri: path } : default_image}
+        resizeMode={FastImage.resizeMode.cover}
+        style={style}
+        {...otherProps}
       />
       {assets > 1 ? (
         <View style={{ position: "absolute", top: 10, right: 0 }}>
