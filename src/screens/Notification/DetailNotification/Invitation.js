@@ -270,7 +270,10 @@ export default function Invitation({
         await setLoading(false);
         throw new Error(response.data.reject_buddy.message);
       } else {
-        updateisread(data.ids);
+        if (data.isread == false) {
+          updateisread(data.ids);
+        }
+        // updateisread(data.ids);
         // var dt = new Date();
         // let rejected_at = `${dt
         //   .getFullYear()
@@ -339,7 +342,10 @@ export default function Invitation({
         await setLoading(false);
         throw new Error(response.data.confrim_buddy.message);
       } else {
-        updateisread(data.ids);
+        if (data.isread == false) {
+          updateisread(data.ids);
+        }
+        // updateisread(data.ids);
         // var dt = new Date();
         // let accepted_at = `${dt
         //   .getFullYear()
@@ -403,10 +409,11 @@ export default function Invitation({
           notif_id: notif_id,
         },
       });
-
       if (response.data.update_read.code != 200) {
         await setLoading(false);
         throw new Error(response.data.update_read.message);
+      } else {
+        await setLoading(false);
       }
     } catch (error) {
       RNToasty.Show({
@@ -418,6 +425,9 @@ export default function Invitation({
   };
 
   const handle_areaklik_comment = (data) => {
+    if (data.isread == false) {
+      updateisread(data.ids);
+    }
     navigation.push("FeedStack", {
       screen: "CommentPost",
       params: {
@@ -427,9 +437,6 @@ export default function Invitation({
         from: "notification",
       },
     });
-    if (data.isread == false) {
-      updateisread(data.ids);
-    }
   };
 
   const handle_areaklik_like = (data) => {
@@ -446,6 +453,9 @@ export default function Invitation({
     }
   };
   const handle_areaklik_like_itinerary = (data) => {
+    if (data.isread == false) {
+      updateisread(data.ids);
+    }
     if (data.like_itinerary.itinerary) {
       navigation.navigate("ItineraryStack", {
         screen: "itindetail",
@@ -459,9 +469,7 @@ export default function Invitation({
         },
       });
     }
-    if (data.isread == false) {
-      updateisread(data.ids);
-    }
+
     // navigation.navigate("FeedStack", {
     //   // screen: "CommentsById",
     //   screen: "CommentPost",
@@ -488,6 +496,8 @@ export default function Invitation({
   };
 
   const handle_areaklik_buddy = (data) => {
+    console.log("~ data", data);
+    console.log("area klik");
     data?.itinerary_buddy
       ? data.itinerary_buddy.isconfrim == true &&
         data.itinerary_buddy.accepted_at != null
@@ -507,7 +517,11 @@ export default function Invitation({
             title: t("youReject"),
             position: "bottom",
           })
-        : showModalTrip(data?.itinerary_buddy?.itinerary_id, data)
+        : data.itinerary_buddy.isconfrim == false &&
+          data.itinerary_buddy.rejected_at == null &&
+          data.itinerary_buddy.accepted_at == null
+        ? showModalTrip(data?.itinerary_buddy?.itinerary_id, data)
+        : null
       : RNToasty.Show({
           title: t("youReject"),
           position: "bottom",
@@ -716,7 +730,6 @@ export default function Invitation({
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
             borderBottomWidth: 1,
-            // borderWidth: 1,
             borderBottomColor: "#D1D1D1",
             width: Dimensions.get("screen").width,
           }}
@@ -734,12 +747,12 @@ export default function Invitation({
             <View
               style={{
                 flexDirection: "row",
-                width: "85%",
+                flex: 1,
               }}
             >
+              {/* Profil */}
               <Pressable
                 style={{
-                  width: "15%",
                   alignContent: "flex-start",
                   marginLeft: Platform.select({
                     ios: Notch ? -3 : 5,
@@ -775,12 +788,14 @@ export default function Invitation({
                   }
                 />
               </Pressable>
+
+              {/* End Profil */}
+
               <View
                 style={{
                   flexDirection: "column",
-                  width: "83%",
-
                   paddingLeft: 10,
+                  flex: 1,
                 }}
               >
                 <View
@@ -892,7 +907,7 @@ export default function Invitation({
                     </Text>
                   </View>
                 ) : (
-                  <View>
+                  <View style={{ marginTop: 10 }}>
                     <Text
                       size="description"
                       type="regular"
@@ -907,15 +922,15 @@ export default function Invitation({
               </View>
             </View>
             {item.itinerary_buddy &&
-            item.itinerary_buddy.isconfrim == false &&
+            // item.itinerary_buddy.isconfrim == false &&
             item.itinerary_buddy.accepted_at == null &&
             item.itinerary_buddy.rejected_at == null ? (
               <View
                 style={{
-                  width: "15%",
+                  width: 60,
                 }}
               >
-                <Ripple
+                <Pressable
                   onPress={() => {
                     showModalTrip(item?.itinerary_buddy?.itinerary_id, item);
                   }}
@@ -935,7 +950,7 @@ export default function Invitation({
                   >
                     {t("Detail")}
                   </Text>
-                </Ripple>
+                </Pressable>
               </View>
             ) : null}
           </View>
@@ -948,7 +963,6 @@ export default function Invitation({
           style={{
             backgroundColor: item.isread == false ? "#EDF5F5" : "white",
             borderBottomWidth: 0.5,
-            // borderWidth: 1,
             borderBottomColor: "#D1D1D1",
           }}
         >
@@ -956,13 +970,13 @@ export default function Invitation({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              // borderWidth: 1,
               width: Dimensions.get("screen").width,
               paddingHorizontal: normalize(20),
               paddingTop: normalize(20),
               paddingBottom: normalize(8),
             }}
           >
+            {/* profil */}
             <Pressable
               onPress={() => {
                 item.comment_feed.user.id !== setting?.user?.id
@@ -975,13 +989,10 @@ export default function Invitation({
                   : null;
               }}
               style={{
-                width: "15%",
-
                 marginLeft: Platform.select({
                   ios: Notch ? -3 : 5,
                   android: deviceId == "LYA-L29" ? -2 : 0,
                 }),
-                // alignContent: "flex-start",
               }}
             >
               <FunImage
@@ -1003,11 +1014,13 @@ export default function Invitation({
                 }
               />
             </Pressable>
+
+            {/* End profil */}
+
             <View
               style={{
                 flexDirection: "column",
-
-                width: "65%",
+                flex: 1,
                 paddingLeft: 10,
               }}
             >
@@ -1067,17 +1080,13 @@ export default function Invitation({
               style={{
                 flexDirection: "column",
                 alignSelf: "flex-start",
-
                 alignItems: "flex-end",
-                width: "20%",
-                // borderWidth: 1,
               }}
             >
               <View
                 styles={{
                   width: 50,
                   height: 50,
-                  borderWidth: 1,
                   backgroundColor: "#F6F6F6",
                 }}
               >
@@ -1115,7 +1124,6 @@ export default function Invitation({
                       style={{
                         width: 45,
                         height: 45,
-
                         borderRadius: 5,
                       }}
                     />
@@ -1127,15 +1135,13 @@ export default function Invitation({
           <View
             style={{
               flexDirection: "row",
-              // justifyContent: "",
-
               width: Dimensions.get("screen").width,
               paddingBottom: 15,
             }}
           >
             <View
               style={{
-                width: "20%",
+                width: 70,
               }}
             ></View>
             <View
@@ -1143,7 +1149,8 @@ export default function Invitation({
                 backgroundColor: item.isread == false ? "#FFFFFF" : "#F6F6F6",
                 padding: 10,
                 borderRadius: 5,
-                width: deviceId == "LYA-L29" ? "75%" : "74%",
+                flex: 1,
+                marginRight: 20,
               }}
             >
               <Text
@@ -1177,12 +1184,12 @@ export default function Invitation({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              // borderWidth: 1,
               width: Dimensions.get("screen").width,
               paddingVertical: normalize(20),
               paddingHorizontal: normalize(20),
             }}
           >
+            {/* Profil */}
             <Pressable
               onPress={() => {
                 item?.like_feed?.user?.id !== setting?.user?.id
@@ -1196,8 +1203,6 @@ export default function Invitation({
               }}
               style={{
                 alignContent: "flex-start",
-                width: "15%",
-
                 marginLeft: Platform.select({
                   ios: Notch ? -3 : 5,
                   android: deviceId == "LYA-L29" ? -2 : 0,
@@ -1209,7 +1214,6 @@ export default function Invitation({
                   height: 45,
                   width: 45,
                   alignSelf: "center",
-
                   borderRadius: 25,
                   resizeMode: "cover",
                   borderRadius: 25,
@@ -1221,12 +1225,14 @@ export default function Invitation({
                 }
               />
             </Pressable>
+            {/*End Profil */}
+
             <View
               style={{
                 flexDirection: "column",
-                width: "65%",
+                // width: "65%",
                 paddingLeft: 10,
-                // borderWidth: 1,
+                flex: 1,
               }}
             >
               {/* <Adduser width={20} height={20} /> */}
@@ -1294,7 +1300,8 @@ export default function Invitation({
                 alignSelf: "flex-start",
                 // justifyContent: "flex-end",
                 alignItems: "flex-end",
-                width: "20%",
+                marginLeft: 10,
+                // width: "20%",
               }}
             >
               {/* <View
@@ -1364,9 +1371,9 @@ export default function Invitation({
               paddingHorizontal: normalize(20),
             }}
           >
+            {/* profile */}
             <View
               style={{
-                width: "15%",
                 alignContent: "flex-start",
                 marginLeft: Platform.select({
                   ios: Notch ? -3 : 5,
@@ -1393,12 +1400,13 @@ export default function Invitation({
                 }
               />
             </View>
+            {/* End profile */}
+
             <View
               style={{
                 flexDirection: "column",
-                // borderWidth: 1,
                 justifyContent: "center",
-                width: "65%",
+                flex: 1,
                 paddingLeft: 10,
               }}
             >
@@ -1446,9 +1454,6 @@ export default function Invitation({
                     type="regular"
                     size="description"
                     style={{
-                      // fontFamily: "Lato-Regular",
-                      // fontSize: 15,
-                      // width: '100%',
                       color: "#464646",
                       marginBottom: 7,
                       marginRight: 10,
@@ -1460,11 +1465,7 @@ export default function Invitation({
                     size="description"
                     type="regular"
                     style={{
-                      // textAlign: "right",
                       color: "#6c6c6c",
-
-                      // width: '30%',
-                      // fontSize: 15,
                       marginBottom: 5,
                     }}
                   >
@@ -1492,28 +1493,6 @@ export default function Invitation({
                 ) : null}
               </View>
             </View>
-            {/* <View
-              style={{
-                flexDirection: "column",
-                alignSelf: "flex-start",
-                // justifyContent: "flex-end",
-                alignItems: "flex-end",
-                width: "17%",
-              }}
-            >
-              <Text
-                size="description"
-                style={{
-                  // textAlign: "right",
-                  color: "#6c6c6c",
-                  // width: '30%',
-                  // fontSize: 15,
-                  marginBottom: 5,
-                }}
-              >
-                {duration(item.tgl_buat)}
-              </Text>
-            </View> */}
           </View>
         </Pressable>
       );
@@ -1534,10 +1513,11 @@ export default function Invitation({
             style={{
               width: Dimensions.get("screen").width,
               paddingVertical: normalize(20),
-              paddingHorizontal: normalize(25),
+              paddingHorizontal: normalize(20),
               flexDirection: "row",
             }}
           >
+            {/* Profil */}
             <Pressable
               onPress={() => {
                 item?.like_itinerary?.user_like?.id !== setting?.user?.id
@@ -1563,7 +1543,6 @@ export default function Invitation({
                   alignSelf: "center",
                   borderRadius: 25,
                   resizeMode: "cover",
-                  borderRadius: 25,
                 }}
                 source={
                   item.like_itinerary.user_like?.picture
@@ -1572,8 +1551,13 @@ export default function Invitation({
                 }
               />
             </Pressable>
+            {/* End Profil */}
+
             <Pressable
-              style={{ flex: 1, marginLeft: 15 }}
+              style={{
+                flex: 1,
+                marginLeft: 10,
+              }}
               onPress={() => handle_areaklik_like_itinerary(item)}
             >
               <Text size="label" type="bold" numberOfLines={2}>

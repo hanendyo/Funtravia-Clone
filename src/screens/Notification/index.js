@@ -22,6 +22,7 @@ export default function Notification(props) {
   let [token, setToken] = useState(props.route.params.token);
   let [readall, setreadall] = useState(true);
   let [showSideModal, setshowSideModal] = useState(false);
+  console.log("~ showSideModal", showSideModal);
   const [routes] = useState([
     { key: "tab1", title: t("notification") },
     { key: "tab2", title: t("information") },

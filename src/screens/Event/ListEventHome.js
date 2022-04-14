@@ -206,7 +206,7 @@ export default function ListEventHome(props) {
   useEffect(() => {
     setTimeout(() => {
       setLoadingIndicator(false);
-    }, 1000);
+    }, 1500);
 
     // props.navigation.setOptions(HeaderComponent);
     // loadAsync();

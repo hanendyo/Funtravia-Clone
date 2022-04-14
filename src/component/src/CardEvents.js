@@ -166,7 +166,7 @@ export default function CardEvents({
         renderItem={({ item, index }) => (
           <Pressable
             onPress={() => {
-              recent_save(searchtext);
+              dataFrom == "search" ? recent_save(searchtext) : null;
               props.navigation.navigate("eventdetail", {
                 event_id: item.id,
                 name: item.name,

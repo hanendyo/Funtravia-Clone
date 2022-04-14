@@ -153,7 +153,7 @@ export default function DetailJournal(props) {
       backgroundColor: Platform.OS == "ios" ? "#209FAE" : null,
       height: Platform.OS == "ios" ? 45 : null,
       textAlign: Platform.OS == "ios" ? "center" : "left",
-      paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 11) : null,
+      paddingTop: Platform.OS == "ios" ? (Notch ? 10 : 9) : null,
       paddingBottom: Platform.OS == "ios" ? 15 : null,
       left: Platform.OS == "ios" ? 0 : -10,
       paddingRight: 15,
@@ -163,7 +163,7 @@ export default function DetailJournal(props) {
             ? 50
             : dataPopuler?.title.length > 40
             ? 60
-            : 10
+            : 30
           : 0,
       width: Platform.OS == "ios" ? Dimensions.get("screen").width : null,
     },

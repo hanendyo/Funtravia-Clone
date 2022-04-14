@@ -121,7 +121,7 @@ export default function FeedList({ props, token }) {
   let { width, height } = Dimensions.get("screen");
 
   const Scroll_to = async (index) => {
-    index = index ? index : indekScrollto;
+    index = index != -1 ? index : indekScrollto;
     setTimeout(() => {
       if (ref && ref?.current) {
         ref?.current?.scrollToIndex({
