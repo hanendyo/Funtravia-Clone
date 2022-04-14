@@ -680,7 +680,6 @@ export default function MovieLocation({ navigation, route }) {
             bottom: 0,
             zIndex: 999,
             paddingLeft: Platform.OS === "ios" ? 0 : 65,
-            paddingBottom: Platform.OS === "ios" ? 2 : 5,
             backgroundColor: "#209FAE",
             opacity: titleOpacity,
             top: 0,
@@ -691,7 +690,8 @@ export default function MovieLocation({ navigation, route }) {
             type="bold"
             style={{
               color: "#fff",
-              // marginBottom: NotchAndro ? 0 : 0,
+              marginBottom:
+                Platform.OS === "ios" ? 2 : deviceId == "LYA-L29" ? -2 : 5,
             }}
             numberOfLines={1}
           >

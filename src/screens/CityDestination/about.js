@@ -116,7 +116,7 @@ export default function about(props) {
         index: props.route.params.indexcity,
         animated: true,
       });
-    }, 1000);
+    }, 2000);
     refresh();
   }, []);
 
@@ -237,6 +237,7 @@ export default function about(props) {
           paddingHorizontal: 15,
         }}
         data={data}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
       />
     );
@@ -516,6 +517,7 @@ export default function about(props) {
         <FlatList
           key={"listtabbar"}
           ref={scrollRef}
+          keyExtractor={(item, index) => index.toString()}
           data={props.navigationState.routes}
           horizontal={true}
           getItemLayout={getItemLayout}

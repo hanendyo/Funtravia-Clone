@@ -107,7 +107,7 @@ export default function PracticalInformation(props) {
         index: props.route.params.indexcountry,
         animated: true,
       });
-    }, 1000);
+    }, 2000);
     refresh();
   }, []);
 

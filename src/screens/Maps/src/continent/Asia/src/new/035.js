@@ -26,7 +26,6 @@ export default function Maps({
   setChange,
   Idcountry,
 }) {
-  console.log(subContinent.id, colorChange, defaultColor, setChange, Idcountry);
   const { width } = Dimensions.get("screen");
   return (
     <Svg

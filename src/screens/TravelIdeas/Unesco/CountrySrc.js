@@ -209,6 +209,8 @@ export default function CountrySrc({
             type="bold"
             style={{
               color: "white",
+              width: Platform.OS === "ios" ? "75%" : null,
+              textAlign: "center",
             }}
           >
             {t("country")}

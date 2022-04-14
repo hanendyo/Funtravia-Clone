@@ -7758,7 +7758,7 @@ export default function ItineraryDetail(props) {
                     color: "#464646",
                   }}
                 >
-                  Option
+                  {t("option")}
                 </Text>
                 <TouchableOpacity
                   style={{

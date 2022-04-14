@@ -617,7 +617,6 @@ export default function Country(props) {
       outputRange: [0, 55],
       extrapolateRight: "clamp",
     });
-    console.log("render", render)
 
     return (
       <Animated.View
