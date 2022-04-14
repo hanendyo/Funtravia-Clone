@@ -144,7 +144,7 @@ export default function CardDestination({
   };
 
   const addToPlan = (kiriman) => {
-    recent_save(searchtext);
+    dataFrom == "search" ? recent_save(searchtext) : null;
     if (token) {
       if (kiriman) {
         props?.route?.params && props?.route?.params?.IdItinerary
@@ -248,7 +248,7 @@ export default function CardDestination({
               ) : null}
               <Pressable
                 onPress={() => {
-                  recent_save(searchtext);
+                  dataFrom == "search" ? recent_save(searchtext) : null;
                   props.navigation.push("DestinationUnescoDetail", {
                     id: item?.id,
                     name: item?.name,
