@@ -21,6 +21,6 @@
 
     NOTE
 
-    <!-- Penambahan/Revisi Code di Module Checkbox -->
+  Penambahan/Revisi Code di Module Checkbox
  - style: [styles.rctCheckBox, style], ref: this._setNativeRef, value: value, onValueChange: this._onChange
- - line 86
+ - @react-native-community/checkbox/dist/Checkbox.ios.js line 86
