@@ -328,14 +328,7 @@ export default function Comments(props) {
     return unsubscribe;
   }, [props.route.params, props.navigation]);
 
-  const [
-    GetCommentList,
-    {
-      data: queryDataComment,
-      loading: queryLoadingComment,
-      error: queryErrorComment,
-    },
-  ] = useLazyQuery(CommentList, {
+  const [GetCommentList] = useLazyQuery(CommentList, {
     fetchPolicy: "network-only",
     variables: { post_id: idPost },
     context: {
@@ -345,11 +338,13 @@ export default function Comments(props) {
       },
     },
     onCompleted: async (queryDataComment) => {
-      setDataComment(queryDataComment?.comment);
-      let temps = { ...queryDataComment };
-      let index = temps.comment.findIndex((k) => k["id"] === idComment);
-      await setIndeks(index);
-      await scroll_to_index(index);
+      await setDataComment(queryDataComment?.comment);
+      let temps = await { ...queryDataComment };
+      if (typeof temps === "object" && temps !== null) {
+        let index = temps?.comment.findIndex((k) => k["id"] === idComment);
+        await setIndeks(index);
+        await scroll_to_index(index);
+      }
     },
   });
 
@@ -370,8 +365,8 @@ export default function Comments(props) {
         Authorization: tokenApps,
       },
     },
-    onCompleted: () => {
-      setDataPost(queryDataPost?.feed_post_byid);
+    onCompleted: async (queryDataPost) => {
+      await setDataPost(queryDataPost?.feed_post_byid);
     },
   });
 

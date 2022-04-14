@@ -129,7 +129,7 @@ export default function EventDetail(props) {
                 ? deviceId === "iPhone 12 Pro"
                   ? 32 //10
                   : 30 //8
-                : 7
+                : 25
               : 8, //4
         }}
       >
@@ -739,7 +739,6 @@ export default function EventDetail(props) {
                 size="header"
                 style={{
                   color: "#fff",
-                  // marginLeft: 10,
                   marginRight: 25,
                   marginLeft:
                     Platform.OS == "ios" ? (widthName > 290 ? 0 : -20) : 10,
@@ -748,7 +747,7 @@ export default function EventDetail(props) {
                       ? 13
                       : deviceId == "CPH2127"
                       ? SafeStatusBar + 14
-                      : SafeStatusBar + 14,
+                      : SafeStatusBar + 16,
                   fontFamily: "Lato-Bold",
                   textAlign: Platform.OS == "ios" ? "center" : "left",
                 }}

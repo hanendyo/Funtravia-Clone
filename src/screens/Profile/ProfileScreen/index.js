@@ -984,32 +984,32 @@ export default function OtherProfile(props) {
             }}
           >
             {/* foto profile */}
-            {data.picture ? (
-              <Animated.Image
-                source={
-                  data.picture ? { uri: data.picture } : DefaultProfileSquare
-                }
-                style={{
-                  alignSelf: "center",
-                  width: width / 3.8,
-                  height: width / 3.8,
-                  borderRadius: width / 6,
-                  borderWidth: 2,
-                  borderColor: "#FFF",
-                  top: 5,
-                  zIndex: 1,
-                  // opacity: imageOpacitys,
-                  transform: [{ scale: imageTrans }],
-                }}
-              />
-            ) : (
+            {/* {data.picture ? ( */}
+            <Animated.Image
+              source={
+                data.picture ? { uri: data.picture } : DefaultProfileSquare
+              }
+              style={{
+                alignSelf: "center",
+                width: width / 3.8,
+                height: width / 3.8,
+                borderRadius: width / 6,
+                borderWidth: 2,
+                borderColor: "#FFF",
+                top: 5,
+                zIndex: 1,
+                // opacity: imageOpacitys,
+                transform: [{ scale: imageTrans }],
+              }}
+            />
+            {/* ) : (
               <View
                 style={{
                   width: width / 4,
                   height: width / 4,
                 }}
               ></View>
-            )}
+            )} */}
           </View>
           {/* name & username */}
           <View
