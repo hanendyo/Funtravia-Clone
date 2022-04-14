@@ -109,7 +109,7 @@ export default function aboutcountry(props) {
         index: props.route.params.indexcountry,
         animated: true,
       });
-    }, 1000);
+    }, 2000);
 
     refresh();
   }, []);
@@ -522,6 +522,7 @@ export default function aboutcountry(props) {
           getItemLayout={getItemLayout}
           renderItem={({ item, index }) => (
             <Ripple
+              key={index}
               onPress={() => {
                 setIndex(index);
                 scrollRef.current?.scrollToIndex({

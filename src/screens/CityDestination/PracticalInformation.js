@@ -119,7 +119,7 @@ export default function PracticalInformation(props) {
         index: props.route.params.indexcity,
         animated: true,
       });
-    }, 1000);
+    }, 2000);
   }, []);
 
   const getItemLayout = (data, index) => ({

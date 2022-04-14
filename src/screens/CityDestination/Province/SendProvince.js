@@ -355,9 +355,6 @@ export default function SendProvince({ navigation, route }) {
           }
           renderItem={({ item, index }) => RenderBuddy(item, index)}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{
-            backgroundColor: "#FFFFFF",
-          }}
           ListFooterComponent={
             loadingwith ? (
               <View style={{ paddingVertical: 20 }}>
@@ -392,9 +389,6 @@ export default function SendProvince({ navigation, route }) {
           }
           renderItem={({ item, index }) => RenderGroup(item, index)}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{
-            backgroundColor: "#FFFFFF",
-          }}
           ListFooterComponent={
             loading ? (
               <View style={{ paddingVertical: 20 }}>
