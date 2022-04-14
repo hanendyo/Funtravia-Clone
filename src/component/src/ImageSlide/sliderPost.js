@@ -94,7 +94,7 @@ export default function ImageSlide({
         alignContent: "center",
       }}
     >
-      <KeyboardAvoidingView
+      <SafeAreaView
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
@@ -347,7 +347,7 @@ export default function ImageSlide({
             <Arrowrightwhite width={20} height={20}></Arrowrightwhite>
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     </Modal>
   );
 }

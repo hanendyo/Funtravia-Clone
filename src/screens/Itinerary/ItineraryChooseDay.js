@@ -1633,16 +1633,16 @@ export default function ItineraryChooseday(props) {
             item.itinerary_id
           )
         }
-        disabled={cek(
-          item.total_hours ? item.total_hours : "00:00:00",
-          item.id
-        )}
+        // disabled={cek(
+        //   item.total_hours ? item.total_hours : "00:00:00",
+        //   item.id
+        // )}
         style={{
-          opacity:
-            cek(item.total_hours ? item.total_hours : "00:00:00", item.id) ===
-            true
-              ? 0.5
-              : 1,
+          // opacity:
+          //   cek(item.total_hours ? item.total_hours : "00:00:00", item.id) ===
+          //   true
+          //     ? 0.5
+          //     : 1,
           flexDirection: "row",
           borderBottomWidth: 1,
           borderBottomColor: "#f3f3f3",

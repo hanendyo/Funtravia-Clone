@@ -590,6 +590,7 @@ export default function ChatTypelayout({
                   if (i < 3) {
                     return (
                       <View
+                        key={i}
                         style={{
                           backgroundColor: "#FFFFFF",
                           borderRadius: 3,
@@ -1489,7 +1490,7 @@ export default function ChatTypelayout({
               size="description"
               style={{ marginBottom: 5, paddingRight: 30 }}
             >
-              {item.name}asdasdasd
+              {item.name}
             </Text>
           </View>
         ) : null

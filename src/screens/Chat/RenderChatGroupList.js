@@ -39,15 +39,6 @@ export default function ChatGroupList({
 }) {
   const { t } = useTranslation();
   const dateGroup = () => {
-    let date = new Date().toLocaleDateString();
-    return date;
-  };
-  // const timeChatGroup = (item) => {
-  //   let timeChat = new Date(item.recent?.time).toTimeString();
-  //   return timeChat;
-  // };
-
-  const timeChatGroup = () => {
     const dates = new Date();
     let day = dates.getDate();
     let month = dates.getMonth();
@@ -59,20 +50,19 @@ export default function ChatGroupList({
     return date;
   };
 
-  // const dateChatGroup = (item) => {
-  //   let dateChat = new Date(item.recent?.time).toLocaleDateString();
+  const timeChatGroup = (item) => {
+    let timeChat = new Date(item.recent?.time).toTimeString();
+    return timeChat;
+  };
 
-  //   return dateChat;
-  // };
   const dateChatGroup = (item) => {
     let dateChateDate = new Date(item.recent?.time).getDate();
-    let dateChateMonth = new Date(item.recent?.time).getMonth();
+    let dateChateMonth = parseInt(new Date(item.recent?.time).getMonth()) + 1;
     let dateChateYear = new Date(item.recent?.time)
       .getFullYear()
       .toString()
       .substr(2, 2);
-    let dateChat =
-      dateChateDate + "/" + (dateChateMonth + 1) + "/" + dateChateYear;
+    let dateChat = dateChateDate + "/" + dateChateMonth + "/" + dateChateYear;
     return dateChat;
   };
 
@@ -206,11 +196,9 @@ export default function ChatGroupList({
                   }}
                 >
                   <Text size="small">
-                    {timeChatGroup(item)
-                      ? dateChatGroup(item) == dateGroup()
-                        ? timeChatGroup(item).substring(0, 5)
-                        : dateChatGroup(item)
-                      : null}
+                    {dateChatGroup(item) === dateGroup()
+                      ? timeChatGroup(item).substring(0, 5)
+                      : dateChatGroup(item)}
                   </Text>
                   {item?.count_newmassage > 0 ? (
                     <View
