@@ -18,3 +18,9 @@
     3. git checkout -b user_gitlab
     4. yarn install
     5. yarn android/ios
+
+    NOTE
+
+    <!-- Penambahan/Revisi Code di Module Checkbox -->
+ - style: [styles.rctCheckBox, style], ref: this._setNativeRef, value: value, onValueChange: this._onChange
+ - line 86
