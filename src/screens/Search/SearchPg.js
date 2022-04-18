@@ -63,7 +63,11 @@ export default function SearchPg(props, { navigation, route }) {
   const searchRdx = useSelector((data) => data.searchInput);
   const { t, i18n } = useTranslation();
   const [active_src, setActiveSrc] = useState(
-    searchRdx && searchRdx.active_src.length ? searchRdx.active_src : "location"
+    searchRdx && searchRdx.active_src.length
+      ? searchRdx.active_src
+      : props.route.params?.idcity
+      ? "destination"
+      : "location"
   );
   let [list_rekomendasi_user, SetListrequser] = useState([]);
 
@@ -338,27 +342,32 @@ export default function SearchPg(props, { navigation, route }) {
       return fetchMoreLocation({
         updateQuery: onUpdateLocation,
         variables: {
-          limit: 10,
+          limit: 5,
           offset: dataLocation.search_location_cursor_based.page_info.offset,
         },
       });
     }
   };
   const onUpdateLocation = (prev, { fetchMoreResult }) => {
-    if (!fetchMoreResult) return prev;
-    const { page_info } = fetchMoreResult.search_location_cursor_based;
-    const datas = [
-      ...prev.search_location_cursor_based.datas,
-      ...fetchMoreResult.search_location_cursor_based.datas,
-    ];
+    if (
+      prev.search_location_cursor_based.datas.length <
+      fetchMoreResult.search_location_cursor_based.page_info.offset
+    ) {
+      if (!fetchMoreResult) return prev;
+      const { page_info } = fetchMoreResult.search_location_cursor_based;
+      const datas = [
+        ...prev.search_location_cursor_based.datas,
+        ...fetchMoreResult.search_location_cursor_based.datas,
+      ];
 
-    return Object.assign({}, prev, {
-      search_location_cursor_based: {
-        __typename: prev.search_location_cursor_based.__typename,
-        page_info,
-        datas,
-      },
-    });
+      return Object.assign({}, prev, {
+        search_location_cursor_based: {
+          __typename: prev.search_location_cursor_based.__typename,
+          page_info,
+          datas,
+        },
+      });
+    }
   };
 
   let [destinationSearch, SetdestinationSearch] = useState([]);
@@ -438,7 +447,7 @@ export default function SearchPg(props, { navigation, route }) {
       cities_id: cities_id,
       province_id: province_id,
       countries_id: countries_id,
-      limit: 10,
+      limit: 30,
       offset: 0,
     },
     fetchPolicy: "network-only",
@@ -780,128 +789,224 @@ export default function SearchPg(props, { navigation, route }) {
         {aktifsearch == true ? (
           tokenApps ? (
             <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#EEEEEE",
-                  paddingHorizontal: 15,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("location");
-                  }}
+              {props.route.params?.idcity ? (
+                <View
                   style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "location" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "location" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginRight: 15,
+                    flexDirection: "row",
+                    backgroundColor: "#fff",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#EEEEEE",
+                    paddingHorizontal: 15,
                   }}
                 >
-                  <Text
-                    size="label"
-                    type={active_src == "location" ? "bold" : "bold"}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("destination");
+                    }}
                     style={{
-                      color: active_src == "location" ? "#209FAE" : "#464646",
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "destination" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      marginRight: 15,
                     }}
                   >
-                    {t("location")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("destination");
-                  }}
+                    <Text
+                      size="label"
+                      type={active_src == "destination" ? "bold" : "bold"}
+                      style={{
+                        color:
+                          active_src == "destination" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("destination")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("people");
+                    }}
+                    style={{
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "people" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "people" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 15,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      type={active_src == "people" ? "bold" : "bold"}
+                      style={{
+                        color: active_src == "people" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("people")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("event");
+                    }}
+                    style={{
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "event" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "event" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      // type={
+                      //     active_src == "event" ? "bold" : "reg"
+                      // }
+                      type="bold"
+                      style={{
+                        color: active_src == "event" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("event")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
                   style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "destination" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "destination" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginHorizontal: 15,
+                    flexDirection: "row",
+                    backgroundColor: "#fff",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#EEEEEE",
+                    paddingHorizontal: 15,
                   }}
                 >
-                  <Text
-                    size="label"
-                    type={active_src == "destination" ? "bold" : "bold"}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("location");
+                    }}
                     style={{
-                      color:
-                        active_src == "destination" ? "#209FAE" : "#464646",
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "location" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "location" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginRight: 15,
                     }}
                   >
-                    {t("destination")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("people");
-                  }}
-                  style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "people" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "people" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginHorizontal: 15,
-                  }}
-                >
-                  <Text
-                    size="label"
-                    type={active_src == "people" ? "bold" : "bold"}
+                    <Text
+                      size="label"
+                      type={active_src == "location" ? "bold" : "bold"}
+                      style={{
+                        color: active_src == "location" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("location")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("destination");
+                    }}
                     style={{
-                      color: active_src == "people" ? "#209FAE" : "#464646",
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "destination" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 15,
                     }}
                   >
-                    {t("people")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("event");
-                  }}
-                  style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "event" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "event" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Text
-                    size="label"
-                    // type={
-                    //     active_src == "event" ? "bold" : "reg"
-                    // }
-                    type="bold"
+                    <Text
+                      size="label"
+                      type={active_src == "destination" ? "bold" : "bold"}
+                      style={{
+                        color:
+                          active_src == "destination" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("destination")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("people");
+                    }}
                     style={{
-                      color: active_src == "event" ? "#209FAE" : "#464646",
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "people" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "people" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 15,
                     }}
                   >
-                    {t("event")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Text
+                      size="label"
+                      type={active_src == "people" ? "bold" : "bold"}
+                      style={{
+                        color: active_src == "people" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("people")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("event");
+                    }}
+                    style={{
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "event" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "event" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      // type={
+                      //     active_src == "event" ? "bold" : "reg"
+                      // }
+                      type="bold"
+                      style={{
+                        color: active_src == "event" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("event")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               {active_src === "people" && (
                 <FlatList
                   key={"search"}
@@ -1051,9 +1156,11 @@ export default function SearchPg(props, { navigation, route }) {
                     paddingBottom: 120,
                   }}
                   horizontal={false}
-                  onEndReachedThreshold={0.7}
+                  // onEndReachedThreshold={0.1}
+                  initialNumToRender={20}
+                  onEndReachedThreshold={1}
                   showsVerticalScrollIndicator={false}
-                  onEndReached={handleOnEndReachedLocation}
+                  // onEndReached={handleOnEndReachedLocation}
                   renderItem={({ item, index }) => (
                     <Pressable
                       onPress={() => gotoLocation(item)}
@@ -1170,7 +1277,7 @@ export default function SearchPg(props, { navigation, route }) {
                   </View>
                 )
               ) : null}
-              {active_src == "event" ? (
+              {active_src == "event" && searchtext != "" ? (
                 loadingEvent ? (
                   <View
                     style={{
@@ -1203,101 +1310,170 @@ export default function SearchPg(props, { navigation, route }) {
             </>
           ) : (
             <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: "#fff",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#EEEEEE",
-                  paddingHorizontal: 15,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("location");
-                  }}
+              {props.route.params?.idcity ? (
+                <View
                   style={{
-                    // width: width / 3,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "location" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "location" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginRight: 15,
+                    flexDirection: "row",
+                    backgroundColor: "#fff",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#EEEEEE",
+                    paddingHorizontal: 15,
                   }}
                 >
-                  <Text
-                    size="label"
-                    type={active_src == "location" ? "bold" : "bold"}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("destination");
+                    }}
                     style={{
-                      color: active_src == "location" ? "#209FAE" : "#464646",
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "destination" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      marginRight: 15,
                     }}
                   >
-                    {t("location")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("destination");
-                  }}
+                    <Text
+                      size="label"
+                      type={active_src == "destination" ? "bold" : "bold"}
+                      style={{
+                        color:
+                          active_src == "destination" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("destination")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("event");
+                    }}
+                    style={{
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "event" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "event" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      // type={
+                      //     active_src == "event" ? "bold" : "reg"
+                      // }
+                      type="bold"
+                      style={{
+                        color: active_src == "event" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("event")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View
                   style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "destination" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "destination" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginHorizontal: 15,
+                    flexDirection: "row",
+                    backgroundColor: "#fff",
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#EEEEEE",
+                    paddingHorizontal: 15,
                   }}
                 >
-                  <Text
-                    size="label"
-                    type={active_src == "destination" ? "bold" : "bold"}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("location");
+                    }}
                     style={{
-                      color:
-                        active_src == "destination" ? "#209FAE" : "#464646",
+                      // width: width / 3,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "location" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "location" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginRight: 15,
                     }}
                   >
-                    {t("destination")}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setActiveSrc("event");
-                  }}
-                  style={{
-                    // width: width / 2,
-                    alignContent: "center",
-                    alignItems: "center",
-                    borderBottomWidth: active_src == "event" ? 2 : 0,
-                    borderBottomColor:
-                      active_src == "event" ? "#209FAE" : "#EEEEEE",
-                    paddingVertical: 15,
-                    backgroundColor: "#FFFFFF",
-                    // paddingHorizontal: 10,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Text
-                    size="label"
-                    // type={
-                    //     active_src == "event" ? "bold" : "reg"
-                    // }
-                    type="bold"
+                    <Text
+                      size="label"
+                      type={active_src == "location" ? "bold" : "bold"}
+                      style={{
+                        color: active_src == "location" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("location")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("destination");
+                    }}
                     style={{
-                      color: active_src == "event" ? "#209FAE" : "#464646",
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "destination" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "destination" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 15,
                     }}
                   >
-                    {t("event")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Text
+                      size="label"
+                      type={active_src == "destination" ? "bold" : "bold"}
+                      style={{
+                        color:
+                          active_src == "destination" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("destination")}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setActiveSrc("event");
+                    }}
+                    style={{
+                      // width: width / 2,
+                      alignContent: "center",
+                      alignItems: "center",
+                      borderBottomWidth: active_src == "event" ? 2 : 0,
+                      borderBottomColor:
+                        active_src == "event" ? "#209FAE" : "#EEEEEE",
+                      paddingVertical: 15,
+                      backgroundColor: "#FFFFFF",
+                      // paddingHorizontal: 10,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    <Text
+                      size="label"
+                      // type={
+                      //     active_src == "event" ? "bold" : "reg"
+                      // }
+                      type="bold"
+                      style={{
+                        color: active_src == "event" ? "#209FAE" : "#464646",
+                      }}
+                    >
+                      {t("event")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               {active_src === "people" ? (
                 loadingSrcuser ? null : ( // </View> //   /> //     color="#209fae" //     size="large" //     animating={loadingSrcuser} //   <ActivityIndicator // > //   }} //     marginHorizontal: 15, //     alignItems: "center", //     justifyContent: "center", //     width: width, //     flex: 1, //     // bottom:0, //     // position: 'absolute', //   style={{ // <View
                   // <FriendList
@@ -1589,7 +1765,7 @@ export default function SearchPg(props, { navigation, route }) {
                   />
                 )
               ) : null}
-              {active_src == "event" ? (
+              {active_src == "event" && searchtext ? (
                 loadingEvent ? (
                   <View
                     style={{

@@ -1720,7 +1720,6 @@ export default function Invitation({
           <View
             style={{
               paddingHorizontal: 30,
-
               width: "100%",
             }}
           >
@@ -1735,14 +1734,15 @@ export default function Invitation({
             >
               <View
                 style={{
-                  width: "15%",
+                  marginRight: 15,
                 }}
               >
                 <IdcardGreen width={30} height={30} />
               </View>
               <View
                 style={{
-                  width: "85%",
+                  flex: 1,
+                  alignItems: "flex-start",
                 }}
               >
                 <Text type="regular" size="label" style={{ marginBottom: 5 }}>
@@ -1753,6 +1753,7 @@ export default function Invitation({
                 </Text>
               </View>
             </View>
+
             {/* kota destinasi */}
             <View
               style={{
@@ -1764,14 +1765,14 @@ export default function Invitation({
             >
               <View
                 style={{
-                  width: "15%",
+                  marginRight: 15,
                 }}
               >
                 <LocationaoutlineGreen width={30} height={30} />
               </View>
               <View
                 style={{
-                  width: "85%",
+                  flex: 1,
                 }}
               >
                 <Text type="regular" size="label">
@@ -1782,6 +1783,7 @@ export default function Invitation({
                 </Text>
               </View>
             </View>
+
             {/* Date */}
             <View
               style={{
@@ -1793,14 +1795,14 @@ export default function Invitation({
             >
               <View
                 style={{
-                  width: "15%",
+                  marginRight: 15,
                 }}
               >
                 <CalendarBiru width={30} height={30} />
               </View>
               <View
                 style={{
-                  width: "85%",
+                  flex: 1,
                 }}
               >
                 <Text type="regular" size="label">
@@ -1813,6 +1815,7 @@ export default function Invitation({
                 </Text>
               </View>
             </View>
+
             {/* Duration */}
             <View
               style={{
@@ -1824,14 +1827,14 @@ export default function Invitation({
             >
               <View
                 style={{
-                  width: "15%",
+                  marginRight: 15,
                 }}
               >
                 <DurationGreen width={30} height={30} />
               </View>
               <View
                 style={{
-                  width: "85%",
+                  flex: 1,
                 }}
               >
                 <Text type="regular" size="label">
@@ -1847,24 +1850,24 @@ export default function Invitation({
                 </Text>
               </View>
             </View>
+
             {/* Travel Buddy */}
             <View
               style={{
                 flexDirection: "row",
-
                 paddingVertical: 10,
               }}
             >
               <View
                 style={{
-                  width: "15%",
+                  marginRight: 15,
                 }}
               >
                 <UsersgroupGreen width={30} height={30} />
               </View>
               <View
                 style={{
-                  width: "85%",
+                  flex: 1,
                 }}
               >
                 <Text type="regular" size="label">
@@ -1879,42 +1882,59 @@ export default function Invitation({
                     scrollEnabled={false}
                     data={dataItinerary?.itinerary_detail?.buddy}
                     numColumns={2}
-                    renderItem={({ item, index }) => (
-                      <View
-                        style={{
-                          marginVertical: 10,
-                          flex: 1,
-                          flexDirection: "row",
-                          paddingHorizontal: 2,
-                          alignContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          source={
-                            item?.user?.picture
-                              ? { uri: item?.user?.picture }
-                              : default_image
-                          }
+                    renderItem={({ item, index }) =>
+                      index <= 3 ? (
+                        <View
                           style={{
-                            height: 30,
-                            width: 30,
-                            borderRadius: 15,
+                            marginVertical: 5,
+                            flex: 1,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginRight: 5,
                           }}
-                        />
-                        <Text
-                          size="label"
-                          type="bold"
-                          style={{ marginLeft: 5, width: 105 }}
-                          numberOfLines={1}
                         >
-                          {item?.user?.first_name
-                            ? Capital({ text: item?.user?.first_name })
-                            : "User Funtravia"}
-                        </Text>
-                      </View>
-                    )}
+                          <Image
+                            source={
+                              item?.user?.picture
+                                ? { uri: item?.user?.picture }
+                                : default_image
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              borderRadius: 15,
+                            }}
+                          />
+                          <Text
+                            size="label"
+                            type="bold"
+                            style={{ marginLeft: 5, flex: 1 }}
+                            numberOfLines={1}
+                          >
+                            {item?.user?.first_name
+                              ? Capital({ text: item?.user?.first_name })
+                              : "User Funtravia"}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
                     keyExtractor={(d) => "buddy" + d?.id}
+                    ListFooterComponent={
+                      dataItinerary?.itinerary_detail?.buddy.length >= 5 ? (
+                        <View
+                          style={{
+                            width: "100%",
+                            alignItems: "flex-start",
+                            marginVertical: 10,
+                          }}
+                        >
+                          <Text size="label" type="bold">
+                            {`${"+"} ${dataItinerary?.itinerary_detail?.buddy
+                              .length - 4} ${t("more")}`}
+                          </Text>
+                        </View>
+                      ) : null
+                    }
                   />
                 </View>
               </View>
@@ -1932,7 +1952,6 @@ export default function Invitation({
                   ios: Notch ? 25 : 12,
                   android: 12,
                 }),
-
                 backgroundColor: "#FFFFFF",
                 shadowColor: "#000",
                 shadowOffset: {
@@ -1941,14 +1960,12 @@ export default function Invitation({
                 },
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
-
                 elevation: 5,
-                // shadowColor: "#6F7273",
-
-                // shadowOffset: { width: 0, height: 2 },
-                // shadowOpacity: 1,
-                // shadowRadius: 2,
-                // elevation: 3,
+                shadowColor: "#6F7273",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 2,
+                elevation: 3,
                 borderTopWidth: 1,
                 borderTopColor: "#f6f6f6",
               }}

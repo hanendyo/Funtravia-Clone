@@ -295,7 +295,7 @@ export default function SettingNegara(props) {
             onSubmitEditing={(e) => setCountry(e)}
             autoCorrect={false}
             // autoCompleteType={false}
-            placeholder={t("Search")}
+            placeholder={t("search")}
           />
           {country.length !== 0 ? (
             <TouchableOpacity onPress={() => clearFilter()}>

@@ -574,7 +574,7 @@ export default function ChatsearchPage({ navigation, route }) {
               ref={srcinpt}
               onChangeText={(e) => _searchHandle(e)}
               value={searchtext}
-              placeholder="Search"
+              placeholder={t("search")}
               placeholderTextColor="#464646"
               style={{
                 width: "85%",
