@@ -713,6 +713,8 @@ export default function EventDetail(props) {
                         : 2
                       : deviceId == "CPH2127"
                       ? SafeStatusBar + 2
+                      : deviceId == "Mi A2"
+                      ? SafeStatusBar + 4
                       : SafeStatusBar + 3,
                   borderRadius: 30,
                   justifyContent: "center",
@@ -746,6 +748,8 @@ export default function EventDetail(props) {
                     Platform.OS == "ios"
                       ? 13
                       : deviceId == "CPH2127"
+                      ? SafeStatusBar + 14
+                      : deviceId == "Mi A2"
                       ? SafeStatusBar + 14
                       : SafeStatusBar + 16,
                   fontFamily: "Lato-Bold",

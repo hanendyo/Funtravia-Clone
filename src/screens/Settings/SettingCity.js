@@ -372,7 +372,7 @@ export default function SettingCity(props) {
             }}
             onChangeText={(e) => setCity(e)}
             onSubmitEditing={(e) => setCity(e)}
-            placeholder={t("Search")}
+            placeholder={t("search")}
             value={city}
           />
           {city.length !== 0 ? (
