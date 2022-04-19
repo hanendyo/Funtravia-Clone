@@ -125,6 +125,7 @@ function MyAccountStackScreen() {
           // headerTransparent: false,
           headerTitle: "",
         }}
+        t
       />
     </MyAccountStack.Navigator>
   );

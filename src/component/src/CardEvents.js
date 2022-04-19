@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { CalendarBiru, LikeEmpty, LikeRed, PinHijau } from "../../assets/svg";
-import { Text, FunImageBackground } from "../../component";
+import FunImageBackground from "./FunImageBackground";
+import Text from "./Text";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 import { default_image, CalenderGrey } from "../../assets/png";
-import { ModalLogin } from "../../component";
+import ModalLogin from "./ModalLogin";
 import { useMutation } from "@apollo/client";
 import { RNToasty } from "react-native-toasty";
 import Liked from "../../graphQL/Mutation/Event/likedEvent";

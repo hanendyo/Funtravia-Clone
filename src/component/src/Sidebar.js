@@ -11,7 +11,9 @@ import {
 // import Modal from "react-native-modal";
 import { Home, Xhitam } from "../../assets/svg";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../index";
+// import { Text, Button } from "../index";
+import Text from "./Text";
+import Button from "./Button";
 
 export default function Sidebar({ show, Data, setClose, props }) {
   const { t, i18n } = useTranslation();

@@ -735,6 +735,52 @@ export default function ItineraryChooseday(props) {
         },
       ],
     },
+    itinerary: {
+      index: 3,
+      routes: [
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "HomeScreen" }],
+          },
+        },
+        {
+          name: "BottomStack",
+          state: {
+            routes: [{ name: "TripBottomPlaning" }],
+          },
+        },
+        {
+          name: "ItineraryStack",
+          state: {
+            routes: [
+              {
+                name: "itindetail",
+                params: {
+                  itintitle: dataItinerary?.itinerary_detail?.name,
+                  country: Iditinerary,
+                  dateitin:
+                    dataItinerary && dataItinerary?.itinerary_detail
+                      ? dateFormatr(
+                          dataItinerary?.itinerary_detail?.start_date
+                        ) +
+                        "  -  " +
+                        dateFormatr(dataItinerary?.itinerary_detail?.end_date)
+                      : null,
+                  token: token,
+                  datadayaktif: dataSelected?.[0],
+                  status: "edit",
+                  index: 0,
+                  onbackhandler: "list",
+                  data_from: props?.route?.params?.data_from,
+                  idKiriman: props?.route?.params?.Kiriman,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
   };
 
   const dataFromEventPicker = {

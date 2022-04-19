@@ -13,7 +13,7 @@ import { ASSETS_SERVER } from "../../config";
 import CACHE from "../cache.json";
 import { Refresh } from "../../assets/svg";
 
-export default function ImageBackground({
+export default function FunImageBackground({
   children,
   style,
   source,
@@ -53,11 +53,11 @@ export default function ImageBackground({
               fromUrl: uri,
               toFile: path,
               background: true,
-              begin: (res: DownloadBeginCallbackResult) => {
+              begin: (res) => {
                 // console.log("Response begin ===\n\n");
                 // console.log(res);
               },
-              progress: (res: DownloadProgressCallbackResult) => {
+              progress: (res) => {
                 //here you can calculate your progress for file download
                 // console.log("Response written ===\n\n");
                 let progressPercent =

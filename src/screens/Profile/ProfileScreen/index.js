@@ -1240,7 +1240,6 @@ export default function OtherProfile(props) {
             <Text
               onTextLayout={(x) => {
                 let line = x.nativeEvent.lines.length;
-
                 if (line == 0) {
                   Platform.select({
                     ios: Notch ? setHeightBio(0) : setHeightBio(0),
