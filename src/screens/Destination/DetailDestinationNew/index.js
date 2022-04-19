@@ -485,6 +485,7 @@ const Index = (props) => {
   };
 
   const loadAsync = async () => {
+    setLoadings(true);
     await fetchData();
     await fetchDataAnotherDes();
   };
@@ -2843,7 +2844,7 @@ const Index = (props) => {
               }}
             >
               <Pressable
-                onPress={() => SetShareModal(false)}
+                onPress={() => setModalSosial(false)}
                 style={{
                   position: "absolute",
                   right: 0,

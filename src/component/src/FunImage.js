@@ -15,7 +15,7 @@ import { moderateScale } from "react-native-size-matters";
 import FastImage from "react-native-fast-image";
 import { AlbumFeed } from "../../assets/svg";
 
-export default function Image({
+export default function FunImage({
   children,
   style,
   source,

@@ -20,11 +20,12 @@ import {
   TravelStoriesdis,
   TravelAlbumdis,
 } from "../../assets/svg";
-import { Text, Button } from "../../component";
+import Text from "./Text";
+import Button from "./Button";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 import { Bg_soon, default_profile, ItineraryKosong } from "../../assets/png";
-import { ModalLogin } from "../../component";
+import ModalLogin from "./ModalLogin";
 import { useMutation } from "@apollo/client";
 import ItineraryLiked from "../../graphQL/Mutation/Itinerary/ItineraryLike";
 import ItineraryUnliked from "../../graphQL/Mutation/Itinerary/ItineraryUnlike";

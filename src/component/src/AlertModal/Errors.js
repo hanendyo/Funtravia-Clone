@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "react-native-modal";
 import { Input, Item, Label, View } from "native-base";
 import { Pressable, Dimensions, Image } from "react-native";
-import { Text } from "../../index";
+import Text from "../Text";
 
 export default function Errors({ modals, setModals, message }) {
   setTimeout(() => {

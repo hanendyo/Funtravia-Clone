@@ -691,7 +691,13 @@ export default function MovieLocation({ navigation, route }) {
             style={{
               color: "#fff",
               marginBottom:
-                Platform.OS === "ios" ? 2 : deviceId == "LYA-L29" ? -2 : 5,
+                Platform.OS === "ios"
+                  ? Notch
+                    ? 2
+                    : 4
+                  : deviceId == "LYA-L29"
+                  ? -2
+                  : 5,
             }}
             numberOfLines={1}
           >

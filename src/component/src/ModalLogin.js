@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Pressable, View, Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Text, Button } from "../../component";
+import Text from "./Text";
+import Button from "./Button";
 import { Xgray } from "../../assets/svg";
 
 export default function ModalLogin({ props, modalLogin, setModalLogin }) {

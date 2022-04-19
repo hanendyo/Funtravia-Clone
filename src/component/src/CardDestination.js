@@ -17,11 +17,14 @@ import {
   UnescoIcon,
   MovieIcon,
 } from "../../assets/svg";
-import { Text, Button, FunImage } from "..";
+import Text from "./Text";
+import Button from "./Button";
+import FunImage from "./FunImage";
 import { useTranslation } from "react-i18next";
 import normalize from "react-native-normalize";
 import { Bg_soon, default_profile, default_image } from "../../assets/png";
-import { ModalLogin, FunIcon } from "../../component";
+import ModalLogin from "./ModalLogin";
+import FunIcon from "./FunIcon";
 import { RNToasty } from "react-native-toasty";
 import Liked from "../../graphQL/Mutation/Destination/Liked";
 import unLiked from "../../graphQL/Mutation/Destination/UnLiked";
