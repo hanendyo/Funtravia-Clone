@@ -367,8 +367,8 @@ export default function detailCustomItinerary(props) {
     file: true, //wajib
   });
 
-  let startDate = props.route.params?.startDate?.split(" ").join("T");
-  let endDate = props.route.params?.endDate?.split(" ").join("T");
+  let startDate = props.route.params?.startDate?.split(" ")[0];
+  let endDate = props.route.params?.endDate?.split(" ")[0];
 
   const validation = (name, value) => {
     if (!value || value === "" || value == null) {
@@ -1272,9 +1272,9 @@ export default function detailCustomItinerary(props) {
                 onChangeText={(e) => {
                   setdataState({ ...dataState, note: e });
                 }}
-                onSubmitEditing={(e) => {
-                  setdataState({ ...dataState, note: e });
-                }}
+                // onSubmitEditing={(e) => {
+                //   setdataState({ ...dataState, note: e });
+                // }}
               />
             </View>
           </View>

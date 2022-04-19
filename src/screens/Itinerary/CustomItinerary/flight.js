@@ -233,6 +233,8 @@ export default function detailCustomItinerary(props) {
 
   // };
 
+  console.log("note", note);
+
   //constant data
   const order = ["0"];
   const duration = "01:00:00";
@@ -1192,7 +1194,7 @@ export default function detailCustomItinerary(props) {
             placeholder={t("optional")}
             value={note}
             autoCorrect={false}
-            onChangeText={setNote}
+            onChangeText={(e) => setNote(e)}
             style={styles.textInputNotes}
           />
         </View>
