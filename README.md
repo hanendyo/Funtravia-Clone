@@ -13,7 +13,7 @@
     2. NDK (21.0.6113669)
     3. Install Liciency Google Play
   - Clone Project
-    1. git clone https://gitlab.com/fidev/funtravia-group/f-app-v2.git app
+    1. git clone https://github.com/hanendyo/Funtravia-Clone.git app
     2. cd app
     3. git checkout -b user_gitlab
     4. yarn install
