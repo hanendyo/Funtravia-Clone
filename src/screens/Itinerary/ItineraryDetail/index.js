@@ -926,6 +926,7 @@ export default function ItineraryDetail(props) {
     var menit = parseFloat(starttime[1]) + parseFloat(duration[1]);
 
     if (menit > 59) {
+      jam = jam + 1;
       menit -= 60;
     }
 
@@ -1209,6 +1210,7 @@ export default function ItineraryDetail(props) {
   });
 
   const savetimeline = async (datakiriman) => {
+    setloading(true);
     try {
       let response = await mutationSaveTimeline({
         variables: {
@@ -1228,11 +1230,12 @@ export default function ItineraryDetail(props) {
         if (response.data.update_timeline.code !== 200) {
           throw new Error(response.data.update_timeline.message);
         }
-
+        setloading(false);
         startRefreshAction();
         GetTimelin();
       }
     } catch (error) {
+      setloading(false);
       Alert.alert("" + error);
     }
   };
@@ -1272,6 +1275,7 @@ export default function ItineraryDetail(props) {
 
   const deleteactivity = async (iditinerarys, idactivitys, typess) => {
     try {
+      setloading(true);
       let response = await mutationDeleteActivity({
         variables: {
           itinerary_id: iditinerarys,
@@ -1283,6 +1287,7 @@ export default function ItineraryDetail(props) {
         throw new Error("Error Input");
       }
       if (response.data) {
+        setloading(false);
         if (response.data.delete_activity.code !== 200) {
           console.log(
             "Error Delete Activity",
@@ -1394,8 +1399,6 @@ export default function ItineraryDetail(props) {
             order++;
           }
 
-          console.log("Xdata", Xdata);
-
           if ((x = Xdata.length)) {
             try {
               let response = await mutationSaveTimeline({
@@ -1429,6 +1432,7 @@ export default function ItineraryDetail(props) {
         setModalDelete(false);
       }
     } catch (error) {
+      setloading(false);
       console.log("errorXdata", error);
       Alert.alert("" + error);
       setModalDelete(false);
@@ -5334,6 +5338,31 @@ export default function ItineraryDetail(props) {
     );
   }
 
+  // if (loading) {
+  //   return (
+  //     <View
+  //       // style={{
+  //       //   flex: 1,
+
+  //       //   alignItems: "center",
+  //       //   alignContent: "center",
+  //       //   justifyContent: "center",
+  //       // }}
+  //       style={{
+  //         width: Dimensions.get("screen").width + 25,
+  //         height: Dimensions.get("screen").height,
+  //         justifyContent: "center",
+  //         opacity: 0.7,
+  //         zIndex: 99999999,
+  //         backgroundColor: "#000",
+  //         position: "absolute",
+  //       }}
+  //     >
+  //       <ActivityIndicator animating={true} color="#209fae" size="large" />
+  //     </View>
+  //   );
+  // }
+
   if (datadetail) {
     let rData = datadetail?.itinerary_detail
       ? datadetail?.itinerary_detail
@@ -5347,6 +5376,22 @@ export default function ItineraryDetail(props) {
 
     return (
       <Fragment>
+        {/* loading indikator */}
+        {loading ? (
+          <View
+            style={{
+              width: Dimensions.get("screen").width + 25,
+              height: Dimensions.get("screen").height,
+              justifyContent: "center",
+              opacity: 0.7,
+              zIndex: 99999999,
+              backgroundColor: "#000",
+              position: "absolute",
+            }}
+          >
+            <ActivityIndicator animating={true} color="#209fae" size="large" />
+          </View>
+        ) : null}
         <CustomStatusBar backgroundColor="#14646e" barStyle="light-content" />
         <SafeAreaView
           style={{
