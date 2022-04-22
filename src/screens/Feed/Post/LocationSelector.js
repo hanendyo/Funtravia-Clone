@@ -23,6 +23,7 @@ import Modal from "react-native-modal";
 import { Text } from "../../../component";
 import { useTranslation } from "react-i18next";
 import DeviceInfo from "react-native-device-info";
+import { API_KEY } from "../../../config";
 const Notch = DeviceInfo.hasNotch();
 
 export default function LocationSelector({
@@ -125,7 +126,7 @@ export default function LocationSelector({
         >
           <GooglePlacesAutocomplete
             query={{
-              key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+              key: API_KEY,
               language: t("googleLocationLang"), // language of the results
               // components: "country:id",
             }}

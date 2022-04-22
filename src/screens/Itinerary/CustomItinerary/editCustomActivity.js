@@ -1,6 +1,6 @@
-import {Input, Item, Label, Textarea} from "native-base";
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import { Input, Item, Label, Textarea } from "native-base";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dimensions,
   View,
@@ -11,7 +11,7 @@ import {
   Modal as Modalss,
   Platform,
 } from "react-native";
-import {ScrollView, TouchableOpacity} from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import CheckBox from "@react-native-community/checkbox";
 import {
   Arrowbackios,
@@ -22,18 +22,19 @@ import {
   Pointmapgray,
   Xhitam,
 } from "../../../assets/svg";
-import {Button, Loading, Text, Truncate, Distance} from "../../../component";
+import { Button, Loading, Text, Truncate, Distance } from "../../../component";
 import Modal from "react-native-modal";
-import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Ripple from "react-native-material-ripple";
 import EditCustom from "../../../graphQL/Mutation/Itinerary/EditCustom";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import SaveCustom from "../../../graphQL/Mutation/Itinerary/Savecustom";
-import {asyncMap} from "@apollo/client/utilities";
-import {ReactNativeFile} from "apollo-upload-client";
+import { asyncMap } from "@apollo/client/utilities";
+import { ReactNativeFile } from "apollo-upload-client";
 import moment from "moment";
-import {StackActions} from "@react-navigation/native";
+import { StackActions } from "@react-navigation/native";
 import UpdateTimelines from "../../../graphQL/Mutation/Itinerary/UpdateTimeline";
+import { API_KEY } from "../../../config";
 
 export default function editCustomActivity(props) {
   let [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ export default function editCustomActivity(props) {
   );
   let [dataSplitIndex, setdataSplitIndex] = useState({});
 
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   let [modals, setModal] = useState(false);
   let [modaldate, setModaldate] = useState(false);
   let [cheked, setcheck] = useState(false);
@@ -93,17 +94,17 @@ export default function editCustomActivity(props) {
     let check = validation(name, text);
 
     if (name === "tittle") {
-      setdataState({...dataState, title: text});
+      setdataState({ ...dataState, title: text });
       setdataSplitIndex({
         ...dataSplitIndex,
         name: text,
       });
     }
     if (name === "address") {
-      setdataState({...dataState, address: text});
+      setdataState({ ...dataState, address: text });
     }
     if (name === "detail") {
-      setdataState({...dataState, addressdetail: text});
+      setdataState({ ...dataState, addressdetail: text });
       setdataSplitIndex({
         ...dataSplitIndex,
         address: text,
@@ -183,7 +184,7 @@ export default function editCustomActivity(props) {
             marginBottom: 1,
           }}
         >
-          <Text type="bold" size="title" style={{color: "#fff"}}>
+          <Text type="bold" size="title" style={{ color: "#fff" }}>
             {t("editCustomActivity")}
           </Text>
         </View>
@@ -207,7 +208,7 @@ export default function editCustomActivity(props) {
       temp.push(files);
     }
     let tempData = [...temp];
-    setdataState((prevState) => ({...prevState, file: tempData}));
+    setdataState((prevState) => ({ ...prevState, file: tempData }));
   };
 
   useEffect(() => {
@@ -230,7 +231,7 @@ export default function editCustomActivity(props) {
 
   const [
     mutationSaved,
-    {loading: loadingSaved, data: dataSaved, error: errorSaved},
+    { loading: loadingSaved, data: dataSaved, error: errorSaved },
   ] = useMutation(EditCustom, {
     context: {
       headers: {
@@ -244,7 +245,7 @@ export default function editCustomActivity(props) {
 
   const [
     mutationChecked,
-    {loading: loadingChecked, data: dataChecked, error: errorChecked},
+    { loading: loadingChecked, data: dataChecked, error: errorChecked },
   ] = useMutation(SaveCustom, {
     context: {
       headers: {
@@ -289,7 +290,7 @@ export default function editCustomActivity(props) {
       parseFloat(durations.split(":")[1]);
 
     let datax = [...dataList];
-    let dataganti = {...datax[indexData]};
+    let dataganti = { ...datax[indexData] };
 
     dataganti.time = starttimes;
     dataganti.duration = durations;
@@ -340,7 +341,7 @@ export default function editCustomActivity(props) {
     var order = 1;
 
     for (var y in datax) {
-      let datareplace = {...datax[y]};
+      let datareplace = { ...datax[y] };
       datareplace.order = order;
       if (datax[y - 1]) {
         if (datax[y - 1].detail_flight) {
@@ -463,7 +464,7 @@ export default function editCustomActivity(props) {
     }
   };
 
-  const hitungDuration = ({startt, dur}) => {
+  const hitungDuration = ({ startt, dur }) => {
     var duration = dur ? dur.split(":") : "00:00:00";
     var starttime = startt ? startt.split(":") : "00:00:00";
 
@@ -485,7 +486,7 @@ export default function editCustomActivity(props) {
 
   const [
     mutationSaveTimeline,
-    {loading: loadingSave, data: dataSave, error: errorSave},
+    { loading: loadingSave, data: dataSave, error: errorSave },
   ] = useMutation(UpdateTimelines, {
     context: {
       headers: {
@@ -573,7 +574,7 @@ export default function editCustomActivity(props) {
               setmodalAlert(true);
             } else {
               Alert.alert(t("FailedUpdate"), t("FailedUpdate"), [
-                {text: "OK", onPress: () => console.log("OK Pressed")},
+                { text: "OK", onPress: () => console.log("OK Pressed") },
               ]);
             }
           }
@@ -583,7 +584,7 @@ export default function editCustomActivity(props) {
               setmodalAlert(true);
             } else {
               Alert.alert(t("FailedUpdate"), t("AktivitasFull"), [
-                {text: "OK", onPress: () => console.log("OK Pressed")},
+                { text: "OK", onPress: () => console.log("OK Pressed") },
               ]);
             }
           }
@@ -622,7 +623,7 @@ export default function editCustomActivity(props) {
       >
         {/* title */}
 
-        <View style={{width: Dimensions.get("screen").width, padding: 20}}>
+        <View style={{ width: Dimensions.get("screen").width, padding: 20 }}>
           <Text
             size="title"
             type="bold"
@@ -694,7 +695,7 @@ export default function editCustomActivity(props) {
             <Text size="label" type="bold" style={{}}>
               {t("duration")}
             </Text>
-            <View style={{flexDirection: "row"}}>
+            <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() => {
                   setModaldate(true);
@@ -829,7 +830,7 @@ export default function editCustomActivity(props) {
                     alignItems: "center",
                   }}
                 >
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosIcon={
                         <View>
@@ -840,10 +841,10 @@ export default function editCustomActivity(props) {
                       note
                       mode="dropdown"
                       selectedValue={hour}
-                      textStyle={{fontFamily: "Lato-Regular"}}
-                      itemTextStyle={{fontFamily: "Lato-Regular"}}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
-                      placeholderStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{ fontFamily: "Lato-Regular" }}
                       headerTitleStyle={{
                         fontFamily: "Lato-Regular",
                       }}
@@ -876,17 +877,17 @@ export default function editCustomActivity(props) {
                       :
                     </Text>
                   </View>
-                  <View style={{width: "40%"}}>
+                  <View style={{ width: "40%" }}>
                     <Picker
                       iosHeader="Select Minutes"
-                      headerBackButtonTextStyle={{fontFamily: "Lato-Regular"}}
+                      headerBackButtonTextStyle={{ fontFamily: "Lato-Regular" }}
                       note
                       mode="dropdown"
                       selectedValue={minutes}
-                      textStyle={{fontFamily: "Lato-Regular"}}
-                      itemTextStyle={{fontFamily: "Lato-Regular"}}
-                      itemStyle={{fontFamily: "Lato-Regular"}}
-                      placeholderStyle={{fontFamily: "Lato-Regular"}}
+                      textStyle={{ fontFamily: "Lato-Regular" }}
+                      itemTextStyle={{ fontFamily: "Lato-Regular" }}
+                      itemStyle={{ fontFamily: "Lato-Regular" }}
+                      placeholderStyle={{ fontFamily: "Lato-Regular" }}
                       iosIcon={
                         <View>
                           <Bottom />
@@ -1064,8 +1065,8 @@ export default function editCustomActivity(props) {
                   android: 35,
                 }),
                 transform: Platform.select({
-                  ios: [{scaleX: 0.8}, {scaleY: 0.8}],
-                  android: [{scaleX: 1.3}, {scaleY: 1.3}],
+                  ios: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
+                  android: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
                 }),
               }}
               value={cheked}
@@ -1121,7 +1122,7 @@ export default function editCustomActivity(props) {
             borderRadius: 5,
           }}
         >
-          <Text size="description" type="regular" style={{color: "white"}}>
+          <Text size="description" type="regular" style={{ color: "white" }}>
             {t("next")}
           </Text>
         </TouchableOpacity>
@@ -1202,7 +1203,7 @@ export default function editCustomActivity(props) {
           >
             <GooglePlacesAutocomplete
               query={{
-                key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+                key: API_KEY,
                 language: t("googleLocationLang"), // language of the results
               }}
               fetchDetails={true}
@@ -1218,12 +1219,12 @@ export default function editCustomActivity(props) {
               currentLocationLabel="Nearby location"
               renderLeftButton={() => {
                 return (
-                  <View style={{justifyContent: "center"}}>
+                  <View style={{ justifyContent: "center" }}>
                     <Pointmapgray />
                   </View>
                 );
               }}
-              GooglePlacesSearchQuery={{rankby: "distance"}}
+              GooglePlacesSearchQuery={{ rankby: "distance" }}
               enablePoweredByContainer={false}
               renderRow={(data) => {
                 if (data.description) {
@@ -1246,12 +1247,16 @@ export default function editCustomActivity(props) {
                     >
                       <Pointmapgray />
                     </View>
-                    <View style={{width: Dimensions.get("screen").width - 60}}>
-                      <Text style={{fontFamily: "Lato-Bold", fontSize: 12}}>
+                    <View
+                      style={{ width: Dimensions.get("screen").width - 60 }}
+                    >
+                      <Text style={{ fontFamily: "Lato-Bold", fontSize: 12 }}>
                         {/* {x[0]} */}
                         {x ? x[0] : data.name}
                       </Text>
-                      <Text style={{fontFamily: "Lato-Regular", fontSize: 12}}>
+                      <Text
+                        style={{ fontFamily: "Lato-Regular", fontSize: 12 }}
+                      >
                         <Truncate
                           text={
                             data.description ? data.description : data.vicinity
@@ -1377,7 +1382,7 @@ export default function editCustomActivity(props) {
                 padding: 20,
               }}
             >
-              <Text size="label" style={{textAlign: "center"}}>
+              <Text size="label" style={{ textAlign: "center" }}>
                 {t(textAlert)}
               </Text>
             </View>

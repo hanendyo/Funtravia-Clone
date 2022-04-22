@@ -37,9 +37,9 @@ import DocumentPicker from "react-native-document-picker";
 import { ReactNativeFile } from "apollo-upload-client";
 import Ripple from "react-native-material-ripple";
 import DeviceInfo from "react-native-device-info";
+import { API_KEY } from "../../../config";
 
 export default function CreateCustom(props) {
-
   const { t, i18n } = useTranslation();
   const Notch = DeviceInfo.hasNotch();
   const deviceId = DeviceInfo.getModel();
@@ -1243,7 +1243,7 @@ export default function CreateCustom(props) {
             <GooglePlacesAutocomplete
               style={{}}
               query={{
-                key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+                key: API_KEY,
                 language: t("googleLocationLang"), // language of the results
               }}
               fetchDetails={true}

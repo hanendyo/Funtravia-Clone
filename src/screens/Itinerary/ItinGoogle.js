@@ -32,6 +32,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import normalize from "react-native-normalize";
 import DeviceInfo from "react-native-device-info";
+import { API_KEY } from "../../config";
 
 export default function ItinGoogle(props) {
   const { t, i18n } = useTranslation();
@@ -469,7 +470,7 @@ export default function ItinGoogle(props) {
             <GooglePlacesAutocomplete
               style={{}}
               query={{
-                key: "AIzaSyD4qyD449yZQ2_7AbdnUvn9PpAxCZ4wZEg",
+                key: API_KEY,
                 language: t("googleLocationLang"), // language of the results
                 // components: 'country:id',
               }}
